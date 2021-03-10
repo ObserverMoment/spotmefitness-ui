@@ -1,0 +1,8 @@
+query equipments {
+  equipments {
+    id
+    name
+    imageUrl
+    loadAdjustable
+  }
+}

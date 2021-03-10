@@ -1,0 +1,17 @@
+targets:
+  $default:
+    sources:
+      - lib/**
+      - graphql/**
+      - schema.graphql
+    builders:
+      artemis:
+        options:
+          scalar_mapping:
+            - custom_parser_import: 'package:spotmefitness_ui/coercers.dart'
+              graphql_type: DateTime
+              dart_type: DateTime
+          schema_mapping:
+            - schema: schema.graphql
+              queries_glob: graphql/**.graphql
+              output: lib/api/graphql_api.dart
