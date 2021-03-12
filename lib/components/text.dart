@@ -1,14 +1,18 @@
 import 'package:flutter/cupertino.dart';
 
-const double HUGE_FONT_SIZE = 24;
-const double LARGE_FONT_SIZE = 20;
-const double MAIN_FONT_SIZE = 16;
-const double SMALL_FONT_SIZE = 13;
-const double TINY_FONT_SIZE = 11;
+enum FONTSIZE { TINY, SMALL, MAIN, LARGE, HUGE }
+
+const Map<FONTSIZE, double> _fontSizeMap = {
+  FONTSIZE.TINY: 11,
+  FONTSIZE.SMALL: 13,
+  FONTSIZE.MAIN: 16,
+  FONTSIZE.LARGE: 20,
+  FONTSIZE.HUGE: 24
+};
 
 enum FONTWEIGHT { LIGHT, REGULAR, BOLD }
 
-const fontWeightMap = {
+const Map<FONTWEIGHT, FontWeight> _fontWeightMap = {
   FONTWEIGHT.LIGHT: FontWeight.w300,
   FONTWEIGHT.REGULAR: FontWeight.w400,
   FONTWEIGHT.BOLD: FontWeight.w500,
@@ -17,19 +21,21 @@ const fontWeightMap = {
 class MyText extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
-  final double size;
+  final FONTSIZE size;
   final FONTWEIGHT weight;
   final TextOverflow overflow;
   final int? maxLines;
+  final Color? color;
+  final TextDecoration? decoration;
 
-  MyText(
-    this.text, {
-    this.textAlign = TextAlign.start,
-    this.size = MAIN_FONT_SIZE,
-    this.overflow = TextOverflow.ellipsis,
-    this.weight = FONTWEIGHT.REGULAR,
-    this.maxLines,
-  });
+  MyText(this.text,
+      {this.textAlign = TextAlign.start,
+      this.size = FONTSIZE.MAIN,
+      this.overflow = TextOverflow.ellipsis,
+      this.weight = FONTWEIGHT.REGULAR,
+      this.maxLines,
+      this.color,
+      this.decoration});
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +44,10 @@ class MyText extends StatelessWidget {
         maxLines: maxLines,
         overflow: overflow,
         style: TextStyle(
-          fontWeight: fontWeightMap[weight],
-          fontSize: size,
-        ));
+            fontWeight: _fontWeightMap[weight],
+            decoration: decoration,
+            fontSize: _fontSizeMap[size],
+            color: color));
   }
 }
 
@@ -51,7 +58,18 @@ class H1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyText(text,
-        textAlign: textAlign, size: HUGE_FONT_SIZE, weight: FONTWEIGHT.BOLD);
+        textAlign: textAlign, size: FONTSIZE.HUGE, weight: FONTWEIGHT.BOLD);
+  }
+}
+
+class H2 extends StatelessWidget {
+  final String text;
+  final TextAlign textAlign;
+  H2(this.text, {this.textAlign = TextAlign.start});
+  @override
+  Widget build(BuildContext context) {
+    return MyText(text,
+        textAlign: textAlign, size: FONTSIZE.LARGE, weight: FONTWEIGHT.BOLD);
   }
 }
 

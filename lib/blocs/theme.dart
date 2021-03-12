@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 
 enum ThemeName { LIGHT, DARK }
 
@@ -13,39 +12,11 @@ class ThemeBloc {
       primaryColor: const Color(0xff8f28f6),
       primaryContrastingColor: const Color(0xfffefe7e),
       textTheme: CupertinoTextThemeData(
-        primaryColor: const Color(0xff8f28f6),
-        textStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        tabLabelTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navTitleTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navLargeTitleTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: LARGE_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        actionTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navActionTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        pickerTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        dateTimePickerTextStyle: TextStyle(
-            color: CupertinoColors.white,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
+        primaryColor: CupertinoColors.white,
+        textStyle:
+            TextStyle(color: CupertinoColors.white, fontFamily: 'Nunito_Sans'),
+        actionTextStyle:
+            TextStyle(color: CupertinoColors.white, fontFamily: 'Nunito_Sans'),
       ));
 
   static CupertinoThemeData lightTheme = CupertinoThemeData(
@@ -55,39 +26,9 @@ class ThemeBloc {
       primaryColor: const Color(0xff8f28f6),
       primaryContrastingColor: const Color(0xff0088ff),
       textTheme: CupertinoTextThemeData(
-        primaryColor: const Color(0xff8f28f6),
-        textStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        tabLabelTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navTitleTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navLargeTitleTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: LARGE_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        actionTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        navActionTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        pickerTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
-        dateTimePickerTextStyle: TextStyle(
-            color: CupertinoColors.black,
-            fontSize: MAIN_FONT_SIZE,
-            fontFamily: 'Nunito_Sans'),
+        primaryColor: CupertinoColors.black,
+        textStyle:
+            TextStyle(color: CupertinoColors.black, fontFamily: 'Nunito_Sans'),
       ));
 
   StreamController<CupertinoThemeData> _theme =

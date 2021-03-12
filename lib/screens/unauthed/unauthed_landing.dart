@@ -2,7 +2,12 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotmefitness_ui/blocs/theme.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:spotmefitness_ui/screens/unauthed/sign_in.dart';
+import 'package:spotmefitness_ui/screens/unauthed/start_trial.dart';
 
 class UnAuthedLanding extends StatefulWidget {
   @override
@@ -11,7 +16,6 @@ class UnAuthedLanding extends StatefulWidget {
 
 class _UnAuthedLandingState extends State<UnAuthedLanding> {
   late PageController _pageController;
-  late CupertinoThemeData _themeData;
 
   @override
   void initState() {
@@ -20,8 +24,45 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
     _pageController.addListener(() {
       setState(() => {});
     });
-    _themeData = ThemeBloc.darkTheme;
   }
+
+  List<Widget> _featurePages = [
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/girls_group.jpg',
+        fit: BoxFit.cover,
+      ),
+    )),
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/bars_man.jpg',
+        fit: BoxFit.fitHeight,
+      ),
+    )),
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/yoga_girl.jpg',
+        fit: BoxFit.cover,
+      ),
+    )),
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/bars_man.jpg',
+        fit: BoxFit.cover,
+      ),
+    )),
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/girls_group.jpg',
+        fit: BoxFit.cover,
+      ),
+    )),
+  ];
 
   Widget _logoHeader() {
     return Padding(
@@ -31,10 +72,10 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
           SvgPicture.asset(
             'assets/logos/spotme_fitness_logo.svg',
             width: 50.0,
-            color: _themeData.textTheme.textStyle.color,
+            color: ThemeBloc.darkTheme.textTheme.textStyle.color,
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 6.0),
+            padding: const EdgeInsets.only(top: 6, bottom: 10.0),
             child: MyText(
               'SpotMe Fitness',
             ),
@@ -47,104 +88,53 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeBloc.darkTheme,
-      home: CupertinoPageScaffold(
-          child: SafeArea(
-        child: Column(children: [
-          _logoHeader(),
-          H1('Sign In'),
-          H1('Start Free Trial'),
-          Container(
-            child: CupertinoFormSection.insetGrouped(
-                margin: EdgeInsets.all(10),
-                children: [
-                  CupertinoTextFormFieldRow(
-                    prefix: Icon(CupertinoIcons.envelope_circle),
-                    placeholder: 'Email',
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  CupertinoTextFormFieldRow(
-                    prefix: Icon(CupertinoIcons.lock_circle),
-                    placeholder: 'Password',
-                    keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
-                  )
-                ]),
-          ),
-          Container(
-            padding: EdgeInsets.only(bottom: 16),
-            child: MyText(
-              'Reset password',
-              weight: FONTWEIGHT.BOLD,
-            ),
-          ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              children: [
-                SizedBox.expand(
-                    child: Container(
-                  margin: EdgeInsets.all(4),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: Image.asset(
-                    'assets/stock_images/girls_group.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                )),
-                SizedBox.expand(
-                    child: Container(
-                  child: Image.asset(
-                    'assets/stock_images/bars_man.jpg',
-                    fit: BoxFit.fitHeight,
-                  ),
-                )),
-                SizedBox.expand(
-                    child: Container(
-                  child: Image.asset(
-                    'assets/stock_images/yoga_girl.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                )),
-                SizedBox.expand(
-                    child: Container(
-                  child: Image.asset(
-                    'assets/stock_images/bars_man.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                )),
-                SizedBox.expand(
-                    child: Container(
-                  child: Image.asset(
-                    'assets/stock_images/girls_group.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                )),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: DotsIndicator(
-              dotsCount: 5,
-              position:
-                  _pageController.hasClients && _pageController.page != null
-                      ? _pageController.page!
-                      : 0,
-              decorator: DotsDecorator(
-                size: const Size.square(12.0),
-                color: CupertinoColors.systemGrey3,
-                activeColor: _themeData.primaryColor,
-                activeSize: const Size(44.0, 12.0),
-                activeShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0)),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeBloc.darkTheme,
+        home: Builder(
+          builder: (context) => CupertinoPageScaffold(
+              child: SafeArea(
+            child: Column(children: [
+              _logoHeader(),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  children: _featurePages,
+                ),
               ),
-            ),
-          )
-        ]),
-      )),
-    );
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: DotsIndicator(
+                  dotsCount: _featurePages.length,
+                  position:
+                      _pageController.hasClients && _pageController.page != null
+                          ? _pageController.page!
+                          : 0,
+                  decorator: DotsDecorator(
+                    size: const Size.square(12.0),
+                    color: CupertinoColors.systemGrey3,
+                    activeColor: ThemeBloc.darkTheme.primaryColor,
+                    activeSize: const Size(44.0, 12.0),
+                    activeShape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0)),
+                  ),
+                ),
+              ),
+              PrimaryButton(
+                  text: 'Sign In',
+                  onPressed: () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          fullscreenDialog: true, builder: (_) => SignIn()))),
+              SizedBox(height: 10),
+              SecondaryButton(
+                text: 'Free Trial',
+                onPressed: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        fullscreenDialog: true, builder: (_) => StartTrial())),
+              ),
+            ]),
+          )),
+        ));
   }
 }
