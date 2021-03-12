@@ -2,7 +2,7 @@
     package="com.quarksoup.spotmefitness">
    <application
         android:label="spotmefitness_ui"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/spot_me_launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
