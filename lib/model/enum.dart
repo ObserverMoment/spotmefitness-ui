@@ -1,0 +1,1 @@
+enum TrialType { BASIC, PRO }

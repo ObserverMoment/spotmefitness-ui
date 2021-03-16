@@ -14,4 +14,4 @@ targets:
           schema_mapping:
             - schema: schema.graphql
               queries_glob: graphql/**.graphql
-              output: lib/api/graphql_api.dart
+              output: lib/generated/api/graphql_api.dart

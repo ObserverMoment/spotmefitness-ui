@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
 /// Base button class on which all other buttons are derived
@@ -11,6 +12,7 @@ class MyButton extends StatelessWidget {
   final Color backgroundColor;
   final bool border;
   final bool disabled;
+  final bool loading;
 
   MyButton(
       {this.prefix,
@@ -20,7 +22,8 @@ class MyButton extends StatelessWidget {
       required this.contentColor,
       required this.backgroundColor,
       this.border = false,
-      this.disabled = false});
+      this.disabled = false,
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +48,15 @@ class MyButton extends StatelessWidget {
               if (prefix != null) prefix!,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                child: MyText(
-                  text,
-                  weight: FONTWEIGHT.BOLD,
-                  color: contentColor,
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 300),
+                  child: loading
+                      ? LoadingDots()
+                      : MyText(
+                          text,
+                          weight: FONTWEIGHT.BOLD,
+                          color: contentColor,
+                        ),
                 ),
               ),
               if (suffix != null) suffix!
@@ -68,12 +76,15 @@ class PrimaryButton extends StatelessWidget {
   final Widget? suffix;
   final void Function() onPressed;
   final bool disabled;
+  final bool loading;
+
   PrimaryButton(
       {this.prefix,
       required this.text,
       this.suffix,
       required this.onPressed,
-      this.disabled = false});
+      this.disabled = false,
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +94,7 @@ class PrimaryButton extends StatelessWidget {
       text: text,
       onPressed: onPressed,
       disabled: disabled,
+      loading: loading,
       backgroundColor:
           _isDarkTheme ? CupertinoColors.white : CupertinoColors.black,
       contentColor:
@@ -97,8 +109,14 @@ class SecondaryButton extends StatelessWidget {
   final String text;
   final Widget? suffix;
   final void Function() onPressed;
+  final bool loading;
+
   SecondaryButton(
-      {this.prefix, required this.text, this.suffix, required this.onPressed});
+      {this.prefix,
+      required this.text,
+      this.suffix,
+      required this.onPressed,
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -138,18 +156,27 @@ class TextButton extends StatelessWidget {
   final String text;
   final bool destructive;
   final void Function() onPressed;
+  final bool loading;
 
   TextButton(
-      {required this.text, required this.onPressed, this.destructive = false});
+      {required this.text,
+      required this.onPressed,
+      this.destructive = false,
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: onPressed,
-      child: MyText(text,
-          weight: FONTWEIGHT.BOLD,
-          decoration: TextDecoration.underline,
-          color: destructive ? CupertinoColors.destructiveRed : null),
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 300),
+        child: loading
+            ? LoadingDots()
+            : MyText(text,
+                weight: FONTWEIGHT.BOLD,
+                decoration: TextDecoration.underline,
+                color: destructive ? CupertinoColors.destructiveRed : null),
+      ),
     );
   }
 }

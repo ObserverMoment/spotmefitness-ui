@@ -1,0 +1,14 @@
+mutation createUser($firebaseUid: ID!) {
+  createUser(firebaseUid: $firebaseUid) {
+    id
+  }
+}
+
+query userByUid($uid: ID!) {
+  userByUid(uid: $uid) {
+    id
+    avatarUri
+    displayName
+    hasOnboarded
+  }
+}

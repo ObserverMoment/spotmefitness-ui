@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/blocs/theme.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/screens/unauthed/sign_in.dart';
 import 'package:spotmefitness_ui/screens/unauthed/start_trial.dart';
 
@@ -72,7 +71,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
           SvgPicture.asset(
             'assets/logos/spotme_fitness_logo.svg',
             width: 50.0,
-            color: ThemeBloc.darkTheme.textTheme.textStyle.color,
+            color: ThemeBloc.cupertinoDarkData.primaryColor,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6, bottom: 10.0),
@@ -89,7 +88,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
   Widget build(BuildContext context) {
     return CupertinoApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeBloc.darkTheme,
+        theme: ThemeBloc.cupertinoDarkData,
         home: Builder(
           builder: (context) => CupertinoPageScaffold(
               child: SafeArea(
@@ -112,7 +111,8 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
                   decorator: DotsDecorator(
                     size: const Size.square(12.0),
                     color: CupertinoColors.systemGrey3,
-                    activeColor: ThemeBloc.darkTheme.primaryColor,
+                    activeColor:
+                        ThemeBloc.cupertinoDarkData.primaryContrastingColor,
                     activeSize: const Size(44.0, 12.0),
                     activeShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0)),
@@ -133,6 +133,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
                     CupertinoPageRoute(
                         fullscreenDialog: true, builder: (_) => StartTrial())),
               ),
+              SizedBox(height: 16),
             ]),
           )),
         ));

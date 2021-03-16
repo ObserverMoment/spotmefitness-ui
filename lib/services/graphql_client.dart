@@ -12,8 +12,9 @@ class GraphQL {
       EnvironmentConfig.apiEndpoint,
     );
 
-    final AuthLink _authLink =
-        AuthLink(getToken: GetIt.I<AuthService>().getIdToken);
+    final AuthLink _authLink = AuthLink(
+        getToken: () async =>
+            'Bearer ${await GetIt.I<AuthService>().getIdToken()}');
 
     final Link _link = _authLink.concat(_httpLink);
 
@@ -22,6 +23,8 @@ class GraphQL {
       link: _link,
     );
   }
-
-  ValueNotifier<GraphQLClient> get client => ValueNotifier(_client);
+  // Use for direct access. i.e. for one off mutations.
+  GraphQLClient get client => _client;
+  // Used for provider / consumer pattern
+  ValueNotifier<GraphQLClient> get clientNotifier => ValueNotifier(_client);
 }
