@@ -11,6 +11,10 @@ class ThemeBloc extends ChangeNotifier {
   Theme _theme = ThemeData.darkTheme;
   Theme get theme => _theme;
 
+  /// Getters for regularly used attributes
+  Color get primary => _theme.cupertinoThemeData.primaryColor;
+  Color get background => _theme.cupertinoThemeData.scaffoldBackgroundColor;
+
   Future<void> switchToTheme(ThemeName themeName) async {
     if (themeName == ThemeName.dark) {
       if (themeName != ThemeName.dark) {

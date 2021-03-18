@@ -112,7 +112,7 @@ class AuthBloc {
       throw new Exception(e.message);
     } catch (e) {
       print(e.toString());
-      return null;
+      throw new Exception(e.toString());
     }
   }
 

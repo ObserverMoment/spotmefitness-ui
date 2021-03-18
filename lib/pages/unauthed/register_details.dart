@@ -27,7 +27,7 @@ class RegisterDetails extends StatelessWidget {
       child: Column(
         children: [
           CupertinoFormSection.insetGrouped(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(16),
               footer: MyText('Password: Min 6 characters'),
               children: [
                 MyTextFormFieldRow(

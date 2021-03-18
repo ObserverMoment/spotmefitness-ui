@@ -30,15 +30,22 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
     SizedBox.expand(
         child: RoundedBox(
       child: Image.asset(
-        'assets/stock_images/girls_group.jpg',
+        'assets/stock_images/gym.jpg',
         fit: BoxFit.cover,
       ),
     )),
     SizedBox.expand(
         child: RoundedBox(
       child: Image.asset(
-        'assets/stock_images/bars_man.jpg',
+        'assets/stock_images/stretch.jpg',
         fit: BoxFit.fitHeight,
+      ),
+    )),
+    SizedBox.expand(
+        child: RoundedBox(
+      child: Image.asset(
+        'assets/stock_images/bars_man.jpg',
+        fit: BoxFit.cover,
       ),
     )),
     SizedBox.expand(
@@ -51,14 +58,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
     SizedBox.expand(
         child: RoundedBox(
       child: Image.asset(
-        'assets/stock_images/bars_man.jpg',
-        fit: BoxFit.cover,
-      ),
-    )),
-    SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/girls_group.jpg',
+        'assets/stock_images/skip.jpg',
         fit: BoxFit.cover,
       ),
     )),
@@ -95,57 +95,61 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
           builder: (context) => CupertinoPageScaffold(
               child: SafeArea(
             top: false,
-            child: Column(children: [
-              Expanded(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    PageView(
-                      controller: _pageController,
-                      children: _featurePages,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
-                      child: _logoHeader(),
-                    ),
-                  ],
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                PageView(
+                  controller: _pageController,
+                  children: _featurePages,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: DotsIndicator(
-                  dotsCount: _featurePages.length,
-                  position:
-                      _pageController.hasClients && _pageController.page != null
-                          ? _pageController.page!
-                          : 0,
-                  decorator: DotsDecorator(
-                    size: const Size.square(12.0),
-                    color: CupertinoColors.systemGrey3,
-                    activeColor:
-                        ThemeData.cupertinoDarkData.primaryContrastingColor,
-                    activeSize: const Size(44.0, 12.0),
-                    activeShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0)),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: _logoHeader(),
                 ),
-              ),
-              PrimaryButton(
-                  text: 'Sign In',
-                  onPressed: () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                          fullscreenDialog: true, builder: (_) => SignIn()))),
-              SizedBox(height: 10),
-              SecondaryButton(
-                text: 'Free Trial',
-                onPressed: () => Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        fullscreenDialog: true, builder: (_) => StartTrial())),
-              ),
-              SizedBox(height: 16),
-            ]),
+                Positioned(
+                    bottom: 0,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: DotsIndicator(
+                            dotsCount: _featurePages.length,
+                            position: _pageController.hasClients &&
+                                    _pageController.page != null
+                                ? _pageController.page!
+                                : 0,
+                            decorator: DotsDecorator(
+                              size: const Size.square(12.0),
+                              color: CupertinoColors.systemGrey3,
+                              activeColor: ThemeData
+                                  .cupertinoDarkData.primaryContrastingColor,
+                              activeSize: const Size(44.0, 12.0),
+                              activeShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0)),
+                            ),
+                          ),
+                        ),
+                        PrimaryButton(
+                            text: 'Sign In',
+                            onPressed: () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (_) => SignIn()))),
+                        SizedBox(height: 10),
+                        SecondaryButton(
+                          text: 'Free Trial',
+                          onPressed: () => Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (_) => StartTrial())),
+                        ),
+                        SizedBox(height: 16),
+                      ],
+                    ))
+              ],
+            ),
           )),
         ));
   }

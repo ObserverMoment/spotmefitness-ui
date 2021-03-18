@@ -1,8 +1,13 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
+import 'package:spotmefitness_ui/pages/unauthed/reset_password.dart';
 import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
 
 class SignIn extends StatefulWidget {
@@ -13,6 +18,8 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _signingInUser = false;
+  String? _signInError;
 
   @override
   void initState() {
@@ -33,45 +40,72 @@ class _SignInState extends State<SignIn> {
   }
 
   bool _validateEmail() => EmailValidator.validate(_emailController.text);
-  bool _validatePassword() => _passwordController.text.length > 7;
+  bool _validatePassword() => _passwordController.text.length > 5;
 
   bool _canSubmit() => _validateEmail() & _validatePassword();
+
+  Future<void> _signIn() async {
+    setState(() => _signingInUser = true);
+    try {
+      await GetIt.I<AuthBloc>().signInWithEmailAndPassword(
+          _emailController.text, _passwordController.text);
+    } catch (e) {
+      debugPrint(e.toString());
+      if (mounted) setState(() => _signInError = e.toString());
+    } finally {
+      setState(() => _signingInUser = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: MyText('Sign In'),
+        middle: H2('Sign In'),
       ),
       child: Column(
         children: [
           Container(
             child: CupertinoFormSection.insetGrouped(
-                margin: EdgeInsets.all(10),
+                margin: const EdgeInsets.all(16),
                 children: [
+                  if (_signInError != null)
+                    GrowIn(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MyText(
+                          _signInError!,
+                          color: Styles.errorRed,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                   MyTextFormFieldRow(
-                      prefix: Icon(CupertinoIcons.envelope_circle),
-                      placeholder: 'Email',
-                      keyboardType: TextInputType.emailAddress,
-                      controller: _emailController,
-                      validator: _validateEmail),
-                  MyTextFormFieldRow(
-                    prefix: Icon(CupertinoIcons.lock_circle),
-                    placeholder: 'Password',
-                    keyboardType: TextInputType.visiblePassword,
+                    prefix: Icon(CupertinoIcons.envelope_fill),
+                    placeholder: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: _emailController,
+                    validator: _validateEmail,
+                    autofocus: true,
+                  ),
+                  MyPasswordFieldRow(
                     controller: _passwordController,
                     validator: _validatePassword,
-                    obscureText: true,
                   ),
                 ]),
           ),
           SizedBox(height: 10),
           PrimaryButton(
-              onPressed: () => {print('signing in')},
+              loading: _signingInUser,
+              onPressed: _signIn,
               text: 'Sign In',
               disabled: !_canSubmit()),
           TextButton(
-            onPressed: () => {},
+            onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    fullscreenDialog: true, builder: (_) => ResetPassword())),
             text: 'Reset Password',
           ),
           Padding(

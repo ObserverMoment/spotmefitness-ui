@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
@@ -123,9 +124,36 @@ class SecondaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyButton(
+      prefix: prefix,
+      suffix: suffix,
       text: text,
       onPressed: onPressed,
       backgroundColor: const Color(0xff262626),
+      contentColor: CupertinoColors.white,
+    );
+  }
+}
+
+class DestructiveButton extends StatelessWidget {
+  final Widget? prefix;
+  final String text;
+  final Widget? suffix;
+  final void Function() onPressed;
+  final bool loading;
+
+  DestructiveButton(
+      {this.prefix,
+      required this.text,
+      this.suffix,
+      required this.onPressed,
+      this.loading = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return MyButton(
+      text: text,
+      onPressed: onPressed,
+      backgroundColor: CupertinoColors.destructiveRed,
       contentColor: CupertinoColors.white,
     );
   }
