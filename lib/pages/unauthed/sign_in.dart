@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
-import 'package:spotmefitness_ui/screens/unauthed/start_trial.dart';
+import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
 
 class SignIn extends StatefulWidget {
   @override

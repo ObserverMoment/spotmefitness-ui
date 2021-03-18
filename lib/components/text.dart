@@ -33,7 +33,7 @@ class MyText extends StatelessWidget {
       this.size = FONTSIZE.MAIN,
       this.overflow = TextOverflow.ellipsis,
       this.weight = FONTWEIGHT.REGULAR,
-      this.maxLines,
+      this.maxLines = 1,
       this.color,
       this.decoration});
 

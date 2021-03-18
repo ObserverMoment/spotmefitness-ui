@@ -1,15 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:spotmefitness_ui/screens/authed/app.dart';
-import 'package:spotmefitness_ui/screens/unauthed/unauthed_landing.dart';
-import 'package:spotmefitness_ui/services/auth.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/pages/authed/app.dart';
+import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  GetIt.I.registerSingleton<AuthService>(AuthService());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    // Default to light initially - this needs to be updated to dark if the user selects light theme.
+    statusBarIconBrightness: Brightness.light,
+  ));
   runApp(AuthRouter());
 }
 
@@ -19,22 +25,31 @@ class AuthRouter extends StatefulWidget {
 }
 
 class _AuthRouterState extends State<AuthRouter> {
-  String? _authedFirebaseUid;
+  final AuthBloc _authBloc = AuthBloc();
+
   @override
   void initState() {
-    _authedFirebaseUid = FirebaseAuth.instance.currentUser?.uid;
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      setState(() {
-        _authedFirebaseUid = user?.uid;
-      });
-    });
+    GetIt.I.registerSingleton<AuthBloc>(_authBloc);
     super.initState();
   }
 
   @override
+  void dispose() {
+    _authBloc.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return _authedFirebaseUid != null
-        ? App(_authedFirebaseUid)
-        : UnAuthedLanding();
+    return ValueListenableBuilder<AuthState>(
+        valueListenable: GetIt.I<AuthBloc>().authState,
+        builder: (context, authState, _) {
+          final _authedUser = GetIt.I<AuthBloc>().authedUser;
+          return FadeIn(
+            child: authState == AuthState.AUTHED && _authedUser != null
+                ? App(_authedUser)
+                : UnAuthedLanding(),
+          );
+        });
   }
 }

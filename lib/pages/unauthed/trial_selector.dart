@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -99,8 +99,8 @@ class TrialSelectorBox extends StatelessWidget {
                 border: Border.all(
                     width: 3,
                     color: isSelected
-                        ? ThemeBloc.cupertinoDarkData.primaryContrastingColor
-                        : ThemeBloc.cupertinoDarkData.primaryColor
+                        ? ThemeData.cupertinoDarkData.primaryContrastingColor
+                        : ThemeData.cupertinoDarkData.primaryColor
                             .withOpacity(0.4))),
             padding: const EdgeInsets.all(10),
             width: 160,
@@ -122,7 +122,7 @@ class TrialSelectorBox extends StatelessWidget {
               child: FadeIn(
                   child: Icon(
                 CupertinoIcons.check_mark_circled_solid,
-                color: ThemeBloc.cupertinoDarkData.primaryContrastingColor,
+                color: ThemeData.cupertinoDarkData.primaryContrastingColor,
               )))
       ],
     );

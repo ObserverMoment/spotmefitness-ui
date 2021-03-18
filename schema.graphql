@@ -21,7 +21,7 @@ type Query {
   textSearchWorkoutPrograms(text: String!): [TextSearchWorkoutProgramResult!]
   textSearchCreatorPublicProfiles(text: String!): [UserPublicProfile!]
   checkUniqueDisplayName(displayName: String!): Boolean!
-  userByUid(uid: ID!): User!
+  authedUser: User!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
   officialWorkouts: [Workout!]!
@@ -188,7 +188,7 @@ enum MoveScope {
   STANDARD
   CUSTOM
 }
-enum ThemePreference {
+enum ThemeName {
   DARK
   LIGHT
 }
@@ -294,6 +294,7 @@ input BodyAreaMoveScoreInput {
 type User {
   id: ID!
   userProfileScope: UserProfileScope!
+  themeName: ThemeName!
   avatarUri: String
   introVideoUri: String
   introVideoThumbUri: String
@@ -323,6 +324,7 @@ type User {
 input UpdateUserInput {
   id: ID!
   userProfileScope: UserProfileScope
+  themeName: ThemeName
   avatarUri: String
   introVideoUri: String
   introVideoThumbUri: String

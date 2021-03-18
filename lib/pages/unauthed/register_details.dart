@@ -23,10 +23,10 @@ class RegisterDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: CupertinoFormSection.insetGrouped(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          CupertinoFormSection.insetGrouped(
               margin: EdgeInsets.all(10),
               footer: MyText('Password: Min 6 characters'),
               children: [
@@ -43,15 +43,16 @@ class RegisterDetails extends StatelessWidget {
                   validator: validatePassword,
                 ),
               ]),
-        ),
-        SizedBox(height: 10),
-        PrimaryButton(
-          onPressed: registerNewUserAndContinue,
-          text: 'Sign Up',
-          disabled: !canSubmit(),
-        ),
-        SizedBox(height: 16),
-      ],
+          SizedBox(height: 10),
+          PrimaryButton(
+            onPressed: registerNewUserAndContinue,
+            text: 'Sign Up',
+            disabled: !canSubmit(),
+            loading: registeringNewUser,
+          ),
+          SizedBox(height: 16),
+        ],
+      ),
     );
   }
 }

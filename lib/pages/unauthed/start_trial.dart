@@ -1,17 +1,14 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/blocs/theme.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
-import 'package:spotmefitness_ui/screens/unauthed/register_details.dart';
-import 'package:spotmefitness_ui/screens/unauthed/trial_selector.dart';
-import 'package:spotmefitness_ui/services/auth.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/pages/unauthed/register_details.dart';
+import 'package:spotmefitness_ui/pages/unauthed/trial_selector.dart';
 
 class StartTrial extends StatefulWidget {
   @override
@@ -65,12 +62,13 @@ class _StartTrialState extends State<StartTrial> {
   void _registerNewUserAndContinue() async {
     setState(() => _registeringNewUser = true);
     try {
-      await GetIt.I<AuthService>().registerWithEmailAndPassword(
+      await GetIt.I<AuthBloc>().registerWithEmailAndPassword(
           _emailController.text, _passwordController.text);
-      setState(() => _registeringNewUser = false);
     } catch (e) {
       print(e.toString());
-      setState(() => _registrationError = e.toString());
+      if (mounted) setState(() => _registrationError = e.toString());
+    } finally {
+      setState(() => _registeringNewUser = false);
     }
   }
 
@@ -100,6 +98,8 @@ class _StartTrialState extends State<StartTrial> {
                 child: MyText(
                   _registrationError!,
                   color: Styles.errorRed,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

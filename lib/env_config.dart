@@ -12,16 +12,20 @@ class EnvironmentConfig {
   /// these env variables must be added to the codemagic build command via --dart-defines
   static String graphqlEndpoint = String.fromEnvironment(
       'SPOTME_GRAPHQL_ENDPOINT',
-      defaultValue: 'http://${EnvironmentConfig.gethost()}:4000/graphql/');
+      defaultValue: 'http://${EnvironmentConfig.gethost()}:4000/graphql');
 
-  static Uri getRegisterEndpoint() {
-    final _endpoint =
-        String.fromEnvironment('SPOTME_API_ENDPOINT', defaultValue: 'local');
-    if (_endpoint == 'local') {
-      return Uri.http(EnvironmentConfig.gethost(), '/api/register');
-    } else {
-      return Uri.https(_endpoint, '/api/register');
-    }
+  // Either from ENV or local (ios, web or android)
+  static Uri getRestApiEndpoint(String endpoint) {
+    final _isLocal = !bool.hasEnvironment('SPOTME_REST_API_ENDPOINT');
+
+    return _isLocal
+        // Use raw Uri due to host setting issues with other constructors
+        ? Uri(
+            scheme: 'http', host: gethost(), port: 4000, path: '/api/$endpoint')
+        : Uri.https(
+            String.fromEnvironment('SPOTME_REST_API_ENDPOINT',
+                defaultValue: ''),
+            '/$endpoint');
   }
 
   static String get uploadCarePublicKey =>

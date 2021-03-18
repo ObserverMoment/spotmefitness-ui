@@ -4,11 +4,15 @@ import 'package:flutter/cupertino.dart';
 class RoundedBox extends StatelessWidget {
   final Widget child;
   final bool border;
-  RoundedBox({required this.child, this.border = false});
+  final EdgeInsets margin;
+  RoundedBox(
+      {required this.child,
+      this.border = false,
+      this.margin = const EdgeInsets.all(0)});
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(4),
+      margin: margin,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),

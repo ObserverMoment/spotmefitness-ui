@@ -1,20 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/env_config.dart';
-import 'package:spotmefitness_ui/services/auth.dart';
 
 class GraphQL {
   late GraphQLClient _client;
 
   GraphQL() {
     final HttpLink _httpLink = HttpLink(
-      EnvironmentConfig.apiEndpoint,
+      EnvironmentConfig.graphqlEndpoint,
     );
 
     final AuthLink _authLink = AuthLink(
         getToken: () async =>
-            'Bearer ${await GetIt.I<AuthService>().getIdToken()}');
+            'Bearer ${await GetIt.I<AuthBloc>().getIdToken()}');
 
     final Link _link = _authLink.concat(_httpLink);
 

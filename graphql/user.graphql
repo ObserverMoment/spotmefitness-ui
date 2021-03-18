@@ -1,14 +1,19 @@
-mutation createUser($firebaseUid: ID!) {
-  createUser(firebaseUid: $firebaseUid) {
-    id
+fragment UserFields on User {
+  id
+  avatarUri
+  displayName
+  hasOnboarded
+  themeName
+}
+
+query authedUser {
+  authedUser {
+    ...UserFields
   }
 }
 
-query userByUid($uid: ID!) {
-  userByUid(uid: $uid) {
-    id
-    avatarUri
-    displayName
-    hasOnboarded
+mutation updateUser($data: UpdateUserInput!) {
+  updateUser(data: $data) {
+    ...UserFields
   }
 }

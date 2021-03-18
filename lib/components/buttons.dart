@@ -51,7 +51,9 @@ class MyButton extends StatelessWidget {
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
                   child: loading
-                      ? LoadingDots()
+                      ? LoadingDots(
+                          color: contentColor,
+                        )
                       : MyText(
                           text,
                           weight: FONTWEIGHT.BOLD,

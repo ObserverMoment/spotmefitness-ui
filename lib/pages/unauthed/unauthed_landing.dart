@@ -1,12 +1,13 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spotmefitness_ui/blocs/theme.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/screens/unauthed/sign_in.dart';
-import 'package:spotmefitness_ui/screens/unauthed/start_trial.dart';
+import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
+
+import 'sign_in.dart';
 
 class UnAuthedLanding extends StatefulWidget {
   @override
@@ -70,13 +71,14 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
         children: <Widget>[
           SvgPicture.asset(
             'assets/logos/spotme_fitness_logo.svg',
-            width: 50.0,
-            color: ThemeBloc.cupertinoDarkData.primaryColor,
+            width: 60.0,
+            color: ThemeData.cupertinoDarkData.primaryColor,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6, bottom: 10.0),
             child: MyText(
               'SpotMe Fitness',
+              weight: FONTWEIGHT.BOLD,
             ),
           )
         ],
@@ -88,20 +90,29 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
   Widget build(BuildContext context) {
     return CupertinoApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeBloc.cupertinoDarkData,
+        theme: ThemeData.cupertinoDarkData,
         home: Builder(
           builder: (context) => CupertinoPageScaffold(
               child: SafeArea(
+            top: false,
             child: Column(children: [
-              _logoHeader(),
               Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  children: _featurePages,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    PageView(
+                      controller: _pageController,
+                      children: _featurePages,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0),
+                      child: _logoHeader(),
+                    ),
+                  ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(12.0),
                 child: DotsIndicator(
                   dotsCount: _featurePages.length,
                   position:
@@ -112,7 +123,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
                     size: const Size.square(12.0),
                     color: CupertinoColors.systemGrey3,
                     activeColor:
-                        ThemeBloc.cupertinoDarkData.primaryContrastingColor,
+                        ThemeData.cupertinoDarkData.primaryContrastingColor,
                     activeSize: const Size(44.0, 12.0),
                     activeShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0)),

@@ -1,8 +1,34 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
-enum ThemeName { LIGHT, DARK }
+class ThemeBloc extends ChangeNotifier {
+  ThemeName themeName;
+  GraphQLClient graphqlClient;
+
+  ThemeBloc({required this.themeName, required this.graphqlClient});
+
+  Theme _theme = ThemeData.darkTheme;
+  Theme get theme => _theme;
+
+  Future<void> switchToTheme(ThemeName themeName) async {
+    if (themeName == ThemeName.dark) {
+      if (themeName != ThemeName.dark) {
+        _theme = ThemeData.darkTheme;
+        themeName = ThemeName.dark;
+        notifyListeners();
+        // await graphqlClient.mutate(MutationOptions(document: UpdateUser));
+      }
+    } else {
+      if (themeName != ThemeName.light) {
+        _theme = ThemeData.lightTheme;
+        themeName = ThemeName.light;
+        notifyListeners();
+        // await graphqlClient.mutate(options);
+      }
+    }
+  }
+}
 
 class Theme {
   final CupertinoThemeData cupertinoThemeData;
@@ -12,25 +38,33 @@ class Theme {
 
 class CustomThemeData {
   final LinearGradient scaffoldGradient;
-  CustomThemeData({required this.scaffoldGradient});
+  final Color bottomNavigationBackground;
+  CustomThemeData(
+      {required this.scaffoldGradient,
+      required this.bottomNavigationBackground});
 }
 
-class ThemeBloc {
+abstract class ThemeData {
+  static Theme darkTheme = Theme(cupertinoDarkData, customDarkData);
+  static Theme lightTheme = Theme(cupertinoLightData, customLightData);
+
   static CustomThemeData customDarkData = CustomThemeData(
       scaffoldGradient: LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [CupertinoColors.black, const Color(0xff434343)],
-    stops: [0.1, 0.9],
-  ));
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [CupertinoColors.black, const Color(0xff434343)],
+        stops: [0.1, 0.9],
+      ),
+      bottomNavigationBackground: const Color(0xff434343));
 
   static CustomThemeData customLightData = CustomThemeData(
       scaffoldGradient: LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [CupertinoColors.white, const Color(0xffE0EAFC)],
-    stops: [0.1, 0.9],
-  ));
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [CupertinoColors.white, const Color(0xffE0EAFC)],
+        stops: [0.1, 0.9],
+      ),
+      bottomNavigationBackground: const Color(0xffffffff));
 
   static const CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
       brightness: Brightness.dark,
@@ -44,7 +78,7 @@ class ThemeBloc {
             TextStyle(color: CupertinoColors.white, fontFamily: 'Nunito_Sans'),
       ));
 
-  static CupertinoThemeData cupertinoLightData = CupertinoThemeData(
+  static const CupertinoThemeData cupertinoLightData = CupertinoThemeData(
       brightness: Brightness.light,
       barBackgroundColor: CupertinoColors.systemGroupedBackground,
       scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
@@ -55,20 +89,6 @@ class ThemeBloc {
         textStyle:
             TextStyle(color: CupertinoColors.black, fontFamily: 'Nunito_Sans'),
       ));
-
-  StreamController<Theme> _theme = StreamController<Theme>();
-
-  Stream<Theme> get theme => _theme.stream;
-
-  void switchTheme(ThemeName themeName) async {
-    _theme.add(themeName == ThemeName.DARK
-        ? Theme(cupertinoDarkData, customDarkData)
-        : Theme(cupertinoLightData, customLightData));
-  }
-
-  void dispose() {
-    _theme.close();
-  }
 }
 
 //// Values which stay constant across both themes ////
@@ -78,7 +98,7 @@ abstract class Styles {
   static const infoBlue = CupertinoColors.activeBlue;
   static const heartRed = const Color(0xffA8294B);
   static const highlightOne = const Color(0xff286E6E); // Green-ish
-  static const neonBlueOne = const Color(0xffA8294B);
+  static const neonBlueOne = const Color(0xff2193B0);
   static const neonBlueTwo = const Color(0xff6DD5ED);
   static const peachRed = const Color(0xffF28367);
 
