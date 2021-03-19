@@ -330,6 +330,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -487,6 +494,34 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  image_cropper:
+    dependency: "direct main"
+    description:
+      name: image_cropper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
+  image_picker:
+    dependency: "direct main"
+    description:
+      name: image_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.3"
+  image_picker_for_web:
+    dependency: transitive
+    description:
+      name: image_picker_for_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  image_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: image_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   intl:
     dependency: transitive
     description:
@@ -877,6 +912,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  uploadcare_client:
+    dependency: transitive
+    description:
+      name: uploadcare_client
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2"
+  uploadcare_flutter:
+    dependency: "direct main"
+    description:
+      name: uploadcare_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   uuid:
     dependency: transitive
     description:

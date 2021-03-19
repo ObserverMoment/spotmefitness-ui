@@ -112,7 +112,7 @@ class TrialSelectorBox extends StatelessWidget {
                   child: content,
                 ),
                 MyText('£${cost.toString()} / month',
-                    weight: FONTWEIGHT.BOLD, size: FONTSIZE.LARGE),
+                    weight: FontWeight.bold, size: FONTSIZE.LARGE),
               ],
             )),
         if (isSelected)

@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -95,12 +94,8 @@ class _GlobalPageState extends State<GlobalPage> {
             builder: (context, child, animation) {
               final _tabsRouter = context.tabsRouter;
               final _activeIndex = _tabsRouter.activeIndex;
-              final _activeColor = Styles.difficultyLevelThree;
-              final _inActiveColor = context
-                  .read<ThemeBloc>()
-                  .theme
-                  .cupertinoThemeData
-                  .primaryColor;
+              final _activeColor = Styles.colorFour;
+              final _inActiveColor = context.read<ThemeBloc>().primary;
               return Stack(
                 alignment: Alignment.topCenter,
                 children: [
@@ -119,9 +114,7 @@ class _GlobalPageState extends State<GlobalPage> {
                               decoration: BoxDecoration(
                                 color: context
                                     .read<ThemeBloc>()
-                                    .theme
-                                    .cupertinoThemeData
-                                    .scaffoldBackgroundColor
+                                    .background
                                     .withOpacity(0.6),
                               ),
                               height: 66,
@@ -223,7 +216,7 @@ class TabIcon extends StatelessWidget {
                   ? Column(
                       children: [
                         activeIcon,
-                        SizedBox(height: 4),
+                        SizedBox(height: 1),
                         MyText(
                           label,
                           size: FONTSIZE.TINY,
@@ -234,7 +227,7 @@ class TabIcon extends StatelessWidget {
                   : Column(
                       children: [
                         icon,
-                        SizedBox(height: 4),
+                        SizedBox(height: 1),
                         MyText(label, size: FONTSIZE.TINY, color: inActiveColor)
                       ],
                     )),

@@ -88,10 +88,12 @@ class _SignInState extends State<SignIn> {
                     controller: _emailController,
                     validator: _validateEmail,
                     autofocus: true,
+                    autofillHints: const <String>[AutofillHints.email],
                   ),
                   MyPasswordFieldRow(
                     controller: _passwordController,
                     validator: _validatePassword,
+                    autofillHints: const <String>[AutofillHints.password],
                   ),
                 ]),
           ),

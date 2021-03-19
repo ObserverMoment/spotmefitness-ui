@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
@@ -70,7 +71,7 @@ abstract class ThemeData {
       ),
       bottomNavigationBackground: const Color(0xffffffff));
 
-  static const CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
+  static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
       brightness: Brightness.dark,
       barBackgroundColor: CupertinoColors.black,
       scaffoldBackgroundColor: CupertinoColors.black,
@@ -78,11 +79,11 @@ abstract class ThemeData {
       primaryContrastingColor: const Color(0xff286E6E),
       textTheme: CupertinoTextThemeData(
         primaryColor: CupertinoColors.white,
-        textStyle:
-            TextStyle(color: CupertinoColors.white, fontFamily: 'Nunito_Sans'),
+        textStyle: GoogleFonts.palanquin(
+            textStyle: TextStyle(color: CupertinoColors.white)),
       ));
 
-  static const CupertinoThemeData cupertinoLightData = CupertinoThemeData(
+  static CupertinoThemeData cupertinoLightData = CupertinoThemeData(
       brightness: Brightness.light,
       barBackgroundColor: CupertinoColors.systemGroupedBackground,
       scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
@@ -90,20 +91,25 @@ abstract class ThemeData {
       primaryContrastingColor: const Color(0xff286E6E),
       textTheme: CupertinoTextThemeData(
         primaryColor: CupertinoColors.black,
-        textStyle:
-            TextStyle(color: CupertinoColors.black, fontFamily: 'Nunito_Sans'),
+        textStyle: GoogleFonts.palanquin(
+            textStyle: TextStyle(color: CupertinoColors.black)),
       ));
 }
 
 //// Values which stay constant across both themes ////
 abstract class Styles {
   // Theme colors
+  static const black = CupertinoColors.black;
+  static const white = CupertinoColors.white;
+  static const grey = CupertinoColors.systemGrey;
   static const errorRed = CupertinoColors.destructiveRed;
   static const infoBlue = CupertinoColors.activeBlue;
   static const heartRed = const Color(0xffA8294B);
-  static const highlightOne = const Color(0xff286E6E); // Green-ish
+  static const colorOne = const Color(0xff286E6E);
+  static const colorTwo = const Color(0xffFC7436);
+  static const colorThree = const Color(0xff492B58);
+  static const colorFour = const Color(0xff6DD5ED);
   static const neonBlueOne = const Color(0xff2193B0);
-  static const neonBlueTwo = const Color(0xff6DD5ED);
   static const peachRed = const Color(0xffF28367);
 
   // Difficulty Level Colours
@@ -117,8 +123,8 @@ abstract class Styles {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      Styles.highlightOne.withOpacity(0.7),
-      Styles.highlightOne.withOpacity(0.4),
+      Styles.colorOne.withOpacity(0.7),
+      Styles.colorOne.withOpacity(0.4),
       CupertinoColors.black.withOpacity(0.5),
       CupertinoColors.black.withOpacity(0.7),
       CupertinoColors.black.withOpacity(1),
@@ -129,7 +135,7 @@ abstract class Styles {
   static final neonBlueGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Styles.neonBlueOne, Styles.neonBlueTwo],
+    colors: [Styles.neonBlueOne, Styles.colorFour],
     stops: [0.1, 0.9],
   );
 
@@ -144,8 +150,8 @@ abstract class Styles {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Styles.highlightOne,
-      Color.lerp(Styles.highlightOne, CupertinoColors.white, 0.15)!
+      Styles.colorOne,
+      Color.lerp(Styles.colorOne, CupertinoColors.white, 0.15)!
     ],
     stops: [0.1, 0.9],
   );
@@ -191,12 +197,12 @@ abstract class Styles {
   // static const highlightFour = Color.fromRGBO(87, 75, 226, 1); // Blue
   // static const highlightFive = Color.fromRGBO(249, 244, 233, 1); // Ivory
 
-  // static final highlightOneGradient = LinearGradient(
+  // static final colorOneGradient = LinearGradient(
   //   begin: Alignment.topLeft,
   //   end: Alignment.bottomRight,
   //   colors: [
-  //     Styles.highlightOne,
-  //     Color.lerp(Styles.highlightOne, Styles.white, 0.4)
+  //     Styles.colorOne,
+  //     Color.lerp(Styles.colorOne, Styles.white, 0.4)
   //   ],
   //   stops: [0.1, 0.9],
   // );

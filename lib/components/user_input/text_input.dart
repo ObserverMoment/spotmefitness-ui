@@ -6,6 +6,7 @@ class MyTextFormFieldRow extends StatelessWidget {
   final Widget? prefix;
   final String placeholder;
   final TextInputType keyboardType;
+  final List<String>? autofillHints;
   final bool obscureText;
   final bool autofocus;
   final TextEditingController controller;
@@ -16,6 +17,7 @@ class MyTextFormFieldRow extends StatelessWidget {
       required this.placeholder,
       required this.keyboardType,
       required this.controller,
+      this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
       this.validator});
@@ -32,6 +34,7 @@ class MyTextFormFieldRow extends StatelessWidget {
             placeholder: placeholder,
             keyboardType: keyboardType,
             style: TextStyle(fontSize: 18),
+            autofillHints: autofillHints,
             obscureText: obscureText),
         if (controller.text.length > 0)
           Positioned(
@@ -41,7 +44,7 @@ class MyTextFormFieldRow extends StatelessWidget {
                 child: MyText(
                   placeholder,
                   size: FONTSIZE.TINY,
-                  weight: FONTWEIGHT.BOLD,
+                  weight: FontWeight.bold,
                 ),
               )),
         if (validator != null && validator!())
@@ -64,10 +67,12 @@ class MyPasswordFieldRow extends StatefulWidget {
   final bool autofocus;
   final TextEditingController controller;
   final bool Function()? validator;
+  final List<String>? autofillHints;
 
   MyPasswordFieldRow(
       {this.prefix,
       required this.controller,
+      this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
       this.validator});
@@ -92,6 +97,7 @@ class _MyPasswordFieldRowState extends State<MyPasswordFieldRow> {
             obscureText: !_showPassword,
             controller: widget.controller,
             validator: widget.validator,
+            autofillHints: widget.autofillHints,
           ),
         ),
         CupertinoButton(

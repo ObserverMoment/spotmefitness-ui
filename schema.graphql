@@ -322,7 +322,6 @@ type User {
   ProgressJournalGoalTags: [ProgressJournalGoalTag!]
 }
 input UpdateUserInput {
-  id: ID!
   userProfileScope: UserProfileScope
   themeName: ThemeName
   avatarUri: String

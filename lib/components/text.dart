@@ -10,19 +10,11 @@ const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.HUGE: 24
 };
 
-enum FONTWEIGHT { LIGHT, REGULAR, BOLD }
-
-const Map<FONTWEIGHT, FontWeight> _fontWeightMap = {
-  FONTWEIGHT.LIGHT: FontWeight.w300,
-  FONTWEIGHT.REGULAR: FontWeight.w400,
-  FONTWEIGHT.BOLD: FontWeight.w500,
-};
-
 class MyText extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
   final FONTSIZE size;
-  final FONTWEIGHT weight;
+  final FontWeight weight;
   final TextOverflow overflow;
   final int? maxLines;
   final Color? color;
@@ -32,7 +24,7 @@ class MyText extends StatelessWidget {
       {this.textAlign = TextAlign.start,
       this.size = FONTSIZE.MAIN,
       this.overflow = TextOverflow.ellipsis,
-      this.weight = FONTWEIGHT.REGULAR,
+      this.weight = FontWeight.normal,
       this.maxLines = 1,
       this.color,
       this.decoration});
@@ -44,7 +36,7 @@ class MyText extends StatelessWidget {
         maxLines: maxLines,
         overflow: overflow,
         style: TextStyle(
-            fontWeight: _fontWeightMap[weight],
+            fontWeight: weight,
             decoration: decoration,
             fontSize: _fontSizeMap[size],
             color: color));
@@ -54,22 +46,30 @@ class MyText extends StatelessWidget {
 class H1 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
-  H1(this.text, {this.textAlign = TextAlign.start});
+  final Color? color;
+  H1(this.text, {this.textAlign = TextAlign.start, this.color});
   @override
   Widget build(BuildContext context) {
     return MyText(text,
-        textAlign: textAlign, size: FONTSIZE.HUGE, weight: FONTWEIGHT.BOLD);
+        color: color,
+        textAlign: textAlign,
+        size: FONTSIZE.HUGE,
+        weight: FontWeight.bold);
   }
 }
 
 class H2 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
-  H2(this.text, {this.textAlign = TextAlign.start});
+  final Color? color;
+  H2(this.text, {this.textAlign = TextAlign.start, this.color});
   @override
   Widget build(BuildContext context) {
     return MyText(text,
-        textAlign: textAlign, size: FONTSIZE.LARGE, weight: FONTWEIGHT.BOLD);
+        color: color,
+        textAlign: textAlign,
+        size: FONTSIZE.LARGE,
+        weight: FontWeight.bold);
   }
 }
 

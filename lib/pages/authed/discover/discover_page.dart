@@ -8,7 +8,7 @@ class DiscoverPage extends StatelessWidget {
     return Container(
         height: 200,
         width: 200,
-        color: Styles.highlightOne,
+        color: Styles.colorOne,
         child: MyText('Discover'));
   }
 }

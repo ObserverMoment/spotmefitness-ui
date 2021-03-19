@@ -93,6 +93,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                           controller: _emailController,
                           validator: _validateEmail,
                           autofocus: true,
+                          autofillHints: const <String>[AutofillHints.email],
                         ),
                       ],
                     ),

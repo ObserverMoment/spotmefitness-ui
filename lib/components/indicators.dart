@@ -65,7 +65,7 @@ class StageProgressIndicator extends StatelessWidget {
                     opacity: _isComplete || _isActive ? 1 : 0.6,
                     child: MyText(
                       titles![index],
-                      weight: _isActive ? FONTWEIGHT.BOLD : FONTWEIGHT.LIGHT,
+                      weight: _isActive ? FontWeight.bold : FontWeight.w300,
                     ))
                 : null,
             beforeLineStyle: LineStyle(

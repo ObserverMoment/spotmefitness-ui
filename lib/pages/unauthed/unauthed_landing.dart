@@ -78,7 +78,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
             padding: const EdgeInsets.only(top: 6, bottom: 10.0),
             child: MyText(
               'SpotMe Fitness',
-              weight: FONTWEIGHT.BOLD,
+              weight: FontWeight.bold,
             ),
           )
         ],

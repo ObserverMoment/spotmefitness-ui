@@ -105,7 +105,6 @@ Map<String, dynamic> _$UpdateUser$MutationToJson(
 
 UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
   return UpdateUserInput(
-    id: json['id'] as String,
     userProfileScope: _$enumDecodeNullable(
         _$UserProfileScopeEnumMap, json['userProfileScope'],
         unknownValue: UserProfileScope.artemisUnknown),
@@ -139,7 +138,6 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
       'themeName': _$ThemeNameEnumMap[instance.themeName],
       'avatarUri': instance.avatarUri,
@@ -226,6 +224,18 @@ Map<String, dynamic> _$Equipments$QueryToJson(Equipments$Query instance) =>
       'equipments': instance.equipments.map((e) => e.toJson()).toList(),
     };
 
+CheckUniqueDisplayName$Query _$CheckUniqueDisplayName$QueryFromJson(
+    Map<String, dynamic> json) {
+  return CheckUniqueDisplayName$Query()
+    ..checkUniqueDisplayName = json['checkUniqueDisplayName'] as bool;
+}
+
+Map<String, dynamic> _$CheckUniqueDisplayName$QueryToJson(
+        CheckUniqueDisplayName$Query instance) =>
+    <String, dynamic>{
+      'checkUniqueDisplayName': instance.checkUniqueDisplayName,
+    };
+
 UpdateUserArguments _$UpdateUserArgumentsFromJson(Map<String, dynamic> json) {
   return UpdateUserArguments(
     data: UpdateUserInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -236,4 +246,17 @@ Map<String, dynamic> _$UpdateUserArgumentsToJson(
         UpdateUserArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
+    };
+
+CheckUniqueDisplayNameArguments _$CheckUniqueDisplayNameArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CheckUniqueDisplayNameArguments(
+    displayName: json['displayName'] as String,
+  );
+}
+
+Map<String, dynamic> _$CheckUniqueDisplayNameArgumentsToJson(
+        CheckUniqueDisplayNameArguments instance) =>
+    <String, dynamic>{
+      'displayName': instance.displayName,
     };

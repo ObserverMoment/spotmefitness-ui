@@ -1,7 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.quarksoup.spotmefitness">
+  <!-- https://pub.dev/packages/image_picker = android:requestLegacyExternalStorage="true" -->
    <application
         android:label="spotmefitness_ui"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/spot_me_launcher_icon">
         <activity
             android:name=".MainActivity"
@@ -32,6 +34,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- https://pub.dev/packages/image_cropper -->
+        <activity
+          android:name="com.yalantis.ucrop.UCropActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

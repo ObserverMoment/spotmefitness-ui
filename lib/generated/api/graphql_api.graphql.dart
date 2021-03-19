@@ -76,8 +76,7 @@ class UpdateUser$Mutation extends JsonSerializable with EquatableMixin {
 @JsonSerializable(explicitToJson: true)
 class UpdateUserInput extends JsonSerializable with EquatableMixin {
   UpdateUserInput(
-      {required this.id,
-      this.userProfileScope,
+      {this.userProfileScope,
       this.themeName,
       this.avatarUri,
       this.introVideoUri,
@@ -103,8 +102,6 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
 
   factory UpdateUserInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateUserInputFromJson(json);
-
-  late String id;
 
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope? userProfileScope;
@@ -161,7 +158,6 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [
-        id,
         userProfileScope,
         themeName,
         avatarUri,
@@ -221,6 +217,21 @@ class Equipments$Query extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [equipments];
   Map<String, dynamic> toJson() => _$Equipments$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CheckUniqueDisplayName$Query extends JsonSerializable
+    with EquatableMixin {
+  CheckUniqueDisplayName$Query();
+
+  factory CheckUniqueDisplayName$Query.fromJson(Map<String, dynamic> json) =>
+      _$CheckUniqueDisplayName$QueryFromJson(json);
+
+  late bool checkUniqueDisplayName;
+
+  @override
+  List<Object?> get props => [checkUniqueDisplayName];
+  Map<String, dynamic> toJson() => _$CheckUniqueDisplayName$QueryToJson(this);
 }
 
 enum ThemeName {
@@ -482,4 +493,67 @@ class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
   @override
   Equipments$Query parse(Map<String, dynamic> json) =>
       Equipments$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CheckUniqueDisplayNameArguments extends JsonSerializable
+    with EquatableMixin {
+  CheckUniqueDisplayNameArguments({required this.displayName});
+
+  @override
+  factory CheckUniqueDisplayNameArguments.fromJson(Map<String, dynamic> json) =>
+      _$CheckUniqueDisplayNameArgumentsFromJson(json);
+
+  final String displayName;
+
+  @override
+  List<Object?> get props => [displayName];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CheckUniqueDisplayNameArgumentsToJson(this);
+}
+
+class CheckUniqueDisplayNameQuery extends GraphQLQuery<
+    CheckUniqueDisplayName$Query, CheckUniqueDisplayNameArguments> {
+  CheckUniqueDisplayNameQuery({this.variables});
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'checkUniqueDisplayName'),
+        variableDefinitions: [
+          VariableDefinitionNode(
+              variable: VariableNode(name: NameNode(value: 'displayName')),
+              type: NamedTypeNode(
+                  name: NameNode(value: 'String'), isNonNull: true),
+              defaultValue: DefaultValueNode(value: null),
+              directives: [])
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'checkUniqueDisplayName'),
+              alias: null,
+              arguments: [
+                ArgumentNode(
+                    name: NameNode(value: 'displayName'),
+                    value: VariableNode(name: NameNode(value: 'displayName')))
+              ],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'checkUniqueDisplayName';
+
+  @override
+  final CheckUniqueDisplayNameArguments? variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CheckUniqueDisplayName$Query parse(Map<String, dynamic> json) =>
+      CheckUniqueDisplayName$Query.fromJson(json);
 }

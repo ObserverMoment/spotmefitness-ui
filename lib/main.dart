@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
+import 'package:spotmefitness_ui/services/uploadcare.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,10 @@ void main() async {
     // Default to light initially - this needs to be updated to dark if the user selects light theme.
     statusBarIconBrightness: Brightness.light,
   ));
+
+  // Global services that have no deps.
+  GetIt.I.registerSingleton<UploadcareService>(UploadcareService());
+
   runApp(AuthRouter());
 }
 
@@ -30,6 +35,7 @@ class _AuthRouterState extends State<AuthRouter> {
   @override
   void initState() {
     GetIt.I.registerSingleton<AuthBloc>(_authBloc);
+
     super.initState();
   }
 

@@ -37,10 +37,12 @@ class RegisterDetails extends StatelessWidget {
                   controller: emailController,
                   validator: validateEmail,
                   autofocus: true,
+                  autofillHints: const <String>[AutofillHints.email],
                 ),
                 MyPasswordFieldRow(
                   controller: passwordController,
                   validator: validatePassword,
+                  autofillHints: const <String>[AutofillHints.newPassword],
                 ),
               ]),
           SizedBox(height: 10),
