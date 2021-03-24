@@ -14,9 +14,9 @@ class FadeInUp extends StatelessWidget {
   FadeInUp(
       {this.delay = 0,
       required this.child,
-      this.duration = 500,
-      this.delayBasis = 300,
-      this.yTranslate = 40});
+      this.duration = 250,
+      this.delayBasis = 150,
+      this.yTranslate = 10});
   @override
   Widget build(BuildContext context) {
     final tween = MultiTween<_AniProps>()

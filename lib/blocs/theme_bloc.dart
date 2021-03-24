@@ -1,37 +1,66 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:hive/hive.dart';
+
+enum ThemeName { dark, light }
 
 class ThemeBloc extends ChangeNotifier {
-  ThemeName themeName;
   GraphQLClient graphqlClient;
+  final String _hiveThemeKey = 'themeName';
 
-  ThemeBloc({required this.themeName, required this.graphqlClient});
+  ThemeBloc({required this.graphqlClient}) {
+    // Initialise them from Hive box.
+    final themeNameFromSettings =
+        Hive.box('settings').get(_hiveThemeKey, defaultValue: ThemeName.dark);
+    if (themeNameFromSettings == 'dark') {
+      _setToDark();
+    } else {
+      _setToLight();
+    }
+  }
 
-  Theme _theme = ThemeData.darkTheme;
-  Theme get theme => _theme;
+  Theme theme = ThemeData.darkTheme;
+  ThemeName themeName = ThemeName.dark;
 
   /// Getters for regularly used attributes
-  Color get primary => _theme.cupertinoThemeData.primaryColor;
-  Color get background => _theme.cupertinoThemeData.scaffoldBackgroundColor;
+  /// Context has been extended to allow for calling context.[getter]
+  /// Rather than context.watch<ThemeBloc>()
+  CupertinoThemeData get cupertinoThemeData => theme.cupertinoThemeData;
+  CustomThemeData get customThemeData => theme.customThemeData;
+  Color get primary => theme.cupertinoThemeData.primaryColor;
+  Color get background => theme.cupertinoThemeData.scaffoldBackgroundColor;
+  Color get activeIcon => theme.customThemeData.activeIcon;
 
-  Future<void> switchToTheme(ThemeName themeName) async {
-    if (themeName == ThemeName.dark) {
-      if (themeName != ThemeName.dark) {
-        _theme = ThemeData.darkTheme;
-        themeName = ThemeName.dark;
-        notifyListeners();
-        // await graphqlClient.mutate(MutationOptions(document: UpdateUser));
-      }
-    } else {
-      if (themeName != ThemeName.light) {
-        _theme = ThemeData.lightTheme;
-        themeName = ThemeName.light;
-        notifyListeners();
-        // await graphqlClient.mutate(options);
-      }
+  Future<void> switchToTheme(ThemeName switchToTheme) async {
+    if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {
+      _setToDark();
+      await Hive.box('settings').put(_hiveThemeKey, 'dark');
+    } else if (switchToTheme == ThemeName.light &&
+        themeName != ThemeName.light) {
+      _setToLight();
+      await Hive.box('settings').put(_hiveThemeKey, 'light');
     }
+  }
+
+  void _setToDark() {
+    theme = ThemeData.darkTheme;
+    themeName = ThemeName.dark;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.light,
+    ));
+    notifyListeners();
+  }
+
+  void _setToLight() {
+    theme = ThemeData.lightTheme;
+    themeName = ThemeName.light;
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.dark,
+    ));
+    notifyListeners();
   }
 }
 
@@ -44,9 +73,11 @@ class Theme {
 class CustomThemeData {
   final LinearGradient scaffoldGradient;
   final Color bottomNavigationBackground;
+  final Color activeIcon;
   CustomThemeData(
       {required this.scaffoldGradient,
-      required this.bottomNavigationBackground});
+      required this.bottomNavigationBackground,
+      required this.activeIcon});
 }
 
 abstract class ThemeData {
@@ -60,6 +91,7 @@ abstract class ThemeData {
         colors: [CupertinoColors.black, const Color(0xff434343)],
         stops: [0.1, 0.9],
       ),
+      activeIcon: Styles.colorFour,
       bottomNavigationBackground: const Color(0xff434343));
 
   static CustomThemeData customLightData = CustomThemeData(
@@ -69,6 +101,7 @@ abstract class ThemeData {
         colors: [CupertinoColors.white, const Color(0xffE0EAFC)],
         stops: [0.1, 0.9],
       ),
+      activeIcon: Styles.neonBlueOne,
       bottomNavigationBackground: const Color(0xffffffff));
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(

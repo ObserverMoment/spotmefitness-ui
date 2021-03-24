@@ -1,22 +1,103 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
+import 'package:spotmefitness_ui/components/navigation.dart';
+import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/wrappers.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/friends.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/personal_details.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/settings_and_info.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  int _activeTabIndex = 0;
+
+  Widget _buildContent() {
+    switch (_activeTabIndex) {
+      case 0:
+        return ProfilePersonalDetails();
+      case 1:
+        return ProfileFriends();
+      case 2:
+        return ProfileGymProfiles();
+      default:
+        throw new Exception('No widget at this tab index: $_activeTabIndex');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SafeArea(
-        child: Container(
-            height: 200,
-            width: 200,
-            color: Styles.difficultyLevelThree,
-            child: DestructiveButton(
-              text: 'Sign Out',
-              onPressed: () async => await GetIt.I<AuthBloc>().signOut(),
-            )),
+      navigationBar: CupertinoNavigationBar(
+        middle: NavBarTitle(
+          'PROFILE',
+        ),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(CupertinoIcons.gear_solid),
+            onPressed: () => Navigator.push(context,
+                CupertinoPageRoute(builder: (context) => SettingsAndInfo()))),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Query(
+                  options: QueryOptions(document: AuthedUserQuery().document),
+                  builder: (result, {fetchMore, refetch}) {
+                    return QueryResponseBuilder(
+                        result: result,
+                        builder: () {
+                          final _user =
+                              AuthedUser$Query.fromJson(result.data ?? {})
+                                  .authedUser;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  UserAvatarUploader(
+                                      avatarUri: _user.avatarUri,
+                                      displaySize: Size(100, 100),
+                                      onUploadSuccess: (uri) => print(uri)),
+                                  MyText('Photo')
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  UserAvatarUploader(
+                                      displaySize: Size(100, 100),
+                                      onUploadSuccess: (uri) => print(uri)),
+                                  MyText('Video')
+                                ],
+                              ),
+                            ],
+                          );
+                        });
+                  }),
+              SizedBox(height: 12),
+              MyTabBarNav(
+                  activeTabIndex: _activeTabIndex,
+                  tabs: <Widget>[
+                    MyText('Personal'),
+                    MyText('Friends'),
+                    MyText('Gym Profiles')
+                  ],
+                  handleTabChange: (index) =>
+                      setState(() => _activeTabIndex = index)),
+              FadeIn(
+                  key: Key(_activeTabIndex.toString()), child: _buildContent())
+            ],
+          ),
+        ),
       ),
     );
   }

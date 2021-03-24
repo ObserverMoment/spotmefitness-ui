@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 
 enum FONTSIZE { TINY, SMALL, MAIN, LARGE, HUGE }
 
 const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.TINY: 11,
-  FONTSIZE.SMALL: 13,
+  FONTSIZE.SMALL: 14,
   FONTSIZE.MAIN: 16,
   FONTSIZE.LARGE: 20,
   FONTSIZE.HUGE: 24
@@ -70,6 +71,33 @@ class H2 extends StatelessWidget {
         textAlign: textAlign,
         size: FONTSIZE.LARGE,
         weight: FontWeight.bold);
+  }
+}
+
+/// Small size, bold, uppercase letters
+class NavBarTitle extends StatelessWidget {
+  final String text;
+  NavBarTitle(this.text);
+  @override
+  Widget build(BuildContext context) {
+    return MyText(text.toUpperCase(),
+        size: FONTSIZE.SMALL, weight: FontWeight.bold);
+  }
+}
+
+/// Displays '(required)' in super text pos and style. For inputs.
+class RequiredSuperText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(2, -8),
+      child: MyText(
+        '(required)',
+        color: Styles.errorRed,
+        weight: FontWeight.bold,
+        size: FONTSIZE.TINY,
+      ),
+    );
   }
 }
 

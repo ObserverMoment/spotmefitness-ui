@@ -1,9 +1,13 @@
 fragment UserFields on User {
+  __typename
   id
   avatarUri
+  bio
+  birthdate
+  countryCode
   displayName
-  hasOnboarded
-  themeName
+  introVideoUri
+  gender
 }
 
 query authedUser {

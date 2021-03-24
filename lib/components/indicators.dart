@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:spotmefitness_ui/extensions.dart';
 
 class StageProgressIndicator extends StatelessWidget {
   final int numStages;
@@ -88,6 +89,40 @@ class StageProgressIndicator extends StatelessWidget {
                     index: index,
                     isComplete: _isComplete,
                     isActive: _isActive)),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class BasicProgressDots extends StatelessWidget {
+  final int numDots;
+  final int currentIndex;
+  final double? dotSize;
+  final Color? color;
+  BasicProgressDots(
+      {required this.numDots,
+      required this.currentIndex,
+      this.dotSize = 10,
+      this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(numDots, (index) {
+        return AnimatedOpacity(
+          duration: Duration(milliseconds: 200),
+          opacity: currentIndex == index ? 1 : 0.4,
+          child: Container(
+            margin: const EdgeInsets.all(6),
+            height: dotSize,
+            width: dotSize,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color ?? context.theme.primary,
+            ),
           ),
         );
       }),

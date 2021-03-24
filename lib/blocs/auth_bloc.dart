@@ -5,29 +5,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:http/http.dart' as http;
-import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
 enum AuthState { UNAUTHED, AUTHED, REGISTERING, VALIDATING, ERROR }
 
 class AuthedUser {
   String id;
-  String? avatarUri;
   bool hasOnboarded;
-  ThemeName themeName;
 
-  AuthedUser(
-      {required this.id,
-      this.avatarUri,
-      required this.hasOnboarded,
-      required this.themeName});
+  AuthedUser({
+    required this.id,
+    required this.hasOnboarded,
+  });
 
   factory AuthedUser.fromJson(Map<String, dynamic> json) {
-    return AuthedUser(
-        id: json['id'],
-        avatarUri: json['avatarUri'],
-        hasOnboarded: json['hasOnboarded'],
-        themeName:
-            json['themeName'] == 'DARK' ? ThemeName.dark : ThemeName.light);
+    return AuthedUser(id: json['id'], hasOnboarded: json['hasOnboarded']);
   }
 }
 

@@ -73,7 +73,6 @@ type Mutation {
   createScheduledWorkout(data: CreateScheduledWorkoutInput!): ScheduledWorkout!
   updateScheduledWorkout(data: UpdateScheduledWorkoutInput!): ScheduledWorkout!
   deleteScheduledWorkoutById(id: ID!): ID!
-  createUser(firebaseUid: ID!): User!
   updateUser(data: UpdateUserInput!): User!
   makeCopyWorkoutById(id: ID!): Workout!
   createWorkout(data: CreateWorkoutInput!): Workout!
@@ -171,10 +170,6 @@ enum Gender {
   FEMALE
   NONBINARY
 }
-enum HeightUnit {
-  CM
-  IN
-}
 enum LoadUnit {
   KG
   LB
@@ -187,18 +182,6 @@ Custom moves are created by users.
 enum MoveScope {
   STANDARD
   CUSTOM
-}
-enum ThemeName {
-  DARK
-  LIGHT
-}
-enum UnitSystem {
-  IMPERIAL
-  METRIC
-}
-enum WeightUnit {
-  KG
-  LB
 }
 enum WorkoutMoveRepType {
   REPS
@@ -294,7 +277,6 @@ input BodyAreaMoveScoreInput {
 type User {
   id: ID!
   userProfileScope: UserProfileScope!
-  themeName: ThemeName!
   avatarUri: String
   introVideoUri: String
   introVideoThumbUri: String
@@ -313,17 +295,11 @@ type User {
   lastname: String
   gender: Gender
   hasOnboarded: Boolean!
-  height: Float
-  heightUnit: HeightUnit
-  weight: Float
-  weightUnit: WeightUnit
-  unitSystem: UnitSystem
   GymProfiles: [GymProfile!]
   ProgressJournalGoalTags: [ProgressJournalGoalTag!]
 }
 input UpdateUserInput {
   userProfileScope: UserProfileScope
-  themeName: ThemeName
   avatarUri: String
   introVideoUri: String
   introVideoThumbUri: String
@@ -341,10 +317,7 @@ input UpdateUserInput {
   firstname: String
   gender: Gender
   hasOnboarded: Boolean
-  height: Float
   lastname: String
-  unitSystem: UnitSystem
-  weight: Float
 }
 type UserPublicProfile {
   id: ID!

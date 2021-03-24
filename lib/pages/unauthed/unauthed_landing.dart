@@ -1,8 +1,8 @@
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
@@ -112,21 +112,13 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: DotsIndicator(
-                            dotsCount: _featurePages.length,
-                            position: _pageController.hasClients &&
+                          child: BasicProgressDots(
+                            numDots: _featurePages.length,
+                            currentIndex: _pageController.hasClients &&
                                     _pageController.page != null
-                                ? _pageController.page!
+                                ? _pageController.page!.toInt()
                                 : 0,
-                            decorator: DotsDecorator(
-                              size: const Size.square(12.0),
-                              color: CupertinoColors.systemGrey3,
-                              activeColor: ThemeData
-                                  .cupertinoDarkData.primaryContrastingColor,
-                              activeSize: const Size(44.0, 12.0),
-                              activeShape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0)),
-                            ),
+                            color: Styles.white,
                           ),
                         ),
                         PrimaryButton(

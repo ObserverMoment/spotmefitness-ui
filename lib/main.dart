@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
@@ -11,7 +13,12 @@ import 'package:spotmefitness_ui/services/uploadcare.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initHiveForFlutter();
+  await Hive.openBox('settings');
+
   await Firebase.initializeApp();
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     // Default to light initially - this needs to be updated to dark if the user selects light theme.

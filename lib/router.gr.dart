@@ -78,7 +78,9 @@ class AppRouter extends _i1.RootStackRouter {
               _i1.RouteConfig(JournalRouter.name,
                   path: 'journal', fullMatch: false, usesTabsRouter: false),
               _i1.RouteConfig(ProfileRouter.name,
-                  path: 'profile', fullMatch: false, usesTabsRouter: false)
+                  path: 'profile', fullMatch: false, usesTabsRouter: false),
+              _i1.RouteConfig('*#redirect',
+                  path: '*', redirectTo: '/', fullMatch: true)
             ])
       ];
 }

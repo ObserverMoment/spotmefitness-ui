@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
@@ -158,29 +160,6 @@ class DestructiveButton extends StatelessWidget {
   }
 }
 
-/// Dark theme == white border, white content
-/// Light theme == black border, black content
-class BorderButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-// class HighlightOneButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return CupertinoButton();
-//   }
-// }
-
-// class HighlightTwoButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return CupertinoButton();
-//   }
-// }
-
 class TextButton extends StatelessWidget {
   final String text;
   final bool destructive;
@@ -206,6 +185,63 @@ class TextButton extends StatelessWidget {
                 decoration: TextDecoration.underline,
                 color: destructive ? CupertinoColors.destructiveRed : null),
       ),
+    );
+  }
+}
+
+/// Clickable row which spans the width of parent
+/// With title on left and right chevron on right.
+class PageLink extends StatelessWidget {
+  final void Function() onPress;
+  final String linkText;
+  final Widget? icon;
+  final bool infoHighlight;
+  final bool destructiveHighlight;
+  final bool bold;
+  final bool large;
+  PageLink(
+      {required this.linkText,
+      required this.onPress,
+      this.icon,
+      this.infoHighlight = false,
+      this.destructiveHighlight = false,
+      this.bold = false,
+      this.large = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPress,
+      child: Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: context.theme.primary.withOpacity(0.06)))),
+          width: double.infinity,
+          padding: EdgeInsets.all(12),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: [
+                  if (icon != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: icon,
+                    ),
+                  MyText(linkText,
+                      color: infoHighlight
+                          ? Styles.infoBlue
+                          : destructiveHighlight
+                              ? Styles.errorRed
+                              : null,
+                      weight: FontWeight.bold),
+                ],
+              ),
+              Icon(CupertinoIcons.right_chevron, size: 18),
+            ],
+          )),
     );
   }
 }

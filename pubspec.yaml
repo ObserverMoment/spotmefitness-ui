@@ -26,7 +26,6 @@ dependencies:
   
   auto_route: ^1.0.1
   cupertino_icons: ^1.0.2
-  dots_indicator: ^2.0.0
   equatable: ^2.0.0
   email_validator: 2.0.0-nullsafety
   firebase_auth: ^1.0.1
@@ -35,36 +34,36 @@ dependencies:
   flutter_svg: 0.21.0-nullsafety.0
   get_it: ^6.0.0
   google_fonts: ^2.0.0
-  gql: 0.13.0-nullsafety.2
   graphql_flutter: ^5.0.0-nullsafety.1
+  hive: ^2.0.0
   image_picker: ^0.7.3
   image_cropper: ^1.4.0
+  intl: ^0.17.0
   json_annotation: ^4.0.0
   meta: ^1.3.0
   modal_bottom_sheet: ^2.0.0
   provider: ^5.0.0
-  shared_preferences: ^2.0.5
   simple_animations: ^3.0.1
   timeline_tile: ^2.0.0
   uploadcare_flutter: ^1.0.2
 
 dev_dependencies:
-  artemis:
-    git:
-      url: https://github.com/glynskyi/artemis.git
-      ref: c98cf50
+  artemis: 7.0.0-beta.1
   auto_route_generator: ^1.0.1
   build_runner: ^1.11.5
   json_serializable: ^4.0.2
-  flutter_launcher_icons: ^0.9.0
-  flutter_native_splash: ^1.0.3
+  # flutter_launcher_icons: ^0.9.0
+  # flutter_native_splash: ^1.0.3
   flutter_test:
     sdk: flutter
 
 # Required until Artemis package sorts its shit out
 dependency_overrides:
-  analyzer: ^1.0.0
-  equatable: ^2.0.0
+  build: ^2.0.0
+  # analyzer: ^1.0.0
+  # equatable: ^2.0.0
+  intl: ^0.17.0
+  dart_style: ^2.0.0
   glob: ^2.0.0
   gql: ^0.13.0-nullsafety.2
   gql_exec: ^0.3.0-nullsafety.1
@@ -72,18 +71,20 @@ dependency_overrides:
   gql_link: ^0.4.0-nullsafety.2
   gql_http_link: ^0.4.0-nullsafety.1
   http: ^0.13.0
-  json_annotation: ^4.0.0
-  web_socket_channel: ^2.0.0
-  recase: ^4.0.0-nullsafety.0
+  source_gen: ^1.0.0
+  # json_annotation: ^4.0.0
+  # web_socket_channel: ^2.0.0
+  # recase: ^4.0.0-nullsafety.0
+  yaml: ^3.1.0
     
-flutter_icons:
-  android: "spot_me_launcher_icon"
-  ios: "spot_me_launcher_icon"
-  image_path: "assets/logos/spotme_launcher_icon.png"
+# flutter_icons:
+#   android: "spot_me_launcher_icon"
+#   ios: "spot_me_launcher_icon"
+#   image_path: "assets/logos/spotme_launcher_icon.png"
 
-flutter_native_splash:
-  image: "assets/logos/spotme_splash_icon.png"
-  color: "#000000"
+# flutter_native_splash:
+#   image: "assets/logos/spotme_splash_icon.png"
+#   color: "#000000"
 
 flutter:
   assets: 

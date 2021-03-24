@@ -9,12 +9,20 @@ import 'package:spotmefitness_ui/coercers.dart';
 part 'graphql_api.graphql.g.dart';
 
 mixin UserFieldsMixin {
+  @JsonKey(name: '__typename')
+  late String $$typename;
   late String id;
   String? avatarUri;
+  String? bio;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  DateTime? birthdate;
+  String? countryCode;
   String? displayName;
-  late bool hasOnboarded;
-  @JsonKey(unknownEnumValue: ThemeName.artemisUnknown)
-  late ThemeName themeName;
+  String? introVideoUri;
+  @JsonKey(unknownEnumValue: Gender.artemisUnknown)
+  Gender? gender;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -26,8 +34,17 @@ class AuthedUser$Query$User extends JsonSerializable
       _$AuthedUser$Query$UserFromJson(json);
 
   @override
-  List<Object?> get props =>
-      [id, avatarUri, displayName, hasOnboarded, themeName];
+  List<Object?> get props => [
+        $$typename,
+        id,
+        avatarUri,
+        bio,
+        birthdate,
+        countryCode,
+        displayName,
+        introVideoUri,
+        gender
+      ];
   Map<String, dynamic> toJson() => _$AuthedUser$Query$UserToJson(this);
 }
 
@@ -54,8 +71,17 @@ class UpdateUser$Mutation$User extends JsonSerializable
       _$UpdateUser$Mutation$UserFromJson(json);
 
   @override
-  List<Object?> get props =>
-      [id, avatarUri, displayName, hasOnboarded, themeName];
+  List<Object?> get props => [
+        $$typename,
+        id,
+        avatarUri,
+        bio,
+        birthdate,
+        countryCode,
+        displayName,
+        introVideoUri,
+        gender
+      ];
   Map<String, dynamic> toJson() => _$UpdateUser$Mutation$UserToJson(this);
 }
 
@@ -77,7 +103,6 @@ class UpdateUser$Mutation extends JsonSerializable with EquatableMixin {
 class UpdateUserInput extends JsonSerializable with EquatableMixin {
   UpdateUserInput(
       {this.userProfileScope,
-      this.themeName,
       this.avatarUri,
       this.introVideoUri,
       this.introVideoThumbUri,
@@ -95,19 +120,13 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
       this.firstname,
       this.gender,
       this.hasOnboarded,
-      this.height,
-      this.lastname,
-      this.unitSystem,
-      this.weight});
+      this.lastname});
 
   factory UpdateUserInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateUserInputFromJson(json);
 
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope? userProfileScope;
-
-  @JsonKey(unknownEnumValue: ThemeName.artemisUnknown)
-  late ThemeName? themeName;
 
   late String? avatarUri;
 
@@ -147,19 +166,11 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
 
   late bool? hasOnboarded;
 
-  late double? height;
-
   late String? lastname;
-
-  @JsonKey(unknownEnumValue: UnitSystem.artemisUnknown)
-  late UnitSystem? unitSystem;
-
-  late double? weight;
 
   @override
   List<Object?> get props => [
         userProfileScope,
-        themeName,
         avatarUri,
         introVideoUri,
         introVideoThumbUri,
@@ -177,10 +188,7 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
         firstname,
         gender,
         hasOnboarded,
-        height,
-        lastname,
-        unitSystem,
-        weight
+        lastname
       ];
   Map<String, dynamic> toJson() => _$UpdateUserInputToJson(this);
 }
@@ -192,6 +200,9 @@ class Equipments$Query$Equipment extends JsonSerializable with EquatableMixin {
   factory Equipments$Query$Equipment.fromJson(Map<String, dynamic> json) =>
       _$Equipments$Query$EquipmentFromJson(json);
 
+  @JsonKey(name: '__typename')
+  late String $$typename;
+
   late String id;
 
   late String name;
@@ -201,7 +212,7 @@ class Equipments$Query$Equipment extends JsonSerializable with EquatableMixin {
   late bool loadAdjustable;
 
   @override
-  List<Object?> get props => [id, name, imageUrl, loadAdjustable];
+  List<Object?> get props => [$$typename, id, name, imageUrl, loadAdjustable];
   Map<String, dynamic> toJson() => _$Equipments$Query$EquipmentToJson(this);
 }
 
@@ -234,14 +245,6 @@ class CheckUniqueDisplayName$Query extends JsonSerializable
   Map<String, dynamic> toJson() => _$CheckUniqueDisplayName$QueryToJson(this);
 }
 
-enum ThemeName {
-  @JsonValue('DARK')
-  dark,
-  @JsonValue('LIGHT')
-  light,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
 enum Gender {
   @JsonValue('MALE')
   male,
@@ -249,14 +252,6 @@ enum Gender {
   female,
   @JsonValue('NONBINARY')
   nonbinary,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
-enum UnitSystem {
-  @JsonValue('IMPERIAL')
-  imperial,
-  @JsonValue('METRIC')
-  metric,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -281,6 +276,12 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'id'),
               alias: null,
               arguments: [],
@@ -293,19 +294,37 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
               directives: [],
               selectionSet: null),
           FieldNode(
+              name: NameNode(value: 'bio'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'birthdate'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'countryCode'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'displayName'),
               alias: null,
               arguments: [],
               directives: [],
               selectionSet: null),
           FieldNode(
-              name: NameNode(value: 'hasOnboarded'),
+              name: NameNode(value: 'introVideoUri'),
               alias: null,
               arguments: [],
               directives: [],
               selectionSet: null),
           FieldNode(
-              name: NameNode(value: 'themeName'),
+              name: NameNode(value: 'gender'),
               alias: null,
               arguments: [],
               directives: [],
@@ -368,6 +387,12 @@ class UpdateUserMutation
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'id'),
               alias: null,
               arguments: [],
@@ -380,19 +405,37 @@ class UpdateUserMutation
               directives: [],
               selectionSet: null),
           FieldNode(
+              name: NameNode(value: 'bio'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'birthdate'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'countryCode'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'displayName'),
               alias: null,
               arguments: [],
               directives: [],
               selectionSet: null),
           FieldNode(
-              name: NameNode(value: 'hasOnboarded'),
+              name: NameNode(value: 'introVideoUri'),
               alias: null,
               arguments: [],
               directives: [],
               selectionSet: null),
           FieldNode(
-              name: NameNode(value: 'themeName'),
+              name: NameNode(value: 'gender'),
               alias: null,
               arguments: [],
               directives: [],
@@ -457,6 +500,12 @@ class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
               arguments: [],
               directives: [],
               selectionSet: SelectionSetNode(selections: [
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
                 FieldNode(
                     name: NameNode(value: 'id'),
                     alias: null,

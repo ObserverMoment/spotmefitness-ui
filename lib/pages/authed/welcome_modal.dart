@@ -2,9 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -14,6 +12,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/debounce.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/extensions.dart';
 
 class WelcomeModal extends StatefulWidget {
   @override
@@ -138,10 +137,7 @@ class _WelcomeModalState extends State<WelcomeModal> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: context
-                              .read<ThemeBloc>()
-                              .primary
-                              .withOpacity(0.7),
+                          color: context.theme.primary.withOpacity(0.7),
                         )),
                     child: Stack(
                       children: [

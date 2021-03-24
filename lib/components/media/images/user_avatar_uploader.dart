@@ -6,10 +6,9 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/media/image/sized_uploadcare_image.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
@@ -71,8 +70,8 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
 
   @override
   Widget build(BuildContext context) {
-    final Color _primary = context.read<ThemeBloc>().primary;
-    final Color _background = context.read<ThemeBloc>().background;
+    final Color _primary = context.theme.primary;
+    final Color _background = context.theme.background;
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,
@@ -110,7 +109,6 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _primary.withOpacity(0.7),
-              border: Border.all(color: _primary.withOpacity(0.75)),
               boxShadow: [
                 BoxShadow(
                     color: CupertinoColors.black.withOpacity(0.5),
@@ -132,7 +130,7 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
                   : widget.avatarUri != null
                       ? SizedUploadcareImage(widget.avatarUri!)
                       : Icon(
-                          CupertinoIcons.plus,
+                          CupertinoIcons.photo,
                           size: widget.displaySize.width / 2.5,
                           color: _background.withOpacity(0.4),
                         ),

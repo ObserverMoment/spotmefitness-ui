@@ -11,6 +11,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/extensions.dart';
 
 class App extends StatelessWidget {
   final AuthedUser authedUser;
@@ -24,15 +25,13 @@ class App extends StatelessWidget {
     return GraphQLProvider(
         client: _graphql.clientNotifier,
         child: ChangeNotifierProvider(
-          create: (_) => ThemeBloc(
-              themeName: authedUser.themeName, graphqlClient: _graphql.client),
-          builder: (context, child) => CupertinoApp.router(
-            debugShowCheckedModeBanner: false,
-            theme: context.read<ThemeBloc>().theme.cupertinoThemeData,
-            routerDelegate: _appRouter.delegate(),
-            routeInformationParser: _appRouter.defaultRouteParser(),
-          ),
-        ));
+            create: (_) => ThemeBloc(graphqlClient: _graphql.client),
+            builder: (context, child) => CupertinoApp.router(
+                  debugShowCheckedModeBanner: false,
+                  theme: context.theme.cupertinoThemeData,
+                  routerDelegate: _appRouter.delegate(),
+                  routeInformationParser: _appRouter.defaultRouteParser(),
+                )));
   }
 }
 
@@ -80,102 +79,96 @@ class _GlobalPageState extends State<GlobalPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery.of(context).size;
     return CupertinoPageScaffold(
-      child: SizedBox.expand(
-        child: AutoTabsRouter(
-            routes: [
-              HomeRouter(),
-              DiscoverRouter(),
-              SocialRouter(),
-              JournalRouter(),
-              ProfileRouter()
-            ],
-            builder: (context, child, animation) {
-              final _tabsRouter = context.tabsRouter;
-              final _activeIndex = _tabsRouter.activeIndex;
-              final _activeColor = Styles.colorFour;
-              final _inActiveColor = context.read<ThemeBloc>().primary;
-              return Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  FadeTransition(child: child, opacity: animation),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10.0, left: 14, right: 14, bottom: 4),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: context
-                                    .read<ThemeBloc>()
-                                    .background
-                                    .withOpacity(0.6),
-                              ),
-                              height: 66,
-                              width: _size.width - 28,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildTabItem(
-                                      tabsRouter: _tabsRouter,
-                                      activeIndex: _activeIndex,
-                                      activeColor: _activeColor,
-                                      inActiveColor: _inActiveColor,
-                                      tabIndex: 0,
-                                      label: 'Home',
-                                      iconData:
-                                          CupertinoIcons.square_grid_2x2_fill),
-                                  _buildTabItem(
-                                      tabsRouter: _tabsRouter,
-                                      activeIndex: _activeIndex,
-                                      activeColor: _activeColor,
-                                      inActiveColor: _inActiveColor,
-                                      tabIndex: 1,
-                                      label: 'Discover',
-                                      iconData: CupertinoIcons.compass_fill),
-                                  _buildTabItem(
-                                      tabsRouter: _tabsRouter,
-                                      activeIndex: _activeIndex,
-                                      activeColor: _activeColor,
-                                      inActiveColor: _inActiveColor,
-                                      tabIndex: 2,
-                                      label: 'Social',
-                                      iconData:
-                                          CupertinoIcons.person_2_square_stack),
-                                  _buildTabItem(
-                                      tabsRouter: _tabsRouter,
-                                      activeIndex: _activeIndex,
-                                      activeColor: _activeColor,
-                                      inActiveColor: _inActiveColor,
-                                      tabIndex: 3,
-                                      label: 'Journal',
-                                      iconData: CupertinoIcons.doc_plaintext),
-                                  _buildTabItem(
-                                      tabsRouter: _tabsRouter,
-                                      activeIndex: _activeIndex,
-                                      activeColor: _activeColor,
-                                      inActiveColor: _inActiveColor,
-                                      tabIndex: 4,
-                                      label: 'Profile',
-                                      iconData: CupertinoIcons.profile_circled),
-                                ],
-                              )),
-                        ),
+      child: AutoTabsRouter(
+          routes: [
+            HomeRouter(),
+            DiscoverRouter(),
+            SocialRouter(),
+            JournalRouter(),
+            ProfileRouter()
+          ],
+          builder: (context, child, animation) {
+            final _size = MediaQuery.of(context).size;
+            final _tabsRouter = context.tabsRouter;
+            final _activeIndex = _tabsRouter.activeIndex;
+            final _activeColor = context.theme.activeIcon;
+            final _inActiveColor = context.theme.primary;
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                FadeTransition(child: child, opacity: animation),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 14, right: 14, bottom: 4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: context.theme.background.withOpacity(0.6),
+                            ),
+                            height: 66,
+                            width: _size.width - 28,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 0,
+                                    label: 'Home',
+                                    iconData:
+                                        CupertinoIcons.square_grid_2x2_fill),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 1,
+                                    label: 'Discover',
+                                    iconData: CupertinoIcons.compass_fill),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 2,
+                                    label: 'Social',
+                                    iconData:
+                                        CupertinoIcons.person_2_square_stack),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 3,
+                                    label: 'Journal',
+                                    iconData: CupertinoIcons.doc_plaintext),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 4,
+                                    label: 'Profile',
+                                    iconData: CupertinoIcons.profile_circled),
+                              ],
+                            )),
                       ),
                     ),
-                  )
-                ],
-              );
-            }),
-      ),
+                  ),
+                )
+              ],
+            );
+          }),
     );
   }
 }

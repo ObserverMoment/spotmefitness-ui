@@ -1,5 +1,6 @@
 query equipments {
   equipments {
+    __typename
     id
     name
     imageUrl

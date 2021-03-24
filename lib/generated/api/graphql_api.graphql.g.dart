@@ -9,22 +9,31 @@ part of 'graphql_api.graphql.dart';
 AuthedUser$Query$User _$AuthedUser$Query$UserFromJson(
     Map<String, dynamic> json) {
   return AuthedUser$Query$User()
+    ..$$typename = json['__typename'] as String
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
+    ..bio = json['bio'] as String?
+    ..birthdate =
+        fromGraphQLDateTimeToDartDateTime(json['birthdate'] as String?)
+    ..countryCode = json['countryCode'] as String?
     ..displayName = json['displayName'] as String?
-    ..hasOnboarded = json['hasOnboarded'] as bool
-    ..themeName = _$enumDecode(_$ThemeNameEnumMap, json['themeName'],
-        unknownValue: ThemeName.artemisUnknown);
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
+        unknownValue: Gender.artemisUnknown);
 }
 
 Map<String, dynamic> _$AuthedUser$Query$UserToJson(
         AuthedUser$Query$User instance) =>
     <String, dynamic>{
+      '__typename': instance.$$typename,
       'id': instance.id,
       'avatarUri': instance.avatarUri,
+      'bio': instance.bio,
+      'birthdate': fromDartDateTimeToGraphQLDateTime(instance.birthdate),
+      'countryCode': instance.countryCode,
       'displayName': instance.displayName,
-      'hasOnboarded': instance.hasOnboarded,
-      'themeName': _$ThemeNameEnumMap[instance.themeName],
+      'introVideoUri': instance.introVideoUri,
+      'gender': _$GenderEnumMap[instance.gender],
     };
 
 K _$enumDecode<K, V>(
@@ -53,10 +62,22 @@ K _$enumDecode<K, V>(
   ).key;
 }
 
-const _$ThemeNameEnumMap = {
-  ThemeName.dark: 'DARK',
-  ThemeName.light: 'LIGHT',
-  ThemeName.artemisUnknown: 'ARTEMIS_UNKNOWN',
+K? _$enumDecodeNullable<K, V>(
+  Map<K, V> enumValues,
+  dynamic source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$GenderEnumMap = {
+  Gender.male: 'MALE',
+  Gender.female: 'FEMALE',
+  Gender.nonbinary: 'NONBINARY',
+  Gender.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
 AuthedUser$Query _$AuthedUser$QueryFromJson(Map<String, dynamic> json) {
@@ -73,22 +94,31 @@ Map<String, dynamic> _$AuthedUser$QueryToJson(AuthedUser$Query instance) =>
 UpdateUser$Mutation$User _$UpdateUser$Mutation$UserFromJson(
     Map<String, dynamic> json) {
   return UpdateUser$Mutation$User()
+    ..$$typename = json['__typename'] as String
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
+    ..bio = json['bio'] as String?
+    ..birthdate =
+        fromGraphQLDateTimeToDartDateTime(json['birthdate'] as String?)
+    ..countryCode = json['countryCode'] as String?
     ..displayName = json['displayName'] as String?
-    ..hasOnboarded = json['hasOnboarded'] as bool
-    ..themeName = _$enumDecode(_$ThemeNameEnumMap, json['themeName'],
-        unknownValue: ThemeName.artemisUnknown);
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
+        unknownValue: Gender.artemisUnknown);
 }
 
 Map<String, dynamic> _$UpdateUser$Mutation$UserToJson(
         UpdateUser$Mutation$User instance) =>
     <String, dynamic>{
+      '__typename': instance.$$typename,
       'id': instance.id,
       'avatarUri': instance.avatarUri,
+      'bio': instance.bio,
+      'birthdate': fromDartDateTimeToGraphQLDateTime(instance.birthdate),
+      'countryCode': instance.countryCode,
       'displayName': instance.displayName,
-      'hasOnboarded': instance.hasOnboarded,
-      'themeName': _$ThemeNameEnumMap[instance.themeName],
+      'introVideoUri': instance.introVideoUri,
+      'gender': _$GenderEnumMap[instance.gender],
     };
 
 UpdateUser$Mutation _$UpdateUser$MutationFromJson(Map<String, dynamic> json) {
@@ -108,8 +138,6 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
     userProfileScope: _$enumDecodeNullable(
         _$UserProfileScopeEnumMap, json['userProfileScope'],
         unknownValue: UserProfileScope.artemisUnknown),
-    themeName: _$enumDecodeNullable(_$ThemeNameEnumMap, json['themeName'],
-        unknownValue: ThemeName.artemisUnknown),
     avatarUri: json['avatarUri'] as String?,
     introVideoUri: json['introVideoUri'] as String?,
     introVideoThumbUri: json['introVideoThumbUri'] as String?,
@@ -128,18 +156,13 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
     gender: _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
         unknownValue: Gender.artemisUnknown),
     hasOnboarded: json['hasOnboarded'] as bool?,
-    height: (json['height'] as num?)?.toDouble(),
     lastname: json['lastname'] as String?,
-    unitSystem: _$enumDecodeNullable(_$UnitSystemEnumMap, json['unitSystem'],
-        unknownValue: UnitSystem.artemisUnknown),
-    weight: (json['weight'] as num?)?.toDouble(),
   );
 }
 
 Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
     <String, dynamic>{
       'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
-      'themeName': _$ThemeNameEnumMap[instance.themeName],
       'avatarUri': instance.avatarUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -157,22 +180,8 @@ Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
       'firstname': instance.firstname,
       'gender': _$GenderEnumMap[instance.gender],
       'hasOnboarded': instance.hasOnboarded,
-      'height': instance.height,
       'lastname': instance.lastname,
-      'unitSystem': _$UnitSystemEnumMap[instance.unitSystem],
-      'weight': instance.weight,
     };
-
-K? _$enumDecodeNullable<K, V>(
-  Map<K, V> enumValues,
-  dynamic source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
-}
 
 const _$UserProfileScopeEnumMap = {
   UserProfileScope.private: 'PRIVATE',
@@ -180,22 +189,10 @@ const _$UserProfileScopeEnumMap = {
   UserProfileScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
-const _$GenderEnumMap = {
-  Gender.male: 'MALE',
-  Gender.female: 'FEMALE',
-  Gender.nonbinary: 'NONBINARY',
-  Gender.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
-
-const _$UnitSystemEnumMap = {
-  UnitSystem.imperial: 'IMPERIAL',
-  UnitSystem.metric: 'METRIC',
-  UnitSystem.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
-
 Equipments$Query$Equipment _$Equipments$Query$EquipmentFromJson(
     Map<String, dynamic> json) {
   return Equipments$Query$Equipment()
+    ..$$typename = json['__typename'] as String
     ..id = json['id'] as String
     ..name = json['name'] as String
     ..imageUrl = json['imageUrl'] as String?
@@ -205,6 +202,7 @@ Equipments$Query$Equipment _$Equipments$Query$EquipmentFromJson(
 Map<String, dynamic> _$Equipments$Query$EquipmentToJson(
         Equipments$Query$Equipment instance) =>
     <String, dynamic>{
+      '__typename': instance.$$typename,
       'id': instance.id,
       'name': instance.name,
       'imageUrl': instance.imageUrl,
