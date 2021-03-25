@@ -19,12 +19,13 @@ class GraphQL {
     final Link _link = _authLink.concat(_httpLink);
 
     _client = GraphQLClient(
-        cache: GraphQLCache(store: HiveStore()),
-        link: _link,
-        defaultPolicies: DefaultPolicies(
-            watchQuery: Policies(
-                fetch: FetchPolicy.cacheAndNetwork,
-                cacheReread: CacheRereadPolicy.mergeOptimistic)));
+      cache: GraphQLCache(store: HiveStore()),
+      link: _link,
+    );
+    // defaultPolicies: DefaultPolicies(
+    //     watchQuery: Policies(
+    //         fetch: FetchPolicy.cacheAndNetwork,
+    //         cacheReread: CacheRereadPolicy.mergeOptimistic)));
   }
   // Use for direct access. i.e. for one off mutations.
   GraphQLClient get client => _client;

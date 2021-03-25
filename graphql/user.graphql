@@ -7,6 +7,7 @@ fragment UserFields on User {
   countryCode
   displayName
   introVideoUri
+  introVideoThumbUri
   gender
 }
 

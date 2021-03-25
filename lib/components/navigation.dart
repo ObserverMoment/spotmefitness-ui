@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 
 // Simple animated tabs which return a new tab index when clicked.
 class MyTabBarNav extends StatefulWidget {
-  final List<Widget> tabs;
+  final List<String> titles;
   final int activeTabIndex;
   final Function(int newIndex) handleTabChange;
   final double buttonHeight;
   final double animatedLineHeight;
 
   MyTabBarNav({
-    required this.tabs,
+    required this.titles,
     required this.handleTabChange,
     this.buttonHeight = 44,
     this.animatedLineHeight = 1.5,
@@ -48,17 +49,18 @@ class _MyTabBarNavState extends State<MyTabBarNav>
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(10),
           color: context.theme.primary.withOpacity(0.07)),
       child: Column(
         children: [
           Row(
-            children: widget.tabs
+            children: widget.titles
                 .asMap()
-                .map((index, tab) => MapEntry(
+                .map((index, title) => MapEntry(
                     index,
                     Expanded(
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () => _handleTabChange(index),
                         child: Container(
                           height: widget.buttonHeight,
@@ -66,13 +68,15 @@ class _MyTabBarNavState extends State<MyTabBarNav>
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
+                              Expanded(
+                                child: Center(
                                   child: AnimatedOpacity(
                                     opacity: index == _activeTabIndex ? 1 : 0.7,
                                     duration: _animationDuration,
-                                    child: tab,
+                                    child: MyText(
+                                      title,
+                                      weight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -86,7 +90,7 @@ class _MyTabBarNavState extends State<MyTabBarNav>
                                       ? double.infinity
                                       : 0,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(6),
                                     color: context.theme.primary,
                                   ),
                                 ),
@@ -99,9 +103,6 @@ class _MyTabBarNavState extends State<MyTabBarNav>
                 .values
                 .toList(),
           ),
-          Container(
-              height: 1,
-              color: CupertinoTheme.of(context).primaryColor.withOpacity(0.2)),
         ],
       ),
     );

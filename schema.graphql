@@ -169,6 +169,7 @@ enum Gender {
   MALE
   FEMALE
   NONBINARY
+  NONE
 }
 enum LoadUnit {
   KG

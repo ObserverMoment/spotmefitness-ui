@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 class Country extends Equatable {
   final String isoCode;
@@ -15,8 +16,8 @@ class Country extends Equatable {
 
   factory Country.fromIsoCode(String isoCode) {
     Country country = CountryRepo.countries.firstWhere(
-      (country) => country.isoCode == isoCode,
-    );
+        (country) => country.isoCode == isoCode,
+        orElse: () => throw new Exception('You supplied an unknown isoCode.'));
 
     return country;
   }
@@ -33,7 +34,38 @@ class Country extends Equatable {
       ];
 }
 
+class CountryFlag extends StatelessWidget {
+  final String isoCode;
+  final double size;
+  CountryFlag(this.isoCode, this.size);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        boxShadow: [
+          BoxShadow(
+              color: CupertinoColors.black.withOpacity(0.3),
+              blurRadius: 1.0, // soften the shadow
+              spreadRadius: 0.5, //extend the shadow
+              offset: Offset(
+                0.5, // Move to right horizontally
+                0.5, // Move to bottom Vertically
+              )),
+        ],
+      ),
+      child: Image.asset('assets/flags/png/${isoCode.toLowerCase()}.png',
+          width: size),
+    );
+  }
+}
+
 class CountryRepo {
+  static Country fromIsoCode(String isoCode) => countries.firstWhere(
+      (country) => country.isoCode == isoCode,
+      orElse: () => throw new Exception('You supplied an unknown isoCode.'));
+
   static final List<Country> countries = [
     Country(
       isoCode: "AF",
@@ -982,12 +1014,6 @@ class CountryRepo {
       phoneCode: "31",
       name: "Netherlands",
       iso3Code: "NLD",
-    ),
-    Country(
-      isoCode: "AN",
-      phoneCode: "599",
-      name: "Netherlands Antilles",
-      iso3Code: "AN",
     ),
     Country(
       isoCode: "NC",

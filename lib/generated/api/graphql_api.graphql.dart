@@ -21,6 +21,7 @@ mixin UserFieldsMixin {
   String? countryCode;
   String? displayName;
   String? introVideoUri;
+  String? introVideoThumbUri;
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
   Gender? gender;
 }
@@ -43,6 +44,7 @@ class AuthedUser$Query$User extends JsonSerializable
         countryCode,
         displayName,
         introVideoUri,
+        introVideoThumbUri,
         gender
       ];
   Map<String, dynamic> toJson() => _$AuthedUser$Query$UserToJson(this);
@@ -80,6 +82,7 @@ class UpdateUser$Mutation$User extends JsonSerializable
         countryCode,
         displayName,
         introVideoUri,
+        introVideoThumbUri,
         gender
       ];
   Map<String, dynamic> toJson() => _$UpdateUser$Mutation$UserToJson(this);
@@ -252,6 +255,8 @@ enum Gender {
   female,
   @JsonValue('NONBINARY')
   nonbinary,
+  @JsonValue('NONE')
+  none,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -319,6 +324,12 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'introVideoUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'introVideoThumbUri'),
               alias: null,
               arguments: [],
               directives: [],
@@ -430,6 +441,12 @@ class UpdateUserMutation
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'introVideoUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'introVideoThumbUri'),
               alias: null,
               arguments: [],
               directives: [],

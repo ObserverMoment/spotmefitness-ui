@@ -3,9 +3,9 @@ import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/friends.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/friends_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/personal_details.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 
@@ -18,10 +18,25 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
       AutoRoute(path: 'social', name: 'socialRouter', page: SocialPage),
       AutoRoute(path: 'journal', name: 'journalRouter', page: JournalPage),
       AutoRoute(
-        path: 'profile',
-        name: 'profileRouter',
-        page: ProfilePage,
-      ),
+          path: 'profile',
+          name: 'profileRouter',
+          page: ProfilePage,
+          usesTabsRouter: true,
+          children: [
+            AutoRoute(
+                path: 'personal',
+                name: 'profilePersonalRouter',
+                page: ProfilePersonalPage),
+            AutoRoute(
+                path: 'friends',
+                name: 'profileFriendsRouter',
+                page: ProfileFriendsPage),
+            AutoRoute(
+                path: 'gym-profiles',
+                name: 'profileGymProfilesRouter',
+                page: ProfileGymProfilesPage),
+            RedirectRoute(path: '*', redirectTo: 'personal')
+          ]),
       RedirectRoute(path: '*', redirectTo: '/')
     ]),
   ],

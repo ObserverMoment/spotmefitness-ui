@@ -135,6 +135,7 @@ abstract class Styles {
   static const black = CupertinoColors.black;
   static const white = CupertinoColors.white;
   static const grey = CupertinoColors.systemGrey;
+  static final lightGrey = CupertinoColors.systemGrey.withOpacity(0.2);
   static const errorRed = CupertinoColors.destructiveRed;
   static const infoBlue = CupertinoColors.activeBlue;
   static const heartRed = const Color(0xffA8294B);

@@ -13,11 +13,11 @@ AuthedUser$Query$User _$AuthedUser$Query$UserFromJson(
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
     ..bio = json['bio'] as String?
-    ..birthdate =
-        fromGraphQLDateTimeToDartDateTime(json['birthdate'] as String?)
+    ..birthdate = fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?)
     ..countryCode = json['countryCode'] as String?
     ..displayName = json['displayName'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
     ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
         unknownValue: Gender.artemisUnknown);
 }
@@ -33,6 +33,7 @@ Map<String, dynamic> _$AuthedUser$Query$UserToJson(
       'countryCode': instance.countryCode,
       'displayName': instance.displayName,
       'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
       'gender': _$GenderEnumMap[instance.gender],
     };
 
@@ -77,6 +78,7 @@ const _$GenderEnumMap = {
   Gender.male: 'MALE',
   Gender.female: 'FEMALE',
   Gender.nonbinary: 'NONBINARY',
+  Gender.none: 'NONE',
   Gender.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
@@ -98,11 +100,11 @@ UpdateUser$Mutation$User _$UpdateUser$Mutation$UserFromJson(
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
     ..bio = json['bio'] as String?
-    ..birthdate =
-        fromGraphQLDateTimeToDartDateTime(json['birthdate'] as String?)
+    ..birthdate = fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?)
     ..countryCode = json['countryCode'] as String?
     ..displayName = json['displayName'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
     ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
         unknownValue: Gender.artemisUnknown);
 }
@@ -118,6 +120,7 @@ Map<String, dynamic> _$UpdateUser$Mutation$UserToJson(
       'countryCode': instance.countryCode,
       'displayName': instance.displayName,
       'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
       'gender': _$GenderEnumMap[instance.gender],
     };
 
@@ -143,7 +146,7 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
     introVideoThumbUri: json['introVideoThumbUri'] as String?,
     bio: json['bio'] as String?,
     tagline: json['tagline'] as String?,
-    birthdate: fromGraphQLDateTimeToDartDateTime(json['birthdate'] as String?),
+    birthdate: fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?),
     city: json['city'] as String?,
     countryCode: json['countryCode'] as String?,
     displayName: json['displayName'] as String?,

@@ -1,15 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
+import 'package:spotmefitness_ui/components/media/images/user_intro_video_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/friends.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/personal_details.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/settings_and_info.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -19,18 +18,20 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int _activeTabIndex = 0;
 
-  Widget _buildContent() {
-    switch (_activeTabIndex) {
-      case 0:
-        return ProfilePersonalDetails();
-      case 1:
-        return ProfileFriends();
-      case 2:
-        return ProfileGymProfiles();
-      default:
-        throw new Exception('No widget at this tab index: $_activeTabIndex');
-    }
-  }
+  final _titles = <String>['Personal', 'Friends', 'Gym Profiles'];
+
+  // Widget _buildContent() {
+  //   switch (_activeTabIndex) {
+  //     case 0:
+  //       return ProfilePersonalDetails();
+  //     case 1:
+  //       return ProfileFriends();
+  //     case 2:
+  //       return ProfileGymProfiles();
+  //     default:
+  //       throw new Exception('No widget at this tab index: $_activeTabIndex');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -65,17 +66,20 @@ class _ProfilePageState extends State<ProfilePage> {
                               Column(
                                 children: [
                                   UserAvatarUploader(
-                                      avatarUri: _user.avatarUri,
-                                      displaySize: Size(100, 100),
-                                      onUploadSuccess: (uri) => print(uri)),
+                                    avatarUri: _user.avatarUri,
+                                    displaySize: Size(100, 100),
+                                  ),
                                   MyText('Photo')
                                 ],
                               ),
                               Column(
                                 children: [
-                                  UserAvatarUploader(
-                                      displaySize: Size(100, 100),
-                                      onUploadSuccess: (uri) => print(uri)),
+                                  UserIntroVideoUploader(
+                                    introVideoUri: _user.introVideoUri,
+                                    introVideoThumbUri:
+                                        _user.introVideoThumbUri,
+                                    displaySize: Size(100, 100),
+                                  ),
                                   MyText('Video')
                                 ],
                               ),
@@ -84,17 +88,29 @@ class _ProfilePageState extends State<ProfilePage> {
                         });
                   }),
               SizedBox(height: 12),
-              MyTabBarNav(
-                  activeTabIndex: _activeTabIndex,
-                  tabs: <Widget>[
-                    MyText('Personal'),
-                    MyText('Friends'),
-                    MyText('Gym Profiles')
+              AutoTabsRouter(
+                  routes: [
+                    ProfilePersonalRouter(),
+                    ProfileFriendsRouter(),
+                    ProfileGymProfilesRouter(),
                   ],
-                  handleTabChange: (index) =>
-                      setState(() => _activeTabIndex = index)),
-              FadeIn(
-                  key: Key(_activeTabIndex.toString()), child: _buildContent())
+                  builder: (context, child, animation) {
+                    return Column(
+                      children: [
+                        MyTabBarNav(
+                            activeTabIndex: _activeTabIndex,
+                            titles: _titles,
+                            handleTabChange: (index) {
+                              setState(() => _activeTabIndex = index);
+                              context.tabsRouter.setActiveIndex(index);
+                            }),
+                        FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        )
+                      ],
+                    );
+                  }),
             ],
           ),
         ),

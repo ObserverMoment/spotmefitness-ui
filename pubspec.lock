@@ -9,7 +9,7 @@ packages:
     source: hosted
     version: "19.0.0"
   analyzer:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
@@ -25,10 +25,12 @@ packages:
   artemis:
     dependency: "direct dev"
     description:
-      name: artemis
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "7.0.0-beta.1"
+      path: "."
+      ref: c98cf50
+      resolved-ref: c98cf50843a1adf69f959b3e74bab0689145430f
+      url: "https://github.com/glynskyi/artemis.git"
+    source: git
+    version: "7.0.0"
   async:
     dependency: transitive
     description:
@@ -105,14 +107,14 @@ packages:
       name: built_collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0"
+    version: "4.3.2"
   built_value:
     dependency: transitive
     description:
       name: built_value
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.0.4"
+    version: "7.1.0"
   characters:
     dependency: transitive
     description:
@@ -301,7 +303,7 @@ packages:
       name: fixnum
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "0.10.11"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -366,13 +368,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.0-nullsafety.2"
-  gql_code_gen:
+  gql_code_builder:
     dependency: transitive
     description:
-      name: gql_code_gen
+      name: gql_code_builder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5"
+    version: "0.1.5-alpha+1615272573438"
   gql_dedupe_link:
     dependency: "direct overridden"
     description:
@@ -702,13 +704,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  recase:
+  quiver:
     dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.5"
+  recase:
+    dependency: "direct overridden"
     description:
       name: recase
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "4.0.0-nullsafety.0"
   rxdart:
     dependency: transitive
     description:
@@ -869,7 +878,7 @@ packages:
     source: hosted
     version: "1.0.0"
   web_socket_channel:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: web_socket_channel
       url: "https://pub.dartlang.org"

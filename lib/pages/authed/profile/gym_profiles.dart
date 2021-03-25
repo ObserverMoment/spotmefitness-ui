@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
-class ProfileGymProfiles extends StatelessWidget {
+class ProfileGymProfilesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

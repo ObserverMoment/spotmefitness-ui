@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -153,5 +154,56 @@ class LoadingCircle extends StatelessWidget {
         color:
             color ?? CupertinoTheme.of(context).primaryColor.withOpacity(0.5),
         size: size ?? 30);
+  }
+}
+
+class LinearProgressIndicator extends StatelessWidget {
+  final double progress;
+  final double width;
+  final double? height;
+  final Duration animationDuration;
+  final double progressColorOpacity;
+  final Gradient? gradient;
+
+  LinearProgressIndicator(
+      {required this.progress,
+      required this.width,
+      this.height = 6,
+      this.progressColorOpacity = 1,
+      this.gradient,
+      this.animationDuration = const Duration(milliseconds: 100)});
+
+  final _borderRadius = BorderRadius.circular(30);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: _borderRadius,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            clipBehavior: Clip.hardEdge,
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              borderRadius: _borderRadius,
+              color: context.theme.primary.withOpacity(0.5),
+            ),
+          ),
+          Opacity(
+            opacity: progressColorOpacity,
+            child: AnimatedContainer(
+              height: height,
+              width: progress * width,
+              curve: Curves.easeIn,
+              duration: animationDuration,
+              decoration: BoxDecoration(
+                  borderRadius: _borderRadius,
+                  gradient: gradient ?? Styles.neonBlueGradient),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

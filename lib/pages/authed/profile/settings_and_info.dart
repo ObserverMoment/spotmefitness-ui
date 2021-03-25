@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/extensions.dart';
 
 class SettingsAndInfo extends StatelessWidget {
   Widget _spacer() => SizedBox(height: 10);
@@ -61,6 +60,10 @@ class SettingsAndInfo extends StatelessWidget {
             _spacer(),
             MyText('ACCOUNT', color: _headingColor),
             _spacer(),
+            PageLink(
+              linkText: 'Profile Privacy',
+              onPress: () => {},
+            ),
             PageLink(
               linkText: 'Subscription',
               onPress: () => {},

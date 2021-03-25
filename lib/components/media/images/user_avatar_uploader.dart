@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -18,11 +19,11 @@ import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 class UserAvatarUploader extends StatefulWidget {
   final String? avatarUri;
   final Size displaySize;
-  final Function(String uploadedUri) onUploadSuccess;
+  final Function(String uploadedUri)? onUploadSuccess;
   UserAvatarUploader(
       {this.avatarUri,
       this.displaySize = const Size(120, 120),
-      required this.onUploadSuccess});
+      this.onUploadSuccess});
 
   @override
   _UserAvatarUploaderState createState() => _UserAvatarUploaderState();
@@ -43,7 +44,21 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
           setState(() => _uploading = true);
           await _uploadFile(_croppedFile);
           setState(() => _uploading = false);
-        } catch (e) {}
+        } catch (e) {
+          await context.showAlert(
+            title: 'Sorry, something went wrong.',
+            content: MyText(
+              e.toString(),
+              color: Styles.errorRed,
+            ),
+            actions: [
+              CupertinoDialogAction(
+                child: MyText('Ok'),
+                onPressed: () => context.pop,
+              ),
+            ],
+          );
+        }
       }
     }
   }
@@ -62,7 +77,9 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
             variables: {
               'data': {'avatarUri': uri}
             },
-            onCompleted: (_) => widget.onUploadSuccess(uri),
+            onCompleted: (_) => widget.onUploadSuccess != null
+                ? widget.onUploadSuccess!(uri)
+                : null,
             onError: (e) => throw new Exception(e),
           ),
         );
