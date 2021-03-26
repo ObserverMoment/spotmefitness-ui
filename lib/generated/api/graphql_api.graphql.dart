@@ -8,31 +8,37 @@ import 'package:gql/ast.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 part 'graphql_api.graphql.g.dart';
 
-mixin UserFieldsMixin {
-  @JsonKey(name: '__typename')
-  late String $$typename;
-  late String id;
-  String? avatarUri;
-  String? bio;
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  DateTime? birthdate;
-  String? countryCode;
-  String? displayName;
-  String? introVideoUri;
-  String? introVideoThumbUri;
-  @JsonKey(unknownEnumValue: Gender.artemisUnknown)
-  Gender? gender;
-}
-
 @JsonSerializable(explicitToJson: true)
-class AuthedUser$Query$User extends JsonSerializable
-    with EquatableMixin, UserFieldsMixin {
+class AuthedUser$Query$User extends JsonSerializable with EquatableMixin {
   AuthedUser$Query$User();
 
   factory AuthedUser$Query$User.fromJson(Map<String, dynamic> json) =>
       _$AuthedUser$Query$UserFromJson(json);
+
+  @JsonKey(name: '__typename')
+  late String $$typename;
+
+  late String id;
+
+  late String? avatarUri;
+
+  late String? bio;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime? birthdate;
+
+  late String? countryCode;
+
+  late String? displayName;
+
+  late String? introVideoUri;
+
+  late String? introVideoThumbUri;
+
+  @JsonKey(unknownEnumValue: Gender.artemisUnknown)
+  late Gender? gender;
 
   @override
   List<Object?> get props => [
@@ -65,12 +71,36 @@ class AuthedUser$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class UpdateUser$Mutation$User extends JsonSerializable
-    with EquatableMixin, UserFieldsMixin {
+class UpdateUser$Mutation$User extends JsonSerializable with EquatableMixin {
   UpdateUser$Mutation$User();
 
   factory UpdateUser$Mutation$User.fromJson(Map<String, dynamic> json) =>
       _$UpdateUser$Mutation$UserFromJson(json);
+
+  @JsonKey(name: '__typename')
+  late String $$typename;
+
+  late String id;
+
+  late String? avatarUri;
+
+  late String? bio;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime? birthdate;
+
+  late String? countryCode;
+
+  late String? displayName;
+
+  late String? introVideoUri;
+
+  late String? introVideoThumbUri;
+
+  @JsonKey(unknownEnumValue: Gender.artemisUnknown)
+  late Gender? gender;
 
   @override
   List<Object?> get props => [
@@ -274,73 +304,6 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
-    FragmentDefinitionNode(
-        name: NameNode(value: 'UserFields'),
-        typeCondition: TypeConditionNode(
-            on: NamedTypeNode(name: NameNode(value: 'User'), isNonNull: false)),
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: '__typename'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'id'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'avatarUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'bio'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'birthdate'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'countryCode'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'displayName'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoThumbUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'gender'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null)
-        ])),
     OperationDefinitionNode(
         type: OperationType.query,
         name: NameNode(value: 'authedUser'),
@@ -353,8 +316,66 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
               arguments: [],
               directives: [],
               selectionSet: SelectionSetNode(selections: [
-                FragmentSpreadNode(
-                    name: NameNode(value: 'UserFields'), directives: [])
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'id'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'avatarUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'bio'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'birthdate'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'countryCode'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'displayName'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'introVideoUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'introVideoThumbUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'gender'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null)
               ]))
         ]))
   ]);
@@ -391,73 +412,6 @@ class UpdateUserMutation
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
-    FragmentDefinitionNode(
-        name: NameNode(value: 'UserFields'),
-        typeCondition: TypeConditionNode(
-            on: NamedTypeNode(name: NameNode(value: 'User'), isNonNull: false)),
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: '__typename'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'id'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'avatarUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'bio'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'birthdate'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'countryCode'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'displayName'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoThumbUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'gender'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null)
-        ])),
     OperationDefinitionNode(
         type: OperationType.mutation,
         name: NameNode(value: 'updateUser'),
@@ -481,8 +435,66 @@ class UpdateUserMutation
               ],
               directives: [],
               selectionSet: SelectionSetNode(selections: [
-                FragmentSpreadNode(
-                    name: NameNode(value: 'UserFields'), directives: [])
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'id'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'avatarUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'bio'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'birthdate'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'countryCode'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'displayName'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'introVideoUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'introVideoThumbUri'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'gender'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null)
               ]))
         ]))
   ]);

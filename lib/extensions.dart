@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -14,6 +15,8 @@ extension BuildContextExtension on BuildContext {
     return watch<ThemeBloc>();
   }
 
+  GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
+
   Future<T> push<T>(
       {required Widget child, bool fullscreenDialog = false}) async {
     final BuildContext context = this;
@@ -22,7 +25,7 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
-  Future<T> showAlert<T>(
+  Future<T> showDialog<T>(
       {String? title,
       Widget? content,
       required List<CupertinoDialogAction> actions}) async {
@@ -34,6 +37,27 @@ extension BuildContextExtension on BuildContext {
             content: content,
             actions: actions));
     return res;
+  }
+
+  Future<void> showErrorAlert(
+    String message,
+  ) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: H2('Oops, it went wrong...'),
+                content: MyText(
+                  message,
+                  color: Styles.errorRed,
+                  maxLines: 8,
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    child: MyText('Ok'),
+                    onPressed: () => context.pop(),
+                  ),
+                ]));
   }
 
   Size get size => MediaQuery.of(this).size;

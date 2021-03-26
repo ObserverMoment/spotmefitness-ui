@@ -5,8 +5,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -36,24 +37,6 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   bool _uploading = false;
   bool _processing = false;
   double _uploadProgress = 0;
-  late ObservableQuery _observableQuery;
-  late GraphQLClient _client;
-
-  @override
-  void initState() {
-    super.initState();
-    _client = GraphQL().client;
-    // _observableQuery = _client.watchMutation(
-    //     WatchQueryOptions(document: UpdateUserMutation().document));
-
-    // _observableQuery.onData([onData]);
-  }
-
-  @override
-  void dispose() {
-    _observableQuery.close();
-    super.dispose();
-  }
 
   Future<void> _pickVideo(ImageSource source) async {
     PickedFile? _pickedFile = await ImagePicker().getVideo(source: source);
@@ -63,7 +46,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
       final String _fileSize =
           '${(_file.lengthSync() / 1000000).toStringAsFixed(2)} MB';
 
-      await context.showAlert(
+      await context.showDialog(
           title: 'Upload video',
           content: MyText('This file is $_fileSize in size.'),
           actions: [
@@ -98,124 +81,60 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
           onFail: (e) => throw new Exception(e));
     } catch (e) {
       print(e.toString());
-      await context.showAlert(
-        title: 'Sorry, something went wrong.',
-        content: MyText(
-          e.toString(),
-          color: Styles.errorRed,
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: MyText('Ok'),
-            onPressed: () => context.pop,
-          ),
-        ],
-      );
-    } finally {
+      await context.showErrorAlert(e.toString());
       _resetState();
     }
   }
 
-  // FutureOr<void> onData(QueryResult? result) {
-  //   print('ondata');
-  //   print(result);
-  // }
-
   Future<void> _saveUrisToDB(String videoUri, String videoThumbUri) async {
-    print(videoUri);
-    print(videoThumbUri);
-    // _client.cache.writeFragment(
-    //     Request(operation: Operation(document: UpdateUserMutation().document)),
-    // data: {
-    //   'updateUser': {
-    //     'id': 'a379ea36-8a96-4bc6-82ae-c1b716c85b86',
-    //     'introVideoUri': videoUri,
-    //     '__typename': 'User',
-    //   }
-    //     });
-
-    _client.cache.writeFragment(
-      Fragment(
-          document: gql(
-        '''
-              fragment fields on UpdateUser {
-                id
-                __typename
-                introVideoUri
-                introVideoThumbUri
-              }
-            ''',
-        // helper for constructing FragmentRequest
-      )).asRequest(idFields: {
-        '__typename': 'User',
-        'id': 'a379ea36-8a96-4bc6-82ae-c1b716c85b86',
-      }),
-      data: {
-        'id': 'a379ea36-8a96-4bc6-82ae-c1b716c85b86',
-        'introVideoUri': videoUri,
-        'introVideoThumbUri': videoThumbUri,
-        '__typename': 'User',
-      },
-    );
-
-    // final mutationCallbacks = MutationCallbackHandler(
-    //     cache: _client.cache,
-    //     queryId: _observableQuery.queryId,
-    //     options: MutationOptions(
-    //       document: UpdateUserMutation().document,
-    //       variables: {
-    //         'data': {
-    //           'introVideoUri': videoUri,
-    //           'introVideoThumbUri': videoThumbUri
-    //         }
-    //       },
-    //       onCompleted: (_) => widget.onUploadSuccess != null
-    //           ? widget.onUploadSuccess!(videoUri, videoThumbUri)
-    //           : null,
-    //       onError: (e) => throw new Exception(e),
-    //     ));
-
-    // (_observableQuery
-    //       ..variables = {
-    //         'data': {'introVideoUri': videoUri}
-    //       }
-    //       ..options.optimisticResult = {
-    //         'updateUser': {'introVideoUri': videoUri}
-    //       }
-    //       ..onData(mutationCallbacks.callbacks) // add callbacks to observable
-    //     )
-    //     .fetchResults();
-
-    //         final mutationCallbacks = MutationCallbackHandler(
-    //   cache: _client.cache,
-    //   queryId: observableQuery!.queryId,
-    //   options: widget.options,
-    // );
-
-    // return (observableQuery!
-    //       ..variables = variables
-    //       ..options.optimisticResult = optimisticResult
-    //       ..onData(mutationCallbacks.callbacks) // add callbacks to observable
-    //     )
-    //     .fetchResults();
-
-    // _observable.close();
-
-    // await GraphQL().client.mutate(
-    //       MutationOptions(
-    //   document: UpdateUserMutation().document,
-    //   variables: {
-    //     'data': {
-    //       'introVideoUri': videoUri,
-    //       'introVideoThumbUri': videoThumbUri
-    //     }
-    //   },
-    //   onCompleted: (_) => widget.onUploadSuccess != null
-    //       ? widget.onUploadSuccess!(videoUri, videoThumbUri)
-    //       : null,
-    //   onError: (e) => throw new Exception(e),
-    // ),
-    //     );
+    final GraphQLClient _client = GraphQLProvider.of(context).value;
+    final FragmentRequest _fragmentRequest = Fragment(
+        document: gql(
+      '''
+            fragment videoFields on User {
+              introVideoUri
+              introVideoThumbUri
+            }
+          ''',
+    )).asRequest(idFields: {
+      '__typename': 'User',
+      'id': GetIt.I<AuthBloc>().authedUser!.id,
+    });
+    try {
+      await GraphQL.mutateOptimisticFragment(
+        client: _client,
+        options: MutationOptions(
+          document: UpdateUserMutation().document,
+          variables: {
+            'data': {
+              'introVideoUri': videoUri,
+              'introVideoThumbUri': videoThumbUri
+            }
+          },
+          onCompleted: (_) => widget.onUploadSuccess != null
+              ? widget.onUploadSuccess!(videoUri, videoThumbUri)
+              : null,
+          update: (cache, result) {
+            if (result!.hasException) {
+              context.showErrorAlert(result.exception.toString());
+            } else {
+              cache.writeFragment(
+                _fragmentRequest,
+                data: result.data![UpdateUserMutation().operationName],
+              );
+            }
+          },
+          onError: (e) => throw new Exception(e),
+        ),
+        request: _fragmentRequest,
+        data: {'introVideoUri': videoUri, 'introVideoThumbUri': videoThumbUri},
+      );
+    } catch (e) {
+      print(e.toString());
+      await context.showErrorAlert(e.toString());
+    } finally {
+      _resetState();
+    }
   }
 
   void _resetState() => setState(() {
@@ -228,6 +147,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   Widget build(BuildContext context) {
     final Color _primary = context.theme.primary;
     final Color _background = context.theme.background;
+    ;
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,

@@ -19,16 +19,29 @@ class GraphQL {
     final Link _link = _authLink.concat(_httpLink);
 
     _client = GraphQLClient(
-      cache: GraphQLCache(store: HiveStore()),
-      link: _link,
-    );
-    // defaultPolicies: DefaultPolicies(
-    //     watchQuery: Policies(
-    //         fetch: FetchPolicy.cacheAndNetwork,
-    //         cacheReread: CacheRereadPolicy.mergeOptimistic)));
+        cache: GraphQLCache(store: HiveStore()),
+        link: _link,
+        defaultPolicies: DefaultPolicies(
+            watchQuery: Policies(
+                fetch: FetchPolicy.cacheAndNetwork,
+                cacheReread: CacheRereadPolicy.mergeOptimistic)));
   }
   // Use for direct access. i.e. for one off mutations.
   GraphQLClient get client => _client;
   // Used for provider / consumer pattern
   ValueNotifier<GraphQLClient> get clientNotifier => ValueNotifier(_client);
+
+  static Future<QueryResult> mutateOptimisticFragment(
+      {required GraphQLClient client,
+      required MutationOptions options,
+      required FragmentRequest request,
+      required Map<String, dynamic> data}) async {
+    // Write optimistic fragment and broadcast.
+    client.cache.writeFragment(request, data: data);
+    client.queryManager.maybeRebroadcastQueries();
+
+    // Run network mutation.
+    final result = await client.mutate(options);
+    return result;
+  }
 }

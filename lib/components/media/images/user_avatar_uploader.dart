@@ -45,19 +45,9 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
           await _uploadFile(_croppedFile);
           setState(() => _uploading = false);
         } catch (e) {
-          await context.showAlert(
-            title: 'Sorry, something went wrong.',
-            content: MyText(
-              e.toString(),
-              color: Styles.errorRed,
-            ),
-            actions: [
-              CupertinoDialogAction(
-                child: MyText('Ok'),
-                onPressed: () => context.pop,
-              ),
-            ],
-          );
+          await context.showErrorAlert(e.toString());
+        } finally {
+          setState(() => _uploading = false);
         }
       }
     }

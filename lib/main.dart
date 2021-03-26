@@ -17,6 +17,12 @@ void main() async {
   await initHiveForFlutter();
   await Hive.openBox('settings');
 
+  // print('clearing');
+  // var cache = Hive.box(HiveStore.defaultBoxName);
+  // cache.clear();
+  // var settings = Hive.box('settings');
+  // settings.clear();
+
   await Firebase.initializeApp();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

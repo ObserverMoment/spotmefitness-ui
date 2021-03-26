@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
 import 'package:spotmefitness_ui/components/media/images/user_intro_video_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -19,19 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
   int _activeTabIndex = 0;
 
   final _titles = <String>['Personal', 'Friends', 'Gym Profiles'];
-
-  // Widget _buildContent() {
-  //   switch (_activeTabIndex) {
-  //     case 0:
-  //       return ProfilePersonalDetails();
-  //     case 1:
-  //       return ProfileFriends();
-  //     case 2:
-  //       return ProfileGymProfiles();
-  //     default:
-  //       throw new Exception('No widget at this tab index: $_activeTabIndex');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +40,10 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
               Query(
-                  options: QueryOptions(document: AuthedUserQuery().document),
+                  options: QueryOptions(
+                      document: AuthedUserQuery().document,
+                      fetchPolicy: FetchPolicy.cacheAndNetwork,
+                      cacheRereadPolicy: CacheRereadPolicy.mergeOptimistic),
                   builder: (result, {fetchMore, refetch}) {
                     return QueryResponseBuilder(
                         result: result,
