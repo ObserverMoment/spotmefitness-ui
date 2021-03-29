@@ -22,6 +22,7 @@ type Query {
   textSearchCreatorPublicProfiles(text: String!): [UserPublicProfile!]
   checkUniqueDisplayName(displayName: String!): Boolean!
   authedUser: User!
+  gymProfiles: [GymProfile!]!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
   officialWorkouts: [Workout!]!
@@ -208,20 +209,17 @@ type Equipment {
   id: ID!
   name: String!
   altNames: String
-  imageUrl: String
   loadAdjustable: Boolean!
 }
 input CreateEquipmentInput {
   name: String!
   altNames: String
-  imageUrl: String
   loadAdjustable: Boolean!
 }
 input UpdateEquipmentInput {
   id: ID!
   name: String
   altNames: String
-  imageUrl: String
   loadAdjustable: Boolean
 }
 type Move {
@@ -350,7 +348,6 @@ type GymProfile {
   description: String
   postcode: String
   bodyweightOnly: Boolean!
-  User: User!
   Equipments: [Equipment!]
 }
 input CreateGymProfileInput {

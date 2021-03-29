@@ -71,6 +71,74 @@ class AuthedUser$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class GymProfiles$Query$GymProfile$Equipment extends JsonSerializable
+    with EquatableMixin {
+  GymProfiles$Query$GymProfile$Equipment();
+
+  factory GymProfiles$Query$GymProfile$Equipment.fromJson(
+          Map<String, dynamic> json) =>
+      _$GymProfiles$Query$GymProfile$EquipmentFromJson(json);
+
+  @JsonKey(name: '__typename')
+  late String $$typename;
+
+  late String id;
+
+  late String name;
+
+  late bool loadAdjustable;
+
+  @override
+  List<Object?> get props => [$$typename, id, name, loadAdjustable];
+  Map<String, dynamic> toJson() =>
+      _$GymProfiles$Query$GymProfile$EquipmentToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class GymProfiles$Query$GymProfile extends JsonSerializable
+    with EquatableMixin {
+  GymProfiles$Query$GymProfile();
+
+  factory GymProfiles$Query$GymProfile.fromJson(Map<String, dynamic> json) =>
+      _$GymProfiles$Query$GymProfileFromJson(json);
+
+  @JsonKey(name: '__typename')
+  late String $$typename;
+
+  late String id;
+
+  late String name;
+
+  late String? description;
+
+  late String? postcode;
+
+  late bool bodyweightOnly;
+
+  @JsonKey(name: 'Equipments')
+  late List<GymProfiles$Query$GymProfile$Equipment>? equipments;
+
+  @override
+  List<Object?> get props =>
+      [$$typename, id, name, description, postcode, bodyweightOnly, equipments];
+  Map<String, dynamic> toJson() => _$GymProfiles$Query$GymProfileToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class GymProfiles$Query extends JsonSerializable with EquatableMixin {
+  GymProfiles$Query();
+
+  factory GymProfiles$Query.fromJson(Map<String, dynamic> json) =>
+      _$GymProfiles$QueryFromJson(json);
+
+  late List<GymProfiles$Query$GymProfile> gymProfiles;
+
+  @override
+  List<Object?> get props => [gymProfiles];
+  Map<String, dynamic> toJson() => _$GymProfiles$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class UpdateUser$Mutation$User extends JsonSerializable with EquatableMixin {
   UpdateUser$Mutation$User();
 
@@ -240,12 +308,10 @@ class Equipments$Query$Equipment extends JsonSerializable with EquatableMixin {
 
   late String name;
 
-  late String? imageUrl;
-
   late bool loadAdjustable;
 
   @override
-  List<Object?> get props => [$$typename, id, name, imageUrl, loadAdjustable];
+  List<Object?> get props => [$$typename, id, name, loadAdjustable];
   Map<String, dynamic> toJson() => _$Equipments$Query$EquipmentToJson(this);
 }
 
@@ -388,6 +454,105 @@ class AuthedUserQuery extends GraphQLQuery<AuthedUser$Query, JsonSerializable> {
   @override
   AuthedUser$Query parse(Map<String, dynamic> json) =>
       AuthedUser$Query.fromJson(json);
+}
+
+class GymProfilesQuery
+    extends GraphQLQuery<GymProfiles$Query, JsonSerializable> {
+  GymProfilesQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'gymProfiles'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'gymProfiles'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'id'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'name'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'description'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'postcode'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'bodyweightOnly'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'Equipments'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: SelectionSetNode(selections: [
+                      FieldNode(
+                          name: NameNode(value: '__typename'),
+                          alias: null,
+                          arguments: [],
+                          directives: [],
+                          selectionSet: null),
+                      FieldNode(
+                          name: NameNode(value: 'id'),
+                          alias: null,
+                          arguments: [],
+                          directives: [],
+                          selectionSet: null),
+                      FieldNode(
+                          name: NameNode(value: 'name'),
+                          alias: null,
+                          arguments: [],
+                          directives: [],
+                          selectionSet: null),
+                      FieldNode(
+                          name: NameNode(value: 'loadAdjustable'),
+                          alias: null,
+                          arguments: [],
+                          directives: [],
+                          selectionSet: null)
+                    ]))
+              ]))
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'gymProfiles';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  GymProfiles$Query parse(Map<String, dynamic> json) =>
+      GymProfiles$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -543,12 +708,6 @@ class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
                     selectionSet: null),
                 FieldNode(
                     name: NameNode(value: 'name'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null),
-                FieldNode(
-                    name: NameNode(value: 'imageUrl'),
                     alias: null,
                     arguments: [],
                     directives: [],

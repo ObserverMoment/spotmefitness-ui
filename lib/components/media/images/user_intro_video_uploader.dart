@@ -5,7 +5,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/extensions.dart';
@@ -88,46 +87,28 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
 
   Future<void> _saveUrisToDB(String videoUri, String videoThumbUri) async {
     final GraphQLClient _client = GraphQLProvider.of(context).value;
-    final FragmentRequest _fragmentRequest = Fragment(
-        document: gql(
-      '''
+    final String _fragment = '''
             fragment videoFields on User {
               introVideoUri
               introVideoThumbUri
             }
-          ''',
-    )).asRequest(idFields: {
-      '__typename': 'User',
-      'id': GetIt.I<AuthBloc>().authedUser!.id,
-    });
+          ''';
+    final Map<String, String> _data = {
+      'introVideoUri': videoUri,
+      'introVideoThumbUri': videoThumbUri
+    };
     try {
       await GraphQL.mutateOptimisticFragment(
         client: _client,
-        options: MutationOptions(
-          document: UpdateUserMutation().document,
-          variables: {
-            'data': {
-              'introVideoUri': videoUri,
-              'introVideoThumbUri': videoThumbUri
-            }
-          },
-          onCompleted: (_) => widget.onUploadSuccess != null
-              ? widget.onUploadSuccess!(videoUri, videoThumbUri)
-              : null,
-          update: (cache, result) {
-            if (result!.hasException) {
-              context.showErrorAlert(result.exception.toString());
-            } else {
-              cache.writeFragment(
-                _fragmentRequest,
-                data: result.data![UpdateUserMutation().operationName],
-              );
-            }
-          },
-          onError: (e) => throw new Exception(e),
-        ),
-        request: _fragmentRequest,
-        data: {'introVideoUri': videoUri, 'introVideoThumbUri': videoThumbUri},
+        document: UpdateUserMutation().document,
+        operationName: UpdateUserMutation().operationName,
+        variables: {
+          'data': _data,
+        },
+        fragment: _fragment,
+        objectId: GetIt.I<AuthBloc>().authedUser!.id,
+        objectType: 'User',
+        optimisticData: _data,
       );
     } catch (e) {
       print(e.toString());

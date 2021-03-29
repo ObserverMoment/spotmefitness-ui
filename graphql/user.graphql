@@ -13,11 +13,22 @@ query authedUser {
   }
 }
 
-# query gymProfiles {
-#   gymProfiles {
-#     id
-#   }
-# }
+query gymProfiles {
+  gymProfiles {
+    __typename
+    id
+    name
+    description
+    postcode
+    bodyweightOnly
+    Equipments {
+      __typename
+      id
+      name
+      loadAdjustable
+    }
+  }
+}
 
 mutation updateUser($data: UpdateUserInput!) {
   updateUser(data: $data) {

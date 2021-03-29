@@ -3,7 +3,6 @@ query equipments {
     __typename
     id
     name
-    imageUrl
     loadAdjustable
   }
 }

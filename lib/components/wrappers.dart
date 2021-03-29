@@ -20,7 +20,10 @@ class QueryResponseBuilder extends StatelessWidget {
         color: Styles.errorRed,
       );
     } else if (result.isLoading) {
-      return loadingWidget ?? LoadingCircle();
+      return Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: loadingWidget ?? LoadingCircle(),
+      );
     } else {
       return FadeInUp(child: builder());
     }

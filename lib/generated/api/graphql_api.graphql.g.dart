@@ -93,6 +93,65 @@ Map<String, dynamic> _$AuthedUser$QueryToJson(AuthedUser$Query instance) =>
       'authedUser': instance.authedUser.toJson(),
     };
 
+GymProfiles$Query$GymProfile$Equipment
+    _$GymProfiles$Query$GymProfile$EquipmentFromJson(
+        Map<String, dynamic> json) {
+  return GymProfiles$Query$GymProfile$Equipment()
+    ..$$typename = json['__typename'] as String
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..loadAdjustable = json['loadAdjustable'] as bool;
+}
+
+Map<String, dynamic> _$GymProfiles$Query$GymProfile$EquipmentToJson(
+        GymProfiles$Query$GymProfile$Equipment instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'loadAdjustable': instance.loadAdjustable,
+    };
+
+GymProfiles$Query$GymProfile _$GymProfiles$Query$GymProfileFromJson(
+    Map<String, dynamic> json) {
+  return GymProfiles$Query$GymProfile()
+    ..$$typename = json['__typename'] as String
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..postcode = json['postcode'] as String?
+    ..bodyweightOnly = json['bodyweightOnly'] as bool
+    ..equipments = (json['Equipments'] as List<dynamic>?)
+        ?.map((e) => GymProfiles$Query$GymProfile$Equipment.fromJson(
+            e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$GymProfiles$Query$GymProfileToJson(
+        GymProfiles$Query$GymProfile instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'postcode': instance.postcode,
+      'bodyweightOnly': instance.bodyweightOnly,
+      'Equipments': instance.equipments?.map((e) => e.toJson()).toList(),
+    };
+
+GymProfiles$Query _$GymProfiles$QueryFromJson(Map<String, dynamic> json) {
+  return GymProfiles$Query()
+    ..gymProfiles = (json['gymProfiles'] as List<dynamic>)
+        .map((e) =>
+            GymProfiles$Query$GymProfile.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$GymProfiles$QueryToJson(GymProfiles$Query instance) =>
+    <String, dynamic>{
+      'gymProfiles': instance.gymProfiles.map((e) => e.toJson()).toList(),
+    };
+
 UpdateUser$Mutation$User _$UpdateUser$Mutation$UserFromJson(
     Map<String, dynamic> json) {
   return UpdateUser$Mutation$User()
@@ -198,7 +257,6 @@ Equipments$Query$Equipment _$Equipments$Query$EquipmentFromJson(
     ..$$typename = json['__typename'] as String
     ..id = json['id'] as String
     ..name = json['name'] as String
-    ..imageUrl = json['imageUrl'] as String?
     ..loadAdjustable = json['loadAdjustable'] as bool;
 }
 
@@ -208,7 +266,6 @@ Map<String, dynamic> _$Equipments$Query$EquipmentToJson(
       '__typename': instance.$$typename,
       'id': instance.id,
       'name': instance.name,
-      'imageUrl': instance.imageUrl,
       'loadAdjustable': instance.loadAdjustable,
     };
 

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 
 /// Box with rounded corners. No elevation.
 class RoundedBox extends StatelessWidget {
@@ -46,5 +47,33 @@ class CircularBox extends StatelessWidget {
               : null),
       child: child,
     );
+  }
+}
+
+/// A stack which expands to fill available space with a floating action button in the bottom right.
+/// Receives a single child and specs for the button.
+class StackAndFloatingButton extends StatelessWidget {
+  final Widget child;
+  StackAndFloatingButton({required this.child});
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      print(constraints.maxHeight);
+      print(constraints.biggest);
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            SizedBox(width: constraints.maxWidth, child: child),
+            Positioned(
+                bottom: 200,
+                right: 0,
+                child: PrimaryButton(
+                    text: 'Floating', onPressed: () => print('floating')))
+          ],
+        ),
+      );
+    });
   }
 }

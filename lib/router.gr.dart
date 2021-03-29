@@ -10,8 +10,7 @@ import 'pages/authed/app.dart' as _i2;
 import 'pages/authed/discover/discover_page.dart' as _i4;
 import 'pages/authed/home/home_page.dart' as _i3;
 import 'pages/authed/journal/journal_page.dart' as _i6;
-import 'pages/authed/profile/friends_page.dart' as _i9;
-import 'pages/authed/profile/gym_profiles.dart' as _i10;
+import 'pages/authed/profile/gym_profiles.dart' as _i9;
 import 'pages/authed/profile/personal_page.dart' as _i8;
 import 'pages/authed/profile/profile_page.dart' as _i7;
 import 'pages/authed/social/social_page.dart' as _i5;
@@ -42,12 +41,9 @@ class AppRouter extends _i1.RootStackRouter {
     ProfilePersonalRouter.name: (entry) {
       return _i1.CupertinoPageX(entry: entry, child: _i8.ProfilePersonalPage());
     },
-    ProfileFriendsRouter.name: (entry) {
-      return _i1.CupertinoPageX(entry: entry, child: _i9.ProfileFriendsPage());
-    },
     ProfileGymProfilesRouter.name: (entry) {
       return _i1.CupertinoPageX(
-          entry: entry, child: _i10.ProfileGymProfilesPage());
+          entry: entry, child: _i9.ProfileGymProfilesPage());
     }
   };
 
@@ -67,7 +63,6 @@ class AppRouter extends _i1.RootStackRouter {
                   children: [
                     _i1.RouteConfig(ProfilePersonalRouter.name,
                         path: 'personal'),
-                    _i1.RouteConfig(ProfileFriendsRouter.name, path: 'friends'),
                     _i1.RouteConfig(ProfileGymProfilesRouter.name,
                         path: 'gym-profiles'),
                     _i1.RouteConfig('*#redirect',
@@ -121,12 +116,6 @@ class ProfilePersonalRouter extends _i1.PageRouteInfo {
   const ProfilePersonalRouter() : super(name, path: 'personal');
 
   static const String name = 'ProfilePersonalRouter';
-}
-
-class ProfileFriendsRouter extends _i1.PageRouteInfo {
-  const ProfileFriendsRouter() : super(name, path: 'friends');
-
-  static const String name = 'ProfileFriendsRouter';
 }
 
 class ProfileGymProfilesRouter extends _i1.PageRouteInfo {

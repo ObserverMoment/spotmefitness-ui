@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
 import 'package:spotmefitness_ui/components/media/images/user_intro_video_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -19,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int _activeTabIndex = 0;
 
-  final _titles = <String>['Personal', 'Friends', 'Gym Profiles'];
+  final _titles = <String>['Personal', 'Gym Profiles'];
 
   @override
   Widget build(BuildContext context) {
@@ -34,59 +33,57 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () => Navigator.push(context,
                 CupertinoPageRoute(builder: (context) => SettingsAndInfo()))),
       ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Query(
-                  options: QueryOptions(
-                      document: AuthedUserQuery().document,
-                      fetchPolicy: FetchPolicy.cacheAndNetwork,
-                      cacheRereadPolicy: CacheRereadPolicy.mergeOptimistic),
-                  builder: (result, {fetchMore, refetch}) {
-                    return QueryResponseBuilder(
-                        result: result,
-                        builder: () {
-                          final _user =
-                              AuthedUser$Query.fromJson(result.data ?? {})
-                                  .authedUser;
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  UserAvatarUploader(
-                                    avatarUri: _user.avatarUri,
-                                    displaySize: Size(100, 100),
-                                  ),
-                                  MyText('Photo')
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  UserIntroVideoUploader(
-                                    introVideoUri: _user.introVideoUri,
-                                    introVideoThumbUri:
-                                        _user.introVideoThumbUri,
-                                    displaySize: Size(100, 100),
-                                  ),
-                                  MyText('Video')
-                                ],
-                              ),
-                            ],
-                          );
-                        });
-                  }),
-              SizedBox(height: 12),
-              AutoTabsRouter(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Query(
+                options: QueryOptions(
+                  document: AuthedUserQuery().document,
+                ),
+                builder: (result, {fetchMore, refetch}) {
+                  return QueryResponseBuilder(
+                      result: result,
+                      builder: () {
+                        final _user =
+                            AuthedUser$Query.fromJson(result.data ?? {})
+                                .authedUser;
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                UserAvatarUploader(
+                                  avatarUri: _user.avatarUri,
+                                  displaySize: Size(100, 100),
+                                ),
+                                MyText('Photo')
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                UserIntroVideoUploader(
+                                  introVideoUri: _user.introVideoUri,
+                                  introVideoThumbUri: _user.introVideoThumbUri,
+                                  displaySize: Size(100, 100),
+                                ),
+                                MyText('Video')
+                              ],
+                            ),
+                          ],
+                        );
+                      });
+                }),
+            SizedBox(height: 12),
+            Expanded(
+              child: AutoTabsRouter(
                   routes: [
                     ProfilePersonalRouter(),
-                    ProfileFriendsRouter(),
                     ProfileGymProfilesRouter(),
                   ],
                   builder: (context, child, animation) {
                     return Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         MyTabBarNav(
                             activeTabIndex: _activeTabIndex,
@@ -95,15 +92,17 @@ class _ProfilePageState extends State<ProfilePage> {
                               setState(() => _activeTabIndex = index);
                               context.tabsRouter.setActiveIndex(index);
                             }),
-                        FadeTransition(
-                          opacity: animation,
-                          child: child,
+                        Flexible(
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
                         )
                       ],
                     );
                   }),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

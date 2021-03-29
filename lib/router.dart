@@ -28,10 +28,6 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
                 name: 'profilePersonalRouter',
                 page: ProfilePersonalPage),
             AutoRoute(
-                path: 'friends',
-                name: 'profileFriendsRouter',
-                page: ProfileFriendsPage),
-            AutoRoute(
                 path: 'gym-profiles',
                 name: 'profileGymProfilesRouter',
                 page: ProfileGymProfilesPage),
