@@ -33,6 +33,7 @@ class ThemeBloc extends ChangeNotifier {
   Color get primary => theme.cupertinoThemeData.primaryColor;
   Color get background => theme.cupertinoThemeData.scaffoldBackgroundColor;
   Color get activeIcon => theme.customThemeData.activeIcon;
+  Color get cardBackground => theme.customThemeData.cardBackground;
 
   Future<void> switchToTheme(ThemeName switchToTheme) async {
     if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {
@@ -74,10 +75,12 @@ class CustomThemeData {
   final LinearGradient scaffoldGradient;
   final Color bottomNavigationBackground;
   final Color activeIcon;
+  final Color cardBackground;
   CustomThemeData(
       {required this.scaffoldGradient,
       required this.bottomNavigationBackground,
-      required this.activeIcon});
+      required this.activeIcon,
+      required this.cardBackground});
 }
 
 abstract class ThemeData {
@@ -92,6 +95,7 @@ abstract class ThemeData {
         stops: [0.1, 0.9],
       ),
       activeIcon: Styles.colorFour,
+      cardBackground: const Color(0xFF1c1c1c),
       bottomNavigationBackground: const Color(0xff434343));
 
   static CustomThemeData customLightData = CustomThemeData(
@@ -102,6 +106,7 @@ abstract class ThemeData {
         stops: [0.1, 0.9],
       ),
       activeIcon: Styles.neonBlueOne,
+      cardBackground: const Color(0xFFf5f5f5),
       bottomNavigationBackground: const Color(0xffffffff));
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
@@ -189,6 +194,33 @@ abstract class Styles {
     ],
     stops: [0.1, 0.9],
   );
+
+  static final BoxShadow avatarBoxShadow = BoxShadow(
+      color: CupertinoColors.black.withOpacity(0.5),
+      blurRadius: 2.0, // soften the shadow
+      spreadRadius: 1.0, //extend the shadow
+      offset: Offset(
+        1.0, // Move to right horizontally
+        1.0, // Move to bottom Vertically
+      ));
+
+  static final BoxShadow elevatedButtonShadow = BoxShadow(
+      color: CupertinoColors.black.withOpacity(0.3),
+      blurRadius: 3, // soften the shadow
+      spreadRadius: 3.0, //extend the shadow
+      offset: Offset(
+        0.3, // Move to right horizontally
+        0.3, // Move to bottom Vertically
+      ));
+
+  static final BoxShadow cardBoxShadow = BoxShadow(
+      color: CupertinoColors.black.withOpacity(0.1),
+      blurRadius: 4.0, // soften the shadow
+      spreadRadius: 1.0, //extend the shadow
+      offset: Offset(
+        0.2, // Move to right horizontally
+        0.2, // Move to bottom Vertically
+      ));
 
   // static final BorderRadius sharpRadius = BorderRadius.circular(4);
   // static final BorderRadius mediumSharpRadius = BorderRadius.circular(6);

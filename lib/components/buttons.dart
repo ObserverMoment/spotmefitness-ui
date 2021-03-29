@@ -160,6 +160,66 @@ class DestructiveButton extends StatelessWidget {
   }
 }
 
+class RoundIconButton extends StatelessWidget {
+  final IconData iconData;
+  final void Function() onPressed;
+  final bool disabled;
+  final bool loading;
+
+  RoundIconButton(
+      {required this.iconData,
+      required this.onPressed,
+      this.disabled = false,
+      this.loading = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 300),
+      opacity: disabled ? 0.2 : 1,
+      child: CupertinoButton(
+        padding: EdgeInsets.all(0),
+        pressedOpacity: 0.8,
+        onPressed: disabled ? null : onPressed,
+        child: Container(
+          height: 50,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: CupertinoColors.black.withOpacity(0.5),
+                  blurRadius: 3, // soften the shadow
+                  spreadRadius: 1.5, //extend the shadow
+                  offset: Offset(
+                    0.4, // Move to right horizontally
+                    0.4, // Move to bottom Vertically
+                  ))
+            ],
+            color: Styles.colorOne,
+            shape: BoxShape.circle,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    child: loading
+                        ? LoadingCircle(color: context.theme.primary, size: 12)
+                        : Icon(iconData, size: 34, color: Styles.white)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class TextButton extends StatelessWidget {
   final String text;
   final bool destructive;

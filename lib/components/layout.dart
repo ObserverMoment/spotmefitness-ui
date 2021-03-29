@@ -52,28 +52,29 @@ class CircularBox extends StatelessWidget {
 
 /// A stack which expands to fill available space with a floating action button in the bottom right.
 /// Receives a single child and specs for the button.
+/// At least one of [buttonIcon] and [buttonText] must not be null.
 class StackAndFloatingButton extends StatelessWidget {
   final Widget child;
-  StackAndFloatingButton({required this.child});
+  final bool pageHasBottomNavBar;
+  final IconData buttonIconData;
+  final void Function() onPressed;
+  StackAndFloatingButton(
+      {required this.child,
+      this.pageHasBottomNavBar = true,
+      required this.buttonIconData,
+      required this.onPressed});
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      print(constraints.maxHeight);
-      print(constraints.biggest);
-      return Align(
-        alignment: Alignment.bottomCenter,
-        child: Stack(
-          alignment: Alignment.bottomRight,
-          children: [
-            SizedBox(width: constraints.maxWidth, child: child),
-            Positioned(
-                bottom: 200,
-                right: 0,
-                child: PrimaryButton(
-                    text: 'Floating', onPressed: () => print('floating')))
-          ],
-        ),
-      );
-    });
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        child,
+        Positioned(
+            bottom: pageHasBottomNavBar ? 78 : 10,
+            right: 6,
+            child:
+                RoundIconButton(iconData: buttonIconData, onPressed: onPressed))
+      ],
+    );
   }
 }

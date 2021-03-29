@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -164,19 +165,9 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
             width: widget.displaySize.width,
             height: widget.displaySize.height,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _primary.withOpacity(0.7),
-              boxShadow: [
-                BoxShadow(
-                    color: CupertinoColors.black.withOpacity(0.5),
-                    blurRadius: 2.0, // soften the shadow
-                    spreadRadius: 1.0, //extend the shadow
-                    offset: Offset(
-                      1.0, // Move to right horizontally
-                      1.0, // Move to bottom Vertically
-                    )),
-              ],
-            ),
+                shape: BoxShape.circle,
+                color: _primary.withOpacity(0.7),
+                boxShadow: [Styles.avatarBoxShadow]),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 400),

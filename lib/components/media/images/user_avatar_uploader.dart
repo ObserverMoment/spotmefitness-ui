@@ -116,16 +116,7 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: _primary.withOpacity(0.7),
-              boxShadow: [
-                BoxShadow(
-                    color: CupertinoColors.black.withOpacity(0.5),
-                    blurRadius: 2.0, // soften the shadow
-                    spreadRadius: 1.0, //extend the shadow
-                    offset: Offset(
-                      1.0, // Move to right horizontally
-                      1.0, // Move to bottom Vertically
-                    )),
-              ],
+              boxShadow: [Styles.avatarBoxShadow],
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: AnimatedSwitcher(
