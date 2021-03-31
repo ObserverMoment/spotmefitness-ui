@@ -1,49 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-
-import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_client/uploadcare_client.dart';
-
-// class VideoInfoEntity {
-//   final String id;
-//   final String url;
-//   final int width;
-//   final int height;
-
-//   VideoInfoEntity(
-//       {@required this.id,
-//       @required this.url,
-//       @required this.width,
-//       @required this.height});
-
-//   bool isPortrait() {
-//     if (width == null || width == 0 || height == null || height == 0) {
-//       return false;
-//     } else {
-//       return width < height;
-//     }
-//   }
-
-//   factory VideoInfoEntity.fromJson(Map<String, dynamic> json) {
-//     int _width =
-//         (json['video_info'] != null && json['video_info']['video'] != null)
-//             ? json['video_info']['video']['width']
-//             : null;
-//     int _height =
-//         (json['video_info'] != null && json['video_info']['video'] != null)
-//             ? json['video_info']['video']['height']
-//             : null;
-//     return VideoInfoEntity(
-//         id: json['id'],
-//         url: json['original_file_url'],
-//         width: _width,
-//         height: _height);
-//   }
-// }
 
 class ProcessedVideoResult {
   final String videoUri;

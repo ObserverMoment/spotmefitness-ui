@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 
-enum FONTSIZE { TINY, SMALL, MAIN, LARGE, HUGE }
+enum FONTSIZE { TINY, SMALL, MAIN, BIG, LARGE, HUGE }
 
 const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.TINY: 11,
   FONTSIZE.SMALL: 14,
   FONTSIZE.MAIN: 16,
+  FONTSIZE.BIG: 18,
   FONTSIZE.LARGE: 20,
   FONTSIZE.HUGE: 24
 };
@@ -20,6 +21,7 @@ class MyText extends StatelessWidget {
   final int? maxLines;
   final Color? color;
   final TextDecoration? decoration;
+  final double? lineHeight;
 
   MyText(this.text,
       {this.textAlign = TextAlign.start,
@@ -28,7 +30,8 @@ class MyText extends StatelessWidget {
       this.weight = FontWeight.normal,
       this.maxLines = 1,
       this.color,
-      this.decoration});
+      this.decoration,
+      this.lineHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,7 @@ class MyText extends StatelessWidget {
         style: TextStyle(
             fontWeight: weight,
             decoration: decoration,
+            height: lineHeight,
             fontSize: _fontSizeMap[size],
             color: color));
   }

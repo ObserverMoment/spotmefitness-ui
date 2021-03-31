@@ -223,27 +223,39 @@ class RoundIconButton extends StatelessWidget {
 class TextButton extends StatelessWidget {
   final String text;
   final bool destructive;
+  final bool confirm;
   final void Function() onPressed;
   final bool loading;
+  final EdgeInsets? padding;
+  final bool? underline;
 
   TextButton(
       {required this.text,
       required this.onPressed,
       this.destructive = false,
-      this.loading = false});
+      this.confirm = false,
+      this.loading = false,
+      this.padding,
+      this.underline = true})
+      : assert(!(confirm && destructive));
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       onPressed: onPressed,
+      padding: padding,
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 300),
         child: loading
             ? LoadingDots()
             : MyText(text,
                 weight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                color: destructive ? CupertinoColors.destructiveRed : null),
+                decoration: underline! ? TextDecoration.underline : null,
+                color: confirm
+                    ? Styles.infoBlue
+                    : destructive
+                        ? Styles.errorRed
+                        : null),
       ),
     );
   }

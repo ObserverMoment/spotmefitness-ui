@@ -3,7 +3,6 @@ import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/friends_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';

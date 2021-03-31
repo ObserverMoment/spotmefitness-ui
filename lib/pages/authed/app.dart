@@ -96,11 +96,12 @@ class _GlobalPageState extends State<GlobalPage> {
           final _activeColor = context.theme.activeIcon;
           final _inActiveColor = context.theme.primary;
           final _bottomNavBarHeight = 68.0;
-          // CupertinoTabScaffold
+
           return Stack(
             fit: StackFit.expand,
             clipBehavior: Clip.none,
             children: [
+              // Similar to how CupertinoTabScaffold handles non opaque bottom nav bar.
               FadeTransition(
                   child: MediaQuery(
                       data: _mediaQuery.copyWith(

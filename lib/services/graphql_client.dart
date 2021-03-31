@@ -6,6 +6,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import "package:gql/ast.dart";
+import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 
 class GraphQL {
   late GraphQLClient _client;
@@ -34,11 +35,53 @@ class GraphQL {
   // Used for provider / consumer pattern
   ValueNotifier<GraphQLClient> get clientNotifier => ValueNotifier(_client);
 
+  /// For use when creating objects that require a custom update handler.
+  /// For example if one or more queries need to be written to cache in response.
+  static Future<QueryResult> createWithQueryUpdate(
+      {required GraphQLClient client,
+      required DocumentNode document,
+      required String operationName,
+      required Map<String, dynamic> variables,
+      required String fragment,
+      FutureOr<void> Function(dynamic)? onCompleted}) async {
+    // Run network mutation.
+    final result = await client.mutate(MutationOptions(
+      document: document,
+      variables: variables,
+      update: (cache, result) {
+        if (result!.hasException) {
+          throw new Exception(result.exception);
+        } else {
+          // updateCachehandler(cache, result) == pass in from caller
+          final res = cache.readQuery(Request(
+              operation: Operation(document: GymProfilesQuery().document)));
+          final prevGymProfiles =
+              GymProfiles$Query.fromJson(res ?? {}).gymProfiles;
+          cache.writeQuery(
+            Request(
+                operation: Operation(document: GymProfilesQuery().document)),
+            data: {
+              'gymProfiles': [
+                ...prevGymProfiles.map((p) => p.toJson()),
+                result.data![operationName]
+              ]
+            },
+          );
+          // updateCachehandler(cache, result) == pass in from caller
+        }
+      },
+      onError: (e) => throw new Exception(e),
+      onCompleted: onCompleted,
+    ));
+    return result;
+  }
+
   /// Wrapper around client.mutate().
   /// First writes a fragment to cache 'optimistically' and manually broadcast queries.
   /// Then run network mutate
-  /// Finally write to cache again with the result from the network
-  static Future<QueryResult> mutateOptimisticFragment(
+  /// Finally write to cache again with the result from the network.
+  /// For single object updates only - does not work with creates as it does not update the cache at the root query.
+  static Future<QueryResult> updateWithOptimisticFragmentUpdate(
       {required GraphQLClient client,
       required DocumentNode document,
       required String operationName,
@@ -46,7 +89,7 @@ class GraphQL {
       required String objectId,
       required String objectType,
       required String fragment,
-      required Map<String, dynamic> optimisticData,
+      Map<String, dynamic>? optimisticData,
       FutureOr<void> Function(dynamic)? onCompleted}) async {
     final FragmentRequest request = Fragment(
         document: gql(
@@ -55,9 +98,12 @@ class GraphQL {
       '__typename': objectType,
       'id': objectId,
     });
-    // Write optimistic fragment and broadcast.
-    client.cache.writeFragment(request, data: optimisticData);
-    client.queryManager.maybeRebroadcastQueries();
+
+    if (optimisticData != null) {
+      // Write optimistic fragment and broadcast.
+      client.cache.writeFragment(request, data: optimisticData);
+      client.queryManager.maybeRebroadcastQueries();
+    }
 
     // Run network mutation.
     final result = await client.mutate(MutationOptions(

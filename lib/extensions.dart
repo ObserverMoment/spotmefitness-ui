@@ -39,6 +39,44 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
+  /// Standardise dialog with two options - Confirm or Cancel
+  Future<T> showConfirmDialog<T>({
+    String? title,
+    Widget? content,
+    required void Function() onConfirm,
+    required void Function() onCancel,
+  }) async {
+    final BuildContext context = this;
+    final T res = await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: title != null ? H2(title) : null,
+                content: content,
+                actions: [
+                  CupertinoDialogAction(
+                    child: MyText(
+                      'Confirm',
+                      color: context.theme.primary,
+                    ),
+                    onPressed: () {
+                      onConfirm();
+                      context.pop();
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: MyText(
+                      'Cancel',
+                      color: context.theme.primary,
+                    ),
+                    onPressed: () {
+                      onCancel();
+                      context.pop();
+                    },
+                  ),
+                ]));
+    return res;
+  }
+
   Future<void> showErrorAlert(
     String message,
   ) async {
@@ -82,6 +120,16 @@ extension DoubleExtension on double {
 extension DateTimeFormatting on DateTime {
   /// Date only - July 10, 1996
   String get dateString => DateFormat.yMMMMd().format(this);
+}
+
+extension ListExtension on List {
+  /// If not in list, add it, else remove it.
+  /// Assumes Equatable functionality if item is non scalar.
+  List<T> toggleItem<T>(T item) {
+    return (this as List<T>).contains(item)
+        ? (this as List<T>).where((e) => e != item).toList()
+        : <T>[...this, item];
+  }
 }
 
 /// Enum extensions

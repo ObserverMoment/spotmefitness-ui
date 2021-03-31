@@ -14,7 +14,9 @@ class QueryResponseBuilder extends StatelessWidget {
       {required this.result, required this.builder, this.loadingWidget});
   @override
   Widget build(BuildContext context) {
+    print('QueryResponseBuilder');
     if (result.hasException) {
+      print(result.exception);
       return MyText(
         'Sorry there was a problem retrieving your info',
         color: Styles.errorRed,

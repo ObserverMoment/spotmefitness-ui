@@ -144,12 +144,6 @@ type BodyAreaMoveScore {
   score: Float!
 }
 """Enums"""
-enum ContentAccessScope {
-  PRIVATE
-  PUBLIC
-  GROUP
-  OFFICIAL
-}
 enum BodyAreaFrontBack {
   BACK
   FRONT
@@ -159,6 +153,19 @@ enum BodyAreaUpperLower {
   CORE
   LOWER
   UPPER
+}
+enum ContentAccessScope {
+  PRIVATE
+  PUBLIC
+  GROUP
+  OFFICIAL
+}
+enum DifficultyLevel {
+  LIGHT
+  CHALLENGING
+  INTERMEDIATE
+  ADVANCED
+  ELITE
 }
 enum DistanceUnit {
   METRES
@@ -346,23 +353,17 @@ type GymProfile {
   id: ID!
   name: String!
   description: String
-  postcode: String
-  bodyweightOnly: Boolean!
-  Equipments: [Equipment!]
+  Equipments: [Equipment!]!
 }
 input CreateGymProfileInput {
   name: String!
   description: String
-  postcode: String
-  bodyweightOnly: Boolean
-  Equipments: [ID!]
+  Equipments: [ID!]!
 }
 input UpdateGymProfileInput {
   id: ID!
   name: String
   description: String
-  postcode: String
-  bodyweightOnly: Boolean
   Equipments: [ID!]
 }
 type LoggedWorkout {
@@ -645,10 +646,10 @@ type Workout {
   introVideoThumbUri: String
   introAudioUri: String
   coverImageUri: String
-  difficultyLevel: Int!
+  difficultyLevel: DifficultyLevel!
   contentAccessScope: ContentAccessScope!
   WorkoutSections: [WorkoutSection!]!
-  WorkoutGoals: [WorkoutGoal!]
+  WorkoutGoals: [WorkoutGoal!]!
 }
 input CreateWorkoutInput {
   name: String!
@@ -658,10 +659,10 @@ input CreateWorkoutInput {
   introVideoThumbUri: String
   introAudioUri: String
   coverImageUri: String
-  difficultyLevel: Int!
+  difficultyLevel: DifficultyLevel!
   contentAccessScope: ContentAccessScope!
   WorkoutSections: [CreateWorkoutSectionInput!]!
-  WorkoutGoals: [ID!]
+  WorkoutGoals: [ID!]!
 }
 input UpdateWorkoutInput {
   id: ID!
@@ -672,7 +673,7 @@ input UpdateWorkoutInput {
   introVideoThumbUri: String
   introAudioUri: String
   coverImageUri: String
-  difficultyLevel: Int
+  difficultyLevel: DifficultyLevel
   contentAccessScope: ContentAccessScope
   WorkoutGoals: [ID!]
 }

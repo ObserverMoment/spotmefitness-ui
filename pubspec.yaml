@@ -93,5 +93,6 @@ flutter:
     - assets/logos/
     - assets/stock_images/
     - assets/flags/png/
+    - assets/equipment_icons/
 
   uses-material-design: true

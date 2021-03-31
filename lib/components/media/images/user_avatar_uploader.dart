@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
@@ -61,19 +62,42 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
   }
 
   Future<void> _saveUriToDB(String uri) async {
-    await GraphQL().client.mutate(
-          MutationOptions(
-            document: UpdateUserMutation().document,
-            variables: {
-              'data': {'avatarUri': uri}
-            },
-            onCompleted: (_) => widget.onUploadSuccess != null
-                ? widget.onUploadSuccess!(uri)
-                : null,
-            onError: (e) => throw new Exception(e),
-          ),
-        );
+    final String _fragment = '''
+            fragment avatarField on User {
+              avatarUri
+            }
+          ''';
+    final Map<String, String> _data = {
+      'avatarUri': uri,
+    };
+
+    try {
+      await GraphQL.mutateWithOptimisticFragment(
+        client: context.graphQLClient,
+        document: UpdateUserMutation().document,
+        operationName: UpdateUserMutation().operationName,
+        variables: {
+          'data': _data,
+        },
+        fragment: _fragment,
+        objectId: GetIt.I<AuthBloc>().authedUser!.id,
+        objectType: 'User',
+        optimisticData: _data,
+        onCompleted: (_) => widget.onUploadSuccess != null
+            ? widget.onUploadSuccess!(uri)
+            : null,
+      );
+    } catch (e) {
+      print(e.toString());
+      await context.showErrorAlert(e.toString());
+    } finally {
+      _resetState();
+    }
   }
+
+  void _resetState() => setState(() {
+        _uploading = false;
+      });
 
   @override
   Widget build(BuildContext context) {

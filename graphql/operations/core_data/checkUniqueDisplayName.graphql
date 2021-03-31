@@ -1,12 +1,3 @@
-query equipments {
-  equipments {
-    __typename
-    id
-    name
-    loadAdjustable
-  }
-}
-
 query checkUniqueDisplayName($displayName: String!) {
   checkUniqueDisplayName(displayName: $displayName)
 }

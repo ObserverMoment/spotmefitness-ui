@@ -1,5 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spotmefitness_ui/extensions.dart';
+
 abstract class Utils {
   // https://stackoverflow.com/questions/47776045/is-there-a-good-way-to-write-wait-for-variables-to-change-in-darts-async-meth
   // Completes the future when async test() return true
@@ -24,5 +28,25 @@ abstract class Utils {
 
     check();
     return completer.future;
+  }
+
+  static Widget getEquipmentIcon(BuildContext context, String name,
+      {Color? color, bool isSelected = false}) {
+    return SvgPicture.asset(
+      'assets/equipment_icons/${getSvgAssetUrlFromEquipmentName(name)}.svg',
+      color: color ?? context.theme.primary,
+    );
+  }
+
+  /// Assets should be snake case versions of the equipment name.
+  static String getSvgAssetUrlFromEquipmentName(String name) {
+    return name.toLowerCase().split(' ').join('_');
+  }
+
+  static void hideKeyboard(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
   }
 }

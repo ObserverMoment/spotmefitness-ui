@@ -137,19 +137,19 @@ abstract class ThemeData {
 //// Values which stay constant across both themes ////
 abstract class Styles {
   // Theme colors
-  static const black = CupertinoColors.black;
-  static const white = CupertinoColors.white;
-  static const grey = CupertinoColors.systemGrey;
-  static final lightGrey = CupertinoColors.systemGrey.withOpacity(0.2);
-  static const errorRed = CupertinoColors.destructiveRed;
-  static const infoBlue = CupertinoColors.activeBlue;
-  static const heartRed = const Color(0xffA8294B);
-  static const colorOne = const Color(0xff286E6E);
-  static const colorTwo = const Color(0xffFC7436);
-  static const colorThree = const Color(0xff492B58);
-  static const colorFour = const Color(0xff6DD5ED);
-  static const neonBlueOne = const Color(0xff2193B0);
-  static const peachRed = const Color(0xffF28367);
+  static const Color black = CupertinoColors.black;
+  static const Color white = CupertinoColors.white;
+  static const Color grey = CupertinoColors.systemGrey;
+  static final Color lightGrey = CupertinoColors.systemGrey.withOpacity(0.2);
+  static const Color errorRed = CupertinoColors.destructiveRed;
+  static const Color infoBlue = CupertinoColors.activeBlue;
+  static const Color heartRed = const Color(0xffA8294B);
+  static const Color colorOne = const Color(0xff286E6E);
+  static const Color colorTwo = const Color(0xffFC7436);
+  static const Color colorThree = const Color(0xff492B58);
+  static const Color colorFour = const Color(0xff6DD5ED);
+  static const Color neonBlueOne = const Color(0xff2193B0);
+  static const Color peachRed = const Color(0xffF28367);
 
   // Difficulty Level Colours
   static const difficultyLevelOne = const Color(0xff226F54); // Green
@@ -157,6 +157,13 @@ abstract class Styles {
   static const difficultyLevelThree = const Color(0xffFFA62B); // Orange
   static const difficultyLevelFour = Color(0xff990133); // Red
   static const difficultyLevelFive = const Color(0xff1A1B25); // Black
+
+  static final LinearGradient colorOneGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Styles.colorOne, Styles.colorOne],
+    stops: [0.1, 0.9],
+  );
 
   static final fullPageModalGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -181,7 +188,7 @@ abstract class Styles {
   static final pinkGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [const Color(0xffF28367), const Color(0xffFF5282)],
+    colors: [Styles.peachRed, const Color(0xffFF5282)],
     stops: [0.1, 0.9],
   );
 
@@ -215,7 +222,7 @@ abstract class Styles {
 
   static final BoxShadow cardBoxShadow = BoxShadow(
       color: CupertinoColors.black.withOpacity(0.1),
-      blurRadius: 4.0, // soften the shadow
+      blurRadius: 3.0, // soften the shadow
       spreadRadius: 1.0, //extend the shadow
       offset: Offset(
         0.2, // Move to right horizontally

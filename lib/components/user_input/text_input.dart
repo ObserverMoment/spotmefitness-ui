@@ -112,3 +112,65 @@ class _MyPasswordFieldRowState extends State<MyPasswordFieldRow> {
     );
   }
 }
+
+class MyTextAreaFormFieldRow extends StatelessWidget {
+  final Widget? prefix;
+  final String placeholder;
+  final TextInputType keyboardType;
+  final List<String>? autofillHints;
+  final bool obscureText;
+  final bool autofocus;
+  final TextEditingController controller;
+  final bool Function()? validator;
+
+  MyTextAreaFormFieldRow(
+      {this.prefix,
+      required this.placeholder,
+      required this.keyboardType,
+      required this.controller,
+      this.autofillHints,
+      this.autofocus = false,
+      this.obscureText = false,
+      this.validator});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CupertinoTextFormFieldRow(
+            controller: controller,
+            expands: true,
+            maxLines: null,
+            minLines: null,
+            padding: EdgeInsets.only(top: 20, bottom: 4, left: 18, right: 12),
+            prefix: prefix,
+            autofocus: autofocus,
+            placeholder: placeholder,
+            keyboardType: keyboardType,
+            style: TextStyle(fontSize: 18, height: 1.4),
+            autofillHints: autofillHints,
+            obscureText: obscureText),
+        if (controller.text.length > 0)
+          Positioned(
+              left: 18,
+              top: 5,
+              child: FadeIn(
+                child: MyText(
+                  placeholder,
+                  size: FONTSIZE.TINY,
+                  weight: FontWeight.bold,
+                ),
+              )),
+        if (validator != null && validator!())
+          Positioned(
+              right: 5,
+              bottom: 16,
+              child: FadeIn(
+                  child: Icon(
+                CupertinoIcons.check_mark_circled,
+                color: CupertinoColors.systemBlue,
+              ))),
+      ],
+    );
+  }
+}

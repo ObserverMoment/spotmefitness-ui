@@ -117,15 +117,17 @@ class GrowInOut extends StatefulWidget {
   final Curve curve;
   final Axis axis;
   final double axisAlignment;
+  final bool animateOpacity;
 
   GrowInOut({
     required this.show,
     this.key,
     required this.child,
-    this.duration = const Duration(milliseconds: 500),
+    this.duration = const Duration(milliseconds: 300),
     this.axis = Axis.vertical,
     this.axisAlignment = 0.0,
     this.curve = Curves.fastOutSlowIn,
+    this.animateOpacity = false,
   });
 
   @override
@@ -174,11 +176,15 @@ class _GrowInOutState extends State<GrowInOut>
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor: _sizeFactor,
-      child: AnimatedOpacity(
-          opacity: widget.show ? 1 : 0,
-          duration: widget.duration,
-          curve: widget.curve,
-          child: widget.child),
+      axis: widget.axis,
+      axisAlignment: widget.axisAlignment,
+      child: widget.animateOpacity
+          ? AnimatedOpacity(
+              opacity: widget.show ? 1 : 0,
+              duration: widget.duration,
+              curve: widget.curve,
+              child: widget.child)
+          : widget.child,
     );
   }
 }

@@ -87,7 +87,6 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   }
 
   Future<void> _saveUrisToDB(String videoUri, String videoThumbUri) async {
-    final GraphQLClient _client = GraphQLProvider.of(context).value;
     final String _fragment = '''
             fragment videoFields on User {
               introVideoUri
@@ -99,8 +98,8 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
       'introVideoThumbUri': videoThumbUri
     };
     try {
-      await GraphQL.mutateOptimisticFragment(
-        client: _client,
+      await GraphQL.mutateWithOptimisticFragment(
+        client: context.graphQLClient,
         document: UpdateUserMutation().document,
         operationName: UpdateUserMutation().operationName,
         variables: {
@@ -110,6 +109,9 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
         objectId: GetIt.I<AuthBloc>().authedUser!.id,
         objectType: 'User',
         optimisticData: _data,
+        onCompleted: (_) => widget.onUploadSuccess != null
+            ? widget.onUploadSuccess!(videoUri, videoThumbUri)
+            : null,
       );
     } catch (e) {
       print(e.toString());
@@ -129,7 +131,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   Widget build(BuildContext context) {
     final Color _primary = context.theme.primary;
     final Color _background = context.theme.background;
-    ;
+
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,

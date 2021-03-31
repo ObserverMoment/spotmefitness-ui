@@ -67,6 +67,7 @@ class StackAndFloatingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
+      clipBehavior: Clip.none,
       children: [
         child,
         Positioned(

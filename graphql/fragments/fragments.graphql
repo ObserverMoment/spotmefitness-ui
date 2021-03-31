@@ -1,0 +1,26 @@
+fragment Equipment on Equipment {
+  __typename
+  id
+  name
+  loadAdjustable
+}
+
+fragment GymProfile on GymProfile {
+  __typename
+  id
+  name
+  description
+}
+
+fragment User on User {
+  __typename
+  id
+  avatarUri
+  bio
+  birthdate
+  countryCode
+  displayName
+  introVideoUri
+  introVideoThumbUri
+  gender
+}
