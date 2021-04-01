@@ -22,7 +22,7 @@ class ProfilePersonalPage extends StatelessWidget {
           }
         ''';
 
-    await GraphQL.mutateWithOptimisticFragment(
+    await GraphQL.updateObjectWithOptimisticFragment(
       client: client,
       document: UpdateUserMutation().document,
       operationName: UpdateUserMutation().operationName,

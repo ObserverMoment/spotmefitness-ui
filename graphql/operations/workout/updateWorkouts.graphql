@@ -1,0 +1,7 @@
+mutation updateWorkout($data: UpdateWorkoutInput!) {
+  updateWorkout(data: $data) {
+    __typename
+    id
+    name
+  }
+}

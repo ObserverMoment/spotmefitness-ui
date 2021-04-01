@@ -15,6 +15,7 @@ class MyButton extends StatelessWidget {
   final bool border;
   final bool disabled;
   final bool loading;
+  final bool withMinWidth;
 
   MyButton(
       {this.prefix,
@@ -25,6 +26,7 @@ class MyButton extends StatelessWidget {
       required this.backgroundColor,
       this.border = false,
       this.disabled = false,
+      this.withMinWidth = true,
       this.loading = false});
 
   @override
@@ -37,7 +39,7 @@ class MyButton extends StatelessWidget {
         onPressed: disabled ? null : onPressed,
         child: Container(
           height: 50,
-          constraints: BoxConstraints(minWidth: 300),
+          constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
           padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           decoration: BoxDecoration(
               border: border ? Border.all(color: contentColor) : null,
@@ -81,6 +83,7 @@ class PrimaryButton extends StatelessWidget {
   final void Function() onPressed;
   final bool disabled;
   final bool loading;
+  final bool withMinWidth;
 
   PrimaryButton(
       {this.prefix,
@@ -88,6 +91,7 @@ class PrimaryButton extends StatelessWidget {
       this.suffix,
       required this.onPressed,
       this.disabled = false,
+      this.withMinWidth = true,
       this.loading = false});
 
   @override
@@ -103,6 +107,7 @@ class PrimaryButton extends StatelessWidget {
           _isDarkTheme ? CupertinoColors.white : CupertinoColors.black,
       contentColor:
           _isDarkTheme ? CupertinoColors.black : CupertinoColors.white,
+      withMinWidth: withMinWidth,
     );
   }
 }
@@ -114,12 +119,14 @@ class SecondaryButton extends StatelessWidget {
   final Widget? suffix;
   final void Function() onPressed;
   final bool loading;
+  final bool withMinWidth;
 
   SecondaryButton(
       {this.prefix,
       required this.text,
       this.suffix,
       required this.onPressed,
+      this.withMinWidth = true,
       this.loading = false});
 
   @override
@@ -131,6 +138,7 @@ class SecondaryButton extends StatelessWidget {
       onPressed: onPressed,
       backgroundColor: const Color(0xff262626),
       contentColor: CupertinoColors.white,
+      withMinWidth: withMinWidth,
     );
   }
 }
@@ -141,21 +149,27 @@ class DestructiveButton extends StatelessWidget {
   final Widget? suffix;
   final void Function() onPressed;
   final bool loading;
+  final bool withMinWidth;
 
   DestructiveButton(
       {this.prefix,
       required this.text,
       this.suffix,
       required this.onPressed,
+      this.withMinWidth = true,
       this.loading = false});
 
   @override
   Widget build(BuildContext context) {
     return MyButton(
+      prefix: prefix,
       text: text,
+      suffix: suffix,
+      loading: loading,
       onPressed: onPressed,
       backgroundColor: CupertinoColors.destructiveRed,
       contentColor: CupertinoColors.white,
+      withMinWidth: withMinWidth,
     );
   }
 }

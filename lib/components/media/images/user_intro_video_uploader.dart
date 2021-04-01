@@ -98,7 +98,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
       'introVideoThumbUri': videoThumbUri
     };
     try {
-      await GraphQL.mutateWithOptimisticFragment(
+      await GraphQL.updateObjectWithOptimisticFragment(
         client: context.graphQLClient,
         document: UpdateUserMutation().document,
         operationName: UpdateUserMutation().operationName,

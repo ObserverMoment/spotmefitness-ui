@@ -78,6 +78,21 @@ class H2 extends StatelessWidget {
   }
 }
 
+class H3 extends StatelessWidget {
+  final String text;
+  final TextAlign textAlign;
+  final Color? color;
+  H3(this.text, {this.textAlign = TextAlign.start, this.color});
+  @override
+  Widget build(BuildContext context) {
+    return MyText(text,
+        color: color,
+        textAlign: textAlign,
+        size: FONTSIZE.BIG,
+        weight: FontWeight.bold);
+  }
+}
+
 /// Small size, bold, uppercase letters
 class NavBarTitle extends StatelessWidget {
   final String text;

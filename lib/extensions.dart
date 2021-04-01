@@ -33,7 +33,7 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-            title: title != null ? H2(title) : null,
+            title: title != null ? H3(title) : null,
             content: content,
             actions: actions));
     return res;
@@ -50,7 +50,7 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: title != null ? H2(title) : null,
+                title: title != null ? H3(title) : null,
                 content: content,
                 actions: [
                   CupertinoDialogAction(
@@ -77,6 +77,53 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
+  /// Dialog checking if the user wants to delete the item. Includes the Item type
+  // and the item name.
+  Future<T> showConfirmDeleteDialog<T>({
+    required String itemType,
+    required String itemName,
+    required void Function() onConfirm,
+  }) async {
+    final BuildContext context = this;
+    final T res = await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: H3(
+                  'Delete $itemType',
+                  textAlign: TextAlign.center,
+                ),
+                content: Column(
+                  children: [
+                    SizedBox(height: 6),
+                    MyText('"$itemName"'),
+                    SizedBox(height: 4),
+                    MyText(
+                      'Are you sure?',
+                    ),
+                  ],
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: MyText(
+                      'Confirm',
+                    ),
+                    onPressed: () {
+                      onConfirm();
+                      context.pop();
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: MyText(
+                      'Cancel',
+                      color: context.theme.primary,
+                    ),
+                    onPressed: context.pop,
+                  ),
+                ]));
+    return res;
+  }
+
   Future<void> showErrorAlert(
     String message,
   ) async {
@@ -84,7 +131,7 @@ extension BuildContextExtension on BuildContext {
     await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: H2('Oops, it went wrong...'),
+                title: H3('Oops, it went wrong...'),
                 content: MyText(
                   message,
                   color: Styles.errorRed,

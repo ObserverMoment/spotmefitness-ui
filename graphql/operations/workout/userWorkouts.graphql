@@ -1,0 +1,7 @@
+query userWorkouts {
+  userWorkouts {
+    __typename
+    id
+    name
+  }
+}

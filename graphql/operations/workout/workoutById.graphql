@@ -1,0 +1,7 @@
+query workoutById($id: ID!) {
+  workoutById(id: $id) {
+    __typename
+    id
+    name
+  }
+}

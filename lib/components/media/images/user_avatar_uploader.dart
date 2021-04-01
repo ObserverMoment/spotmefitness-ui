@@ -72,7 +72,7 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
     };
 
     try {
-      await GraphQL.mutateWithOptimisticFragment(
+      await GraphQL.updateObjectWithOptimisticFragment(
         client: context.graphQLClient,
         document: UpdateUserMutation().document,
         operationName: UpdateUserMutation().operationName,

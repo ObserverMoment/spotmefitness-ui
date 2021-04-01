@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:hive/hive.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
@@ -111,9 +112,36 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
     }
   }
 
-  void _handleSave() {
+  void _handleSave() async {
     if (widget.gymProfile != null) {
       // Update
+      final args = UpdateGymProfileArguments(
+          data: UpdateGymProfileInput.fromJson({
+        ..._activeGymProfile.toJson(),
+        'Equipments': _activeGymProfile.equipments.map((e) => e.id).toList()
+      }));
+
+      final String fragment = '''
+        fragment updateGymProfile on GymProfile {
+          name
+          description
+          Equipments {
+            id
+          }
+        }
+      ''';
+
+      await GraphQL.updateObjectWithOptimisticFragment(
+        client: context.graphQLClient,
+        document: UpdateGymProfileMutation().document,
+        operationName: UpdateGymProfileMutation().operationName,
+        objectId: args.data.id,
+        objectType: 'GymProfile',
+        variables: args.toJson(),
+        fragment: fragment,
+        optimisticData: _activeGymProfile.toJson(),
+        onCompleteOptimistic: context.pop,
+      );
     } else {
       // Create
       final args = CreateGymProfileArguments(
@@ -122,23 +150,35 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
         'Equipments': _activeGymProfile.equipments.map((e) => e.id).toList()
       }));
 
-      final String fragment = '''
-          fragment GymProfile on GymProfile {
-            name
-            description
-            Equipments
-          }
-        ''';
-
-      GraphQL.mutateWithFragmentUpdate(
+      await GraphQL.createWithQueryUpdate(
         client: context.graphQLClient,
-        document: CreateGymProfileMutation().document,
-        variables: args.toJson(),
-        fragment: fragment,
-        operationName: CreateGymProfileMutation().operationName,
+        mutationDocument: CreateGymProfileMutation().document,
+        mutationOperationName: CreateGymProfileMutation().operationName,
+        mutationVariables: args.toJson(),
+        queryDocument: GymProfilesQuery().document,
+        queryOperationName: GymProfilesQuery().operationName,
         onCompleted: (_) => context.pop(),
       );
     }
+  }
+
+  void _handleDelete() {
+    context.showConfirmDeleteDialog(
+      itemType: 'Gym Profile',
+      itemName: _activeGymProfile.name,
+      onConfirm: _deleteGymProfile,
+    );
+  }
+
+  void _deleteGymProfile() {
+    print('delete profile then pop');
+    GraphQL.deleteObjectOptimistic(
+        client: context.graphQLClient,
+        document: DeleteGymProfileByIdMutation().document,
+        operationName: DeleteGymProfileByIdMutation().operationName,
+        objectId: _activeGymProfile.id,
+        objectType: 'GymProfile',
+        onCompleteOptimistic: () => print('complete optimistic'));
   }
 
   void _toggleEquipment(Equipment e) =>
@@ -161,44 +201,14 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-          leading: Align(
-              alignment: Alignment.centerLeft,
-              child: NavBarTitle('Gym Profile')),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_formIsDirty)
-                FadeIn(
-                  child: TextButton(
-                      destructive: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      text: 'Undo all',
-                      underline: false,
-                      onPressed: _handleUndo),
-                ),
-              AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                child: _inputValid()
-                    ? TextButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        confirm: true,
-                        underline: false,
-                        text: 'Save',
-                        onPressed: _handleSave)
-                    : TextButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        underline: false,
-                        text: 'Close',
-                        onPressed: _handleClose),
-              ),
-              TextButton(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  underline: false,
-                  text: 'Close',
-                  onPressed: _handleClose),
-            ],
-          )),
+      navigationBar: CreateEditPageNavBar(
+        formIsDirty: _formIsDirty,
+        handleClose: _handleClose,
+        handleSave: _handleSave,
+        handleUndo: _handleUndo,
+        inputValid: _inputValid(),
+        title: 'GymProfiles',
+      ),
       child: Column(
         children: [
           MyTabBarNav(
@@ -213,9 +223,9 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: _GymProfileCreatorDetails(
-                    nameController: _nameController,
-                    descriptionController: _descriptionController,
-                  ),
+                      nameController: _nameController,
+                      descriptionController: _descriptionController,
+                      handleDelete: _handleDelete),
                 ),
                 _GymProfileCreatorEquipment(
                   clearAllEquipment: _clearAllEquipment,
@@ -234,21 +244,43 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 class _GymProfileCreatorDetails extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController descriptionController;
+  final void Function() handleDelete;
   _GymProfileCreatorDetails(
-      {required this.nameController, required this.descriptionController});
+      {required this.nameController,
+      required this.descriptionController,
+      required this.handleDelete});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: CupertinoFormSection.insetGrouped(children: [
-        MyTextFormFieldRow(
-            placeholder: 'Name (Required - min 2 chars)',
-            keyboardType: TextInputType.text,
-            controller: nameController),
-        MyTextAreaFormFieldRow(
-            placeholder: 'Description',
-            keyboardType: TextInputType.text,
-            controller: descriptionController),
-      ]),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          child: CupertinoFormSection.insetGrouped(children: [
+            MyTextFormFieldRow(
+                placeholder: 'Name (Required - min 2 chars)',
+                keyboardType: TextInputType.text,
+                controller: nameController),
+            MyTextAreaFormFieldRow(
+                placeholder: 'Description',
+                keyboardType: TextInputType.text,
+                controller: descriptionController),
+          ]),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            DestructiveButton(
+                prefix: Icon(
+                  CupertinoIcons.delete,
+                  color: Styles.white,
+                  size: 18,
+                ),
+                text: 'Delete',
+                withMinWidth: false,
+                onPressed: handleDelete)
+          ],
+        )
+      ],
     );
   }
 }
