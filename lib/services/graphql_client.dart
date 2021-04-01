@@ -96,7 +96,7 @@ class GraphQL {
   }
 
   /// Wrapper around client.mutate().
-  /// First writes a fragment to cache 'optimistically' and manually broadcast queries.
+  /// First writes a fragment to cache 'optimistically'.
   /// Then run network mutate
   /// Finally write to cache again with the result from the network.
   /// For single object updates only - does not work with creates as it does not update the cache at the root query.
@@ -124,8 +124,10 @@ class GraphQL {
     });
 
     if (optimisticData != null) {
-      // Write optimistic fragment.
+      // Write optimistic fragment and rebroadcast.
+      // This calls seems to be required but I am not sure why...
       client.cache.writeFragment(request, data: optimisticData);
+      client.queryManager.maybeRebroadcastQueries();
       if (onCompleteOptimistic != null) {
         onCompleteOptimistic();
       }
@@ -160,31 +162,42 @@ class GraphQL {
       required String objectId,
       required String objectType,
 
+      /// Runs after a successful optimistic delete.
+      void Function()? onCompleteOptimistic,
+
       /// Runs after a successful network update.
       FutureOr<void> Function(dynamic)? onCompleted}) async {
-    final prev = client.cache
+    final Map<String, dynamic>? prevData = client.cache
         .readQuery(Request(operation: Operation(document: queryDocument)));
-    if (prev == null) {
+
+    if (prevData == null) {
       throw AssertionError('Unable to read from cache - cache update failed.');
     }
-    if (prev[queryOperationName] == null) {
+    if (prevData[queryOperationName] == null) {
       throw AssertionError(
           'There is no data in the cache under key: "$queryOperationName".');
     }
-    if (!(prev[queryOperationName] is List)) {
+    if (!(prevData[queryOperationName] is List)) {
       throw AssertionError(
           'Data in the cache under key: "$queryOperationName" is not a list as is required for standard deleteById updates.');
     }
-    final List<Map<String, dynamic>> updated =
-        (prev[queryOperationName] as List<Map<String, dynamic>>)
-            .where((e) => e['id'] != objectId)
-            .toList();
+
+    // Filter old data - removing the deleted object and any null objects.
+    final updated = prevData[queryOperationName]
+        .where((e) => e != null && e['id'] != objectId)
+        .toList();
+
+    // Write the updated data.
     client.cache.writeQuery(
       Request(operation: Operation(document: queryDocument)),
       data: {queryOperationName: updated},
     );
-    // TODO: Remove all instances of the object from the cache.
-    // client.cache.store.
+
+    client.cache.store.delete('$objectType:$objectId');
+
+    if (onCompleteOptimistic != null) {
+      onCompleteOptimistic();
+    }
 
     final result = await client.mutate(MutationOptions(
       document: mutationDocument,
@@ -193,10 +206,25 @@ class GraphQL {
         if (result!.hasException) {
           throw new Exception(result.exception);
         } else {
-          cache.writeQuery(
-            Request(operation: Operation(document: queryDocument)),
-            data: result.data![queryOperationName],
-          );
+          // Check that the expected result has been returned.
+          // Object deletions should always return the object ID.
+          // If this has been returned as expected then just cleanup to do.
+          if (result.data == null ||
+              result.data?[mutationOperationName] != objectId) {
+            // The response was not as expected. Roll back the changes and throw an exception.
+            client.cache.writeQuery(
+              Request(operation: Operation(document: queryDocument)),
+              data: {queryOperationName: prevData},
+            );
+            throw new Exception(
+                'There was an problem. We were not able to delete $objectType with id $objectId. Changes have been rolled back. Please try again.');
+          } else {
+            // TODO: Run cleanup? Or mark the cache as 'cleanup required'?
+            // Cleanup could be periodic as this is not urgent
+            // - as long as graphql client ignores null $refs...
+            // Remove any dangling references created by this deletion.
+            // Could use normalize.isDanglingReference
+          }
         }
       },
       onError: (e) => throw new Exception(e),

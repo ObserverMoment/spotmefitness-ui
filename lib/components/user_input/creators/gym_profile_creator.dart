@@ -171,14 +171,16 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   }
 
   void _deleteGymProfile() {
-    print('delete profile then pop');
-    GraphQL.deleteObjectOptimistic(
-        client: context.graphQLClient,
-        document: DeleteGymProfileByIdMutation().document,
-        operationName: DeleteGymProfileByIdMutation().operationName,
-        objectId: _activeGymProfile.id,
-        objectType: 'GymProfile',
-        onCompleteOptimistic: () => print('complete optimistic'));
+    GraphQL.deleteObjectByIdOptimistic(
+      client: context.graphQLClient,
+      mutationDocument: DeleteGymProfileByIdMutation().document,
+      mutationOperationName: DeleteGymProfileByIdMutation().operationName,
+      queryDocument: GymProfilesQuery().document,
+      queryOperationName: GymProfilesQuery().operationName,
+      objectId: _activeGymProfile.id,
+      objectType: 'GymProfile',
+      onCompleteOptimistic: context.pop,
+    );
   }
 
   void _toggleEquipment(Equipment e) =>

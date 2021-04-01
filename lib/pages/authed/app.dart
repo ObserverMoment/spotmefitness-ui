@@ -82,11 +82,11 @@ class _GlobalPageState extends State<GlobalPage> {
   Widget build(BuildContext context) {
     return AutoTabsRouter(
         routes: [
-          HomeRouter(),
-          DiscoverRouter(),
-          SocialRouter(),
-          JournalRouter(),
-          ProfileRouter()
+          HomeStack(),
+          DiscoverRoute(),
+          SocialRoute(),
+          JournalRoute(),
+          ProfileRoute()
         ],
         builder: (context, child, animation) {
           final _mediaQuery = MediaQuery.of(context);

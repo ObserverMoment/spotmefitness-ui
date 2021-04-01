@@ -78,8 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
             Expanded(
               child: AutoTabsRouter(
                   routes: [
-                    ProfilePersonalRouter(),
-                    ProfileGymProfilesRouter(),
+                    ProfilePersonalRoute(),
+                    ProfileGymProfilesRoute(),
                   ],
                   builder: (context, child, animation) {
                     return Column(

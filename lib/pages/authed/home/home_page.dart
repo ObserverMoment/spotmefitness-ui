@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/schedule/weekly_calendar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -33,6 +35,79 @@ class HomePage extends StatelessWidget {
                         crossAxisCount: 2),
                     physics: NeverScrollableScrollPhysics(),
                     children: [
+                      GestureDetector(
+                        onTap: () =>
+                            context.router.push(YourCollectionsRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Collections',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFFF09819),
+                                const Color(0xFFEDDE5D),
+                              ]),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.router.push(YourWorkoutsRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Workouts',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF232526),
+                                const Color(0xFF414345),
+                              ]),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.router.push(YourPlansRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Plans',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF4CA1AF),
+                                const Color(0xFF2C3E50),
+                              ]),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.router.push(YourEventsRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Events',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF004e92),
+                                const Color(0xFF000428),
+                              ]),
+                        ),
+                      ),
+                    ],
+                  ),
+                  GridView(
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2),
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
                       HomeScreenCard(
                         content: H2(
                           'Collections',
@@ -46,18 +121,25 @@ class HomePage extends StatelessWidget {
                               const Color(0xFFEDDE5D),
                             ]),
                       ),
-                      HomeScreenCard(
-                        content: H2(
-                          'Workouts',
-                          color: Styles.white,
+                      GestureDetector(
+                        onTap: () {
+                          print('tapping');
+                          print(context.router);
+                          context.router.push(YourWorkoutsRoute());
+                        },
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Workouts',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF232526),
+                                const Color(0xFF414345),
+                              ]),
                         ),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              const Color(0xFF232526),
-                              const Color(0xFF414345),
-                            ]),
                       ),
                       HomeScreenCard(
                         content: H2(

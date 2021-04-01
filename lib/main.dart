@@ -23,6 +23,14 @@ void main() async {
   // var settings = Hive.box('settings');
   // settings.clear();
 
+  //  For inspecting cache...
+  //  for (final String k in cache.keys) {
+  //   if (k.contains('GymProfile')) {
+  //     print(cache.get(k));
+  //     print('----------');
+  //   }
+  // }
+
   await Firebase.initializeApp();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

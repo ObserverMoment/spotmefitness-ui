@@ -89,7 +89,7 @@ extension BuildContextExtension on BuildContext {
         context: context,
         builder: (context) => CupertinoAlertDialog(
                 title: H3(
-                  'Delete $itemType',
+                  'Delete $itemType!',
                   textAlign: TextAlign.center,
                 ),
                 content: Column(

@@ -26,7 +26,7 @@ class QueryResponseBuilder extends StatelessWidget {
         child: loadingWidget ?? LoadingCircle(),
       );
     } else {
-      return FadeInUp(child: builder());
+      return FadeIn(child: builder());
     }
   }
 }

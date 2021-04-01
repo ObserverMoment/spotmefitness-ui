@@ -37,7 +37,7 @@ mixin GymProfileMixin {
   late String $$typename;
   late String id;
   late String name;
-  late String? description;
+  String? description;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -185,6 +185,21 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class DeleteGymProfileById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteGymProfileById$Mutation();
+
+  factory DeleteGymProfileById$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$DeleteGymProfileById$MutationFromJson(json);
+
+  late String? deleteGymProfileById;
+
+  @override
+  List<Object?> get props => [deleteGymProfileById];
+  Map<String, dynamic> toJson() => _$DeleteGymProfileById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class Equipment extends JsonSerializable with EquatableMixin, EquipmentMixin {
   Equipment();
 
@@ -260,35 +275,6 @@ class GymProfiles$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class CheckUniqueDisplayName$Query extends JsonSerializable
-    with EquatableMixin {
-  CheckUniqueDisplayName$Query();
-
-  factory CheckUniqueDisplayName$Query.fromJson(Map<String, dynamic> json) =>
-      _$CheckUniqueDisplayName$QueryFromJson(json);
-
-  late bool checkUniqueDisplayName;
-
-  @override
-  List<Object?> get props => [checkUniqueDisplayName];
-  Map<String, dynamic> toJson() => _$CheckUniqueDisplayName$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class Equipments$Query extends JsonSerializable with EquatableMixin {
-  Equipments$Query();
-
-  factory Equipments$Query.fromJson(Map<String, dynamic> json) =>
-      _$Equipments$QueryFromJson(json);
-
-  late List<Equipment> equipments;
-
-  @override
-  List<Object?> get props => [equipments];
-  Map<String, dynamic> toJson() => _$Equipments$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class UpdateGymProfile$Mutation extends JsonSerializable with EquatableMixin {
   UpdateGymProfile$Mutation();
 
@@ -325,6 +311,35 @@ class UpdateGymProfileInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class CheckUniqueDisplayName$Query extends JsonSerializable
+    with EquatableMixin {
+  CheckUniqueDisplayName$Query();
+
+  factory CheckUniqueDisplayName$Query.fromJson(Map<String, dynamic> json) =>
+      _$CheckUniqueDisplayName$QueryFromJson(json);
+
+  late bool checkUniqueDisplayName;
+
+  @override
+  List<Object?> get props => [checkUniqueDisplayName];
+  Map<String, dynamic> toJson() => _$CheckUniqueDisplayName$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Equipments$Query extends JsonSerializable with EquatableMixin {
+  Equipments$Query();
+
+  factory Equipments$Query.fromJson(Map<String, dynamic> json) =>
+      _$Equipments$QueryFromJson(json);
+
+  late List<Equipment> equipments;
+
+  @override
+  List<Object?> get props => [equipments];
+  Map<String, dynamic> toJson() => _$Equipments$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class Workout extends JsonSerializable with EquatableMixin {
   Workout();
 
@@ -341,34 +356,6 @@ class Workout extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [$$typename, id, name];
   Map<String, dynamic> toJson() => _$WorkoutToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UserWorkouts$Query extends JsonSerializable with EquatableMixin {
-  UserWorkouts$Query();
-
-  factory UserWorkouts$Query.fromJson(Map<String, dynamic> json) =>
-      _$UserWorkouts$QueryFromJson(json);
-
-  late List<Workout> userWorkouts;
-
-  @override
-  List<Object?> get props => [userWorkouts];
-  Map<String, dynamic> toJson() => _$UserWorkouts$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class WorkoutById$Query extends JsonSerializable with EquatableMixin {
-  WorkoutById$Query();
-
-  factory WorkoutById$Query.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutById$QueryFromJson(json);
-
-  late Workout workoutById;
-
-  @override
-  List<Object?> get props => [workoutById];
-  Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -443,6 +430,20 @@ class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
         workoutGoals
       ];
   Map<String, dynamic> toJson() => _$UpdateWorkoutInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserWorkouts$Query extends JsonSerializable with EquatableMixin {
+  UserWorkouts$Query();
+
+  factory UserWorkouts$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserWorkouts$QueryFromJson(json);
+
+  late List<Workout> userWorkouts;
+
+  @override
+  List<Object?> get props => [userWorkouts];
+  Map<String, dynamic> toJson() => _$UserWorkouts$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -592,18 +593,17 @@ class CreateWorkoutSectionInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class DeleteGymProfileById$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteGymProfileById$Mutation();
+class WorkoutById$Query extends JsonSerializable with EquatableMixin {
+  WorkoutById$Query();
 
-  factory DeleteGymProfileById$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$DeleteGymProfileById$MutationFromJson(json);
+  factory WorkoutById$Query.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutById$QueryFromJson(json);
 
-  late String? deleteGymProfileById;
+  late Workout workoutById;
 
   @override
-  List<Object?> get props => [deleteGymProfileById];
-  Map<String, dynamic> toJson() => _$DeleteGymProfileById$MutationToJson(this);
+  List<Object?> get props => [workoutById];
+  Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
 enum Gender {
@@ -885,6 +885,67 @@ class UpdateUserMutation
 }
 
 @JsonSerializable(explicitToJson: true)
+class DeleteGymProfileByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteGymProfileByIdArguments({required this.id});
+
+  @override
+  factory DeleteGymProfileByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$DeleteGymProfileByIdArgumentsFromJson(json);
+
+  final String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$DeleteGymProfileByIdArgumentsToJson(this);
+}
+
+class DeleteGymProfileByIdMutation extends GraphQLQuery<
+    DeleteGymProfileById$Mutation, DeleteGymProfileByIdArguments> {
+  DeleteGymProfileByIdMutation({this.variables});
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.mutation,
+        name: NameNode(value: 'deleteGymProfileById'),
+        variableDefinitions: [
+          VariableDefinitionNode(
+              variable: VariableNode(name: NameNode(value: 'id')),
+              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+              defaultValue: DefaultValueNode(value: null),
+              directives: [])
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'deleteGymProfileById'),
+              alias: null,
+              arguments: [
+                ArgumentNode(
+                    name: NameNode(value: 'id'),
+                    value: VariableNode(name: NameNode(value: 'id')))
+              ],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'deleteGymProfileById';
+
+  @override
+  final DeleteGymProfileByIdArguments? variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteGymProfileById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteGymProfileById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CreateGymProfileArguments extends JsonSerializable with EquatableMixin {
   CreateGymProfileArguments({required this.data});
 
@@ -1130,134 +1191,6 @@ class GymProfilesQuery
 }
 
 @JsonSerializable(explicitToJson: true)
-class CheckUniqueDisplayNameArguments extends JsonSerializable
-    with EquatableMixin {
-  CheckUniqueDisplayNameArguments({required this.displayName});
-
-  @override
-  factory CheckUniqueDisplayNameArguments.fromJson(Map<String, dynamic> json) =>
-      _$CheckUniqueDisplayNameArgumentsFromJson(json);
-
-  final String displayName;
-
-  @override
-  List<Object?> get props => [displayName];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CheckUniqueDisplayNameArgumentsToJson(this);
-}
-
-class CheckUniqueDisplayNameQuery extends GraphQLQuery<
-    CheckUniqueDisplayName$Query, CheckUniqueDisplayNameArguments> {
-  CheckUniqueDisplayNameQuery({this.variables});
-
-  @override
-  final DocumentNode document = DocumentNode(definitions: [
-    OperationDefinitionNode(
-        type: OperationType.query,
-        name: NameNode(value: 'checkUniqueDisplayName'),
-        variableDefinitions: [
-          VariableDefinitionNode(
-              variable: VariableNode(name: NameNode(value: 'displayName')),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'String'), isNonNull: true),
-              defaultValue: DefaultValueNode(value: null),
-              directives: [])
-        ],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: 'checkUniqueDisplayName'),
-              alias: null,
-              arguments: [
-                ArgumentNode(
-                    name: NameNode(value: 'displayName'),
-                    value: VariableNode(name: NameNode(value: 'displayName')))
-              ],
-              directives: [],
-              selectionSet: null)
-        ]))
-  ]);
-
-  @override
-  final String operationName = 'checkUniqueDisplayName';
-
-  @override
-  final CheckUniqueDisplayNameArguments? variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CheckUniqueDisplayName$Query parse(Map<String, dynamic> json) =>
-      CheckUniqueDisplayName$Query.fromJson(json);
-}
-
-class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
-  EquipmentsQuery();
-
-  @override
-  final DocumentNode document = DocumentNode(definitions: [
-    OperationDefinitionNode(
-        type: OperationType.query,
-        name: NameNode(value: 'equipments'),
-        variableDefinitions: [],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: 'equipments'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: SelectionSetNode(selections: [
-                FragmentSpreadNode(
-                    name: NameNode(value: 'Equipment'), directives: [])
-              ]))
-        ])),
-    FragmentDefinitionNode(
-        name: NameNode(value: 'Equipment'),
-        typeCondition: TypeConditionNode(
-            on: NamedTypeNode(
-                name: NameNode(value: 'Equipment'), isNonNull: false)),
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: '__typename'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'id'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'name'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'loadAdjustable'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null)
-        ]))
-  ]);
-
-  @override
-  final String operationName = 'equipments';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  Equipments$Query parse(Map<String, dynamic> json) =>
-      Equipments$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
 class UpdateGymProfileArguments extends JsonSerializable with EquatableMixin {
   UpdateGymProfileArguments({required this.data});
 
@@ -1395,133 +1328,132 @@ class UpdateGymProfileMutation
       UpdateGymProfile$Mutation.fromJson(json);
 }
 
-class UserWorkoutsQuery
-    extends GraphQLQuery<UserWorkouts$Query, JsonSerializable> {
-  UserWorkoutsQuery();
-
-  @override
-  final DocumentNode document = DocumentNode(definitions: [
-    OperationDefinitionNode(
-        type: OperationType.query,
-        name: NameNode(value: 'userWorkouts'),
-        variableDefinitions: [],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: 'userWorkouts'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: SelectionSetNode(selections: [
-                FieldNode(
-                    name: NameNode(value: '__typename'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null),
-                FieldNode(
-                    name: NameNode(value: 'id'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null),
-                FieldNode(
-                    name: NameNode(value: 'name'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null)
-              ]))
-        ]))
-  ]);
-
-  @override
-  final String operationName = 'userWorkouts';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  UserWorkouts$Query parse(Map<String, dynamic> json) =>
-      UserWorkouts$Query.fromJson(json);
-}
-
 @JsonSerializable(explicitToJson: true)
-class WorkoutByIdArguments extends JsonSerializable with EquatableMixin {
-  WorkoutByIdArguments({required this.id});
+class CheckUniqueDisplayNameArguments extends JsonSerializable
+    with EquatableMixin {
+  CheckUniqueDisplayNameArguments({required this.displayName});
 
   @override
-  factory WorkoutByIdArguments.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutByIdArgumentsFromJson(json);
+  factory CheckUniqueDisplayNameArguments.fromJson(Map<String, dynamic> json) =>
+      _$CheckUniqueDisplayNameArgumentsFromJson(json);
 
-  final String id;
+  final String displayName;
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [displayName];
   @override
-  Map<String, dynamic> toJson() => _$WorkoutByIdArgumentsToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$CheckUniqueDisplayNameArgumentsToJson(this);
 }
 
-class WorkoutByIdQuery
-    extends GraphQLQuery<WorkoutById$Query, WorkoutByIdArguments> {
-  WorkoutByIdQuery({this.variables});
+class CheckUniqueDisplayNameQuery extends GraphQLQuery<
+    CheckUniqueDisplayName$Query, CheckUniqueDisplayNameArguments> {
+  CheckUniqueDisplayNameQuery({this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
     OperationDefinitionNode(
         type: OperationType.query,
-        name: NameNode(value: 'workoutById'),
+        name: NameNode(value: 'checkUniqueDisplayName'),
         variableDefinitions: [
           VariableDefinitionNode(
-              variable: VariableNode(name: NameNode(value: 'id')),
-              type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+              variable: VariableNode(name: NameNode(value: 'displayName')),
+              type: NamedTypeNode(
+                  name: NameNode(value: 'String'), isNonNull: true),
               defaultValue: DefaultValueNode(value: null),
               directives: [])
         ],
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
-              name: NameNode(value: 'workoutById'),
+              name: NameNode(value: 'checkUniqueDisplayName'),
               alias: null,
               arguments: [
                 ArgumentNode(
-                    name: NameNode(value: 'id'),
-                    value: VariableNode(name: NameNode(value: 'id')))
+                    name: NameNode(value: 'displayName'),
+                    value: VariableNode(name: NameNode(value: 'displayName')))
               ],
               directives: [],
-              selectionSet: SelectionSetNode(selections: [
-                FieldNode(
-                    name: NameNode(value: '__typename'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null),
-                FieldNode(
-                    name: NameNode(value: 'id'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null),
-                FieldNode(
-                    name: NameNode(value: 'name'),
-                    alias: null,
-                    arguments: [],
-                    directives: [],
-                    selectionSet: null)
-              ]))
+              selectionSet: null)
         ]))
   ]);
 
   @override
-  final String operationName = 'workoutById';
+  final String operationName = 'checkUniqueDisplayName';
 
   @override
-  final WorkoutByIdArguments? variables;
+  final CheckUniqueDisplayNameArguments? variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
   @override
-  WorkoutById$Query parse(Map<String, dynamic> json) =>
-      WorkoutById$Query.fromJson(json);
+  CheckUniqueDisplayName$Query parse(Map<String, dynamic> json) =>
+      CheckUniqueDisplayName$Query.fromJson(json);
+}
+
+class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
+  EquipmentsQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'equipments'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'equipments'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'Equipment'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'Equipment'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'Equipment'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'loadAdjustable'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'equipments';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  Equipments$Query parse(Map<String, dynamic> json) =>
+      Equipments$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1602,6 +1534,56 @@ class UpdateWorkoutMutation
   @override
   UpdateWorkout$Mutation parse(Map<String, dynamic> json) =>
       UpdateWorkout$Mutation.fromJson(json);
+}
+
+class UserWorkoutsQuery
+    extends GraphQLQuery<UserWorkouts$Query, JsonSerializable> {
+  UserWorkoutsQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'userWorkouts'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'userWorkouts'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'id'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'name'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null)
+              ]))
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'userWorkouts';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  UserWorkouts$Query parse(Map<String, dynamic> json) =>
+      UserWorkouts$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1685,31 +1667,30 @@ class CreateWorkoutMutation
 }
 
 @JsonSerializable(explicitToJson: true)
-class DeleteGymProfileByIdArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteGymProfileByIdArguments({required this.id});
+class WorkoutByIdArguments extends JsonSerializable with EquatableMixin {
+  WorkoutByIdArguments({required this.id});
 
   @override
-  factory DeleteGymProfileByIdArguments.fromJson(Map<String, dynamic> json) =>
-      _$DeleteGymProfileByIdArgumentsFromJson(json);
+  factory WorkoutByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutByIdArgumentsFromJson(json);
 
   final String id;
 
   @override
   List<Object?> get props => [id];
   @override
-  Map<String, dynamic> toJson() => _$DeleteGymProfileByIdArgumentsToJson(this);
+  Map<String, dynamic> toJson() => _$WorkoutByIdArgumentsToJson(this);
 }
 
-class DeleteGymProfileByIdMutation extends GraphQLQuery<
-    DeleteGymProfileById$Mutation, DeleteGymProfileByIdArguments> {
-  DeleteGymProfileByIdMutation({this.variables});
+class WorkoutByIdQuery
+    extends GraphQLQuery<WorkoutById$Query, WorkoutByIdArguments> {
+  WorkoutByIdQuery({this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
     OperationDefinitionNode(
-        type: OperationType.mutation,
-        name: NameNode(value: 'deleteGymProfileById'),
+        type: OperationType.query,
+        name: NameNode(value: 'workoutById'),
         variableDefinitions: [
           VariableDefinitionNode(
               variable: VariableNode(name: NameNode(value: 'id')),
@@ -1720,7 +1701,7 @@ class DeleteGymProfileByIdMutation extends GraphQLQuery<
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
-              name: NameNode(value: 'deleteGymProfileById'),
+              name: NameNode(value: 'workoutById'),
               alias: null,
               arguments: [
                 ArgumentNode(
@@ -1728,19 +1709,38 @@ class DeleteGymProfileByIdMutation extends GraphQLQuery<
                     value: VariableNode(name: NameNode(value: 'id')))
               ],
               directives: [],
-              selectionSet: null)
+              selectionSet: SelectionSetNode(selections: [
+                FieldNode(
+                    name: NameNode(value: '__typename'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'id'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
+                    name: NameNode(value: 'name'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null)
+              ]))
         ]))
   ]);
 
   @override
-  final String operationName = 'deleteGymProfileById';
+  final String operationName = 'workoutById';
 
   @override
-  final DeleteGymProfileByIdArguments? variables;
+  final WorkoutByIdArguments? variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
   @override
-  DeleteGymProfileById$Mutation parse(Map<String, dynamic> json) =>
-      DeleteGymProfileById$Mutation.fromJson(json);
+  WorkoutById$Query parse(Map<String, dynamic> json) =>
+      WorkoutById$Query.fromJson(json);
 }
