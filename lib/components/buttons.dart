@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
@@ -328,6 +329,115 @@ class PageLink extends StatelessWidget {
               Icon(CupertinoIcons.right_chevron, size: 18),
             ],
           )),
+    );
+  }
+}
+
+/// Small simplified button with little padding. Use for eg filter button.
+class MiniButton extends StatelessWidget {
+  final Widget? prefix;
+  final String text;
+  final void Function() onPressed;
+  MiniButton({this.prefix, required this.text, required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: const EdgeInsets.all(2),
+      pressedOpacity: 0.8,
+      onPressed: () => {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+            color: Styles.black, borderRadius: BorderRadius.circular(4)),
+        child: Row(
+          children: [
+            if (prefix != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 4),
+                child: prefix,
+              ),
+            MyText(
+              text,
+              weight: FontWeight.bold,
+              size: FONTSIZE.SMALL,
+              color: Styles.white,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FilterButton extends StatelessWidget {
+  final void Function() onPressed;
+  final int activeFilters;
+  FilterButton({required this.onPressed, this.activeFilters = 0});
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        MiniButton(
+          onPressed: () => {},
+          text: 'Filter',
+          prefix: Icon(
+            CupertinoIcons.slider_horizontal_3,
+            color: context.theme.background,
+            size: 20,
+          ),
+        ),
+        if (activeFilters > 0)
+          Positioned(
+            top: -1,
+            right: -1,
+            child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: Styles.colorTwo, shape: BoxShape.circle),
+                child: MyText(
+                  activeFilters.toString(),
+                  lineHeight: 1,
+                  color: Styles.white,
+                  size: FONTSIZE.TINY,
+                  weight: FontWeight.bold,
+                )),
+          )
+      ],
+    );
+  }
+}
+
+class OpenTextSearchButton extends StatelessWidget {
+  final void Function() onPressed;
+  OpenTextSearchButton({required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return MiniButton(
+      onPressed: () => {},
+      text: 'Search',
+      prefix: Icon(
+        CupertinoIcons.search,
+        color: context.theme.background,
+        size: 20,
+      ),
+    );
+  }
+}
+
+class SortByButton extends StatelessWidget {
+  final void Function() onPressed;
+  SortByButton({required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return MiniButton(
+      onPressed: () => {},
+      text: 'Sort',
+      prefix: Icon(
+        Icons.sort_outlined,
+        color: context.theme.background,
+        size: 20,
+      ),
     );
   }
 }

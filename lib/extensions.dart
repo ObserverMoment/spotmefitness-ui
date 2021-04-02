@@ -211,3 +211,56 @@ extension GenderExtension on Gender {
     }
   }
 }
+
+extension DifficultyLevelExtension on DifficultyLevel {
+  String get displayText {
+    switch (this) {
+      case DifficultyLevel.light:
+        return 'Light';
+      case DifficultyLevel.challenging:
+        return 'Challenging';
+      case DifficultyLevel.intermediate:
+        return 'Intermediate';
+      case DifficultyLevel.advanced:
+        return 'Advanced';
+      case DifficultyLevel.elite:
+        return 'Elite';
+      default:
+        throw new Exception('This is not a valid DifficultyLevel enum: $this');
+    }
+  }
+
+  Color get displayColor {
+    switch (this) {
+      case DifficultyLevel.light:
+        return Styles.difficultyLevelOne;
+      case DifficultyLevel.challenging:
+        return Styles.difficultyLevelTwo;
+      case DifficultyLevel.intermediate:
+        return Styles.difficultyLevelThree;
+      case DifficultyLevel.advanced:
+        return Styles.difficultyLevelFour;
+      case DifficultyLevel.elite:
+        return Styles.difficultyLevelFive;
+      default:
+        throw new Exception('This is not a valid DifficultyLevel enum: $this');
+    }
+  }
+
+  String get apiValue {
+    switch (this) {
+      case DifficultyLevel.light:
+        return 'LIGHT';
+      case DifficultyLevel.challenging:
+        return 'CHALLENGING';
+      case DifficultyLevel.intermediate:
+        return 'INTERMEDIATE';
+      case DifficultyLevel.advanced:
+        return 'ADVANCED';
+      case DifficultyLevel.elite:
+        return 'ELITE';
+      default:
+        throw new Exception('This is not a valid DifficultyLevel enum: $this');
+    }
+  }
+}

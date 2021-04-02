@@ -1,7 +1,47 @@
+# The full workout detail data tree, for displaying on a 'workout/:id' page.
 query workoutById($id: ID!) {
-  workoutById(id: $id) {
+  WorkoutById: workoutById(id: $id) {
     __typename
     id
     name
+    description
+    difficultyLevel
+    coverImageUri
+    UserInfo: User {
+      ...UserInfo
+    }
+    WorkoutGoals {
+      __typename
+      id
+      name
+    }
+    WorkoutTags {
+      __typename
+      id
+      tag
+    }
+    WorkoutSections {
+      __typename
+      id
+      timecap
+      WorkoutSectionType {
+        __typename
+        id
+        name
+      }
+      WorkoutSets {
+        WorkoutMoves {
+          SelectedEquipment: Equipment {
+            name
+          }
+          Move {
+            name
+            RequiredEquipments: RequiredEquipments {
+              name
+            }
+          }
+        }
+      }
+    }
   }
 }

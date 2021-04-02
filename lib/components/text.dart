@@ -31,7 +31,7 @@ class MyText extends StatelessWidget {
       this.maxLines = 1,
       this.color,
       this.decoration,
-      this.lineHeight});
+      this.lineHeight = 1.5});
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +59,7 @@ class H1 extends StatelessWidget {
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.HUGE,
+        lineHeight: 1.6,
         weight: FontWeight.bold);
   }
 }
@@ -74,6 +75,7 @@ class H2 extends StatelessWidget {
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.LARGE,
+        lineHeight: 1.6,
         weight: FontWeight.bold);
   }
 }
@@ -89,6 +91,7 @@ class H3 extends StatelessWidget {
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.BIG,
+        lineHeight: 1.6,
         weight: FontWeight.bold);
   }
 }

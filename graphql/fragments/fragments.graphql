@@ -24,3 +24,10 @@ fragment User on User {
   introVideoThumbUri
   gender
 }
+
+fragment UserInfo on User {
+  __typename
+  id
+  avatarUri
+  displayName
+}

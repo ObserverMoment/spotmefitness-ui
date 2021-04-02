@@ -106,7 +106,7 @@ abstract class ThemeData {
         stops: [0.1, 0.9],
       ),
       activeIcon: Styles.neonBlueOne,
-      cardBackground: const Color(0xFFf5f5f5),
+      cardBackground: CupertinoColors.white,
       bottomNavigationBackground: const Color(0xffffffff));
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
@@ -156,7 +156,7 @@ abstract class Styles {
   static const difficultyLevelTwo = const Color(0xff005AA7); // Blue
   static const difficultyLevelThree = const Color(0xffFFA62B); // Orange
   static const difficultyLevelFour = Color(0xff990133); // Red
-  static const difficultyLevelFive = const Color(0xff1A1B25); // Black
+  static const difficultyLevelFive = CupertinoColors.black; // Black
 
   static final LinearGradient colorOneGradient = LinearGradient(
     begin: Alignment.topLeft,

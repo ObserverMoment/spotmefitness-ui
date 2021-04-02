@@ -110,7 +110,7 @@ class HomePage extends StatelessWidget {
                     children: [
                       HomeScreenCard(
                         content: H2(
-                          'Collections',
+                          'Nutrition',
                           color: Styles.white,
                         ),
                         gradient: LinearGradient(
@@ -121,50 +121,17 @@ class HomePage extends StatelessWidget {
                               const Color(0xFFEDDE5D),
                             ]),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          print('tapping');
-                          print(context.router);
-                          context.router.push(YourWorkoutsRoute());
-                        },
-                        child: HomeScreenCard(
-                          content: H2(
-                            'Workouts',
-                            color: Styles.white,
-                          ),
-                          gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                const Color(0xFF232526),
-                                const Color(0xFF414345),
-                              ]),
-                        ),
-                      ),
                       HomeScreenCard(
                         content: H2(
-                          'Plans',
+                          'The Mind',
                           color: Styles.white,
                         ),
                         gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              const Color(0xFF4CA1AF),
-                              const Color(0xFF2C3E50),
-                            ]),
-                      ),
-                      HomeScreenCard(
-                        content: H2(
-                          'Events',
-                          color: Styles.white,
-                        ),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              const Color(0xFF004e92),
-                              const Color(0xFF000428),
+                              const Color(0xFF232526),
+                              const Color(0xFF414345),
                             ]),
                       ),
                     ],

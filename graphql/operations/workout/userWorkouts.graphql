@@ -1,7 +1,47 @@
+# Summary data only - for lists and search results.
 query userWorkouts {
-  userWorkouts {
+  WorkoutSummary: userWorkouts {
     __typename
     id
     name
+    description
+    difficultyLevel
+    coverImageUri
+    UserInfo: User {
+      ...UserInfo
+    }
+    WorkoutGoals {
+      __typename
+      id
+      name
+    }
+    WorkoutTags {
+      __typename
+      id
+      tag
+    }
+    WorkoutSections {
+      __typename
+      id
+      timecap
+      WorkoutSectionType {
+        __typename
+        id
+        name
+      }
+      WorkoutSets {
+        WorkoutMoves {
+          SelectedEquipment: Equipment {
+            name
+          }
+          Move {
+            name
+            RequiredEquipments: RequiredEquipments {
+              name
+            }
+          }
+        }
+      }
+    }
   }
 }

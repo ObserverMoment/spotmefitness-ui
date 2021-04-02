@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/plans.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/workouts.dart';
@@ -53,6 +54,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
             RedirectRoute(path: '*', redirectTo: 'personal')
           ]),
     ]),
+    AutoRoute(path: '/workout/:id', page: WorkoutDetailsPage),
     RedirectRoute(path: '*', redirectTo: '/')
   ],
 )
