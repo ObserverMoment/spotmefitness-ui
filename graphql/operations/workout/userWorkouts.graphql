@@ -20,7 +20,7 @@ query userWorkouts {
       id
       tag
     }
-    WorkoutSections {
+    WorkoutSectionsWithoutMoveDetail: WorkoutSections {
       __typename
       id
       timecap
@@ -29,15 +29,17 @@ query userWorkouts {
         id
         name
       }
-      WorkoutSets {
-        WorkoutMoves {
-          SelectedEquipment: Equipment {
-            name
+      WorkoutSetsWithEquipmentOnly: WorkoutSets {
+        WorkoutMovesWithEquipmentOnly: WorkoutMoves {
+          Equipment {
+            ...Equipment
           }
-          Move {
+          MoveWithEquipmentOnly: Move {
+            __typename
+            id
             name
-            RequiredEquipments: RequiredEquipments {
-              name
+            RequiredEquipments {
+              ...Equipment
             }
           }
         }

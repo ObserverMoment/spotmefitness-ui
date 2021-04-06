@@ -12,7 +12,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/debounce.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WelcomeModal extends StatefulWidget {
   @override

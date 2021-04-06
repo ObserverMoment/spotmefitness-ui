@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:spotmefitness_ui/extensions.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Base button class on which all other buttons are derived
 class MyButton extends StatelessWidget {
@@ -344,11 +344,12 @@ class MiniButton extends StatelessWidget {
     return CupertinoButton(
       padding: const EdgeInsets.all(2),
       pressedOpacity: 0.8,
-      onPressed: () => {},
+      onPressed: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-            color: Styles.black, borderRadius: BorderRadius.circular(4)),
+            color: context.theme.primary,
+            borderRadius: BorderRadius.circular(4)),
         child: Row(
           children: [
             if (prefix != null)
@@ -360,7 +361,7 @@ class MiniButton extends StatelessWidget {
               text,
               weight: FontWeight.bold,
               size: FONTSIZE.SMALL,
-              color: Styles.white,
+              color: context.theme.background,
             )
           ],
         ),

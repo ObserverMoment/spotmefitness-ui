@@ -3,7 +3,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class EquipmentTile extends StatelessWidget {
   final Equipment equipment;

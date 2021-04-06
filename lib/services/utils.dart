@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 abstract class Utils {
   // https://stackoverflow.com/questions/47776045/is-there-a-good-way-to-write-wait-for-variables-to-change-in-darts-async-meth
@@ -33,13 +33,18 @@ abstract class Utils {
   static Widget getEquipmentIcon(BuildContext context, String name,
       {Color? color, bool isSelected = false}) {
     return SvgPicture.asset(
-      'assets/equipment_icons/${getSvgAssetUrlFromEquipmentName(name)}.svg',
+      'assets/equipment_icons/${getSvgAssetUriFromEquipmentName(name)}.svg',
       color: color ?? context.theme.primary,
     );
   }
 
   /// Assets should be snake case versions of the equipment name.
-  static String getSvgAssetUrlFromEquipmentName(String name) {
+  static String getSvgAssetUriFromEquipmentName(String name) {
+    return name.toLowerCase().split(' ').join('_');
+  }
+
+  /// Assets should be snake case versions of the body area name in the db.
+  static String getSvgAssetUriFromBodyAreaName(String name) {
     return name.toLowerCase().split(' ').join('_');
   }
 
@@ -49,4 +54,13 @@ abstract class Utils {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }
+
+  /// Checks that text is not null and not an empty string.
+  static bool textNotNull(String? text) => (text != null && text != '');
+
+  /// returns true is any items in the list exist (are not null).
+  static bool anyNotNull(List list) => list.any((e) => e != null);
+
+  /// Checks that load is not null and not zero.
+  static bool hasLoad(double? load) => (load != null && load != 0);
 }

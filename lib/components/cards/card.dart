@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/extensions.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class Card extends StatelessWidget {
   final Widget child;

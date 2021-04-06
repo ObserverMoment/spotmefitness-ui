@@ -2,16 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 
 enum ThemeName { dark, light }
 
 class ThemeBloc extends ChangeNotifier {
-  GraphQLClient graphqlClient;
   final String _hiveThemeKey = 'themeName';
 
-  ThemeBloc({required this.graphqlClient}) {
+  ThemeBloc() {
     // Initialise them from Hive box.
     final themeNameFromSettings =
         Hive.box('settings').get(_hiveThemeKey, defaultValue: ThemeName.dark);

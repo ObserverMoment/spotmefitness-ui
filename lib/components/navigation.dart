@@ -39,10 +39,13 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      alignment: Alignment.centerLeft,
+      height: 30,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         children: widget.titles
             .asMap()
             .map((index, title) => MapEntry(

@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:simple_animations/simple_animations.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class StageProgressIndicator extends StatelessWidget {
   final int numStages;

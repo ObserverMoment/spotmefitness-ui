@@ -7,6 +7,10 @@ query workoutById($id: ID!) {
     description
     difficultyLevel
     coverImageUri
+    contentAccessScope
+    introVideoUri
+    introVideoThumbUri
+    introAudioUri
     UserInfo: User {
       ...UserInfo
     }
@@ -23,21 +27,52 @@ query workoutById($id: ID!) {
     WorkoutSections {
       __typename
       id
+      name
+      notes
+      rounds
       timecap
+      sortPosition
+      introVideoUri
+      introVideoThumbUri
+      introAudioUri
+      classVideoUri
+      classVideoThumbUri
+      classAudioUri
       WorkoutSectionType {
         __typename
         id
         name
       }
       WorkoutSets {
+        __typename
+        id
+        sortPosition
+        rounds
+        notes
         WorkoutMoves {
-          SelectedEquipment: Equipment {
-            name
+          __typename
+          id
+          sortPosition
+          reps
+          repType
+          distanceUnit
+          loadAmount
+          loadUnit
+          Equipment {
+            ...Equipment
           }
           Move {
+            __typename
+            id
             name
-            RequiredEquipments: RequiredEquipments {
-              name
+            BodyAreaMoveScores {
+              BodyArea {
+                ...BodyArea
+              }
+              score
+            }
+            RequiredEquipments {
+              ...Equipment
             }
           }
         }

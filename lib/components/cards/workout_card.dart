@@ -4,11 +4,11 @@ import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCard extends StatelessWidget {
-  final WorkoutSummary workout;
-  WorkoutCard({required this.workout});
+  final WorkoutSummary workoutSummary;
+  WorkoutCard(this.workoutSummary);
 
   final double cardHeight = 120;
 
@@ -18,31 +18,32 @@ class WorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> allTags = [
-      ...workout.workoutGoals.map((g) => g.name),
-      ...workout.workoutTags.map((t) => t.tag)
+    final List<String> _allTags = [
+      ...workoutSummary.workoutGoals.map((g) => g.name),
+      ...workoutSummary.workoutTags.map((t) => t.tag)
     ];
 
-    late Set<String> allMoves = {};
-    late Set<String> allEquipments = {};
+    late Set<String> _allMoves = {};
+    late Set<String> _allEquipments = {};
 
-    for (final section in workout.workoutSections) {
-      for (final workoutSet in section.workoutSets) {
-        for (final workoutMove in workoutSet.workoutMoves) {
-          allMoves.add(workoutMove.move.name);
-          if (workoutMove.selectedEquipment != null) {
-            allEquipments.add(workoutMove.selectedEquipment!.name);
+    for (final section in workoutSummary.workoutSectionsWithoutMoveDetail) {
+      for (final workoutSet in section.workoutSetsWithEquipmentOnly) {
+        for (final workoutMove in workoutSet.workoutMovesWithEquipmentOnly) {
+          _allMoves.add(workoutMove.moveWithEquipmentOnly.name);
+          if (workoutMove.equipment != null) {
+            _allEquipments.add(workoutMove.equipment!.name);
           }
-          if (workoutMove.move.requiredEquipments.isNotEmpty) {
-            allEquipments
-                .addAll(workoutMove.move.requiredEquipments.map((e) => e.name));
+          if (workoutMove.moveWithEquipmentOnly.requiredEquipments.isNotEmpty) {
+            _allEquipments.addAll(workoutMove
+                .moveWithEquipmentOnly.requiredEquipments
+                .map((e) => e.name));
           }
         }
       }
     }
 
     return Card(
-      backgroundImageUri: workout.coverImageUri,
+      backgroundImageUri: workoutSummary.coverImageUri,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -50,13 +51,13 @@ class WorkoutCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MyText(
-                workout.name,
+                workoutSummary.name,
                 weight: FontWeight.bold,
               ),
-              DifficultyLevelDot(workout.difficultyLevel)
+              DifficultyLevelDot(workoutSummary.difficultyLevel)
             ],
           ),
-          if (workout.workoutSections.isNotEmpty)
+          if (workoutSummary.workoutSectionsWithoutMoveDetail.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: SizedBox(
@@ -64,73 +65,79 @@ class WorkoutCard extends StatelessWidget {
                 child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: workout.workoutSections.length,
+                    itemCount:
+                        workoutSummary.workoutSectionsWithoutMoveDetail.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: WorkoutSectionTypeTag(
-                              workout.workoutSections[index].workoutSectionType
+                              workoutSummary
+                                  .workoutSectionsWithoutMoveDetail[index]
+                                  .workoutSectionType
                                   .name,
-                              timecap: workout.workoutSections[index].timecap),
+                              timecap: workoutSummary
+                                  .workoutSectionsWithoutMoveDetail[index]
+                                  .timecap),
                         )),
               ),
             ),
-          if (allTags.isNotEmpty)
+          if (_allTags.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: allTags.length,
+                    itemCount: _allTags.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5, bottom: 2),
                           child: Tag(
-                            tag: allTags[index],
+                            tag: _allTags[index],
                           ),
                         )),
               ),
             ),
-          if (workout.description != null && workout.description != '')
+          if (Utils.textNotNull(workoutSummary.description))
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: MyText(
-                workout.description!,
+                workoutSummary.description!,
                 maxLines: 2,
+                size: FONTSIZE.SMALL,
               ),
             ),
-          if (allMoves.isNotEmpty)
+          if (_allMoves.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: allMoves.length,
+                    itemCount: _allMoves.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5, bottom: 2),
                           child: Tag(
                             color: context.theme.background,
                             textColor: context.theme.primary,
-                            tag: allMoves.elementAt(index),
+                            tag: _allMoves.elementAt(index),
                           ),
                         )),
               ),
             ),
-          if (allEquipments.isNotEmpty)
+          if (_allEquipments.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 3.0, bottom: 2),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: allEquipments.length,
+                    itemCount: _allEquipments.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5, bottom: 2),
                           child: SizedBox(
                               width: 30,
                               height: 30,
                               child: Utils.getEquipmentIcon(
-                                  context, allEquipments.elementAt(index),
+                                  context, _allEquipments.elementAt(index),
                                   color:
                                       context.theme.primary.withOpacity(0.8))),
                         )),

@@ -12,7 +12,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
-import 'package:spotmefitness_ui/extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class App extends StatelessWidget {
   final AuthedUser authedUser;
@@ -26,7 +26,7 @@ class App extends StatelessWidget {
     return GraphQLProvider(
         client: _graphql.clientNotifier,
         child: ChangeNotifierProvider(
-            create: (_) => ThemeBloc(graphqlClient: _graphql.client),
+            create: (_) => ThemeBloc(),
             builder: (context, child) => CupertinoApp.router(
                   debugShowCheckedModeBanner: false,
                   theme: context.theme.cupertinoThemeData,

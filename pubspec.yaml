@@ -71,9 +71,14 @@ flutter_native_splash:
 
 flutter:
   assets: 
+    - assets/body_areas/
+    - assets/body_areas/front/
+    - assets/body_areas/front/selection/
+    - assets/body_areas/back/
+    - assets/body_areas/back/selection/
+    - assets/equipment_icons/
+    - assets/flags/png/
     - assets/logos/
     - assets/stock_images/
-    - assets/flags/png/
-    - assets/equipment_icons/
 
   uses-material-design: true

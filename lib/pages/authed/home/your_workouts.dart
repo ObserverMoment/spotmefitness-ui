@@ -1,15 +1,23 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
-class YourWorkoutsPage extends StatelessWidget {
+class YourWorkoutsPage extends StatefulWidget {
+  @override
+  _YourWorkoutsPageState createState() => _YourWorkoutsPageState();
+}
+
+class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
+  String? _searchString;
+
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -23,6 +31,12 @@ class YourWorkoutsPage extends StatelessWidget {
           builder: () {
             final workouts = UserWorkouts$Query.fromJson(result.data ?? {})
                 .workoutSummary
+                .where((workoutSummary) => Utils.textNotNull(_searchString)
+                    ? workoutSummary.name
+                        .toLowerCase()
+                        .contains(_searchString!.toLowerCase())
+                    : true)
+                .toList()
                 .reversed
                 .toList();
             return CupertinoPageScaffold(
@@ -30,16 +44,20 @@ class YourWorkoutsPage extends StatelessWidget {
                   middle: NavBarTitle('Your Workouts'),
                   trailing: CupertinoButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () => showCupertinoModalBottomSheet(
-                        expand: true,
-                        context: context,
-                        builder: (context) => Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                MyText(
-                                    'Info about this list, the filters, what the icons mean, the different tag types etc'),
-                              ],
-                            )),
+                    onPressed: () => context.push(
+                        fullscreenDialog: true,
+                        child: CupertinoPageScaffold(
+                          navigationBar: CupertinoNavigationBar(
+                            middle: NavBarTitle('Info'),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              MyText(
+                                  'Info about this list, the filters, what the icons mean, the different tag types etc'),
+                            ],
+                          ),
+                        )),
                     child: Icon(
                       CupertinoIcons.info_circle,
                       size: 25,
@@ -67,6 +85,8 @@ class YourWorkoutsPage extends StatelessWidget {
                               padding: const EdgeInsets.all(4.0),
                               child: CupertinoSearchTextField(
                                 padding: const EdgeInsets.all(5.0),
+                                onChanged: (searchString) => setState(
+                                    () => _searchString = searchString),
                               ),
                             ))
                           ],
@@ -83,8 +103,7 @@ class YourWorkoutsPage extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 3, vertical: 3.0),
-                                    child:
-                                        WorkoutCard(workout: workouts[index]),
+                                    child: WorkoutCard(workouts[index]),
                                   ),
                                 )),
                       ),

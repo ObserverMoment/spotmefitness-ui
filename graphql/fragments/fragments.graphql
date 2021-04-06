@@ -1,3 +1,11 @@
+fragment BodyArea on BodyArea {
+  __typename
+  id
+  name
+  frontBack
+  upperLower
+}
+
 fragment Equipment on Equipment {
   __typename
   id

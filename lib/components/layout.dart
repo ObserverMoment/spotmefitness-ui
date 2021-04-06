@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Box with rounded corners. No elevation.
 class RoundedBox extends StatelessWidget {
@@ -139,4 +140,26 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
                     onPressed: handleClose),
               ],
             ));
+}
+
+class HorizontalLine extends StatelessWidget {
+  final double thickness;
+  final Color? color;
+  final double verticalPadding;
+  HorizontalLine({this.thickness = 1, this.color, this.verticalPadding = 4.0});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: verticalPadding),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+                height: thickness,
+                color: color ?? context.theme.primary.withOpacity(0.2)),
+          ),
+        ],
+      ),
+    );
+  }
 }

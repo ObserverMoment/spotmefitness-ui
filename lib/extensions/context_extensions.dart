@@ -1,15 +1,10 @@
-import 'dart:math';
-
+// https://stackoverflow.com/questions/49172746/is-it-possible-extend-themedata-in-flutter
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
-import 'generated/api/graphql_api.graphql.dart';
-
-// https://stackoverflow.com/questions/49172746/is-it-possible-extend-themedata-in-flutter
 extension BuildContextExtension on BuildContext {
   ThemeBloc get theme {
     return watch<ThemeBloc>();
@@ -148,119 +143,4 @@ extension BuildContextExtension on BuildContext {
   Size get size => MediaQuery.of(this).size;
 
   dynamic pop({dynamic? result}) => Navigator.of(this).pop(result);
-}
-
-extension DoubleExtension on double {
-  double roundMyDouble(
-    double x,
-    int decimalPlaces,
-  ) {
-    int i = x.truncate();
-    if (x == i) {
-      return i.toDouble();
-    }
-    // Returns to max of [decimalPlaces] decimal places
-    return ((x * pow(10, decimalPlaces)).truncate() / 100);
-  }
-}
-
-extension DateTimeFormatting on DateTime {
-  /// Date only - July 10, 1996
-  String get dateString => DateFormat.yMMMMd().format(this);
-}
-
-extension ListExtension on List {
-  /// If not in list, add it, else remove it.
-  /// Assumes Equatable functionality if item is non scalar.
-  List<T> toggleItem<T>(T item) {
-    return (this as List<T>).contains(item)
-        ? (this as List<T>).where((e) => e != item).toList()
-        : <T>[...this, item];
-  }
-}
-
-/// Enum extensions
-extension GenderExtension on Gender {
-  String get display {
-    switch (this) {
-      case Gender.male:
-        return 'Male';
-      case Gender.female:
-        return 'Female';
-      case Gender.nonbinary:
-        return 'Non-binary';
-      case Gender.none:
-        return 'None';
-      default:
-        throw new Exception('This is not a valid Gender enum: $this');
-    }
-  }
-
-  String get apiValue {
-    switch (this) {
-      case Gender.male:
-        return 'MALE';
-      case Gender.female:
-        return 'FEMALE';
-      case Gender.nonbinary:
-        return 'NONBINARY';
-      case Gender.none:
-        return 'NONE';
-      default:
-        throw new Exception('This is not a valid Gender enum: $this');
-    }
-  }
-}
-
-extension DifficultyLevelExtension on DifficultyLevel {
-  String get displayText {
-    switch (this) {
-      case DifficultyLevel.light:
-        return 'Light';
-      case DifficultyLevel.challenging:
-        return 'Challenging';
-      case DifficultyLevel.intermediate:
-        return 'Intermediate';
-      case DifficultyLevel.advanced:
-        return 'Advanced';
-      case DifficultyLevel.elite:
-        return 'Elite';
-      default:
-        throw new Exception('This is not a valid DifficultyLevel enum: $this');
-    }
-  }
-
-  Color get displayColor {
-    switch (this) {
-      case DifficultyLevel.light:
-        return Styles.difficultyLevelOne;
-      case DifficultyLevel.challenging:
-        return Styles.difficultyLevelTwo;
-      case DifficultyLevel.intermediate:
-        return Styles.difficultyLevelThree;
-      case DifficultyLevel.advanced:
-        return Styles.difficultyLevelFour;
-      case DifficultyLevel.elite:
-        return Styles.difficultyLevelFive;
-      default:
-        throw new Exception('This is not a valid DifficultyLevel enum: $this');
-    }
-  }
-
-  String get apiValue {
-    switch (this) {
-      case DifficultyLevel.light:
-        return 'LIGHT';
-      case DifficultyLevel.challenging:
-        return 'CHALLENGING';
-      case DifficultyLevel.intermediate:
-        return 'INTERMEDIATE';
-      case DifficultyLevel.advanced:
-        return 'ADVANCED';
-      case DifficultyLevel.elite:
-        return 'ELITE';
-      default:
-        throw new Exception('This is not a valid DifficultyLevel enum: $this');
-    }
-  }
 }

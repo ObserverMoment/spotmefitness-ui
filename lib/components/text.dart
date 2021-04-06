@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 enum FONTSIZE { TINY, SMALL, MAIN, BIG, LARGE, HUGE }
 
@@ -22,6 +23,7 @@ class MyText extends StatelessWidget {
   final Color? color;
   final TextDecoration? decoration;
   final double? lineHeight;
+  final bool subtext;
 
   MyText(this.text,
       {this.textAlign = TextAlign.start,
@@ -31,10 +33,12 @@ class MyText extends StatelessWidget {
       this.maxLines = 1,
       this.color,
       this.decoration,
-      this.lineHeight = 1.5});
+      this.lineHeight = 1.5,
+      this.subtext = false});
 
   @override
   Widget build(BuildContext context) {
+    final _color = color ?? context.theme.primary;
     return Text(text,
         textAlign: textAlign,
         maxLines: maxLines,
@@ -44,7 +48,7 @@ class MyText extends StatelessWidget {
             decoration: decoration,
             height: lineHeight,
             fontSize: _fontSizeMap[size],
-            color: color));
+            color: subtext ? _color.withOpacity(0.6) : _color));
   }
 }
 
@@ -118,6 +122,63 @@ class RequiredSuperText extends StatelessWidget {
         color: Styles.errorRed,
         weight: FontWeight.bold,
         size: FONTSIZE.TINY,
+      ),
+    );
+  }
+}
+
+/// Should be the same as MyNavBar style.
+class UnderlineTitle extends StatefulWidget {
+  final String text;
+  UnderlineTitle(this.text);
+
+  @override
+  _UnderlineTitleState createState() => _UnderlineTitleState();
+}
+
+class _UnderlineTitleState extends State<UnderlineTitle> {
+  // Create global key that can track the actual rendered size of the text.
+  late GlobalKey globalTextBoxKey;
+  double? renderedWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    globalTextBoxKey = GlobalKey();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      // Get renderBox widths of the text elements.
+      renderedWidth = globalTextBoxKey.currentContext!.size!.width;
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Row(
+        key: globalTextBoxKey,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Column(
+            children: [
+              MyText(
+                widget.text,
+                weight: FontWeight.bold,
+                lineHeight: 1.2,
+              ),
+              Container(
+                height: 2.5,
+                width: renderedWidth ?? 60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: Styles.colorOne,
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
