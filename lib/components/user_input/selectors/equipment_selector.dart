@@ -49,7 +49,7 @@ class EquipmentTile extends StatelessWidget {
           if (showText)
             Flexible(
               child: Padding(
-                padding: const EdgeInsets.only(top: 3.0),
+                padding: const EdgeInsets.only(top: 6.0),
                 child: MyText(
                   equipment.name,
                   size: fontSize,

@@ -26,16 +26,16 @@ class WorkoutCard extends StatelessWidget {
     late Set<String> _allMoves = {};
     late Set<String> _allEquipments = {};
 
-    for (final section in workoutSummary.workoutSectionsWithoutMoveDetail) {
-      for (final workoutSet in section.workoutSetsWithEquipmentOnly) {
-        for (final workoutMove in workoutSet.workoutMovesWithEquipmentOnly) {
-          _allMoves.add(workoutMove.moveWithEquipmentOnly.name);
+    for (final section in workoutSummary.userWorkoutsWorkoutSections) {
+      for (final workoutSet in section.userWorkoutsWorkoutSets) {
+        for (final workoutMove in workoutSet.userWorkoutsWorkoutMoves) {
+          _allMoves.add(workoutMove.userWorkoutsMove.name);
           if (workoutMove.equipment != null) {
             _allEquipments.add(workoutMove.equipment!.name);
           }
-          if (workoutMove.moveWithEquipmentOnly.requiredEquipments.isNotEmpty) {
+          if (workoutMove.userWorkoutsMove.requiredEquipments.isNotEmpty) {
             _allEquipments.addAll(workoutMove
-                .moveWithEquipmentOnly.requiredEquipments
+                .userWorkoutsMove.requiredEquipments
                 .map((e) => e.name));
           }
         }
@@ -57,7 +57,7 @@ class WorkoutCard extends StatelessWidget {
               DifficultyLevelDot(workoutSummary.difficultyLevel)
             ],
           ),
-          if (workoutSummary.workoutSectionsWithoutMoveDetail.isNotEmpty)
+          if (workoutSummary.userWorkoutsWorkoutSections.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: SizedBox(
@@ -66,17 +66,14 @@ class WorkoutCard extends StatelessWidget {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemCount:
-                        workoutSummary.workoutSectionsWithoutMoveDetail.length,
+                        workoutSummary.userWorkoutsWorkoutSections.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: WorkoutSectionTypeTag(
-                              workoutSummary
-                                  .workoutSectionsWithoutMoveDetail[index]
-                                  .workoutSectionType
-                                  .name,
+                              workoutSummary.userWorkoutsWorkoutSections[index]
+                                  .workoutSectionType.name,
                               timecap: workoutSummary
-                                  .workoutSectionsWithoutMoveDetail[index]
-                                  .timecap),
+                                  .userWorkoutsWorkoutSections[index].timecap),
                         )),
               ),
             ),

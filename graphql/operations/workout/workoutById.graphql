@@ -1,16 +1,8 @@
 # The full workout detail data tree, for displaying on a 'workout/:id' page.
+# Also includes the full move data so that you can pop open a move_details page for all the included moves if needed.
 query workoutById($id: ID!) {
   WorkoutById: workoutById(id: $id) {
-    __typename
-    id
-    name
-    description
-    difficultyLevel
-    coverImageUri
-    contentAccessScope
-    introVideoUri
-    introVideoThumbUri
-    introAudioUri
+    ...Workout
     UserInfo: User {
       ...UserInfo
     }
@@ -25,53 +17,32 @@ query workoutById($id: ID!) {
       tag
     }
     WorkoutSections {
-      __typename
-      id
-      name
-      notes
-      rounds
-      timecap
-      sortPosition
-      introVideoUri
-      introVideoThumbUri
-      introAudioUri
-      classVideoUri
-      classVideoThumbUri
-      classAudioUri
+      ...WorkoutSection
       WorkoutSectionType {
-        __typename
-        id
-        name
+        ...WorkoutSectionType
       }
       WorkoutSets {
-        __typename
-        id
-        sortPosition
-        rounds
-        notes
+        ...WorkoutSet
         WorkoutMoves {
-          __typename
-          id
-          sortPosition
-          reps
-          repType
-          distanceUnit
-          loadAmount
-          loadUnit
+          ...WorkoutMove
           Equipment {
             ...Equipment
           }
           Move {
-            __typename
-            id
-            name
+            ...Move
+            MoveType {
+              ...MoveType
+            }
             BodyAreaMoveScores {
+              score
               BodyArea {
                 ...BodyArea
               }
-              score
             }
             RequiredEquipments {
+              ...Equipment
+            }
+            SelectableEquipments {
               ...Equipment
             }
           }

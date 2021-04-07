@@ -63,4 +63,7 @@ abstract class Utils {
 
   /// Checks that load is not null and not zero.
   static bool hasLoad(double? load) => (load != null && load != 0);
+
+  /// Checks that load is not null and not zero.
+  static bool notNullNotEmpty(List? list) => list != null && list.isNotEmpty;
 }

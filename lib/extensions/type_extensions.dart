@@ -13,7 +13,7 @@ extension DoubleExtension on double {
       return i.toDouble();
     }
     // Returns to max of [decimalPlaces] decimal places
-    return ((this * pow(10, decimalPlaces)).truncate() / 100);
+    return ((this * pow(10, decimalPlaces)).round() / pow(10, decimalPlaces));
   }
 }
 

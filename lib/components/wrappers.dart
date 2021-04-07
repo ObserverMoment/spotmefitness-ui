@@ -20,14 +20,19 @@ class QueryResponseBuilder extends StatelessWidget {
         navigationBar: CupertinoNavigationBar(
           middle: NavBarTitle('Oops...'),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: MyText(
-            'Sorry there was a problem retrieving your info',
-            color: Styles.errorRed,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: MyText(
+                'Sorry there was a problem retrieving your info',
+                color: Styles.errorRed,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+              ),
+            ),
+          ],
         ),
       );
     } else if (result.isLoading) {

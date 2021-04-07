@@ -137,7 +137,7 @@ type BodyArea {
   upperLower: BodyAreaUpperLower!
 }
 type BodyAreaMoveScore {
-  id: ID!
+  moveId_bodyAreaId: ID!
   Move: Move!
   BodyArea: BodyArea!
   score: Float!

@@ -79,6 +79,8 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
             child: MyText(
               'SpotMe Fitness',
               weight: FontWeight.bold,
+              // Must pass a color to avoid MyText component trying to look up context.theme, which does not exist prior to the user reaching the authed section of the app.
+              color: Styles.white,
             ),
           )
         ],
