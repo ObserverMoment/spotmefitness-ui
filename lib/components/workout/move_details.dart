@@ -139,7 +139,8 @@ class MoveDetails extends StatelessWidget {
                       if (move.demoVideoUri != null)
                         SizedBox(
                             height: 220,
-                            child: UploadcareVideoPlayer(move.demoVideoUri!)),
+                            child: UploadcareVideoPlayer(
+                                videoUri: move.demoVideoUri!)),
                       if (Utils.textNotNull(move.description))
                         Padding(
                           padding: const EdgeInsets.all(12.0),

@@ -64,9 +64,14 @@ class UploadcareService {
     apiVersion: 'v0.6',
   )));
 
-  static Future<String> getFileUrl(String fileId) async {
-    CdnFile cdnFile = CdnFile(fileId);
-    return cdnFile.url;
+  static Future<String?> getFileUrl(String fileId) async {
+    try {
+      CdnFile cdnFile = CdnFile(fileId);
+      return cdnFile.url;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 
   Future<FileInfoEntity> getFileInfo(String fileId) async {

@@ -1,19 +1,32 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/video/video_controls_overlay.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
-import 'package:video_player/video_player.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// For displaying video within the flow of content. Not full screen.
+/// Must pass either a [String videoUri] (Uploadcare UUID) or a [BetterPlayerController controller]
 class UploadcareVideoPlayer extends StatefulWidget {
+  final Key? key;
   final String videoUri;
   final bool autoPlay;
   final bool autoLoop;
-  UploadcareVideoPlayer(this.videoUri,
-      {this.autoLoop = false, this.autoPlay = false});
+  final bool isFullScreen;
+
+  /// Seek to this point immediately.
+  final Duration? startPosition;
+  UploadcareVideoPlayer(
+      {this.key,
+      required this.videoUri,
+      this.autoLoop = false,
+      this.autoPlay = false,
+      this.startPosition,
+      this.isFullScreen = false})
+      : super(key: key);
 
   @override
   _UploadcareVideoPlayerState createState() => _UploadcareVideoPlayerState();
@@ -37,7 +50,7 @@ class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
   // Calls Uploadcare API and gets back a full url that the video player can use to play the video.
   Future<void> _initializeVideoController() async {
     _videoInfo = await UploadcareService.getVideoInfoRaw(widget.videoUri);
-    if (_videoInfo == null) {
+    if (_videoInfo?.url == null) {
       setState(() {
         _errorMessage = 'Sorry, we were not able to play this video.';
       });
@@ -55,26 +68,50 @@ class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
         throw Exception('Unable to get the video aspect ratio for display.');
       }
 
-      // When video is portrait only show v basic controls - play and full screen.
-      // Generally these videos should be landscape.
+      // Show full controls if the player is full screen.
+      // Or if the video is landscape (and should be taking up the full width of the screen).
+      final _showFullControls = widget.isFullScreen || _aspectRatio! >= 1;
       _controller = BetterPlayerController(
           BetterPlayerConfiguration(
-            autoDispose: true,
+            autoDispose: false,
+            fit: BoxFit.cover,
             aspectRatio: _aspectRatio,
             autoPlay: widget.autoPlay,
             looping: widget.autoLoop,
             controlsConfiguration: BetterPlayerControlsConfiguration(
               playerTheme: BetterPlayerTheme.custom,
               customControlsBuilder: (controller) {
-                return FullScreenVideoControls(
-                  controller: controller,
-                  showEnterExitFullScreen: _aspectRatio! >= 1,
-                  duration: Duration(milliseconds: _videoInfo!.duration),
-                );
+                return _showFullControls
+                    ? FullVideoControls(
+                        controller: controller,
+                        showEnterExitFullScreen: _showFullControls,
+                        enterExitFullScreen: widget.isFullScreen
+                            ? () => context.pop(
+                                result: _controller!
+                                    .videoPlayerController!.position)
+                            : _handleEnterFullScreen,
+                        duration: Duration(milliseconds: _videoInfo!.duration),
+                      )
+                    : MinimalVideoControls(
+                        controller: controller,
+                        enterFullScreen: _handleEnterFullScreen,
+                      );
               },
             ),
           ),
           betterPlayerDataSource: _dataSource);
+      final _initialized = _controller!.isVideoInitialized();
+      if (_initialized ?? false) {
+        setState(() {
+          _errorMessage = 'Sorry, could not get this video ready to play.';
+        });
+        throw Exception(
+            'The video controller did not initialize correctly. Please check the file url..');
+      }
+
+      if (widget.startPosition != null) {
+        _controller!.seekTo(widget.startPosition!);
+      }
     }
   }
 
@@ -84,17 +121,45 @@ class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
     super.dispose();
   }
 
+  Future<void> _handleEnterFullScreen() async {
+    final _startPosition = await _controller!.videoPlayerController!.position;
+    final _positionWhenClosed = await context.push<Duration>(
+        fullscreenDialog: _aspectRatio! < 1,
+        child: CupertinoPageScaffold(
+            resizeToAvoidBottomInset: false,
+            child: SizedBox.expand(
+              child: RotatedBox(
+                quarterTurns: _aspectRatio! < 1 ? 0 : 1,
+                child: UploadcareVideoPlayer(
+                    key: Key('${widget.videoUri} - full screen'),
+                    videoUri: widget.videoUri,
+                    isFullScreen: true,
+                    autoPlay: true,
+                    startPosition: _startPosition ?? Duration(seconds: 0)),
+              ),
+            )));
+    _controller!.seekTo(_positionWhenClosed);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Wrapping in center helps maintain size when video is in a list view.
-    // https://stackoverflow.com/questions/59472726/why-does-aspectratio-not-work-in-a-listview
-    return _controller != null && _aspectRatio != null
-        ? AspectRatio(
-            aspectRatio: _aspectRatio!,
-            child: BetterPlayer(
-              controller: _controller!,
+    return Utils.textNotNull(_errorMessage)
+        ? Center(
+            child: MyText(
+              _errorMessage!,
+              color: Styles.errorRed,
             ),
           )
-        : LoadingCircle();
+        : _controller != null
+            ? Hero(
+                tag: 'uploadcare-video-player-hero',
+                child: AspectRatio(
+                  aspectRatio: _aspectRatio!,
+                  child: BetterPlayer(
+                    controller: _controller!,
+                  ),
+                ),
+              )
+            : LoadingCircle();
   }
 }

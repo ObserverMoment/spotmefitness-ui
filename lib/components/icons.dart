@@ -16,7 +16,9 @@ class WorkoutSectionTypeTag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20), color: Styles.colorOne),
+        border: Border.all(color: context.theme.primary),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Row(
         children: [
           MyText(

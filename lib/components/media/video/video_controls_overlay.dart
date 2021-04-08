@@ -6,24 +6,30 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-/// Also for use on inline videos which have landscape aspect ratio.
-class FullScreenVideoControls extends StatefulWidget {
+/// The first returns widget must be a valid stack child.
+/// This is what is required by [BetterPlayerControlsConfiguration][customControlsBuilder]
+class FullVideoControls extends StatefulWidget {
   final BetterPlayerController controller;
   final Duration duration;
   final Widget? overlay;
   final bool showEnterExitFullScreen;
-  FullScreenVideoControls(
+  final void Function()? enterExitFullScreen;
+  final bool isFullScreen;
+  FullVideoControls(
       {required this.controller,
       required this.duration,
       this.showEnterExitFullScreen = false,
-      this.overlay});
+      this.isFullScreen = false,
+      this.enterExitFullScreen,
+      this.overlay})
+      : assert((showEnterExitFullScreen && enterExitFullScreen != null) ||
+            (!showEnterExitFullScreen && enterExitFullScreen == null));
 
   @override
-  _FullScreenVideoControlsState createState() =>
-      _FullScreenVideoControlsState();
+  _FullVideoControlsState createState() => _FullVideoControlsState();
 }
 
-class _FullScreenVideoControlsState extends State<FullScreenVideoControls> {
+class _FullVideoControlsState extends State<FullVideoControls> {
   bool _isFinished = false;
   bool _isPlaying = false;
   // Between 0 and 1
@@ -88,21 +94,6 @@ class _FullScreenVideoControlsState extends State<FullScreenVideoControls> {
                 child: AnimatedSwitcher(
                     duration: _animDuration,
                     child: _isPlaying ? null : widget.overlay)),
-          if (widget.showEnterExitFullScreen)
-            Positioned(
-                top: 0,
-                right: 0,
-                child: AnimatedSwitcher(
-                    duration: _animDuration,
-                    child: _isPlaying
-                        ? Container(height: 0, width: 0)
-                        : CupertinoButton(
-                            onPressed: () => print('open full screen'),
-                            padding: EdgeInsets.zero,
-                            child: Icon(
-                              Icons.fullscreen,
-                              size: 36,
-                            )))),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -149,12 +140,13 @@ class _FullScreenVideoControlsState extends State<FullScreenVideoControls> {
                 duration: _animDuration,
                 child: !_isPlaying || _isFinished
                     ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
                         height: 40,
                         child: Row(
                           children: [
                             Expanded(
                                 child: SfSlider(
+                              interval: 1 / _duration.inSeconds,
                               value: _progress,
                               onChanged: _handleSeek,
                               activeColor: Styles.peachRed,
@@ -173,17 +165,57 @@ class _FullScreenVideoControlsState extends State<FullScreenVideoControls> {
               )
             ],
           ),
+          if (widget.showEnterExitFullScreen)
+            Positioned(
+                top: 6,
+                right: 6,
+                child: AnimatedSwitcher(
+                    duration: _animDuration,
+                    child: _isPlaying
+                        ? Container(height: 0, width: 0)
+                        : CupertinoButton(
+                            onPressed: widget.enterExitFullScreen,
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Styles.black.withOpacity(0.1),
+                                  shape: BoxShape.circle),
+                              padding: const EdgeInsets.all(4),
+                              child: widget.isFullScreen
+                                  ? Icon(CupertinoIcons.clear)
+                                  : Icon(
+                                      Icons.fullscreen,
+                                      size: 36,
+                                    ),
+                            )))),
         ],
       ),
     );
   }
 }
 
-class PortraitVideoControls extends StatelessWidget {
+/// The first returns widget must be a valid stack child.
+/// This is what is required by [BetterPlayerControlsConfiguration][customControlsBuilder]
+class MinimalVideoControls extends StatelessWidget {
   final BetterPlayerController controller;
-  PortraitVideoControls(this.controller);
+  final void Function() enterFullScreen;
+  MinimalVideoControls(
+      {required this.controller, required this.enterFullScreen});
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Positioned.fill(
+      child: GestureDetector(
+        onTap: enterFullScreen,
+        behavior: HitTestBehavior.opaque,
+        child: Container(
+          child: Center(
+            child: Icon(
+              CupertinoIcons.play_fill,
+              size: 45,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
