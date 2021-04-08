@@ -9,14 +9,20 @@ enum ThemeName { dark, light }
 class ThemeBloc extends ChangeNotifier {
   final String _hiveThemeKey = 'themeName';
 
-  ThemeBloc() {
-    // Initialise them from Hive box.
-    final themeNameFromSettings =
-        Hive.box('settings').get(_hiveThemeKey, defaultValue: ThemeName.dark);
-    if (themeNameFromSettings == 'dark') {
+  ThemeBloc({bool? isLanding = false}) {
+    if (isLanding != null && isLanding) {
+      /// Always a dark theme for sign in and landing.
       _setToDark();
     } else {
-      _setToLight();
+      // Initialise them from Hive box.
+      final themeNameFromSettings =
+          Hive.box('settings').get(_hiveThemeKey, defaultValue: 'dark');
+
+      if (themeNameFromSettings == 'dark') {
+        _setToDark();
+      } else {
+        _setToLight();
+      }
     }
   }
 
@@ -24,7 +30,7 @@ class ThemeBloc extends ChangeNotifier {
   ThemeName themeName = ThemeName.dark;
 
   /// Getters for regularly used attributes
-  /// Context has been extended to allow for calling context.[getter]
+  /// Context has been extended to allow for calling context.theme.[getter]
   /// Rather than context.watch<ThemeBloc>()
   CupertinoThemeData get cupertinoThemeData => theme.cupertinoThemeData;
   CustomThemeData get customThemeData => theme.customThemeData;

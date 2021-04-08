@@ -48,5 +48,10 @@
 		<string>Please allow access so that you can record and upload audio.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Please allow access so that you can upload image and video from your device.</string>
+		<key>NSAppTransportSecurity</key>
+		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		</dict>
 	</dict>
 </plist>

@@ -1,7 +1,45 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_client/uploadcare_client.dart';
+import 'package:http/http.dart' as http;
+
+class VideoInfoEntity {
+  final String uuid;
+  final String url;
+  final int duration;
+  final int size;
+  final int width;
+  final int height;
+
+  VideoInfoEntity(
+      {required this.uuid,
+      required this.url,
+      required this.duration,
+      required this.size,
+      required this.width,
+      required this.height});
+
+  bool isPortrait() {
+    if (width == 0 || height == 0) {
+      throw new Exception('The video either has no height or no width..');
+    } else {
+      return width < height;
+    }
+  }
+
+  factory VideoInfoEntity.fromJson(Map<String, dynamic> json) {
+    return VideoInfoEntity(
+        uuid: json['uuid'],
+        url: json['original_file_url'],
+        size: json['size'],
+        duration: json['video_info']['duration'],
+        width: json['video_info']['video']['width'],
+        height: json['video_info']['video']['height']);
+  }
+}
 
 class ProcessedVideoResult {
   final String videoUri;
@@ -12,7 +50,7 @@ class ProcessedVideoResult {
 }
 
 class UploadcareService {
-  final UploadcareClient _client = UploadcareClient.withRegularAuth(
+  final UploadcareClient client = UploadcareClient.withRegularAuth(
     publicKey: EnvironmentConfig.uploadCarePublicKey,
     privateKey: EnvironmentConfig.uploadCarePrivateKey,
     apiVersion: 'v0.6',
@@ -20,12 +58,11 @@ class UploadcareService {
 
   final _uploadApi = ApiUpload(
       options: ClientOptions(
-          useSignedUploads: true,
           authorizationScheme: AuthSchemeRegular(
-            publicKey: EnvironmentConfig.uploadCarePublicKey,
-            privateKey: EnvironmentConfig.uploadCarePrivateKey,
-            apiVersion: 'v0.6',
-          )));
+    publicKey: EnvironmentConfig.uploadCarePublicKey,
+    privateKey: EnvironmentConfig.uploadCarePrivateKey,
+    apiVersion: 'v0.6',
+  )));
 
   static Future<String> getFileUrl(String fileId) async {
     CdnFile cdnFile = CdnFile(fileId);
@@ -33,27 +70,28 @@ class UploadcareService {
   }
 
   Future<FileInfoEntity> getFileInfo(String fileId) async {
-    FileInfoEntity _fileInfoEntity = await _client.files.file(fileId);
+    FileInfoEntity _fileInfoEntity = await client.files.file(fileId);
     return _fileInfoEntity;
   }
 
   // Just uses the simple, unsigned auth scheme.
   // Implemented because the uploadcare client package always returns a FileInfoEntity when getting info.
   // FileInfoEntity has no fields for video specific data.
-  // Future<VideoInfoEntity> getVideoInfoRaw(String fileId) async {
-  //   dynamic res = await http.get(
-  //     'https://api.uploadcare.com/files/$fileId/',
-  //     // Send authorization headers to the backend.
-  //     headers: {
-  //       HttpHeaders.acceptHeader: 'application/vnd.uploadcare-v0.6+json',
-  //       HttpHeaders.authorizationHeader:
-  //           "Uploadcare.Simple ${EnvironmentConfig.uploadCarePublicKey}:${EnvironmentConfig.uploadCarePrivateKey}",
-  //     },
-  //   );
-  //   final responseJson = await json.decode(res.body);
-  //   VideoInfoEntity _videoInfo = VideoInfoEntity.fromJson(responseJson);
-  //   return _videoInfo;
-  // }
+  /// TODO: Is this secure - to send the public and private key from a client.
+  static Future<VideoInfoEntity> getVideoInfoRaw(String fileId) async {
+    dynamic res = await http.get(
+      Uri.https('api.uploadcare.com', '/files/$fileId/'),
+      // Send authorization headers to the backend.
+      headers: {
+        HttpHeaders.acceptHeader: 'application/vnd.uploadcare-v0.6+json',
+        HttpHeaders.authorizationHeader:
+            "Uploadcare.Simple ${EnvironmentConfig.uploadCarePublicKey}:${EnvironmentConfig.uploadCarePrivateKey}",
+      },
+    );
+    final responseJson = await json.decode(res.body);
+    VideoInfoEntity _videoInfo = VideoInfoEntity.fromJson(responseJson);
+    return _videoInfo;
+  }
 
   Future<void> uploadImage(
       {required SharedFile file,
@@ -125,12 +163,12 @@ class UploadcareService {
 
   // Check file is ready for further processing aftre being uploading.
   Future<bool> checkFileIsReady(String cdnFileId) async {
-    return (await _client.files.file(cdnFileId)).isReady;
+    return (await client.files.file(cdnFileId)).isReady;
   }
 
   Future<ProcessedVideoResult> encodeVideoAndGenerateThumb(String uri) async {
     VideoEncodingConvertEntity _convertedFile =
-        await _client.videoEncoding.process({
+        await client.videoEncoding.process({
       uri: [VideoThumbsGenerateTransformation(1)],
     });
 
@@ -138,7 +176,7 @@ class UploadcareService {
       throw Exception(
           'There was a problem uploading your video, ${_convertedFile.problems.toString()}');
     } else {
-      GroupInfoEntity _thumbsGroup = await _client.groups
+      GroupInfoEntity _thumbsGroup = await client.groups
           .group(_convertedFile.results[0].thumbnailsGroupId);
 
       return ProcessedVideoResult(
@@ -151,7 +189,7 @@ class UploadcareService {
       Function()? onComplete,
       Function(dynamic)? onFail}) async {
     try {
-      await _client.files.remove(fileIds);
+      await client.files.remove(fileIds);
       if (onComplete != null) onComplete();
     } catch (e) {
       print(e.toString());

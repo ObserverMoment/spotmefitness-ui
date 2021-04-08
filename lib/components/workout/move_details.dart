@@ -5,11 +5,11 @@ import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_score
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
-import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -17,10 +17,6 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class MoveDetails extends StatelessWidget {
   final Move move;
   MoveDetails(this.move);
-
-  // Calls Uploadcare API and gets back a full url that the video player can use to play the video.
-  Future<String> _getVideoUrl() async =>
-      UploadcareService.getFileUrl(move.demoVideoUri!);
 
   Widget _buildEquipmentLists(Move move) => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,35 +133,16 @@ class MoveDetails extends StatelessWidget {
                 navigationBar: CupertinoNavigationBar(
                   middle: NavBarTitle(move.name),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
                       if (move.demoVideoUri != null)
                         SizedBox(
-                          height: 220,
-                          child: FutureBuilder(
-                            future: _getVideoUrl(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<dynamic> snapshot) {
-                              if (snapshot.hasData) {
-                                print(snapshot.data);
-                                return MyText(
-                                    'Show video and play inline / full screen');
-                              } else if (snapshot.hasError) {
-                                return Card(
-                                  child: MyText(
-                                      'Sorry, there was a problem playing this video'),
-                                );
-                              } else {
-                                return LoadingCircle();
-                              }
-                            },
-                          ),
-                        ),
+                            height: 220,
+                            child: UploadcareVideoPlayer(move.demoVideoUri!)),
                       if (Utils.textNotNull(move.description))
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(12.0),
                           child: Center(
                             child: MyText(
                               move.description!,
@@ -176,7 +153,7 @@ class MoveDetails extends StatelessWidget {
                           ),
                         ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(12.0),
                         child: Column(
                           children: [
                             Center(

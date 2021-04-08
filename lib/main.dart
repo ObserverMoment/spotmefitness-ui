@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,9 +58,8 @@ class _AuthRouterState extends State<AuthRouter> {
 
   @override
   void initState() {
-    GetIt.I.registerSingleton<AuthBloc>(_authBloc);
-
     super.initState();
+    GetIt.I.registerSingleton<AuthBloc>(_authBloc);
   }
 
   @override
@@ -75,7 +77,12 @@ class _AuthRouterState extends State<AuthRouter> {
           return FadeIn(
             child: authState == AuthState.AUTHED && _authedUser != null
                 ? App(_authedUser)
-                : UnAuthedLanding(),
+                : ChangeNotifierProvider(
+                    create: (_) => ThemeBloc(isLanding: true),
+                    builder: (context, child) => CupertinoApp(
+                        theme: context.theme.cupertinoThemeData,
+                        home: UnAuthedLanding()),
+                  ),
           );
         });
   }

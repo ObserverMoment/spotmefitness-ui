@@ -97,23 +97,19 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool _isDarkTheme =
-        CupertinoTheme.brightnessOf(context) == Brightness.dark;
     return MyButton(
       text: text,
       onPressed: onPressed,
       disabled: disabled,
       loading: loading,
-      backgroundColor:
-          _isDarkTheme ? CupertinoColors.white : CupertinoColors.black,
-      contentColor:
-          _isDarkTheme ? CupertinoColors.black : CupertinoColors.white,
+      backgroundColor: context.theme.primary,
+      contentColor: context.theme.background,
       withMinWidth: withMinWidth,
     );
   }
 }
 
-/// Offset grey-ish BG with white content on both themes.
+/// Primary color border - primary color text.
 class SecondaryButton extends StatelessWidget {
   final Widget? prefix;
   final String text;
@@ -137,9 +133,10 @@ class SecondaryButton extends StatelessWidget {
       suffix: suffix,
       text: text,
       onPressed: onPressed,
-      backgroundColor: const Color(0xff262626),
-      contentColor: CupertinoColors.white,
+      backgroundColor: CupertinoColors.darkBackgroundGray,
+      contentColor: context.theme.primary,
       withMinWidth: withMinWidth,
+      border: true,
     );
   }
 }

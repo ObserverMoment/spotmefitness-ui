@@ -54,7 +54,7 @@ class StageProgressIndicator extends StatelessWidget {
         final _isActive = currentStage == index;
 
         return SizedBox(
-          height: titles == null ? 60 : 90,
+          height: titles == null ? 64 : 100,
           child: TimelineTile(
             alignment: TimelineAlign.center,
             isFirst: index == 0,

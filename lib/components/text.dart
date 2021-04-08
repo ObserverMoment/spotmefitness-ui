@@ -38,7 +38,6 @@ class MyText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _color = color ?? context.theme.primary;
     return Text(text,
         textAlign: textAlign,
         maxLines: maxLines,
@@ -48,7 +47,11 @@ class MyText extends StatelessWidget {
             decoration: decoration,
             height: lineHeight,
             fontSize: _fontSizeMap[size],
-            color: subtext ? _color.withOpacity(0.6) : _color));
+            color: subtext
+                ? context.theme.primary.withOpacity(0.6)
+                : color != null
+                    ? color
+                    : context.theme.primary));
   }
 }
 
