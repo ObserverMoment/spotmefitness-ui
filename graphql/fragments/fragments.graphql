@@ -72,6 +72,13 @@ fragment Workout on Workout {
   introAudioUri
 }
 
+fragment WorkoutGoal on WorkoutGoal {
+  __typename
+  id
+  name
+  description
+}
+
 fragment WorkoutSection on WorkoutSection {
   __typename
   id

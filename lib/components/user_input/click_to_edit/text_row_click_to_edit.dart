@@ -81,7 +81,7 @@ class EditableTextFieldRow extends StatelessWidget {
   }
 }
 
-class EditableTextFieldArea extends StatelessWidget {
+class EditableTextAreaRow extends StatelessWidget {
   final String title;
   final String text;
   final int? maxDisplayLines;
@@ -92,7 +92,7 @@ class EditableTextFieldArea extends StatelessWidget {
   final int? maxChars;
   final bool isRequired;
 
-  EditableTextFieldArea(
+  EditableTextAreaRow(
       {required this.title,
       this.text = '',
       required this.onSave,

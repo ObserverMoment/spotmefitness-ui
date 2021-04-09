@@ -45,9 +45,13 @@ class _WelcomeModalState extends State<WelcomeModal> {
 
   void _checkNameIsUnique() async {
     if (_nameController.text.length > 2) {
+      final _vars =
+          CheckUniqueDisplayNameArguments(displayName: _nameController.text);
+
       final _res = await GraphQL().client.query(QueryOptions(
-          document: CheckUniqueDisplayNameQuery().document,
-          variables: {'displayName': _nameController.text}));
+          document: CheckUniqueDisplayNameQuery(variables: _vars).document,
+          variables: _vars.toJson()));
+
       final _isUnique = CheckUniqueDisplayName$Query.fromJson(_res.data ?? {})
           .checkUniqueDisplayName;
       setState(() => _nameIsUnique = _isUnique);
@@ -61,15 +65,14 @@ class _WelcomeModalState extends State<WelcomeModal> {
 
   Future<void> _handleExit() async {
     if (_validateName()) {
+      final _vars = UpdateUserArguments(
+          data: UpdateUserInput(
+              displayName: _nameController.text, hasOnboarded: true));
+
       await GraphQL().client.mutate(
             MutationOptions(
-              document: UpdateUserMutation().document,
-              variables: {
-                'data': {
-                  'displayName': _nameController.text,
-                  'hasOnboarded': true
-                }
-              },
+              document: UpdateUserMutation(variables: _vars).document,
+              variables: _vars.toJson(),
               onError: (e) => throw new Exception(e),
             ),
           );

@@ -11,9 +11,7 @@ query userWorkouts {
       ...UserInfo
     }
     WorkoutGoals {
-      __typename
-      id
-      name
+      ...WorkoutGoal
     }
     WorkoutTags {
       __typename

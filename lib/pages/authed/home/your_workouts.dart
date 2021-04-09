@@ -4,6 +4,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -42,26 +43,26 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
             return CupertinoPageScaffold(
                 navigationBar: CupertinoNavigationBar(
                   middle: NavBarTitle('Your Workouts'),
-                  trailing: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => context.push(
-                        fullscreenDialog: true,
-                        child: CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                            middle: NavBarTitle('Info'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CreateIconButton(
+                        onPressed: () => context.push(
+                            rootNavigator: true,
+                            fullscreenDialog: true,
+                            child: WorkoutCreator()),
+                      ),
+                      InfoPopupButton(
+                        infoWidget: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyText(
+                            'Info about this list, the filters, what the icons mean, the different tag types etc',
+                            maxLines: 10,
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MyText(
-                                  'Info about this list, the filters, what the icons mean, the different tag types etc'),
-                            ],
-                          ),
-                        )),
-                    child: Icon(
-                      CupertinoIcons.info_circle,
-                      size: 25,
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
                 child: Padding(

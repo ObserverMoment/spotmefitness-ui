@@ -71,7 +71,7 @@ class _CountrySelectorState extends State<CountrySelector> {
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(
-              'Close',
+              'Done',
               weight: FontWeight.bold,
             ),
             onPressed: () => Navigator.pop(context)),

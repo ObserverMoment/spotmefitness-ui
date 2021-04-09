@@ -37,7 +37,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     setState(() => activeSectionTabIndex = index);
   }
 
-  Widget _buildAvatar(WorkoutById workout) {
+  Widget _buildAvatar(WorkoutData workout) {
     final radius = 40.0;
 
     Widget _displayName(String text) => Padding(
@@ -79,7 +79,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     }
   }
 
-  List<String> _sectionTitles(WorkoutById workout) {
+  List<String> _sectionTitles(WorkoutData workout) {
     return workout.workoutSections
         .map((ws) => ws.name ?? 'Section ${(ws.sortPosition + 1).toString()}')
         .toList();
@@ -87,18 +87,19 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final _queryVars = WorkoutByIdArguments(id: widget.id);
     return Query(
         options: QueryOptions(
-            document: WorkoutByIdQuery().document,
-            variables: {'id': widget.id}),
+            document: WorkoutByIdQuery(variables: _queryVars).document,
+            variables: _queryVars.toJson()),
         builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
             result: result,
             builder: () {
-              final WorkoutById workout =
-                  WorkoutById$Query.fromJson(result.data ?? {}).workoutById;
+              final WorkoutData _workoutData =
+                  WorkoutById$Query.fromJson(result.data ?? {}).workoutData;
               return CupertinoPageScaffold(
                 navigationBar: CupertinoNavigationBar(
-                  middle: NavBarTitle(workout.name),
+                  middle: NavBarTitle(_workoutData.name),
                   trailing: Icon(CupertinoIcons.ellipsis),
                 ),
                 child: Padding(
@@ -111,7 +112,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildAvatar(workout),
+                              _buildAvatar(_workoutData),
                               Row(
                                 children: [
                                   CupertinoButton(
@@ -128,8 +129,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                             ],
                           ),
                         ),
-                        if (workout.workoutGoals.isNotEmpty ||
-                            workout.workoutTags.isNotEmpty)
+                        if (_workoutData.workoutGoals.isNotEmpty ||
+                            _workoutData.workoutTags.isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
@@ -138,47 +139,50 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                   spacing: 5,
                                   runSpacing: 5,
                                   children: [
-                                    DifficultyLevelTag(workout.difficultyLevel),
-                                    ...workout.workoutGoals
+                                    DifficultyLevelTag(
+                                        _workoutData.difficultyLevel),
+                                    ..._workoutData.workoutGoals
                                         .map((g) => Tag(tag: g.name)),
-                                    ...workout.workoutTags
+                                    ..._workoutData.workoutTags
                                         .map((t) => Tag(tag: t.tag))
                                   ].toList(),
                                 ),
                               ],
                             ),
                           ),
-                        if (Utils.textNotNull(workout.description))
+                        if (Utils.textNotNull(_workoutData.description))
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: MyText(
-                              workout.description!,
+                              _workoutData.description!,
                               maxLines: 10,
                               lineHeight: 1.3,
                             ),
                           ),
-                        if (Utils.anyNotNull(
-                            [workout.introAudioUri, workout.introVideoUri]))
+                        if (Utils.anyNotNull([
+                          _workoutData.introAudioUri,
+                          _workoutData.introVideoUri
+                        ]))
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              if (workout.introVideoUri != null)
+                              if (_workoutData.introVideoUri != null)
                                 MyText('Intro Video'),
-                              if (workout.introAudioUri != null)
+                              if (_workoutData.introAudioUri != null)
                                 MyText('Intro Intro Audio')
                             ],
                           ),
                         HorizontalLine(),
-                        if (workout.workoutSections.length > 1)
+                        if (_workoutData.workoutSections.length > 1)
                           MyTabBarNav(
-                              titles: _sectionTitles(workout),
+                              titles: _sectionTitles(_workoutData),
                               handleTabChange: _handleTabChange,
                               activeTabIndex: activeSectionTabIndex)
-                        else if (workout.workoutSections[0].name != null)
-                          UnderlineTitle(workout.workoutSections[0].name!),
+                        else if (_workoutData.workoutSections[0].name != null)
+                          UnderlineTitle(_workoutData.workoutSections[0].name!),
                         FadeIn(
                             key: Key(activeSectionTabIndex.toString()),
-                            child: WorkoutDetailsSection(workout
+                            child: WorkoutDetailsSection(_workoutData
                                 .workoutSections[activeSectionTabIndex])),
                       ],
                     ),

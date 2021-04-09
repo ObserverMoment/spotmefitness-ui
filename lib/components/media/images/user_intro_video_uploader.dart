@@ -92,22 +92,21 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
               introVideoThumbUri
             }
           ''';
-    final Map<String, String> _data = {
-      'introVideoUri': videoUri,
-      'introVideoThumbUri': videoThumbUri
-    };
+
     try {
+      final _vars = UpdateUserArguments.fromJson({
+        'data': {'introVideoUri': videoUri, 'introVideoThumbUri': videoThumbUri}
+      });
+
       await GraphQL.updateObjectWithOptimisticFragment(
         client: context.graphQLClient,
-        document: UpdateUserMutation().document,
-        operationName: UpdateUserMutation().operationName,
-        variables: {
-          'data': _data,
-        },
+        document: UpdateUserMutation(variables: _vars).document,
+        operationName: UpdateUserMutation(variables: _vars).operationName,
+        variables: _vars.toJson(),
         fragment: _fragment,
         objectId: GetIt.I<AuthBloc>().authedUser!.id,
         objectType: 'User',
-        optimisticData: _data,
+        optimisticData: _vars.data.toJson(),
         onCompleted: (_) => widget.onUploadSuccess != null
             ? widget.onUploadSuccess!(videoUri, videoThumbUri)
             : null,

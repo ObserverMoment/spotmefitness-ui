@@ -75,8 +75,8 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
         ? GymProfile.fromJson(_backupJson!)
         : GymProfile.fromJson({
             '__typename': 'GymProfile',
-            'id': 'temmp_id',
-            'name': 'Profile X',
+            'id': 'temp_id',
+            'name': 'Profile ${DateTime.now().dateString}',
             'description': '',
             'Equipments': <Equipment>[]
           });
@@ -116,7 +116,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   void _handleSave() async {
     if (widget.gymProfile != null) {
       // Update
-      final args = UpdateGymProfileArguments(
+      final _vars = UpdateGymProfileArguments(
           data: UpdateGymProfileInput.fromJson({
         ..._activeGymProfile.toJson(),
         'Equipments': _activeGymProfile.equipments.map((e) => e.id).toList()
@@ -134,18 +134,18 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 
       await GraphQL.updateObjectWithOptimisticFragment(
         client: context.graphQLClient,
-        document: UpdateGymProfileMutation().document,
-        operationName: UpdateGymProfileMutation().operationName,
-        objectId: args.data.id,
+        document: UpdateGymProfileMutation(variables: _vars).document,
+        operationName: UpdateGymProfileMutation(variables: _vars).operationName,
+        objectId: _vars.data.id,
         objectType: 'GymProfile',
-        variables: args.toJson(),
+        variables: _vars.toJson(),
         fragment: fragment,
         optimisticData: _activeGymProfile.toJson(),
         onCompleteOptimistic: context.pop,
       );
     } else {
       // Create
-      final args = CreateGymProfileArguments(
+      final _vars = CreateGymProfileArguments(
           data: CreateGymProfileInput.fromJson({
         ..._activeGymProfile.toJson(),
         'Equipments': _activeGymProfile.equipments.map((e) => e.id).toList()
@@ -153,9 +153,10 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 
       await GraphQL.createWithQueryUpdate(
         client: context.graphQLClient,
-        mutationDocument: CreateGymProfileMutation().document,
-        mutationOperationName: CreateGymProfileMutation().operationName,
-        mutationVariables: args.toJson(),
+        mutationDocument: CreateGymProfileMutation(variables: _vars).document,
+        mutationOperationName:
+            CreateGymProfileMutation(variables: _vars).operationName,
+        mutationVariables: _vars.toJson(),
         queryDocument: GymProfilesQuery().document,
         queryOperationName: GymProfilesQuery().operationName,
         onCompleted: (_) => context.pop(),
@@ -172,13 +173,16 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   }
 
   void _deleteGymProfile() {
+    final _vars = DeleteGymProfileByIdArguments(id: _activeGymProfile.id);
+
     GraphQL.deleteObjectByIdOptimistic(
       client: context.graphQLClient,
-      mutationDocument: DeleteGymProfileByIdMutation().document,
-      mutationOperationName: DeleteGymProfileByIdMutation().operationName,
+      mutationDocument: DeleteGymProfileByIdMutation(variables: _vars).document,
+      mutationOperationName:
+          DeleteGymProfileByIdMutation(variables: _vars).operationName,
       queryDocument: GymProfilesQuery().document,
       queryOperationName: GymProfilesQuery().operationName,
-      objectId: _activeGymProfile.id,
+      objectId: _vars.id,
       objectType: 'GymProfile',
       onCompleteOptimistic: context.pop,
     );
@@ -210,7 +214,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
         handleSave: _handleSave,
         handleUndo: _handleUndo,
         inputValid: _inputValid(),
-        title: 'GymProfiles',
+        title: widget.gymProfile == null ? 'New Profile' : 'Edit Profile',
       ),
       child: Column(
         children: [

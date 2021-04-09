@@ -17,22 +17,26 @@ import 'package:spotmefitness_ui/services/graphql_client.dart';
 class ProfilePersonalPage extends StatelessWidget {
   Future<void> updateUserFields(
       GraphQLClient client, String id, String key, dynamic value) async {
-    Map<String, dynamic> data = {key: value};
+    Map<String, dynamic> _data = {
+      'data': {key: value}
+    };
     final String _fragment = '''
           fragment field on User {
             $key
           }
         ''';
 
+    final _vars = UpdateUserArguments.fromJson(_data);
+
     await GraphQL.updateObjectWithOptimisticFragment(
       client: client,
-      document: UpdateUserMutation().document,
-      operationName: UpdateUserMutation().operationName,
-      variables: {'data': data},
+      document: UpdateUserMutation(variables: _vars).document,
+      operationName: UpdateUserMutation(variables: _vars).operationName,
+      variables: _data,
       fragment: _fragment,
       objectId: id,
       objectType: 'User',
-      optimisticData: data,
+      optimisticData: {key: value},
     );
   }
 
@@ -64,7 +68,7 @@ class ProfilePersonalPage extends StatelessWidget {
                       validationMessage: 'Min 3, max 30 characters',
                       maxChars: 30,
                     ),
-                    EditableTextFieldArea(
+                    EditableTextAreaRow(
                       title: 'Bio',
                       text: user.bio ?? '',
                       onSave: (newText) => updateUserFields(

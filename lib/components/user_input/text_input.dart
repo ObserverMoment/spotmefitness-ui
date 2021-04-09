@@ -28,7 +28,7 @@ class MyTextFormFieldRow extends StatelessWidget {
       children: [
         CupertinoTextFormFieldRow(
             controller: controller,
-            padding: EdgeInsets.only(top: 16, bottom: 8, left: 18, right: 12),
+            padding: EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
             prefix: prefix,
             autofocus: autofocus,
             placeholder: placeholder,

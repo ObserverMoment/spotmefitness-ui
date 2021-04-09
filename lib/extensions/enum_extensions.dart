@@ -1,57 +1,18 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-extension GenderExtension on Gender {
-  String get display {
-    switch (this) {
-      case Gender.male:
-        return 'Male';
-      case Gender.female:
-        return 'Female';
-      case Gender.nonbinary:
-        return 'Non-binary';
-      case Gender.none:
-        return 'None';
-      default:
-        throw new Exception('This is not a valid Gender enum: $this');
-    }
-  }
-
-  String get apiValue {
-    switch (this) {
-      case Gender.male:
-        return 'MALE';
-      case Gender.female:
-        return 'FEMALE';
-      case Gender.nonbinary:
-        return 'NONBINARY';
-      case Gender.none:
-        return 'NONE';
-      default:
-        throw new Exception('This is not a valid Gender enum: $this');
-    }
-  }
+extension ContentAccessScopeExtension on ContentAccessScope {
+  String get display => describeEnum(this).capitalize;
+  String get apiValue => describeEnum(this).toUpperCase();
 }
 
 extension DifficultyLevelExtension on DifficultyLevel {
-  String get displayText {
-    switch (this) {
-      case DifficultyLevel.light:
-        return 'Light';
-      case DifficultyLevel.challenging:
-        return 'Challenging';
-      case DifficultyLevel.intermediate:
-        return 'Intermediate';
-      case DifficultyLevel.advanced:
-        return 'Advanced';
-      case DifficultyLevel.elite:
-        return 'Elite';
-      default:
-        throw new Exception('This is not a valid DifficultyLevel enum: $this');
-    }
-  }
+  String get display => describeEnum(this).capitalize;
+  String get apiValue => describeEnum(this).toUpperCase();
 
   Color get displayColor {
     switch (this) {
@@ -65,23 +26,6 @@ extension DifficultyLevelExtension on DifficultyLevel {
         return Styles.difficultyLevelFour;
       case DifficultyLevel.elite:
         return Styles.difficultyLevelFive;
-      default:
-        throw new Exception('This is not a valid DifficultyLevel enum: $this');
-    }
-  }
-
-  String get apiValue {
-    switch (this) {
-      case DifficultyLevel.light:
-        return 'LIGHT';
-      case DifficultyLevel.challenging:
-        return 'CHALLENGING';
-      case DifficultyLevel.intermediate:
-        return 'INTERMEDIATE';
-      case DifficultyLevel.advanced:
-        return 'ADVANCED';
-      case DifficultyLevel.elite:
-        return 'ELITE';
       default:
         throw new Exception('This is not a valid DifficultyLevel enum: $this');
     }
@@ -104,20 +48,12 @@ extension DistanceUnitExtension on DistanceUnit {
     }
   }
 
-  String get apiValue {
-    switch (this) {
-      case DistanceUnit.metres:
-        return 'METRES';
-      case DistanceUnit.kilometres:
-        return 'KILOMETRES';
-      case DistanceUnit.yards:
-        return 'YARDS';
-      case DistanceUnit.miles:
-        return 'MILES';
-      default:
-        throw new Exception('This is not a valid DistanceUnit enum: $this');
-    }
-  }
+  String get apiValue => describeEnum(this).toUpperCase();
+}
+
+extension GenderExtension on Gender {
+  String get display => describeEnum(this).capitalize;
+  String get apiValue => describeEnum(this).toUpperCase();
 }
 
 extension LoadUnitExtension on LoadUnit {
@@ -134,16 +70,5 @@ extension LoadUnitExtension on LoadUnit {
     }
   }
 
-  String get apiValue {
-    switch (this) {
-      case LoadUnit.kg:
-        return 'KG';
-      case LoadUnit.lb:
-        return 'LB';
-      case LoadUnit.bodyweightpercent:
-        return 'BODYWEIGHTPERCENT';
-      default:
-        throw new Exception('This is not a valid LoadUnit enum: $this');
-    }
-  }
+  String get apiValue => describeEnum(this).toUpperCase();
 }

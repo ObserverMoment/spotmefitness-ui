@@ -97,7 +97,7 @@ class DifficultyLevelTag extends StatelessWidget {
           color: difficultyLevel.displayColor),
       child: Center(
         child: MyText(
-          difficultyLevel.displayText,
+          difficultyLevel.display,
           size: FONTSIZE.TINY,
           weight: FontWeight.bold,
           color: Styles.white,

@@ -8,7 +8,7 @@ type Query {
   bodyAreas: [BodyArea!]!
   equipments: [Equipment!]!
   moveTypes: [MoveType!]!
-  workoutGoals: [WorkoutGoal]!
+  workoutGoals: [WorkoutGoal!]!
   workoutSectionTypes: [WorkoutSectionType!]!
   userLoggedWorkouts: [LoggedWorkout!]!
   standardMoves: [Move!]!
@@ -117,7 +117,6 @@ type WorkoutGoal {
   id: ID!
   name: String!
   description: String!
-  imageUri: String
 }
 type WorkoutSectionType {
   id: ID!
@@ -137,7 +136,6 @@ type BodyArea {
   upperLower: BodyAreaUpperLower!
 }
 type BodyAreaMoveScore {
-  moveId_bodyAreaId: ID!
   Move: Move!
   BodyArea: BodyArea!
   score: Float!

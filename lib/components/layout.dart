@@ -104,42 +104,45 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
       required this.handleClose,
       required this.inputValid})
       : super(
-            leading: Align(
-                alignment: Alignment.centerLeft, child: NavBarTitle(title)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (formIsDirty)
-                  FadeIn(
-                    child: TextButton(
-                        destructive: true,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        text: 'Undo all',
-                        underline: false,
-                        onPressed: handleUndo),
+          leading:
+              Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
+          trailing: formIsDirty
+              ? FadeIn(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextButton(
+                          destructive: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          text: 'Undo all',
+                          underline: false,
+                          onPressed: handleUndo),
+                      AnimatedSwitcher(
+                        duration: Duration(milliseconds: 300),
+                        child: inputValid
+                            ? TextButton(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                confirm: true,
+                                underline: false,
+                                text: 'Save',
+                                onPressed: handleSave)
+                            : TextButton(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                underline: false,
+                                text: 'Close',
+                                onPressed: handleClose),
+                      )
+                    ],
                   ),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 300),
-                  child: inputValid
-                      ? TextButton(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          confirm: true,
-                          underline: false,
-                          text: 'Save',
-                          onPressed: handleSave)
-                      : TextButton(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          underline: false,
-                          text: 'Close',
-                          onPressed: handleClose),
-                ),
-                TextButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    underline: false,
-                    text: 'Close',
-                    onPressed: handleClose),
-              ],
-            ));
+                )
+              : TextButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  underline: false,
+                  text: 'Close',
+                  onPressed: handleClose),
+        );
 }
 
 class HorizontalLine extends StatelessWidget {

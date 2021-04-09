@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart = 2.12
 
-import 'package:meta/meta.dart';
 import 'package:artemis/artemis.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -10,7 +10,7 @@ part 'graphql_api.graphql.g.dart';
 
 mixin UserMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   String? avatarUri;
   String? bio;
@@ -27,35 +27,31 @@ mixin UserMixin {
 }
 mixin EquipmentMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
   late bool loadAdjustable;
 }
 mixin GymProfileMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
   String? description;
 }
-mixin UserInfoMixin {
+mixin BodyAreaMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
-  late String id;
-  String? avatarUri;
-  String? displayName;
-}
-mixin WorkoutSectionTypeMixin {
-  @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
-  late String description;
+  @JsonKey(unknownEnumValue: BodyAreaFrontBack.artemisUnknown)
+  late BodyAreaFrontBack frontBack;
+  @JsonKey(unknownEnumValue: BodyAreaUpperLower.artemisUnknown)
+  late BodyAreaUpperLower upperLower;
 }
 mixin WorkoutMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
   String? description;
@@ -68,27 +64,38 @@ mixin WorkoutMixin {
   String? introVideoThumbUri;
   String? introAudioUri;
 }
+mixin UserInfoMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  String? avatarUri;
+  String? displayName;
+}
+mixin WorkoutGoalMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  late String name;
+  late String description;
+}
+mixin WorkoutSectionTypeMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  late String name;
+  late String description;
+}
 mixin MoveTypeMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
   String? description;
   String? imageUri;
 }
-mixin BodyAreaMixin {
-  @JsonKey(name: '__typename')
-  late String $$typename;
-  late String id;
-  late String name;
-  @JsonKey(unknownEnumValue: BodyAreaFrontBack.artemisUnknown)
-  late BodyAreaFrontBack frontBack;
-  @JsonKey(unknownEnumValue: BodyAreaUpperLower.artemisUnknown)
-  late BodyAreaUpperLower upperLower;
-}
 mixin MoveMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late String name;
   String? description;
@@ -101,7 +108,7 @@ mixin MoveMixin {
 }
 mixin WorkoutMoveMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late int sortPosition;
   late double reps;
@@ -115,7 +122,7 @@ mixin WorkoutMoveMixin {
 }
 mixin WorkoutSetMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
   late int sortPosition;
   late int rounds;
@@ -123,9 +130,9 @@ mixin WorkoutSetMixin {
 }
 mixin WorkoutSectionMixin {
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
   late String id;
-  late String? name;
+  String? name;
   String? notes;
   late int rounds;
   int? timecap;
@@ -215,47 +222,47 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
       _$UpdateUserInputFromJson(json);
 
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
-  late UserProfileScope? userProfileScope;
+  UserProfileScope? userProfileScope;
 
-  late String? avatarUri;
+  String? avatarUri;
 
-  late String? introVideoUri;
+  String? introVideoUri;
 
-  late String? introVideoThumbUri;
+  String? introVideoThumbUri;
 
-  late String? bio;
+  String? bio;
 
-  late String? tagline;
+  String? tagline;
 
   @JsonKey(
       fromJson: fromGraphQLDateTimeToDartDateTime,
       toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime? birthdate;
+  DateTime? birthdate;
 
-  late String? city;
+  String? city;
 
-  late String? countryCode;
+  String? countryCode;
 
-  late String? displayName;
+  String? displayName;
 
-  late String? instagramUrl;
+  String? instagramUrl;
 
-  late String? tiktokUrl;
+  String? tiktokUrl;
 
-  late String? youtubeUrl;
+  String? youtubeUrl;
 
-  late String? snapUrl;
+  String? snapUrl;
 
-  late String? linkedinUrl;
+  String? linkedinUrl;
 
-  late String? firstname;
+  String? firstname;
 
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
-  late Gender? gender;
+  Gender? gender;
 
-  late bool? hasOnboarded;
+  bool? hasOnboarded;
 
-  late String? lastname;
+  String? lastname;
 
   @override
   List<Object?> get props => [
@@ -290,7 +297,7 @@ class DeleteGymProfileById$Mutation extends JsonSerializable
   factory DeleteGymProfileById$Mutation.fromJson(Map<String, dynamic> json) =>
       _$DeleteGymProfileById$MutationFromJson(json);
 
-  late String? deleteGymProfileById;
+  String? deleteGymProfileById;
 
   @override
   List<Object?> get props => [deleteGymProfileById];
@@ -348,7 +355,7 @@ class CreateGymProfileInput extends JsonSerializable with EquatableMixin {
 
   late String name;
 
-  late String? description;
+  String? description;
 
   @JsonKey(name: 'Equipments')
   late List<String> equipments;
@@ -396,12 +403,12 @@ class UpdateGymProfileInput extends JsonSerializable with EquatableMixin {
 
   late String id;
 
-  late String? name;
+  String? name;
 
-  late String? description;
+  String? description;
 
   @JsonKey(name: 'Equipments')
-  late List<String>? equipments;
+  List<String>? equipments;
 
   @override
   List<Object?> get props => [id, name, description, equipments];
@@ -424,6 +431,32 @@ class CheckUniqueDisplayName$Query extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
+class BodyArea extends JsonSerializable with EquatableMixin, BodyAreaMixin {
+  BodyArea();
+
+  factory BodyArea.fromJson(Map<String, dynamic> json) =>
+      _$BodyAreaFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, name, frontBack, upperLower];
+  Map<String, dynamic> toJson() => _$BodyAreaToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class BodyAreas$Query extends JsonSerializable with EquatableMixin {
+  BodyAreas$Query();
+
+  factory BodyAreas$Query.fromJson(Map<String, dynamic> json) =>
+      _$BodyAreas$QueryFromJson(json);
+
+  late List<BodyArea> bodyAreas;
+
+  @override
+  List<Object?> get props => [bodyAreas];
+  Map<String, dynamic> toJson() => _$BodyAreas$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class Equipments$Query extends JsonSerializable with EquatableMixin {
   Equipments$Query();
 
@@ -435,6 +468,104 @@ class Equipments$Query extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [equipments];
   Map<String, dynamic> toJson() => _$Equipments$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Workout extends JsonSerializable with EquatableMixin, WorkoutMixin {
+  Workout();
+
+  factory Workout.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        name,
+        description,
+        difficultyLevel,
+        coverImageUri,
+        contentAccessScope,
+        introVideoUri,
+        introVideoThumbUri,
+        introAudioUri
+      ];
+  Map<String, dynamic> toJson() => _$WorkoutToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkout$Mutation extends JsonSerializable with EquatableMixin {
+  UpdateWorkout$Mutation();
+
+  factory UpdateWorkout$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkout$MutationFromJson(json);
+
+  late Workout updateWorkout;
+
+  @override
+  List<Object?> get props => [updateWorkout];
+  Map<String, dynamic> toJson() => _$UpdateWorkout$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
+  UpdateWorkoutInput(
+      {required this.id,
+      this.name,
+      this.description,
+      this.introVideoUri,
+      this.introVideoThumbUri,
+      this.introAudioUri,
+      this.coverImageUri,
+      this.difficultyLevel,
+      this.contentAccessScope,
+      this.workoutGoals,
+      required this.workoutTags});
+
+  factory UpdateWorkoutInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkoutInputFromJson(json);
+
+  late String id;
+
+  String? name;
+
+  String? description;
+
+  String? introVideoUri;
+
+  String? introVideoThumbUri;
+
+  String? introAudioUri;
+
+  String? coverImageUri;
+
+  @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
+  DifficultyLevel? difficultyLevel;
+
+  @JsonKey(unknownEnumValue: ContentAccessScope.artemisUnknown)
+  ContentAccessScope? contentAccessScope;
+
+  @JsonKey(name: 'WorkoutGoals')
+  List<String>? workoutGoals;
+
+  @JsonKey(name: 'WorkoutTags')
+  late List<String> workoutTags;
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        introVideoUri,
+        introVideoThumbUri,
+        introAudioUri,
+        coverImageUri,
+        difficultyLevel,
+        contentAccessScope,
+        workoutGoals,
+        workoutTags
+      ];
+  Map<String, dynamic> toJson() => _$UpdateWorkoutInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -450,21 +581,15 @@ class UserInfo extends JsonSerializable with EquatableMixin, UserInfoMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class WorkoutGoal extends JsonSerializable with EquatableMixin {
+class WorkoutGoal extends JsonSerializable
+    with EquatableMixin, WorkoutGoalMixin {
   WorkoutGoal();
 
   factory WorkoutGoal.fromJson(Map<String, dynamic> json) =>
       _$WorkoutGoalFromJson(json);
 
-  @JsonKey(name: '__typename')
-  late String $$typename;
-
-  late String id;
-
-  late String name;
-
   @override
-  List<Object?> get props => [$$typename, id, name];
+  List<Object?> get props => [$$typename, id, name, description];
   Map<String, dynamic> toJson() => _$WorkoutGoalToJson(this);
 }
 
@@ -476,7 +601,7 @@ class WorkoutTag extends JsonSerializable with EquatableMixin {
       _$WorkoutTagFromJson(json);
 
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
 
   late String id;
 
@@ -508,7 +633,7 @@ class UserWorkoutsMove extends JsonSerializable with EquatableMixin {
       _$UserWorkoutsMoveFromJson(json);
 
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
 
   late String id;
 
@@ -530,7 +655,7 @@ class UserWorkoutsWorkoutMoves extends JsonSerializable with EquatableMixin {
       _$UserWorkoutsWorkoutMovesFromJson(json);
 
   @JsonKey(name: 'Equipment')
-  late Equipment? equipment;
+  Equipment? equipment;
 
   @JsonKey(name: 'UserWorkoutsMove')
   late UserWorkoutsMove userWorkoutsMove;
@@ -563,11 +688,11 @@ class UserWorkoutsWorkoutSections extends JsonSerializable with EquatableMixin {
       _$UserWorkoutsWorkoutSectionsFromJson(json);
 
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
 
   late String id;
 
-  late int? timecap;
+  int? timecap;
 
   @JsonKey(name: 'WorkoutSectionType')
   late WorkoutSectionType workoutSectionType;
@@ -589,21 +714,21 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
       _$WorkoutSummaryFromJson(json);
 
   @JsonKey(name: '__typename')
-  late String $$typename;
+  String? $$typename;
 
   late String id;
 
   late String name;
 
-  late String? description;
+  String? description;
 
   @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
   late DifficultyLevel difficultyLevel;
 
-  late String? coverImageUri;
+  String? coverImageUri;
 
   @JsonKey(name: 'UserInfo')
-  late UserInfo? userInfo;
+  UserInfo? userInfo;
 
   @JsonKey(name: 'WorkoutGoals')
   late List<WorkoutGoal> workoutGoals;
@@ -646,29 +771,6 @@ class UserWorkouts$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Workout extends JsonSerializable with EquatableMixin, WorkoutMixin {
-  Workout();
-
-  factory Workout.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        name,
-        description,
-        difficultyLevel,
-        coverImageUri,
-        contentAccessScope,
-        introVideoUri,
-        introVideoThumbUri,
-        introAudioUri
-      ];
-  Map<String, dynamic> toJson() => _$WorkoutToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class CreateWorkout$Mutation extends JsonSerializable with EquatableMixin {
   CreateWorkout$Mutation();
 
@@ -702,15 +804,15 @@ class CreateWorkoutInput extends JsonSerializable with EquatableMixin {
 
   late String name;
 
-  late String? description;
+  String? description;
 
-  late String? introVideoUri;
+  String? introVideoUri;
 
-  late String? introVideoThumbUri;
+  String? introVideoThumbUri;
 
-  late String? introAudioUri;
+  String? introAudioUri;
 
-  late String? coverImageUri;
+  String? coverImageUri;
 
   @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
   late DifficultyLevel difficultyLevel;
@@ -767,33 +869,33 @@ class CreateWorkoutSectionInput extends JsonSerializable with EquatableMixin {
   factory CreateWorkoutSectionInput.fromJson(Map<String, dynamic> json) =>
       _$CreateWorkoutSectionInputFromJson(json);
 
-  late String? name;
+  String? name;
 
-  late String? notes;
+  String? notes;
 
-  late int? rounds;
+  int? rounds;
 
-  late int? timecap;
+  int? timecap;
 
   late int sortPosition;
 
-  late String? introVideoUri;
+  String? introVideoUri;
 
-  late String? introVideoThumbUri;
+  String? introVideoThumbUri;
 
-  late String? introAudioUri;
+  String? introAudioUri;
 
-  late String? classVideoUri;
+  String? classVideoUri;
 
-  late String? classVideoThumbUri;
+  String? classVideoThumbUri;
 
-  late String? classAudioUri;
+  String? classAudioUri;
 
-  late String? outroVideoUri;
+  String? outroVideoUri;
 
-  late String? outroVideoThumbUri;
+  String? outroVideoThumbUri;
 
-  late String? outroAudioUri;
+  String? outroAudioUri;
 
   @JsonKey(name: 'WorkoutSectionType')
   late String workoutSectionType;
@@ -836,18 +938,6 @@ class MoveType extends JsonSerializable with EquatableMixin, MoveTypeMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class BodyArea extends JsonSerializable with EquatableMixin, BodyAreaMixin {
-  BodyArea();
-
-  factory BodyArea.fromJson(Map<String, dynamic> json) =>
-      _$BodyAreaFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, name, frontBack, upperLower];
-  Map<String, dynamic> toJson() => _$BodyAreaToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class BodyAreaMoveScore extends JsonSerializable with EquatableMixin {
   BodyAreaMoveScore();
 
@@ -874,7 +964,7 @@ class Move extends JsonSerializable with EquatableMixin, MoveMixin {
   late MoveType moveType;
 
   @JsonKey(name: 'BodyAreaMoveScores')
-  late List<BodyAreaMoveScore>? bodyAreaMoveScores;
+  List<BodyAreaMoveScore>? bodyAreaMoveScores;
 
   @JsonKey(name: 'RequiredEquipments')
   late List<Equipment> requiredEquipments;
@@ -909,7 +999,7 @@ class WorkoutMove extends JsonSerializable
       _$WorkoutMoveFromJson(json);
 
   @JsonKey(name: 'Equipment')
-  late Equipment? equipment;
+  Equipment? equipment;
 
   @JsonKey(name: 'Move')
   late Move move;
@@ -982,14 +1072,14 @@ class WorkoutSection extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class WorkoutById extends JsonSerializable with EquatableMixin, WorkoutMixin {
-  WorkoutById();
+class WorkoutData extends JsonSerializable with EquatableMixin, WorkoutMixin {
+  WorkoutData();
 
-  factory WorkoutById.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutByIdFromJson(json);
+  factory WorkoutData.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutDataFromJson(json);
 
   @JsonKey(name: 'UserInfo')
-  late UserInfo? userInfo;
+  UserInfo? userInfo;
 
   @JsonKey(name: 'WorkoutGoals')
   late List<WorkoutGoal> workoutGoals;
@@ -1017,7 +1107,7 @@ class WorkoutById extends JsonSerializable with EquatableMixin, WorkoutMixin {
         workoutTags,
         workoutSections
       ];
-  Map<String, dynamic> toJson() => _$WorkoutByIdToJson(this);
+  Map<String, dynamic> toJson() => _$WorkoutDataToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1027,101 +1117,26 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   factory WorkoutById$Query.fromJson(Map<String, dynamic> json) =>
       _$WorkoutById$QueryFromJson(json);
 
-  @JsonKey(name: 'WorkoutById')
-  late WorkoutById workoutById;
+  @JsonKey(name: 'WorkoutData')
+  late WorkoutData workoutData;
 
   @override
-  List<Object?> get props => [workoutById];
+  List<Object?> get props => [workoutData];
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class BodyAreas$Query extends JsonSerializable with EquatableMixin {
-  BodyAreas$Query();
+class WorkoutGoals$Query extends JsonSerializable with EquatableMixin {
+  WorkoutGoals$Query();
 
-  factory BodyAreas$Query.fromJson(Map<String, dynamic> json) =>
-      _$BodyAreas$QueryFromJson(json);
+  factory WorkoutGoals$Query.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutGoals$QueryFromJson(json);
 
-  late List<BodyArea> bodyAreas;
-
-  @override
-  List<Object?> get props => [bodyAreas];
-  Map<String, dynamic> toJson() => _$BodyAreas$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateWorkout$Mutation extends JsonSerializable with EquatableMixin {
-  UpdateWorkout$Mutation();
-
-  factory UpdateWorkout$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$UpdateWorkout$MutationFromJson(json);
-
-  late Workout updateWorkout;
+  late List<WorkoutGoal> workoutGoals;
 
   @override
-  List<Object?> get props => [updateWorkout];
-  Map<String, dynamic> toJson() => _$UpdateWorkout$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
-  UpdateWorkoutInput(
-      {required this.id,
-      this.name,
-      this.description,
-      this.introVideoUri,
-      this.introVideoThumbUri,
-      this.introAudioUri,
-      this.coverImageUri,
-      this.difficultyLevel,
-      this.contentAccessScope,
-      this.workoutGoals,
-      required this.workoutTags});
-
-  factory UpdateWorkoutInput.fromJson(Map<String, dynamic> json) =>
-      _$UpdateWorkoutInputFromJson(json);
-
-  late String id;
-
-  late String? name;
-
-  late String? description;
-
-  late String? introVideoUri;
-
-  late String? introVideoThumbUri;
-
-  late String? introAudioUri;
-
-  late String? coverImageUri;
-
-  @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
-  late DifficultyLevel? difficultyLevel;
-
-  @JsonKey(unknownEnumValue: ContentAccessScope.artemisUnknown)
-  late ContentAccessScope? contentAccessScope;
-
-  @JsonKey(name: 'WorkoutGoals')
-  late List<String>? workoutGoals;
-
-  @JsonKey(name: 'WorkoutTags')
-  late List<String> workoutTags;
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        description,
-        introVideoUri,
-        introVideoThumbUri,
-        introAudioUri,
-        coverImageUri,
-        difficultyLevel,
-        contentAccessScope,
-        workoutGoals,
-        workoutTags
-      ];
-  Map<String, dynamic> toJson() => _$UpdateWorkoutInputToJson(this);
+  List<Object?> get props => [workoutGoals];
+  Map<String, dynamic> toJson() => _$WorkoutGoals$QueryToJson(this);
 }
 
 enum Gender {
@@ -1144,32 +1159,6 @@ enum UserProfileScope {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum DifficultyLevel {
-  @JsonValue('LIGHT')
-  light,
-  @JsonValue('CHALLENGING')
-  challenging,
-  @JsonValue('INTERMEDIATE')
-  intermediate,
-  @JsonValue('ADVANCED')
-  advanced,
-  @JsonValue('ELITE')
-  elite,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
-enum ContentAccessScope {
-  @JsonValue('PRIVATE')
-  private,
-  @JsonValue('PUBLIC')
-  public,
-  @JsonValue('GROUP')
-  group,
-  @JsonValue('OFFICIAL')
-  official,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
 enum BodyAreaFrontBack {
   @JsonValue('BACK')
   back,
@@ -1187,6 +1176,32 @@ enum BodyAreaUpperLower {
   lower,
   @JsonValue('UPPER')
   upper,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum ContentAccessScope {
+  @JsonValue('PRIVATE')
+  private,
+  @JsonValue('PUBLIC')
+  public,
+  @JsonValue('GROUP')
+  group,
+  @JsonValue('OFFICIAL')
+  official,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum DifficultyLevel {
+  @JsonValue('LIGHT')
+  light,
+  @JsonValue('CHALLENGING')
+  challenging,
+  @JsonValue('INTERMEDIATE')
+  intermediate,
+  @JsonValue('ADVANCED')
+  advanced,
+  @JsonValue('ELITE')
+  elite,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -1341,7 +1356,7 @@ class UpdateUserArguments extends JsonSerializable with EquatableMixin {
   factory UpdateUserArguments.fromJson(Map<String, dynamic> json) =>
       _$UpdateUserArgumentsFromJson(json);
 
-  final UpdateUserInput data;
+  late UpdateUserInput data;
 
   @override
   List<Object?> get props => [data];
@@ -1351,7 +1366,7 @@ class UpdateUserArguments extends JsonSerializable with EquatableMixin {
 
 class UpdateUserMutation
     extends GraphQLQuery<UpdateUser$Mutation, UpdateUserArguments> {
-  UpdateUserMutation({this.variables});
+  UpdateUserMutation({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -1455,7 +1470,7 @@ class UpdateUserMutation
   final String operationName = 'updateUser';
 
   @override
-  final UpdateUserArguments? variables;
+  final UpdateUserArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -1473,7 +1488,7 @@ class DeleteGymProfileByIdArguments extends JsonSerializable
   factory DeleteGymProfileByIdArguments.fromJson(Map<String, dynamic> json) =>
       _$DeleteGymProfileByIdArgumentsFromJson(json);
 
-  final String id;
+  late String id;
 
   @override
   List<Object?> get props => [id];
@@ -1483,7 +1498,7 @@ class DeleteGymProfileByIdArguments extends JsonSerializable
 
 class DeleteGymProfileByIdMutation extends GraphQLQuery<
     DeleteGymProfileById$Mutation, DeleteGymProfileByIdArguments> {
-  DeleteGymProfileByIdMutation({this.variables});
+  DeleteGymProfileByIdMutation({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -1516,7 +1531,7 @@ class DeleteGymProfileByIdMutation extends GraphQLQuery<
   final String operationName = 'deleteGymProfileById';
 
   @override
-  final DeleteGymProfileByIdArguments? variables;
+  final DeleteGymProfileByIdArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -1533,7 +1548,7 @@ class CreateGymProfileArguments extends JsonSerializable with EquatableMixin {
   factory CreateGymProfileArguments.fromJson(Map<String, dynamic> json) =>
       _$CreateGymProfileArgumentsFromJson(json);
 
-  final CreateGymProfileInput data;
+  late CreateGymProfileInput data;
 
   @override
   List<Object?> get props => [data];
@@ -1543,7 +1558,7 @@ class CreateGymProfileArguments extends JsonSerializable with EquatableMixin {
 
 class CreateGymProfileMutation
     extends GraphQLQuery<CreateGymProfile$Mutation, CreateGymProfileArguments> {
-  CreateGymProfileMutation({this.variables});
+  CreateGymProfileMutation({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -1654,7 +1669,7 @@ class CreateGymProfileMutation
   final String operationName = 'createGymProfile';
 
   @override
-  final CreateGymProfileArguments? variables;
+  final CreateGymProfileArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -1778,7 +1793,7 @@ class UpdateGymProfileArguments extends JsonSerializable with EquatableMixin {
   factory UpdateGymProfileArguments.fromJson(Map<String, dynamic> json) =>
       _$UpdateGymProfileArgumentsFromJson(json);
 
-  final UpdateGymProfileInput data;
+  late UpdateGymProfileInput data;
 
   @override
   List<Object?> get props => [data];
@@ -1788,7 +1803,7 @@ class UpdateGymProfileArguments extends JsonSerializable with EquatableMixin {
 
 class UpdateGymProfileMutation
     extends GraphQLQuery<UpdateGymProfile$Mutation, UpdateGymProfileArguments> {
-  UpdateGymProfileMutation({this.variables});
+  UpdateGymProfileMutation({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -1899,7 +1914,7 @@ class UpdateGymProfileMutation
   final String operationName = 'updateGymProfile';
 
   @override
-  final UpdateGymProfileArguments? variables;
+  final UpdateGymProfileArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -1917,7 +1932,7 @@ class CheckUniqueDisplayNameArguments extends JsonSerializable
   factory CheckUniqueDisplayNameArguments.fromJson(Map<String, dynamic> json) =>
       _$CheckUniqueDisplayNameArgumentsFromJson(json);
 
-  final String displayName;
+  late String displayName;
 
   @override
   List<Object?> get props => [displayName];
@@ -1928,7 +1943,7 @@ class CheckUniqueDisplayNameArguments extends JsonSerializable
 
 class CheckUniqueDisplayNameQuery extends GraphQLQuery<
     CheckUniqueDisplayName$Query, CheckUniqueDisplayNameArguments> {
-  CheckUniqueDisplayNameQuery({this.variables});
+  CheckUniqueDisplayNameQuery({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -1962,13 +1977,84 @@ class CheckUniqueDisplayNameQuery extends GraphQLQuery<
   final String operationName = 'checkUniqueDisplayName';
 
   @override
-  final CheckUniqueDisplayNameArguments? variables;
+  final CheckUniqueDisplayNameArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
   @override
   CheckUniqueDisplayName$Query parse(Map<String, dynamic> json) =>
       CheckUniqueDisplayName$Query.fromJson(json);
+}
+
+class BodyAreasQuery extends GraphQLQuery<BodyAreas$Query, JsonSerializable> {
+  BodyAreasQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'bodyAreas'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'bodyAreas'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'BodyArea'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'BodyArea'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'BodyArea'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'frontBack'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'upperLower'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'bodyAreas';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  BodyAreas$Query parse(Map<String, dynamic> json) =>
+      BodyAreas$Query.fromJson(json);
 }
 
 class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
@@ -2034,6 +2120,138 @@ class EquipmentsQuery extends GraphQLQuery<Equipments$Query, JsonSerializable> {
   @override
   Equipments$Query parse(Map<String, dynamic> json) =>
       Equipments$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkoutArguments extends JsonSerializable with EquatableMixin {
+  UpdateWorkoutArguments({required this.data});
+
+  @override
+  factory UpdateWorkoutArguments.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkoutArgumentsFromJson(json);
+
+  late UpdateWorkoutInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$UpdateWorkoutArgumentsToJson(this);
+}
+
+class UpdateWorkoutMutation
+    extends GraphQLQuery<UpdateWorkout$Mutation, UpdateWorkoutArguments> {
+  UpdateWorkoutMutation({required this.variables});
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.mutation,
+        name: NameNode(value: 'updateWorkout'),
+        variableDefinitions: [
+          VariableDefinitionNode(
+              variable: VariableNode(name: NameNode(value: 'data')),
+              type: NamedTypeNode(
+                  name: NameNode(value: 'UpdateWorkoutInput'), isNonNull: true),
+              defaultValue: DefaultValueNode(value: null),
+              directives: [])
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'updateWorkout'),
+              alias: null,
+              arguments: [
+                ArgumentNode(
+                    name: NameNode(value: 'data'),
+                    value: VariableNode(name: NameNode(value: 'data')))
+              ],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'Workout'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'Workout'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'Workout'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'description'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'difficultyLevel'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'coverImageUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'contentAccessScope'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'introVideoUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'introVideoThumbUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'introAudioUri'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'updateWorkout';
+
+  @override
+  final UpdateWorkoutArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateWorkout$Mutation parse(Map<String, dynamic> json) =>
+      UpdateWorkout$Mutation.fromJson(json);
 }
 
 class UserWorkoutsQuery
@@ -2105,24 +2323,8 @@ class UserWorkoutsQuery
                     arguments: [],
                     directives: [],
                     selectionSet: SelectionSetNode(selections: [
-                      FieldNode(
-                          name: NameNode(value: '__typename'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'id'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'name'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null)
+                      FragmentSpreadNode(
+                          name: NameNode(value: 'WorkoutGoal'), directives: [])
                     ])),
                 FieldNode(
                     name: NameNode(value: 'WorkoutTags'),
@@ -2284,6 +2486,38 @@ class UserWorkoutsQuery
               selectionSet: null)
         ])),
     FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutGoal'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutGoal'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'description'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ])),
+    FragmentDefinitionNode(
         name: NameNode(value: 'WorkoutSectionType'),
         typeCondition: TypeConditionNode(
             on: NamedTypeNode(
@@ -2367,7 +2601,7 @@ class CreateWorkoutArguments extends JsonSerializable with EquatableMixin {
   factory CreateWorkoutArguments.fromJson(Map<String, dynamic> json) =>
       _$CreateWorkoutArgumentsFromJson(json);
 
-  final CreateWorkoutInput data;
+  late CreateWorkoutInput data;
 
   @override
   List<Object?> get props => [data];
@@ -2377,7 +2611,7 @@ class CreateWorkoutArguments extends JsonSerializable with EquatableMixin {
 
 class CreateWorkoutMutation
     extends GraphQLQuery<CreateWorkout$Mutation, CreateWorkoutArguments> {
-  CreateWorkoutMutation({this.variables});
+  CreateWorkoutMutation({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -2482,7 +2716,7 @@ class CreateWorkoutMutation
   final String operationName = 'createWorkout';
 
   @override
-  final CreateWorkoutArguments? variables;
+  final CreateWorkoutArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -2499,7 +2733,7 @@ class WorkoutByIdArguments extends JsonSerializable with EquatableMixin {
   factory WorkoutByIdArguments.fromJson(Map<String, dynamic> json) =>
       _$WorkoutByIdArgumentsFromJson(json);
 
-  final String id;
+  late String id;
 
   @override
   List<Object?> get props => [id];
@@ -2509,7 +2743,7 @@ class WorkoutByIdArguments extends JsonSerializable with EquatableMixin {
 
 class WorkoutByIdQuery
     extends GraphQLQuery<WorkoutById$Query, WorkoutByIdArguments> {
-  WorkoutByIdQuery({this.variables});
+  WorkoutByIdQuery({required this.variables});
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
@@ -2527,7 +2761,7 @@ class WorkoutByIdQuery
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
               name: NameNode(value: 'workoutById'),
-              alias: NameNode(value: 'WorkoutById'),
+              alias: NameNode(value: 'WorkoutData'),
               arguments: [
                 ArgumentNode(
                     name: NameNode(value: 'id'),
@@ -2552,24 +2786,8 @@ class WorkoutByIdQuery
                     arguments: [],
                     directives: [],
                     selectionSet: SelectionSetNode(selections: [
-                      FieldNode(
-                          name: NameNode(value: '__typename'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'id'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'name'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null)
+                      FragmentSpreadNode(
+                          name: NameNode(value: 'WorkoutGoal'), directives: [])
                     ])),
                 FieldNode(
                     name: NameNode(value: 'WorkoutTags'),
@@ -2755,6 +2973,38 @@ class WorkoutByIdQuery
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'displayName'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutGoal'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutGoal'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'description'),
               alias: null,
               arguments: [],
               directives: [],
@@ -3209,7 +3459,7 @@ class WorkoutByIdQuery
   final String operationName = 'workoutById';
 
   @override
-  final WorkoutByIdArguments? variables;
+  final WorkoutByIdArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
@@ -3218,131 +3468,33 @@ class WorkoutByIdQuery
       WorkoutById$Query.fromJson(json);
 }
 
-class BodyAreasQuery extends GraphQLQuery<BodyAreas$Query, JsonSerializable> {
-  BodyAreasQuery();
+class WorkoutGoalsQuery
+    extends GraphQLQuery<WorkoutGoals$Query, JsonSerializable> {
+  WorkoutGoalsQuery();
 
   @override
   final DocumentNode document = DocumentNode(definitions: [
     OperationDefinitionNode(
         type: OperationType.query,
-        name: NameNode(value: 'bodyAreas'),
+        name: NameNode(value: 'workoutGoals'),
         variableDefinitions: [],
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
-              name: NameNode(value: 'bodyAreas'),
+              name: NameNode(value: 'workoutGoals'),
               alias: null,
               arguments: [],
               directives: [],
               selectionSet: SelectionSetNode(selections: [
                 FragmentSpreadNode(
-                    name: NameNode(value: 'BodyArea'), directives: [])
+                    name: NameNode(value: 'WorkoutGoal'), directives: [])
               ]))
         ])),
     FragmentDefinitionNode(
-        name: NameNode(value: 'BodyArea'),
+        name: NameNode(value: 'WorkoutGoal'),
         typeCondition: TypeConditionNode(
             on: NamedTypeNode(
-                name: NameNode(value: 'BodyArea'), isNonNull: false)),
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: '__typename'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'id'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'name'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'frontBack'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'upperLower'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null)
-        ]))
-  ]);
-
-  @override
-  final String operationName = 'bodyAreas';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  BodyAreas$Query parse(Map<String, dynamic> json) =>
-      BodyAreas$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateWorkoutArguments extends JsonSerializable with EquatableMixin {
-  UpdateWorkoutArguments({required this.data});
-
-  @override
-  factory UpdateWorkoutArguments.fromJson(Map<String, dynamic> json) =>
-      _$UpdateWorkoutArgumentsFromJson(json);
-
-  final UpdateWorkoutInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() => _$UpdateWorkoutArgumentsToJson(this);
-}
-
-class UpdateWorkoutMutation
-    extends GraphQLQuery<UpdateWorkout$Mutation, UpdateWorkoutArguments> {
-  UpdateWorkoutMutation({this.variables});
-
-  @override
-  final DocumentNode document = DocumentNode(definitions: [
-    OperationDefinitionNode(
-        type: OperationType.mutation,
-        name: NameNode(value: 'updateWorkout'),
-        variableDefinitions: [
-          VariableDefinitionNode(
-              variable: VariableNode(name: NameNode(value: 'data')),
-              type: NamedTypeNode(
-                  name: NameNode(value: 'UpdateWorkoutInput'), isNonNull: true),
-              defaultValue: DefaultValueNode(value: null),
-              directives: [])
-        ],
-        directives: [],
-        selectionSet: SelectionSetNode(selections: [
-          FieldNode(
-              name: NameNode(value: 'updateWorkout'),
-              alias: null,
-              arguments: [
-                ArgumentNode(
-                    name: NameNode(value: 'data'),
-                    value: VariableNode(name: NameNode(value: 'data')))
-              ],
-              directives: [],
-              selectionSet: SelectionSetNode(selections: [
-                FragmentSpreadNode(
-                    name: NameNode(value: 'Workout'), directives: [])
-              ]))
-        ])),
-    FragmentDefinitionNode(
-        name: NameNode(value: 'Workout'),
-        typeCondition: TypeConditionNode(
-            on: NamedTypeNode(
-                name: NameNode(value: 'Workout'), isNonNull: false)),
+                name: NameNode(value: 'WorkoutGoal'), isNonNull: false)),
         directives: [],
         selectionSet: SelectionSetNode(selections: [
           FieldNode(
@@ -3368,55 +3520,16 @@ class UpdateWorkoutMutation
               alias: null,
               arguments: [],
               directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'difficultyLevel'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'coverImageUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'contentAccessScope'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introVideoThumbUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
-              selectionSet: null),
-          FieldNode(
-              name: NameNode(value: 'introAudioUri'),
-              alias: null,
-              arguments: [],
-              directives: [],
               selectionSet: null)
         ]))
   ]);
 
   @override
-  final String operationName = 'updateWorkout';
+  final String operationName = 'workoutGoals';
 
   @override
-  final UpdateWorkoutArguments? variables;
-
+  List<Object?> get props => [document, operationName];
   @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UpdateWorkout$Mutation parse(Map<String, dynamic> json) =>
-      UpdateWorkout$Mutation.fromJson(json);
+  WorkoutGoals$Query parse(Map<String, dynamic> json) =>
+      WorkoutGoals$Query.fromJson(json);
 }

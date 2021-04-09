@@ -4,6 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
+extension StringExtension on String {
+  String get capitalize => this[0].toUpperCase() + this.substring(1);
+}
+
+extension DateTimeFormatting on DateTime {
+  /// Date only - July 10, 1996
+  String get dateString => DateFormat.yMMMMd().format(this);
+}
+
 extension DoubleExtension on double {
   double roundMyDouble(
     int decimalPlaces,
@@ -14,21 +23,6 @@ extension DoubleExtension on double {
     }
     // Returns to max of [decimalPlaces] decimal places
     return ((this * pow(10, decimalPlaces)).round() / pow(10, decimalPlaces));
-  }
-}
-
-extension DateTimeFormatting on DateTime {
-  /// Date only - July 10, 1996
-  String get dateString => DateFormat.yMMMMd().format(this);
-}
-
-extension ListExtension on List {
-  /// If not in list, add it, else remove it.
-  /// Assumes Equatable functionality if item is non scalar.
-  List<T> toggleItem<T>(T item) {
-    return (this as List<T>).contains(item)
-        ? (this as List<T>).where((e) => e != item).toList()
-        : <T>[...this, item];
   }
 }
 
@@ -87,5 +81,15 @@ extension DurationExtension on Duration {
         '${this.inSeconds.remainder(60).toString().padLeft(2, '0')}';
 
     return '$_hours$_minutes$_seconds';
+  }
+}
+
+extension ListExtension on List {
+  /// If not in list, add it, else remove it.
+  /// Assumes Equatable functionality if item is non scalar.
+  List<T> toggleItem<T>(T item) {
+    return (this as List<T>).contains(item)
+        ? (this as List<T>).where((e) => e != item).toList()
+        : <T>[...this, item];
   }
 }

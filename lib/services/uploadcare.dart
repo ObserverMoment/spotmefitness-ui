@@ -82,7 +82,6 @@ class UploadcareService {
   // Just uses the simple, unsigned auth scheme.
   // Implemented because the uploadcare client package always returns a FileInfoEntity when getting info.
   // FileInfoEntity has no fields for video specific data.
-  /// TODO: Is this secure - to send the public and private key from a client.
   static Future<VideoInfoEntity> getVideoInfoRaw(String fileId) async {
     dynamic res = await http.get(
       Uri.https('api.uploadcare.com', '/files/$fileId/'),

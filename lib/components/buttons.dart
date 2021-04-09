@@ -439,3 +439,51 @@ class SortByButton extends StatelessWidget {
     );
   }
 }
+
+class InfoPopupButton extends StatelessWidget {
+  final String pageTitle;
+  final Widget infoWidget;
+  InfoPopupButton({required this.infoWidget, this.pageTitle = 'Info'});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push(
+          fullscreenDialog: true,
+          child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: NavBarTitle(pageTitle),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [infoWidget],
+                ),
+              ),
+            ),
+          )),
+      child: Icon(
+        CupertinoIcons.info_circle,
+        size: 25,
+      ),
+    );
+  }
+}
+
+class CreateIconButton extends StatelessWidget {
+  final void Function() onPressed;
+  CreateIconButton({required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: Icon(
+        CupertinoIcons.add_circled,
+        size: 25,
+      ),
+    );
+  }
+}

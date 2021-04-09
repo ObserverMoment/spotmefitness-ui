@@ -13,10 +13,13 @@ extension BuildContextExtension on BuildContext {
   GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
 
   Future<T> push<T>(
-      {required Widget child, bool fullscreenDialog = false}) async {
+      {required Widget child,
+      bool fullscreenDialog = false,
+      rootNavigator = false}) async {
     final BuildContext context = this;
-    final T res = await Navigator.of(context).push(CupertinoPageRoute(
-        fullscreenDialog: fullscreenDialog, builder: (context) => child));
+    final T res = await Navigator.of(context, rootNavigator: rootNavigator)
+        .push(CupertinoPageRoute(
+            fullscreenDialog: fullscreenDialog, builder: (context) => child));
     return res;
   }
 
@@ -139,8 +142,6 @@ extension BuildContextExtension on BuildContext {
                   ),
                 ]));
   }
-
-  Size get size => MediaQuery.of(this).size;
 
   dynamic pop({dynamic? result}) => Navigator.of(this).pop(result);
 }
