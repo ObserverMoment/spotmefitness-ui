@@ -1015,6 +1015,21 @@ Map<String, dynamic> _$WorkoutGoals$QueryToJson(WorkoutGoals$Query instance) =>
       'workoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
     };
 
+UserWorkoutTags$Query _$UserWorkoutTags$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserWorkoutTags$Query()
+    ..userWorkoutTags = (json['userWorkoutTags'] as List<dynamic>)
+        .map((e) => WorkoutTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserWorkoutTags$QueryToJson(
+        UserWorkoutTags$Query instance) =>
+    <String, dynamic>{
+      'userWorkoutTags':
+          instance.userWorkoutTags.map((e) => e.toJson()).toList(),
+    };
+
 UpdateUserArguments _$UpdateUserArgumentsFromJson(Map<String, dynamic> json) {
   return UpdateUserArguments(
     data: UpdateUserInput.fromJson(json['data'] as Map<String, dynamic>),

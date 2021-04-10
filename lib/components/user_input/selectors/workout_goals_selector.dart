@@ -40,15 +40,14 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        automaticallyImplyLeading: false,
-        middle: NavBarTitle('Workout Goals'),
-        trailing: CupertinoButton(
+        leading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(
               'Done',
               weight: FontWeight.bold,
             ),
             onPressed: () => Navigator.pop(context)),
+        middle: NavBarTitle('Workout Goals'),
       ),
       child: Query(
           options: QueryOptions(

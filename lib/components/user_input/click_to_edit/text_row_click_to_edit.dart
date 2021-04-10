@@ -4,6 +4,8 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/my_text_field.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 //// Update Jan 2021 ////
 /// TikTok style text editing flow.
@@ -34,18 +36,16 @@ class EditableTextFieldRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      onPressed: () => Navigator.push(
-          context,
-          MaterialWithModalsPageRoute(
-              builder: (context) => FullScreenTextEditing(
-                    title: title,
-                    inputValidation: inputValidation,
-                    validationMessage: validationMessage,
-                    initialValue: text,
-                    onSave: onSave,
-                    maxChars: maxChars,
-                    maxInputLines: maxInputLines,
-                  ))),
+      onPressed: () => context.push(
+          child: FullScreenTextEditing(
+        title: title,
+        inputValidation: inputValidation,
+        validationMessage: validationMessage,
+        initialValue: text,
+        onSave: onSave,
+        maxChars: maxChars,
+        maxInputLines: maxInputLines,
+      )),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -84,6 +84,7 @@ class EditableTextFieldRow extends StatelessWidget {
 class EditableTextAreaRow extends StatelessWidget {
   final String title;
   final String text;
+  final String placeholder;
   final int? maxDisplayLines;
   final Function(String) onSave;
   final bool Function(String) inputValidation;
@@ -95,6 +96,7 @@ class EditableTextAreaRow extends StatelessWidget {
   EditableTextAreaRow(
       {required this.title,
       this.text = '',
+      this.placeholder = 'add...',
       required this.onSave,
       required this.inputValidation,
       this.validationMessage,
@@ -107,18 +109,16 @@ class EditableTextAreaRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      onPressed: () => Navigator.push(
-          context,
-          MaterialWithModalsPageRoute(
-              builder: (context) => FullScreenTextEditing(
-                    title: title,
-                    inputValidation: inputValidation,
-                    validationMessage: validationMessage,
-                    initialValue: text,
-                    onSave: onSave,
-                    maxChars: maxChars,
-                    maxInputLines: maxInputLines,
-                  ))),
+      onPressed: () => context.push(
+          child: FullScreenTextEditing(
+        title: title,
+        inputValidation: inputValidation,
+        validationMessage: validationMessage,
+        initialValue: text,
+        onSave: onSave,
+        maxChars: maxChars,
+        maxInputLines: maxInputLines,
+      )),
       child: Column(
         children: [
           Row(
@@ -132,7 +132,20 @@ class EditableTextAreaRow extends StatelessWidget {
                   if (isRequired == true) RequiredSuperText()
                 ],
               ),
-              Icon(CupertinoIcons.pencil, size: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (!Utils.textNotNull(text))
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: MyText(
+                        placeholder,
+                        subtext: true,
+                      ),
+                    ),
+                  Icon(CupertinoIcons.pencil, size: 18),
+                ],
+              ),
             ],
           ),
           if (text != '')

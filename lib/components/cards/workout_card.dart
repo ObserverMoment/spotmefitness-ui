@@ -47,19 +47,22 @@ class WorkoutCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyText(
-                workoutSummary.name,
-                weight: FontWeight.bold,
-              ),
-              DifficultyLevelDot(workoutSummary.difficultyLevel)
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 2.0, top: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText(
+                  workoutSummary.name,
+                  weight: FontWeight.bold,
+                ),
+                DifficultyLevelDot(workoutSummary.difficultyLevel)
+              ],
+            ),
           ),
           if (workoutSummary.userWorkoutsWorkoutSections.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
@@ -79,7 +82,7 @@ class WorkoutCard extends StatelessWidget {
             ),
           if (_allTags.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
@@ -95,7 +98,7 @@ class WorkoutCard extends StatelessWidget {
             ),
           if (Utils.textNotNull(workoutSummary.description))
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
               child: MyText(
                 workoutSummary.description!,
                 maxLines: 2,
@@ -104,25 +107,22 @@ class WorkoutCard extends StatelessWidget {
             ),
           if (_allMoves.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: _allMoves.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 5, bottom: 2),
-                          child: Tag(
-                            color: context.theme.background,
-                            textColor: context.theme.primary,
-                            tag: _allMoves.elementAt(index),
-                          ),
+                    itemBuilder: (context, index) => Tag(
+                          color: context.theme.background,
+                          textColor: context.theme.primary,
+                          tag: _allMoves.elementAt(index),
                         )),
               ),
             ),
           if (_allEquipments.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(left: 4, top: 3.0, bottom: 2),
+              padding: const EdgeInsets.only(left: 4, top: 7.0, bottom: 4),
               child: SizedBox(
                 height: 24,
                 child: ListView.builder(

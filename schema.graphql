@@ -23,6 +23,7 @@ type Query {
   checkUniqueDisplayName(displayName: String!): Boolean!
   authedUser: User!
   gymProfiles: [GymProfile!]!
+  userWorkoutTags: [WorkoutTag!]!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
   officialWorkouts: [Workout!]!

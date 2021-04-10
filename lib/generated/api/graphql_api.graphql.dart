@@ -78,6 +78,12 @@ mixin WorkoutGoalMixin {
   late String name;
   late String description;
 }
+mixin WorkoutTagMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  late String tag;
+}
 mixin WorkoutSectionTypeMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -594,18 +600,11 @@ class WorkoutGoal extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class WorkoutTag extends JsonSerializable with EquatableMixin {
+class WorkoutTag extends JsonSerializable with EquatableMixin, WorkoutTagMixin {
   WorkoutTag();
 
   factory WorkoutTag.fromJson(Map<String, dynamic> json) =>
       _$WorkoutTagFromJson(json);
-
-  @JsonKey(name: '__typename')
-  String? $$typename;
-
-  late String id;
-
-  late String tag;
 
   @override
   List<Object?> get props => [$$typename, id, tag];
@@ -1137,6 +1136,20 @@ class WorkoutGoals$Query extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [workoutGoals];
   Map<String, dynamic> toJson() => _$WorkoutGoals$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserWorkoutTags$Query extends JsonSerializable with EquatableMixin {
+  UserWorkoutTags$Query();
+
+  factory UserWorkoutTags$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserWorkoutTags$QueryFromJson(json);
+
+  late List<WorkoutTag> userWorkoutTags;
+
+  @override
+  List<Object?> get props => [userWorkoutTags];
+  Map<String, dynamic> toJson() => _$UserWorkoutTags$QueryToJson(this);
 }
 
 enum Gender {
@@ -2332,24 +2345,8 @@ class UserWorkoutsQuery
                     arguments: [],
                     directives: [],
                     selectionSet: SelectionSetNode(selections: [
-                      FieldNode(
-                          name: NameNode(value: '__typename'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'id'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'tag'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null)
+                      FragmentSpreadNode(
+                          name: NameNode(value: 'WorkoutTag'), directives: [])
                     ])),
                 FieldNode(
                     name: NameNode(value: 'WorkoutSections'),
@@ -2512,6 +2509,32 @@ class UserWorkoutsQuery
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'description'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutTag'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutTag'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'tag'),
               alias: null,
               arguments: [],
               directives: [],
@@ -2795,24 +2818,8 @@ class WorkoutByIdQuery
                     arguments: [],
                     directives: [],
                     selectionSet: SelectionSetNode(selections: [
-                      FieldNode(
-                          name: NameNode(value: '__typename'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'id'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null),
-                      FieldNode(
-                          name: NameNode(value: 'tag'),
-                          alias: null,
-                          arguments: [],
-                          directives: [],
-                          selectionSet: null)
+                      FragmentSpreadNode(
+                          name: NameNode(value: 'WorkoutTag'), directives: [])
                     ])),
                 FieldNode(
                     name: NameNode(value: 'WorkoutSections'),
@@ -3005,6 +3012,32 @@ class WorkoutByIdQuery
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'description'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutTag'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutTag'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'tag'),
               alias: null,
               arguments: [],
               directives: [],
@@ -3532,4 +3565,64 @@ class WorkoutGoalsQuery
   @override
   WorkoutGoals$Query parse(Map<String, dynamic> json) =>
       WorkoutGoals$Query.fromJson(json);
+}
+
+class UserWorkoutTagsQuery
+    extends GraphQLQuery<UserWorkoutTags$Query, JsonSerializable> {
+  UserWorkoutTagsQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'userWorkoutTags'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'userWorkoutTags'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'WorkoutTag'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutTag'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutTag'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'tag'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'userWorkoutTags';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  UserWorkoutTags$Query parse(Map<String, dynamic> json) =>
+      UserWorkoutTags$Query.fromJson(json);
 }

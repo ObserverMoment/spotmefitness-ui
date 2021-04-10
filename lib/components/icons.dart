@@ -61,18 +61,15 @@ class Tag extends StatelessWidget {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      height: 24,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(30), color: _color),
-      child: Center(
-        child: MyText(
-          tag,
-          size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
-          color: _textColor,
-          lineHeight: 1.1,
-        ),
+      child: MyText(
+        tag,
+        size: FONTSIZE.TINY,
+        weight: FontWeight.bold,
+        color: _textColor,
+        lineHeight: 1.1,
       ),
     );
   }

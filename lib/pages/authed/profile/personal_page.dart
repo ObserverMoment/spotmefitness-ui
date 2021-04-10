@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
@@ -120,8 +121,9 @@ class ProfilePersonalPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 10),
                           CupertinoSlidingSegmentedControl<Gender>(
+                              thumbColor: Styles.colorOne,
                               groupValue: user.gender,
                               children: <Gender, Widget>{
                                 for (final v in Gender.values

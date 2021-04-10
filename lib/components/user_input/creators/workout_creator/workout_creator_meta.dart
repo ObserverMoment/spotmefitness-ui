@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_selector.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -46,6 +48,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
               EditableTextAreaRow(
                 title: 'Description',
                 text: descriptionController.text,
+                placeholder: 'Add description...',
                 onSave: (text) =>
                     descriptionController.value = TextEditingValue(text: text),
                 inputValidation: (t) => true,
@@ -63,22 +66,14 @@ class WorkoutCreatorMeta extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.6,
-                              child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                return Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 4,
-                                  runSpacing: 4,
-                                  children: workoutData.workoutGoals
-                                      .map((g) => Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Tag(tag: g.name),
-                                            ],
-                                          ))
-                                      .toList(),
-                                );
-                              })),
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: workoutData.workoutGoals
+                                    .map((g) => Tag(tag: g.name))
+                                    .toList(),
+                              )),
                         ),
                   onTap: () => context.push(
                           child: WorkoutGoalsSelector(
@@ -96,13 +91,37 @@ class WorkoutCreatorMeta extends StatelessWidget {
                           'Add some tags...',
                           subtext: true,
                         )
-                      : MyText('goals selected'),
-                  onTap: () => print('open tag selector')),
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: workoutData.workoutTags
+                                    .map((t) => Tag(
+                                          tag: t.tag,
+                                          color: Styles.colorOne,
+                                          textColor: Styles.white,
+                                        ))
+                                    .toList(),
+                              )),
+                        ),
+                  onTap: () => context.push(
+                          child: WorkoutTagsSelector(
+                        selectedWorkoutTags: workoutData.workoutTags,
+                        updateSelectedWorkoutTags: (tags) =>
+                            updateWorkoutMetaData({
+                          'WorkoutTags': tags.map((t) => t.toJson()).toList()
+                        }),
+                      ))),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoSlidingSegmentedControl<ContentAccessScope>(
+                      thumbColor: Styles.colorOne,
                       groupValue: workoutData.contentAccessScope,
                       children: <ContentAccessScope, Widget>{
                         for (final v in ContentAccessScope.values.where((v) =>

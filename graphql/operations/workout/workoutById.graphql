@@ -12,9 +12,7 @@ query workoutById($id: ID!) {
       ...WorkoutGoal
     }
     WorkoutTags {
-      __typename
-      id
-      tag
+      ...WorkoutTag
     }
     WorkoutSections {
       ...WorkoutSection
