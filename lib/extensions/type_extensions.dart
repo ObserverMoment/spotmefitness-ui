@@ -93,3 +93,8 @@ extension ListExtension on List {
         : <T>[...this, item];
   }
 }
+
+extension PageControllerExtension on PageController {
+  void toPage(int page) => this.animateToPage(page,
+      duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+}

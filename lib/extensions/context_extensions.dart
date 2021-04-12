@@ -1,4 +1,5 @@
 // https://stackoverflow.com/questions/49172746/is-it-possible-extend-themedata-in-flutter
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -142,6 +143,21 @@ extension BuildContextExtension on BuildContext {
                   ),
                 ]));
   }
+
+  void showToast({required String message, Widget? icon}) => Flushbar(
+        backgroundColor: CupertinoColors.darkBackgroundGray,
+        icon: icon,
+        maxWidth: 500,
+        animationDuration: Duration(milliseconds: 300),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+        messageText: MyText(
+          message,
+          color: Styles.white,
+          weight: FontWeight.bold,
+        ),
+        duration: Duration(seconds: 3),
+      )..show(this);
 
   dynamic pop({dynamic? result}) => Navigator.of(this).pop(result);
 }

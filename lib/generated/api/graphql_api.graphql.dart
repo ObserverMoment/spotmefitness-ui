@@ -1152,6 +1152,48 @@ class UserWorkoutTags$Query extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$UserWorkoutTags$QueryToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class CreateWorkoutTag$Mutation extends JsonSerializable with EquatableMixin {
+  CreateWorkoutTag$Mutation();
+
+  factory CreateWorkoutTag$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$CreateWorkoutTag$MutationFromJson(json);
+
+  late WorkoutTag createWorkoutTag;
+
+  @override
+  List<Object?> get props => [createWorkoutTag];
+  Map<String, dynamic> toJson() => _$CreateWorkoutTag$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateWorkoutTagInput extends JsonSerializable with EquatableMixin {
+  CreateWorkoutTagInput({required this.tag});
+
+  factory CreateWorkoutTagInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateWorkoutTagInputFromJson(json);
+
+  late String tag;
+
+  @override
+  List<Object?> get props => [tag];
+  Map<String, dynamic> toJson() => _$CreateWorkoutTagInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class WorkoutSectionTypes$Query extends JsonSerializable with EquatableMixin {
+  WorkoutSectionTypes$Query();
+
+  factory WorkoutSectionTypes$Query.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutSectionTypes$QueryFromJson(json);
+
+  late List<WorkoutSectionType> workoutSectionTypes;
+
+  @override
+  List<Object?> get props => [workoutSectionTypes];
+  Map<String, dynamic> toJson() => _$WorkoutSectionTypes$QueryToJson(this);
+}
+
 enum Gender {
   @JsonValue('MALE')
   male,
@@ -3625,4 +3667,161 @@ class UserWorkoutTagsQuery
   @override
   UserWorkoutTags$Query parse(Map<String, dynamic> json) =>
       UserWorkoutTags$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateWorkoutTagArguments extends JsonSerializable with EquatableMixin {
+  CreateWorkoutTagArguments({required this.data});
+
+  @override
+  factory CreateWorkoutTagArguments.fromJson(Map<String, dynamic> json) =>
+      _$CreateWorkoutTagArgumentsFromJson(json);
+
+  late CreateWorkoutTagInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$CreateWorkoutTagArgumentsToJson(this);
+}
+
+class CreateWorkoutTagMutation
+    extends GraphQLQuery<CreateWorkoutTag$Mutation, CreateWorkoutTagArguments> {
+  CreateWorkoutTagMutation({required this.variables});
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.mutation,
+        name: NameNode(value: 'createWorkoutTag'),
+        variableDefinitions: [
+          VariableDefinitionNode(
+              variable: VariableNode(name: NameNode(value: 'data')),
+              type: NamedTypeNode(
+                  name: NameNode(value: 'CreateWorkoutTagInput'),
+                  isNonNull: true),
+              defaultValue: DefaultValueNode(value: null),
+              directives: [])
+        ],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'createWorkoutTag'),
+              alias: null,
+              arguments: [
+                ArgumentNode(
+                    name: NameNode(value: 'data'),
+                    value: VariableNode(name: NameNode(value: 'data')))
+              ],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'WorkoutTag'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutTag'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutTag'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'tag'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'createWorkoutTag';
+
+  @override
+  final CreateWorkoutTagArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateWorkoutTag$Mutation parse(Map<String, dynamic> json) =>
+      CreateWorkoutTag$Mutation.fromJson(json);
+}
+
+class WorkoutSectionTypesQuery
+    extends GraphQLQuery<WorkoutSectionTypes$Query, JsonSerializable> {
+  WorkoutSectionTypesQuery();
+
+  @override
+  final DocumentNode document = DocumentNode(definitions: [
+    OperationDefinitionNode(
+        type: OperationType.query,
+        name: NameNode(value: 'workoutSectionTypes'),
+        variableDefinitions: [],
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: 'workoutSectionTypes'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: SelectionSetNode(selections: [
+                FragmentSpreadNode(
+                    name: NameNode(value: 'WorkoutSectionType'), directives: [])
+              ]))
+        ])),
+    FragmentDefinitionNode(
+        name: NameNode(value: 'WorkoutSectionType'),
+        typeCondition: TypeConditionNode(
+            on: NamedTypeNode(
+                name: NameNode(value: 'WorkoutSectionType'), isNonNull: false)),
+        directives: [],
+        selectionSet: SelectionSetNode(selections: [
+          FieldNode(
+              name: NameNode(value: '__typename'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'name'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'description'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null)
+        ]))
+  ]);
+
+  @override
+  final String operationName = 'workoutSectionTypes';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  WorkoutSectionTypes$Query parse(Map<String, dynamic> json) =>
+      WorkoutSectionTypes$Query.fromJson(json);
 }

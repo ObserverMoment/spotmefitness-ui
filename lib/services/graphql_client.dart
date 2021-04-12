@@ -81,8 +81,8 @@ class GraphQL {
               Request(operation: Operation(document: queryDocument)),
               data: {
                 queryOperationName!: [
-                  result.data![mutationOperationName],
                   ...prev[queryOperationName],
+                  result.data![mutationOperationName],
                 ]
               },
             );

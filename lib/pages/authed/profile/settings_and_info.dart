@@ -1,13 +1,28 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class SettingsAndInfo extends StatelessWidget {
+class SettingsAndInfo extends StatefulWidget {
+  @override
+  _SettingsAndInfoState createState() => _SettingsAndInfoState();
+}
+
+class _SettingsAndInfoState extends State<SettingsAndInfo> {
+  bool _clearingCache = false;
   Widget _spacer() => SizedBox(height: 10);
+
+  Future<void> _cleareCache(BuildContext context) async {
+    setState(() => _clearingCache = true);
+    await context.graphQLClient.resetStore();
+    setState(() => _clearingCache = false);
+    context.showToast(message: 'Cache cleared.');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +67,10 @@ class SettingsAndInfo extends StatelessWidget {
               ),
             ),
             PageLink(
-                linkText: 'Upgrade to PRO',
-                onPress: () => {},
-                infoHighlight: true,
-                large: true,
-                bold: true),
+              linkText: 'Upgrade to PRO',
+              onPress: () => {},
+              infoHighlight: true,
+            ),
             _spacer(),
             MyText('ACCOUNT', color: _headingColor),
             _spacer(),
@@ -85,6 +99,12 @@ class SettingsAndInfo extends StatelessWidget {
             PageLink(
               linkText: 'Health trackers',
               onPress: () => {},
+            ),
+            PageLink(
+              linkText: 'Clear cache',
+              onPress: () => _cleareCache(context),
+              icon: Icon(Icons.cached_rounded),
+              loading: _clearingCache,
             ),
             _spacer(),
             MyText(

@@ -12,34 +12,40 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   WorkoutSectionTypeTag(this.name, {this.timecap});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(color: context.theme.primary),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          MyText(
-            name,
-            weight: FontWeight.bold,
-            lineHeight: 1.2,
-            size: FONTSIZE.SMALL,
-            color: Styles.white,
-            textAlign: TextAlign.center,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: context.theme.primary),
+            borderRadius: BorderRadius.circular(20),
           ),
-          if (timecap != null)
-            MyText(
-              ' - ${timecap! ~/ 60} mins',
-              weight: FontWeight.bold,
-              lineHeight: 1.15,
-              size: FONTSIZE.SMALL,
-              color: Styles.white,
-              textAlign: TextAlign.center,
-            )
-        ],
-      ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MyText(
+                name,
+                weight: FontWeight.bold,
+                lineHeight: 1.2,
+                size: FONTSIZE.SMALL,
+                color: Styles.white,
+                textAlign: TextAlign.center,
+              ),
+              if (timecap != null)
+                MyText(
+                  ' - ${timecap! ~/ 60} mins',
+                  weight: FontWeight.bold,
+                  lineHeight: 1.15,
+                  size: FONTSIZE.SMALL,
+                  color: Styles.white,
+                  textAlign: TextAlign.center,
+                )
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

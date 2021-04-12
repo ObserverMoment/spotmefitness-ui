@@ -76,6 +76,7 @@ type Mutation {
   updateScheduledWorkout(data: UpdateScheduledWorkoutInput!): ScheduledWorkout!
   deleteScheduledWorkoutById(id: ID!): ID!
   updateUser(data: UpdateUserInput!): User!
+  createWorkoutTag(data: CreateWorkoutTagInput!): WorkoutTag!
   makeCopyWorkoutById(id: ID!): Workout!
   createWorkout(data: CreateWorkoutInput!): Workout!
   updateWorkout(data: UpdateWorkoutInput!): Workout!
@@ -346,6 +347,18 @@ type UserPrivateProfile {
   Workouts: [Workout!]
   WorkoutPrograms: [WorkoutProgram!]
   WorkoutProgramEnrolments: [WorkoutProgramEnrolment!]
+}
+type WorkoutTag {
+  id: ID!
+  User: User!
+  tag: String!
+}
+input CreateWorkoutTagInput {
+  tag: String!
+}
+input UpdateWorkoutTagInput {
+  id: ID!
+  tag: String!
 }
 type GymProfile {
   id: ID!
@@ -674,18 +687,6 @@ input UpdateWorkoutInput {
   contentAccessScope: ContentAccessScope
   WorkoutGoals: [ID!]
   WorkoutTags: [ID!]!
-}
-type WorkoutTag {
-  id: ID!
-  User: User!
-  tag: String!
-}
-input CreateWorkoutTagInput {
-  tag: String!
-}
-input UpdateWorkoutTagInput {
-  id: ID!
-  tag: String!
 }
 type WorkoutSection {
   id: ID!

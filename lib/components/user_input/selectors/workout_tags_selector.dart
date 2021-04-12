@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/services/graphql_client.dart';
 
-/// Also lets you create a new tag and then select.
+/// Also lets you create a new tag and then select it.
 class WorkoutTagsSelector extends StatefulWidget {
   final List<WorkoutTag> selectedWorkoutTags;
   final void Function(List<WorkoutTag> updated) updateSelectedWorkoutTags;
@@ -40,17 +40,31 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
     widget.updateSelectedWorkoutTags(_activeSelectedWorkoutTags);
   }
 
-  void _openCreateNewTag() async {
+  void _openCreateNewTag() {
     context.push(
         child: FullScreenTextEditing(
       title: 'New Tag',
       inputValidation: (text) => text.length > 2 && text.length <= 20,
       validationMessage: 'Min chars: 3, Max chars 20',
       initialValue: '',
-      onSave: (text) => print(text),
+      onSave: (text) => _createNewTag(text),
       maxChars: 20,
       maxInputLines: 1,
     ));
+  }
+
+  Future<void> _createNewTag(String tag) async {
+    final _vars =
+        CreateWorkoutTagArguments(data: CreateWorkoutTagInput(tag: tag));
+    await GraphQL.createWithQueryUpdate(
+      client: context.graphQLClient,
+      mutationDocument: CreateWorkoutTagMutation(variables: _vars).document,
+      mutationOperationName:
+          CreateWorkoutTagMutation(variables: _vars).operationName,
+      mutationVariables: _vars.toJson(),
+      queryDocument: UserWorkoutTagsQuery().document,
+      queryOperationName: UserWorkoutTagsQuery().operationName,
+    );
   }
 
   @override
@@ -85,7 +99,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
       child: Query(
         options: QueryOptions(
             document: UserWorkoutTagsQuery().document,
-            fetchPolicy: FetchPolicy.cacheFirst),
+            fetchPolicy: FetchPolicy.cacheAndNetwork),
         builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
             result: result,
             builder: () {
@@ -103,20 +117,22 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                       children: [
                         MyText(
                           'Click to select / deselect.',
-                          subtext: true,
+                          size: FONTSIZE.SMALL,
                         ),
                         SizedBox(height: 16),
                         Wrap(
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: _workoutTags
+                          children: _workoutTags.reversed
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
-                                    child: SelectableTag(
-                                      tag: tag,
-                                      isSelected: _activeSelectedWorkoutTags
-                                          .contains(tag),
+                                    child: FadeIn(
+                                      child: SelectableTag(
+                                        tag: tag,
+                                        isSelected: _activeSelectedWorkoutTags
+                                            .contains(tag),
+                                      ),
                                     ),
                                   ))
                               .toList(),

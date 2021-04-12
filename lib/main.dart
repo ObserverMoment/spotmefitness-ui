@@ -20,20 +20,6 @@ void main() async {
   await initHiveForFlutter();
   await Hive.openBox('settings');
 
-  // print('clearing');
-  // var cache = Hive.box(HiveStore.defaultBoxName);
-  // cache.clear();
-  // var settings = Hive.box('settings');
-  // settings.clear();
-
-  //  For inspecting cache...
-  //  for (final String k in cache.keys) {
-  //   if (k.contains('GymProfile')) {
-  //     print(cache.get(k));
-  //     print('----------');
-  //   }
-  // }
-
   await Firebase.initializeApp();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -74,16 +60,42 @@ class _AuthRouterState extends State<AuthRouter> {
         valueListenable: GetIt.I<AuthBloc>().authState,
         builder: (context, authState, _) {
           final _authedUser = GetIt.I<AuthBloc>().authedUser;
-          return FadeIn(
-            child: authState == AuthState.AUTHED && _authedUser != null
-                ? App(_authedUser)
-                : ChangeNotifierProvider(
-                    create: (_) => ThemeBloc(isLanding: true),
-                    builder: (context, child) => CupertinoApp(
-                        theme: context.theme.cupertinoThemeData,
-                        home: UnAuthedLanding()),
-                  ),
+          return _Unfocus(
+            child: FadeIn(
+              child: authState == AuthState.AUTHED && _authedUser != null
+                  ? App(_authedUser)
+                  : ChangeNotifierProvider(
+                      create: (_) => ThemeBloc(isLanding: true),
+                      builder: (context, child) => CupertinoApp(
+                          theme: context.theme.cupertinoThemeData,
+                          home: UnAuthedLanding()),
+                    ),
+            ),
           );
         });
+  }
+}
+
+/// A widget that unfocus everything when tapped.
+///
+/// This implements the "Unfocus when tapping in empty space" behavior for the
+/// entire application.
+class _Unfocus extends StatelessWidget {
+  const _Unfocus({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: child,
+    );
   }
 }

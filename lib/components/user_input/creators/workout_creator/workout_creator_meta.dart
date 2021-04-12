@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -13,19 +15,12 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreatorMeta extends StatelessWidget {
-  final WorkoutData workoutData;
-
-  /// Top level data fields accessed via a key.
-  final Function(Map<String, dynamic> data) updateWorkoutMetaData;
-  final TextEditingController nameController;
-  final TextEditingController descriptionController;
-  WorkoutCreatorMeta(
-      {required this.workoutData,
-      required this.updateWorkoutMetaData,
-      required this.nameController,
-      required this.descriptionController});
   @override
   Widget build(BuildContext context) {
+    final _updateWorkoutMeta =
+        context.read<WorkoutCreatorBloc>().updateWorkoutMeta;
+    final _workoutData = context.watch<WorkoutCreatorBloc>().workoutData;
+
     return Container(
       child: SingleChildScrollView(
         child: Padding(
@@ -40,24 +35,24 @@ class WorkoutCreatorMeta extends StatelessWidget {
                       MyTextFormFieldRow(
                         placeholder: 'Name (Required - min 3 chars)',
                         keyboardType: TextInputType.text,
-                        controller: nameController,
-                        validator: () => nameController.text.length > 2,
+                        initialValue: _workoutData.name,
+                        onChanged: (text) => _updateWorkoutMeta({'name': text}),
+                        validator: () => _workoutData.name.length > 2,
                       ),
                     ]),
               ),
               EditableTextAreaRow(
                 title: 'Description',
-                text: descriptionController.text,
+                text: _workoutData.description ?? '',
                 placeholder: 'Add description...',
-                onSave: (text) =>
-                    descriptionController.value = TextEditingValue(text: text),
+                onSave: (text) => _updateWorkoutMeta({'description': text}),
                 inputValidation: (t) => true,
                 maxDisplayLines: 2,
               ),
               SizedBox(height: 6),
               TappableRow(
                   title: 'Goals',
-                  display: workoutData.workoutGoals.isEmpty
+                  display: _workoutData.workoutGoals.isEmpty
                       ? MyText(
                           'Add some goals...',
                           subtext: true,
@@ -70,23 +65,23 @@ class WorkoutCreatorMeta extends StatelessWidget {
                                 alignment: WrapAlignment.center,
                                 spacing: 4,
                                 runSpacing: 4,
-                                children: workoutData.workoutGoals
+                                children: _workoutData.workoutGoals
                                     .map((g) => Tag(tag: g.name))
                                     .toList(),
                               )),
                         ),
                   onTap: () => context.push(
                           child: WorkoutGoalsSelector(
-                        selectedWorkoutGoals: workoutData.workoutGoals,
+                        selectedWorkoutGoals: _workoutData.workoutGoals,
                         updateSelectedWorkoutGoals: (goals) =>
-                            updateWorkoutMetaData({
+                            _updateWorkoutMeta({
                           'WorkoutGoals': goals.map((g) => g.toJson()).toList()
                         }),
                       ))),
               SizedBox(height: 16),
               TappableRow(
                   title: 'Tags',
-                  display: workoutData.workoutTags.isEmpty
+                  display: _workoutData.workoutTags.isEmpty
                       ? MyText(
                           'Add some tags...',
                           subtext: true,
@@ -99,7 +94,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                                 alignment: WrapAlignment.center,
                                 spacing: 4,
                                 runSpacing: 4,
-                                children: workoutData.workoutTags
+                                children: _workoutData.workoutTags
                                     .map((t) => Tag(
                                           tag: t.tag,
                                           color: Styles.colorOne,
@@ -110,31 +105,35 @@ class WorkoutCreatorMeta extends StatelessWidget {
                         ),
                   onTap: () => context.push(
                           child: WorkoutTagsSelector(
-                        selectedWorkoutTags: workoutData.workoutTags,
+                        selectedWorkoutTags: _workoutData.workoutTags,
                         updateSelectedWorkoutTags: (tags) =>
-                            updateWorkoutMetaData({
+                            _updateWorkoutMeta({
                           'WorkoutTags': tags.map((t) => t.toJson()).toList()
                         }),
                       ))),
               SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CupertinoSlidingSegmentedControl<ContentAccessScope>(
-                      thumbColor: Styles.colorOne,
-                      groupValue: workoutData.contentAccessScope,
-                      children: <ContentAccessScope, Widget>{
-                        for (final v in ContentAccessScope.values.where((v) =>
-                            v != ContentAccessScope.artemisUnknown &&
-                            v != ContentAccessScope.official))
-                          v: MyText(v.display)
-                      },
-                      onValueChanged: (scope) => updateWorkoutMetaData(
-                          {'contentAccessScope': scope?.apiValue})),
-                  InfoPopupButton(
-                      infoWidget: MyText(
-                          'Explaining the difrerent scopes and what they mean.')),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText('Audience'),
+                    CupertinoSlidingSegmentedControl<ContentAccessScope>(
+                        thumbColor: Styles.colorOne,
+                        groupValue: _workoutData.contentAccessScope,
+                        children: <ContentAccessScope, Widget>{
+                          for (final v in ContentAccessScope.values.where((v) =>
+                              v != ContentAccessScope.artemisUnknown &&
+                              v != ContentAccessScope.official))
+                            v: MyText(v.display)
+                        },
+                        onValueChanged: (scope) => _updateWorkoutMeta(
+                            {'contentAccessScope': scope?.apiValue})),
+                    InfoPopupButton(
+                        infoWidget: MyText(
+                            'Explaining the difrerent scopes and what they mean.')),
+                  ],
+                ),
               )
             ],
           ),

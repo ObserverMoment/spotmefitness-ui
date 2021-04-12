@@ -1030,6 +1030,47 @@ Map<String, dynamic> _$UserWorkoutTags$QueryToJson(
           instance.userWorkoutTags.map((e) => e.toJson()).toList(),
     };
 
+CreateWorkoutTag$Mutation _$CreateWorkoutTag$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutTag$Mutation()
+    ..createWorkoutTag =
+        WorkoutTag.fromJson(json['createWorkoutTag'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateWorkoutTag$MutationToJson(
+        CreateWorkoutTag$Mutation instance) =>
+    <String, dynamic>{
+      'createWorkoutTag': instance.createWorkoutTag.toJson(),
+    };
+
+CreateWorkoutTagInput _$CreateWorkoutTagInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutTagInput(
+    tag: json['tag'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutTagInputToJson(
+        CreateWorkoutTagInput instance) =>
+    <String, dynamic>{
+      'tag': instance.tag,
+    };
+
+WorkoutSectionTypes$Query _$WorkoutSectionTypes$QueryFromJson(
+    Map<String, dynamic> json) {
+  return WorkoutSectionTypes$Query()
+    ..workoutSectionTypes = (json['workoutSectionTypes'] as List<dynamic>)
+        .map((e) => WorkoutSectionType.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$WorkoutSectionTypes$QueryToJson(
+        WorkoutSectionTypes$Query instance) =>
+    <String, dynamic>{
+      'workoutSectionTypes':
+          instance.workoutSectionTypes.map((e) => e.toJson()).toList(),
+    };
+
 UpdateUserArguments _$UpdateUserArgumentsFromJson(Map<String, dynamic> json) {
   return UpdateUserArguments(
     data: UpdateUserInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -1130,4 +1171,17 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+CreateWorkoutTagArguments _$CreateWorkoutTagArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutTagArguments(
+    data: CreateWorkoutTagInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutTagArgumentsToJson(
+        CreateWorkoutTagArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
     };

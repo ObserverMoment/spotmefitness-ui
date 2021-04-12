@@ -36,10 +36,7 @@ class QueryResponseBuilder extends StatelessWidget {
         ),
       );
     } else if (result.isLoading) {
-      return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-          middle: NavBarTitle('Loading...'),
-        ),
+      return SafeArea(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),

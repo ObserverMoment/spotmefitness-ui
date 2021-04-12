@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -281,21 +282,20 @@ class PageLink extends StatelessWidget {
   final Widget? icon;
   final bool infoHighlight;
   final bool destructiveHighlight;
-  final bool bold;
-  final bool large;
+  final bool loading;
+
   PageLink(
       {required this.linkText,
       required this.onPress,
       this.icon,
       this.infoHighlight = false,
       this.destructiveHighlight = false,
-      this.bold = false,
-      this.large = false});
+      this.loading = false});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPress,
+      onTap: loading ? null : onPress,
       child: Container(
           decoration: BoxDecoration(
               border: Border(
@@ -321,6 +321,15 @@ class PageLink extends StatelessWidget {
                               ? Styles.errorRed
                               : null,
                       weight: FontWeight.bold),
+                  if (loading)
+                    FadeIn(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: LoadingDots(
+                          size: 10,
+                        ),
+                      ),
+                    ),
                 ],
               ),
               Icon(CupertinoIcons.right_chevron, size: 18),
@@ -485,5 +494,50 @@ class CreateIconButton extends StatelessWidget {
         size: 25,
       ),
     );
+  }
+}
+
+/// Create button with no background or border.
+class CreateTextIconButton extends StatelessWidget {
+  final void Function() onPressed;
+  final String text;
+  CreateTextIconButton({required this.onPressed, this.text = 'Create'});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            CupertinoIcons.add,
+            size: 22,
+          ),
+          SizedBox(width: 6),
+          MyText(
+            text,
+            weight: FontWeight.bold,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' widget in the nav bar.
+class NavBarCancelButton extends StatelessWidget {
+  final void Function() onPressed;
+  NavBarCancelButton(this.onPressed);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: MyText(
+          'Cancel',
+          color: Styles.errorRed,
+        ));
   }
 }

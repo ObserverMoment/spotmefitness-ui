@@ -62,9 +62,9 @@ class WorkoutCard extends StatelessWidget {
           ),
           if (workoutSummary.userWorkoutsWorkoutSections.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: SizedBox(
-                height: 24,
+                height: 28,
                 child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
