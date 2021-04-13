@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// Used for standard on screen text inputs where focusing the field brings up a keyboard.
 class MyTextFormFieldRow extends StatefulWidget {
   final Widget? prefix;
   final String placeholder;
@@ -161,6 +163,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
     return Stack(
       children: [
         CupertinoTextFormFieldRow(
+            keyboardAppearance: context.theme.cupertinoThemeData.brightness,
             controller: controller,
             expands: true,
             maxLines: null,

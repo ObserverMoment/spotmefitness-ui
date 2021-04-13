@@ -233,6 +233,9 @@ abstract class Styles {
         0.2, // Move to bottom Vertically
       ));
 
+  /// For use in nav bars, headers and buttons.
+  static final double buttonIconSize = 25.0;
+
   // static final BorderRadius sharpRadius = BorderRadius.circular(4);
   // static final BorderRadius mediumSharpRadius = BorderRadius.circular(6);
   // static final BorderRadius mediumRadius = BorderRadius.circular(8);

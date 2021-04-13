@@ -381,7 +381,7 @@ type LoggedWorkout {
   id: ID!
   completedOn: DateTime!
   name: String!
-  notes: String
+  note: String
   imageUri: String
   LoggedWorkoutSections: [LoggedWorkoutSection!]!
   Workout: Workout!
@@ -395,7 +395,7 @@ type LoggedWorkoutSection {
   setIndex: Int!
   roundIndex: Int!
   timeTakenMs: Int!
-  notes: String
+  note: String
   WorkoutSectionType: WorkoutSectionType!
   LoggedWorkoutSets: [LoggedWorkoutSet!]!
   LoggedWorkout: LoggedWorkout!
@@ -422,7 +422,7 @@ type LoggedWorkoutMove {
 input CreateLoggedWorkoutInput {
   completedOn: DateTime!
   name: String!
-  notes: String
+  note: String
   imageUri: String
   LoggedWorkoutSections: [CreateLoggedWorkoutSectionInLoggedWorkoutInput!]!
   Workout: ID!
@@ -435,7 +435,7 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   sectionIndex: Int!
   roundIndex: Int!
   timeTakenMs: Int!
-  notes: String
+  note: String
   WorkoutSectionType: ID!
   LoggedWorkoutSets: [CreateLoggedWorkoutSetInLoggedSectionInput!]!
 }
@@ -460,7 +460,7 @@ input CreateLoggedWorkoutSectionInput {
   sectionIndex: Int!
   roundIndex: Int!
   timeTakenMs: Int!
-  notes: String
+  note: String
   WorkoutSectionType: ID!
   LoggedWorkout: ID!
 }
@@ -486,7 +486,7 @@ input UpdateLoggedWorkoutInput {
   id: ID!
   completedOn: DateTime
   name: String
-  notes: String
+  note: String
   imageUri: String
   ScheduledWorkout: ID
   GymProfile: ID
@@ -496,7 +496,7 @@ input UpdateLoggedWorkoutInput {
 input UpdateLoggedWorkoutSectionInput {
   id: ID!
   timeTakenMs: Int
-  notes: String
+  note: String
 }
 input UpdateLoggedWorkoutSetInput {
   id: ID!
@@ -532,7 +532,7 @@ input UpdateProgressJournalInput {
 type ProgressJournalEntry {
   id: ID!
   createdAt: DateTime!
-  notes: String
+  note: String
   voiceNoteUri: String
   bodyweight: Float
   moodScore: Float
@@ -543,7 +543,7 @@ type ProgressJournalEntry {
   ProgressJournal: ProgressJournal!
 }
 input CreateProgressJournalEntryInput {
-  notes: String
+  note: String
   voiceNoteUri: String
   bodyweight: Float
   moodScore: Float
@@ -555,7 +555,7 @@ input CreateProgressJournalEntryInput {
 }
 input UpdateProgressJournalEntryInput {
   id: ID!
-  notes: String
+  note: String
   voiceNoteUri: String
   bodyweight: Float
   moodScore: Float
@@ -607,21 +607,21 @@ type ScheduledWorkout {
   id: ID!
   createdAt: DateTime!
   scheduledAt: DateTime!
-  notes: String
+  note: String
   Workout: Workout!
   LoggedWorkout: LoggedWorkout
   GymProfile: GymProfile
 }
 input CreateScheduledWorkoutInput {
   scheduledAt: DateTime!
-  notes: String
+  note: String
   Workout: ID!
   GymProfile: ID
 }
 input UpdateScheduledWorkoutInput {
   id: ID!
   scheduledAt: DateTime
-  notes: String
+  note: String
   Workout: ID
   LoggedWorkout: ID
   GymProfile: ID
@@ -691,7 +691,7 @@ input UpdateWorkoutInput {
 type WorkoutSection {
   id: ID!
   name: String
-  notes: String
+  note: String
   rounds: Int!
   timecap: Int
   sortPosition: Int!
@@ -710,7 +710,7 @@ type WorkoutSection {
 }
 input CreateWorkoutSectionInput {
   name: String
-  notes: String
+  note: String
   rounds: Int
   timecap: Int
   sortPosition: Int!
@@ -729,7 +729,7 @@ input CreateWorkoutSectionInput {
 input UpdateWorkoutSectionInput {
   id: ID!
   name: String
-  notes: String
+  note: String
   rounds: Int
   timecap: Int
   introVideoUri: String
@@ -746,7 +746,6 @@ type WorkoutSet {
   id: ID!
   sortPosition: Int!
   rounds: Int!
-  notes: String
   WorkoutMoves: [WorkoutMove!]!
   Generators: [WorkoutSetGenerator!]
   IntervalBuyIn: WorkoutSetIntervalBuyIn
@@ -754,13 +753,11 @@ type WorkoutSet {
 input CreateWorkoutSetInput {
   sortPosition: Int!
   rounds: Int
-  notes: String
   WorkoutSection: ID!
 }
 input UpdateWorkoutSetInput {
   id: ID!
   rounds: Int
-  notes: String
 }
 type WorkoutSetIntervalBuyIn {
   id: ID!
@@ -853,7 +850,7 @@ type WorkoutProgram {
 type WorkoutProgramWorkout {
   id: ID!
   dayNumber: Float!
-  notes: String
+  note: String
   Workout: Workout!
 }
 type WorkoutProgramEnrolment {
@@ -894,14 +891,14 @@ input UpdateWorkoutProgramInput {
 }
 input CreateWorkoutProgramWorkoutInput {
   dayNumber: Float!
-  notes: String
+  note: String
   Workout: ID!
   WorkoutProgram: ID!
 }
 input UpdateWorkoutProgramWorkoutInput {
   id: ID!
   dayNumber: Float!
-  notes: String
+  note: String
   Workout: ID!
 }
 input CreateWorkoutProgramReviewInput {

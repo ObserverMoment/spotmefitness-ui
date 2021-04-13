@@ -50,7 +50,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  WorkoutSection genDefaultWorkoutsection(WorkoutSectionType type) =>
+  WorkoutSection _genDefaultWorkoutSection(WorkoutSectionType type) =>
       WorkoutSection()
         ..$$typename = 'WorkoutSection'
         ..id = (_sectionId++).toString()
@@ -61,7 +61,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
   void createSection(WorkoutSectionType type) {
     formIsDirty = true;
-    workoutData.workoutSections.add(genDefaultWorkoutsection(type));
+    workoutData.workoutSections.add(_genDefaultWorkoutSection(type));
     notifyListeners();
   }
 
@@ -69,6 +69,25 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     formIsDirty = true;
     workoutData.workoutSections[index] = WorkoutSection.fromJson(
         {...workoutData.workoutSections[index].toJson(), ...data});
+    notifyListeners();
+  }
+
+  WorkoutSet _genDefaultWorkoutSet(int sortPosition) => WorkoutSet()
+    ..$$typename = 'WorkoutSet'
+    ..id = (_setId++).toString()
+    ..rounds = 1
+    ..sortPosition = sortPosition
+    ..workoutMoves = [];
+
+  void createSet(int sectionIndex) {
+    formIsDirty = true;
+    final oldWorkoutSets = [
+      ...workoutData.workoutSections[sectionIndex].workoutSets
+    ];
+    workoutData.workoutSections[sectionIndex].workoutSets = [
+      ...oldWorkoutSets,
+      _genDefaultWorkoutSet(oldWorkoutSets.length)
+    ];
     notifyListeners();
   }
 }

@@ -449,54 +449,6 @@ class SortByButton extends StatelessWidget {
   }
 }
 
-class InfoPopupButton extends StatelessWidget {
-  final String pageTitle;
-  final Widget infoWidget;
-  InfoPopupButton({required this.infoWidget, this.pageTitle = 'Info'});
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: () => context.push(
-          fullscreenDialog: true,
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBar(
-              middle: NavBarTitle(pageTitle),
-            ),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [infoWidget],
-                ),
-              ),
-            ),
-          )),
-      child: Icon(
-        CupertinoIcons.info_circle,
-        size: 25,
-      ),
-    );
-  }
-}
-
-class CreateIconButton extends StatelessWidget {
-  final void Function() onPressed;
-  CreateIconButton({required this.onPressed});
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: Icon(
-        CupertinoIcons.add_circled,
-        size: 25,
-      ),
-    );
-  }
-}
-
 /// Create button with no background or border.
 class CreateTextIconButton extends StatelessWidget {
   final void Function() onPressed;
@@ -526,7 +478,7 @@ class CreateTextIconButton extends StatelessWidget {
   }
 }
 
-/// Has no padding which allows it to act as 'Leading' widget in the nav bar.
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
 class NavBarCancelButton extends StatelessWidget {
   final void Function() onPressed;
   NavBarCancelButton(this.onPressed);
@@ -539,5 +491,93 @@ class NavBarCancelButton extends StatelessWidget {
           'Cancel',
           color: Styles.errorRed,
         ));
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
+class NavBarSaveButton extends StatelessWidget {
+  final void Function() onPressed;
+  NavBarSaveButton(this.onPressed);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: MyText(
+          'Save',
+          color: Styles.infoBlue,
+          weight: FontWeight.bold,
+        ));
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
+class NavBarTextButton extends StatelessWidget {
+  final String text;
+  final void Function() onPressed;
+  NavBarTextButton({required this.text, required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: MyText(
+          text,
+        ));
+  }
+}
+
+/// Icon buttons
+class InfoPopupButton extends StatelessWidget {
+  final String pageTitle;
+  final Widget infoWidget;
+
+  /// Defaults to displaying a nav bar but can be removed if the info widget being displayed already has one.
+  final bool withoutNavBar;
+  InfoPopupButton(
+      {required this.infoWidget,
+      this.pageTitle = 'Info',
+      this.withoutNavBar = false});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push(
+          fullscreenDialog: true,
+          child: CupertinoPageScaffold(
+            navigationBar: withoutNavBar
+                ? null
+                : CupertinoNavigationBar(
+                    middle: NavBarTitle(pageTitle),
+                  ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [infoWidget],
+                ),
+              ),
+            ),
+          )),
+      child: Icon(CupertinoIcons.info, size: Styles.buttonIconSize),
+    );
+  }
+}
+
+/// Circled + should be used in the nav bar only - elsewhere use the uncircled version.
+class CreateIconButton extends StatelessWidget {
+  final void Function() onPressed;
+  CreateIconButton({required this.onPressed});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: Icon(
+        CupertinoIcons.add_circled,
+        size: 25,
+      ),
+    );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// Used for [TextRowClickToEdit] components
 class MyTextField extends StatefulWidget {
   final Key? key;
   final bool autofocus;
@@ -73,6 +75,7 @@ class _MyTextFieldState extends State<MyTextField> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: CupertinoTextField(
+        keyboardAppearance: context.theme.cupertinoThemeData.brightness,
         key: widget.key,
         maxLines: widget.maxLines,
         controller: widget.controller,

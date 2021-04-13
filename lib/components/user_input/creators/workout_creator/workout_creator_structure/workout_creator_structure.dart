@@ -12,7 +12,7 @@ class WorkoutCreatorStructure extends StatelessWidget {
     // Create a default section as a placeholder until user selects the type.
     bloc.createSection(WorkoutSectionType()
       ..id = 0.toString()
-      ..name = 'Free Session'
+      ..name = 'Section'
       ..description = '');
 
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
@@ -22,7 +22,8 @@ class WorkoutCreatorStructure extends StatelessWidget {
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
           value: bloc,
           child: WorkoutSectionCreator(
-            bloc.workoutData.workoutSections.length - 1,
+            key: Key((bloc.workoutData.workoutSections.length - 1).toString()),
+            sectionIndex: bloc.workoutData.workoutSections.length - 1,
             isCreate: true,
           ),
         ),
@@ -39,7 +40,8 @@ class WorkoutCreatorStructure extends StatelessWidget {
       CupertinoPageRoute(
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
           value: bloc,
-          child: WorkoutSectionCreator(sectionIndex),
+          child: WorkoutSectionCreator(
+              key: Key(sectionIndex.toString()), sectionIndex: sectionIndex),
         ),
       ),
     );

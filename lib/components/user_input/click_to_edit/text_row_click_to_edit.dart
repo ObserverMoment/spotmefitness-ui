@@ -21,10 +21,12 @@ class EditableTextFieldRow extends StatelessWidget {
   final int maxInputLines;
   final int? maxChars;
   final bool isRequired;
+  final String placeholder;
 
   EditableTextFieldRow(
       {required this.title,
       this.text = '',
+      this.placeholder = 'Add...',
       required this.onSave,
       required this.inputValidation,
       this.validationMessage,
@@ -34,8 +36,9 @@ class EditableTextFieldRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasText = Utils.textNotNull(text);
     return CupertinoButton(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       onPressed: () => context.push(
           child: FullScreenTextEditing(
         title: title,
@@ -61,16 +64,17 @@ class EditableTextFieldRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Row(children: [
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Expanded(
                 child: MyText(
-                  text,
+                  hasText ? text : placeholder,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
+                  textAlign: hasText ? TextAlign.center : TextAlign.end,
+                  subtext: !hasText,
                 ),
               ),
               SizedBox(
-                width: 4,
+                width: 8,
               ),
               Icon(CupertinoIcons.pencil, size: 18),
             ]),

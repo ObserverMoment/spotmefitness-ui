@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
@@ -55,11 +56,11 @@ class WorkoutDetailsSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                if (Utils.textNotNull(workoutSection.notes))
+                if (Utils.textNotNull(workoutSection.note))
                   CupertinoButton(
                       padding: EdgeInsets.zero,
                       onPressed: () => context.push(
-                          child: TextViewer(workoutSection.notes!, 'Notes'),
+                          child: TextViewer(workoutSection.note!, 'Note'),
                           fullscreenDialog: true),
                       child: Icon(CupertinoIcons.doc_text_search)),
                 WorkoutSectionTypeTag(workoutSection.workoutSectionType.name,

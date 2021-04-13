@@ -1,7 +1,10 @@
 // https://stackoverflow.com/questions/49172746/is-it-possible-extend-themedata-in-flutter
+import 'dart:ui';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -11,7 +14,32 @@ extension BuildContextExtension on BuildContext {
     return watch<ThemeBloc>();
   }
 
+  ThemeBloc get readTheme {
+    return read<ThemeBloc>();
+  }
+
   GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
+
+  Future<T?> openBlurModalPopup<T>(Widget child,
+      {double? width,
+      double? height,
+      double sigmaX = 8,
+      double sigmaY = 8}) async {
+    T? returned = await showCupertinoModalPopup(
+      filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+      context: this,
+      builder: (context) => Center(
+          child: Container(
+              width: width ?? MediaQuery.of(context).size.width * 0.90,
+              height: height,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              decoration: BoxDecoration(
+                  color: this.theme.cardBackground.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(16)),
+              child: child)),
+    );
+    return returned;
+  }
 
   Future<T> push<T>(
       {required Widget child,
@@ -19,7 +47,7 @@ extension BuildContextExtension on BuildContext {
       rootNavigator = false}) async {
     final BuildContext context = this;
     final T res = await Navigator.of(context, rootNavigator: rootNavigator)
-        .push(CupertinoPageRoute(
+        .push(MaterialWithModalsPageRoute(
             fullscreenDialog: fullscreenDialog, builder: (context) => child));
     return res;
   }
@@ -121,6 +149,15 @@ extension BuildContextExtension on BuildContext {
                   ),
                 ]));
     return res;
+  }
+
+  Future<T?> showBottomSheet<T>({required Widget child}) async {
+    final BuildContext context = this;
+    final T? result = await showCupertinoModalBottomSheet(
+        context: context,
+        barrierColor: Styles.black.withOpacity(0.5),
+        builder: (context) => child);
+    return result;
   }
 
   Future<void> showErrorAlert(

@@ -28,13 +28,6 @@ class WorkoutSetDisplay extends StatelessWidget {
             children: [
               if (workoutSet.rounds > 1)
                 MyText('Repeat ${workoutSet.rounds} times'),
-              if (Utils.textNotNull(workoutSet.notes))
-                CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () => context.push(
-                        child: TextViewer(workoutSet.notes!, 'Notes'),
-                        fullscreenDialog: true),
-                    child: Icon(CupertinoIcons.doc_text_search)),
             ],
           ),
           ListView.builder(

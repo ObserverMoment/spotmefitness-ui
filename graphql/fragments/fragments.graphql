@@ -83,7 +83,7 @@ fragment WorkoutSection on WorkoutSection {
   __typename
   id
   name
-  notes
+  note
   rounds
   timecap
   sortPosition
@@ -107,7 +107,6 @@ fragment WorkoutSet on WorkoutSet {
   id
   sortPosition
   rounds
-  notes
 }
 
 fragment WorkoutMove on WorkoutMove {

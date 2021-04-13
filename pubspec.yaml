@@ -28,6 +28,7 @@ dependencies:
   auto_route: ^1.0.1
   better_player: ^0.0.63
   cupertino_icons: ^1.0.2
+  custom_pop_up_menu: ^1.2.0
   equatable: ^2.0.0
   email_validator: ^2.0.1
   firebase_auth: ^1.0.2
