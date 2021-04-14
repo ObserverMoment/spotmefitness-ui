@@ -73,19 +73,25 @@ class EquipmentMultiSelector extends StatelessWidget {
   final bool showIcon;
   final int crossAxisCount;
   final Axis scrollDirection;
+  final bool tilesBorder;
+  final FONTSIZE fontSize;
+  final double boxSize;
   EquipmentMultiSelector({
     required this.selectedEquipments,
     required this.equipments,
     this.showIcon = false,
     required this.handleSelection,
     this.crossAxisCount = 1,
+    this.fontSize = FONTSIZE.MAIN,
+    this.boxSize = 100,
+    this.tilesBorder = false,
     this.scrollDirection = Axis.horizontal,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 110,
+      height: boxSize,
       child: GridView.builder(
           scrollDirection: scrollDirection,
           shrinkWrap: true,
@@ -100,6 +106,8 @@ class EquipmentMultiSelector extends StatelessWidget {
               child: EquipmentTile(
                   showIcon: showIcon,
                   equipment: equipments[index],
+                  withBorder: tilesBorder,
+                  fontSize: fontSize,
                   isSelected: selectedEquipments.contains(equipments[index])),
             );
           }),

@@ -578,9 +578,11 @@ WorkoutMove _$WorkoutMoveFromJson(Map<String, dynamic> json) {
         unknownValue: WorkoutMoveRepType.artemisUnknown)
     ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown)
-    ..loadAmount = (json['loadAmount'] as num?)?.toDouble()
+    ..loadAmount = (json['loadAmount'] as num).toDouble()
     ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown)
+    ..timeUnit = _$enumDecode(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown)
     ..equipment = json['Equipment'] == null
         ? null
         : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
@@ -597,6 +599,7 @@ Map<String, dynamic> _$WorkoutMoveToJson(WorkoutMove instance) =>
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
       'loadAmount': instance.loadAmount,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
       'Equipment': instance.equipment?.toJson(),
       'Move': instance.move.toJson(),
     };
@@ -614,6 +617,13 @@ const _$LoadUnitEnumMap = {
   LoadUnit.lb: 'LB',
   LoadUnit.bodyweightpercent: 'BODYWEIGHTPERCENT',
   LoadUnit.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+const _$TimeUnitEnumMap = {
+  TimeUnit.hours: 'HOURS',
+  TimeUnit.minutes: 'MINUTES',
+  TimeUnit.seconds: 'SECONDS',
+  TimeUnit.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
 WorkoutSet _$WorkoutSetFromJson(Map<String, dynamic> json) {

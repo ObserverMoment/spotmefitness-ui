@@ -151,11 +151,13 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
-  Future<T?> showBottomSheet<T>({required Widget child}) async {
+  Future<T?> showBottomSheet<T>(
+      {required Widget child, bool expand = false}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
+        expand: expand,
         context: context,
-        barrierColor: Styles.black.withOpacity(0.5),
+        barrierColor: Styles.black.withOpacity(0.8),
         builder: (context) => child);
     return result;
   }

@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_editable_display.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_move_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:collection/collection.dart';
 
 class FreeSessionCreator extends StatelessWidget {
   final int sectionIndex;
@@ -23,8 +24,10 @@ class FreeSessionCreator extends StatelessWidget {
           value: bloc,
           child: WorkoutMoveCreator(
             sectionIndex: sectionIndex,
-            setIndex: bloc
-                .workoutData.workoutSections[sectionIndex].workoutSets.length,
+            setIndex: bloc.workoutData.workoutSections[sectionIndex].workoutSets
+                    .length -
+                1,
+            workoutMoveIndex: 0,
           ),
         ),
       ),
@@ -36,13 +39,20 @@ class FreeSessionCreator extends StatelessWidget {
     final workoutSets = context.select<WorkoutCreatorBloc, List<WorkoutSet>>(
         (bloc) => bloc.workoutData.workoutSections[sectionIndex].workoutSets);
 
-    return Column(
-      children: [
-        ListView.builder(
-            shrinkWrap: true,
-            itemCount: workoutSets.length,
-            itemBuilder: (context, index) =>
-                MyText(workoutSets[index].sortPosition.toString())),
+    final List<WorkoutSet> _sortedSets =
+        workoutSets.sortedBy<num>((ws) => ws.sortPosition);
+
+    return Expanded(
+      child: ListView(shrinkWrap: true, children: [
+        ..._sortedSets
+            .map((ws) => Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: WorkoutSetEditableDisplay(
+                    sectionIndex: sectionIndex,
+                    setIndex: ws.sortPosition,
+                  ),
+                ))
+            .toList(),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -55,7 +65,7 @@ class FreeSessionCreator extends StatelessWidget {
             ],
           ),
         ),
-      ],
+      ]),
     );
   }
 }

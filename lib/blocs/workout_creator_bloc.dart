@@ -90,4 +90,21 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     ];
     notifyListeners();
   }
+
+  /// Add a workoutMove to a set.
+  void createWorkoutMove(int sectionIndex, setIndex, WorkoutMove workoutMove) {
+    formIsDirty = true;
+    final oldWorkoutSet =
+        workoutData.workoutSections[sectionIndex].workoutSets[setIndex];
+    final oldWorkoutMoves = oldWorkoutSet.workoutMoves;
+    workoutData.workoutSections[sectionIndex].workoutSets[setIndex] =
+        WorkoutSet.fromJson({
+      ...oldWorkoutSet.toJson(),
+      'WorkoutMoves': [
+        ...oldWorkoutMoves.map((wm) => wm.toJson()),
+        workoutMove.toJson()
+      ]
+    });
+    notifyListeners();
+  }
 }

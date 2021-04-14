@@ -26,7 +26,7 @@ class Card extends StatelessWidget {
       decoration: BoxDecoration(
           color: context.theme.cardBackground,
           boxShadow: [Styles.cardBoxShadow],
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(4),
           image: backgroundImageUri != null
               ? DecorationImage(
                   fit: BoxFit.cover,

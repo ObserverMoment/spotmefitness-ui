@@ -118,6 +118,7 @@ fragment WorkoutMove on WorkoutMove {
   distanceUnit
   loadAmount
   loadUnit
+  timeUnit
 }
 
 fragment WorkoutTag on WorkoutTag {

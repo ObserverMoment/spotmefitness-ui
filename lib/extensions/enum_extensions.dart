@@ -33,7 +33,7 @@ extension DifficultyLevelExtension on DifficultyLevel {
 }
 
 extension DistanceUnitExtension on DistanceUnit {
-  String get display {
+  String get shortDisplay {
     switch (this) {
       case DistanceUnit.metres:
         return 'mtr';
@@ -48,6 +48,7 @@ extension DistanceUnitExtension on DistanceUnit {
     }
   }
 
+  String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
 }
 
@@ -70,5 +71,28 @@ extension LoadUnitExtension on LoadUnit {
     }
   }
 
+  String get apiValue => describeEnum(this).toUpperCase();
+}
+
+extension TimeUnitExtension on TimeUnit {
+  String get shortDisplay {
+    switch (this) {
+      case TimeUnit.hours:
+        return 'hrs';
+      case TimeUnit.minutes:
+        return 'mins';
+      case TimeUnit.seconds:
+        return 'secs';
+      default:
+        throw new Exception('This is not a valid TimeUnit enum: $this');
+    }
+  }
+
+  String get display => describeEnum(this).capitalize;
+  String get apiValue => describeEnum(this).toUpperCase();
+}
+
+extension WorkoutMoveRepTypeExtension on WorkoutMoveRepType {
+  String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
 }

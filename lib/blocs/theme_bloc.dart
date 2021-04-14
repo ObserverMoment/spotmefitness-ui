@@ -38,6 +38,8 @@ class ThemeBloc extends ChangeNotifier {
   Color get background => theme.cupertinoThemeData.scaffoldBackgroundColor;
   Color get activeIcon => theme.customThemeData.activeIcon;
   Color get cardBackground => theme.customThemeData.cardBackground;
+  Color get modalBackground =>
+      theme.customThemeData.cardBackground.withOpacity(0.8);
 
   Future<void> switchToTheme(ThemeName switchToTheme) async {
     if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {
@@ -99,7 +101,7 @@ abstract class ThemeData {
         stops: [0.1, 0.9],
       ),
       activeIcon: Styles.colorFour,
-      cardBackground: const Color(0xFF1c1c1c),
+      cardBackground: const Color(0xFF151515),
       bottomNavigationBackground: const Color(0xff434343));
 
   static CustomThemeData customLightData = CustomThemeData(

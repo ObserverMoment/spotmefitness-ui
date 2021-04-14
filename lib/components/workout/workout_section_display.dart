@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:collection/collection.dart';
 
 class WorkoutDetailsSection extends StatelessWidget {
   final WorkoutSection workoutSection;
@@ -46,7 +47,9 @@ class WorkoutDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Set<Equipment> _allEquipments = _uniqueEquipments();
+    final Set<Equipment> allEquipments = _uniqueEquipments();
+    final sortedSets =
+        workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       child: Column(
@@ -86,14 +89,14 @@ class WorkoutDetailsSection extends StatelessWidget {
               ],
             ),
           ),
-          if (_allEquipments.isNotEmpty)
+          if (allEquipments.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(bottom: 6.0),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 6,
                 runSpacing: 4,
-                children: _allEquipments
+                children: allEquipments
                     .map((e) => Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
@@ -136,10 +139,10 @@ class WorkoutDetailsSection extends StatelessWidget {
           ListView.builder(
               physics: scrollable ? null : NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: workoutSection.workoutSets.length,
+              itemCount: sortedSets.length,
               itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: WorkoutSetDisplay(workoutSection.workoutSets[index]),
+                    child: WorkoutSetDisplay(sortedSets[index]),
                   ))
         ],
       ),

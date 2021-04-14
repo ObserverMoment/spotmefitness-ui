@@ -14,6 +14,17 @@ extension DateTimeFormatting on DateTime {
 }
 
 extension DoubleExtension on double {
+  // https://python.developreference.com/article/10024227/How+to+remove+trailing+zeros+using+Dart
+  // The "EDIT" version
+  String stringMyDouble() {
+    int i = this.truncate();
+    if (this == i) {
+      return i.toString();
+    }
+    // Returns to max of two decimal places
+    return ((this * 100).truncate() / 100).toString();
+  }
+
   double roundMyDouble(
     int decimalPlaces,
   ) {

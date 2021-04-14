@@ -386,7 +386,7 @@ class FilterButton extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         MiniButton(
-          onPressed: () => {},
+          onPressed: onPressed,
           text: 'Filter',
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,

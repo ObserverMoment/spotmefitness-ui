@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
@@ -16,63 +17,31 @@ class WorkoutMoveDisplay extends StatelessWidget {
       {this.isLast = false, this.openInfoPageOnTap = false});
 
   Widget _buildRepDisplay() {
-    switch (workoutMove.repType) {
-      case WorkoutMoveRepType.reps:
-        return Column(
-          children: [
-            MyText(
-              '${workoutMove.reps.toInt().toString()}',
-              lineHeight: 1.2,
-              weight: FontWeight.bold,
-            ),
-            MyText(
-              'reps',
-              size: FONTSIZE.TINY,
-              weight: FontWeight.bold,
-            ),
-          ],
-        );
-      case WorkoutMoveRepType.calories:
-        return Column(
-          children: [
-            MyText(
-              '${workoutMove.reps.toInt().toString()}',
-              lineHeight: 1.2,
-            ),
-            MyText(
-              'calories',
-              size: FONTSIZE.TINY,
-              weight: FontWeight.bold,
-            ),
-          ],
-        );
-      case WorkoutMoveRepType.distance:
-        return Column(
-          children: [
-            MyText(
-              '${workoutMove.reps.roundMyDouble(2).toString()}',
-              lineHeight: 1.2,
-              weight: FontWeight.bold,
-            ),
-            MyText(
-              workoutMove.distanceUnit.display,
-              size: FONTSIZE.TINY,
-            ),
-          ],
-        );
-      case WorkoutMoveRepType.time:
-        return Duration(seconds: workoutMove.reps.toInt())
-            .display(direction: Axis.vertical);
-      default:
-        throw Exception('${workoutMove.repType} is not a valid rep type.');
-    }
+    return Column(
+      children: [
+        MyText(
+          workoutMove.reps.stringMyDouble(),
+          lineHeight: 1.2,
+          weight: FontWeight.bold,
+        ),
+        MyText(
+          workoutMove.repType == WorkoutMoveRepType.time
+              ? workoutMove.timeUnit.shortDisplay
+              : workoutMove.repType == WorkoutMoveRepType.distance
+                  ? workoutMove.distanceUnit.shortDisplay
+                  : describeEnum(workoutMove.repType),
+          size: FONTSIZE.TINY,
+          weight: FontWeight.bold,
+        ),
+      ],
+    );
   }
 
   Widget _buildLoadDisplay() {
     return Column(
       children: [
         MyText(
-          '${workoutMove.loadAmount!.roundMyDouble(2).toString()}',
+          workoutMove.loadAmount.stringMyDouble(),
           lineHeight: 1.2,
           weight: FontWeight.bold,
         ),

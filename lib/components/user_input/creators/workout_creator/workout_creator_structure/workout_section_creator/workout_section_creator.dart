@@ -126,33 +126,30 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          WorkoutSectionTypeTag(
-                              workoutSection.workoutSectionType.name),
-                          RoundPicker(
-                            rounds: workoutSection.rounds,
-                            saveValue: (value) =>
-                                _updateSection({'rounds': value}),
-                            modalTitle: 'How many rounds?',
-                          ),
-                          TimecapPicker(
-                            timecap: workoutSection.timecap != null
-                                ? Duration(seconds: workoutSection.timecap!)
-                                : null,
-                            saveTimecap: (duration) => _updateSection(
-                                {'timecap': duration?.inSeconds}),
-                          ),
-                          NoteEditor(
-                            title: 'Section Note',
-                            note: workoutSection.note,
-                            saveNote: (note) => _updateSection({'note': note}),
-                          )
-                        ],
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        WorkoutSectionTypeTag(
+                            workoutSection.workoutSectionType.name),
+                        RoundPicker(
+                          rounds: workoutSection.rounds,
+                          saveValue: (value) =>
+                              _updateSection({'rounds': value}),
+                          modalTitle: 'How many rounds?',
+                        ),
+                        TimecapPicker(
+                          timecap: workoutSection.timecap != null
+                              ? Duration(seconds: workoutSection.timecap!)
+                              : null,
+                          saveTimecap: (duration) =>
+                              _updateSection({'timecap': duration?.inSeconds}),
+                        ),
+                        NoteEditor(
+                          title: 'Section Note',
+                          note: workoutSection.note,
+                          saveNote: (note) => _updateSection({'note': note}),
+                        )
+                      ],
                     ),
                     _buildSectionTypeCreator(workoutSection.workoutSectionType)
                   ],

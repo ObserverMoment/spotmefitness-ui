@@ -1,8 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+
+/// Box with rounded corners. No elevation. Card background color.
+class ContentBox extends StatelessWidget {
+  final Widget child;
+  ContentBox({required this.child});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      decoration: BoxDecoration(
+          color: context.theme.cardBackground,
+          borderRadius: BorderRadius.circular(6)),
+      child: child,
+    );
+  }
+}
 
 /// Box with rounded corners. No elevation.
 class RoundedBox extends StatelessWidget {
@@ -49,6 +67,28 @@ class CircularBox extends StatelessWidget {
                       : CupertinoColors.black)
               : null),
       child: child,
+    );
+  }
+}
+
+class HorizontalLine extends StatelessWidget {
+  final double thickness;
+  final Color? color;
+  final double verticalPadding;
+  HorizontalLine({this.thickness = 1, this.color, this.verticalPadding = 4.0});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: verticalPadding),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+                height: thickness,
+                color: color ?? context.theme.primary.withOpacity(0.2)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -145,24 +185,79 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
         );
 }
 
-class HorizontalLine extends StatelessWidget {
-  final double thickness;
-  final Color? color;
-  final double verticalPadding;
-  HorizontalLine({this.thickness = 1, this.color, this.verticalPadding = 4.0});
+class ModalCupertinoPageScaffold extends StatelessWidget {
+  /// Used for both the nav bar and the main modal.
+  final Widget child;
+  final String title;
+  final void Function()? cancel;
+  final void Function()? save;
+  final bool validToSave;
+  final bool resizeToAvoidBottomInset;
+  ModalCupertinoPageScaffold(
+      {required this.child,
+      required this.title,
+      required this.cancel,
+      required this.save,
+      this.resizeToAvoidBottomInset = false,
+      this.validToSave = false});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: verticalPadding),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-                height: thickness,
-                color: color ?? context.theme.primary.withOpacity(0.2)),
-          ),
-        ],
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      backgroundColor: context.theme.modalBackground,
+      navigationBar: CupertinoNavigationBar(
+        leading: cancel != null ? NavBarCancelButton(cancel!) : null,
+        backgroundColor: context.theme.modalBackground,
+        middle: NavBarTitle(title),
+        trailing: save != null && validToSave
+            ? FadeIn(child: NavBarSaveButton(save!))
+            : null,
+      ),
+      child: Padding(
+        // Top padding to avoid nav bar
+        // When background color hasOpacity content will sit behind it by default
+        padding:
+            const EdgeInsets.only(top: 60.0, left: 12, right: 12, bottom: 16),
+        child: child,
       ),
     );
   }
 }
+
+// class ModalCupertinoPageScaffold extends CupertinoPageScaffold {
+//   final Key key;
+
+//   /// Used for both the nav bar and the main modal.
+//   final Color backgroundColor;
+//   final Widget child;
+//   final String title;
+//   final void Function()? cancel;
+//   final void Function()? save;
+//   final bool validToSave;
+//   ModalCupertinoPageScaffold(
+//       {required this.key,
+//       required this.child,
+//       required this.title,
+//       required this.backgroundColor,
+//       required this.cancel,
+//       required this.save,
+//       this.validToSave = false})
+//       : super(
+//             key: key,
+//             resizeToAvoidBottomInset: false,
+//             child: Column(
+//               children: [
+//                 SizedBox(height: 100),
+//                 child,
+//               ],
+//             ),
+//             backgroundColor: Styles.errorRed,
+//             navigationBar: CupertinoNavigationBar(
+//               leading: cancel != null ? NavBarCancelButton(cancel) : null,
+//               backgroundColor: Styles.errorRed,
+//               middle: NavBarTitle(title),
+//               trailing: save != null && validToSave
+//                   ? FadeIn(child: NavBarSaveButton(save))
+//                   : null,
+//             ));
+// }

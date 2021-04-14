@@ -60,7 +60,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: CupertinoSearchTextField(),
                     ),
                     Expanded(

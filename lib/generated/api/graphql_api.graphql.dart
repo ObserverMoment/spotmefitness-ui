@@ -107,9 +107,11 @@ mixin WorkoutMoveMixin {
   late WorkoutMoveRepType repType;
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   late DistanceUnit distanceUnit;
-  double? loadAmount;
+  late double loadAmount;
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   late LoadUnit loadUnit;
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  late TimeUnit timeUnit;
 }
 mixin WorkoutSetMixin {
   @JsonKey(name: '__typename')
@@ -684,6 +686,7 @@ class WorkoutMove extends JsonSerializable
         distanceUnit,
         loadAmount,
         loadUnit,
+        timeUnit,
         equipment,
         move
       ];
@@ -1318,6 +1321,16 @@ enum MoveScope {
   standard,
   @JsonValue('CUSTOM')
   custom,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum TimeUnit {
+  @JsonValue('HOURS')
+  hours,
+  @JsonValue('MINUTES')
+  minutes,
+  @JsonValue('SECONDS')
+  seconds,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -3036,6 +3049,12 @@ class UpdateWorkoutMutation
               alias: null,
               arguments: [],
               directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'timeUnit'),
+              alias: null,
+              arguments: [],
+              directives: [],
               selectionSet: null)
         ])),
     FragmentDefinitionNode(
@@ -4133,6 +4152,12 @@ class CreateWorkoutMutation
               alias: null,
               arguments: [],
               directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'timeUnit'),
+              alias: null,
+              arguments: [],
+              directives: [],
               selectionSet: null)
         ])),
     FragmentDefinitionNode(
@@ -4877,6 +4902,12 @@ class WorkoutByIdQuery
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'loadUnit'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'timeUnit'),
               alias: null,
               arguments: [],
               directives: [],
