@@ -18,6 +18,7 @@ import 'package:collection/collection.dart';
 
 /// Handles state internally the user is ready to save it and add it to the section.
 class WorkoutMoveCreator extends StatefulWidget {
+  final String? pageTitle;
   final int sectionIndex;
   final int setIndex;
   final int workoutMoveIndex;
@@ -26,6 +27,7 @@ class WorkoutMoveCreator extends StatefulWidget {
       {required this.sectionIndex,
       required this.setIndex,
       required this.workoutMoveIndex,
+      this.pageTitle,
       this.workoutMove});
 
   @override
@@ -90,8 +92,14 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
 
   void _saveWorkoutMove() {
     if (_activeWorkoutMove != null && _validToSave()) {
-      _bloc.createWorkoutMove(
-          widget.sectionIndex, widget.setIndex, _activeWorkoutMove!);
+      // Check if this is a create or an edit op.
+      if (widget.workoutMove != null) {
+        _bloc.editWorkoutMove(
+            widget.sectionIndex, widget.setIndex, _activeWorkoutMove!);
+      } else {
+        _bloc.createWorkoutMove(
+            widget.sectionIndex, widget.setIndex, _activeWorkoutMove!);
+      }
     }
     context.pop();
   }
@@ -105,6 +113,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
         onPressed: () => _pageController.toPage(1),
       );
     } else if (_validToSave()) {
+      // Check if this is a create or an edit op.
+
       return FadeIn(
         child: NavBarSaveButton(
           _saveWorkoutMove,
@@ -135,7 +145,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         leading: NavBarCancelButton(context.pop),
-        middle: NavBarTitle('Set'),
+        middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),
       ),
       child: Column(

@@ -1,32 +1,69 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
+import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_editable_display.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_move_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 
-class FreeSessionCreator extends StatelessWidget {
+class FreeSessionCreator extends StatefulWidget {
   final int sectionIndex;
   FreeSessionCreator(this.sectionIndex);
 
-  void _createSet(BuildContext context) {
-    final bloc = context.read<WorkoutCreatorBloc>();
+  @override
+  _FreeSessionCreatorState createState() => _FreeSessionCreatorState();
+}
+
+class _FreeSessionCreatorState extends State<FreeSessionCreator> {
+  late List<WorkoutSet> _workoutSets;
+  late WorkoutCreatorBloc _bloc;
+
+  void _checkForNewData() {
+    if (_bloc.workoutData.workoutSections.length > widget.sectionIndex) {
+      final _updated =
+          _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets;
+
+      if (!listEquals(_workoutSets, _updated)) {
+        setState(() {
+          _workoutSets = [..._updated];
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<WorkoutCreatorBloc>();
+    _workoutSets =
+        _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets;
+    _bloc.addListener(_checkForNewData);
+  }
+
+  @override
+  void dispose() {
+    _bloc.removeListener(_checkForNewData);
+    super.dispose();
+  }
+
+  void _createSet() {
     // Create default set.
-    bloc.createSet(sectionIndex);
+    _bloc.createWorkoutSet(widget.sectionIndex);
     // Open workout move creator to add first move.
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: bloc,
+          value: _bloc,
           child: WorkoutMoveCreator(
-            sectionIndex: sectionIndex,
-            setIndex: bloc.workoutData.workoutSections[sectionIndex].workoutSets
-                    .length -
-                1,
+            pageTitle: 'Add Set',
+            sectionIndex: widget.sectionIndex,
+            setIndex: _workoutSets.length - 1,
             workoutMoveIndex: 0,
           ),
         ),
@@ -36,23 +73,33 @@ class FreeSessionCreator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workoutSets = context.select<WorkoutCreatorBloc, List<WorkoutSet>>(
-        (bloc) => bloc.workoutData.workoutSections[sectionIndex].workoutSets);
-
     final List<WorkoutSet> _sortedSets =
-        workoutSets.sortedBy<num>((ws) => ws.sortPosition);
+        _workoutSets.sortedBy<num>((ws) => ws.sortPosition);
 
     return Expanded(
       child: ListView(shrinkWrap: true, children: [
-        ..._sortedSets
-            .map((ws) => Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: WorkoutSetEditableDisplay(
-                    sectionIndex: sectionIndex,
-                    setIndex: ws.sortPosition,
-                  ),
-                ))
-            .toList(),
+        ImplicitlyAnimatedList<WorkoutSet>(
+          items: _sortedSets,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          areItemsTheSame: (a, b) => a.id == b.id,
+          itemBuilder: (context, animation, item, index) {
+            return SizeFadeTransition(
+              sizeFraction: 0.7,
+              curve: Curves.easeInOut,
+              animation: animation,
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: WorkoutSetCreator(
+                  key: Key(
+                      'session_creator-${widget.sectionIndex}-${item.sortPosition}'),
+                  sectionIndex: widget.sectionIndex,
+                  setIndex: item.sortPosition,
+                ),
+              ),
+            );
+          },
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -60,7 +107,7 @@ class FreeSessionCreator extends StatelessWidget {
             children: [
               CreateTextIconButton(
                 text: 'Add Set',
-                onPressed: () => _createSet(context),
+                onPressed: _createSet,
               ),
             ],
           ),

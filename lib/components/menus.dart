@@ -10,7 +10,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// Ellipsis icon for top right of nav bar that opens up a context menu.
 class NavBarEllipsisMenu extends StatefulWidget {
   final List<ContextMenuItem> items;
-  NavBarEllipsisMenu({required this.items});
+  final bool ellipsisCircled;
+  NavBarEllipsisMenu({required this.items, this.ellipsisCircled = true});
 
   @override
   _NavBarEllipsisMenuState createState() => _NavBarEllipsisMenuState();
@@ -31,9 +32,14 @@ class _NavBarEllipsisMenuState extends State<NavBarEllipsisMenu> {
       controller: _controller,
       pressType: PressType.singleClick,
       showArrow: false,
-      child: Icon(
-        CupertinoIcons.ellipsis_circle,
-        size: Styles.buttonIconSize,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Icon(
+          widget.ellipsisCircled
+              ? CupertinoIcons.ellipsis_circle
+              : CupertinoIcons.ellipsis,
+          size: Styles.buttonIconSize,
+        ),
       ),
       menuBuilder: () => ContextMenu(
         items: widget.items,

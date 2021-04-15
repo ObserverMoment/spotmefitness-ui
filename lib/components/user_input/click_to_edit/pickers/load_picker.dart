@@ -77,6 +77,9 @@ class _LoadPickerModalState extends State<LoadPickerModal> {
     _activeLoadUnit = widget.loadUnit;
     _loadAmountController =
         TextEditingController(text: widget.loadAmount.stringMyDouble());
+    // Select text on open.
+    _loadAmountController.selection = TextSelection(
+        baseOffset: 0, extentOffset: _loadAmountController.value.text.length);
     _loadAmountController.addListener(() {
       if (Utils.textNotNull(_loadAmountController.text)) {
         setState(

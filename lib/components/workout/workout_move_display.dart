@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -12,9 +11,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 class WorkoutMoveDisplay extends StatelessWidget {
   final WorkoutMove workoutMove;
   final bool isLast;
-  final bool openInfoPageOnTap;
-  WorkoutMoveDisplay(this.workoutMove,
-      {this.isLast = false, this.openInfoPageOnTap = false});
+  WorkoutMoveDisplay(this.workoutMove, {this.isLast = false});
 
   Widget _buildRepDisplay() {
     return Column(
@@ -61,58 +58,54 @@ class WorkoutMoveDisplay extends StatelessWidget {
         workoutMove.equipment!.name,
       ...workoutMove.move.requiredEquipments.map((e) => e.name).toList()
     ];
-    return GestureDetector(
-      onTap: () => context.push(
-          fullscreenDialog: true, child: MoveDetails(workoutMove.move)),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 8),
-        decoration: BoxDecoration(
-            border: isLast
-                ? null
-                : Border(
-                    bottom: BorderSide(
-                        color: context.theme.primary.withOpacity(0.06)))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MyText(workoutMove.move.name),
-                Row(
-                    children: _equipmentNames
-                        .asMap()
-                        .map((index, name) => MapEntry(
-                            index,
-                            MyText(
-                              index == _equipmentNames.length - 1
-                                  ? name
-                                  : '$name, ',
-                              size: FONTSIZE.SMALL,
-                              color: Styles.colorTwo,
-                            )))
-                        .values
-                        .toList())
-              ],
-            ),
-            Row(
-              children: [
-                if (Utils.hasLoad(workoutMove.loadAmount)) _buildLoadDisplay(),
-                if (Utils.hasLoad(workoutMove.loadAmount))
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: MyText([
-                      WorkoutMoveRepType.distance,
-                      WorkoutMoveRepType.time
-                    ].contains(workoutMove.repType)
-                        ? 'for'
-                        : 'x'),
-                  ),
-                _buildRepDisplay(),
-              ],
-            )
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+      decoration: BoxDecoration(
+          border: isLast
+              ? null
+              : Border(
+                  bottom: BorderSide(
+                      color: context.theme.primary.withOpacity(0.06)))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyText(workoutMove.move.name),
+              Row(
+                  children: _equipmentNames
+                      .asMap()
+                      .map((index, name) => MapEntry(
+                          index,
+                          MyText(
+                            index == _equipmentNames.length - 1
+                                ? name
+                                : '$name, ',
+                            size: FONTSIZE.SMALL,
+                            color: Styles.colorTwo,
+                          )))
+                      .values
+                      .toList())
+            ],
+          ),
+          Row(
+            children: [
+              if (Utils.hasLoad(workoutMove.loadAmount)) _buildLoadDisplay(),
+              if (Utils.hasLoad(workoutMove.loadAmount))
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: MyText([
+                    WorkoutMoveRepType.distance,
+                    WorkoutMoveRepType.time
+                  ].contains(workoutMove.repType)
+                      ? 'for'
+                      : 'x'),
+                ),
+              _buildRepDisplay(),
+            ],
+          )
+        ],
       ),
     );
   }

@@ -47,7 +47,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   }
 
   void _updateSection(Map<String, dynamic> data) {
-    _bloc.updateSection(widget.sectionIndex, data);
+    _bloc.updateWorkoutSection(widget.sectionIndex, data);
   }
 
   Widget _buildSectionTypeCreator(WorkoutSectionType workoutSectionType) {

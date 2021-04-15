@@ -26,6 +26,9 @@ class _NumberInputModalState<T> extends State<NumberInputModal> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.value.toString());
+    // Auto select the previous input.
+    _controller.selection = TextSelection(
+        baseOffset: 0, extentOffset: _controller.value.text.length);
     _controller.addListener(() {
       setState(() {});
     });

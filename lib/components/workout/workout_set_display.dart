@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
@@ -32,9 +33,13 @@ class WorkoutSetDisplay extends StatelessWidget {
               physics: scrollable ? null : NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: _sortedMoves.length,
-              itemBuilder: (context, index) => WorkoutMoveDisplay(
-                    _sortedMoves[index],
-                    isLast: index == _sortedMoves.length - 1,
+              itemBuilder: (context, index) => GestureDetector(
+                    onTap: () => context.push(
+                        child: MoveDetails(_sortedMoves[index].move)),
+                    child: WorkoutMoveDisplay(
+                      _sortedMoves[index],
+                      isLast: index == _sortedMoves.length - 1,
+                    ),
                   ))
         ],
       ),

@@ -89,7 +89,7 @@ class Tag extends StatelessWidget {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(30), color: _color),
       child: MyText(
@@ -109,6 +109,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   WorkoutSectionTypeTag(this.name, {this.timecap});
   @override
   Widget build(BuildContext context) {
+    final Color _color = context.theme.primary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -116,7 +117,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(color: context.theme.primary),
+            border: Border.all(color: _color),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -127,7 +128,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                 weight: FontWeight.bold,
                 lineHeight: 1.2,
                 size: FONTSIZE.SMALL,
-                color: Styles.white,
+                color: _color,
                 textAlign: TextAlign.center,
               ),
               if (timecap != null)
@@ -136,7 +137,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   weight: FontWeight.bold,
                   lineHeight: 1.15,
                   size: FONTSIZE.SMALL,
-                  color: Styles.white,
+                  color: _color,
                   textAlign: TextAlign.center,
                 )
             ],
