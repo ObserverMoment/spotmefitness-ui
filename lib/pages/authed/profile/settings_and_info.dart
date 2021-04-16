@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class SettingsAndInfo extends StatefulWidget {
@@ -30,7 +32,7 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
         CupertinoTheme.of(context).primaryColor.withOpacity(0.70);
 
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         middle: NavBarTitle('SETTINGS'),
       ),
       child: SingleChildScrollView(
@@ -49,8 +51,8 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
                     'Dark Mode',
                     weight: FontWeight.bold,
                   ),
-                  CupertinoSlidingSegmentedControl<ThemeName>(
-                      groupValue: context.watch<ThemeBloc>().themeName,
+                  SlidingSelect<ThemeName>(
+                      value: context.watch<ThemeBloc>().themeName,
                       children: <ThemeName, Widget>{
                         ThemeName.dark: Icon(
                           CupertinoIcons.moon_fill,
@@ -61,8 +63,8 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
                           color: CupertinoColors.systemYellow.withOpacity(0.7),
                         ),
                       },
-                      onValueChanged: (themeName) =>
-                          context.read<ThemeBloc>().switchToTheme(themeName!)),
+                      updateValue: (themeName) =>
+                          context.read<ThemeBloc>().switchToTheme(themeName)),
                 ],
               ),
             ),

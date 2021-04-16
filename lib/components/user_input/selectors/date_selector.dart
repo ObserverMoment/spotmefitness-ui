@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -36,7 +37,7 @@ class _DateSelectorState extends State<DateSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: _handleCancel,

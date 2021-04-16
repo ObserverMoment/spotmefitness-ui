@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/my_text_field.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -218,7 +218,7 @@ class _FullScreenTextEditingState extends State<FullScreenTextEditing> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+        navigationBar: BasicNavBar(
           leading: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

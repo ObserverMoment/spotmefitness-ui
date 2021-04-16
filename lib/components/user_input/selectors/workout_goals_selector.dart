@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -39,7 +40,7 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         leading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(
@@ -49,58 +50,55 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
             onPressed: () => Navigator.pop(context)),
         middle: NavBarTitle('Workout Goals'),
       ),
-      child: Query(
+      child: QueryResponseBuilder(
           options: QueryOptions(
               document: WorkoutGoalsQuery().document,
               fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) => QueryResponseBuilder(
-              result: result,
-              builder: () {
-                final _workoutGoals =
-                    WorkoutGoals$Query.fromJson(result.data ?? {}).workoutGoals;
+          builder: (result, {refetch, fetchMore}) {
+            final _workoutGoals =
+                WorkoutGoals$Query.fromJson(result.data ?? {}).workoutGoals;
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView(
-                    children: _workoutGoals
-                        .map((goal) => GestureDetector(
-                              onTap: () => _handleUpdateSelected(goal),
-                              child: Container(
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Styles.lightGrey))),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 16),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView(
+                children: _workoutGoals
+                    .map((goal) => GestureDetector(
+                          onTap: () => _handleUpdateSelected(goal),
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom:
+                                        BorderSide(color: Styles.lightGrey))),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        MyText(goal.name),
-                                        if (_activeSelectedWorkoutGoals
-                                            .contains(goal))
-                                          FadeIn(
-                                              child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 6.0),
-                                            child: ConfirmCheckIcon(),
-                                          )),
-                                      ],
-                                    ),
-                                    InfoPopupButton(
-                                        infoWidget:
-                                            MyText('Info about ${goal.name}'))
+                                    MyText(goal.name),
+                                    if (_activeSelectedWorkoutGoals
+                                        .contains(goal))
+                                      FadeIn(
+                                          child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 6.0),
+                                        child: ConfirmCheckIcon(),
+                                      )),
                                   ],
                                 ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                );
-              })),
+                                InfoPopupButton(
+                                    infoWidget:
+                                        MyText('Info about ${goal.name}'))
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            );
+          }),
     );
   }
 }

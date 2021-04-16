@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -70,39 +71,37 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: MyText(
-              'Done',
-              weight: FontWeight.bold,
-            ),
-            onPressed: () => Navigator.pop(context)),
-        middle: NavBarTitle('Workout Tags'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            CreateIconButton(onPressed: _openCreateNewTag),
-            InfoPopupButton(
-              infoWidget: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyText(
-                  'Info about this workout tags.',
-                  maxLines: 10,
-                ),
+        navigationBar: BasicNavBar(
+          leading: CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: MyText(
+                'Done',
+                weight: FontWeight.bold,
               ),
-            )
-          ],
+              onPressed: () => Navigator.pop(context)),
+          middle: NavBarTitle('Workout Tags'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CreateIconButton(onPressed: _openCreateNewTag),
+              InfoPopupButton(
+                infoWidget: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyText(
+                    'Info about this workout tags.',
+                    maxLines: 10,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      child: Query(
-        options: QueryOptions(
-            document: UserWorkoutTagsQuery().document,
-            fetchPolicy: FetchPolicy.cacheAndNetwork),
-        builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
-            result: result,
-            builder: () {
+        child: QueryResponseBuilder(
+            options: QueryOptions(
+                document: UserWorkoutTagsQuery().document,
+                fetchPolicy: FetchPolicy.cacheAndNetwork),
+            builder: (result, {fetchMore, refetch}) {
               final _workoutTags =
                   UserWorkoutTags$Query.fromJson(result.data ?? {})
                       .userWorkoutTags;
@@ -142,9 +141,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                   ),
                 ),
               );
-            }),
-      ),
-    );
+            }));
   }
 }
 
@@ -160,8 +157,15 @@ class SelectableTag extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: isSelected ? Styles.colorOne : null,
-          border: Border.all(color: context.theme.primary)),
-      child: MyText(tag.tag),
+          border: Border.all(
+              width: 2,
+              color: isSelected
+                  ? Styles.colorOne
+                  : context.theme.primary.withOpacity(0.65))),
+      child: MyText(
+        tag.tag,
+        color: isSelected ? Styles.white : null,
+      ),
     );
   }
 }

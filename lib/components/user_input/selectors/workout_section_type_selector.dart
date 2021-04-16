@@ -16,54 +16,50 @@ class WorkoutSectionTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Query(
+      child: QueryResponseBuilder(
           options: QueryOptions(
               document: WorkoutSectionTypesQuery().document,
               fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) => QueryResponseBuilder(
-              result: result,
-              builder: () {
-                final _workoutSectionTypes =
-                    WorkoutSectionTypes$Query.fromJson(result.data ?? {})
-                        .workoutSectionTypes;
+          builder: (result, {refetch, fetchMore}) {
+            final _workoutSectionTypes =
+                WorkoutSectionTypes$Query.fromJson(result.data ?? {})
+                    .workoutSectionTypes;
 
-                return ListView(
-                  shrinkWrap: true,
-                  children: _workoutSectionTypes
-                      .sortedBy<num>((type) => int.parse(type.id))
-                      .map((type) => GestureDetector(
-                            onTap: () => selectWorkoutSectionType(type),
-                            child: Container(
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom:
-                                          BorderSide(color: Styles.lightGrey))),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 16),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  MyText(type.name),
-                                  InfoPopupButton(
-                                      pageTitle: '${type.name}',
-                                      infoWidget: Column(
-                                        children: [
-                                          MyText(
-                                            '${type.description}',
-                                            maxLines: 20,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ))
-                                ],
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                );
-              })),
+            return ListView(
+              shrinkWrap: true,
+              children: _workoutSectionTypes
+                  .sortedBy<num>((type) => int.parse(type.id))
+                  .map((type) => GestureDetector(
+                        onTap: () => selectWorkoutSectionType(type),
+                        child: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(color: Styles.lightGrey))),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              MyText(type.name),
+                              InfoPopupButton(
+                                  pageTitle: '${type.name}',
+                                  infoWidget: Column(
+                                    children: [
+                                      MyText(
+                                        '${type.description}',
+                                        maxLines: 20,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            );
+          }),
     );
   }
 }

@@ -117,25 +117,28 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
       sizeFactor: _scaleAnimation,
       child: SlideTransition(
         position: _slideAnimation,
-        child: Slidable(
-          key: widget.key,
-          actionPane: SlidableDrawerActionPane(),
-          closeOnScroll: true,
-          enabled: widget.enabled,
-          actionExtentRatio: 0.20,
-          secondaryActions: <Widget>[
-            ...widget.secondaryActions,
-            IconSlideAction(
-              caption: 'Remove',
-              color: Styles.errorRed,
-              iconWidget: Icon(
-                CupertinoIcons.delete,
-                size: 20,
+        child: IconTheme(
+          data: IconThemeData(color: Styles.white),
+          child: Slidable(
+            key: widget.key,
+            actionPane: SlidableDrawerActionPane(),
+            closeOnScroll: true,
+            enabled: widget.enabled,
+            actionExtentRatio: 0.20,
+            secondaryActions: <Widget>[
+              ...widget.secondaryActions,
+              IconSlideAction(
+                caption: 'Remove',
+                color: Styles.errorRed,
+                iconWidget: Icon(
+                  CupertinoIcons.delete,
+                  size: 20,
+                ),
+                onTap: _confirmRemoveItem,
               ),
-              onTap: _confirmRemoveItem,
-            ),
-          ],
-          child: widget.child,
+            ],
+            child: widget.child,
+          ),
         ),
       ),
     );

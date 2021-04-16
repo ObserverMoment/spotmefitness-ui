@@ -63,8 +63,9 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     _activeWorkoutMove = WorkoutMove()
       ..id = _activeWorkoutMove?.id ?? 'tempId'
       ..sortPosition = widget.workoutMoveIndex
+      ..equipment = null
       ..reps = _activeWorkoutMove?.reps ?? 10
-      ..repType = _activeWorkoutMove?.repType ?? WorkoutMoveRepType.reps
+      ..repType = move.validRepTypes.first
       ..distanceUnit = _activeWorkoutMove?.distanceUnit ?? DistanceUnit.metres
       ..loadUnit = _activeWorkoutMove?.loadUnit ?? LoadUnit.kg
       ..timeUnit = _activeWorkoutMove?.timeUnit ?? TimeUnit.minutes
@@ -123,6 +124,22 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     }
   }
 
+  bool _showLoadPicker() {
+    if (_activeWorkoutMove?.move == null) {
+      return false;
+    } else if (_activeWorkoutMove?.equipment != null) {
+      // Check for selected equipment.
+      return _activeWorkoutMove!.equipment!.loadAdjustable;
+    } else {
+      // Check for all possible equipment.
+      return [
+            ..._activeWorkoutMove!.move.requiredEquipments,
+            ..._activeWorkoutMove!.move.selectableEquipments
+          ].firstWhereOrNull((e) => e.loadAdjustable) !=
+          null;
+    }
+  }
+
   List<Equipment> _equipmentsWithBodyWeightFirst(List<Equipment> equipments) {
     final bodyweight =
         equipments.firstWhereOrNull((e) => e.id == kBodyweightEquipmentId);
@@ -143,7 +160,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         leading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),
@@ -213,6 +230,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     children: [
                                       RepPickerDisplay(
                                         reps: _activeWorkoutMove!.reps,
+                                        validRepTypes: _activeWorkoutMove!
+                                            .move.validRepTypes,
                                         repType: _activeWorkoutMove!.repType,
                                         updateReps: (reps) =>
                                             _updateWorkoutMove({'reps': reps}),
@@ -231,18 +250,22 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                           'timeUnit': timeUnit.apiValue
                                         }),
                                       ),
-                                      LoadPickerDisplay(
-                                        loadAmount:
-                                            _activeWorkoutMove!.loadAmount,
-                                        loadUnit: _activeWorkoutMove!.loadUnit,
-                                        updateLoadAmount: (loadAmount) =>
-                                            _updateWorkoutMove(
-                                                {'loadAmount': loadAmount}),
-                                        updateLoadUnit: (loadUnit) =>
-                                            _updateWorkoutMove({
-                                          'loadUnit': loadUnit.apiValue
-                                        }),
-                                      ),
+                                      if (_showLoadPicker())
+                                        FadeIn(
+                                          child: LoadPickerDisplay(
+                                            loadAmount:
+                                                _activeWorkoutMove!.loadAmount,
+                                            loadUnit:
+                                                _activeWorkoutMove!.loadUnit,
+                                            updateLoadAmount: (loadAmount) =>
+                                                _updateWorkoutMove(
+                                                    {'loadAmount': loadAmount}),
+                                            updateLoadUnit: (loadUnit) =>
+                                                _updateWorkoutMove({
+                                              'loadUnit': loadUnit.apiValue
+                                            }),
+                                          ),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -290,11 +313,16 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                                 _equipmentsWithBodyWeightFirst(
                                                     _activeWorkoutMove!.move
                                                         .selectableEquipments),
-                                            handleSelection: (equipment) =>
-                                                _updateWorkoutMove({
-                                                  'Equipment':
-                                                      equipment.toJson()
-                                                }),
+                                            handleSelection: (equipment) {
+                                              _updateWorkoutMove({
+                                                'Equipment': equipment.toJson(),
+                                                'loadAmount': equipment.id ==
+                                                        kBodyweightEquipmentId
+                                                    ? 0
+                                                    : _activeWorkoutMove!
+                                                        .loadAmount,
+                                              });
+                                            },
                                             selectedEquipments: [
                                               if (_activeWorkoutMove!
                                                       .equipment !=

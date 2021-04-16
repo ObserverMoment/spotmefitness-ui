@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/close_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class TimecapPicker extends StatelessWidget {
@@ -71,9 +72,8 @@ class _TimecapPopupState extends State<TimecapPopup> {
                   SizedBox(
                     width: 20,
                   ),
-                  CupertinoSlidingSegmentedControl<bool>(
-                      thumbColor: Styles.colorOne.withOpacity(0.9),
-                      groupValue: _isOn,
+                  SlidingSelect<bool>(
+                      value: _isOn,
                       children: {
                         true: Padding(
                             padding: const EdgeInsets.all(4),
@@ -82,9 +82,8 @@ class _TimecapPopupState extends State<TimecapPopup> {
                             padding: const EdgeInsets.all(4),
                             child: MyText('Off')),
                       },
-                      onValueChanged: (bool? isOn) {
-                        setState(() => _isOn = isOn ?? false);
-                      }),
+                      updateValue: (bool? isOn) =>
+                          setState(() => _isOn = isOn ?? false)),
                 ],
               ),
             ),

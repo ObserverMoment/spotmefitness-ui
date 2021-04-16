@@ -108,7 +108,7 @@ extension BuildContextExtension on BuildContext {
   // and the item name.
   Future<T> showConfirmDeleteDialog<T>({
     required String itemType,
-    required String itemName,
+    String? itemName,
     required void Function() onConfirm,
   }) async {
     final BuildContext context = this;
@@ -121,9 +121,11 @@ extension BuildContextExtension on BuildContext {
                 ),
                 content: Column(
                   children: [
-                    SizedBox(height: 6),
-                    MyText('"$itemName"'),
-                    SizedBox(height: 4),
+                    if (itemName != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: MyText('"$itemName"'),
+                      ),
                     MyText(
                       'Are you sure?',
                     ),

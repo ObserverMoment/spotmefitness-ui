@@ -12,7 +12,8 @@ import 'package:collection/collection.dart';
 
 class FreeSessionCreator extends StatefulWidget {
   final int sectionIndex;
-  FreeSessionCreator(this.sectionIndex);
+  final bool allowSetReorder;
+  FreeSessionCreator(this.sectionIndex, {this.allowSetReorder = false});
 
   @override
   _FreeSessionCreatorState createState() => _FreeSessionCreatorState();
@@ -95,6 +96,7 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
                       'session_creator-${widget.sectionIndex}-${item.sortPosition}'),
                   sectionIndex: widget.sectionIndex,
                   setIndex: item.sortPosition,
+                  allowReorder: widget.allowSetReorder,
                 ),
               ),
             );

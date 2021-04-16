@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -50,12 +51,19 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     _bloc.updateWorkoutSection(widget.sectionIndex, data);
   }
 
-  Widget _buildSectionTypeCreator(WorkoutSectionType workoutSectionType) {
+  Widget _buildSectionTypeCreator(WorkoutSectionType workoutSectionType,
+      {allowSetReorder = false}) {
     switch (workoutSectionType.name) {
       case 'Free Session':
-        return FreeSessionCreator(widget.sectionIndex);
+        return FreeSessionCreator(
+          widget.sectionIndex,
+          allowSetReorder: allowSetReorder,
+        );
       case 'EMOM':
-        return FreeSessionCreator(widget.sectionIndex);
+        return FreeSessionCreator(
+          widget.sectionIndex,
+          allowSetReorder: allowSetReorder,
+        );
       default:
         return Container();
     }
@@ -79,17 +87,17 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     final WorkoutSection workoutSection =
         context.select<WorkoutCreatorBloc, WorkoutSection>(
             (_bloc) => _bloc.workoutData.workoutSections[widget.sectionIndex]);
+    final bool allowSetReorder = context.select<WorkoutCreatorBloc, bool>(
+        (_bloc) =>
+            _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets
+                .length >
+            1);
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         middle: NavBarTitle(_buildTitle(workoutSection)),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(
                 items: [
-                  ContextMenuItem(
-                    text: 'Change type',
-                    iconData: CupertinoIcons.arrow_left_right,
-                    onTap: () => _pageController.toPage(0),
-                  ),
                   ContextMenuItem(
                     text: Utils.textNotNull(workoutSection.name)
                         ? 'Edit name'
@@ -102,6 +110,11 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                       initialValue: workoutSection.name,
                       onSave: (text) => _updateSection({'name': text}),
                     )),
+                  ),
+                  ContextMenuItem(
+                    text: 'Change type',
+                    iconData: CupertinoIcons.arrow_left_right,
+                    onTap: () => _pageController.toPage(0),
                   ),
                 ],
               )
@@ -151,7 +164,8 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                         )
                       ],
                     ),
-                    _buildSectionTypeCreator(workoutSection.workoutSectionType)
+                    _buildSectionTypeCreator(workoutSection.workoutSectionType,
+                        allowSetReorder: allowSetReorder)
                   ],
                 )
               ],

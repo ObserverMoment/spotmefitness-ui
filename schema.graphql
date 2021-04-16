@@ -34,9 +34,7 @@ type Query {
   publicWorkoutPrograms: [WorkoutProgram!]!
   workoutProgramById(id: ID!): WorkoutProgram!
   userWorkoutPrograms: [WorkoutProgram!]!
-  userWorkoutProgramEnrolments(
-    workoutProgramId: ID!
-  ): [WorkoutProgramEnrolment!]
+  userWorkoutProgramEnrolments(workoutProgramId: ID!): [WorkoutProgramEnrolment!]
 }
 type Mutation {
   createEquipment(data: CreateEquipmentInput!): Equipment
@@ -47,56 +45,30 @@ type Mutation {
   createProgressJournal(data: CreateProgressJournalInput!): ProgressJournal!
   updateProgressJournal(data: UpdateProgressJournalInput!): ProgressJournal!
   deleteProgressJournalById(id: ID!): ID!
-  createProgressJournalEntry(
-    data: CreateProgressJournalEntryInput!
-  ): ProgressJournalEntry!
-  updateProgressJournalEntry(
-    data: UpdateProgressJournalEntryInput!
-  ): ProgressJournalEntry!
+  createProgressJournalEntry(data: CreateProgressJournalEntryInput!): ProgressJournalEntry!
+  updateProgressJournalEntry(data: UpdateProgressJournalEntryInput!): ProgressJournalEntry!
   deleteProgressJournalEntryById(id: ID!): ID!
-  createProgressJournalGoal(
-    data: CreateProgressJournalGoalInput!
-  ): ProgressJournalGoal!
-  updateProgressJournalGoal(
-    data: UpdateProgressJournalGoalInput!
-  ): ProgressJournalGoal!
+  createProgressJournalGoal(data: CreateProgressJournalGoalInput!): ProgressJournalGoal!
+  updateProgressJournalGoal(data: UpdateProgressJournalGoalInput!): ProgressJournalGoal!
   deleteProgressJournalGoalById(id: ID!): ID!
-  createProgressJournalGoalTag(
-    data: CreateProgressJournalGoalTagInput!
-  ): ProgressJournalGoalTag!
-  updateProgressJournalGoalTag(
-    data: UpdateProgressJournalGoalTagInput!
-  ): ProgressJournalGoalTag!
+  createProgressJournalGoalTag(data: CreateProgressJournalGoalTagInput!): ProgressJournalGoalTag!
+  updateProgressJournalGoalTag(data: UpdateProgressJournalGoalTagInput!): ProgressJournalGoalTag!
   deleteProgressJournalGoalTagById(id: ID!): ID!
   createLoggedWorkout(data: CreateLoggedWorkoutInput!): LoggedWorkout!
   updateLoggedWorkout(data: UpdateLoggedWorkoutInput!): LoggedWorkout!
   deleteLoggedWorkoutById(id: ID!): ID!
-  createLoggedWorkoutSection(
-    data: CreateLoggedWorkoutSectionInput!
-  ): LoggedWorkoutSection!
-  updateLoggedWorkoutSection(
-    data: UpdateLoggedWorkoutSectionInput!
-  ): LoggedWorkoutSection!
+  createLoggedWorkoutSection(data: CreateLoggedWorkoutSectionInput!): LoggedWorkoutSection!
+  updateLoggedWorkoutSection(data: UpdateLoggedWorkoutSectionInput!): LoggedWorkoutSection!
   deleteLoggedWorkoutSectionById(id: ID!): ID!
-  reorderLoggedWorkoutSections(
-    data: [UpdateSortPositionInput!]!
-  ): [LoggedWorkoutSection!]!
+  reorderLoggedWorkoutSections(data: [UpdateSortPositionInput!]!): [LoggedWorkoutSection!]!
   createLoggedWorkoutSet(data: CreateLoggedWorkoutSetInput!): LoggedWorkoutSet!
   updateLoggedWorkoutSet(data: UpdateLoggedWorkoutSetInput!): LoggedWorkoutSet!
   deleteLoggedWorkoutSetById(id: ID!): ID!
-  reorderLoggedWorkoutSets(
-    data: [UpdateSortPositionInput!]!
-  ): [LoggedWorkoutSet!]!
-  createLoggedWorkoutMove(
-    data: CreateLoggedWorkoutMoveInput!
-  ): LoggedWorkoutMove!
-  updateLoggedWorkoutMove(
-    data: UpdateLoggedWorkoutMoveInput!
-  ): LoggedWorkoutMove!
+  reorderLoggedWorkoutSets(data: [UpdateSortPositionInput!]!): [LoggedWorkoutSet!]!
+  createLoggedWorkoutMove(data: CreateLoggedWorkoutMoveInput!): LoggedWorkoutMove!
+  updateLoggedWorkoutMove(data: UpdateLoggedWorkoutMoveInput!): LoggedWorkoutMove!
   deleteLoggedWorkoutMoveById(id: ID!): ID!
-  reorderLoggedWorkoutMoves(
-    data: [UpdateSortPositionInput!]!
-  ): [LoggedWorkoutMove!]!
+  reorderLoggedWorkoutMoves(data: [UpdateSortPositionInput!]!): [LoggedWorkoutMove!]!
   createMove(data: CreateMoveInput!): Move!
   updateMove(data: UpdateMoveInput!): Move!
   softDeleteMoveById(id: ID!): ID!
@@ -117,19 +89,11 @@ type Mutation {
   updateWorkoutSet(data: UpdateWorkoutSetInput!): WorkoutSet!
   deleteWorkoutSetById(id: ID!): ID!
   reorderWorkoutSets(data: [UpdateSortPositionInput!]!): [WorkoutSet!]!
-  createWorkoutSetIntervalBuyIn(
-    data: CreateWorkoutSetIntervalBuyInInput!
-  ): WorkoutSetIntervalBuyIn!
-  updateWorkoutSetIntervalBuyIn(
-    data: UpdateWorkoutSetIntervalBuyInInput!
-  ): WorkoutSetIntervalBuyIn!
+  createWorkoutSetIntervalBuyIn(data: CreateWorkoutSetIntervalBuyInInput!): WorkoutSetIntervalBuyIn!
+  updateWorkoutSetIntervalBuyIn(data: UpdateWorkoutSetIntervalBuyInInput!): WorkoutSetIntervalBuyIn!
   deleteWorkoutSetIntervalBuyInById(id: ID!): ID!
-  createWorkoutSetGenerator(
-    data: CreateWorkoutSetGeneratorInput!
-  ): WorkoutSetGenerator!
-  updateWorkoutSetGenerator(
-    data: UpdateWorkoutSetGeneratorInput!
-  ): WorkoutSetGenerator!
+  createWorkoutSetGenerator(data: CreateWorkoutSetGeneratorInput!): WorkoutSetGenerator!
+  updateWorkoutSetGenerator(data: UpdateWorkoutSetGeneratorInput!): WorkoutSetGenerator!
   deleteWorkoutSetGeneratorById(id: ID!): ID!
   createWorkoutMove(data: CreateWorkoutMoveInput!): WorkoutMove!
   updateWorkoutMove(data: UpdateWorkoutMoveInput!): WorkoutMove!
@@ -138,21 +102,13 @@ type Mutation {
   createWorkoutProgram(data: CreateWorkoutProgramInput!): WorkoutProgram!
   updateWorkoutProgram(data: UpdateWorkoutProgramInput!): WorkoutProgram!
   softDeleteWorkoutProgramById(id: ID!): ID!
-  createWorkoutProgramWorkout(
-    data: CreateWorkoutProgramWorkoutInput!
-  ): WorkoutProgramWorkout!
-  updateWorkoutProgramWorkout(
-    data: UpdateWorkoutProgramWorkoutInput!
-  ): WorkoutProgramWorkout!
+  createWorkoutProgramWorkout(data: CreateWorkoutProgramWorkoutInput!): WorkoutProgramWorkout!
+  updateWorkoutProgramWorkout(data: UpdateWorkoutProgramWorkoutInput!): WorkoutProgramWorkout!
   deleteWorkoutProgramWorkoutById(id: ID!): ID!
   createWorkoutProgramEnrolment(workoutProgramId: ID!): WorkoutProgramEnrolment!
   deleteWorkoutProgramEnrolmentById(id: ID!): ID!
-  createWorkoutProgramReview(
-    data: CreateWorkoutProgramReviewInput!
-  ): WorkoutProgramReview!
-  updateWorkoutProgramReview(
-    data: UpdateWorkoutProgramReviewInput!
-  ): WorkoutProgramReview!
+  createWorkoutProgramReview(data: CreateWorkoutProgramReviewInput!): WorkoutProgramReview!
+  updateWorkoutProgramReview(data: UpdateWorkoutProgramReviewInput!): WorkoutProgramReview!
   deleteWorkoutProgramReviewById(id: ID!): ID!
 }
 input UpdateSortPositionInput {
@@ -186,9 +142,7 @@ type BodyAreaMoveScore {
   BodyArea: BodyArea!
   score: Float!
 }
-"""
-Enums
-"""
+"""Enums"""
 enum BodyAreaFrontBack {
   BACK
   FRONT
@@ -291,7 +245,7 @@ type Move {
   validRepTypes: [WorkoutMoveRepType!]!
   RequiredEquipments: [Equipment!]!
   SelectableEquipments: [Equipment!]!
-  BodyAreaMoveScores: [BodyAreaMoveScore!]
+  BodyAreaMoveScores: [BodyAreaMoveScore!]!
 }
 type MoveType {
   id: ID!
@@ -715,16 +669,8 @@ type Workout {
 }
 input CreateWorkoutInput {
   name: String!
-  description: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  coverImageUri: String
   difficultyLevel: DifficultyLevel!
   contentAccessScope: ContentAccessScope!
-  WorkoutSections: [CreateWorkoutSectionInput!]!
-  WorkoutGoals: [ID!]!
-  WorkoutTags: [ID!]!
 }
 input UpdateWorkoutInput {
   id: ID!
@@ -737,7 +683,7 @@ input UpdateWorkoutInput {
   difficultyLevel: DifficultyLevel
   contentAccessScope: ContentAccessScope
   WorkoutGoals: [ID!]
-  WorkoutTags: [ID!]!
+  WorkoutTags: [ID!]
 }
 type WorkoutSection {
   id: ID!

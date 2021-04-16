@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
@@ -25,11 +26,14 @@ class WorkoutSetCreator extends StatefulWidget {
   final int sectionIndex;
   final int setIndex;
   final bool scrollable;
-  WorkoutSetCreator(
-      {required this.key,
-      required this.sectionIndex,
-      required this.setIndex,
-      this.scrollable = false});
+  final bool allowReorder;
+  WorkoutSetCreator({
+    required this.key,
+    required this.sectionIndex,
+    required this.setIndex,
+    this.scrollable = false,
+    this.allowReorder = false,
+  });
 
   @override
   _WorkoutSetCreatorState createState() => _WorkoutSetCreatorState();
@@ -78,7 +82,6 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   void _deleteWorkoutSet() {
     context.showConfirmDeleteDialog(
         itemType: 'Set',
-        itemName: 'Set Position ${widget.setIndex + 1}',
         onConfirm: () => context
             .read<WorkoutCreatorBloc>()
             .deleteWorkoutSet(widget.sectionIndex, widget.setIndex));
@@ -157,7 +160,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
   @override
   Widget build(BuildContext context) {
-    final _sortedMoves = _workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
+    final sortedMoves = _workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -188,7 +191,8 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                                       widget.setIndex, {'rounds': r}),
                               title: 'How many repeats?',
                             ))),
-                    if (_sortedMoves.length > 3)
+                    MyText(widget.setIndex.toString()),
+                    if (sortedMoves.length > 3)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -197,7 +201,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                           textColor: Styles.white,
                         ),
                       )
-                    else if (_sortedMoves.length == 3)
+                    else if (sortedMoves.length == 3)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -206,7 +210,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                           textColor: Styles.white,
                         ),
                       )
-                    else if (_sortedMoves.length == 2)
+                    else if (sortedMoves.length == 2)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -220,14 +224,16 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: _moveWorkoutSetUpOne,
-                        child: Icon(CupertinoIcons.up_arrow)),
-                    CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: _moveWorkoutSetDownOne,
-                        child: Icon(CupertinoIcons.down_arrow)),
+                    if (widget.allowReorder)
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: _moveWorkoutSetUpOne,
+                          child: Icon(CupertinoIcons.up_arrow)),
+                    if (widget.allowReorder)
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: _moveWorkoutSetDownOne,
+                          child: Icon(CupertinoIcons.down_arrow)),
                     NavBarEllipsisMenu(ellipsisCircled: false, items: [
                       ContextMenuItem(
                           text: 'Duplicate',
@@ -248,21 +254,21 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
           AnimatedContainer(
             duration: Duration(milliseconds: 200),
             curve: Curves.easeInOut,
-            height: _sortedMoves.length * 62,
+            height: sortedMoves.length * 62,
             child: ReorderableListView.builder(
                 proxyDecorator: (child, index, animation) =>
                     DraggedItem(child: child),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: _sortedMoves.length,
+                itemCount: sortedMoves.length,
                 itemBuilder: (context, index) => WorkoutMoveInSet(
                       key: Key(
-                          '$index-workout_set_creator-${_sortedMoves[index].id}'),
-                      workoutMove: _sortedMoves[index],
+                          '$index-workout_set_creator-${sortedMoves[index].id}'),
+                      workoutMove: sortedMoves[index],
                       deleteWorkoutMove: _deleteWorkoutMove,
                       duplicateWorkoutMove: _duplicateWorkoutMove,
                       openEditWorkoutMove: _openEditWorkoutMove,
-                      isLast: index == _sortedMoves.length - 1,
+                      isLast: index == sortedMoves.length - 1,
                     ),
                 onReorder: _reorderWorkoutMoves),
           ),

@@ -132,18 +132,19 @@ class StackAndFloatingButton extends StatelessWidget {
 class CreateEditPageNavBar extends CupertinoNavigationBar {
   final String title;
   final bool formIsDirty;
-  final Function() handleUndo;
+  final Function()? handleUndo;
   final Function() handleSave;
   final Function() handleClose;
   final bool inputValid;
   CreateEditPageNavBar(
       {required this.title,
       required this.formIsDirty,
-      required this.handleUndo,
+      this.handleUndo,
       required this.handleSave,
       required this.handleClose,
       required this.inputValid})
       : super(
+          border: null,
           leading:
               Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
           trailing: formIsDirty
@@ -151,12 +152,13 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton(
-                          destructive: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          text: 'Undo all',
-                          underline: false,
-                          onPressed: handleUndo),
+                      if (handleUndo != null)
+                        TextButton(
+                            destructive: true,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            text: 'Undo all',
+                            underline: false,
+                            onPressed: handleUndo),
                       AnimatedSwitcher(
                         duration: Duration(milliseconds: 300),
                         child: inputValid
@@ -185,6 +187,28 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
         );
 }
 
+/// Removes the bottom border from all nav bars.
+class BasicNavBar extends CupertinoNavigationBar {
+  final bool automaticallyImplyLeading;
+  final Widget? leading;
+  final Widget? middle;
+  final Widget? trailing;
+  final Color? backgroundColor;
+  BasicNavBar(
+      {this.automaticallyImplyLeading = true,
+      this.leading,
+      this.middle,
+      this.trailing,
+      this.backgroundColor})
+      : super(
+            border: null,
+            backgroundColor: backgroundColor,
+            leading: leading,
+            middle: middle,
+            trailing: trailing,
+            automaticallyImplyLeading: automaticallyImplyLeading);
+}
+
 class ModalCupertinoPageScaffold extends StatelessWidget {
   /// Used for both the nav bar and the main modal.
   final Widget child;
@@ -205,7 +229,7 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         leading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),
@@ -223,41 +247,3 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
     );
   }
 }
-
-// class ModalCupertinoPageScaffold extends CupertinoPageScaffold {
-//   final Key key;
-
-//   /// Used for both the nav bar and the main modal.
-//   final Color backgroundColor;
-//   final Widget child;
-//   final String title;
-//   final void Function()? cancel;
-//   final void Function()? save;
-//   final bool validToSave;
-//   ModalCupertinoPageScaffold(
-//       {required this.key,
-//       required this.child,
-//       required this.title,
-//       required this.backgroundColor,
-//       required this.cancel,
-//       required this.save,
-//       this.validToSave = false})
-//       : super(
-//             key: key,
-//             resizeToAvoidBottomInset: false,
-//             child: Column(
-//               children: [
-//                 SizedBox(height: 100),
-//                 child,
-//               ],
-//             ),
-//             backgroundColor: Styles.errorRed,
-//             navigationBar: CupertinoNavigationBar(
-//               leading: cancel != null ? NavBarCancelButton(cancel) : null,
-//               backgroundColor: Styles.errorRed,
-//               middle: NavBarTitle(title),
-//               trailing: save != null && validToSave
-//                   ? FadeIn(child: NavBarSaveButton(save))
-//                   : null,
-//             ));
-// }

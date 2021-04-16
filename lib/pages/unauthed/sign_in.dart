@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/pages/unauthed/reset_password.dart';
@@ -60,7 +61,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         middle: MyText(
           'Sign In',
           weight: FontWeight.bold,

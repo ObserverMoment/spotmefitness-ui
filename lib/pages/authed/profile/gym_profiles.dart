@@ -12,46 +12,44 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class ProfileGymProfilesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Query(
+    return QueryResponseBuilder(
         options: QueryOptions(
           fetchPolicy: FetchPolicy.cacheAndNetwork,
           document: GymProfilesQuery().document,
         ),
-        builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
-            result: result,
-            builder: () {
-              final _gymProfiles =
-                  GymProfiles$Query.fromJson(result.data ?? {}).gymProfiles;
-              return StackAndFloatingButton(
-                buttonIconData: CupertinoIcons.add,
-                onPressed: () => context.push(
-                    child: GymProfileCreator(), fullscreenDialog: true),
-                child: _gymProfiles.isNotEmpty
-                    ? Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: ListView.builder(
-                            itemCount: _gymProfiles.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) => GestureDetector(
-                                  onTap: () => context.push(
-                                      child: GymProfileCreator(
-                                        gymProfile: _gymProfiles[index],
-                                      ),
-                                      fullscreenDialog: true),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 2, vertical: 3.0),
-                                    child: GymProfileCard(
-                                      gymProfile: _gymProfiles[index],
-                                    ),
+        builder: (result, {fetchMore, refetch}) {
+          final gymProfiles =
+              GymProfiles$Query.fromJson(result.data ?? {}).gymProfiles;
+          return StackAndFloatingButton(
+            buttonIconData: CupertinoIcons.add,
+            onPressed: () => context.push(
+                child: GymProfileCreator(), fullscreenDialog: true),
+            child: gymProfiles.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: ListView.builder(
+                        itemCount: gymProfiles.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => GestureDetector(
+                              onTap: () => context.push(
+                                  child: GymProfileCreator(
+                                    gymProfile: gymProfiles[index],
                                   ),
-                                )),
-                      )
-                    : MyText(
-                        'No gym profiles yet...',
-                        textAlign: TextAlign.center,
-                      ),
-              );
-            }));
+                                  fullscreenDialog: true),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 2, vertical: 3.0),
+                                child: GymProfileCard(
+                                  gymProfile: gymProfiles[index],
+                                ),
+                              ),
+                            )),
+                  )
+                : MyText(
+                    'No gym profiles yet...',
+                    textAlign: TextAlign.center,
+                  ),
+          );
+        });
   }
 }

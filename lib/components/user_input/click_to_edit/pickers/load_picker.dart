@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -124,19 +125,15 @@ class _LoadPickerModalState extends State<LoadPickerModal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CupertinoSlidingSegmentedControl<LoadUnit>(
-                  groupValue: _activeLoadUnit,
-                  thumbColor: Styles.colorOne,
+              SlidingSelect<LoadUnit>(
+                  value: _activeLoadUnit,
                   children: {
                     for (final v in LoadUnit.values
                         .where((v) => v != LoadUnit.artemisUnknown))
                       v: MyText(v.display)
                   },
-                  onValueChanged: (loadUnit) {
-                    if (loadUnit != null) {
-                      setState(() => _activeLoadUnit = loadUnit);
-                    }
-                  }),
+                  updateValue: (loadUnit) =>
+                      setState(() => _activeLoadUnit = loadUnit)),
             ],
           ),
         ],

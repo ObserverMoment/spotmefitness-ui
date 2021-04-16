@@ -5,10 +5,12 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/pages/unauthed/register_details.dart';
 import 'package:spotmefitness_ui/pages/unauthed/trial_selector.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class StartTrial extends StatefulWidget {
   @override
@@ -75,10 +77,10 @@ class _StartTrialState extends State<StartTrial> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+        navigationBar: BasicNavBar(
           leading: CupertinoButton(
               padding: const EdgeInsets.all(0),
-              onPressed: () => Navigator.pop(context),
+              onPressed: context.pop,
               child: MyText('Cancel')),
         ),
         child: Column(children: [

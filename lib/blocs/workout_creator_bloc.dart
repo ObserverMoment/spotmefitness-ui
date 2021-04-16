@@ -1,47 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreatorBloc extends ChangeNotifier {
   int _sectionId = 0;
   int _setId = 0;
   int _workoutMoveId = 0;
-  final WorkoutData? initialWorkoutData;
+  WorkoutData initialWorkoutData;
 
   bool formIsDirty = false;
-  Map<String, dynamic>? _backupJson;
-  late WorkoutData workoutData;
+  Map<String, dynamic> _backupJson;
+  WorkoutData workoutData;
 
-  WorkoutCreatorBloc(this.initialWorkoutData) {
-    workoutData = initialWorkoutData != null
-        ? WorkoutData.fromJson(initialWorkoutData!.toJson())
-        : WorkoutData.fromJson({
-            '__typename': 'Workout',
-            'id': 'temp_id',
-            'name': 'Workout ${DateTime.now().dateString}',
-            'difficultyLevel': 'CHALLENGING',
-            'contentAccessScope': 'PRIVATE',
-            'WorkoutGoals': [],
-            'WorkoutTags': [],
-            'WorkoutSections': []
-          });
+  WorkoutCreatorBloc(this.initialWorkoutData)
+      : workoutData = initialWorkoutData,
+        _backupJson = initialWorkoutData.toJson();
+
+  /// Run this before constructing the bloc
+  static Future<WorkoutData> initialize(
+      BuildContext context, WorkoutData? prevWorkoutData) async {
+    try {
+      if (prevWorkoutData != null) {
+        // User is editing a previous workout - just return a copy.
+        return WorkoutData.fromJson(prevWorkoutData.toJson());
+      } else {
+        // User is creating - make an empty workout in the db and return.
+        final createInput = CreateWorkoutInput.fromJson({
+          'name': 'Workout ${DateTime.now().dateString}',
+          'difficultyLevel': DifficultyLevel.challenging.apiValue,
+          'contentAccessScope': ContentAccessScope.private.apiValue,
+        });
+        final result = await context.graphQLClient.mutate(
+          MutationOptions(
+              variables: {'data': createInput.toJson()},
+              document: CreateWorkoutMutation(
+                      variables: CreateWorkoutArguments(data: createInput))
+                  .document),
+        );
+
+        final newWorkout =
+            WorkoutData.fromJson(result.data?['createWorkout'] ?? {});
+        return newWorkout;
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   /// Reset to the initial data or create default empty WorkoutData
   void undoAllChanges() {
-    workoutData = _backupJson != null
-        ? WorkoutData.fromJson(_backupJson!)
-        : WorkoutData.fromJson({
-            '__typename': 'Workout',
-            'id': 'temp_id',
-            'name': 'Workout ${DateTime.now().dateString}',
-            'difficultyLevel': 'CHALLENGING',
-            'contentAccessScope': 'PRIVATE',
-            'WorkoutGoals': [],
-            'WorkoutTags': [],
-            'WorkoutSections': []
-          });
+    // TODO: Need to reset data in the database as well
+    // This probably needs to be an async function.
+    workoutData = WorkoutData.fromJson(_backupJson);
     notifyListeners();
   }
 
@@ -114,15 +128,19 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   void reorderWorkoutSets(int sectionIndex, int from, int to) {
-    formIsDirty = true;
-    final workoutSets = workoutData.workoutSections[sectionIndex].workoutSets;
+    // Check that user is not trying to move beyond the bounds of the list.
+    if (to >= 0 &&
+        to < workoutData.workoutSections[sectionIndex].workoutSets.length) {
+      formIsDirty = true;
+      final workoutSets = workoutData.workoutSections[sectionIndex].workoutSets;
 
-    final inTransit = workoutSets.removeAt(from);
-    workoutSets.insert(to, inTransit);
+      final inTransit = workoutSets.removeAt(from);
+      workoutSets.insert(to, inTransit);
 
-    _updateWorkoutSetsSortPosition(workoutSets);
+      _updateWorkoutSetsSortPosition(workoutSets);
 
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
   void deleteWorkoutSet(int sectionIndex, int setIndex) {

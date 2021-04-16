@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/country.dart';
 
@@ -65,7 +66,7 @@ class _CountrySelectorState extends State<CountrySelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
+      navigationBar: BasicNavBar(
         automaticallyImplyLeading: false,
         middle: NavBarTitle('Select Country'),
         trailing: CupertinoButton(

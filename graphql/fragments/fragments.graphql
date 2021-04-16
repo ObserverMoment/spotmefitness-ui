@@ -93,6 +93,9 @@ fragment WorkoutSection on WorkoutSection {
   classVideoUri
   classVideoThumbUri
   classAudioUri
+  outroVideoUri
+  outroVideoThumbUri
+  outroAudioUri
 }
 
 fragment WorkoutSectionType on WorkoutSectionType {

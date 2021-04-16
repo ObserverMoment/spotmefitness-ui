@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_view.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -41,7 +42,7 @@ class WorkoutDetailsSection extends StatelessWidget {
               ...workoutSet.workoutMoves.fold(
                   <BodyAreaMoveScore>[],
                   (acum2, workoutMove) =>
-                      [...acum2, ...workoutMove.move.bodyAreaMoveScores ?? []])
+                      [...acum2, ...workoutMove.move.bodyAreaMoveScores])
             ]);
   }
 
@@ -80,7 +81,7 @@ class WorkoutDetailsSection extends StatelessWidget {
                   text: 'Body',
                   onPressed: () => context.push(
                       child: CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
+                          navigationBar: BasicNavBar(
                               middle: NavBarTitle('Targeted Body Areas')),
                           child: TargetedBodyAreasPageView(
                               bodyAreaMoveScoresFromSection())),

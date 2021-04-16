@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -14,6 +15,7 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class RepPickerDisplay extends StatelessWidget {
+  final List<WorkoutMoveRepType> validRepTypes;
   final double reps;
   final void Function(double reps) updateReps;
   final WorkoutMoveRepType repType;
@@ -23,6 +25,7 @@ class RepPickerDisplay extends StatelessWidget {
   final TimeUnit timeUnit;
   final void Function(TimeUnit timeUnit) updateTimeUnit;
   RepPickerDisplay({
+    required this.validRepTypes,
     required this.reps,
     required this.updateReps,
     required this.repType,
@@ -61,6 +64,7 @@ class RepPickerDisplay extends StatelessWidget {
         reps: reps,
         updateReps: updateReps,
         repType: repType,
+        validRepTypes: validRepTypes,
         updateRepType: updateRepType,
         distanceUnit: distanceUnit,
         updateDistanceUnit: updateDistanceUnit,
@@ -89,6 +93,7 @@ class RepPickerDisplay extends StatelessWidget {
 class RepPickerModal extends StatefulWidget {
   final double reps;
   final void Function(double reps) updateReps;
+  final List<WorkoutMoveRepType> validRepTypes;
   final WorkoutMoveRepType repType;
   final void Function(WorkoutMoveRepType repType) updateRepType;
   final DistanceUnit distanceUnit;
@@ -98,6 +103,7 @@ class RepPickerModal extends StatefulWidget {
   RepPickerModal({
     required this.reps,
     required this.updateReps,
+    required this.validRepTypes,
     required this.repType,
     required this.updateRepType,
     required this.distanceUnit,
@@ -169,19 +175,16 @@ class _RepPickerModalState extends State<RepPickerModal> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CupertinoSlidingSegmentedControl<WorkoutMoveRepType>(
-                    groupValue: _activeRepType,
-                    thumbColor: Styles.colorOne,
+                SlidingSelect<WorkoutMoveRepType>(
+                    value: _activeRepType,
                     children: {
-                      for (final v in WorkoutMoveRepType.values
-                          .where((v) => v != WorkoutMoveRepType.artemisUnknown))
+                      for (final v in WorkoutMoveRepType.values.where((v) =>
+                          v != WorkoutMoveRepType.artemisUnknown &&
+                          widget.validRepTypes.contains(v)))
                         v: MyText(v.display)
                     },
-                    onValueChanged: (repType) {
-                      if (repType != null) {
-                        setState(() => _activeRepType = repType);
-                      }
-                    }),
+                    updateValue: (repType) =>
+                        setState(() => _activeRepType = repType)),
               ],
             ),
             if (_activeRepType != WorkoutMoveRepType.time)
@@ -207,19 +210,15 @@ class _RepPickerModalState extends State<RepPickerModal> {
               FadeIn(child: MyText(_activeRepType.display)),
             if (_activeRepType == WorkoutMoveRepType.distance)
               FadeIn(
-                child: CupertinoSlidingSegmentedControl<DistanceUnit>(
-                    groupValue: _activeDistanceUnit,
-                    thumbColor: Styles.colorOne,
+                child: SlidingSelect<DistanceUnit>(
+                    value: _activeDistanceUnit,
                     children: {
                       for (final v in DistanceUnit.values
                           .where((v) => v != DistanceUnit.artemisUnknown))
                         v: MyText(v.display)
                     },
-                    onValueChanged: (distanceUnit) {
-                      if (distanceUnit != null) {
-                        setState(() => _activeDistanceUnit = distanceUnit);
-                      }
-                    }),
+                    updateValue: (distanceUnit) =>
+                        setState(() => _activeDistanceUnit = distanceUnit)),
               )
           ],
         ),
@@ -257,19 +256,14 @@ class RepTimePicker extends StatelessWidget {
                 onSelectedItemChanged: (index) => updateReps(index + 1),
                 children: List<Widget>.generate(maxInput - 1,
                     (i) => Center(child: H3((i + 1).toString()))))),
-        CupertinoSlidingSegmentedControl<TimeUnit>(
-            groupValue: timeUnit,
-            thumbColor: Styles.colorOne,
+        SlidingSelect<TimeUnit>(
+            value: timeUnit,
             children: {
               for (final v
                   in TimeUnit.values.where((v) => v != TimeUnit.artemisUnknown))
                 v: MyText(describeEnum(v))
             },
-            onValueChanged: (timeUnit) {
-              if (timeUnit != null) {
-                updateTimeUnit(timeUnit);
-              }
-            }),
+            updateValue: (timeUnit) => updateTimeUnit(timeUnit)),
       ],
     );
   }

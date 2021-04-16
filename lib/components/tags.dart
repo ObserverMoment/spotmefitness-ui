@@ -78,23 +78,25 @@ class Tag extends StatelessWidget {
   final String tag;
   final Widget? prefix;
   final Widget? suffix;
+  final FONTSIZE fontSize;
   Tag(
       {this.color,
       this.textColor,
       required this.tag,
       this.prefix,
-      this.suffix});
+      this.suffix,
+      this.fontSize = FONTSIZE.TINY});
   @override
   Widget build(BuildContext context) {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration:
           BoxDecoration(borderRadius: BorderRadius.circular(30), color: _color),
       child: MyText(
         tag,
-        size: FONTSIZE.TINY,
+        size: fontSize,
         weight: FontWeight.bold,
         color: _textColor,
         lineHeight: 1.1,
@@ -114,10 +116,11 @@ class WorkoutSectionTypeTag extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(color: _color),
+            color: Styles.lightGrey,
+            border: Border.all(width: 1.5, color: _color.withOpacity(0.5)),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(

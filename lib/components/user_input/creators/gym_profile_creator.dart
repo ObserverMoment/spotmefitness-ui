@@ -329,29 +329,26 @@ class _GymProfileCreatorEquipment extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: Query(
-            options: QueryOptions(
-                document: EquipmentsQuery().document,
-                fetchPolicy: FetchPolicy.cacheFirst),
-            builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
-                result: result,
-                builder: () {
-                  final List<Equipment> equipments =
-                      Equipments$Query.fromJson(result.data ?? {}).equipments;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 6),
-                    child: EquipmentMultiSelector(
-                      showIcon: true,
-                      crossAxisCount: 4,
-                      equipments: equipments,
-                      scrollDirection: Axis.vertical,
-                      handleSelection: handleSelection,
-                      selectedEquipments: selectedEquipments,
-                    ),
-                  );
-                }),
-          ),
+          child: QueryResponseBuilder(
+              options: QueryOptions(
+                  document: EquipmentsQuery().document,
+                  fetchPolicy: FetchPolicy.cacheFirst),
+              builder: (result, {fetchMore, refetch}) {
+                final List<Equipment> equipments =
+                    Equipments$Query.fromJson(result.data ?? {}).equipments;
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
+                  child: EquipmentMultiSelector(
+                    showIcon: true,
+                    crossAxisCount: 4,
+                    equipments: equipments,
+                    scrollDirection: Axis.vertical,
+                    handleSelection: handleSelection,
+                    selectedEquipments: selectedEquipments,
+                  ),
+                );
+              }),
         ),
       ],
     );

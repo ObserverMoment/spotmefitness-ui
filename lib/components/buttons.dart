@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -342,13 +343,14 @@ class PageLink extends StatelessWidget {
 /// Small simplified button with little padding. Use for eg filter button.
 class MiniButton extends StatelessWidget {
   final Widget? prefix;
-  final String text;
+  final String? text;
   final void Function() onPressed;
-  MiniButton({this.prefix, required this.text, required this.onPressed});
+  MiniButton({this.prefix, this.text, required this.onPressed})
+      : assert(prefix != null || text != null);
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.all(4),
       pressedOpacity: 0.8,
       onPressed: onPressed,
       child: Container(
@@ -358,17 +360,15 @@ class MiniButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(4)),
         child: Row(
           children: [
-            if (prefix != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: prefix,
-              ),
-            MyText(
-              text,
-              weight: FontWeight.bold,
-              size: FONTSIZE.SMALL,
-              color: context.theme.background,
-            )
+            if (prefix != null) prefix!,
+            if (text != null && prefix != null) SizedBox(width: 4),
+            if (text != null)
+              MyText(
+                text!,
+                weight: FontWeight.bold,
+                size: FONTSIZE.SMALL,
+                color: context.theme.background,
+              )
           ],
         ),
       ),
@@ -387,17 +387,16 @@ class FilterButton extends StatelessWidget {
       children: [
         MiniButton(
           onPressed: onPressed,
-          text: 'Filter',
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,
             color: context.theme.background,
-            size: 20,
+            size: 26,
           ),
         ),
         if (activeFilters > 0)
           Positioned(
-            top: -1,
-            right: -1,
+            top: -5,
+            right: 0,
             child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -439,11 +438,10 @@ class SortByButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MiniButton(
       onPressed: () => {},
-      text: 'Sort',
       prefix: Icon(
         Icons.sort_outlined,
         color: context.theme.background,
-        size: 20,
+        size: 26,
       ),
     );
   }
@@ -547,9 +545,7 @@ class InfoPopupButton extends StatelessWidget {
           child: CupertinoPageScaffold(
             navigationBar: withoutNavBar
                 ? null
-                : CupertinoNavigationBar(
-                    middle: NavBarTitle(pageTitle),
-                  ),
+                : BasicNavBar(middle: NavBarTitle(pageTitle)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),

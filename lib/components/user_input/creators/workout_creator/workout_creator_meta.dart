@@ -5,8 +5,10 @@ import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/difficulty_level_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
@@ -19,7 +21,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
   Widget build(BuildContext context) {
     final _updateWorkoutMeta =
         context.read<WorkoutCreatorBloc>().updateWorkoutMeta;
-    final _workoutData = context.watch<WorkoutCreatorBloc>().workoutData;
+    final workoutData = context.watch<WorkoutCreatorBloc>().workoutData;
 
     return Container(
       child: SingleChildScrollView(
@@ -35,15 +37,15 @@ class WorkoutCreatorMeta extends StatelessWidget {
                       MyTextFormFieldRow(
                         placeholder: 'Name (Required - min 3 chars)',
                         keyboardType: TextInputType.text,
-                        initialValue: _workoutData.name,
+                        initialValue: workoutData.name,
                         onChanged: (text) => _updateWorkoutMeta({'name': text}),
-                        validator: () => _workoutData.name.length > 2,
+                        validator: () => workoutData.name.length > 2,
                       ),
                     ]),
               ),
               EditableTextAreaRow(
                 title: 'Description',
-                text: _workoutData.description ?? '',
+                text: workoutData.description ?? '',
                 placeholder: 'Add description...',
                 onSave: (text) => _updateWorkoutMeta({'description': text}),
                 inputValidation: (t) => true,
@@ -52,7 +54,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
               SizedBox(height: 6),
               TappableRow(
                   title: 'Goals',
-                  display: _workoutData.workoutGoals.isEmpty
+                  display: workoutData.workoutGoals.isEmpty
                       ? MyText(
                           'Add some goals...',
                           subtext: true,
@@ -62,17 +64,17 @@ class WorkoutCreatorMeta extends StatelessWidget {
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.6,
                               child: Wrap(
-                                alignment: WrapAlignment.center,
+                                alignment: WrapAlignment.end,
                                 spacing: 4,
                                 runSpacing: 4,
-                                children: _workoutData.workoutGoals
+                                children: workoutData.workoutGoals
                                     .map((g) => Tag(tag: g.name))
                                     .toList(),
                               )),
                         ),
                   onTap: () => context.push(
                           child: WorkoutGoalsSelector(
-                        selectedWorkoutGoals: _workoutData.workoutGoals,
+                        selectedWorkoutGoals: workoutData.workoutGoals,
                         updateSelectedWorkoutGoals: (goals) =>
                             _updateWorkoutMeta({
                           'WorkoutGoals': goals.map((g) => g.toJson()).toList()
@@ -81,7 +83,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
               SizedBox(height: 16),
               TappableRow(
                   title: 'Tags',
-                  display: _workoutData.workoutTags.isEmpty
+                  display: workoutData.workoutTags.isEmpty
                       ? MyText(
                           'Add some tags...',
                           subtext: true,
@@ -91,10 +93,10 @@ class WorkoutCreatorMeta extends StatelessWidget {
                           child: SizedBox(
                               width: MediaQuery.of(context).size.width * 0.6,
                               child: Wrap(
-                                alignment: WrapAlignment.center,
+                                alignment: WrapAlignment.end,
                                 spacing: 4,
                                 runSpacing: 4,
-                                children: _workoutData.workoutTags
+                                children: workoutData.workoutTags
                                     .map((t) => Tag(
                                           tag: t.tag,
                                           color: Styles.colorOne,
@@ -105,11 +107,27 @@ class WorkoutCreatorMeta extends StatelessWidget {
                         ),
                   onTap: () => context.push(
                           child: WorkoutTagsSelector(
-                        selectedWorkoutTags: _workoutData.workoutTags,
+                        selectedWorkoutTags: workoutData.workoutTags,
                         updateSelectedWorkoutTags: (tags) =>
                             _updateWorkoutMeta({
                           'WorkoutTags': tags.map((t) => t.toJson()).toList()
                         }),
+                      ))),
+              SizedBox(height: 20),
+              TappableRow(
+                  title: 'Difficulty',
+                  display: Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: Tag(
+                      tag: workoutData.difficultyLevel.display,
+                      color: workoutData.difficultyLevel.displayColor,
+                    ),
+                  ),
+                  onTap: () => context.push(
+                          child: DifficultyLevelSelector(
+                        difficultyLevel: workoutData.difficultyLevel,
+                        updateDifficultyLevel: (level) => _updateWorkoutMeta(
+                            {'difficultyLevel': level.apiValue}),
                       ))),
               SizedBox(height: 20),
               Padding(
@@ -118,17 +136,16 @@ class WorkoutCreatorMeta extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MyText('Audience'),
-                    CupertinoSlidingSegmentedControl<ContentAccessScope>(
-                        thumbColor: Styles.colorOne,
-                        groupValue: _workoutData.contentAccessScope,
+                    SlidingSelect<ContentAccessScope>(
+                        value: workoutData.contentAccessScope,
                         children: <ContentAccessScope, Widget>{
                           for (final v in ContentAccessScope.values.where((v) =>
                               v != ContentAccessScope.artemisUnknown &&
                               v != ContentAccessScope.official))
                             v: MyText(v.display)
                         },
-                        onValueChanged: (scope) => _updateWorkoutMeta(
-                            {'contentAccessScope': scope?.apiValue})),
+                        updateValue: (scope) => _updateWorkoutMeta(
+                            {'contentAccessScope': scope.apiValue})),
                     InfoPopupButton(
                         infoWidget: MyText(
                             'Explaining the difrerent scopes and what they mean.')),

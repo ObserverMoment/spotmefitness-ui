@@ -23,8 +23,8 @@ class WorkoutCard extends StatelessWidget {
       ...workoutSummary.workoutTags.map((t) => t.tag)
     ];
 
-    late Set<String> _allMoves = {};
-    late Set<String> _allEquipments = {};
+    final Set<String> _allMoves = {};
+    final Set<String> _allEquipments = {};
 
     for (final section in workoutSummary.userWorkoutsWorkoutSections) {
       for (final workoutSet in section.userWorkoutsWorkoutSets) {

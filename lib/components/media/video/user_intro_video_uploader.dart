@@ -58,7 +58,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
             ),
             CupertinoDialogAction(
               child: MyText('No'),
-              onPressed: () => context.pop(),
+              onPressed: context.pop,
             ),
           ]);
     }
@@ -138,14 +138,14 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
               CupertinoActionSheetAction(
                 child: MyText('Take video'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickVideo(ImageSource.camera);
                 },
               ),
               CupertinoActionSheetAction(
                 child: MyText('Choose from library'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickVideo(ImageSource.gallery);
                 },
               ),
@@ -155,7 +155,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
                 'Cancel',
               ),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
             )),
       ),

@@ -131,3 +131,37 @@ class ContextMenuItem extends StatelessWidget {
     );
   }
 }
+
+/// Pass any item to allow it to be tapped and open up an inline context menu.
+class ContextMenuDelegate extends StatefulWidget {
+  final List<ContextMenuItem> items;
+  final Widget tappable;
+  ContextMenuDelegate({required this.items, required this.tappable});
+
+  @override
+  _ContextMenuDelegateState createState() => _ContextMenuDelegateState();
+}
+
+class _ContextMenuDelegateState extends State<ContextMenuDelegate> {
+  CustomPopupMenuController _controller = CustomPopupMenuController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPopupMenu(
+      controller: _controller,
+      pressType: PressType.singleClick,
+      showArrow: false,
+      child: widget.tappable,
+      menuBuilder: () => ContextMenu(
+        items: widget.items,
+        controller: _controller,
+      ),
+    );
+  }
+}

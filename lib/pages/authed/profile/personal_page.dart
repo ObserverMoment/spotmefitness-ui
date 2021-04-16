@@ -3,6 +3,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/country_selector.dart';
@@ -43,104 +44,98 @@ class ProfilePersonalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Query(
+    return QueryResponseBuilder(
         options: QueryOptions(
           document: AuthedUserQuery().document,
         ),
-        builder: (result, {fetchMore, refetch}) => QueryResponseBuilder(
-            result: result,
-            builder: () {
-              final User user =
-                  AuthedUser$Query.fromJson(result.data ?? {}).authedUser;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListView(
-                  children: [
-                    EditableTextFieldRow(
-                      title: 'Name',
-                      text: user.displayName ?? '',
-                      onSave: (newText) => updateUserFields(
-                          context.graphQLClient,
-                          user.id,
-                          'displayName',
-                          newText),
-                      inputValidation: (String text) =>
-                          text.length > 2 && text.length <= 30,
-                      validationMessage: 'Min 3, max 30 characters',
-                      maxChars: 30,
-                    ),
-                    EditableTextAreaRow(
-                      title: 'Bio',
-                      text: user.bio ?? '',
-                      onSave: (newText) => updateUserFields(
-                          context.graphQLClient, user.id, 'bio', newText),
-                      inputValidation: (t) => true,
-                      maxDisplayLines: 2,
-                    ),
-                    TappableRow(
-                        title: 'Country',
-                        display: user.countryCode != null
-                            ? SelectedCountryDisplay(user.countryCode!)
-                            : null,
-                        onTap: () => context.push(
-                            fullscreenDialog: true,
-                            child: CountrySelector(
-                              selectedCountry: user.countryCode != null
-                                  ? Country.fromIsoCode(user.countryCode!)
-                                  : null,
-                              selectCountry: (country) => updateUserFields(
-                                  context.graphQLClient,
-                                  user.id,
-                                  'countryCode',
-                                  country.isoCode),
-                            ))),
-                    TappableRow(
-                        title: 'Birthdate',
-                        display: user.birthdate != null
-                            ? MyText(user.birthdate!.dateString)
-                            : null,
-                        onTap: () => context.push(
-                            fullscreenDialog: true,
-                            child: DateSelector(
-                              selectedDate: user.birthdate,
-                              saveDate: (date) => updateUserFields(
-                                  context.graphQLClient,
-                                  user.id,
-                                  'birthdate',
-                                  fromDartDateTimeToGraphQLDateTime(date)),
-                            ))),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
+        builder: (result, {fetchMore, refetch}) {
+          final User user =
+              AuthedUser$Query.fromJson(result.data ?? {}).authedUser;
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListView(
+              children: [
+                EditableTextFieldRow(
+                  title: 'Name',
+                  text: user.displayName ?? '',
+                  onSave: (newText) => updateUserFields(
+                      context.graphQLClient, user.id, 'displayName', newText),
+                  inputValidation: (String text) =>
+                      text.length > 2 && text.length <= 30,
+                  validationMessage: 'Min 3, max 30 characters',
+                  maxChars: 30,
+                ),
+                EditableTextAreaRow(
+                  title: 'Bio',
+                  text: user.bio ?? '',
+                  onSave: (newText) => updateUserFields(
+                      context.graphQLClient, user.id, 'bio', newText),
+                  inputValidation: (t) => true,
+                  maxDisplayLines: 2,
+                ),
+                TappableRow(
+                    title: 'Country',
+                    display: user.countryCode != null
+                        ? SelectedCountryDisplay(user.countryCode!)
+                        : null,
+                    onTap: () => context.push(
+                        fullscreenDialog: true,
+                        child: CountrySelector(
+                          selectedCountry: user.countryCode != null
+                              ? Country.fromIsoCode(user.countryCode!)
+                              : null,
+                          selectCountry: (country) => updateUserFields(
+                              context.graphQLClient,
+                              user.id,
+                              'countryCode',
+                              country.isoCode),
+                        ))),
+                TappableRow(
+                    title: 'Birthdate',
+                    display: user.birthdate != null
+                        ? MyText(user.birthdate!.dateString)
+                        : null,
+                    onTap: () => context.push(
+                        fullscreenDialog: true,
+                        child: DateSelector(
+                          selectedDate: user.birthdate,
+                          saveDate: (date) => updateUserFields(
+                              context.graphQLClient,
+                              user.id,
+                              'birthdate',
+                              fromDartDateTimeToGraphQLDateTime(date)),
+                        ))),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              MyText(
-                                'Gender',
-                              ),
-                            ],
+                          MyText(
+                            'Gender',
                           ),
-                          SizedBox(height: 10),
-                          CupertinoSlidingSegmentedControl<Gender>(
-                              thumbColor: Styles.colorOne,
-                              groupValue: user.gender,
-                              children: <Gender, Widget>{
-                                for (final v in Gender.values
-                                    .where((v) => v != Gender.artemisUnknown))
-                                  v: MyText(v.display)
-                              },
-                              onValueChanged: (gender) => updateUserFields(
-                                  context.graphQLClient,
-                                  user.id,
-                                  'gender',
-                                  gender!.apiValue)),
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      SlidingSelect<Gender>(
+                          value: user.gender,
+                          children: <Gender, Widget>{
+                            for (final v in Gender.values
+                                .where((v) => v != Gender.artemisUnknown))
+                              v: MyText(v.display)
+                          },
+                          updateValue: (gender) => updateUserFields(
+                              context.graphQLClient,
+                              user.id,
+                              'gender',
+                              gender.apiValue)),
+                    ],
+                  ),
                 ),
-              );
-            }));
+              ],
+            ),
+          );
+        });
   }
 }
