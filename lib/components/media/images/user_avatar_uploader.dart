@@ -33,16 +33,16 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
   bool _uploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    PickedFile? _pickedFile = await ImagePicker().getImage(source: source);
-    if (_pickedFile != null) {
-      File? _croppedFile = await ImageCropper.cropImage(
+    PickedFile? pickedFile = await ImagePicker().getImage(source: source);
+    if (pickedFile != null) {
+      File? croppedFile = await ImageCropper.cropImage(
         cropStyle: CropStyle.circle,
-        sourcePath: _pickedFile.path,
+        sourcePath: pickedFile.path,
       );
-      if (_croppedFile != null) {
+      if (croppedFile != null) {
         try {
           setState(() => _uploading = true);
-          await _uploadFile(_croppedFile);
+          await _uploadFile(croppedFile);
           setState(() => _uploading = false);
         } catch (e) {
           await context.showErrorAlert(e.toString());
@@ -53,9 +53,9 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
     }
   }
 
-  Future<void> _uploadFile(File _croppedFile) async {
-    await GetIt.I<UploadcareService>().uploadImage(
-        file: SharedFile(_croppedFile),
+  Future<void> _uploadFile(File file) async {
+    await GetIt.I<UploadcareService>().uploadFile(
+        file: SharedFile(file),
         onComplete: (String uri) => _saveUriToDB(uri),
         onFail: (e) => throw new Exception(e));
   }

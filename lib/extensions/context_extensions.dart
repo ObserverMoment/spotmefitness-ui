@@ -66,12 +66,14 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
-  /// Standardise dialog with two options - Confirm or Cancel
+  /// Standardise dialog with two options - Confirm or Cancel.
   Future<T> showConfirmDialog<T>({
     String? title,
     Widget? content,
+    String? confirmText,
+    String? cancelText,
     required void Function() onConfirm,
-    required void Function() onCancel,
+    void Function()? onCancel,
   }) async {
     final BuildContext context = this;
     final T res = await showCupertinoDialog(
@@ -82,7 +84,7 @@ extension BuildContextExtension on BuildContext {
                 actions: [
                   CupertinoDialogAction(
                     child: MyText(
-                      'Confirm',
+                      confirmText ?? 'Confirm',
                       color: context.theme.primary,
                     ),
                     onPressed: () {
@@ -92,11 +94,11 @@ extension BuildContextExtension on BuildContext {
                   ),
                   CupertinoDialogAction(
                     child: MyText(
-                      'Cancel',
+                      cancelText ?? 'Cancel',
                       color: context.theme.primary,
                     ),
                     onPressed: () {
-                      onCancel();
+                      if (onCancel != null) onCancel();
                       context.pop();
                     },
                   ),

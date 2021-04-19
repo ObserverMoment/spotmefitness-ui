@@ -6,6 +6,8 @@ import 'package:get_it/get_it.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -15,7 +17,6 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 
 /// Displays an image (if it exists).
-/// OnTap starts pick image then upload image flow.
 /// On complete run [onUploadSuccess] so that we can save the uploaded file uri to the db.
 class ImageUploader extends StatefulWidget {
   final String? imageUri;
@@ -36,16 +37,16 @@ class _ImageUploaderState extends State<ImageUploader> {
   bool _uploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    PickedFile? _pickedFile = await ImagePicker().getImage(source: source);
-    if (_pickedFile != null) {
-      File? _croppedFile = await ImageCropper.cropImage(
+    PickedFile? pickedFile = await ImagePicker().getImage(source: source);
+    if (pickedFile != null) {
+      File? croppedFile = await ImageCropper.cropImage(
         cropStyle: CropStyle.rectangle,
-        sourcePath: _pickedFile.path,
+        sourcePath: pickedFile.path,
       );
-      if (_croppedFile != null) {
+      if (croppedFile != null) {
         try {
           setState(() => _uploading = true);
-          await _uploadFile(_croppedFile);
+          await _uploadFile(croppedFile);
           setState(() => _uploading = false);
         } catch (e) {
           await context.showErrorAlert(e.toString());
@@ -56,9 +57,9 @@ class _ImageUploaderState extends State<ImageUploader> {
     }
   }
 
-  Future<void> _uploadFile(File _croppedFile) async {
-    await GetIt.I<UploadcareService>().uploadImage(
-        file: SharedFile(_croppedFile),
+  Future<void> _uploadFile(File file) async {
+    await GetIt.I<UploadcareService>().uploadFile(
+        file: SharedFile(file),
         onComplete: (uri) {
           _resetState();
           widget.onUploadSuccess(uri);
@@ -83,9 +84,9 @@ class _ImageUploaderState extends State<ImageUploader> {
               if (hasImage)
                 CupertinoActionSheetAction(
                   child: MyText('View image'),
-                  onPressed: () {
+                  onPressed: () async {
                     context.pop();
-                    print('open preview full screen');
+                    await openFullScreenImageViewer(context, widget.imageUri!);
                   },
                 ),
               CupertinoActionSheetAction(
@@ -127,28 +128,31 @@ class _ImageUploaderState extends State<ImageUploader> {
               },
             )),
       ),
-      child: Container(
-        width: widget.displaySize.width,
-        height: widget.displaySize.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: primary.withOpacity(0.7),
-          boxShadow: [Styles.avatarBoxShadow],
-        ),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: AnimatedSwitcher(
-          duration: Duration(milliseconds: 400),
-          child: _uploading
-              ? LoadingCircle(
-                  color: background.withOpacity(0.4),
-                )
-              : widget.imageUri != null
-                  ? SizedUploadcareImage(widget.imageUri!)
-                  : Icon(
-                      CupertinoIcons.photo,
-                      size: widget.displaySize.width / 2.5,
-                      color: background.withOpacity(0.4),
-                    ),
+      child: Hero(
+        tag: kFullScreenImageViewerHeroTag,
+        child: Container(
+          width: widget.displaySize.width,
+          height: widget.displaySize.height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: primary.withOpacity(0.7),
+            boxShadow: [Styles.avatarBoxShadow],
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 400),
+            child: _uploading
+                ? LoadingCircle(
+                    color: background.withOpacity(0.4),
+                  )
+                : hasImage
+                    ? SizedUploadcareImage(widget.imageUri!)
+                    : Icon(
+                        CupertinoIcons.photo,
+                        size: widget.displaySize.width / 2.5,
+                        color: background.withOpacity(0.4),
+                      ),
+          ),
         ),
       ),
     );

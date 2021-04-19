@@ -51,7 +51,7 @@ class NumberRoundsIcon extends StatelessWidget {
           width: 6,
         ),
         MyText(
-          '$rounds x',
+          '$rounds',
           size: FONTSIZE.BIG,
         )
       ];

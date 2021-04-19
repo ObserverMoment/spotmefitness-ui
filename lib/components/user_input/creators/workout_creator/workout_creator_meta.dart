@@ -119,6 +119,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                   display: Padding(
                     padding: const EdgeInsets.only(right: 12.0),
                     child: Tag(
+                      textColor: Styles.white,
                       tag: workoutData.difficultyLevel.display,
                       color: workoutData.difficultyLevel.displayColor,
                     ),

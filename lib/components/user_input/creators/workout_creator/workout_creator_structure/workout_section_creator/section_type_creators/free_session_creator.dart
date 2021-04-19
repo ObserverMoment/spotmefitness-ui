@@ -5,32 +5,31 @@ import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_move_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_set_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 
 class FreeSessionCreator extends StatefulWidget {
   final int sectionIndex;
-  final bool allowSetReorder;
-  FreeSessionCreator(this.sectionIndex, {this.allowSetReorder = false});
+  FreeSessionCreator(this.sectionIndex);
 
   @override
   _FreeSessionCreatorState createState() => _FreeSessionCreatorState();
 }
 
 class _FreeSessionCreatorState extends State<FreeSessionCreator> {
-  late List<WorkoutSet> _workoutSets;
+  late List<WorkoutSet> _sortedWorkoutSets;
   late WorkoutCreatorBloc _bloc;
 
   void _checkForNewData() {
     if (_bloc.workoutData.workoutSections.length > widget.sectionIndex) {
-      final _updated =
+      final updated =
           _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets;
 
-      if (!listEquals(_workoutSets, _updated)) {
+      if (!_sortedWorkoutSets.equals(updated)) {
         setState(() {
-          _workoutSets = [..._updated];
+          _sortedWorkoutSets = updated.sortedBy<num>((ws) => ws.sortPosition);
         });
       }
     }
@@ -40,8 +39,9 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
-    _workoutSets =
-        _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets;
+    _sortedWorkoutSets = _bloc
+        .workoutData.workoutSections[widget.sectionIndex].workoutSets
+        .sortedBy<num>((ws) => ws.sortPosition);
     _bloc.addListener(_checkForNewData);
   }
 
@@ -64,7 +64,7 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
           child: WorkoutMoveCreator(
             pageTitle: 'Add Set',
             sectionIndex: widget.sectionIndex,
-            setIndex: _workoutSets.length - 1,
+            setIndex: _sortedWorkoutSets.length - 1,
             workoutMoveIndex: 0,
           ),
         ),
@@ -74,13 +74,10 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
 
   @override
   Widget build(BuildContext context) {
-    final List<WorkoutSet> _sortedSets =
-        _workoutSets.sortedBy<num>((ws) => ws.sortPosition);
-
     return Expanded(
       child: ListView(shrinkWrap: true, children: [
         ImplicitlyAnimatedList<WorkoutSet>(
-          items: _sortedSets,
+          items: _sortedWorkoutSets,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           areItemsTheSame: (a, b) => a.id == b.id,
@@ -92,12 +89,11 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
               child: Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: WorkoutSetCreator(
-                  key: Key(
-                      'session_creator-${widget.sectionIndex}-${item.sortPosition}'),
-                  sectionIndex: widget.sectionIndex,
-                  setIndex: item.sortPosition,
-                  allowReorder: widget.allowSetReorder,
-                ),
+                    key: Key(
+                        'session_creator-${widget.sectionIndex}-${item.sortPosition}'),
+                    sectionIndex: widget.sectionIndex,
+                    setIndex: item.sortPosition,
+                    allowReorder: _sortedWorkoutSets.length > 1),
               ),
             );
           },

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
@@ -8,7 +9,7 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/note_editor
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/round_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/type_creators/free_session_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/free_session_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -31,12 +32,30 @@ class WorkoutSectionCreator extends StatefulWidget {
 class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   late WorkoutCreatorBloc _bloc;
   late PageController _pageController;
+  late WorkoutSection _workoutSection;
+
+  void _checkForNewData() {
+    if (_bloc.workoutData.workoutSections.length > widget.sectionIndex) {
+      final updated = _bloc.workoutData.workoutSections[widget.sectionIndex];
+
+      if (_workoutSection != updated) {
+        setState(() {
+          _workoutSection = WorkoutSection.fromJson(updated.toJson());
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
     _pageController = PageController(initialPage: widget.isCreate ? 0 : 1);
+
+    _workoutSection = WorkoutSection.fromJson(
+        _bloc.workoutData.workoutSections[widget.sectionIndex].toJson());
+    _bloc.addListener(_checkForNewData);
+
     _pageController.addListener(() {
       setState(() {});
     });
@@ -51,18 +70,17 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     _bloc.updateWorkoutSection(widget.sectionIndex, data);
   }
 
-  Widget _buildSectionTypeCreator(WorkoutSectionType workoutSectionType,
-      {allowSetReorder = false}) {
+  Widget _buildSectionTypeCreator(
+    WorkoutSectionType workoutSectionType,
+  ) {
     switch (workoutSectionType.name) {
       case 'Free Session':
         return FreeSessionCreator(
           widget.sectionIndex,
-          allowSetReorder: allowSetReorder,
         );
       case 'EMOM':
         return FreeSessionCreator(
           widget.sectionIndex,
-          allowSetReorder: allowSetReorder,
         );
       default:
         return Container();
@@ -79,27 +97,20 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   @override
   void dispose() {
     _pageController.dispose();
+    _bloc.removeListener(_checkForNewData);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final WorkoutSection workoutSection =
-        context.select<WorkoutCreatorBloc, WorkoutSection>(
-            (_bloc) => _bloc.workoutData.workoutSections[widget.sectionIndex]);
-    final bool allowSetReorder = context.select<WorkoutCreatorBloc, bool>(
-        (_bloc) =>
-            _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets
-                .length >
-            1);
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-        middle: NavBarTitle(_buildTitle(workoutSection)),
+        middle: NavBarTitle(_buildTitle(_workoutSection)),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(
                 items: [
                   ContextMenuItem(
-                    text: Utils.textNotNull(workoutSection.name)
+                    text: Utils.textNotNull(_workoutSection.name)
                         ? 'Edit name'
                         : 'Add name',
                     iconData: CupertinoIcons.pencil,
@@ -107,7 +118,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                         child: FullScreenTextEditing(
                       title: 'Name',
                       inputValidation: (text) => true,
-                      initialValue: workoutSection.name,
+                      initialValue: _workoutSection.name,
                       onSave: (text) => _updateSection({'name': text}),
                     )),
                   ),
@@ -143,29 +154,28 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         WorkoutSectionTypeTag(
-                            workoutSection.workoutSectionType.name),
+                            _workoutSection.workoutSectionType.name),
                         RoundPicker(
-                          rounds: workoutSection.rounds,
+                          rounds: _workoutSection.rounds,
                           saveValue: (value) =>
                               _updateSection({'rounds': value}),
                           modalTitle: 'How many rounds?',
                         ),
                         TimecapPicker(
-                          timecap: workoutSection.timecap != null
-                              ? Duration(seconds: workoutSection.timecap!)
+                          timecap: _workoutSection.timecap != null
+                              ? Duration(seconds: _workoutSection.timecap!)
                               : null,
                           saveTimecap: (duration) =>
                               _updateSection({'timecap': duration?.inSeconds}),
                         ),
                         NoteEditor(
                           title: 'Section Note',
-                          note: workoutSection.note,
+                          note: _workoutSection.note,
                           saveNote: (note) => _updateSection({'note': note}),
                         )
                       ],
                     ),
-                    _buildSectionTypeCreator(workoutSection.workoutSectionType,
-                        allowSetReorder: allowSetReorder)
+                    _buildSectionTypeCreator(_workoutSection.workoutSectionType)
                   ],
                 )
               ],

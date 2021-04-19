@@ -104,7 +104,7 @@ class FutureBuilderHandler<T> extends StatelessWidget {
                 ),
               );
         } else {
-          return FadeIn(child: builder(snapshot.data!));
+          return builder(snapshot.data!);
         }
       },
     );

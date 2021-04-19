@@ -9,8 +9,7 @@ import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
-import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_move_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
@@ -40,7 +39,7 @@ class WorkoutSetCreator extends StatefulWidget {
 }
 
 class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
-  late List<WorkoutMove> _workoutMoves;
+  late List<WorkoutMove> _sortedWorkoutMoves;
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
 
@@ -49,18 +48,19 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     if (_bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets
             .length >
         widget.setIndex) {
-      final _updatedSet = _bloc.workoutData.workoutSections[widget.sectionIndex]
+      final updatedSet = _bloc.workoutData.workoutSections[widget.sectionIndex]
           .workoutSets[widget.setIndex];
-      final _updatedWorkoutMoves = _updatedSet.workoutMoves;
+      final updatedWorkoutMoves = updatedSet.workoutMoves;
 
-      if (_workoutSet != _updatedSet)
+      if (_workoutSet != updatedSet)
         setState(() {
-          _workoutSet = WorkoutSet.fromJson(_updatedSet.toJson());
+          _workoutSet = WorkoutSet.fromJson(updatedSet.toJson());
         });
 
-      if (!listEquals(_workoutMoves, _updatedWorkoutMoves))
+      if (!_sortedWorkoutMoves.equals(updatedWorkoutMoves))
         setState(() {
-          _workoutMoves = [..._updatedWorkoutMoves];
+          _sortedWorkoutMoves =
+              updatedWorkoutMoves.sortedBy<num>((wm) => wm.sortPosition);
         });
     }
   }
@@ -72,10 +72,10 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     _workoutSet = WorkoutSet.fromJson(_bloc.workoutData
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
         .toJson());
-    _workoutMoves = [
-      ..._bloc.workoutData.workoutSections[widget.sectionIndex]
-          .workoutSets[widget.setIndex].workoutMoves
-    ];
+    _sortedWorkoutMoves = _bloc.workoutData.workoutSections[widget.sectionIndex]
+        .workoutSets[widget.setIndex].workoutMoves
+        .sortedBy<num>((wm) => wm.sortPosition);
+
     _bloc.addListener(_checkForNewData);
   }
 
@@ -112,7 +112,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
             pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
             sectionIndex: widget.sectionIndex,
             setIndex: widget.setIndex,
-            workoutMoveIndex: _workoutMoves.length,
+            workoutMoveIndex: _sortedWorkoutMoves.length,
           ),
         ),
       ),
@@ -160,7 +160,6 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
   @override
   Widget build(BuildContext context) {
-    final sortedMoves = _workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -191,8 +190,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                                       widget.setIndex, {'rounds': r}),
                               title: 'How many repeats?',
                             ))),
-                    MyText(widget.setIndex.toString()),
-                    if (sortedMoves.length > 3)
+                    if (_sortedWorkoutMoves.length > 3)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -201,7 +199,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                           textColor: Styles.white,
                         ),
                       )
-                    else if (sortedMoves.length == 3)
+                    else if (_sortedWorkoutMoves.length == 3)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -210,7 +208,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                           textColor: Styles.white,
                         ),
                       )
-                    else if (sortedMoves.length == 2)
+                    else if (_sortedWorkoutMoves.length == 2)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Tag(
@@ -254,21 +252,21 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
           AnimatedContainer(
             duration: Duration(milliseconds: 200),
             curve: Curves.easeInOut,
-            height: sortedMoves.length * 62,
+            height: _sortedWorkoutMoves.length * 62,
             child: ReorderableListView.builder(
                 proxyDecorator: (child, index, animation) =>
                     DraggedItem(child: child),
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: sortedMoves.length,
+                itemCount: _sortedWorkoutMoves.length,
                 itemBuilder: (context, index) => WorkoutMoveInSet(
                       key: Key(
-                          '$index-workout_set_creator-${sortedMoves[index].id}'),
-                      workoutMove: sortedMoves[index],
+                          '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
+                      workoutMove: _sortedWorkoutMoves[index],
                       deleteWorkoutMove: _deleteWorkoutMove,
                       duplicateWorkoutMove: _duplicateWorkoutMove,
                       openEditWorkoutMove: _openEditWorkoutMove,
-                      isLast: index == sortedMoves.length - 1,
+                      isLast: index == _sortedWorkoutMoves.length - 1,
                     ),
                 onReorder: _reorderWorkoutMoves),
           ),
@@ -303,7 +301,6 @@ class WorkoutMoveInSet extends StatelessWidget {
       child: AnimatedSlidable(
         key: key,
         index: workoutMove.sortPosition,
-        itemName: 'Position ${workoutMove.sortPosition + 1}',
         itemType: 'Move',
         removeItem: deleteWorkoutMove,
         secondaryActions: [

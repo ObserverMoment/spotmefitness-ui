@@ -65,7 +65,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-////// WorkoutSet CRUD //////
+////// WorkoutSection CRUD //////
   void createWorkoutSection(WorkoutSectionType type) {
     formIsDirty = true;
     workoutData.workoutSections.add(_genDefaultWorkoutSection(type));
@@ -77,6 +77,52 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     workoutData.workoutSections[index] = WorkoutSection.fromJson(
         {...workoutData.workoutSections[index].toJson(), ...data});
     notifyListeners();
+  }
+
+  void duplicateWorkoutSection(int index) {
+    formIsDirty = true;
+
+    workoutData.workoutSections.insert(
+        index + 1,
+        WorkoutSection.fromJson({
+          ...workoutData.workoutSections[index].toJson(),
+          'id': 'temp-${_sectionId++}',
+        }));
+
+    _updateWorkoutSectionsSortPosition(workoutData.workoutSections);
+
+    notifyListeners();
+  }
+
+  void reorderWorkoutSections(int from, int to) {
+    // Check that user is not trying to move beyond the bounds of the list.
+    if (to >= 0 && to < workoutData.workoutSections.length) {
+      formIsDirty = true;
+
+      final inTransit = workoutData.workoutSections.removeAt(from);
+      workoutData.workoutSections.insert(to, inTransit);
+
+      _updateWorkoutSectionsSortPosition(workoutData.workoutSections);
+
+      notifyListeners();
+    }
+  }
+
+  void deleteWorkoutSection(int sectionIndex) {
+    formIsDirty = true;
+
+    workoutData.workoutSections.removeAt(sectionIndex);
+
+    _updateWorkoutSectionsSortPosition(workoutData.workoutSections);
+
+    notifyListeners();
+  }
+
+  void _updateWorkoutSectionsSortPosition(
+      List<WorkoutSection> workoutSections) {
+    workoutSections.forEachIndexed((i, workoutSection) {
+      workoutSection.sortPosition = i;
+    });
   }
 
   WorkoutSection _genDefaultWorkoutSection(WorkoutSectionType type) =>
@@ -106,6 +152,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     formIsDirty = true;
     final oldWorkoutSet =
         workoutData.workoutSections[sectionIndex].workoutSets[setIndex];
+
     workoutData.workoutSections[sectionIndex].workoutSets[setIndex] =
         WorkoutSet.fromJson({...oldWorkoutSet.toJson(), ...data});
     notifyListeners();
@@ -152,8 +199,6 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     oldWorkoutSets.removeAt(setIndex);
 
     _updateWorkoutSetsSortPosition(oldWorkoutSets);
-
-    workoutData.workoutSections[sectionIndex].workoutSets = [...oldWorkoutSets];
 
     notifyListeners();
   }
@@ -232,7 +277,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
         .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
 
     final inTransit = workoutMoves.removeAt(from);
-    workoutMoves.insert(to, inTransit);
+    // If moved to a higher index then you need to insert one place lower than the original drop location.
+    // As you have popped a lower index position in the action above.
+    final int newIndex = to > from ? to - 1 : to;
+    workoutMoves.insert(newIndex, inTransit);
 
     _updateWorkoutMovesSortPosition(workoutMoves);
 

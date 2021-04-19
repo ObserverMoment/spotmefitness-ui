@@ -91,6 +91,26 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
         _activeWorkoutMove!.equipment != null;
   }
 
+  bool _workoutMoveNeedsLoad() =>
+      (_activeWorkoutMove?.equipment != null &&
+          _activeWorkoutMove!.equipment!.loadAdjustable) ||
+      (_activeWorkoutMove!.move.requiredEquipments.isNotEmpty &&
+          _activeWorkoutMove!.move.requiredEquipments
+              .any((e) => e.loadAdjustable));
+
+  void _checkLoadAmount() {
+    if (_workoutMoveNeedsLoad() && _activeWorkoutMove!.loadAmount == 0) {
+      context.showConfirmDialog(
+          title: 'Load Amount is Zero',
+          content: MyText('Is this intentional?'),
+          confirmText: 'Yes, save it',
+          cancelText: 'No, change it',
+          onConfirm: _saveWorkoutMove);
+    } else {
+      _saveWorkoutMove();
+    }
+  }
+
   void _saveWorkoutMove() {
     if (_activeWorkoutMove != null && _validToSave()) {
       // Check if this is a create or an edit op.
@@ -114,11 +134,9 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
         onPressed: () => _pageController.toPage(1),
       );
     } else if (_validToSave()) {
-      // Check if this is a create or an edit op.
-
       return FadeIn(
         child: NavBarSaveButton(
-          _saveWorkoutMove,
+          _checkLoadAmount,
         ),
       );
     }

@@ -20,7 +20,7 @@ class AnimatedSlidable extends StatefulWidget {
   final Function(int index) removeItem;
   final bool enabled;
   final String itemType;
-  final String itemName;
+  final String? itemName;
   AnimatedSlidable({
     required this.key,
     required this.child,
@@ -29,7 +29,7 @@ class AnimatedSlidable extends StatefulWidget {
     required this.index,
     this.enabled = true,
     required this.itemType,
-    required this.itemName,
+    this.itemName,
   });
   @override
   _AnimatedSlidableState createState() => _AnimatedSlidableState();

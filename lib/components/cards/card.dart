@@ -31,7 +31,7 @@ class Card extends StatelessWidget {
               ? DecorationImage(
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                      context.theme.cardBackground.withOpacity(0.2),
+                      context.theme.cardBackground.withOpacity(0.55),
                       BlendMode.dstATop),
                   image: UploadcareImageProvider(backgroundImageUri!,
                       transformations: [PreviewTransformation(dimensions)]))

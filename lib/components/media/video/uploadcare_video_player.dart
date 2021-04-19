@@ -8,110 +8,156 @@ import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-/// For displaying video within the flow of content. Not full screen.
-/// Must pass either a [String videoUri] (Uploadcare UUID) or a [BetterPlayerController controller]
-class UploadcareVideoPlayer extends StatefulWidget {
-  final Key? key;
+/// All the data needed to create a better player controller and to play a video.
+class VideoData {
+  final VideoInfoEntity info;
+  final double aspectRatio;
+  final BetterPlayerDataSource dataSource;
+  VideoData(this.info, this.aspectRatio, this.dataSource);
+}
+
+class VideoSetupManager {
+  static Future<VideoData> getVideoData({required String videoUri}) async {
+    VideoInfoEntity videoInfo =
+        await UploadcareService.getVideoInfoRaw(videoUri);
+
+    BetterPlayerDataSource dataSource = BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network, videoInfo.url,
+        cacheConfiguration: BetterPlayerCacheConfiguration(useCache: true));
+
+    double aspectRatio = videoInfo.width / videoInfo.height;
+
+    return VideoData(videoInfo, aspectRatio, dataSource);
+  }
+
+  static BetterPlayerController initializeController(
+      {required BetterPlayerDataSource dataSource,
+      required double aspectRatio,
+      Widget Function(BetterPlayerController)? customControlsBuilder,
+      bool autoPlay = false,
+      bool autoLoop = false}) {
+    return BetterPlayerController(
+        BetterPlayerConfiguration(
+          autoDispose: false,
+          fit: BoxFit.fill,
+          aspectRatio: aspectRatio,
+          autoPlay: autoPlay,
+          looping: autoLoop,
+          controlsConfiguration: BetterPlayerControlsConfiguration(
+            playerTheme: BetterPlayerTheme.custom,
+            customControlsBuilder: customControlsBuilder,
+          ),
+        ),
+        betterPlayerDataSource: dataSource);
+  }
+
+  static Future<double> getAspectRatio(String videoUri) async {
+    final info = await UploadcareService.getVideoInfoRaw(videoUri);
+    return info.width / info.height;
+  }
+
+  static Future<Duration> openFullScreenVideoPlayer({
+    required BuildContext context,
+    required String videoUri,
+    double? aspectRatio,
+    bool autoPlay = false,
+    bool autoLoop = false,
+    Duration? startPosition,
+  }) async {
+    final _aspect = aspectRatio ?? await getAspectRatio(videoUri);
+    print(_aspect);
+    final positionOnExit = await Navigator.push(
+        context,
+        CupertinoPageRoute(
+            fullscreenDialog: _aspect < 1,
+            builder: (context) => SizedBox.expand(
+                  child: Container(
+                    color: Styles.black,
+                    child: RotatedBox(
+                      quarterTurns: _aspect < 1 ? 0 : 1,
+                      child: FullScreenUploadcareVideoPlayer(
+                          videoUri: videoUri,
+                          autoPlay: autoPlay,
+                          autoLoop: autoLoop,
+                          startPosition: startPosition),
+                    ),
+                  ),
+                )));
+    return positionOnExit;
+  }
+}
+
+class FullScreenUploadcareVideoPlayer extends StatefulWidget {
   final String videoUri;
   final bool autoPlay;
   final bool autoLoop;
-  final bool isFullScreen;
-
-  /// Seek to this point immediately.
   final Duration? startPosition;
-  UploadcareVideoPlayer(
-      {this.key,
-      required this.videoUri,
+  FullScreenUploadcareVideoPlayer(
+      {required this.videoUri,
       this.autoLoop = false,
       this.autoPlay = false,
-      this.startPosition,
-      this.isFullScreen = false})
-      : super(key: key);
+      this.startPosition});
 
   @override
-  _UploadcareVideoPlayerState createState() => _UploadcareVideoPlayerState();
+  _FullScreenUploadcareVideoPlayerState createState() =>
+      _FullScreenUploadcareVideoPlayerState();
 }
 
-class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
+class _FullScreenUploadcareVideoPlayerState
+    extends State<FullScreenUploadcareVideoPlayer> {
   BetterPlayerController? _controller;
-  BetterPlayerDataSource? _dataSource;
-  VideoInfoEntity? _videoInfo;
-  double? _aspectRatio;
   String? _errorMessage;
+  VideoData? _videoData;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeVideoController().then((_) {
+    _initializeVideo().then((_) {
       setState(() {});
     });
   }
 
-  // Calls Uploadcare API and gets back a full url that the video player can use to play the video.
-  Future<void> _initializeVideoController() async {
-    _videoInfo = await UploadcareService.getVideoInfoRaw(widget.videoUri);
-    if (_videoInfo?.url == null) {
-      setState(() {
-        _errorMessage = 'Sorry, we were not able to play this video.';
-      });
-      throw Exception('Unable to retrieve video data from the CDN.');
-    } else {
-      _dataSource = BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network, _videoInfo!.url,
-          cacheConfiguration: BetterPlayerCacheConfiguration(useCache: true));
-
-      _aspectRatio = _videoInfo!.width / _videoInfo!.height;
-      if (_aspectRatio == null || _aspectRatio == 0) {
-        setState(() {
-          _errorMessage = 'Sorry, could not work out the aspect ratio.';
-        });
-        throw Exception('Unable to get the video aspect ratio for display.');
+  Future<void> _initializeVideo() async {
+    try {
+      _videoData =
+          await VideoSetupManager.getVideoData(videoUri: widget.videoUri);
+      if (_videoData == null) {
+        throw Exception('Unable to get data for this video.');
       }
 
-      // Show full controls if the player is full screen.
-      // Or if the video is landscape (and should be taking up the full width of the screen).
-      final _showFullControls = widget.isFullScreen || _aspectRatio! >= 1;
-      _controller = BetterPlayerController(
-          BetterPlayerConfiguration(
-            autoDispose: false,
-            fit: BoxFit.cover,
-            aspectRatio: _aspectRatio,
-            autoPlay: widget.autoPlay,
-            looping: widget.autoLoop,
-            controlsConfiguration: BetterPlayerControlsConfiguration(
-              playerTheme: BetterPlayerTheme.custom,
-              customControlsBuilder: (controller) {
-                return _showFullControls
-                    ? FullVideoControls(
-                        controller: controller,
-                        showEnterExitFullScreen: _showFullControls,
-                        enterExitFullScreen: widget.isFullScreen
-                            ? () => context.pop(
-                                result: _controller!
-                                    .videoPlayerController!.position)
-                            : _handleEnterFullScreen,
-                        duration: Duration(milliseconds: _videoInfo!.duration),
-                      )
-                    : MinimalVideoControls(
-                        controller: controller,
-                        enterFullScreen: _handleEnterFullScreen,
-                      );
-              },
-            ),
-          ),
-          betterPlayerDataSource: _dataSource);
-      final _initialized = _controller!.isVideoInitialized();
-      if (_initialized ?? false) {
-        setState(() {
-          _errorMessage = 'Sorry, could not get this video ready to play.';
-        });
+      _controller = VideoSetupManager.initializeController(
+          dataSource: _videoData!.dataSource,
+          aspectRatio: _videoData!.aspectRatio,
+          autoLoop: widget.autoLoop,
+          autoPlay: widget.autoPlay,
+          customControlsBuilder: (controller) {
+            return FullVideoControls(
+              controller: controller,
+              isFullScreen: true,
+              showEnterExitFullScreen: true,
+              enterExitFullScreen: () => context.pop(
+                  result: controller.videoPlayerController!.position),
+              duration: Duration(milliseconds: _videoData!.info.duration),
+            );
+          });
+
+      if (_controller!.isVideoInitialized() ?? false) {
         throw Exception(
-            'The video controller did not initialize correctly. Please check the file url..');
+            'The video did not start correctly. Please check the file url..');
+      } else {
+        if (widget.startPosition != null) {
+          _controller!.seekTo(widget.startPosition!);
+        }
+        setState(() {
+          _initialized = true;
+        });
       }
-
-      if (widget.startPosition != null) {
-        _controller!.seekTo(widget.startPosition!);
-      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        _errorMessage = e.toString();
+      });
     }
   }
 
@@ -119,26 +165,6 @@ class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
   void dispose() {
     _controller?.dispose();
     super.dispose();
-  }
-
-  Future<void> _handleEnterFullScreen() async {
-    final _startPosition = await _controller!.videoPlayerController!.position;
-    final _positionWhenClosed = await context.push<Duration>(
-        fullscreenDialog: _aspectRatio! < 1,
-        child: CupertinoPageScaffold(
-            resizeToAvoidBottomInset: false,
-            child: SizedBox.expand(
-              child: RotatedBox(
-                quarterTurns: _aspectRatio! < 1 ? 0 : 1,
-                child: UploadcareVideoPlayer(
-                    key: Key('${widget.videoUri} - full screen'),
-                    videoUri: widget.videoUri,
-                    isFullScreen: true,
-                    autoPlay: true,
-                    startPosition: _startPosition ?? Duration(seconds: 0)),
-              ),
-            )));
-    _controller!.seekTo(_positionWhenClosed);
   }
 
   @override
@@ -150,15 +176,131 @@ class _UploadcareVideoPlayerState extends State<UploadcareVideoPlayer> {
               color: Styles.errorRed,
             ),
           )
-        : _controller != null
-            ? Hero(
-                tag: 'uploadcare-video-player-hero',
-                child: AspectRatio(
-                  aspectRatio: _aspectRatio!,
-                  child: BetterPlayer(
-                    controller: _controller!,
-                  ),
-                ),
+        : _initialized
+            ? BetterPlayer(
+                controller: _controller!,
+              )
+            : LoadingCircle();
+  }
+}
+
+/// For displaying video within the flow of content. Not full screen.
+class InlineUploadcareVideoPlayer extends StatefulWidget {
+  final String videoUri;
+  final bool autoPlay;
+  final bool autoLoop;
+  final bool isFullScreen;
+
+  /// Seek to this point immediately.
+  final Duration? startPosition;
+  InlineUploadcareVideoPlayer(
+      {required this.videoUri,
+      this.autoLoop = false,
+      this.autoPlay = false,
+      this.startPosition,
+      this.isFullScreen = false});
+
+  @override
+  _InlineUploadcareVideoPlayerState createState() =>
+      _InlineUploadcareVideoPlayerState();
+}
+
+class _InlineUploadcareVideoPlayerState
+    extends State<InlineUploadcareVideoPlayer> {
+  BetterPlayerController? _controller;
+  String? _errorMessage;
+  VideoData? _videoData;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo().then((_) {
+      setState(() {});
+    });
+  }
+
+  // Calls Uploadcare API and gets back a full url that the video player can use to play the video.
+  Future<void> _initializeVideo() async {
+    try {
+      _videoData =
+          await VideoSetupManager.getVideoData(videoUri: widget.videoUri);
+      if (_videoData == null) {
+        throw Exception('Unable to get data for this video.');
+      }
+      final showFullControls =
+          widget.isFullScreen || _videoData!.aspectRatio >= 1;
+
+      _controller = VideoSetupManager.initializeController(
+          dataSource: _videoData!.dataSource,
+          aspectRatio: _videoData!.aspectRatio,
+          customControlsBuilder: (controller) {
+            return showFullControls
+                ? FullVideoControls(
+                    controller: controller,
+                    isFullScreen: widget.isFullScreen,
+                    showEnterExitFullScreen: showFullControls,
+                    enterExitFullScreen: widget.isFullScreen
+                        ? () => context.pop(
+                            result:
+                                _controller!.videoPlayerController!.position)
+                        : _handleEnterFullScreen,
+                    duration: Duration(milliseconds: _videoData!.info.duration),
+                  )
+                : MinimalVideoControls(
+                    controller: controller,
+                    enterFullScreen: _handleEnterFullScreen,
+                  );
+          });
+
+      if (_controller!.isVideoInitialized() ?? false) {
+        throw Exception(
+            'The video did not start correctly. Please check the file url..');
+      } else {
+        if (widget.startPosition != null) {
+          _controller!.seekTo(widget.startPosition!);
+        }
+        setState(() {
+          _initialized = true;
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleEnterFullScreen() async {
+    final startPosition = await _controller!.videoPlayerController!.position;
+    final positionWhenClosed =
+        await VideoSetupManager.openFullScreenVideoPlayer(
+            context: context,
+            videoUri: widget.videoUri,
+            aspectRatio: _videoData!.aspectRatio,
+            startPosition: startPosition);
+    _controller!.seekTo(positionWhenClosed);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Utils.textNotNull(_errorMessage)
+        ? Center(
+            child: MyText(
+              _errorMessage!,
+              color: Styles.errorRed,
+            ),
+          )
+        : _initialized
+            ? BetterPlayer(
+                controller: _controller!,
               )
             : LoadingCircle();
   }

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
+import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
@@ -107,15 +108,18 @@ class _VideoUploaderState extends State<VideoUploader> {
               if (hasVideo)
                 CupertinoActionSheetAction(
                   child: MyText('Watch video'),
-                  onPressed: () {
+                  onPressed: () async {
+                    await VideoSetupManager.openFullScreenVideoPlayer(
+                      context: context,
+                      videoUri: widget.videoUri!,
+                    );
                     context.pop();
-                    print('open preview full screen');
                   },
                 ),
               CupertinoActionSheetAction(
                 child: MyText(hasVideo ? 'Take new video' : 'Take video'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickVideo(ImageSource.camera);
                 },
               ),
@@ -124,7 +128,7 @@ class _VideoUploaderState extends State<VideoUploader> {
                     ? 'Choose new from library'
                     : 'Choose from library'),
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickVideo(ImageSource.gallery);
                 },
               ),
@@ -147,7 +151,7 @@ class _VideoUploaderState extends State<VideoUploader> {
                 'Cancel',
               ),
               onPressed: () {
-                Navigator.pop(context);
+                context.pop();
               },
             )),
       ),
@@ -172,7 +176,7 @@ class _VideoUploaderState extends State<VideoUploader> {
                   ? LoadingCircle(
                       color: _background.withOpacity(0.4),
                     )
-                  : widget.videoThumbUri != null
+                  : hasVideo
                       ? SizedUploadcareImage(widget.videoThumbUri!)
                       : Icon(
                           CupertinoIcons.film,

@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 
 class UserIntroVideoUploader extends StatefulWidget {
@@ -181,7 +182,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
                       ? LoadingCircle(
                           color: _background.withOpacity(0.4),
                         )
-                      : widget.introVideoThumbUri != null
+                      : Utils.textNotNull(widget.introVideoThumbUri)
                           ? SizedUploadcareImage(widget.introVideoThumbUri!)
                           : Icon(
                               CupertinoIcons.film,

@@ -75,8 +75,8 @@ class UploadcareService {
   }
 
   Future<FileInfoEntity> getFileInfo(String fileId) async {
-    FileInfoEntity _fileInfoEntity = await client.files.file(fileId);
-    return _fileInfoEntity;
+    FileInfoEntity fileInfoEntity = await client.files.file(fileId);
+    return fileInfoEntity;
   }
 
   // Just uses the simple, unsigned auth scheme.
@@ -93,11 +93,10 @@ class UploadcareService {
       },
     );
     final responseJson = await json.decode(res.body);
-    VideoInfoEntity _videoInfo = VideoInfoEntity.fromJson(responseJson);
-    return _videoInfo;
+    return VideoInfoEntity.fromJson(responseJson);
   }
 
-  Future<void> uploadImage(
+  Future<void> uploadFile(
       {required SharedFile file,
       void Function(ProgressEntity progress)? onProgress,
       required void Function(String uploadedUri) onComplete,
@@ -105,12 +104,12 @@ class UploadcareService {
       void Function()? onCancel,
       required void Function(Exception) onFail}) async {
     try {
-      String _fileId = await _uploadApi.base(file,
+      String fileId = await _uploadApi.base(file,
           onProgress: onProgress, cancelToken: cancelToken);
       // Check that the file has uploaded correctly and is ready for processing.
-      await Utils.waitWhile(() => checkFileIsReady(_fileId),
+      await Utils.waitWhile(() => checkFileIsReady(fileId),
           pollInterval: Duration(milliseconds: 500), maxAttempts: 20);
-      onComplete(_fileId);
+      onComplete(fileId);
     } on CancelUploadException catch (e) {
       print('User cancelled upload');
       print(e.toString());
@@ -134,28 +133,28 @@ class UploadcareService {
       required void Function(Exception) onFail}) async {
     try {
       // storeMode is false so that the original unprocessed video is deleted after 24 hours.
-      String _originalFileId = await _uploadApi.auto(file,
+      String originalFileId = await _uploadApi.auto(file,
           runInIsolate: true,
           onProgress: onProgress,
           cancelToken: cancelToken,
           storeMode: false);
 
       // Check that the original file has uploaded correctly and is ready for processing.
-      await Utils.waitWhile(() => checkFileIsReady(_originalFileId),
+      await Utils.waitWhile(() => checkFileIsReady(originalFileId),
           pollInterval: Duration(milliseconds: 500), maxAttempts: 40);
 
       if (onUploaded != null) onUploaded();
 
       // Create a thumbnail - hack so that uploadcare fills video info correctly (Aspect ratio etc)
       // Also means you can use the thumbnail...and you get a properly encoded video.
-      ProcessedVideoResult _processedUris =
-          await encodeVideoAndGenerateThumb(_originalFileId);
+      ProcessedVideoResult processedUris =
+          await encodeVideoAndGenerateThumb(originalFileId);
 
       // Again, check when the video is ready for use before continuing.
-      await Utils.waitWhile(() => checkFileIsReady(_processedUris.videoUri),
+      await Utils.waitWhile(() => checkFileIsReady(processedUris.videoUri),
           pollInterval: Duration(milliseconds: 1000), maxAttempts: 60);
 
-      onComplete(_processedUris.videoUri, _processedUris.videoThumbUri);
+      onComplete(processedUris.videoUri, processedUris.videoThumbUri);
     } on CancelUploadException catch (e) {
       print('User cancelled upload');
       print(e);
@@ -171,20 +170,20 @@ class UploadcareService {
   }
 
   Future<ProcessedVideoResult> encodeVideoAndGenerateThumb(String uri) async {
-    VideoEncodingConvertEntity _convertedFile =
+    VideoEncodingConvertEntity convertedFile =
         await client.videoEncoding.process({
       uri: [VideoThumbsGenerateTransformation(1)],
     });
 
-    if (_convertedFile.problems.length > 0) {
+    if (convertedFile.problems.length > 0) {
       throw Exception(
-          'There was a problem uploading your video, ${_convertedFile.problems.toString()}');
+          'There was a problem uploading your video, ${convertedFile.problems.toString()}');
     } else {
-      GroupInfoEntity _thumbsGroup = await client.groups
-          .group(_convertedFile.results[0].thumbnailsGroupId);
+      GroupInfoEntity _thumbsGroup =
+          await client.groups.group(convertedFile.results[0].thumbnailsGroupId);
 
       return ProcessedVideoResult(
-          _convertedFile.results[0].processedFileId, _thumbsGroup.files[0].id);
+          convertedFile.results[0].processedFileId, _thumbsGroup.files[0].id);
     }
   }
 

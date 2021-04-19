@@ -53,5 +53,9 @@
 			<key>NSAllowsArbitraryLoads</key>
 			<true/>
 		</dict>
+		<key>NSAppleMusicUsageDescription</key>
+		<string>Please allow access so that you can upload audio from your device.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>Please allow access so that you can record audio from your device.</string>
 	</dict>
 </plist>

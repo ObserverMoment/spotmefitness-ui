@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
+import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -6,19 +8,54 @@ import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
+import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:collection/collection.dart';
 
-class WorkoutCreatorStructure extends StatelessWidget {
-  void _openCreateSection(BuildContext context) {
-    final bloc = context.read<WorkoutCreatorBloc>();
+class WorkoutCreatorStructure extends StatefulWidget {
+  @override
+  _WorkoutCreatorStructureState createState() =>
+      _WorkoutCreatorStructureState();
+}
+
+class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
+  late WorkoutCreatorBloc _bloc;
+  late List<WorkoutSection> _sortedworkoutSections;
+
+  void _checkForNewData() {
+    final updated = _bloc.workoutData.workoutSections;
+
+    if (!_sortedworkoutSections.equals(updated)) {
+      setState(() {
+        _sortedworkoutSections = [
+          ...updated.sortedBy<num>((ws) => ws.sortPosition)
+        ];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<WorkoutCreatorBloc>();
+
+    _sortedworkoutSections = [
+      ..._bloc.workoutData.workoutSections
+          .sortedBy<num>((ws) => ws.sortPosition)
+    ];
+    _bloc.addListener(_checkForNewData);
+  }
+
+  void _openCreateSection() {
     // Create a default section as a placeholder until user selects the type.
-    bloc.createWorkoutSection(WorkoutSectionType()
+    _bloc.createWorkoutSection(WorkoutSectionType()
       ..id = 0.toString()
       ..name = 'Section'
       ..description = '');
@@ -28,10 +65,10 @@ class WorkoutCreatorStructure extends StatelessWidget {
       context,
       CupertinoPageRoute(
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: bloc,
+          value: _bloc,
           child: WorkoutSectionCreator(
-            key: Key((bloc.workoutData.workoutSections.length - 1).toString()),
-            sectionIndex: bloc.workoutData.workoutSections.length - 1,
+            key: Key((_sortedworkoutSections.length - 1).toString()),
+            sectionIndex: _sortedworkoutSections.length - 1,
             isCreate: true,
           ),
         ),
@@ -39,15 +76,13 @@ class WorkoutCreatorStructure extends StatelessWidget {
     );
   }
 
-  void _openEditSection(BuildContext context, int sectionIndex) {
-    final bloc = context.read<WorkoutCreatorBloc>();
-
+  void _openEditSection(int sectionIndex) {
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: bloc,
+          value: _bloc,
           child: WorkoutSectionCreator(
               key: Key(sectionIndex.toString()), sectionIndex: sectionIndex),
         ),
@@ -56,28 +91,53 @@ class WorkoutCreatorStructure extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    _bloc.removeListener(_checkForNewData);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final workoutData = context.watch<WorkoutCreatorBloc>().workoutData;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: workoutData.workoutSections.length,
-              itemBuilder: (context, index) => GestureDetector(
-                    onTap: () => _openEditSection(context, index),
-                    child: WorkoutSectionInWorkout(
-                        workoutSection: workoutData.workoutSections[index]),
-                  )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CreateTextIconButton(
-                text: 'Add Section',
-                onPressed: () => _openCreateSection(context),
+          Expanded(
+            child: ListView(shrinkWrap: true, children: [
+              ImplicitlyAnimatedList<WorkoutSection>(
+                items: _sortedworkoutSections,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                areItemsTheSame: (a, b) => a.id == b.id,
+                itemBuilder: (context, animation, item, index) {
+                  return SizeFadeTransition(
+                    sizeFraction: 0.7,
+                    curve: Curves.easeInOut,
+                    animation: animation,
+                    child: GestureDetector(
+                      onTap: () => _openEditSection(index),
+                      child: WorkoutSectionInWorkout(
+                        key: Key(item.id),
+                        workoutSection: item,
+                        canReorder: _sortedworkoutSections.length > 1,
+                      ),
+                    ),
+                  );
+                },
               ),
-            ],
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CreateTextIconButton(
+                      text: 'Add Section',
+                      onPressed: _openCreateSection,
+                    ),
+                  ],
+                ),
+              ),
+            ]),
           ),
         ],
       ),
@@ -85,16 +145,14 @@ class WorkoutCreatorStructure extends StatelessWidget {
   }
 }
 
-class _SectionMovesEquipmentsBodyAreas {
-  final Set<String> moves;
-  final Set<String> equipments;
-  final Set<String> bodyAreas;
-  _SectionMovesEquipmentsBodyAreas(this.moves, this.equipments, this.bodyAreas);
-}
-
 class WorkoutSectionInWorkout extends StatelessWidget {
+  final Key key;
   final WorkoutSection workoutSection;
-  WorkoutSectionInWorkout({required this.workoutSection});
+  final bool canReorder;
+  WorkoutSectionInWorkout(
+      {required this.key,
+      required this.workoutSection,
+      this.canReorder = false});
 
   /// Creates a list of all move names and equipment names in the workout without any duplicates.
   _SectionMovesEquipmentsBodyAreas _getMovesAndEquipments() {
@@ -118,6 +176,36 @@ class WorkoutSectionInWorkout extends StatelessWidget {
     }
     return _SectionMovesEquipmentsBodyAreas(
         allMoves, allEquipments, allBodyAreas);
+  }
+
+  void _updateSection(BuildContext context, Map<String, dynamic> data) {
+    context
+        .read<WorkoutCreatorBloc>()
+        .updateWorkoutSection(workoutSection.sortPosition, data);
+  }
+
+  void _deleteWorkoutSection(BuildContext context) {
+    context.showConfirmDeleteDialog(
+        itemType: 'Section',
+        onConfirm: () => context
+            .read<WorkoutCreatorBloc>()
+            .deleteWorkoutSection(workoutSection.sortPosition));
+  }
+
+  void _duplicateWorkoutSection(BuildContext context) {
+    context
+        .read<WorkoutCreatorBloc>()
+        .duplicateWorkoutSection(workoutSection.sortPosition);
+  }
+
+  void _moveWorkoutSectionUpOne(BuildContext context) {
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(
+        workoutSection.sortPosition, workoutSection.sortPosition - 1);
+  }
+
+  void _moveWorkoutSectionDownOne(BuildContext context) {
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(
+        workoutSection.sortPosition, workoutSection.sortPosition + 1);
   }
 
   @override
@@ -153,14 +241,59 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                         weight: FontWeight.bold,
                       ),
                     ),
-                    if (Utils.textNotNull(workoutSection.note))
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          child: NotesIcon(),
-                          onPressed: () => context.showBottomSheet(
-                              expand: true,
-                              child: TextViewer(
-                                  workoutSection.note!, 'Section Note')))
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (Utils.textNotNull(workoutSection.note))
+                          CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: NotesIcon(),
+                              onPressed: () => context.showBottomSheet(
+                                  expand: true,
+                                  child: TextViewer(
+                                      workoutSection.note!, 'Section Note'))),
+                        NavBarEllipsisMenu(items: [
+                          ContextMenuItem(
+                            text: Utils.textNotNull(workoutSection.name)
+                                ? 'Edit name'
+                                : 'Add name',
+                            iconData: CupertinoIcons.pencil,
+                            onTap: () => context.push(
+                                child: FullScreenTextEditing(
+                              title: 'Name',
+                              inputValidation: (text) => true,
+                              initialValue: workoutSection.name,
+                              onSave: (text) =>
+                                  _updateSection(context, {'name': text}),
+                            )),
+                          ),
+                          if (canReorder)
+                            ContextMenuItem(
+                              text: 'Move up',
+                              onTap: () => _moveWorkoutSectionUpOne(context),
+                              iconData: CupertinoIcons.up_arrow,
+                            ),
+                          if (canReorder)
+                            ContextMenuItem(
+                              text: 'Move down',
+                              onTap: () => _moveWorkoutSectionDownOne(context),
+                              iconData: CupertinoIcons.down_arrow,
+                            ),
+                          ContextMenuItem(
+                            text: 'Duplicate',
+                            onTap: () => _duplicateWorkoutSection(context),
+                            iconData: CupertinoIcons.doc_on_doc,
+                          ),
+                          ContextMenuItem(
+                            text: 'Delete',
+                            onTap: () => _deleteWorkoutSection(context),
+                            iconData: CupertinoIcons.delete_simple,
+                            destructive: true,
+                          ),
+                        ])
+                      ],
+                    )
                   ],
                 ),
               ],
@@ -204,4 +337,11 @@ class WorkoutSectionInWorkout extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SectionMovesEquipmentsBodyAreas {
+  final Set<String> moves;
+  final Set<String> equipments;
+  final Set<String> bodyAreas;
+  _SectionMovesEquipmentsBodyAreas(this.moves, this.equipments, this.bodyAreas);
 }

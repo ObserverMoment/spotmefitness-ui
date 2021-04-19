@@ -18,7 +18,7 @@ class FullVideoControls extends StatefulWidget {
   FullVideoControls(
       {required this.controller,
       required this.duration,
-      this.showEnterExitFullScreen = false,
+      this.showEnterExitFullScreen = true,
       this.isFullScreen = false,
       this.enterExitFullScreen,
       this.overlay})
@@ -182,10 +182,13 @@ class _FullVideoControlsState extends State<FullVideoControls> {
                                   shape: BoxShape.circle),
                               padding: const EdgeInsets.all(4),
                               child: widget.isFullScreen
-                                  ? Icon(CupertinoIcons.clear)
+                                  ? Icon(
+                                      CupertinoIcons.clear,
+                                      size: 30,
+                                    )
                                   : Icon(
                                       Icons.fullscreen,
-                                      size: 36,
+                                      size: 26,
                                     ),
                             )))),
         ],
