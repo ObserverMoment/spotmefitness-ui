@@ -68,8 +68,7 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
                             height: 50,
                             decoration: BoxDecoration(
                                 border: Border(
-                                    bottom:
-                                        BorderSide(color: Styles.lightGrey))),
+                                    bottom: BorderSide(color: Styles.grey))),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 16),
                             child: Row(

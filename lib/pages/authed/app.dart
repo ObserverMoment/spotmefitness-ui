@@ -133,10 +133,10 @@ class _GlobalPageState extends State<GlobalPage> {
                       child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color: context.theme.background.withOpacity(0.6),
+                              color: context.theme.background.withOpacity(0.7),
                               border: Border.all(
                                   color:
-                                      context.theme.primary.withOpacity(0.1))),
+                                      context.theme.primary.withOpacity(0.15))),
                           height: _bottomNavBarHeight,
                           width: _size.width - 28,
                           child: Row(

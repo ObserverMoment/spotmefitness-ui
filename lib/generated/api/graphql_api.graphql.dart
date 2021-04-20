@@ -143,6 +143,10 @@ mixin WorkoutMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
   late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  DateTime? createdAt;
   late String name;
   String? description;
   @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
@@ -789,6 +793,7 @@ class Workout extends JsonSerializable with EquatableMixin, WorkoutMixin {
   List<Object?> get props => [
         $$typename,
         id,
+        createdAt,
         name,
         description,
         difficultyLevel,
@@ -881,11 +886,11 @@ class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserWorkoutsMove extends JsonSerializable with EquatableMixin {
-  UserWorkoutsMove();
+class WorkoutSummaryMove extends JsonSerializable with EquatableMixin {
+  WorkoutSummaryMove();
 
-  factory UserWorkoutsMove.fromJson(Map<String, dynamic> json) =>
-      _$UserWorkoutsMoveFromJson(json);
+  factory WorkoutSummaryMove.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutSummaryMoveFromJson(json);
 
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -899,48 +904,48 @@ class UserWorkoutsMove extends JsonSerializable with EquatableMixin {
 
   @override
   List<Object?> get props => [$$typename, id, name, requiredEquipments];
-  Map<String, dynamic> toJson() => _$UserWorkoutsMoveToJson(this);
+  Map<String, dynamic> toJson() => _$WorkoutSummaryMoveToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserWorkoutsWorkoutMoves extends JsonSerializable with EquatableMixin {
-  UserWorkoutsWorkoutMoves();
+class WorkoutSummaryWorkoutMoves extends JsonSerializable with EquatableMixin {
+  WorkoutSummaryWorkoutMoves();
 
-  factory UserWorkoutsWorkoutMoves.fromJson(Map<String, dynamic> json) =>
-      _$UserWorkoutsWorkoutMovesFromJson(json);
+  factory WorkoutSummaryWorkoutMoves.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutSummaryWorkoutMovesFromJson(json);
 
   @JsonKey(name: 'Equipment')
   Equipment? equipment;
 
-  @JsonKey(name: 'UserWorkoutsMove')
-  late UserWorkoutsMove userWorkoutsMove;
+  @JsonKey(name: 'WorkoutSummaryMove')
+  late WorkoutSummaryMove workoutSummaryMove;
 
   @override
-  List<Object?> get props => [equipment, userWorkoutsMove];
-  Map<String, dynamic> toJson() => _$UserWorkoutsWorkoutMovesToJson(this);
+  List<Object?> get props => [equipment, workoutSummaryMove];
+  Map<String, dynamic> toJson() => _$WorkoutSummaryWorkoutMovesToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserWorkoutsWorkoutSets extends JsonSerializable with EquatableMixin {
-  UserWorkoutsWorkoutSets();
+class WorkoutSummarySets extends JsonSerializable with EquatableMixin {
+  WorkoutSummarySets();
 
-  factory UserWorkoutsWorkoutSets.fromJson(Map<String, dynamic> json) =>
-      _$UserWorkoutsWorkoutSetsFromJson(json);
+  factory WorkoutSummarySets.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutSummarySetsFromJson(json);
 
-  @JsonKey(name: 'UserWorkoutsWorkoutMoves')
-  late List<UserWorkoutsWorkoutMoves> userWorkoutsWorkoutMoves;
+  @JsonKey(name: 'WorkoutSummaryWorkoutMoves')
+  late List<WorkoutSummaryWorkoutMoves> workoutSummaryWorkoutMoves;
 
   @override
-  List<Object?> get props => [userWorkoutsWorkoutMoves];
-  Map<String, dynamic> toJson() => _$UserWorkoutsWorkoutSetsToJson(this);
+  List<Object?> get props => [workoutSummaryWorkoutMoves];
+  Map<String, dynamic> toJson() => _$WorkoutSummarySetsToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserWorkoutsWorkoutSections extends JsonSerializable with EquatableMixin {
-  UserWorkoutsWorkoutSections();
+class WorkoutSummarySections extends JsonSerializable with EquatableMixin {
+  WorkoutSummarySections();
 
-  factory UserWorkoutsWorkoutSections.fromJson(Map<String, dynamic> json) =>
-      _$UserWorkoutsWorkoutSectionsFromJson(json);
+  factory WorkoutSummarySections.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutSummarySectionsFromJson(json);
 
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -952,13 +957,13 @@ class UserWorkoutsWorkoutSections extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'WorkoutSectionType')
   late WorkoutSectionType workoutSectionType;
 
-  @JsonKey(name: 'UserWorkoutsWorkoutSets')
-  late List<UserWorkoutsWorkoutSets> userWorkoutsWorkoutSets;
+  @JsonKey(name: 'WorkoutSummarySets')
+  late List<WorkoutSummarySets> workoutSummarySets;
 
   @override
   List<Object?> get props =>
-      [$$typename, id, timecap, workoutSectionType, userWorkoutsWorkoutSets];
-  Map<String, dynamic> toJson() => _$UserWorkoutsWorkoutSectionsToJson(this);
+      [$$typename, id, timecap, workoutSectionType, workoutSummarySets];
+  Map<String, dynamic> toJson() => _$WorkoutSummarySectionsToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -972,6 +977,11 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
   String? $$typename;
 
   late String id;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  DateTime? createdAt;
 
   late String name;
 
@@ -991,13 +1001,14 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'WorkoutTags')
   late List<WorkoutTag> workoutTags;
 
-  @JsonKey(name: 'UserWorkoutsWorkoutSections')
-  late List<UserWorkoutsWorkoutSections> userWorkoutsWorkoutSections;
+  @JsonKey(name: 'WorkoutSummarySections')
+  late List<WorkoutSummarySections> workoutSummarySections;
 
   @override
   List<Object?> get props => [
         $$typename,
         id,
+        createdAt,
         name,
         description,
         difficultyLevel,
@@ -1005,7 +1016,7 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
         userInfo,
         workoutGoals,
         workoutTags,
-        userWorkoutsWorkoutSections
+        workoutSummarySections
       ];
   Map<String, dynamic> toJson() => _$WorkoutSummaryToJson(this);
 }
@@ -1085,6 +1096,7 @@ class WorkoutData extends JsonSerializable with EquatableMixin, WorkoutMixin {
   List<Object?> get props => [
         $$typename,
         id,
+        createdAt,
         name,
         description,
         difficultyLevel,
@@ -3406,6 +3418,12 @@ class UpdateWorkoutMutation
               directives: [],
               selectionSet: null),
           FieldNode(
+              name: NameNode(value: 'createdAt'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'name'),
               alias: null,
               arguments: [],
@@ -3500,6 +3518,12 @@ class UserWorkoutsQuery
                     directives: [],
                     selectionSet: null),
                 FieldNode(
+                    name: NameNode(value: 'createdAt'),
+                    alias: null,
+                    arguments: [],
+                    directives: [],
+                    selectionSet: null),
+                FieldNode(
                     name: NameNode(value: 'name'),
                     alias: null,
                     arguments: [],
@@ -3552,7 +3576,7 @@ class UserWorkoutsQuery
                     ])),
                 FieldNode(
                     name: NameNode(value: 'WorkoutSections'),
-                    alias: NameNode(value: 'UserWorkoutsWorkoutSections'),
+                    alias: NameNode(value: 'WorkoutSummarySections'),
                     arguments: [],
                     directives: [],
                     selectionSet: SelectionSetNode(selections: [
@@ -3586,14 +3610,14 @@ class UserWorkoutsQuery
                           ])),
                       FieldNode(
                           name: NameNode(value: 'WorkoutSets'),
-                          alias: NameNode(value: 'UserWorkoutsWorkoutSets'),
+                          alias: NameNode(value: 'WorkoutSummarySets'),
                           arguments: [],
                           directives: [],
                           selectionSet: SelectionSetNode(selections: [
                             FieldNode(
                                 name: NameNode(value: 'WorkoutMoves'),
-                                alias:
-                                    NameNode(value: 'UserWorkoutsWorkoutMoves'),
+                                alias: NameNode(
+                                    value: 'WorkoutSummaryWorkoutMoves'),
                                 arguments: [],
                                 directives: [],
                                 selectionSet: SelectionSetNode(selections: [
@@ -3611,7 +3635,7 @@ class UserWorkoutsQuery
                                   FieldNode(
                                       name: NameNode(value: 'Move'),
                                       alias:
-                                          NameNode(value: 'UserWorkoutsMove'),
+                                          NameNode(value: 'WorkoutSummaryMove'),
                                       arguments: [],
                                       directives: [],
                                       selectionSet:
@@ -4527,6 +4551,12 @@ class CreateWorkoutMutation
               directives: [],
               selectionSet: null),
           FieldNode(
+              name: NameNode(value: 'createdAt'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
               name: NameNode(value: 'name'),
               alias: null,
               arguments: [],
@@ -5293,6 +5323,12 @@ class WorkoutByIdQuery
               selectionSet: null),
           FieldNode(
               name: NameNode(value: 'id'),
+              alias: null,
+              arguments: [],
+              directives: [],
+              selectionSet: null),
+          FieldNode(
+              name: NameNode(value: 'createdAt'),
               alias: null,
               arguments: [],
               directives: [],

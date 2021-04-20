@@ -11,6 +11,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:collection/collection.dart';
 
 class YourWorkoutsPage extends StatefulWidget {
   @override
@@ -24,10 +25,11 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
   Widget build(BuildContext context) {
     return QueryResponseBuilder(
       options: QueryOptions(
-          document: UserWorkoutsQuery().document,
-          fetchPolicy: FetchPolicy.cacheFirst
-          // These are user created workouts
-          ),
+        document: UserWorkoutsQuery().document,
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
+
+        // These are user created workouts
+      ),
       builder: (result, {fetchMore, refetch}) {
         final workouts = UserWorkouts$Query.fromJson(result.data ?? {})
             .workoutSummary
@@ -36,9 +38,12 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
                     .toLowerCase()
                     .contains(_searchString!.toLowerCase())
                 : true)
-            .toList()
+            // TODO: Should be able to remove the null check from here once this issue is resolved.
+            // https://github.com/zino-app/graphql-flutter/issues/814
+            .sortedBy<DateTime>((w) => w.createdAt!)
             .reversed
             .toList();
+
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
               middle: NavBarTitle('Your Workouts'),

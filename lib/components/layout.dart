@@ -147,43 +147,35 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
           border: null,
           leading:
               Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
-          trailing: formIsDirty
-              ? FadeIn(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (handleUndo != null)
-                        TextButton(
-                            destructive: true,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            text: 'Undo all',
-                            underline: false,
-                            onPressed: handleUndo),
-                      AnimatedSwitcher(
-                        duration: Duration(milliseconds: 300),
-                        child: inputValid
-                            ? TextButton(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                confirm: true,
-                                underline: false,
-                                text: 'Save',
-                                onPressed: handleSave)
-                            : TextButton(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                underline: false,
-                                text: 'Close',
-                                onPressed: handleClose),
-                      )
-                    ],
-                  ),
-                )
-              : TextButton(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  underline: false,
-                  text: 'Close',
-                  onPressed: handleClose),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (formIsDirty && handleUndo != null)
+                FadeIn(
+                  child: TextButton(
+                      destructive: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      text: 'Undo all',
+                      underline: false,
+                      onPressed: handleUndo),
+                ),
+              if (formIsDirty && inputValid)
+                FadeIn(
+                  child: TextButton(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      confirm: true,
+                      underline: false,
+                      text: 'Save',
+                      onPressed: handleSave),
+                ),
+              if (!formIsDirty)
+                TextButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    underline: false,
+                    text: 'Close',
+                    onPressed: handleClose),
+            ],
+          ),
         );
 }
 

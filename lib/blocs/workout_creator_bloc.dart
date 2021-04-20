@@ -5,6 +5,8 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/services/type_converters.dart';
 
 class WorkoutCreatorBloc extends ChangeNotifier {
   int _sectionId = 0;
@@ -44,6 +46,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
         final newWorkout =
             WorkoutData.fromJson(result.data?['createWorkout'] ?? {});
+
+        context.showToast(message: 'Workout Created');
         return newWorkout;
       }
     } catch (e) {
@@ -52,11 +56,24 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   /// Reset to the initial data or create default empty WorkoutData
-  void undoAllChanges() {
-    // TODO: Need to reset data in the database as well
-    // This probably needs to be an async function.
+  Future<void> undoAllChanges(BuildContext context) async {
     workoutData = WorkoutData.fromJson(_backupJson);
+    formIsDirty = false;
     notifyListeners();
+    context.showToast(message: 'Changes undone');
+  }
+
+  /// Send all new data to the device cache so that gql query streams get updated.
+  Future<void> saveAllChanges(BuildContext context) async {
+    final query = UserWorkoutsQuery();
+
+    /// The alias type of the [userWorkouts] query is [WorkoutSummary]
+    /// So this is the data type that needs to be passed to this update.
+    GraphQL.updateCacheListQuery(
+        client: context.graphQLClient,
+        queryDocument: query.document,
+        queryOperationNameOrAlias: 'WorkoutSummary',
+        data: Converters.fromWorkoutDataToWorkoutSummary(workoutData).toJson());
   }
 
   void updateWorkoutMeta(Map<String, dynamic> data) {

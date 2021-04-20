@@ -9,6 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -23,20 +24,19 @@ Future<void> openMicAudioRecorder(
       fullscreenDialog: true,
       child: MicAudioRecorder(
         key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
-        autoStartRecord: autoStartRecord,
         saveAudioRecording: saveAudioRecording,
       ));
 }
 
 class MicAudioRecorder extends StatefulWidget {
   final Key key;
-  final bool autoStartRecord;
+
   final Function(String filePath) saveAudioRecording;
 
-  MicAudioRecorder(
-      {required this.key,
-      required this.saveAudioRecording,
-      this.autoStartRecord = false});
+  MicAudioRecorder({
+    required this.key,
+    required this.saveAudioRecording,
+  });
 
   @override
   _MicAudioRecorderState createState() => _MicAudioRecorderState();
@@ -70,20 +70,7 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
       });
 
       setState(() => _mRecorderIsInited = true);
-
-      if (widget.autoStartRecord) {
-        _startRecorder().then((value) => setState(() {}));
-      }
     });
-  }
-
-  Future<void> _startRecorder() async {
-    await _mRecorder.startRecorder(
-        toFile: _recordedFilePath, audioSource: AudioSource.microphone);
-  }
-
-  Future<void> _stopRecorder() async {
-    await _mRecorder.stopRecorder();
   }
 
   Future<void> _initRecorder() async {
@@ -108,26 +95,46 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
         category: SessionCategory.record, mode: SessionMode.modeSpokenAudio);
   }
 
-  Future<void> _pauseOrResume() async {
+  Future<void> _startRecorder() async {
+    await _mRecorder.startRecorder(
+        toFile: _recordedFilePath, audioSource: AudioSource.microphone);
+  }
+
+  Future<void> _stopRecorder() async {
+    await _mRecorder.stopRecorder();
+  }
+
+  Future<void> _pauseStartOrResume() async {
     if (_mRecorder.isRecording) {
       await _mRecorder.pauseRecorder();
-    } else {
+    } else if (_mRecorder.isPaused) {
       await _mRecorder.resumeRecorder();
+    } else if (_mRecorder.isStopped) {
+      await _startRecorder();
     }
     setState(() {});
   }
 
-  Future<void> _startOrSave() async {
-    if (_recordedFilePath != null) {
-      if (_mRecorder.isStopped) {
-        await _startRecorder();
-        setState(() {});
-      } else {
-        await _mRecorder.stopRecorder();
-        widget.saveAudioRecording(_recordedFilePath!);
-        context.pop();
-      }
+  Future<void> _saveRecording() async {
+    if (!_mRecorder.isStopped) {
+      await _mRecorder.stopRecorder();
     }
+    widget.saveAudioRecording(_recordedFilePath!);
+    context.pop();
+  }
+
+  Future<void> _clearAndReset() async {
+    await context.showConfirmDialog(
+        title: 'Clear recording?',
+        onConfirm: () async {
+          if (!_mRecorder.isStopped) {
+            await _mRecorder.stopRecorder();
+          }
+          setState(() {
+            _volumeDecibels = 0;
+            _recordingLength = Duration.zero;
+          });
+        });
   }
 
   Future<void> _handleCancelAndClose(BuildContext context) async {
@@ -154,118 +161,100 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CreateEditPageNavBar(
-        handleClose: () => _handleCancelAndClose(context),
-        handleSave: () => {},
-        formIsDirty: false,
-        inputValid: true,
-        title: 'Record Audio',
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: _mRecorderIsInited
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      navigationBar: CupertinoNavigationBar(
+          leading: NavBarCancelButton(() => _handleCancelAndClose(context)),
+          middle: NavBarTitle('Record Mic'),
+          trailing: InfoPopupButton(
+              infoWidget: MyText('Explains how the audio recorder works'))),
+      child: SizedBox.expand(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: _mRecorderIsInited
+              ? Column(
+                  children: [
+                    Column(
                       children: [
-                        Column(
-                          children: [
-                            Icon(
-                              CupertinoIcons.mic_fill,
-                              size: 120,
-                              color: CupertinoTheme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.1),
+                        SizedBox(
+                          height: 100,
+                          child: AnimatedSwitcher(
+                            duration: _animDuration,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: _mRecorder.isRecording
+                                  ? SpinKitDoubleBounce(
+                                      color: context.theme.primary
+                                          .withOpacity(0.7),
+                                      size: 26,
+                                      duration: Duration(seconds: 4),
+                                    )
+                                  : Icon(
+                                      CupertinoIcons.circle_fill,
+                                      color: context.theme.primary
+                                          .withOpacity(0.1),
+                                      size: 26,
+                                    ),
                             ),
-                            SizedBox(
-                              height: 70,
-                              child: AnimatedSwitcher(
-                                duration: _animDuration,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: _mRecorder.isRecording
-                                      ? SpinKitDoubleBounce(
-                                          color:
-                                              Styles.heartRed.withOpacity(0.7),
-                                          size: 40,
-                                          duration: Duration(seconds: 4),
-                                        )
-                                      : Icon(
-                                          CupertinoIcons.circle_fill,
-                                          color:
-                                              Styles.heartRed.withOpacity(0.1),
-                                          size: 50,
-                                        ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: LinearProgressIndicator(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.6,
-                                  height: 4,
-                                  progress: min(1, _volumeDecibels / 120),
-                                  animationDuration: Duration(milliseconds: 50),
-                                )),
-                          ],
+                          ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: H2('${_recordingLength.inSeconds} seconds'),
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CupertinoButton(
-                                    child: AnimatedSwitcher(
-                                      duration: _animDuration,
-                                      child: _mRecorder.isRecording
-                                          ? Icon(
-                                              CupertinoIcons.pause_fill,
-                                              size: 100,
-                                            )
-                                          : Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                Icon(
-                                                  CupertinoIcons.circle_filled,
-                                                  size: 100,
-                                                  color: Styles.heartRed,
-                                                ),
-                                                Icon(
-                                                  CupertinoIcons.mic,
-                                                  size: 56,
-                                                )
-                                              ],
-                                            ),
-                                    ),
-                                    onPressed: _pauseOrResume),
-                              ],
-                            ),
-                          ],
-                        ),
-                        PrimaryButton(
-                          text: 'Done',
-                          prefix: Icon(
-                            CupertinoIcons.checkmark_circle_fill,
-                            size: 32,
-                            color: CupertinoTheme.of(context)
-                                .primaryContrastingColor,
-                          ),
-                          onPressed: _startOrSave,
-                        ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: LinearProgressIndicator(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: 2,
+                              progress: min(1, _volumeDecibels / 120),
+                              animationDuration: Duration(milliseconds: 50),
+                            )),
                       ],
-                    )
-                  : LoadingCircle(),
-            ),
-          )
-        ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: MyText(
+                        _recordingLength == Duration.zero
+                            ? ''
+                            : '${_recordingLength.inSeconds} seconds recorded',
+                        weight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: context.theme.primary,
+                            shape: BoxShape.circle),
+                        child: CupertinoButton(
+                            child: AnimatedSwitcher(
+                              duration: _animDuration,
+                              child: _mRecorder.isRecording
+                                  ? Icon(CupertinoIcons.pause_solid,
+                                      color: context.theme.background, size: 36)
+                                  : Icon(CupertinoIcons.mic_fill,
+                                      color: context.theme.background,
+                                      size: 36),
+                            ),
+                            onPressed: _pauseStartOrResume),
+                      ),
+                    ),
+                    if (!_mRecorder.isRecording &&
+                        _recordingLength != Duration.zero)
+                      FadeIn(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            children: [
+                              PrimaryButton(
+                                  text: 'Save Recording',
+                                  onPressed: _saveRecording),
+                              SizedBox(height: 12),
+                              DestructiveButton(
+                                  text: 'Clear', onPressed: _clearAndReset)
+                            ],
+                          ),
+                        ),
+                      )
+                  ],
+                )
+              : LoadingCircle(),
+        ),
       ),
     );
   }

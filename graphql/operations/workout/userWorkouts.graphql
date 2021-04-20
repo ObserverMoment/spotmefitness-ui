@@ -3,6 +3,7 @@ query userWorkouts {
   WorkoutSummary: userWorkouts {
     __typename
     id
+    createdAt
     name
     description
     difficultyLevel
@@ -16,19 +17,19 @@ query userWorkouts {
     WorkoutTags {
       ...WorkoutTag
     }
-    UserWorkoutsWorkoutSections: WorkoutSections {
+    WorkoutSummarySections: WorkoutSections {
       __typename
       id
       timecap
       WorkoutSectionType {
         ...WorkoutSectionType
       }
-      UserWorkoutsWorkoutSets: WorkoutSets {
-        UserWorkoutsWorkoutMoves: WorkoutMoves {
+      WorkoutSummarySets: WorkoutSets {
+        WorkoutSummaryWorkoutMoves: WorkoutMoves {
           Equipment {
             ...Equipment
           }
-          UserWorkoutsMove: Move {
+          WorkoutSummaryMove: Move {
             __typename
             id
             name

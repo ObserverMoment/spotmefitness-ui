@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/components/media/audio/mic_audio_recorder.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
@@ -52,10 +53,9 @@ class _AudioUploaderState extends State<AudioUploader> {
 
   Future<void> _recordAudioFromDevice() async {
     await openMicAudioRecorder(
-        context: context, saveAudioRecording: (path) => print(path));
+        context: context,
+        saveAudioRecording: (path) => _uploadFile(File(path)));
   }
-
-  Future<void> _listenToAudio() async {}
 
   Future<void> _uploadFile(File file) async {
     await GetIt.I<UploadcareService>().uploadFile(
@@ -65,6 +65,17 @@ class _AudioUploaderState extends State<AudioUploader> {
           widget.onUploadSuccess(uri);
         },
         onFail: (e) => throw new Exception(e));
+  }
+
+  Future<void> _listenToAudio() async {
+    if (widget.audioUri != null) {
+      await context.showBottomSheet(
+          expand: true,
+          child: FullAudioPlayer(
+            audioUri: widget.audioUri!,
+            title: 'Preview Audio',
+          ));
+    }
   }
 
   void _resetState() => setState(() {
@@ -85,8 +96,8 @@ class _AudioUploaderState extends State<AudioUploader> {
                 CupertinoActionSheetAction(
                   child: MyText('Listen to audio'),
                   onPressed: () async {
+                    await _listenToAudio();
                     context.pop();
-                    print('listen');
                   },
                 ),
               CupertinoActionSheetAction(

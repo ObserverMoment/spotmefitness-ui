@@ -26,16 +26,16 @@ class WorkoutCard extends StatelessWidget {
     final Set<String> _allMoves = {};
     final Set<String> _allEquipments = {};
 
-    for (final section in workoutSummary.userWorkoutsWorkoutSections) {
-      for (final workoutSet in section.userWorkoutsWorkoutSets) {
-        for (final workoutMove in workoutSet.userWorkoutsWorkoutMoves) {
-          _allMoves.add(workoutMove.userWorkoutsMove.name);
+    for (final section in workoutSummary.workoutSummarySections) {
+      for (final workoutSet in section.workoutSummarySets) {
+        for (final workoutMove in workoutSet.workoutSummaryWorkoutMoves) {
+          _allMoves.add(workoutMove.workoutSummaryMove.name);
           if (workoutMove.equipment != null) {
             _allEquipments.add(workoutMove.equipment!.name);
           }
-          if (workoutMove.userWorkoutsMove.requiredEquipments.isNotEmpty) {
+          if (workoutMove.workoutSummaryMove.requiredEquipments.isNotEmpty) {
             _allEquipments.addAll(workoutMove
-                .userWorkoutsMove.requiredEquipments
+                .workoutSummaryMove.requiredEquipments
                 .map((e) => e.name));
           }
         }
@@ -60,7 +60,7 @@ class WorkoutCard extends StatelessWidget {
               ],
             ),
           ),
-          if (workoutSummary.userWorkoutsWorkoutSections.isNotEmpty)
+          if (workoutSummary.workoutSummarySections.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: SizedBox(
@@ -68,15 +68,14 @@ class WorkoutCard extends StatelessWidget {
                 child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount:
-                        workoutSummary.userWorkoutsWorkoutSections.length,
+                    itemCount: workoutSummary.workoutSummarySections.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: WorkoutSectionTypeTag(
-                              workoutSummary.userWorkoutsWorkoutSections[index]
+                              workoutSummary.workoutSummarySections[index]
                                   .workoutSectionType.name,
                               timecap: workoutSummary
-                                  .userWorkoutsWorkoutSections[index].timecap),
+                                  .workoutSummarySections[index].timecap),
                         )),
               ),
             ),
@@ -113,10 +112,13 @@ class WorkoutCard extends StatelessWidget {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: _allMoves.length,
-                    itemBuilder: (context, index) => Tag(
-                          color: context.theme.background,
-                          textColor: context.theme.primary,
-                          tag: _allMoves.elementAt(index),
+                    itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: Tag(
+                            color: context.theme.background,
+                            textColor: context.theme.primary,
+                            tag: _allMoves.elementAt(index),
+                          ),
                         )),
               ),
             ),

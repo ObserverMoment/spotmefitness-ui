@@ -87,8 +87,8 @@ class MoveSelectorItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: Styles.lightGrey))),
+      decoration:
+          BoxDecoration(border: Border(bottom: BorderSide(color: Styles.grey))),
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -45,7 +45,7 @@ class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
               weight: FontWeight.bold,
             ),
             onPressed: () => Navigator.pop(context)),
-        middle: NavBarTitle('DifficultyLevel'),
+        middle: NavBarTitle('Difficulty Level'),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -57,8 +57,8 @@ class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(color: Styles.lightGrey))),
+                          border:
+                              Border(bottom: BorderSide(color: Styles.grey))),
                       padding: const EdgeInsets.symmetric(
                           vertical: 4, horizontal: 16),
                       child: Row(

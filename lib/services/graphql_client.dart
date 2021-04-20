@@ -232,4 +232,46 @@ class GraphQL {
     ));
     return result;
   }
+
+  ///// Client side only ops /////////////////////////
+  ///// These ops update the client side cache only //
+  ///// By writing queries and fragments /////////////
+
+  /// [updateCacheListQuery] is used for lists of objects only.
+  static void updateCacheListQuery({
+    required GraphQLClient client,
+    required DocumentNode queryDocument,
+    required String queryOperationNameOrAlias,
+    required Map<String, dynamic> data,
+  }) {
+    // Get current data for the given query.
+    final prev = client.cache
+        .readQuery(Request(operation: Operation(document: queryDocument)));
+
+    if (prev == null) {
+      throw AssertionError('Unable to read from cache - cache update failed.');
+    }
+    if (prev[queryOperationNameOrAlias] == null) {
+      throw AssertionError(
+          'There is no data in the cache under key: "$queryOperationNameOrAlias".');
+    }
+    if (!(prev[queryOperationNameOrAlias] is List)) {
+      throw AssertionError(
+          'Data in the cache under key: "$queryOperationNameOrAlias" is not a list as is required for standard cache updates - use a custom [updateCacheHandler] function instead.');
+    }
+
+    /// Write the updated query.
+    client.cache.writeQuery(
+      Request(operation: Operation(document: queryDocument)),
+      data: {
+        queryOperationNameOrAlias: [
+          ...prev[queryOperationNameOrAlias],
+          data,
+        ]
+      },
+    );
+
+    /// Broadcast the changes.
+    client.queryManager.maybeRebroadcastQueries();
+  }
 }

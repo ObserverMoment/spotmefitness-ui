@@ -653,7 +653,7 @@ type TextSearchWorkoutProgramResult {
 }
 type Workout {
   id: ID!
-  createdAt: DateTime!
+  createdAt: DateTime
   User: User
   name: String!
   description: String

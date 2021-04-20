@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
+  audio_session:
+    dependency: "direct main"
+    description:
+      name: audio_session
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   auto_route:
     dependency: "direct main"
     description:
@@ -644,6 +651,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  just_audio:
+    dependency: "direct main"
+    description:
+      name: just_audio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.4"
+  just_audio_platform_interface:
+    dependency: transitive
+    description:
+      name: just_audio_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
+  just_audio_web:
+    dependency: transitive
+    description:
+      name: just_audio_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   logger:
     dependency: transitive
     description:
@@ -854,13 +882,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0-nullsafety.0"
-  record:
-    dependency: "direct main"
-    description:
-      name: record
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0+1"
   rxdart:
     dependency: transitive
     description:
@@ -950,20 +971,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  syncfusion_flutter_core:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_core
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "19.1.55"
-  syncfusion_flutter_sliders:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_sliders
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "19.1.55-beta"
   synchronized:
     dependency: transitive
     description:
@@ -1112,5 +1119,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.1 <3.0.0"
-  flutter: ">=2.0.2"
+  dart: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"

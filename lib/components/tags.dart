@@ -62,7 +62,7 @@ class MoveTypeTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Styles.lightGrey, borderRadius: BorderRadius.circular(8)),
+          color: Styles.grey, borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       child: MyText(
         moveType.name,
@@ -119,9 +119,9 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Styles.lightGrey,
+            color: Styles.grey,
             border: Border.all(width: 1.5, color: _color.withOpacity(0.5)),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

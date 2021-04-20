@@ -93,7 +93,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                               _updateWorkoutData({'coverImageUri': null}),
                         ),
                         MyText(
-                          '(Cover Image)',
+                          'Cover Image',
                           size: FONTSIZE.TINY,
                         )
                       ],
@@ -115,7 +115,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           }),
                         ),
                         MyText(
-                          '(Intro Video)',
+                          'Intro Video',
                           size: FONTSIZE.TINY,
                         )
                       ],
@@ -133,7 +133,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           }),
                         ),
                         MyText(
-                          '(Intro Audio)',
+                          'Intro Audio',
                           size: FONTSIZE.TINY,
                         )
                       ],
@@ -184,7 +184,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Intro Video)',
+                                'Intro Video',
                                 size: FONTSIZE.TINY,
                               )
                             ],
@@ -207,7 +207,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Class Video)',
+                                'Class Video',
                                 size: FONTSIZE.TINY,
                               )
                             ],
@@ -230,7 +230,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Outro Video)',
+                                'Outro Video',
                                 size: FONTSIZE.TINY,
                               )
                             ],
@@ -256,7 +256,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Intro Audio)',
+                                'Intro Audio',
                                 size: FONTSIZE.TINY,
                               )
                             ],
@@ -276,7 +276,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Class Audio)',
+                                'Class Audio',
                                 size: FONTSIZE.TINY,
                               )
                             ],
@@ -296,7 +296,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 }),
                               ),
                               MyText(
-                                '(Outro Audio)',
+                                'Outro Audio',
                                 size: FONTSIZE.TINY,
                               )
                             ],

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class ConfirmCheckIcon extends StatelessWidget {
   final double? size;
@@ -79,5 +80,78 @@ class NotesIcon extends StatelessWidget {
       CupertinoIcons.doc_plaintext,
       size: size ?? 26,
     );
+  }
+}
+
+/// As used at the top of modal bottom sheet popups to indicate drag to dismiss.
+class DragBarHandle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 42,
+      height: 6,
+      decoration: BoxDecoration(
+          color: context.theme.primary.withOpacity(0.23),
+          borderRadius: BorderRadius.circular(18)),
+    );
+  }
+}
+
+enum JumpAmount { fifteen, thirty, fortyfive }
+
+class JumpSeekIcon extends StatelessWidget {
+  final bool forward;
+  final JumpAmount amount;
+  final double size;
+  JumpSeekIcon(
+      {this.forward = true, this.amount = JumpAmount.fifteen, this.size = 34});
+
+  Widget _forwardIcon() {
+    switch (amount) {
+      case JumpAmount.fifteen:
+        return Icon(
+          CupertinoIcons.goforward_15,
+          size: size,
+        );
+      case JumpAmount.thirty:
+        return Icon(
+          CupertinoIcons.goforward_30,
+          size: size,
+        );
+      case JumpAmount.fortyfive:
+        return Icon(
+          CupertinoIcons.goforward_45,
+          size: size,
+        );
+      default:
+        throw Exception('Invalid JumpAmount value');
+    }
+  }
+
+  Widget _backwardIcon() {
+    switch (amount) {
+      case JumpAmount.fifteen:
+        return Icon(
+          CupertinoIcons.gobackward_15,
+          size: size,
+        );
+      case JumpAmount.thirty:
+        return Icon(
+          CupertinoIcons.gobackward_30,
+          size: size,
+        );
+      case JumpAmount.fortyfive:
+        return Icon(
+          CupertinoIcons.gobackward_45,
+          size: size,
+        );
+      default:
+        throw Exception('Invalid JumpAmount value');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return forward ? _forwardIcon() : _backwardIcon();
   }
 }

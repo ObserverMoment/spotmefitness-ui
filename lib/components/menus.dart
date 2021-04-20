@@ -74,7 +74,7 @@ class ContextMenu extends StatelessWidget {
                   },
                   child: items[i]),
               separatorBuilder: (c, i) => HorizontalLine(
-                    color: Styles.lightGrey.withOpacity(0.12),
+                    color: Styles.grey.withOpacity(0.12),
                     verticalPadding: 0,
                   ),
               itemCount: items.length),
@@ -109,9 +109,8 @@ class ContextMenuItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
       decoration: BoxDecoration(
-          border: isLast
-              ? Border(bottom: BorderSide(color: Styles.lightGrey))
-              : null),
+          border:
+              isLast ? Border(bottom: BorderSide(color: Styles.grey)) : null),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

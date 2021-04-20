@@ -91,6 +91,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     return QueryResponseBuilder(
         options: QueryOptions(
             document: WorkoutByIdQuery(variables: _queryVars).document,
+            fetchPolicy: FetchPolicy.noCache,
             variables: _queryVars.toJson()),
         builder: (result, {fetchMore, refetch}) {
           final WorkoutData _workoutData =

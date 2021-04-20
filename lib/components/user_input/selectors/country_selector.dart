@@ -96,8 +96,8 @@ class _CountrySelectorState extends State<CountrySelector> {
                       child: Container(
                         height: 45,
                         decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: Styles.lightGrey))),
+                            border:
+                                Border(bottom: BorderSide(color: Styles.grey))),
                         padding: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 16),
                         child: Row(

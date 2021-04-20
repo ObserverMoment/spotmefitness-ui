@@ -49,7 +49,7 @@ class TargetedBodyAreasGraphic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nonActiveColor = Styles.lightGrey.withOpacity(0.05);
+    final nonActiveColor = Styles.grey.withOpacity(0.05);
     return Stack(
       children: [
         SvgPicture.asset(

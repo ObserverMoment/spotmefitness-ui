@@ -10,8 +10,8 @@ import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_creator_structure.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreator extends StatefulWidget {
   /// For use when duplicating a workout.
@@ -37,12 +37,28 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
     }
   }
 
-  void _handleTabChange(int index) {
+  void _changeTab(int index) {
     _pageController.jumpToPage(
       index,
     );
     Utils.hideKeyboard(context);
     setState(() => _activeTabIndex = index);
+  }
+
+  Future<void> _saveAndClose(BuildContext context) async {
+    await context.read<WorkoutCreatorBloc>().saveAllChanges(context);
+    context.pop();
+  }
+
+  void _undoAllChanges(BuildContext context) {
+    context.showConfirmDialog(
+        title: 'Undo all changes?',
+        content: MyText(
+          'All changes from this session will be reset.',
+          maxLines: 3,
+        ),
+        onConfirm: () =>
+            context.read<WorkoutCreatorBloc>().undoAllChanges(context));
   }
 
   @override
@@ -67,15 +83,21 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
         builder: (initialWorkoutData) => ChangeNotifierProvider(
               create: (context) => WorkoutCreatorBloc(initialWorkoutData),
               builder: (context, child) {
+                final bool formIsDirty =
+                    context.select<WorkoutCreatorBloc, bool>(
+                        (bloc) => bloc.formIsDirty);
+                final String name = context.select<WorkoutCreatorBloc, String>(
+                    (bloc) => bloc.workoutData.name);
                 return CupertinoPageScaffold(
                   navigationBar: CreateEditPageNavBar(
-                    handleClose: () => context.pop(),
-                    handleSave: () => {},
-                    // Only allow undo when editing a workout - not when creating.
-                    handleUndo: widget.workoutData != null ? () => {} : null,
-                    formIsDirty: context.select<WorkoutCreatorBloc, bool>(
-                        (bloc) => bloc.formIsDirty),
-                    inputValid: false,
+                    handleClose: context.pop,
+                    handleSave: () => _saveAndClose(context),
+                    handleUndo: () => _undoAllChanges(context),
+
+                    /// You always need to run the bloc.saveAllUpdates fn when creating.
+                    /// i.e when [widget.workoutData == null]
+                    formIsDirty: widget.workoutData == null || formIsDirty,
+                    inputValid: name.length >= 3,
                     title: widget.workoutData == null
                         ? 'New Workout'
                         : 'Edit Workout',
@@ -85,13 +107,13 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                       children: [
                         MyTabBarNav(
                             titles: ['Meta', 'Structure', 'Media'],
-                            handleTabChange: _handleTabChange,
+                            handleTabChange: _changeTab,
                             activeTabIndex: _activeTabIndex),
                         Expanded(
                             child: PageView(
                           physics: NeverScrollableScrollPhysics(),
                           controller: _pageController,
-                          onPageChanged: _handleTabChange,
+                          onPageChanged: _changeTab,
                           children: [
                             WorkoutCreatorMeta(),
                             WorkoutCreatorStructure(),

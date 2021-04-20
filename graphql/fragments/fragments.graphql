@@ -62,6 +62,7 @@ fragment UserInfo on User {
 fragment Workout on Workout {
   __typename
   id
+  createdAt
   name
   description
   difficultyLevel

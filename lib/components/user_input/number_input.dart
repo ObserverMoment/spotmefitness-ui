@@ -29,7 +29,7 @@ class MyNumberInput extends StatelessWidget {
             : FilteringTextInputFormatter.digitsOnly
       ],
       decoration: BoxDecoration(
-          color: Styles.lightGrey.withOpacity(0.01),
+          color: Styles.grey.withOpacity(0.01),
           borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       style: TextStyle(fontSize: textSize, height: 1),

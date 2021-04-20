@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// The first returns widget must be a valid stack child.
@@ -140,18 +139,28 @@ class _FullVideoControlsState extends State<FullVideoControls> {
                 duration: _animDuration,
                 child: !_isPlaying || _isFinished
                     ? Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        padding: const EdgeInsets.symmetric(horizontal: 36),
                         height: 40,
                         child: Row(
                           children: [
                             Expanded(
-                                child: SfSlider(
-                              interval: 1 / _duration.inSeconds,
-                              value: _progress,
-                              onChanged: _handleSeek,
-                              activeColor: Styles.peachRed,
-                              inactiveColor: Styles.grey,
-                            )),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: SliderTheme(
+                                  data: SliderThemeData(
+                                    trackHeight: 4.0,
+                                    thumbShape: RoundSliderThumbShape(
+                                        enabledThumbRadius: 7),
+                                  ),
+                                  child: Slider(
+                                    value: _progress,
+                                    onChanged: _handleSeek,
+                                    activeColor: Styles.peachRed,
+                                    inactiveColor: Styles.lightGrey,
+                                  ),
+                                ),
+                              ),
+                            ),
                             MyText(
                               (_duration * (1 - _progress)).compactDisplay(),
                               color: Styles.white,
@@ -187,7 +196,7 @@ class _FullVideoControlsState extends State<FullVideoControls> {
                                       size: 30,
                                     )
                                   : Icon(
-                                      Icons.fullscreen,
+                                      CupertinoIcons.fullscreen,
                                       size: 26,
                                     ),
                             )))),

@@ -84,6 +84,16 @@ extension DurationExtension on Duration {
     }
   }
 
+  Duration clamp(Duration lower, Duration upper) {
+    if (this < lower) {
+      return lower;
+    } else if (this > upper) {
+      return upper;
+    } else {
+      return this;
+    }
+  }
+
   String compactDisplay() {
     final String _hours =
         this.inHours != 0 ? '${this.inHours.toString().padLeft(2, '0')}:' : '';

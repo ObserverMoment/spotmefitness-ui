@@ -7,6 +7,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
 extension BuildContextExtension on BuildContext {
@@ -34,7 +35,7 @@ extension BuildContextExtension on BuildContext {
               height: height,
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               decoration: BoxDecoration(
-                  color: this.theme.cardBackground.withOpacity(0.8),
+                  color: this.readTheme.cardBackground.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(16)),
               child: child)),
     );
@@ -85,21 +86,21 @@ extension BuildContextExtension on BuildContext {
                   CupertinoDialogAction(
                     child: MyText(
                       confirmText ?? 'Confirm',
-                      color: context.theme.primary,
+                      color: context.readTheme.primary,
                     ),
                     onPressed: () {
-                      onConfirm();
                       context.pop();
+                      onConfirm();
                     },
                   ),
                   CupertinoDialogAction(
                     child: MyText(
                       cancelText ?? 'Cancel',
-                      color: context.theme.primary,
+                      color: context.readTheme.primary,
                     ),
                     onPressed: () {
-                      if (onCancel != null) onCancel();
                       context.pop();
+                      if (onCancel != null) onCancel();
                     },
                   ),
                 ]));
@@ -147,7 +148,7 @@ extension BuildContextExtension on BuildContext {
                   CupertinoDialogAction(
                     child: MyText(
                       'Cancel',
-                      color: context.theme.primary,
+                      color: context.readTheme.primary,
                     ),
                     onPressed: context.pop,
                   ),
@@ -155,14 +156,28 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
+  /// Opens a bottom sheet with a drag handle (can be set false) at the top to indicate it can be drag dismissed.
   Future<T?> showBottomSheet<T>(
-      {required Widget child, bool expand = false}) async {
+      {required Widget child,
+      bool expand = false,
+      bool showDragHandle = true}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
+        backgroundColor: context.readTheme.modalBackground,
         barrierColor: Styles.black.withOpacity(0.8),
-        builder: (context) => child);
+        builder: (context) => showDragHandle
+            ? Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DragBarHandle(),
+                  ),
+                  child,
+                ],
+              )
+            : child);
     return result;
   }
 
