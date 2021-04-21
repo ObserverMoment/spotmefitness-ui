@@ -15,8 +15,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreator extends StatefulWidget {
   /// For use when duplicating a workout.
-  final WorkoutData? workoutData;
-  WorkoutCreator({this.workoutData});
+  final Workout? workout;
+  WorkoutCreator({this.workout});
 
   @override
   _WorkoutCreatorState createState() => _WorkoutCreatorState();
@@ -24,16 +24,15 @@ class WorkoutCreator extends StatefulWidget {
 
 class _WorkoutCreatorState extends State<WorkoutCreator> {
   int _activeTabIndex = 0;
-  WorkoutData? _initWorkoutData;
+  Workout? _workout;
   final PageController _pageController = PageController();
 
-  Future<WorkoutData> _initWorkout() async {
-    if (_initWorkoutData != null) {
-      return _initWorkoutData!;
+  Future<Workout> _initWorkout() async {
+    if (_workout != null) {
+      return _workout!;
     } else {
-      _initWorkoutData =
-          await WorkoutCreatorBloc.initialize(context, widget.workoutData);
-      return _initWorkoutData!;
+      _workout = await WorkoutCreatorBloc.initialize(context, widget.workout);
+      return _workout!;
     }
   }
 
@@ -50,17 +49,6 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
     context.pop();
   }
 
-  void _undoAllChanges(BuildContext context) {
-    context.showConfirmDialog(
-        title: 'Undo all changes?',
-        content: MyText(
-          'All changes from this session will be reset.',
-          maxLines: 3,
-        ),
-        onConfirm: () =>
-            context.read<WorkoutCreatorBloc>().undoAllChanges(context));
-  }
-
   @override
   void dispose() {
     _pageController.dispose();
@@ -69,7 +57,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilderHandler<WorkoutData>(
+    return FutureBuilderHandler<Workout>(
         loadingWidget: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
             automaticallyImplyLeading: false,
@@ -80,27 +68,26 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
           ),
         ),
         future: _initWorkout(),
-        builder: (initialWorkoutData) => ChangeNotifierProvider(
-              create: (context) => WorkoutCreatorBloc(initialWorkoutData),
+        builder: (initialWorkout) => ChangeNotifierProvider(
+              create: (context) => WorkoutCreatorBloc(initialWorkout, context),
               builder: (context, child) {
                 final bool formIsDirty =
                     context.select<WorkoutCreatorBloc, bool>(
                         (bloc) => bloc.formIsDirty);
                 final String name = context.select<WorkoutCreatorBloc, String>(
-                    (bloc) => bloc.workoutData.name);
+                    (bloc) => bloc.workout.name);
                 return CupertinoPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
                     handleSave: () => _saveAndClose(context),
-                    handleUndo: () => _undoAllChanges(context),
+                    saveText: 'Done',
 
                     /// You always need to run the bloc.saveAllUpdates fn when creating.
-                    /// i.e when [widget.workoutData == null]
-                    formIsDirty: widget.workoutData == null || formIsDirty,
+                    /// i.e when [widget.workout == null]
+                    formIsDirty: widget.workout == null || formIsDirty,
                     inputValid: name.length >= 3,
-                    title: widget.workoutData == null
-                        ? 'New Workout'
-                        : 'Edit Workout',
+                    title:
+                        widget.workout == null ? 'New Workout' : 'Edit Workout',
                   ),
                   child: Container(
                     child: Column(

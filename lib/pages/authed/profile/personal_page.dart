@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
@@ -19,23 +18,23 @@ import 'package:spotmefitness_ui/services/graphql_client.dart';
 class ProfilePersonalPage extends StatelessWidget {
   Future<void> updateUserFields(
       GraphQLClient client, String id, String key, dynamic value) async {
-    Map<String, dynamic> _data = {
+    Map<String, dynamic> data = {
       'data': {key: value}
     };
-    final String _fragment = '''
+    final String fragment = '''
           fragment field on User {
             $key
           }
         ''';
 
-    final _vars = UpdateUserArguments.fromJson(_data);
+    final vars = UpdateUserArguments.fromJson(data);
 
     await GraphQL.updateObjectWithOptimisticFragment(
       client: client,
-      document: UpdateUserMutation(variables: _vars).document,
-      operationName: UpdateUserMutation(variables: _vars).operationName,
-      variables: _data,
-      fragment: _fragment,
+      document: UpdateUserMutation(variables: vars).document,
+      operationName: UpdateUserMutation(variables: vars).operationName,
+      variables: data,
+      fragment: fragment,
       objectId: id,
       objectType: 'User',
       optimisticData: {key: value},
@@ -57,7 +56,7 @@ class ProfilePersonalPage extends StatelessWidget {
               children: [
                 EditableTextFieldRow(
                   title: 'Name',
-                  text: user.displayName ?? '',
+                  text: user.displayName,
                   onSave: (newText) => updateUserFields(
                       context.graphQLClient, user.id, 'displayName', newText),
                   inputValidation: (String text) =>

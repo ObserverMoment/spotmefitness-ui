@@ -17,20 +17,20 @@ class WorkoutCreatorMedia extends StatefulWidget {
 
 class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
   late List<WorkoutSection> _workoutSections;
-  late WorkoutData _workoutData;
+  late Workout _workout;
   late WorkoutCreatorBloc _bloc;
 
   final _thumbSize = Size(75, 75);
 
   void _checkForNewData() {
-    if (_workoutData != _bloc.workoutData)
+    if (_workout != _bloc.workout)
       setState(() {
-        _workoutData = WorkoutData.fromJson(_bloc.workoutData.toJson());
+        _workout = Workout.fromJson(_bloc.workout.toJson());
       });
 
-    if (!listEquals(_workoutSections, _bloc.workoutData.workoutSections))
+    if (!listEquals(_workoutSections, _bloc.workout.workoutSections))
       setState(() {
-        _workoutSections = [..._bloc.workoutData.workoutSections];
+        _workoutSections = [..._bloc.workout.workoutSections];
       });
   }
 
@@ -38,8 +38,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
-    _workoutData = WorkoutData.fromJson(_bloc.workoutData.toJson());
-    _workoutSections = [..._bloc.workoutData.workoutSections];
+    _workout = Workout.fromJson(_bloc.workout.toJson());
+    _workoutSections = [..._bloc.workout.workoutSections];
     _bloc.addListener(_checkForNewData);
   }
 
@@ -86,7 +86,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                       children: [
                         ImageUploader(
                           displaySize: _thumbSize,
-                          imageUri: _workoutData.coverImageUri,
+                          imageUri: _workout.coverImageUri,
                           onUploadSuccess: (uri) =>
                               _updateWorkoutData({'coverImageUri': uri}),
                           removeImage: () =>
@@ -102,8 +102,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                       children: [
                         VideoUploader(
                           displaySize: _thumbSize,
-                          videoUri: _workoutData.introVideoUri,
-                          videoThumbUri: _workoutData.introVideoThumbUri,
+                          videoUri: _workout.introVideoUri,
+                          videoThumbUri: _workout.introVideoThumbUri,
                           onUploadSuccess: (video, thumb) =>
                               _updateWorkoutData({
                             'introVideoUri': video,
@@ -124,7 +124,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                       children: [
                         AudioUploader(
                           displaySize: _thumbSize,
-                          audioUri: _workoutData.introAudioUri,
+                          audioUri: _workout.introAudioUri,
                           onUploadSuccess: (uri) => _updateWorkoutData({
                             'introAudioUri': uri,
                           }),

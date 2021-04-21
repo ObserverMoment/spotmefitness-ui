@@ -1,47 +1,11 @@
 mutation createWorkout($data: CreateWorkoutInput!) {
-  createWorkout(data: $data) {
-    ...Workout
-    UserInfo: User {
-      ...UserInfo
-    }
+  createWorkout: createWorkout(data: $data) {
+    ...WorkoutFields
     WorkoutGoals {
       ...WorkoutGoal
     }
     WorkoutTags {
       ...WorkoutTag
-    }
-    WorkoutSections {
-      ...WorkoutSection
-      WorkoutSectionType {
-        ...WorkoutSectionType
-      }
-      WorkoutSets {
-        ...WorkoutSet
-        WorkoutMoves {
-          ...WorkoutMove
-          Equipment {
-            ...Equipment
-          }
-          Move {
-            ...Move
-            MoveType {
-              ...MoveType
-            }
-            BodyAreaMoveScores {
-              score
-              BodyArea {
-                ...BodyArea
-              }
-            }
-            RequiredEquipments {
-              ...Equipment
-            }
-            SelectableEquipments {
-              ...Equipment
-            }
-          }
-        }
-      }
     }
   }
 }

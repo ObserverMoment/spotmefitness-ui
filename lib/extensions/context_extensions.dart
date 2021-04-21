@@ -202,8 +202,11 @@ extension BuildContextExtension on BuildContext {
                 ]));
   }
 
-  void showToast({required String message, Widget? icon}) => Flushbar(
-        backgroundColor: CupertinoColors.darkBackgroundGray,
+  void showToast(
+          {required String message, Widget? icon, bool isError = false}) =>
+      Flushbar(
+        backgroundColor:
+            isError ? Styles.errorRed : CupertinoColors.darkBackgroundGray,
         icon: icon,
         maxWidth: 500,
         animationDuration: Duration(milliseconds: 300),

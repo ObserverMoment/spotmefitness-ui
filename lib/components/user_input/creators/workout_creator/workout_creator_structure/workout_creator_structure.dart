@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -30,7 +31,7 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
   late List<WorkoutSection> _sortedworkoutSections;
 
   void _checkForNewData() {
-    final updated = _bloc.workoutData.workoutSections;
+    final updated = _bloc.workout.workoutSections;
 
     if (!_sortedworkoutSections.equals(updated)) {
       setState(() {
@@ -47,18 +48,14 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
     _bloc = context.read<WorkoutCreatorBloc>();
 
     _sortedworkoutSections = [
-      ..._bloc.workoutData.workoutSections
-          .sortedBy<num>((ws) => ws.sortPosition)
+      ..._bloc.workout.workoutSections.sortedBy<num>((ws) => ws.sortPosition)
     ];
     _bloc.addListener(_checkForNewData);
   }
 
   void _openCreateSection() {
     // Create a default section as a placeholder until user selects the type.
-    _bloc.createWorkoutSection(WorkoutSectionType()
-      ..id = 0.toString()
-      ..name = 'Section'
-      ..description = '');
+    _bloc.createWorkoutSection(kGenDefaultWorkoutSectionType());
 
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
@@ -119,6 +116,7 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
                       child: WorkoutSectionInWorkout(
                         key: Key(item.id),
                         workoutSection: item,
+                        index: index,
                         canReorder: _sortedworkoutSections.length > 1,
                       ),
                     ),
@@ -147,10 +145,12 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
 
 class WorkoutSectionInWorkout extends StatelessWidget {
   final Key key;
+  final int index;
   final WorkoutSection workoutSection;
   final bool canReorder;
   WorkoutSectionInWorkout(
       {required this.key,
+      required this.index,
       required this.workoutSection,
       this.canReorder = false});
 
@@ -187,9 +187,8 @@ class WorkoutSectionInWorkout extends StatelessWidget {
   void _deleteWorkoutSection(BuildContext context) {
     context.showConfirmDeleteDialog(
         itemType: 'Section',
-        onConfirm: () => context
-            .read<WorkoutCreatorBloc>()
-            .deleteWorkoutSection(workoutSection.sortPosition));
+        onConfirm: () =>
+            context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
   }
 
   void _duplicateWorkoutSection(BuildContext context) {

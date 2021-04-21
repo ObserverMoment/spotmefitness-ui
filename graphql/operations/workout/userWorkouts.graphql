@@ -1,6 +1,6 @@
 # Summary data only - for lists and search results.
 query userWorkouts {
-  WorkoutSummary: userWorkouts {
+  userWorkouts {
     __typename
     id
     createdAt
@@ -8,8 +8,8 @@ query userWorkouts {
     description
     difficultyLevel
     coverImageUri
-    UserInfo: User {
-      ...UserInfo
+    User {
+      ...UserSummary
     }
     WorkoutGoals {
       ...WorkoutGoal
@@ -17,19 +17,19 @@ query userWorkouts {
     WorkoutTags {
       ...WorkoutTag
     }
-    WorkoutSummarySections: WorkoutSections {
+    WorkoutSections {
       __typename
       id
       timecap
       WorkoutSectionType {
         ...WorkoutSectionType
       }
-      WorkoutSummarySets: WorkoutSets {
-        WorkoutSummaryWorkoutMoves: WorkoutMoves {
+      WorkoutSets {
+        WorkoutMoves {
           Equipment {
             ...Equipment
           }
-          WorkoutSummaryMove: Move {
+          Move {
             __typename
             id
             name

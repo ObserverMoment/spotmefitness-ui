@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
 class TextViewer extends StatelessWidget {
@@ -8,17 +7,18 @@ class TextViewer extends StatelessWidget {
   TextViewer(this.text, this.title);
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        middle: NavBarTitle(title),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: MyText(
-            text,
-            maxLines: 999,
-          ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            H2(title),
+            SizedBox(height: 16),
+            MyText(
+              text,
+              maxLines: 999,
+            ),
+          ],
         ),
       ),
     );

@@ -45,10 +45,9 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
   void _checkForNewData() {
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
-    if (_bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets
-            .length >
+    if (_bloc.workout.workoutSections[widget.sectionIndex].workoutSets.length >
         widget.setIndex) {
-      final updatedSet = _bloc.workoutData.workoutSections[widget.sectionIndex]
+      final updatedSet = _bloc.workout.workoutSections[widget.sectionIndex]
           .workoutSets[widget.setIndex];
       final updatedWorkoutMoves = updatedSet.workoutMoves;
 
@@ -69,10 +68,10 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
-    _workoutSet = WorkoutSet.fromJson(_bloc.workoutData
+    _workoutSet = WorkoutSet.fromJson(_bloc.workout
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
         .toJson());
-    _sortedWorkoutMoves = _bloc.workoutData.workoutSections[widget.sectionIndex]
+    _sortedWorkoutMoves = _bloc.workout.workoutSections[widget.sectionIndex]
         .workoutSets[widget.setIndex].workoutMoves
         .sortedBy<num>((wm) => wm.sortPosition);
 

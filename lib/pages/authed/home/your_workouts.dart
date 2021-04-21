@@ -32,7 +32,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
       ),
       builder: (result, {fetchMore, refetch}) {
         final workouts = UserWorkouts$Query.fromJson(result.data ?? {})
-            .workoutSummary
+            .userWorkouts
             .where((workoutSummary) => Utils.textNotNull(_searchString)
                 ? workoutSummary.name
                     .toLowerCase()

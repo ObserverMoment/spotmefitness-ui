@@ -23,9 +23,9 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
   late WorkoutCreatorBloc _bloc;
 
   void _checkForNewData() {
-    if (_bloc.workoutData.workoutSections.length > widget.sectionIndex) {
+    if (_bloc.workout.workoutSections.length > widget.sectionIndex) {
       final updated =
-          _bloc.workoutData.workoutSections[widget.sectionIndex].workoutSets;
+          _bloc.workout.workoutSections[widget.sectionIndex].workoutSets;
 
       if (!_sortedWorkoutSets.equals(updated)) {
         setState(() {
@@ -40,7 +40,7 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
     _sortedWorkoutSets = _bloc
-        .workoutData.workoutSections[widget.sectionIndex].workoutSets
+        .workout.workoutSections[widget.sectionIndex].workoutSets
         .sortedBy<num>((ws) => ws.sortPosition);
     _bloc.addListener(_checkForNewData);
   }

@@ -1,49 +1,11 @@
-# TODO: Needs to get back eaxctly the same data as workoutById
-# Can you have nested fragments - if so make one called WorkoutData.
 mutation updateWorkout($data: UpdateWorkoutInput!) {
-  updateWorkout(data: $data) {
-    ...Workout
-    UserInfo: User {
-      ...UserInfo
-    }
+  updateWorkout: updateWorkout(data: $data) {
+    ...WorkoutFields
     WorkoutGoals {
       ...WorkoutGoal
     }
     WorkoutTags {
       ...WorkoutTag
-    }
-    WorkoutSections {
-      ...WorkoutSection
-      WorkoutSectionType {
-        ...WorkoutSectionType
-      }
-      WorkoutSets {
-        ...WorkoutSet
-        WorkoutMoves {
-          ...WorkoutMove
-          Equipment {
-            ...Equipment
-          }
-          Move {
-            ...Move
-            MoveType {
-              ...MoveType
-            }
-            BodyAreaMoveScores {
-              score
-              BodyArea {
-                ...BodyArea
-              }
-            }
-            RequiredEquipments {
-              ...Equipment
-            }
-            SelectableEquipments {
-              ...Equipment
-            }
-          }
-        }
-      }
     }
   }
 }

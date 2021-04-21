@@ -1,8 +1,7 @@
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
 class Converters {
-  static WorkoutSummary fromWorkoutDataToWorkoutSummary(
-      WorkoutData workoutData) {
+  static WorkoutSummary fromWorkoutToWorkoutSummary(Workout workoutData) {
     return WorkoutSummary.fromJson({
       ...workoutData.toJson(),
       'WorkoutSummarySections': workoutData.workoutSections

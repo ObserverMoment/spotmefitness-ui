@@ -35,8 +35,8 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   late WorkoutSection _workoutSection;
 
   void _checkForNewData() {
-    if (_bloc.workoutData.workoutSections.length > widget.sectionIndex) {
-      final updated = _bloc.workoutData.workoutSections[widget.sectionIndex];
+    if (_bloc.workout.workoutSections.length > widget.sectionIndex) {
+      final updated = _bloc.workout.workoutSections[widget.sectionIndex];
 
       if (_workoutSection != updated) {
         setState(() {
@@ -53,7 +53,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     _pageController = PageController(initialPage: widget.isCreate ? 0 : 1);
 
     _workoutSection = WorkoutSection.fromJson(
-        _bloc.workoutData.workoutSections[widget.sectionIndex].toJson());
+        _bloc.workout.workoutSections[widget.sectionIndex].toJson());
     _bloc.addListener(_checkForNewData);
 
     _pageController.addListener(() {

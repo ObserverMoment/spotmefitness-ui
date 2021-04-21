@@ -1,12 +1,11 @@
 # The full workout detail data tree, for displaying on a 'workout/:id' page.
 # Also includes the full move data so that you can pop open a move_details page for all the included moves if needed.
-# NOTE: When the full data tree of a particular object is being selected we call it {typename}Data.
 # If it is needed multiple time then we can extract to a fragment.
 query workoutById($id: ID!) {
-  WorkoutData: workoutById(id: $id) {
-    ...Workout
-    UserInfo: User {
-      ...UserInfo
+  workoutById(id: $id) {
+    ...WorkoutFields
+    User {
+      ...UserSummary
     }
     WorkoutGoals {
       ...WorkoutGoal

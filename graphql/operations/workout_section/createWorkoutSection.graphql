@@ -1,0 +1,11 @@
+mutation createWorkoutSection(
+  $data: CreateWorkoutSectionInput!
+  $sort: Boolean
+) {
+  createWorkoutSection: createWorkoutSection(data: $data, sort: $sort) {
+    ...WorkoutSection
+    WorkoutSectionType {
+      ...WorkoutSectionType
+    }
+  }
+}

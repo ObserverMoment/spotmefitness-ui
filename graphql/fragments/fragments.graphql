@@ -52,14 +52,14 @@ fragment User on User {
   gender
 }
 
-fragment UserInfo on User {
+fragment UserSummary on UserSummary {
   __typename
   id
   avatarUri
   displayName
 }
 
-fragment Workout on Workout {
+fragment WorkoutFields on Workout {
   __typename
   id
   createdAt

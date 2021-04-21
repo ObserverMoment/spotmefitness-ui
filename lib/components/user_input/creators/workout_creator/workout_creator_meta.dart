@@ -11,7 +11,6 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_cl
 import 'package:spotmefitness_ui/components/user_input/selectors/difficulty_level_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
-import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -21,7 +20,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
   Widget build(BuildContext context) {
     final _updateWorkoutMeta =
         context.read<WorkoutCreatorBloc>().updateWorkoutMeta;
-    final workoutData = context.watch<WorkoutCreatorBloc>().workoutData;
+    final workoutData = context.watch<WorkoutCreatorBloc>().workout;
 
     return Container(
       child: SingleChildScrollView(
@@ -29,19 +28,14 @@ class WorkoutCreatorMeta extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoFormSection.insetGrouped(
-                    margin: EdgeInsets.zero,
-                    children: [
-                      MyTextFormFieldRow(
-                        placeholder: 'Name (Required - min 3 chars)',
-                        keyboardType: TextInputType.text,
-                        initialValue: workoutData.name,
-                        onChanged: (text) => _updateWorkoutMeta({'name': text}),
-                        validator: () => workoutData.name.length > 2,
-                      ),
-                    ]),
+              EditableTextFieldRow(
+                title: 'Name',
+                text: workoutData.name,
+                onSave: (text) => _updateWorkoutMeta({'name': text}),
+                inputValidation: (t) => t.length > 2 && t.length <= 50,
+                isRequired: true,
+                maxChars: 50,
+                validationMessage: 'Required. Min 3 chars. max 50',
               ),
               EditableTextAreaRow(
                 title: 'Description',
@@ -122,6 +116,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                       textColor: Styles.white,
                       tag: workoutData.difficultyLevel.display,
                       color: workoutData.difficultyLevel.displayColor,
+                      withBorder: true,
                     ),
                   ),
                   onTap: () => context.push(

@@ -26,17 +26,16 @@ class WorkoutCard extends StatelessWidget {
     final Set<String> _allMoves = {};
     final Set<String> _allEquipments = {};
 
-    for (final section in workoutSummary.workoutSummarySections) {
-      for (final workoutSet in section.workoutSummarySets) {
-        for (final workoutMove in workoutSet.workoutSummaryWorkoutMoves) {
-          _allMoves.add(workoutMove.workoutSummaryMove.name);
+    for (final section in workoutSummary.workoutSections) {
+      for (final workoutSet in section.workoutSets) {
+        for (final workoutMove in workoutSet.workoutMoves) {
+          _allMoves.add(workoutMove.move.name);
           if (workoutMove.equipment != null) {
             _allEquipments.add(workoutMove.equipment!.name);
           }
-          if (workoutMove.workoutSummaryMove.requiredEquipments.isNotEmpty) {
-            _allEquipments.addAll(workoutMove
-                .workoutSummaryMove.requiredEquipments
-                .map((e) => e.name));
+          if (workoutMove.move.requiredEquipments.isNotEmpty) {
+            _allEquipments
+                .addAll(workoutMove.move.requiredEquipments.map((e) => e.name));
           }
         }
       }
@@ -60,7 +59,7 @@ class WorkoutCard extends StatelessWidget {
               ],
             ),
           ),
-          if (workoutSummary.workoutSummarySections.isNotEmpty)
+          if (workoutSummary.workoutSections.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: SizedBox(
@@ -68,14 +67,14 @@ class WorkoutCard extends StatelessWidget {
                 child: ListView.builder(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: workoutSummary.workoutSummarySections.length,
+                    itemCount: workoutSummary.workoutSections.length,
                     itemBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: WorkoutSectionTypeTag(
-                              workoutSummary.workoutSummarySections[index]
+                              workoutSummary.workoutSections[index]
                                   .workoutSectionType.name,
                               timecap: workoutSummary
-                                  .workoutSummarySections[index].timecap),
+                                  .workoutSections[index].timecap),
                         )),
               ),
             ),

@@ -79,12 +79,14 @@ class Tag extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final FONTSIZE fontSize;
+  final bool withBorder;
   Tag(
       {this.color,
       this.textColor,
       required this.tag,
       this.prefix,
       this.suffix,
+      this.withBorder = false,
       this.fontSize = FONTSIZE.TINY});
   @override
   Widget build(BuildContext context) {
@@ -92,8 +94,10 @@ class Tag extends StatelessWidget {
     final _textColor = textColor ?? context.theme.background;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(30), color: _color),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: _color,
+          border: withBorder ? Border.all(color: context.theme.primary) : null),
       child: MyText(
         tag,
         size: fontSize,

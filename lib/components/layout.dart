@@ -134,11 +134,13 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
   final bool formIsDirty;
   final Function()? handleUndo;
   final Function() handleSave;
+  final String saveText;
   final Function() handleClose;
   final bool inputValid;
   CreateEditPageNavBar(
       {required this.title,
       required this.formIsDirty,
+      this.saveText = 'Save',
       this.handleUndo,
       required this.handleSave,
       required this.handleClose,
@@ -165,7 +167,7 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       confirm: true,
                       underline: false,
-                      text: 'Save',
+                      text: saveText,
                       onPressed: handleSave),
                 ),
               if (!formIsDirty)
