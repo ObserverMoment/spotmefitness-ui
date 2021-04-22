@@ -178,7 +178,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'introVideoUri': video,
                                   'introVideoThumbUri': thumb
                                 }),
-                                removeVideo: () => _updateWorkoutData({
+                                removeVideo: () => _updateWorkoutSection(
+                                    section.sortPosition, {
                                   'introVideoUri': null,
                                   'introVideoThumbUri': null
                                 }),
@@ -201,7 +202,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'classVideoUri': video,
                                   'classVideoThumbUri': thumb
                                 }),
-                                removeVideo: () => _updateWorkoutData({
+                                removeVideo: () => _updateWorkoutSection(
+                                    section.sortPosition, {
                                   'classVideoUri': null,
                                   'classVideoThumbUri': null
                                 }),
@@ -224,7 +226,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'outroVideoUri': video,
                                   'outroVideoThumbUri': thumb
                                 }),
-                                removeVideo: () => _updateWorkoutData({
+                                removeVideo: () => _updateWorkoutSection(
+                                    section.sortPosition, {
                                   'outroVideoUri': null,
                                   'outroVideoThumbUri': null
                                 }),

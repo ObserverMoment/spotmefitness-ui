@@ -54,6 +54,7 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
   }
 
   void _openCreateSection() {
+    final nextIndex = _sortedworkoutSections.length;
     // Create a default section as a placeholder until user selects the type.
     _bloc.createWorkoutSection(kGenDefaultWorkoutSectionType());
 
@@ -64,8 +65,8 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
           value: _bloc,
           child: WorkoutSectionCreator(
-            key: Key((_sortedworkoutSections.length - 1).toString()),
-            sectionIndex: _sortedworkoutSections.length - 1,
+            key: Key((nextIndex).toString()),
+            sectionIndex: nextIndex,
             isCreate: true,
           ),
         ),
@@ -191,20 +192,12 @@ class WorkoutSectionInWorkout extends StatelessWidget {
             context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
   }
 
-  void _duplicateWorkoutSection(BuildContext context) {
-    context
-        .read<WorkoutCreatorBloc>()
-        .duplicateWorkoutSection(workoutSection.sortPosition);
-  }
-
   void _moveWorkoutSectionUpOne(BuildContext context) {
-    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(
-        workoutSection.sortPosition, workoutSection.sortPosition - 1);
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index - 1);
   }
 
   void _moveWorkoutSectionDownOne(BuildContext context) {
-    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(
-        workoutSection.sortPosition, workoutSection.sortPosition + 1);
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index + 1);
   }
 
   @override
@@ -279,11 +272,6 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                               onTap: () => _moveWorkoutSectionDownOne(context),
                               iconData: CupertinoIcons.down_arrow,
                             ),
-                          ContextMenuItem(
-                            text: 'Duplicate',
-                            onTap: () => _duplicateWorkoutSection(context),
-                            iconData: CupertinoIcons.doc_on_doc,
-                          ),
                           ContextMenuItem(
                             text: 'Delete',
                             onTap: () => _deleteWorkoutSection(context),
