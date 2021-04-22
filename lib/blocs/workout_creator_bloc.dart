@@ -209,12 +209,11 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   void reorderWorkoutSections(int from, int to) async {
-    _backupAndMarkDirty();
     // Check that user is not trying to move beyond the bounds of the list.
     if (to >= 0 && to < workout.workoutSections.length) {
-      /// Client.
-      formIsDirty = true;
+      _backupAndMarkDirty();
 
+      /// Client.
       final inTransit = workout.workoutSections.removeAt(from);
       workout.workoutSections.insert(to, inTransit);
 
@@ -376,30 +375,51 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
   }
 
-  void duplicateWorkoutSet(int sectionIndex, int setIndex) {
+  void duplicateWorkoutSet(int sectionIndex, int setIndex) async {
     _backupAndMarkDirty();
 
     final workoutSets = workout.workoutSections[sectionIndex].workoutSets;
+    final toDuplicate = workoutSets[setIndex];
 
+    /// Client.
     workoutSets.insert(
         setIndex + 1,
         WorkoutSet.fromJson({
-          ...workoutSets[setIndex].toJson(),
+          ...toDuplicate.toJson(),
           'id': 'temp-${_setId++}',
         }));
 
     _updateWorkoutSetsSortPosition(workoutSets);
 
     notifyListeners();
+
+    /// Api
+    final variables = DuplicateWorkoutSetByIdArguments(id: toDuplicate.id);
+
+    final result = await context.graphQLClient.mutate(MutationOptions(
+        document:
+            DuplicateWorkoutSetByIdMutation(variables: variables).document,
+        variables: variables.toJson()));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutSets[setIndex + 1] = WorkoutSet.fromJson(
+          DuplicateWorkoutSetById$Mutation.fromJson(result.data!)
+              .duplicateWorkoutSetById
+              .toJson());
+    }
+
+    notifyListeners();
   }
 
-  void reorderWorkoutSets(int sectionIndex, int from, int to) {
-    _backupAndMarkDirty();
-
+  void reorderWorkoutSets(int sectionIndex, int from, int to) async {
     // Check that user is not trying to move beyond the bounds of the list.
     if (to >= 0 &&
         to < workout.workoutSections[sectionIndex].workoutSets.length) {
-      formIsDirty = true;
+      _backupAndMarkDirty();
+
+      /// Client.
       final workoutSets = workout.workoutSections[sectionIndex].workoutSets;
 
       final inTransit = workoutSets.removeAt(from);
@@ -408,20 +428,68 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       _updateWorkoutSetsSortPosition(workoutSets);
 
       notifyListeners();
+
+      /// Api.
+      final variables = ReorderWorkoutSetsArguments(
+          data: workoutSets
+              .map((s) => UpdateSortPositionInput(
+                  id: s.id, sortPosition: s.sortPosition))
+              .toList());
+
+      final result = await context.graphQLClient.mutate(MutationOptions(
+          document: ReorderWorkoutSetsMutation(variables: variables).document,
+          variables: variables.toJson()));
+
+      final success = _checkApiResult(result);
+
+      if (success) {
+        /// Write new sort positions.
+        final positions = ReorderWorkoutSets$Mutation.fromJson(result.data!)
+            .reorderWorkoutSets;
+
+        workoutSets.forEach((ws) {
+          ws.sortPosition =
+              positions.firstWhere((p) => p.id == ws.id).sortPosition;
+        });
+      }
+
+      notifyListeners();
     }
   }
 
-  void deleteWorkoutSet(int sectionIndex, int setIndex) {
+  void deleteWorkoutSet(int sectionIndex, int setIndex) async {
     _backupAndMarkDirty();
 
+    final idToDelete =
+        workout.workoutSections[sectionIndex].workoutSets[setIndex].id;
     final oldWorkoutSets = workout.workoutSections[sectionIndex].workoutSets;
 
-    // Remove the deleted move.
+    // Client.
     oldWorkoutSets.removeAt(setIndex);
 
     _updateWorkoutSetsSortPosition(oldWorkoutSets);
 
     notifyListeners();
+
+    /// Api.
+    final variables = DeleteWorkoutSetByIdArguments(id: idToDelete);
+
+    final result = await context.graphQLClient.mutate(MutationOptions(
+        document: DeleteWorkoutSetByIdMutation(variables: variables).document,
+        variables: variables.toJson()));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedId = DeleteWorkoutSetById$Mutation.fromJson(result.data!)
+          .deleteWorkoutSetById;
+
+      // If the ids do not match then there was a problem - revert the changes.
+      if (idToDelete != deletedId) {
+        _revertChanges(result.exception);
+        notifyListeners();
+      }
+    }
   }
 
   WorkoutSet _genDefaultWorkoutSet(int sortPosition) => WorkoutSet()
@@ -489,63 +557,165 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   void editWorkoutMove(
-      int sectionIndex, int setIndex, WorkoutMove workoutMove) {
+      int sectionIndex, int setIndex, WorkoutMove workoutMove) async {
     _backupAndMarkDirty();
 
     /// Client.
     workout.workoutSections[sectionIndex].workoutSets[setIndex]
         .workoutMoves[workoutMove.sortPosition] = workoutMove;
     notifyListeners();
+
+    /// Api.
+    final variables = UpdateWorkoutMoveArguments(
+        data: UpdateWorkoutMoveInput.fromJson(workoutMove.toJson()));
+
+    final result = await context.graphQLClient.mutate(
+      MutationOptions(
+        document: UpdateWorkoutMoveMutation(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workout.workoutSections[sectionIndex].workoutSets[setIndex]
+          .workoutMoves[workoutMove.sortPosition] = WorkoutMove.fromJson(
+        UpdateWorkoutMove$Mutation.fromJson(result.data!)
+            .updateWorkoutMove
+            .toJson(),
+      );
+    }
+
+    notifyListeners();
   }
 
-  void deleteWorkoutMove(int sectionIndex, int setIndex, int workoutMoveIndex) {
+  void deleteWorkoutMove(
+      int sectionIndex, int setIndex, int workoutMoveIndex) async {
     _backupAndMarkDirty();
 
     final workoutMoves = workout
         .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
 
-    // Remove the deleted move.
+    final idToDelete = workoutMoves[workoutMoveIndex].id;
+
+    // Client.
     workoutMoves.removeAt(workoutMoveIndex);
 
     _updateWorkoutMovesSortPosition(workoutMoves);
 
     notifyListeners();
+
+    // Api.
+    final variables = DeleteWorkoutMoveByIdArguments(id: idToDelete);
+
+    final result = await context.graphQLClient.mutate(MutationOptions(
+        document: DeleteWorkoutMoveByIdMutation(variables: variables).document,
+        variables: variables.toJson()));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedId = DeleteWorkoutMoveById$Mutation.fromJson(result.data!)
+          .deleteWorkoutMoveById;
+
+      // If the ids do not match then there was a problem - revert the changes.
+      if (idToDelete != deletedId) {
+        _revertChanges(result.exception);
+        notifyListeners();
+      }
+    }
   }
 
   void duplicateWorkoutMove(
-      int sectionIndex, int setIndex, int workoutMoveIndex) {
+      int sectionIndex, int setIndex, int workoutMoveIndex) async {
     _backupAndMarkDirty();
 
+    /// Client.
     final workoutMoves = workout
         .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+    final toDuplicate = workoutMoves[workoutMoveIndex];
 
     workoutMoves.insert(
         workoutMoveIndex + 1,
         WorkoutMove.fromJson({
-          ...workoutMoves[workoutMoveIndex].toJson(),
+          ...toDuplicate.toJson(),
           'id': 'temp-${_workoutMoveId++}',
         }));
 
     _updateWorkoutMovesSortPosition(workoutMoves);
 
     notifyListeners();
-  }
 
-  void reorderWorkoutMoves(int sectionIndex, int setIndex, int from, int to) {
-    _backupAndMarkDirty();
+    /// Api.
+    final variables = DuplicateWorkoutMoveByIdArguments(id: toDuplicate.id);
 
-    final workoutMoves = workout
-        .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+    final result = await context.graphQLClient.mutate(MutationOptions(
+        document:
+            DuplicateWorkoutMoveByIdMutation(variables: variables).document,
+        variables: variables.toJson()));
 
-    final inTransit = workoutMoves.removeAt(from);
-    // If moved to a higher index then you need to insert one place lower than the original drop location.
-    // As you have popped a lower index position in the action above.
-    final int newIndex = to > from ? to - 1 : to;
-    workoutMoves.insert(newIndex, inTransit);
+    final success = _checkApiResult(result);
 
-    _updateWorkoutMovesSortPosition(workoutMoves);
+    if (success) {
+      workoutMoves[workoutMoveIndex + 1] = WorkoutMove.fromJson(
+          DuplicateWorkoutMoveById$Mutation.fromJson(result.data!)
+              .duplicateWorkoutMoveById
+              .toJson());
+    }
 
     notifyListeners();
+  }
+
+  void reorderWorkoutMoves(
+      int sectionIndex, int setIndex, int from, int to) async {
+    // https://api.flutter.dev/flutter/material/ReorderableListView-class.html
+    // // Necessary because of how flutters reorderable list calculates drop position...I think.
+    final moveTo = from < to ? to - 1 : to;
+
+    // Check that user is not trying to move beyond the bounds of the list.
+    if (moveTo >= 0 &&
+        moveTo <
+            workout.workoutSections[sectionIndex].workoutSets[setIndex]
+                .workoutMoves.length) {
+      _backupAndMarkDirty();
+
+      final workoutMoves = workout
+          .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+
+      final inTransit = workoutMoves.removeAt(from);
+      workoutMoves.insert(moveTo, inTransit);
+
+      _updateWorkoutMovesSortPosition(workoutMoves);
+
+      notifyListeners();
+
+      /// Api.
+      final variables = ReorderWorkoutMovesArguments(
+          data: workoutMoves
+              .map((s) => UpdateSortPositionInput(
+                  id: s.id, sortPosition: s.sortPosition))
+              .toList());
+
+      final result = await context.graphQLClient.mutate(MutationOptions(
+          document: ReorderWorkoutMovesMutation(variables: variables).document,
+          variables: variables.toJson()));
+
+      final success = _checkApiResult(result);
+
+      if (success) {
+        /// Write new sort positions.
+        final positions = ReorderWorkoutMoves$Mutation.fromJson(result.data!)
+            .reorderWorkoutMoves;
+
+        workoutMoves.forEach((wm) {
+          wm.sortPosition =
+              positions.firstWhere((p) => p.id == wm.id).sortPosition;
+        });
+      }
+
+      notifyListeners();
+    }
   }
 
   void _updateWorkoutMovesSortPosition(List<WorkoutMove> workoutMoves) {

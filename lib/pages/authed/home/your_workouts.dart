@@ -106,7 +106,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
                                   WorkoutDetailsRoute(id: workouts[index].id)),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 3, vertical: 3.0),
+                                    horizontal: 4, vertical: 4.0),
                                 child: WorkoutCard(workouts[index]),
                               ),
                             )),

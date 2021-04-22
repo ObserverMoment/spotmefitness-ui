@@ -72,6 +72,38 @@ class MoveTypeTag extends StatelessWidget {
   }
 }
 
+class SelectableMoveTypeTag extends StatelessWidget {
+  final MoveType moveType;
+  final bool isSelected;
+  final void Function() onPressed;
+  SelectableMoveTypeTag(
+      {required this.moveType,
+      required this.onPressed,
+      this.isSelected = false});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: AnimatedContainer(
+        curve: Curves.easeIn,
+        duration: Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+            border: isSelected
+                ? Border.all(color: Styles.colorOne)
+                : Border.all(color: context.theme.primary.withOpacity(0.5)),
+            color: isSelected ? Styles.colorOne : context.theme.background,
+            borderRadius: BorderRadius.circular(8)),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+        child: MyText(
+          moveType.name,
+          size: FONTSIZE.SMALL,
+        ),
+      ),
+    );
+  }
+}
+
 class Tag extends StatelessWidget {
   final Color? color;
   final Color? textColor;

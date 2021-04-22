@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -61,84 +62,85 @@ class WorkoutCard extends StatelessWidget {
           ),
           if (workoutSummary.workoutSections.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: SizedBox(
-                height: 28,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: workoutSummary.workoutSections.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: WorkoutSectionTypeTag(
-                              workoutSummary.workoutSections[index]
-                                  .workoutSectionType.name,
-                              timecap: workoutSummary
-                                  .workoutSections[index].timecap),
-                        )),
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: workoutSummary.workoutSections
+                    .map((section) => WorkoutSectionTypeTag(
+                        section.workoutSectionType.name,
+                        timecap: section.timecap))
+                    .toList(),
               ),
             ),
           if (_allTags.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
-              child: SizedBox(
-                height: 24,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _allTags.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 5, bottom: 2),
-                          child: Tag(
-                            tag: _allTags[index],
-                          ),
-                        )),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: _allTags
+                    .map(
+                      (tag) => Tag(
+                        tag: tag,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           if (Utils.textNotNull(workoutSummary.description))
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: MyText(
-                workoutSummary.description!,
-                maxLines: 2,
-                size: FONTSIZE.SMALL,
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                  color: context.theme.background.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 3.0, horizontal: 6),
+                child: MyText(
+                  workoutSummary.description!,
+                  maxLines: 2,
+                  size: FONTSIZE.SMALL,
+                  weight: FontWeight.bold,
+                ),
               ),
             ),
           if (_allMoves.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: SizedBox(
-                height: 24,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _allMoves.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: Tag(
-                            color: context.theme.background,
-                            textColor: context.theme.primary,
-                            tag: _allMoves.elementAt(index),
-                          ),
-                        )),
+              child: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: _allMoves
+                    .map(
+                      (move) => Tag(
+                        color: context.theme.background,
+                        textColor: context.theme.primary,
+                        tag: move,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           if (_allEquipments.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(left: 4, top: 7.0, bottom: 4),
-              child: SizedBox(
-                height: 24,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _allEquipments.length,
-                    itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 5, bottom: 2),
-                          child: SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: Utils.getEquipmentIcon(
-                                  context, _allEquipments.elementAt(index),
-                                  color:
-                                      context.theme.primary.withOpacity(0.8))),
-                        )),
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: _allEquipments
+                    .map(
+                      (e) => Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                              color: context.theme.background.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(10)),
+                          width: 36,
+                          height: 36,
+                          child: Utils.getEquipmentIcon(context, e,
+                              color: context.theme.primary)),
+                    )
+                    .toList(),
               ),
             ),
         ],

@@ -87,7 +87,8 @@ class _FreeSessionCreatorState extends State<FreeSessionCreator> {
               curve: Curves.easeInOut,
               animation: animation,
               child: Padding(
-                padding: const EdgeInsets.all(6.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6),
                 child: WorkoutSetCreator(
                     key: Key(
                         'session_creator-${widget.sectionIndex}-${item.sortPosition}'),

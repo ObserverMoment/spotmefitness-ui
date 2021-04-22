@@ -109,6 +109,7 @@ extension DurationExtension on Duration {
 extension ListExtension on List {
   /// If not in list, add it, else remove it.
   /// Assumes Equatable functionality if item is non scalar.
+  /// Returns a new list.
   List<T> toggleItem<T>(T item) {
     return (this as List<T>).contains(item)
         ? (this as List<T>).where((e) => e != item).toList()
