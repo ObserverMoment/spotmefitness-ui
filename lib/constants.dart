@@ -10,3 +10,7 @@ WorkoutSectionType kGenDefaultWorkoutSectionType() {
     ..name = 'Section'
     ..description = '';
 }
+
+/// WorkoutSectionTypeNames
+const kFreeSession = 'Free Session';
+const kHIITCircuit = 'HIIT Circuit';

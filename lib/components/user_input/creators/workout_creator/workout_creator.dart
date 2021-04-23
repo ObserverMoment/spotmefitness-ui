@@ -14,7 +14,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreator extends StatefulWidget {
-  /// For use when duplicating a workout.
+  /// For use when editing or duplicating a workout.
   final Workout? workout;
   WorkoutCreator({this.workout});
 
@@ -44,7 +44,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
     setState(() => _activeTabIndex = index);
   }
 
-  Future<void> _saveAndClose(BuildContext context) async {
+  Future<void> _saveAndClose() async {
     await context.read<WorkoutCreatorBloc>().saveAllChanges(context);
     context.pop();
   }
@@ -79,7 +79,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                 return CupertinoPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
-                    handleSave: () => _saveAndClose(context),
+                    handleSave: _saveAndClose,
                     saveText: 'Done',
 
                     /// You always need to run the bloc.saveAllUpdates fn when creating.

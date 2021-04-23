@@ -23,11 +23,13 @@ class WorkoutMoveCreator extends StatefulWidget {
   final int setIndex;
   final int workoutMoveIndex;
   final WorkoutMove? workoutMove;
+  final bool ignoreReps;
   WorkoutMoveCreator(
       {required this.sectionIndex,
       required this.setIndex,
       required this.workoutMoveIndex,
       this.pageTitle,
+      this.ignoreReps = false,
       this.workoutMove});
 
   @override
@@ -246,28 +248,33 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     alignment: WrapAlignment.spaceEvenly,
                                     runAlignment: WrapAlignment.spaceEvenly,
                                     children: [
-                                      RepPickerDisplay(
-                                        reps: _activeWorkoutMove!.reps,
-                                        validRepTypes: _activeWorkoutMove!
-                                            .move.validRepTypes,
-                                        repType: _activeWorkoutMove!.repType,
-                                        updateReps: (reps) =>
-                                            _updateWorkoutMove({'reps': reps}),
-                                        updateRepType: (repType) =>
-                                            _updateWorkoutMove(
-                                                {'repType': repType.apiValue}),
-                                        distanceUnit:
-                                            _activeWorkoutMove!.distanceUnit,
-                                        updateDistanceUnit: (distanceUnit) =>
-                                            _updateWorkoutMove({
-                                          'distanceUnit': distanceUnit.apiValue
-                                        }),
-                                        timeUnit: _activeWorkoutMove!.timeUnit,
-                                        updateTimeUnit: (timeUnit) =>
-                                            _updateWorkoutMove({
-                                          'timeUnit': timeUnit.apiValue
-                                        }),
-                                      ),
+                                      if (!widget.ignoreReps)
+                                        RepPickerDisplay(
+                                          reps: _activeWorkoutMove!.reps,
+                                          validRepTypes: _activeWorkoutMove!
+                                              .move.validRepTypes,
+                                          repType: _activeWorkoutMove!.repType,
+                                          updateReps: (reps) =>
+                                              _updateWorkoutMove(
+                                                  {'reps': reps}),
+                                          updateRepType: (repType) =>
+                                              _updateWorkoutMove({
+                                            'repType': repType.apiValue
+                                          }),
+                                          distanceUnit:
+                                              _activeWorkoutMove!.distanceUnit,
+                                          updateDistanceUnit: (distanceUnit) =>
+                                              _updateWorkoutMove({
+                                            'distanceUnit':
+                                                distanceUnit.apiValue
+                                          }),
+                                          timeUnit:
+                                              _activeWorkoutMove!.timeUnit,
+                                          updateTimeUnit: (timeUnit) =>
+                                              _updateWorkoutMove({
+                                            'timeUnit': timeUnit.apiValue
+                                          }),
+                                        ),
                                       if (_showLoadPicker())
                                         FadeIn(
                                           child: LoadPickerDisplay(

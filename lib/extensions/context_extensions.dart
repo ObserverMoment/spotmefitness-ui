@@ -141,8 +141,8 @@ extension BuildContextExtension on BuildContext {
                       'Confirm',
                     ),
                     onPressed: () {
-                      onConfirm();
                       context.pop();
+                      onConfirm();
                     },
                   ),
                   CupertinoDialogAction(

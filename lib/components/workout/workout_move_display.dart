@@ -10,8 +10,10 @@ import 'package:spotmefitness_ui/services/utils.dart';
 
 class WorkoutMoveDisplay extends StatelessWidget {
   final WorkoutMove workoutMove;
+  final bool showReps;
   final bool isLast;
-  WorkoutMoveDisplay(this.workoutMove, {this.isLast = false});
+  WorkoutMoveDisplay(this.workoutMove,
+      {this.isLast = false, this.showReps = true});
 
   Widget _buildRepDisplay() {
     return Column(
@@ -92,7 +94,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
           Row(
             children: [
               if (Utils.hasLoad(workoutMove.loadAmount)) _buildLoadDisplay(),
-              if (Utils.hasLoad(workoutMove.loadAmount))
+              if (Utils.hasLoad(workoutMove.loadAmount) && showReps)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: MyText([
@@ -102,7 +104,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
                       ? 'for'
                       : 'x'),
                 ),
-              _buildRepDisplay(),
+              if (showReps) _buildRepDisplay(),
             ],
           )
         ],

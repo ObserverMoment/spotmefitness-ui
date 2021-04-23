@@ -111,6 +111,7 @@ fragment WorkoutSet on WorkoutSet {
   id
   sortPosition
   rounds
+  duration
 }
 
 fragment WorkoutMove on WorkoutMove {

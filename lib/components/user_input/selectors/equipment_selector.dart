@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class EquipmentTile extends StatelessWidget {
   final Equipment equipment;
@@ -98,8 +99,8 @@ class EquipmentMultiSelector extends StatelessWidget {
           itemCount: equipments.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: crossAxisCount,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4),
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5),
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () => handleSelection(equipments[index]),
@@ -111,6 +112,75 @@ class EquipmentMultiSelector extends StatelessWidget {
                   isSelected: selectedEquipments.contains(equipments[index])),
             );
           }),
+    );
+  }
+}
+
+class FullScreenEquipmentSelector extends StatefulWidget {
+  final List<Equipment> selectedEquipments;
+  final List<Equipment> allEquipments;
+  final Function(List<Equipment>) handleSelection;
+  final int crossAxisCount;
+  final bool tilesBorder;
+  final FONTSIZE fontSize;
+  FullScreenEquipmentSelector({
+    required this.selectedEquipments,
+    required this.allEquipments,
+    required this.handleSelection,
+    this.crossAxisCount = 4,
+    this.fontSize = FONTSIZE.SMALL,
+    this.tilesBorder = true,
+  });
+
+  @override
+  _FullScreenEquipmentSelectorState createState() =>
+      _FullScreenEquipmentSelectorState();
+}
+
+class _FullScreenEquipmentSelectorState
+    extends State<FullScreenEquipmentSelector> {
+  late List<Equipment> _activeSelectedEquipments;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeSelectedEquipments = [...widget.selectedEquipments];
+  }
+
+  void _handleSelection(Equipment e) {
+    setState(() =>
+        _activeSelectedEquipments = _activeSelectedEquipments.toggleItem(e));
+    widget.handleSelection(_activeSelectedEquipments);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar:
+          CupertinoNavigationBar(middle: NavBarTitle('Select Equipment')),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: GridView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: widget.allEquipments.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: widget.crossAxisCount,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8),
+            itemBuilder: (context, index) {
+              final Equipment e = widget.allEquipments[index];
+              return GestureDetector(
+                onTap: () => _handleSelection(e),
+                child: EquipmentTile(
+                    showIcon: true,
+                    equipment: e,
+                    withBorder: widget.tilesBorder,
+                    fontSize: widget.fontSize,
+                    isSelected: _activeSelectedEquipments.contains(e)),
+              );
+            }),
+      ),
     );
   }
 }

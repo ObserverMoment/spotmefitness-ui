@@ -844,16 +844,19 @@ type WorkoutSet {
   id: ID!
   sortPosition: Int!
   rounds: Int!
+  duration: Int
   WorkoutMoves: [WorkoutMove!]!
 }
 input CreateWorkoutSetInput {
   sortPosition: Int!
   rounds: Int
+  duration: Int
   WorkoutSection: ConnectRelationInput!
 }
 input UpdateWorkoutSetInput {
   id: ID!
   rounds: Int
+  duration: Int
 }
 type WorkoutSetIntervalBuyIn {
   id: ID!

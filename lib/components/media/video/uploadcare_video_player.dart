@@ -1,5 +1,7 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:fullscreen/fullscreen.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/video/video_controls_overlay.dart';
@@ -65,14 +67,14 @@ class VideoSetupManager {
     Duration? startPosition,
   }) async {
     final _aspect = aspectRatio ?? await getAspectRatio(videoUri);
-    print(_aspect);
-    final positionOnExit = await Navigator.push(
+
+    final positionOnExit = await Navigator.push<Duration?>(
         context,
         CupertinoPageRoute(
             fullscreenDialog: _aspect < 1,
-            builder: (context) => SizedBox.expand(
-                  child: Container(
-                    color: Styles.black,
+            builder: (context) => Container(
+                  color: Styles.black,
+                  child: SizedBox.expand(
                     child: RotatedBox(
                       quarterTurns: _aspect < 1 ? 0 : 1,
                       child: FullScreenUploadcareVideoPlayer(
@@ -83,7 +85,7 @@ class VideoSetupManager {
                     ),
                   ),
                 )));
-    return positionOnExit;
+    return positionOnExit ?? Duration.zero;
   }
 }
 
@@ -113,6 +115,7 @@ class _FullScreenUploadcareVideoPlayerState
   @override
   void initState() {
     super.initState();
+
     _initializeVideo().then((_) {
       setState(() {});
     });
@@ -136,8 +139,11 @@ class _FullScreenUploadcareVideoPlayerState
               controller: controller,
               isFullScreen: true,
               showEnterExitFullScreen: true,
-              enterExitFullScreen: () => context.pop(
-                  result: controller.videoPlayerController!.position),
+              enterExitFullScreen: () async {
+                final position =
+                    await controller.videoPlayerController!.position;
+                _exitFullScreenPlayer(position);
+              },
               duration: Duration(milliseconds: _videoData!.info.duration),
             );
           });
@@ -159,6 +165,10 @@ class _FullScreenUploadcareVideoPlayerState
         _errorMessage = e.toString();
       });
     }
+  }
+
+  void _exitFullScreenPlayer(Duration? position) {
+    context.pop(result: position);
   }
 
   @override
@@ -186,6 +196,7 @@ class _FullScreenUploadcareVideoPlayerState
 
 /// For displaying video within the flow of content. Not full screen.
 class InlineUploadcareVideoPlayer extends StatefulWidget {
+  final Key? key;
   final String videoUri;
   final bool autoPlay;
   final bool autoLoop;
@@ -194,7 +205,8 @@ class InlineUploadcareVideoPlayer extends StatefulWidget {
   /// Seek to this point immediately.
   final Duration? startPosition;
   InlineUploadcareVideoPlayer(
-      {required this.videoUri,
+      {this.key,
+      required this.videoUri,
       this.autoLoop = false,
       this.autoPlay = false,
       this.startPosition,
@@ -241,15 +253,17 @@ class _InlineUploadcareVideoPlayerState
                     isFullScreen: widget.isFullScreen,
                     showEnterExitFullScreen: showFullControls,
                     enterExitFullScreen: widget.isFullScreen
-                        ? () => context.pop(
-                            result:
-                                _controller!.videoPlayerController!.position)
-                        : _handleEnterFullScreen,
+                        ? () async {
+                            final position = await _controller!
+                                .videoPlayerController!.position;
+                            _exitFullScreenPlayer(position);
+                          }
+                        : _enterFullScreen,
                     duration: Duration(milliseconds: _videoData!.info.duration),
                   )
                 : MinimalVideoControls(
                     controller: controller,
-                    enterFullScreen: _handleEnterFullScreen,
+                    enterFullScreen: _enterFullScreen,
                   );
           });
 
@@ -272,14 +286,9 @@ class _InlineUploadcareVideoPlayerState
     }
   }
 
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  Future<void> _handleEnterFullScreen() async {
+  Future<void> _enterFullScreen() async {
     final startPosition = await _controller!.videoPlayerController!.position;
+
     final positionWhenClosed =
         await VideoSetupManager.openFullScreenVideoPlayer(
             context: context,
@@ -287,6 +296,16 @@ class _InlineUploadcareVideoPlayerState
             aspectRatio: _videoData!.aspectRatio,
             startPosition: startPosition);
     _controller!.seekTo(positionWhenClosed);
+  }
+
+  void _exitFullScreenPlayer(Duration? position) {
+    context.pop(result: position);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -299,8 +318,11 @@ class _InlineUploadcareVideoPlayerState
             ),
           )
         : _initialized
-            ? BetterPlayer(
-                controller: _controller!,
+            ? AspectRatio(
+                aspectRatio: _videoData!.aspectRatio,
+                child: BetterPlayer(
+                  controller: _controller!,
+                ),
               )
             : LoadingCircle();
   }

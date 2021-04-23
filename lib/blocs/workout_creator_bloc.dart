@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
@@ -304,13 +303,19 @@ class WorkoutCreatorBloc extends ChangeNotifier {
         ..workoutSets = [];
 
   ////// WorkoutSet CRUD //////
-  void createWorkoutSet(int sectionIndex) async {
+  /// Either empty default or from a pre made set passed as arg.
+  void createWorkoutSet(int sectionIndex,
+      {Map<String, dynamic> defaults = const {}}) async {
     _backupAndMarkDirty();
 
     /// Client / Optimistic.
     final oldSection = workout.workoutSections[sectionIndex];
     final oldWorkoutSetsCopy = [...oldSection.workoutSets];
-    final newWorkoutSet = _genDefaultWorkoutSet(oldWorkoutSetsCopy.length);
+    final newWorkoutSet = WorkoutSet.fromJson({
+      ..._genDefaultWorkoutSet(oldWorkoutSetsCopy.length).toJson(),
+      ...defaults,
+    });
+
     workout.workoutSections[sectionIndex].workoutSets = [
       ...oldWorkoutSetsCopy,
       newWorkoutSet
@@ -319,9 +324,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     /// Api
     final variables = CreateWorkoutSetArguments(
-        data: CreateWorkoutSetInput(
-            sortPosition: newWorkoutSet.sortPosition,
-            workoutSection: ConnectRelationInput(id: oldSection.id)));
+        data: CreateWorkoutSetInput.fromJson({
+      ...newWorkoutSet.toJson(),
+      'WorkoutSection': ConnectRelationInput(id: oldSection.id).toJson()
+    }));
 
     final result = await context.graphQLClient.mutate(MutationOptions(
         document: CreateWorkoutSetMutation(variables: variables).document,

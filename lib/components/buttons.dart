@@ -242,6 +242,7 @@ class TextButton extends StatelessWidget {
   final bool loading;
   final EdgeInsets? padding;
   final bool? underline;
+  final FONTSIZE fontSize;
 
   TextButton(
       {required this.text,
@@ -250,6 +251,7 @@ class TextButton extends StatelessWidget {
       this.confirm = false,
       this.loading = false,
       this.padding,
+      this.fontSize = FONTSIZE.MAIN,
       this.underline = true})
       : assert(!(confirm && destructive));
 
@@ -263,6 +265,7 @@ class TextButton extends StatelessWidget {
         child: loading
             ? LoadingDots()
             : MyText(text,
+                size: fontSize,
                 weight: FontWeight.bold,
                 decoration: underline! ? TextDecoration.underline : null,
                 color: confirm

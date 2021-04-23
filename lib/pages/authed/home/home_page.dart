@@ -100,17 +100,9 @@ class HomePage extends StatelessWidget {
                               ]),
                         ),
                       ),
-                    ],
-                  ),
-                  GridView(
-                    shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
                       HomeScreenCard(
                         content: H2(
-                          'Nutrition',
+                          'Groups',
                           color: Styles.white,
                         ),
                         gradient: LinearGradient(
@@ -123,7 +115,7 @@ class HomePage extends StatelessWidget {
                       ),
                       HomeScreenCard(
                         content: H2(
-                          'The Mind',
+                          'Moves',
                           color: Styles.white,
                         ),
                         gradient: LinearGradient(
@@ -134,8 +126,34 @@ class HomePage extends StatelessWidget {
                               const Color(0xFF414345),
                             ]),
                       ),
+                      HomeScreenCard(
+                        content: H2(
+                          'Nutrition',
+                          color: Styles.white,
+                        ),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              const Color(0xFF4CA1AF),
+                              const Color(0xFF2C3E50),
+                            ]),
+                      ),
+                      HomeScreenCard(
+                        content: H2(
+                          'Mind',
+                          color: Styles.white,
+                        ),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              const Color(0xFF004e92),
+                              const Color(0xFF000428),
+                            ]),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

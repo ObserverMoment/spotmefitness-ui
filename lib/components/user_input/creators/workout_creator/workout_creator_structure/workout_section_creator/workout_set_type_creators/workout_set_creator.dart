@@ -218,33 +218,28 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                       )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (widget.allowReorder)
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: _moveWorkoutSetUpOne,
-                          child: Icon(CupertinoIcons.up_arrow)),
-                    if (widget.allowReorder)
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: _moveWorkoutSetDownOne,
-                          child: Icon(CupertinoIcons.down_arrow)),
-                    NavBarEllipsisMenu(ellipsisCircled: false, items: [
-                      ContextMenuItem(
-                          text: 'Duplicate',
-                          iconData: CupertinoIcons.doc_on_doc,
-                          onTap: _duplicateWorkoutSet),
-                      ContextMenuItem(
-                        text: 'Delete',
-                        iconData: CupertinoIcons.delete_simple,
-                        onTap: _deleteWorkoutSet,
-                        destructive: true,
-                      ),
-                    ])
-                  ],
-                )
+                NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                  if (widget.allowReorder)
+                    ContextMenuItem(
+                        text: 'Move Up',
+                        iconData: CupertinoIcons.up_arrow,
+                        onTap: _moveWorkoutSetUpOne),
+                  if (widget.allowReorder)
+                    ContextMenuItem(
+                        text: 'Move Down',
+                        iconData: CupertinoIcons.down_arrow,
+                        onTap: _moveWorkoutSetDownOne),
+                  ContextMenuItem(
+                      text: 'Duplicate',
+                      iconData: CupertinoIcons.doc_on_doc,
+                      onTap: _duplicateWorkoutSet),
+                  ContextMenuItem(
+                    text: 'Delete',
+                    iconData: CupertinoIcons.delete_simple,
+                    onTap: _deleteWorkoutSet,
+                    destructive: true,
+                  ),
+                ])
               ],
             ),
           ),

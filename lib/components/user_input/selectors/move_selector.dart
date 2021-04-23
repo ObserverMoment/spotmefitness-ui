@@ -6,12 +6,14 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// The user is required to select a move before moving on to the workoutMove creator.
 /// Unlike some other selectors this runs callback immediately on press.
@@ -25,6 +27,7 @@ class MoveSelector extends StatefulWidget {
 }
 
 class _MoveSelectorState extends State<MoveSelector> {
+  /// 0 is standard moves, 1 is custom moves.
   int _activeTabIndex = 0;
   String _textFilter = '';
   List<MoveType> _selectedMoveTypes = [];
@@ -83,9 +86,30 @@ class _MoveSelectorState extends State<MoveSelector> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: CupertinoSearchTextField(
-                          onChanged: (value) =>
-                              setState(() => _textFilter = value.toLowerCase()),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 3.0),
+                                child: CupertinoSearchTextField(
+                                  onChanged: (value) => setState(
+                                      () => _textFilter = value.toLowerCase()),
+                                ),
+                              ),
+                            ),
+                            // If showing custom moves.
+                            if (_activeTabIndex == 1)
+                              FadeIn(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0, right: 6),
+                                  child: CreateTextIconButton(
+                                      onPressed: () => context.push(
+                                          child: CustomMoveCreator())),
+                                ),
+                              )
+                          ],
                         ),
                       ),
                       Container(
@@ -129,14 +153,13 @@ class _MoveSelectorState extends State<MoveSelector> {
                           child: FadeIn(
                             child: ListView(
                               shrinkWrap: true,
-                              children: displayMoves
-                                  .where((m) => m.name
-                                      .toLowerCase()
-                                      .contains(_textFilter))
+                              children: typeFilterMoves
                                   .sortedBy<String>((move) => move.name)
                                   .map((move) => GestureDetector(
                                         onTap: () => widget.selectMove(move),
-                                        child: MoveSelectorItem(move),
+                                        child: _activeTabIndex == 0
+                                            ? MoveSelectorItem(move)
+                                            : CustomMoveSelectorItem(move),
                                       ))
                                   .toList(),
                             ),
@@ -171,6 +194,38 @@ class MoveSelectorItem extends StatelessWidget {
             ],
           ),
           InfoPopupButton(withoutNavBar: true, infoWidget: MoveDetails(move))
+        ],
+      ),
+    );
+  }
+}
+
+class CustomMoveSelectorItem extends StatelessWidget {
+  final Move move;
+  CustomMoveSelectorItem(this.move);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 50,
+      decoration:
+          BoxDecoration(border: Border(bottom: BorderSide(color: Styles.grey))),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              MyText(move.name),
+              SizedBox(width: 8),
+              MoveTypeTag(move.moveType)
+            ],
+          ),
+          TextButton(
+              padding: EdgeInsets.zero,
+              fontSize: FONTSIZE.SMALL,
+              text: 'View / Edit',
+              onPressed: () =>
+                  context.push(child: CustomMoveCreator(move: move)))
         ],
       ),
     );

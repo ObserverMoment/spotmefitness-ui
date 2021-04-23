@@ -26,24 +26,25 @@ class ContentBox extends StatelessWidget {
 class RoundedBox extends StatelessWidget {
   final Widget child;
   final bool border;
+  final Color? color;
   final EdgeInsets margin;
+  final EdgeInsets padding;
   RoundedBox(
       {required this.child,
       this.border = false,
+      this.color,
+      this.padding = const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       this.margin = const EdgeInsets.all(0)});
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: margin,
+      padding: padding,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
+          color: color,
           borderRadius: BorderRadius.circular(20),
-          border: border
-              ? Border.all(
-                  color: CupertinoTheme.brightnessOf(context) == Brightness.dark
-                      ? CupertinoColors.white
-                      : CupertinoColors.black)
-              : null),
+          border: border ? Border.all(color: context.theme.primary) : null),
       child: child,
     );
   }
@@ -52,20 +53,23 @@ class RoundedBox extends StatelessWidget {
 /// Box with rounded corners. No elevation.
 class CircularBox extends StatelessWidget {
   final Widget child;
+  final Color? color;
   final bool border;
-  CircularBox({required this.child, this.border = false});
+  final EdgeInsets? padding;
+  CircularBox(
+      {required this.child,
+      this.padding = const EdgeInsets.all(6),
+      this.color,
+      this.border = false});
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: padding,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
+          color: color,
           shape: BoxShape.circle,
-          border: border
-              ? Border.all(
-                  color: CupertinoTheme.brightnessOf(context) == Brightness.dark
-                      ? CupertinoColors.white
-                      : CupertinoColors.black)
-              : null),
+          border: border ? Border.all(color: context.theme.primary) : null),
       child: child,
     );
   }

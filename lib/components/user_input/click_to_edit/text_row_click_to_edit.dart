@@ -58,6 +58,7 @@ class EditableTextFieldRow extends StatelessWidget {
               children: [
                 MyText(
                   title,
+                  weight: FontWeight.bold,
                 ),
                 if (isRequired == true) RequiredSuperText()
               ],
@@ -132,6 +133,7 @@ class EditableTextAreaRow extends StatelessWidget {
                 children: [
                   MyText(
                     title,
+                    weight: FontWeight.bold,
                   ),
                   if (isRequired == true) RequiredSuperText()
                 ],
