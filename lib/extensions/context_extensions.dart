@@ -166,7 +166,7 @@ extension BuildContextExtension on BuildContext {
         expand: expand,
         context: context,
         backgroundColor: context.readTheme.modalBackground,
-        barrierColor: Styles.black.withOpacity(0.8),
+        barrierColor: Styles.black.withOpacity(0.9),
         builder: (context) => showDragHandle
             ? Column(
                 children: [

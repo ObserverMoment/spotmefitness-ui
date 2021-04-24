@@ -6,8 +6,10 @@ import 'package:spotmefitness_ui/pages/authed/discover/plans.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/you.dart';
 import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_clubs.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_moves.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
@@ -30,6 +32,8 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
             AutoRoute(path: 'your-workouts', page: YourWorkoutsPage),
             AutoRoute(path: 'your-plans', page: YourPlansPage),
             AutoRoute(path: 'your-events', page: YourEventsPage),
+            AutoRoute(path: 'your-clubs', page: YourClubsPage),
+            AutoRoute(path: 'your-moves', page: YourMovesPage),
             RedirectRoute(path: '*', redirectTo: '')
           ]),
       AutoRoute(

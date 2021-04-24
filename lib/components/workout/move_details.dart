@@ -110,20 +110,8 @@ class MoveDetails extends StatelessWidget {
             document: BodyAreasQuery().document,
             fetchPolicy: FetchPolicy.cacheFirst),
         builder: (result, {refetch, fetchMore}) {
-          final List<BodyArea> bodyAreas =
+          final List<BodyArea> allBodyAreas =
               BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
-
-          List<BodyArea> frontBodyAreas = bodyAreas
-              .where((ba) =>
-                  ba.frontBack == BodyAreaFrontBack.front ||
-                  ba.frontBack == BodyAreaFrontBack.both)
-              .toList();
-
-          List<BodyArea> backBodyAreas = bodyAreas
-              .where((ba) =>
-                  ba.frontBack == BodyAreaFrontBack.back ||
-                  ba.frontBack == BodyAreaFrontBack.both)
-              .toList();
 
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
@@ -169,17 +157,15 @@ class MoveDetails extends StatelessWidget {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     TargetedBodyAreasGraphic(
-                                        activeColor: context.theme.primary,
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
-                                        front: true,
-                                        allBodyAreas: frontBodyAreas),
+                                        frontBack: BodyAreaFrontBack.front,
+                                        allBodyAreas: allBodyAreas),
                                     TargetedBodyAreasGraphic(
-                                        activeColor: context.theme.primary,
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
-                                        front: false,
-                                        allBodyAreas: backBodyAreas)
+                                        frontBack: BodyAreaFrontBack.back,
+                                        allBodyAreas: allBodyAreas)
                                   ],
                                 )
                               : MyText('Body areas not specified'),

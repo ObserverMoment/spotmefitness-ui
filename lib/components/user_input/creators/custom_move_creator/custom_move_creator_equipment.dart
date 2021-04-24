@@ -109,7 +109,7 @@ class SelectedEquipmentsDisplay extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: SecondaryButton(
-              text: 'Edit',
+              text: selectedEquipments.isEmpty ? 'Add' : 'Edit',
               onPressed: () => context.push(
                   fullscreenDialog: true,
                   child: FullScreenEquipmentSelector(

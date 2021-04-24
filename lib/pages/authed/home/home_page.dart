@@ -29,10 +29,10 @@ class HomePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: H2('News and articles - coming soon'),
                   ),
-                  GridView(
+                  GridView.count(
+                    crossAxisCount: 2,
                     shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2),
+                    childAspectRatio: 1.5,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
@@ -100,31 +100,37 @@ class HomePage extends StatelessWidget {
                               ]),
                         ),
                       ),
-                      HomeScreenCard(
-                        content: H2(
-                          'Groups',
-                          color: Styles.white,
+                      GestureDetector(
+                        onTap: () => context.router.push(YourClubsRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Clubs',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFFF09819),
+                                const Color(0xFFEDDE5D),
+                              ]),
                         ),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              const Color(0xFFF09819),
-                              const Color(0xFFEDDE5D),
-                            ]),
                       ),
-                      HomeScreenCard(
-                        content: H2(
-                          'Moves',
-                          color: Styles.white,
+                      GestureDetector(
+                        onTap: () => context.router.push(YourMovesRoute()),
+                        child: HomeScreenCard(
+                          content: H2(
+                            'Moves',
+                            color: Styles.white,
+                          ),
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF232526),
+                                const Color(0xFF414345),
+                              ]),
                         ),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              const Color(0xFF232526),
-                              const Color(0xFF414345),
-                            ]),
                       ),
                       HomeScreenCard(
                         content: H2(
@@ -175,7 +181,7 @@ class HomeScreenCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
-          gradient: gradient, borderRadius: BorderRadius.circular(16)),
+          gradient: gradient, borderRadius: BorderRadius.circular(10)),
       child: Center(child: content),
     );
   }

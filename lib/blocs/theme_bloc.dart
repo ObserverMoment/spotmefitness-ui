@@ -39,7 +39,7 @@ class ThemeBloc extends ChangeNotifier {
   Color get activeIcon => theme.customThemeData.activeIcon;
   Color get cardBackground => theme.customThemeData.cardBackground;
   Color get modalBackground =>
-      theme.customThemeData.cardBackground.withOpacity(0.8);
+      theme.customThemeData.cardBackground.withOpacity(0.85);
 
   Future<void> switchToTheme(ThemeName switchToTheme) async {
     if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {

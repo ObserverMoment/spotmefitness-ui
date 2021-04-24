@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -156,8 +157,7 @@ class _FullScreenEquipmentSelectorState
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar:
-          CupertinoNavigationBar(middle: NavBarTitle('Select Equipment')),
+      navigationBar: BasicNavBar(middle: NavBarTitle('Select Equipment')),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: GridView.builder(

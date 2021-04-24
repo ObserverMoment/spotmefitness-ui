@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -56,7 +57,7 @@ class FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
+        navigationBar: BasicNavBar(
           middle: title != null ? NavBarTitle(title!) : null,
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,

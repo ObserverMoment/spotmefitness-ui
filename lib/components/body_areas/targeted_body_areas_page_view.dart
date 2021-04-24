@@ -123,7 +123,7 @@ class TargetedBodyAreasPageView extends StatelessWidget {
                                         .toList()),
                               ),
                               TargetedBodyAreasGraphic(
-                                front: true,
+                                frontBack: BodyAreaFrontBack.front,
                                 allBodyAreas: frontBodyAreas,
                                 activeColor: activeColor,
                                 bodyAreaMoveScores:
@@ -174,7 +174,7 @@ class TargetedBodyAreasPageView extends StatelessWidget {
                                         .toList()),
                               ),
                               TargetedBodyAreasGraphic(
-                                front: false,
+                                frontBack: BodyAreaFrontBack.back,
                                 allBodyAreas: backBodyAreas,
                                 activeColor: activeColor,
                                 bodyAreaMoveScores:

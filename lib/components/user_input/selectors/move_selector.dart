@@ -32,6 +32,30 @@ class _MoveSelectorState extends State<MoveSelector> {
   String _textFilter = '';
   List<MoveType> _selectedMoveTypes = [];
 
+  Future<void> _openCustomMoveCreator(Move? move) async {
+    Utils.unfocusAny();
+    final success =
+        await context.push<bool?>(child: CustomMoveCreator(move: move));
+    if (success != null && success) {
+      if (move != null) {
+        // Created
+        context.showToast(message: 'New move created!');
+      } else {
+        // Updated
+        context.showToast(message: 'Move updates saved!');
+      }
+    }
+  }
+
+  Widget _buildButton(Move move) {
+    return move.scope == MoveScope.custom
+        ? CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(CupertinoIcons.pencil_circle),
+            onPressed: () => _openCustomMoveCreator(move))
+        : InfoPopupButton(withoutNavBar: true, infoWidget: MoveDetails(move));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -105,18 +129,18 @@ class _MoveSelectorState extends State<MoveSelector> {
                                   padding: const EdgeInsets.only(
                                       left: 10.0, right: 6),
                                   child: CreateTextIconButton(
-                                      onPressed: () => context.push(
-                                          child: CustomMoveCreator())),
+                                      onPressed: () =>
+                                          _openCustomMoveCreator(null)),
                                 ),
                               )
                           ],
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.only(top: 6, left: 10),
-                        height: 52,
+                        padding: const EdgeInsets.only(top: 4, left: 8),
+                        height: 56,
                         child: ListView(
-                          padding: EdgeInsets.zero,
+                          padding: const EdgeInsets.only(bottom: 12),
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           children: moveTypes
@@ -156,11 +180,10 @@ class _MoveSelectorState extends State<MoveSelector> {
                               children: typeFilterMoves
                                   .sortedBy<String>((move) => move.name)
                                   .map((move) => GestureDetector(
-                                        onTap: () => widget.selectMove(move),
-                                        child: _activeTabIndex == 0
-                                            ? MoveSelectorItem(move)
-                                            : CustomMoveSelectorItem(move),
-                                      ))
+                                      onTap: () => widget.selectMove(move),
+                                      child: MoveSelectorItem(
+                                          move: move,
+                                          optionalButton: _buildButton(move))))
                                   .toList(),
                             ),
                           ),
@@ -175,34 +198,10 @@ class _MoveSelectorState extends State<MoveSelector> {
 
 class MoveSelectorItem extends StatelessWidget {
   final Move move;
-  MoveSelectorItem(this.move);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(color: Styles.grey))),
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              MyText(move.name),
-              SizedBox(width: 8),
-              MoveTypeTag(move.moveType)
-            ],
-          ),
-          InfoPopupButton(withoutNavBar: true, infoWidget: MoveDetails(move))
-        ],
-      ),
-    );
-  }
-}
 
-class CustomMoveSelectorItem extends StatelessWidget {
-  final Move move;
-  CustomMoveSelectorItem(this.move);
+  /// Optional icon style button on far right of column. Eg. Info / Edit.
+  final Widget? optionalButton;
+  MoveSelectorItem({required this.move, this.optionalButton});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -213,19 +212,21 @@ class CustomMoveSelectorItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              MyText(move.name),
-              SizedBox(width: 8),
-              MoveTypeTag(move.moveType)
-            ],
+          Expanded(
+            child: Row(
+              children: [
+                Flexible(
+                  child: MyText(
+                    move.name,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Flexible(
+                    child: MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY))
+              ],
+            ),
           ),
-          TextButton(
-              padding: EdgeInsets.zero,
-              fontSize: FONTSIZE.SMALL,
-              text: 'View / Edit',
-              onPressed: () =>
-                  context.push(child: CustomMoveCreator(move: move)))
+          if (optionalButton != null) optionalButton!
         ],
       ),
     );

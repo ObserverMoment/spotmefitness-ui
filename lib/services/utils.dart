@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 abstract class Utils {
+  static void unfocusAny() => FocusManager.instance.primaryFocus?.unfocus();
   // https://stackoverflow.com/questions/47776045/is-there-a-good-way-to-write-wait-for-variables-to-change-in-darts-async-meth
   // Completes the future when async test() return true
   // Or bails out after maxAttempts with an error.

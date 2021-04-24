@@ -44,7 +44,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
     setState(() => _activeTabIndex = index);
   }
 
-  Future<void> _saveAndClose() async {
+  Future<void> _saveAndClose(BuildContext context) async {
     await context.read<WorkoutCreatorBloc>().saveAllChanges(context);
     context.pop();
   }
@@ -59,7 +59,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
   Widget build(BuildContext context) {
     return FutureBuilderHandler<Workout>(
         loadingWidget: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
+          navigationBar: BasicNavBar(
             automaticallyImplyLeading: false,
             middle: NavBarTitle('Getting ready...'),
           ),
@@ -79,7 +79,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                 return CupertinoPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
-                    handleSave: _saveAndClose,
+                    handleSave: () => _saveAndClose(context),
                     saveText: 'Done',
 
                     /// You always need to run the bloc.saveAllUpdates fn when creating.

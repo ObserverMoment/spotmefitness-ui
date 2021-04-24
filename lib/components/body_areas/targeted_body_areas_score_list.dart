@@ -35,11 +35,11 @@ class TargetedBodyAreasScoreList extends StatelessWidget {
                   children: [
                     MyText(
                       bam.bodyArea.name,
-                      size: FONTSIZE.SMALL,
                     ),
                     if (showNumericalScore)
                       MyText(
                         '${bam.score.round()}%',
+                        size: FONTSIZE.SMALL,
                         weight: FontWeight.bold,
                       ),
                   ],

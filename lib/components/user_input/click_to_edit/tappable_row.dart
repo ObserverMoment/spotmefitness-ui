@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Spans the width with title on left + currently selected value on right.
 class TappableRow extends StatelessWidget {
@@ -24,7 +24,7 @@ class TappableRow extends StatelessWidget {
                 display ??
                     MyText(
                       'Select...',
-                      color: Styles.grey,
+                      color: context.theme.primary.withOpacity(0.5),
                     ),
                 SizedBox(
                   width: 8,

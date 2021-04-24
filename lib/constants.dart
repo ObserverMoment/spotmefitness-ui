@@ -14,3 +14,8 @@ WorkoutSectionType kGenDefaultWorkoutSectionType() {
 /// WorkoutSectionTypeNames
 const kFreeSession = 'Free Session';
 const kHIITCircuit = 'HIIT Circuit';
+
+/// BodyArea selector SVG viewbox sizes.
+/// Required to correctly render custom path clips on top of graphical SVG elements.
+const double kBodyAreaSelector_svg_width = 93.6;
+const double kBodyAreaSelector_svg_height = 213.43;

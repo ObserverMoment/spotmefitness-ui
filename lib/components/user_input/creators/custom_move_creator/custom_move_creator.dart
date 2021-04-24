@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_body.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_equipment.dart';
@@ -13,6 +16,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// Updates everything to DB when user saves and closes.
 class CustomMoveCreator extends StatefulWidget {
   /// For use when editing.
   final Move? move;
@@ -34,7 +38,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
         widget.move != null ? Move.fromJson(widget.move!.toJson()) : null;
   }
 
-  void _updateMoveType(MoveType moveType) {
+  Future<void> _updateMoveType(MoveType moveType) async {
     if (_activeMove == null) {
       final newMove = Move()
         ..$$typename = 'Move'
@@ -48,27 +52,19 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
         ..bodyAreaMoveScores = []
         ..requiredEquipments = []
         ..selectableEquipments = [];
-      setState(() => _activeMove = newMove);
 
-      /// TODO: Also create the move in the DB.
-      /// Get back the proper id and then overwrite.
+      setState(() => _activeMove = newMove);
     } else {
       setState(() => _activeMove!.moveType = moveType);
-
-      /// TODO: Update via API.
     }
   }
 
+  /// Client only. Updates are sent to the DB when user saves and closes.
   void _updateMove(Map<String, dynamic> data) {
     _formIsDirty = true;
-
-    /// Client.
     setState(() {
       _activeMove = Move.fromJson({..._activeMove!.toJson(), ...data});
     });
-
-    /// Api.
-    /// TODO!!.
   }
 
   void _changeTab(int index) {
@@ -80,8 +76,37 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   }
 
   Future<void> _saveAndClose() async {
-    print('send updates to the api and update local cache on response');
-    context.pop();
+    if (widget.move != null) {
+      // Update
+      final variables = UpdateMoveArguments(
+          data: UpdateMoveInput.fromJson(_activeMove!.toJson()));
+
+      final result = await context.graphQLClient.mutate(MutationOptions(
+          document: UpdateMoveMutation(variables: variables).document,
+          variables: variables.toJson()));
+
+      if (result.data == null || result.hasException) {
+        context.showToast(
+            message: 'Sorry, it went wrong, changes not saved!', isError: true);
+      } else {
+        context.pop(result: true);
+      }
+    } else {
+      // Create
+      final variables = CreateMoveArguments(
+          data: CreateMoveInput.fromJson(_activeMove!.toJson()));
+
+      final result = await context.graphQLClient.mutate(MutationOptions(
+          document: CreateMoveMutation(variables: variables).document,
+          variables: variables.toJson()));
+
+      if (result.data == null || result.hasException) {
+        context.showToast(
+            message: 'Sorry, it went wrong, changes not saved!', isError: true);
+      } else {
+        context.pop(result: true);
+      }
+    }
   }
 
   @override
@@ -93,14 +118,12 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CreateEditPageNavBar(
-        handleClose: context.pop,
-        handleSave: _saveAndClose,
-        saveText: 'Done',
-        formIsDirty: _formIsDirty,
-        inputValid: _activeMove != null && _activeMove!.name.length >= 3,
-        title: widget.move == null ? 'New Move' : 'Edit Move',
-      ),
+      navigationBar: BasicNavBar(
+          leading: NavBarCancelButton(context.pop),
+          middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
+          trailing: NavBarSaveButton(
+            _saveAndClose,
+          )),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

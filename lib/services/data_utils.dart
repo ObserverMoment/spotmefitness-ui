@@ -13,12 +13,12 @@ class DataUtils {
           BodyAreaMoveScore()
             ..bodyArea = bodyArea
             ..score = 0, (BodyAreaMoveScore acum, next) {
-        acum.score += next.score;
+        acum.score += next.score as int;
         return acum;
       });
     });
     return summed.map((bams) {
-      bams.score = ((bams.score / totalPoints) * 100).toDouble();
+      bams.score = ((bams.score ~/ totalPoints) * 100);
       return bams;
     }).toList();
   }

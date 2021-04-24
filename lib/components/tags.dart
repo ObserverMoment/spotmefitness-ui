@@ -57,7 +57,8 @@ class DifficultyLevelTag extends StatelessWidget {
 
 class MoveTypeTag extends StatelessWidget {
   final MoveType moveType;
-  MoveTypeTag(this.moveType);
+  final FONTSIZE fontSize;
+  MoveTypeTag(this.moveType, {this.fontSize = FONTSIZE.SMALL});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,7 +69,7 @@ class MoveTypeTag extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       child: MyText(
         moveType.name,
-        size: FONTSIZE.SMALL,
+        size: fontSize,
         color: Styles.white,
       ),
     );
