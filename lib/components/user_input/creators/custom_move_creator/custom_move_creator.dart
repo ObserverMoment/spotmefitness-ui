@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/components/user_input/creators/custom_move_crea
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_meta.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/move_type_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -29,7 +30,6 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   int _activeTabIndex = 0;
   late Move? _activeMove;
   final PageController _pageController = PageController();
-  bool _formIsDirty = false;
 
   @override
   void initState() {
@@ -61,7 +61,6 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
 
   /// Client only. Updates are sent to the DB when user saves and closes.
   void _updateMove(Map<String, dynamic> data) {
-    _formIsDirty = true;
     setState(() {
       _activeMove = Move.fromJson({..._activeMove!.toJson(), ...data});
     });
@@ -77,13 +76,18 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
 
   Future<void> _saveAndClose() async {
     if (widget.move != null) {
-      // Update
+      // Update.
       final variables = UpdateMoveArguments(
           data: UpdateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await context.graphQLClient.mutate(MutationOptions(
+      final result = await GraphQL.updateObjectWithOptimisticFragment(
+          client: context.graphQLClient,
           document: UpdateMoveMutation(variables: variables).document,
-          variables: variables.toJson()));
+          operationName: UpdateMoveMutation(variables: variables).operationName,
+          variables: variables.toJson(),
+          objectId: _activeMove!.id,
+          objectType: 'Move',
+          fragment: '');
 
       if (result.data == null || result.hasException) {
         context.showToast(
@@ -92,13 +96,18 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
         context.pop(result: true);
       }
     } else {
-      // Create
+      // Create.
       final variables = CreateMoveArguments(
           data: CreateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await context.graphQLClient.mutate(MutationOptions(
-          document: CreateMoveMutation(variables: variables).document,
-          variables: variables.toJson()));
+      final result = await GraphQL.createWithQueryUpdate(
+          client: context.graphQLClient,
+          mutationDocument: CreateMoveMutation(variables: variables).document,
+          mutationOperationName:
+              CreateMoveMutation(variables: variables).operationName,
+          mutationVariables: variables.toJson(),
+          queryDocument: AllMovesQuery().document,
+          queryOperationName: AllMovesQuery().operationName);
 
       if (result.data == null || result.hasException) {
         context.showToast(

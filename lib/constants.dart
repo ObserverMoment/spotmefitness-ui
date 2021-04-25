@@ -19,3 +19,9 @@ const kHIITCircuit = 'HIIT Circuit';
 /// Required to correctly render custom path clips on top of graphical SVG elements.
 const double kBodyAreaSelector_svg_width = 93.6;
 const double kBodyAreaSelector_svg_height = 213.43;
+
+/// Hive
+const String kSettingsHiveBoxName = 'settings_box';
+const String kSettingsHiveBoxThemeKey = 'theme_name';
+const String kSettingsLightThemeKey = 'light';
+const String kSettingsDarkThemeKey = 'dark';

@@ -96,10 +96,11 @@ class GraphQL {
   }
 
   /// Wrapper around client.mutate().
+  /// If [optimisticData] is provided
   /// First writes a fragment to cache 'optimistically'.
   /// Then run network mutate
   /// Finally write to cache again with the result from the network.
-  /// For single object updates only - does not work with creates as it does not update the cache at the root query.
+  /// For single object updates.
   static Future<QueryResult> updateObjectWithOptimisticFragment(
       {required GraphQLClient client,
       required DocumentNode document,

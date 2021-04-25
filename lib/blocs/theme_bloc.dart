@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:spotmefitness_ui/constants.dart';
 
 enum ThemeName { dark, light }
 
 class ThemeBloc extends ChangeNotifier {
-  final String _hiveThemeKey = 'themeName';
+  final String _hiveThemeKey = kSettingsHiveBoxThemeKey;
 
   ThemeBloc({bool? isLanding = false}) {
     if (isLanding != null && isLanding) {
@@ -15,10 +16,10 @@ class ThemeBloc extends ChangeNotifier {
       _setToDark();
     } else {
       // Initialise them from Hive box.
-      final themeNameFromSettings =
-          Hive.box('settings').get(_hiveThemeKey, defaultValue: 'dark');
+      final themeNameFromSettings = Hive.box(kSettingsHiveBoxName)
+          .get(_hiveThemeKey, defaultValue: kSettingsDarkThemeKey);
 
-      if (themeNameFromSettings == 'dark') {
+      if (themeNameFromSettings == kSettingsDarkThemeKey) {
         _setToDark();
       } else {
         _setToLight();
@@ -44,11 +45,13 @@ class ThemeBloc extends ChangeNotifier {
   Future<void> switchToTheme(ThemeName switchToTheme) async {
     if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {
       _setToDark();
-      await Hive.box('settings').put(_hiveThemeKey, 'dark');
+      await Hive.box(kSettingsHiveBoxName)
+          .put(_hiveThemeKey, kSettingsDarkThemeKey);
     } else if (switchToTheme == ThemeName.light &&
         themeName != ThemeName.light) {
       _setToLight();
-      await Hive.box('settings').put(_hiveThemeKey, 'light');
+      await Hive.box(kSettingsHiveBoxName)
+          .put(_hiveThemeKey, kSettingsLightThemeKey);
     }
   }
 

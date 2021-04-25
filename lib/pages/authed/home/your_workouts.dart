@@ -78,13 +78,6 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SortByButton(
-                          onPressed: () => {},
-                        ),
-                        FilterButton(
-                          onPressed: () => {},
-                          activeFilters: 3,
-                        ),
                         Flexible(
                             child: Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -93,7 +86,14 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
                             onChanged: (searchString) =>
                                 setState(() => _searchString = searchString),
                           ),
-                        ))
+                        )),
+                        FilterButton(
+                          onPressed: () => {},
+                          activeFilters: 3,
+                        ),
+                        SortByButton(
+                          onPressed: () => {},
+                        ),
                       ],
                     ),
                   ),

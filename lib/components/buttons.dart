@@ -359,8 +359,8 @@ class MiniButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-            color: context.theme.primary,
-            borderRadius: BorderRadius.circular(4)),
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: context.theme.primary)),
         child: Row(
           children: [
             if (prefix != null) prefix!,
@@ -370,7 +370,6 @@ class MiniButton extends StatelessWidget {
                 text!,
                 weight: FontWeight.bold,
                 size: FONTSIZE.SMALL,
-                color: context.theme.background,
               )
           ],
         ),
@@ -392,7 +391,6 @@ class FilterButton extends StatelessWidget {
           onPressed: onPressed,
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,
-            color: context.theme.background,
             size: 26,
           ),
         ),
@@ -443,7 +441,6 @@ class SortByButton extends StatelessWidget {
       onPressed: () => {},
       prefix: Icon(
         Icons.sort_outlined,
-        color: context.theme.background,
         size: 26,
       ),
     );
