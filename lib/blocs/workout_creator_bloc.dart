@@ -304,7 +304,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
   ////// WorkoutSet CRUD //////
   /// Either empty default or from a pre made set passed as arg.
-  void createWorkoutSet(int sectionIndex,
+  Future<WorkoutSet?> createWorkoutSet(int sectionIndex,
       {Map<String, dynamic> defaults = const {}}) async {
     _backupAndMarkDirty();
 
@@ -336,13 +336,14 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      workout.workoutSections[sectionIndex].workoutSets.last =
-          WorkoutSet.fromJson({
+      final createdSet = WorkoutSet.fromJson({
         ...CreateWorkoutSet$Mutation.fromJson(result.data!)
             .createWorkoutSet
             .toJson(),
         'WorkoutMoves': []
       });
+      workout.workoutSections[sectionIndex].workoutSets.last = createdSet;
+      return createdSet;
     }
   }
 

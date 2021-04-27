@@ -115,6 +115,7 @@ Move _$MoveFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..name = json['name'] as String
+    ..searchTerms = json['searchTerms'] as String?
     ..description = json['description'] as String?
     ..demoVideoUri = json['demoVideoUri'] as String?
     ..demoVideoThumbUri = json['demoVideoThumbUri'] as String?
@@ -140,6 +141,7 @@ Map<String, dynamic> _$MoveToJson(Move instance) => <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
       'name': instance.name,
+      'searchTerms': instance.searchTerms,
       'description': instance.description,
       'demoVideoUri': instance.demoVideoUri,
       'demoVideoThumbUri': instance.demoVideoThumbUri,
@@ -685,6 +687,21 @@ Map<String, dynamic> _$DeleteMoveById$MutationToJson(
       'softDeleteMoveById': instance.softDeleteMoveById,
     };
 
+UserCustomMoves$Query _$UserCustomMoves$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserCustomMoves$Query()
+    ..userCustomMoves = (json['userCustomMoves'] as List<dynamic>)
+        .map((e) => Move.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserCustomMoves$QueryToJson(
+        UserCustomMoves$Query instance) =>
+    <String, dynamic>{
+      'userCustomMoves':
+          instance.userCustomMoves.map((e) => e.toJson()).toList(),
+    };
+
 DeleteGymProfileById$Mutation _$DeleteGymProfileById$MutationFromJson(
     Map<String, dynamic> json) {
   return DeleteGymProfileById$Mutation()
@@ -1020,23 +1037,6 @@ MoveTypes$Query _$MoveTypes$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$MoveTypes$QueryToJson(MoveTypes$Query instance) =>
     <String, dynamic>{
       'moveTypes': instance.moveTypes.map((e) => e.toJson()).toList(),
-    };
-
-AllMoves$Query _$AllMoves$QueryFromJson(Map<String, dynamic> json) {
-  return AllMoves$Query()
-    ..standardMoves = (json['standardMoves'] as List<dynamic>)
-        .map((e) => Move.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..userCustomMoves = (json['userCustomMoves'] as List<dynamic>)
-        .map((e) => Move.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$AllMoves$QueryToJson(AllMoves$Query instance) =>
-    <String, dynamic>{
-      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
-      'userCustomMoves':
-          instance.userCustomMoves.map((e) => e.toJson()).toList(),
     };
 
 WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
@@ -1546,6 +1546,7 @@ WorkoutSectionSummary _$WorkoutSectionSummaryFromJson(
   return WorkoutSectionSummary()
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
+    ..name = json['name'] as String?
     ..timecap = json['timecap'] as int?
     ..workoutSectionType = WorkoutSectionType.fromJson(
         json['WorkoutSectionType'] as Map<String, dynamic>)
@@ -1559,6 +1560,7 @@ Map<String, dynamic> _$WorkoutSectionSummaryToJson(
     <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
+      'name': instance.name,
       'timecap': instance.timecap,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
       'WorkoutSets': instance.workoutSets.map((e) => e.toJson()).toList(),
@@ -1753,6 +1755,19 @@ WorkoutById$Query _$WorkoutById$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
     <String, dynamic>{
       'workoutById': instance.workoutById.toJson(),
+    };
+
+StandardMoves$Query _$StandardMoves$QueryFromJson(Map<String, dynamic> json) {
+  return StandardMoves$Query()
+    ..standardMoves = (json['standardMoves'] as List<dynamic>)
+        .map((e) => Move.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$StandardMoves$QueryToJson(
+        StandardMoves$Query instance) =>
+    <String, dynamic>{
+      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(

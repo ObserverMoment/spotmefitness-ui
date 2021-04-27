@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -30,7 +30,9 @@ class WorkoutCard extends StatelessWidget {
     for (final section in workoutSummary.workoutSections) {
       for (final workoutSet in section.workoutSets) {
         for (final workoutMove in workoutSet.workoutMoves) {
-          _allMoves.add(workoutMove.move.name);
+          if (workoutMove.move.id != kRestMoveId) {
+            _allMoves.add(workoutMove.move.name);
+          }
           if (workoutMove.equipment != null) {
             _allEquipments.add(workoutMove.equipment!.name);
           }
@@ -68,7 +70,9 @@ class WorkoutCard extends StatelessWidget {
                 runSpacing: 4,
                 children: workoutSummary.workoutSections
                     .map((section) => WorkoutSectionTypeTag(
-                        section.workoutSectionType.name,
+                        Utils.textNotNull(section.name)
+                            ? section.name!
+                            : section.workoutSectionType.name,
                         timecap: section.timecap))
                     .toList(),
               ),

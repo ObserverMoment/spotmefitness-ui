@@ -14,8 +14,8 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
@@ -56,7 +56,8 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
   void _openCreateSection() {
     final nextIndex = _sortedworkoutSections.length;
     // Create a default section as a placeholder until user selects the type.
-    _bloc.createWorkoutSection(kGenDefaultWorkoutSectionType());
+    _bloc
+        .createWorkoutSection(DefaultObjectfactory.defaultWorkoutSectionType());
 
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
@@ -245,7 +246,7 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                                   expand: true,
                                   child: TextViewer(
                                       workoutSection.note!, 'Section Note'))),
-                        NavBarEllipsisMenu(items: [
+                        NavBarEllipsisMenu(ellipsisCircled: false, items: [
                           ContextMenuItem(
                             text: Utils.textNotNull(workoutSection.name)
                                 ? 'Edit name'

@@ -8,8 +8,9 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
 
 /// Display for either the front or back of the body, with targeted areas highlighted.
-/// /// Each body area should only have one corresponding bodyAreaMoveScore in this list.
-class TargetedBodyAreasGraphic extends StatelessWidget {
+/// Each body area should only have one corresponding bodyAreaMoveScore in this list.
+/// Score amounts can be indicated by increasing opacity as the score increases.
+class TargetedBodyAreasScoreIndicator extends StatelessWidget {
   final Color? activeColor;
   final double basisOpacity;
   final BodyAreaFrontBack frontBack;
@@ -23,7 +24,7 @@ class TargetedBodyAreasGraphic extends StatelessWidget {
   /// Would show around 50 / 50 back vs legs split - when in actual fact it should be much more heavily weighted towards back as there are more pull ups and they are harder.
   final bool indicatePercentWithColor;
 
-  TargetedBodyAreasGraphic(
+  TargetedBodyAreasScoreIndicator(
       {this.activeColor,
       this.basisOpacity = 0.09,
       required this.bodyAreaMoveScores,
@@ -78,6 +79,60 @@ class TargetedBodyAreasGraphic extends StatelessWidget {
                   'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
                   height: height,
                   color: calculateColorBasedOnScore(context, bodyArea)),
+            )
+            .toList()
+      ],
+    );
+  }
+}
+
+/// Display for either the front or back of the body, with targeted areas highlighted.
+/// Boolean - on or off for each body area.
+class TargetedBodyAreasSelectedIndicator extends StatelessWidget {
+  final Color? activeColor;
+
+  final BodyAreaFrontBack frontBack;
+  final List<BodyArea> selectedBodyAreas;
+  final double height;
+  final List<BodyArea> allBodyAreas;
+
+  TargetedBodyAreasSelectedIndicator({
+    this.activeColor,
+    required this.selectedBodyAreas,
+    required this.frontBack,
+    required this.allBodyAreas,
+    this.height = 300,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final nonActiveColor = Styles.grey.withOpacity(0.2);
+    final _activeColor = activeColor ?? context.watch<ThemeBloc>().primary;
+
+    List<BodyArea> bodyAreasToDisplay = allBodyAreas
+        .where((ba) =>
+            ba.frontBack == frontBack || ba.frontBack == BodyAreaFrontBack.both)
+        .toList();
+
+    final bool isFront = frontBack == BodyAreaFrontBack.front;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        SvgPicture.asset(
+            isFront
+                ? 'assets/body_areas/front/background_front.svg'
+                : 'assets/body_areas/back/background_back.svg',
+            height: height,
+            color: nonActiveColor),
+        ...bodyAreasToDisplay
+            .map(
+              (bodyArea) => SvgPicture.asset(
+                  'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
+                  height: height,
+                  color: selectedBodyAreas.contains(bodyArea)
+                      ? _activeColor
+                      : nonActiveColor),
             )
             .toList()
       ],

@@ -115,6 +115,10 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
 
   void _saveWorkoutMove() {
     if (_activeWorkoutMove != null && _validToSave()) {
+      // Ensure load is zero if the move does not require it.
+      _activeWorkoutMove!.loadAmount =
+          _workoutMoveNeedsLoad() ? _activeWorkoutMove!.loadAmount : 0;
+
       // Check if this is a create or an edit op.
       if (widget.workoutMove != null) {
         _bloc.editWorkoutMove(
@@ -229,9 +233,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     ),
                                     MiniButton(
                                         prefix: Icon(
-                                          CupertinoIcons
-                                              .arrow_left_right_square,
-                                          color: context.theme.background,
+                                          CupertinoIcons.arrow_left_right,
                                           size: 20,
                                         ),
                                         text: 'Change',
@@ -302,21 +304,19 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     children: [
                                       MyText('Required'),
                                       SizedBox(height: 4),
-                                      SizedBox(
-                                        height: 40,
-                                        child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          shrinkWrap: true,
-                                          children: _activeWorkoutMove!
-                                              .move.requiredEquipments
-                                              .map((e) => ContentBox(
-                                                    child: MyText(
-                                                      e.name,
-                                                      weight: FontWeight.bold,
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                        ),
+                                      Wrap(
+                                        alignment: WrapAlignment.center,
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: _activeWorkoutMove!
+                                            .move.requiredEquipments
+                                            .map((e) => ContentBox(
+                                                  child: MyText(
+                                                    e.name,
+                                                    weight: FontWeight.bold,
+                                                  ),
+                                                ))
+                                            .toList(),
                                       )
                                     ],
                                   ),
@@ -341,11 +341,6 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                             handleSelection: (equipment) {
                                               _updateWorkoutMove({
                                                 'Equipment': equipment.toJson(),
-                                                'loadAmount': equipment.id ==
-                                                        kBodyweightEquipmentId
-                                                    ? 0
-                                                    : _activeWorkoutMove!
-                                                        .loadAmount,
                                               });
                                             },
                                             selectedEquipments: [

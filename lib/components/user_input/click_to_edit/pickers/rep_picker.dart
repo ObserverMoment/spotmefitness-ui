@@ -174,16 +174,17 @@ class _RepPickerModalState extends State<RepPickerModal> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SlidingSelect<WorkoutMoveRepType>(
-                    value: _activeRepType,
-                    children: {
-                      for (final v in WorkoutMoveRepType.values.where((v) =>
-                          v != WorkoutMoveRepType.artemisUnknown &&
-                          widget.validRepTypes.contains(v)))
-                        v: MyText(v.display)
-                    },
-                    updateValue: (repType) =>
-                        setState(() => _activeRepType = repType)),
+                if (widget.validRepTypes.length > 1)
+                  SlidingSelect<WorkoutMoveRepType>(
+                      value: _activeRepType,
+                      children: {
+                        for (final v in WorkoutMoveRepType.values.where((v) =>
+                            v != WorkoutMoveRepType.artemisUnknown &&
+                            widget.validRepTypes.contains(v)))
+                          v: MyText(v.display)
+                      },
+                      updateValue: (repType) =>
+                          setState(() => _activeRepType = repType)),
               ],
             ),
             if (_activeRepType != WorkoutMoveRepType.time)

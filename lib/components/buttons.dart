@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Base button class on which all other buttons are derived
@@ -380,8 +381,8 @@ class MiniButton extends StatelessWidget {
 
 class FilterButton extends StatelessWidget {
   final void Function() onPressed;
-  final int activeFilters;
-  FilterButton({required this.onPressed, this.activeFilters = 0});
+  final bool hasActiveFilters;
+  FilterButton({required this.onPressed, this.hasActiveFilters = false});
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -391,24 +392,18 @@ class FilterButton extends StatelessWidget {
           onPressed: onPressed,
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,
-            size: 26,
+            size: kMiniButtonIconSize,
           ),
         ),
-        if (activeFilters > 0)
+        if (hasActiveFilters)
           Positioned(
-            top: -5,
-            right: 0,
-            child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                    color: Styles.colorTwo, shape: BoxShape.circle),
-                child: MyText(
-                  activeFilters.toString(),
-                  lineHeight: 1,
-                  color: Styles.white,
-                  size: FONTSIZE.TINY,
-                  weight: FontWeight.bold,
-                )),
+            top: -4,
+            right: -3,
+            child: Icon(
+              CupertinoIcons.checkmark_alt_circle_fill,
+              color: Styles.infoBlue,
+              size: 20,
+            ),
           )
       ],
     );
@@ -417,16 +412,16 @@ class FilterButton extends StatelessWidget {
 
 class OpenTextSearchButton extends StatelessWidget {
   final void Function() onPressed;
-  OpenTextSearchButton({required this.onPressed});
+  final String? text;
+  OpenTextSearchButton({required this.onPressed, this.text});
   @override
   Widget build(BuildContext context) {
     return MiniButton(
-      onPressed: () => {},
-      text: 'Search',
+      onPressed: onPressed,
+      text: text,
       prefix: Icon(
         CupertinoIcons.search,
-        color: context.theme.background,
-        size: 20,
+        size: kMiniButtonIconSize,
       ),
     );
   }
@@ -465,7 +460,7 @@ class CreateTextIconButton extends StatelessWidget {
             CupertinoIcons.add,
             size: 22,
           ),
-          SizedBox(width: 6),
+          SizedBox(width: 2),
           MyText(
             text,
             weight: FontWeight.bold,
@@ -495,17 +490,29 @@ class NavBarCancelButton extends StatelessWidget {
 /// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
 class NavBarSaveButton extends StatelessWidget {
   final void Function() onPressed;
-  NavBarSaveButton(this.onPressed);
+  final String text;
+  final bool loading;
+  NavBarSaveButton(this.onPressed, {this.text = 'Save', this.loading = false});
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        child: MyText(
-          'Save',
-          color: Styles.infoBlue,
-          weight: FontWeight.bold,
-        ));
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: onPressed,
+            child: loading
+                ? LoadingDots(
+                    size: 12,
+                    color: Styles.infoBlue,
+                  )
+                : MyText(
+                    text,
+                    color: Styles.infoBlue,
+                    weight: FontWeight.bold,
+                  )),
+      ],
+    );
   }
 }
 

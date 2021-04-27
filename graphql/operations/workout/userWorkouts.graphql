@@ -20,6 +20,7 @@ query userWorkouts {
     WorkoutSections {
       __typename
       id
+      name
       timecap
       WorkoutSectionType {
         ...WorkoutSectionType

@@ -1,15 +1,8 @@
-import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-
 const kBodyweightEquipmentId = 'b95da267-c036-4caa-9294-d1fab9b3d2e8';
-const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 
-/// [Free Session].
-WorkoutSectionType kGenDefaultWorkoutSectionType() {
-  return WorkoutSectionType()
-    ..id = 0.toString()
-    ..name = 'Section'
-    ..description = '';
-}
+const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+const kMiniButtonIconSize = 24.0;
 
 /// WorkoutSectionTypeNames
 const kFreeSession = 'Free Session';
@@ -22,6 +15,11 @@ const double kBodyAreaSelector_svg_height = 213.43;
 
 /// Hive
 const String kSettingsHiveBoxName = 'settings_box';
+
+/// Theme ///
 const String kSettingsHiveBoxThemeKey = 'theme_name';
 const String kSettingsLightThemeKey = 'light';
 const String kSettingsDarkThemeKey = 'dark';
+
+/// Move Filters ///
+const String kSettingsHiveBoxMoveFiltersKey = 'move_filters';

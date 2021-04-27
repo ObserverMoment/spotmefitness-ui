@@ -17,6 +17,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -95,12 +96,13 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   // Creates an empty default set and then pushes to workoutMoveCreator to add a move.
   void _createEmptyWorkoutSet(
       {bool openWorkoutMoveSelector = false,
+      bool workoutMoveIgnoreReps = false,
       Map<String, dynamic> defaults = const {}}) {
     // Create default set.
     _bloc.createWorkoutSet(widget.sectionIndex, defaults: defaults);
 
     if (openWorkoutMoveSelector) {
-// Open workout move creator to add first move.
+      // Open workout move creator to add first move.
       // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
       Navigator.push(
         context,
@@ -113,10 +115,28 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
               sectionIndex: widget.sectionIndex,
               setIndex: _sortedWorkoutSets.length - 1,
               workoutMoveIndex: 0,
+              ignoreReps: workoutMoveIgnoreReps,
             ),
           ),
         ),
       );
+    }
+  }
+
+  // Creates a new set and then adds a workout move (rest) to it.
+  // TODO: Consider on boot of app, saving these static default object types into a global repo somewhere.
+  void _createRestSet(Move move, {Map<String, dynamic>? defaults}) async {
+    final workoutSet = await _bloc.createWorkoutSet(widget.sectionIndex,
+        defaults: defaults ?? {});
+    if (workoutSet != null) {
+      _bloc.createWorkoutMove(
+          widget.sectionIndex,
+          workoutSet.sortPosition,
+          DefaultObjectfactory.defaultWorkoutMove(
+              move: move,
+              sortPosition: 0,
+              timeAmount: 1,
+              timeUnit: TimeUnit.minutes));
     }
   }
 
@@ -134,8 +154,15 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         return CircuitCreator(
             sortedWorkoutSets: _sortedWorkoutSets,
             sectionIndex: widget.sectionIndex,
-            createWorkoutSetWithDuration: (defaults) =>
-                _createEmptyWorkoutSet(defaults: defaults));
+            // IgnoreReps is used when creating a workout move for a timed workout set.
+            // No need to set the reps and the length of time working is determined by workoutSet.duration.
+            createWorkoutSet: (defaults) => _createEmptyWorkoutSet(
+                openWorkoutMoveSelector: true,
+                workoutMoveIgnoreReps: true,
+                defaults: defaults),
+            createRestSet: (restMoveObj, duration) => _createRestSet(
+                restMoveObj,
+                defaults: {'duration': duration.inSeconds}));
       default:
         return Container();
     }

@@ -24,6 +24,7 @@ fragment Move on Move {
   __typename
   id
   name
+  searchTerms
   description
   demoVideoUri
   demoVideoThumbUri

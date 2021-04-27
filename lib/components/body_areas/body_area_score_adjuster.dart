@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_score_list.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/score_input_slider.dart';
@@ -37,7 +37,6 @@ class _BodyAreaScoreAdjusterState extends State<BodyAreaScoreAdjuster> {
     if (widget.bodyAreaMoveScores.any((b) => b.bodyArea == widget.bodyArea)) {
       _activeBodyAreaMoveScores = [...widget.bodyAreaMoveScores];
     } else {
-      print('making new');
       final initialBodyAreaMoveScore = BodyAreaMoveScore()
         ..bodyArea = widget.bodyArea
         ..score = 0;

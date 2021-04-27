@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/close_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/rep_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -195,6 +195,9 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
 
   @override
   Widget build(BuildContext context) {
+    final isRest = _sortedWorkoutMoves.length == 1 &&
+        _sortedWorkoutMoves[0].move.id == kRestMoveId;
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -204,7 +207,7 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -225,7 +228,7 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
                     MiniButton(
                         text: _buildStationTimeText(),
                         onPressed: () => context.showBottomSheet(
-                            child: WorkoutStationDurationPicker(
+                            child: DurationPicker(
                                 duration: _workoutSet.duration!,
                                 updateDuration: (seconds) => context
                                     .read<WorkoutCreatorBloc>()
@@ -236,6 +239,16 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        if (isRest)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Tag(
+                              tag: 'REST',
+                              color: Styles.colorThree,
+                              textColor: Styles.white,
+                              fontSize: FONTSIZE.MAIN,
+                            ),
+                          ),
                         if (_sortedWorkoutMoves.length > 3)
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
@@ -292,83 +305,36 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
               ],
             ),
           ),
-          AnimatedContainer(
-            duration: Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            height: _sortedWorkoutMoves.length * 62,
-            child: ReorderableListView.builder(
-                proxyDecorator: (child, index, animation) =>
-                    DraggedItem(child: child),
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: _sortedWorkoutMoves.length,
-                itemBuilder: (context, index) => WorkoutMoveInStationSet(
-                      key: Key(
-                          '$index-workout_station_set_creator-${_sortedWorkoutMoves[index].id}'),
-                      workoutMove: _sortedWorkoutMoves[index],
-                      deleteWorkoutMove: _deleteWorkoutMove,
-                      duplicateWorkoutMove: _duplicateWorkoutMove,
-                      openEditWorkoutMove: _openEditWorkoutMove,
-                      isLast: index == _sortedWorkoutMoves.length - 1,
-                      showReps: _sortedWorkoutMoves.length > 1,
-                    ),
-                onReorder: _reorderWorkoutMoves),
-          ),
-          CreateTextIconButton(
-            text: 'Add move',
-            onPressed: _openAddWorkoutMoveToSet,
-          ),
+          if (!isRest)
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              height: _sortedWorkoutMoves.length * 62,
+              child: ReorderableListView.builder(
+                  proxyDecorator: (child, index, animation) =>
+                      DraggedItem(child: child),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: _sortedWorkoutMoves.length,
+                  itemBuilder: (context, index) => WorkoutMoveInStationSet(
+                        key: Key(
+                            '$index-workout_station_set_creator-${_sortedWorkoutMoves[index].id}'),
+                        workoutMove: _sortedWorkoutMoves[index],
+                        deleteWorkoutMove: _deleteWorkoutMove,
+                        duplicateWorkoutMove: _duplicateWorkoutMove,
+                        openEditWorkoutMove: _openEditWorkoutMove,
+                        isLast: index == _sortedWorkoutMoves.length - 1,
+                        showReps: _sortedWorkoutMoves.length > 1,
+                      ),
+                  onReorder: _reorderWorkoutMoves),
+            ),
+          if (!isRest)
+            CreateTextIconButton(
+              text: 'Add move',
+              onPressed: _openAddWorkoutMoveToSet,
+            ),
         ],
       ),
-    );
-  }
-}
-
-class WorkoutStationDurationPicker extends StatefulWidget {
-  /// in seconds
-  final int duration;
-  final void Function(int duration) updateDuration;
-  WorkoutStationDurationPicker(
-      {required this.duration, required this.updateDuration});
-
-  @override
-  _WorkoutStationDurationPickerState createState() =>
-      _WorkoutStationDurationPickerState();
-}
-
-class _WorkoutStationDurationPickerState
-    extends State<WorkoutStationDurationPicker> {
-  late Duration _activeDuration;
-
-  @override
-  void initState() {
-    super.initState();
-    _activeDuration = Duration(seconds: widget.duration);
-  }
-
-  void _saveAndClose() {
-    widget.updateDuration(_activeDuration.inSeconds);
-    context.pop();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClosePicker(onClose: _saveAndClose),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CupertinoTimerPicker(
-              initialTimerDuration: _activeDuration,
-              mode: CupertinoTimerPickerMode.ms,
-              onTimerDurationChanged: (duration) =>
-                  setState(() => _activeDuration = duration)),
-        ),
-      ],
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphic.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_score_list.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
@@ -122,7 +122,7 @@ class TargetedBodyAreasPageView extends StatelessWidget {
                                                 BodyAreaFrontBack.both)
                                         .toList()),
                               ),
-                              TargetedBodyAreasGraphic(
+                              TargetedBodyAreasScoreIndicator(
                                 frontBack: BodyAreaFrontBack.front,
                                 allBodyAreas: frontBodyAreas,
                                 activeColor: activeColor,
@@ -173,7 +173,7 @@ class TargetedBodyAreasPageView extends StatelessWidget {
                                                 BodyAreaFrontBack.both)
                                         .toList()),
                               ),
-                              TargetedBodyAreasGraphic(
+                              TargetedBodyAreasScoreIndicator(
                                 frontBack: BodyAreaFrontBack.back,
                                 allBodyAreas: backBodyAreas,
                                 activeColor: activeColor,

@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_score_adjuster.dart';
-import 'package:spotmefitness_ui/components/body_areas/body_area_selector_overlay.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphic.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_score_list.dart';
+import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -90,17 +89,13 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
                           child: CupertinoButton(
                               child: MyText('Back >'),
                               onPressed: () => _animateToPage(1))),
-                      TargetedBodyAreasGraphic(
+                      BodyAreaSelectorAndMoveScoreIndicator(
                         bodyAreaMoveScores: widget.move.bodyAreaMoveScores,
                         frontBack: BodyAreaFrontBack.front,
                         allBodyAreas: allBodyAreas,
                         indicatePercentWithColor: true,
+                        handleTapBodyArea: _handleTapBodyArea,
                       ),
-                      BodyAreaSelectorOverlay(
-                        frontBack: BodyAreaFrontBack.front,
-                        allBodyAreas: allBodyAreas,
-                        onTapBodyArea: _handleTapBodyArea,
-                      )
                     ]),
                     Stack(alignment: Alignment.topCenter, children: [
                       Positioned(child: H3('Back')),
@@ -109,17 +104,13 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
                           child: CupertinoButton(
                               child: MyText('< Front'),
                               onPressed: () => _animateToPage(0))),
-                      TargetedBodyAreasGraphic(
+                      BodyAreaSelectorAndMoveScoreIndicator(
                         bodyAreaMoveScores: widget.move.bodyAreaMoveScores,
                         frontBack: BodyAreaFrontBack.back,
                         allBodyAreas: allBodyAreas,
                         indicatePercentWithColor: true,
+                        handleTapBodyArea: _handleTapBodyArea,
                       ),
-                      BodyAreaSelectorOverlay(
-                        frontBack: BodyAreaFrontBack.back,
-                        allBodyAreas: allBodyAreas,
-                        onTapBodyArea: _handleTapBodyArea,
-                      )
                     ]),
                   ],
                 ),

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
@@ -26,25 +27,30 @@ class App extends StatelessWidget {
     final _graphql = GraphQL();
     return GraphQLProvider(
         client: _graphql.clientNotifier,
-        child: ChangeNotifierProvider(
-            create: (_) => ThemeBloc(),
-            builder: (context, child) => CupertinoApp.router(
-                  debugShowCheckedModeBanner: false,
-                  theme: context.theme.cupertinoThemeData,
-                  routerDelegate: _appRouter.delegate(),
-                  routeInformationParser: _appRouter.defaultRouteParser(),
-                  localizationsDelegates: [
-                    DefaultMaterialLocalizations.delegate,
-                    DefaultCupertinoLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: [
-                    const Locale('en', 'US'),
-                    const Locale('en', 'GB'),
-                  ],
-                )));
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => ThemeBloc()),
+            ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
+          ],
+          child: Builder(
+              builder: (context) => CupertinoApp.router(
+                    debugShowCheckedModeBanner: false,
+                    theme: context.theme.cupertinoThemeData,
+                    routerDelegate: _appRouter.delegate(),
+                    routeInformationParser: _appRouter.defaultRouteParser(),
+                    localizationsDelegates: [
+                      DefaultMaterialLocalizations.delegate,
+                      DefaultCupertinoLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: [
+                      const Locale('en', 'US'),
+                      const Locale('en', 'GB'),
+                    ],
+                  )),
+        ));
   }
 }
 

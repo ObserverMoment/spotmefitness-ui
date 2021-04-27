@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selec
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class CustomMoveCreatorEquipment extends StatelessWidget {
   final Move move;

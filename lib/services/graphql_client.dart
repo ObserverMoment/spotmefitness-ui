@@ -7,6 +7,8 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import "package:gql/ast.dart";
 
+enum MutationType { create, update }
+
 class GraphQL {
   late GraphQLClient _client;
 
@@ -34,10 +36,24 @@ class GraphQL {
   // Used for provider / consumer pattern
   ValueNotifier<GraphQLClient> get clientNotifier => ValueNotifier(_client);
 
-  /// For use when creating an object that requires a custom update handler.
-  /// For example if one or more queries need to be written to cache in response.
-  static Future<QueryResult> createWithQueryUpdate(
-      {required GraphQLClient client,
+  static List _insertNewObject(List oldList, newData) => [...oldList, newData];
+
+  static List _replaceUpdatedObject(List oldList, newData) => [
+        ...oldList.map((o) => (o['id'] == newData['id'] &&
+                o['__typename'] == newData['__typename'])
+            ? newData
+            : o),
+      ];
+
+  /// Create or update an object and then write data into the cache via a specified query or [updateCachehandler].
+  /// Created objects will be added to the end of the old data list.
+  /// Updated objects will be mapped onto the spot where the previous data sat
+  /// Objects must have [id] and [__typename] fields otherwise this will error.
+  /// These fields must be requested in all selection field definitions.
+  /// There is no optimistic update in this method - cache will be updated when network result is returned.
+  static Future<QueryResult> mutateWithQueryUpdate(
+      {required MutationType mutationType,
+      required GraphQLClient client,
       required DocumentNode mutationDocument,
       required String mutationOperationName,
       required Map<String, dynamic> mutationVariables,
@@ -62,9 +78,10 @@ class GraphQL {
           if (updateCachehandler != null) {
             updateCachehandler(cache, result);
           } else {
-            /// For standard updates where a returned object goes into a list with key of [queryOperationName]
+            /// For standard updates where a returned object lives in a list with key of [queryOperationName]
             final prev = cache.readQuery(
                 Request(operation: Operation(document: queryDocument!)));
+
             if (prev == null) {
               throw AssertionError(
                   'Unable to read from cache - cache update failed.');
@@ -77,13 +94,15 @@ class GraphQL {
               throw AssertionError(
                   'Data in the cache under key: "$queryOperationName" is not a list as is required for standard cache updates - use a custom [updateCacheHandler] function instead.');
             }
+
             cache.writeQuery(
               Request(operation: Operation(document: queryDocument)),
               data: {
-                queryOperationName!: [
-                  ...prev[queryOperationName],
-                  result.data![mutationOperationName],
-                ]
+                queryOperationName!: mutationType == MutationType.create
+                    ? _insertNewObject(prev[queryOperationName],
+                        result.data![mutationOperationName])
+                    : _replaceUpdatedObject(prev[queryOperationName],
+                        result.data![mutationOperationName])
               },
             );
           }
@@ -100,7 +119,7 @@ class GraphQL {
   /// First writes a fragment to cache 'optimistically'.
   /// Then run network mutate
   /// Finally write to cache again with the result from the network.
-  /// For single object updates.
+  /// For single object updates ideal when updating a small number of scalar fields only.
   static Future<QueryResult> updateObjectWithOptimisticFragment(
       {required GraphQLClient client,
       required DocumentNode document,
@@ -210,6 +229,7 @@ class GraphQL {
           // Check that the expected result has been returned.
           // Object deletions should always return the object ID.
           // If this has been returned as expected then just cleanup to do.
+          // Delete ops should always return the deleted id from the api.
           if (result.data == null ||
               result.data?[mutationOperationName] != objectId) {
             // The response was not as expected. Roll back the changes and throw an exception.

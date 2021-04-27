@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -20,7 +21,7 @@ class EquipmentTile extends StatelessWidget {
       this.isSelected = false,
       this.showIcon = true,
       this.showText = true,
-      this.iconSize = 38,
+      this.iconSize = 35,
       this.fontSize = FONTSIZE.MAIN,
       this.withBorder = true})
       : assert(showIcon || showText);
@@ -157,7 +158,14 @@ class _FullScreenEquipmentSelectorState
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(middle: NavBarTitle('Select Equipment')),
+      navigationBar: BasicNavBar(
+        automaticallyImplyLeading: false,
+        middle: NavBarTitle('Select Equipment'),
+        trailing: NavBarSaveButton(
+          context.pop,
+          text: 'Done',
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: GridView.builder(

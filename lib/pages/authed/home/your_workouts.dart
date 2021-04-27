@@ -74,24 +74,19 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 1.0, top: 3),
+                    padding:
+                        const EdgeInsets.only(bottom: 1.0, top: 3, left: 2),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Flexible(
-                            child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: CupertinoSearchTextField(
-                            padding: const EdgeInsets.all(5.0),
-                            onChanged: (searchString) =>
-                                setState(() => _searchString = searchString),
-                          ),
-                        )),
+                        SortByButton(
+                          onPressed: () => {},
+                        ),
+                        SizedBox(width: 6),
                         FilterButton(
                           onPressed: () => {},
-                          activeFilters: 3,
                         ),
-                        SortByButton(
+                        SizedBox(width: 6),
+                        OpenTextSearchButton(
                           onPressed: () => {},
                         ),
                       ],

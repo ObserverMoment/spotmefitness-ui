@@ -3,11 +3,12 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/models/move_filters.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/screens/move_filters_screen.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
@@ -15,6 +16,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:provider/provider.dart';
 
 /// The user is required to select a move before moving on to the workoutMove creator.
 /// Unlike some other selectors this runs callback immediately on press.
@@ -32,12 +34,12 @@ class _MoveSelectorState extends State<MoveSelector> {
   int _activeTabIndex = 0;
   String _textFilter = '';
 
-  Future<void> _openCustomMoveCreator(Move? move) async {
+  Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();
     final success =
-        await context.push<bool?>(child: CustomMoveCreator(move: move));
+        await context.push<bool?>(child: CustomMoveCreator(move: moveToUpdate));
     if (success != null && success) {
-      if (move != null) {
+      if (moveToUpdate == null) {
         // Created
         context.showToast(message: 'New move created!');
       } else {
@@ -61,112 +63,279 @@ class _MoveSelectorState extends State<MoveSelector> {
     return Expanded(
       child: QueryResponseBuilder(
           options: QueryOptions(
-              document: AllMovesQuery().document,
+              document: StandardMovesQuery().document,
               fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) {
-            final displayMoves = _activeTabIndex == 0
-                ? AllMoves$Query.fromJson(result.data ?? {}).standardMoves
-                : AllMoves$Query.fromJson(result.data ?? {}).userCustomMoves;
+          builder: (standardMovesResult, {refetch, fetchMore}) {
+            return QueryResponseBuilder(
+                options: QueryOptions(
+                    document: UserCustomMovesQuery().document,
+                    fetchPolicy: FetchPolicy.cacheAndNetwork),
+                builder: (customMovesResult, {refetch, fetchMore}) {
+                  final standardMoves = StandardMoves$Query.fromJson(
+                          standardMovesResult.data ?? {})
+                      .standardMoves;
 
-            /// Calc filters moves here. Text filter + moveFilters if present
-            final textFilteredMoves = Utils.textNotNull(_textFilter)
-                ? displayMoves.where((m) =>
-                    m.name.toLowerCase().contains(_textFilter) ||
-                    m.moveType.name.toLowerCase().contains(_textFilter))
-                : displayMoves;
+                  final customMoves = UserCustomMoves$Query.fromJson(
+                          customMovesResult.data ?? {})
+                      .userCustomMoves;
 
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 4.0,
-                    bottom: 8,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SlidingSelect<int>(
-                            value: _activeTabIndex,
-                            children: {
-                              0: MyText('Standard'),
-                              1: MyText('Custom')
-                            },
-                            updateValue: (i) =>
-                                setState(() => _activeTabIndex = i)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            FilterButton(
-                              activeFilters: 5,
-                              onPressed: () =>
-                                  context.push(child: MoveFiltersScreen()),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3.0),
-                          child: CupertinoSearchTextField(
-                            onChanged: (value) => setState(
-                                () => _textFilter = value.toLowerCase()),
-                          ),
-                        ),
-                      ),
-                      // If showing custom moves.
-                      if (_activeTabIndex == 1)
-                        FadeIn(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 10.0, right: 6),
-                            child: CreateTextIconButton(
-                                onPressed: () => _openCustomMoveCreator(null)),
-                          ),
-                        )
-                    ],
-                  ),
-                ),
-                if (textFilteredMoves.isEmpty)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  final displayMoves =
+                      _activeTabIndex == 0 ? standardMoves : customMoves;
+
+                  final moveFiltersBloc = context.watch<MoveFiltersBloc>();
+                  final filteredMoves = moveFiltersBloc.filter(displayMoves);
+
+                  return Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyText(
-                          'No moves match these filters...',
-                          subtext: true,
+                        padding: const EdgeInsets.only(
+                          top: 4.0,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Row(
+                            children: [
+                              SlidingSelect<int>(
+                                  value: _activeTabIndex,
+                                  children: {
+                                    0: MyText('Standard'),
+                                    1: MyText('Custom')
+                                  },
+                                  updateValue: (i) =>
+                                      setState(() => _activeTabIndex = i)),
+                              SizedBox(width: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  OpenTextSearchButton(
+                                    onPressed: () => context.push(
+                                        fullscreenDialog: true,
+                                        child: MoveSelectorTextSearch(
+                                          allMoves: [
+                                            ...standardMoves,
+                                            ...customMoves
+                                          ],
+                                          selectMove: widget.selectMove,
+                                        )),
+                                  ),
+                                  SizedBox(width: 4),
+                                  FilterButton(
+                                    hasActiveFilters:
+                                        moveFiltersBloc.hasActiveFilters,
+                                    onPressed: () => context.push(
+                                        child: MoveFiltersScreen()),
+                                  )
+                                ],
+                              ),
+                              // If showing custom moves.
+                              if (_activeTabIndex == 1)
+                                FadeIn(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: CreateTextIconButton(
+                                        onPressed: () =>
+                                            _openCustomMoveCreator(null)),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
+                      GrowInOut(
+                          show: moveFiltersBloc.hasActiveFilters,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0, vertical: 2),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    MyText(
+                                      'Filters',
+                                      weight: FontWeight.bold,
+                                    ),
+                                    SizedBox(width: 10),
+                                    TextButton(
+                                      text: 'Clear all',
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      destructive: true,
+                                      underline: false,
+                                      onPressed: () => context
+                                          .read<MoveFiltersBloc>()
+                                          .clearAllFilters(),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Wrap(
+                                    alignment: WrapAlignment.center,
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: [
+                                      ...moveFiltersBloc.moveTypeFilters
+                                          .map((e) => Tag(
+                                                tag: e.name,
+                                              ))
+                                          .toList(),
+                                      if (moveFiltersBloc.bodyweightOnlyFilter)
+                                        Tag(
+                                          tag: 'Bodyweight Only',
+                                          color: Styles.colorOne,
+                                          textColor: Styles.white,
+                                        )
+                                      else
+                                        ...moveFiltersBloc.equipmentFilters
+                                            .map((e) => Tag(
+                                                tag: e.name,
+                                                color: Styles.colorOne,
+                                                textColor: Styles.white))
+                                            .toList(),
+                                      ...moveFiltersBloc.bodyAreaFilters
+                                          .map((e) => Tag(
+                                              tag: e.name,
+                                              color: Styles.colorThree,
+                                              textColor: Styles.white))
+                                          .toList(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                      if (filteredMoves.isEmpty)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: MyText(
+                                _activeTabIndex == 0
+                                    ? 'No moves found. Create a custom move?'
+                                    : 'No moves found',
+                                maxLines: 3,
+                                subtext: true,
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        Expanded(
+                          child: FadeIn(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: filteredMoves
+                                  .sortedBy<String>((move) => move.name)
+                                  .map((move) => GestureDetector(
+                                      onTap: () => widget.selectMove(move),
+                                      child: MoveSelectorItem(
+                                          move: move,
+                                          optionalButton: _buildButton(move))))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
                     ],
-                  )
-                else
-                  Expanded(
-                    child: FadeIn(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: textFilteredMoves
-                            .sortedBy<String>((move) => move.name)
-                            .map((move) => GestureDetector(
-                                onTap: () => widget.selectMove(move),
-                                child: MoveSelectorItem(
-                                    move: move,
-                                    optionalButton: _buildButton(move))))
-                            .toList(),
-                      ),
+                  );
+                });
+          }),
+    );
+  }
+}
+
+class MoveSelectorTextSearch extends StatefulWidget {
+  final List<Move> allMoves;
+  final void Function(Move move) selectMove;
+
+  MoveSelectorTextSearch({required this.allMoves, required this.selectMove});
+
+  @override
+  _MoveSelectorTextSearchState createState() => _MoveSelectorTextSearchState();
+}
+
+class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
+  String _searchString = '';
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+    _focusNode.requestFocus();
+  }
+
+  bool _filter(Move move) {
+    return [move.name, move.searchTerms, move.moveType.name]
+        .where((t) => Utils.textNotNull(t))
+        .map((t) => t!.toLowerCase())
+        .any((t) => t.contains(_searchString));
+  }
+
+  List<Move> _filterBySearchString() {
+    return Utils.textNotNull(_searchString)
+        ? widget.allMoves.where((m) => _filter(m)).toList()
+        : widget.allMoves;
+  }
+
+  void _handleSelectMove(Move move) {
+    widget.selectMove(move);
+    context.pop();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filteredMoves = _filterBySearchString();
+    return CupertinoPageScaffold(
+      navigationBar: BasicNavBar(
+        middle: NavBarTitle('Search Moves'),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 3.0),
+                    child: CupertinoSearchTextField(
+                      focusNode: _focusNode,
+                      onChanged: (value) =>
+                          setState(() => _searchString = value.toLowerCase()),
                     ),
                   ),
+                ),
               ],
-            );
-          }),
+            ),
+          ),
+          Expanded(
+            child: FadeIn(
+              child: ListView(
+                shrinkWrap: true,
+                children: filteredMoves
+                    .sortedBy<String>((move) => move.name)
+                    .map((move) => GestureDetector(
+                        onTap: () => _handleSelectMove(move),
+                        child: MoveSelectorItem(
+                          move: move,
+                          optionalButton: move.scope == MoveScope.custom
+                              ? Tag(tag: 'Custom')
+                              : null,
+                        )))
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

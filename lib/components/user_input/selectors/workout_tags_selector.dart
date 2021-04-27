@@ -57,7 +57,8 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   Future<void> _createNewTag(String tag) async {
     final _vars =
         CreateWorkoutTagArguments(data: CreateWorkoutTagInput(tag: tag));
-    await GraphQL.createWithQueryUpdate(
+    await GraphQL.mutateWithQueryUpdate(
+      mutationType: MutationType.create,
       client: context.graphQLClient,
       mutationDocument: CreateWorkoutTagMutation(variables: _vars).document,
       mutationOperationName:

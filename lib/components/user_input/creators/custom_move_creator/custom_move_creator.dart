@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -30,6 +29,8 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   int _activeTabIndex = 0;
   late Move? _activeMove;
   final PageController _pageController = PageController();
+  bool _formIsDirty = false;
+  bool _loading = false;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   }
 
   Future<void> _updateMoveType(MoveType moveType) async {
+    _formIsDirty = true;
     if (_activeMove == null) {
       final newMove = Move()
         ..$$typename = 'Move'
@@ -62,6 +64,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   /// Client only. Updates are sent to the DB when user saves and closes.
   void _updateMove(Map<String, dynamic> data) {
     setState(() {
+      _formIsDirty = true;
       _activeMove = Move.fromJson({..._activeMove!.toJson(), ...data});
     });
   }
@@ -75,19 +78,22 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   }
 
   Future<void> _saveAndClose() async {
+    setState(() => _loading = true);
     if (widget.move != null) {
       // Update.
       final variables = UpdateMoveArguments(
           data: UpdateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await GraphQL.updateObjectWithOptimisticFragment(
-          client: context.graphQLClient,
-          document: UpdateMoveMutation(variables: variables).document,
-          operationName: UpdateMoveMutation(variables: variables).operationName,
-          variables: variables.toJson(),
-          objectId: _activeMove!.id,
-          objectType: 'Move',
-          fragment: '');
+      final result = await GraphQL.mutateWithQueryUpdate(
+        mutationType: MutationType.update,
+        client: context.graphQLClient,
+        mutationDocument: UpdateMoveMutation(variables: variables).document,
+        mutationOperationName:
+            UpdateMoveMutation(variables: variables).operationName,
+        mutationVariables: variables.toJson(),
+        queryDocument: UserCustomMovesQuery().document,
+        queryOperationName: UserCustomMovesQuery().operationName,
+      );
 
       if (result.data == null || result.hasException) {
         context.showToast(
@@ -100,14 +106,16 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
       final variables = CreateMoveArguments(
           data: CreateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await GraphQL.createWithQueryUpdate(
-          client: context.graphQLClient,
-          mutationDocument: CreateMoveMutation(variables: variables).document,
-          mutationOperationName:
-              CreateMoveMutation(variables: variables).operationName,
-          mutationVariables: variables.toJson(),
-          queryDocument: AllMovesQuery().document,
-          queryOperationName: AllMovesQuery().operationName);
+      final result = await GraphQL.mutateWithQueryUpdate(
+        mutationType: MutationType.create,
+        client: context.graphQLClient,
+        mutationDocument: CreateMoveMutation(variables: variables).document,
+        mutationOperationName:
+            CreateMoveMutation(variables: variables).operationName,
+        mutationVariables: variables.toJson(),
+        queryDocument: UserCustomMovesQuery().document,
+        queryOperationName: UserCustomMovesQuery().operationName,
+      );
 
       if (result.data == null || result.hasException) {
         context.showToast(
@@ -116,6 +124,8 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
         context.pop(result: true);
       }
     }
+
+    setState(() => _loading = false);
   }
 
   @override
@@ -130,9 +140,14 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
       navigationBar: BasicNavBar(
           leading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
-          trailing: NavBarSaveButton(
-            _saveAndClose,
-          )),
+          trailing: _formIsDirty
+              ? FadeIn(
+                  child: NavBarSaveButton(
+                    _saveAndClose,
+                    loading: _loading,
+                  ),
+                )
+              : null),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

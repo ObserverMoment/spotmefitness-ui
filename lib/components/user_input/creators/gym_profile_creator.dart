@@ -151,7 +151,8 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
         'Equipments': _activeGymProfile.equipments.map((e) => e.id).toList()
       }));
 
-      await GraphQL.createWithQueryUpdate(
+      await GraphQL.mutateWithQueryUpdate(
+        mutationType: MutationType.create,
         client: context.graphQLClient,
         mutationDocument: CreateGymProfileMutation(variables: _vars).document,
         mutationOperationName:

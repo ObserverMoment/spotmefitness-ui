@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphic.dart';
-import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_score_list.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
+import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -9,7 +9,6 @@ import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selec
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Info about and exercise. Video and description.
 class MoveDetails extends StatelessWidget {
@@ -156,12 +155,12 @@ class MoveDetails extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    TargetedBodyAreasGraphic(
+                                    TargetedBodyAreasScoreIndicator(
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.front,
                                         allBodyAreas: allBodyAreas),
-                                    TargetedBodyAreasGraphic(
+                                    TargetedBodyAreasScoreIndicator(
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.back,

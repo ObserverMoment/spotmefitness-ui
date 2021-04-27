@@ -49,3 +49,35 @@ class TargetedBodyAreasScoreList extends StatelessWidget {
     );
   }
 }
+
+class TargetedBodyAreasList extends StatelessWidget {
+  final List<BodyArea> selectedBodyAreas;
+  TargetedBodyAreasList(
+    this.selectedBodyAreas,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 6,
+      runSpacing: 6,
+      children: selectedBodyAreas
+          .map((ba) => Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: context.theme.cardBackground),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MyText(
+                      ba.name,
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
+    );
+  }
+}

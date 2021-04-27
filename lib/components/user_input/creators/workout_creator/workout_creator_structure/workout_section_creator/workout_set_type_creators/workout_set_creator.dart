@@ -42,6 +42,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   late List<WorkoutMove> _sortedWorkoutMoves;
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
+  final double _kWorkoutMoveListItemHeight = 65;
 
   void _checkForNewData() {
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
@@ -246,7 +247,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
           AnimatedContainer(
             duration: Duration(milliseconds: 200),
             curve: Curves.easeInOut,
-            height: _sortedWorkoutMoves.length * 62,
+            height: _sortedWorkoutMoves.length * _kWorkoutMoveListItemHeight,
             child: ReorderableListView.builder(
                 proxyDecorator: (child, index, animation) =>
                     DraggedItem(child: child),
@@ -256,6 +257,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                 itemBuilder: (context, index) => WorkoutMoveInSet(
                       key: Key(
                           '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
+                      height: _kWorkoutMoveListItemHeight,
                       workoutMove: _sortedWorkoutMoves[index],
                       deleteWorkoutMove: _deleteWorkoutMove,
                       duplicateWorkoutMove: _duplicateWorkoutMove,
@@ -276,6 +278,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
 class WorkoutMoveInSet extends StatelessWidget {
   final Key key;
+  final double height;
   final WorkoutMove workoutMove;
   final void Function(WorkoutMove workoutMove) openEditWorkoutMove;
   final void Function(int index) duplicateWorkoutMove;
@@ -287,30 +290,34 @@ class WorkoutMoveInSet extends StatelessWidget {
       required this.openEditWorkoutMove,
       required this.duplicateWorkoutMove,
       required this.deleteWorkoutMove,
+      required this.height,
       this.isLast = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => openEditWorkoutMove(workoutMove),
-      child: AnimatedSlidable(
-        key: key,
-        index: workoutMove.sortPosition,
-        itemType: 'Move',
-        removeItem: deleteWorkoutMove,
-        secondaryActions: [
-          IconSlideAction(
-            caption: 'Duplicate',
-            color: Styles.infoBlue,
-            iconWidget: Icon(
-              CupertinoIcons.doc_on_doc,
-              size: 20,
+      child: SizedBox(
+        height: height,
+        child: AnimatedSlidable(
+          key: key,
+          index: workoutMove.sortPosition,
+          itemType: 'Move',
+          removeItem: deleteWorkoutMove,
+          secondaryActions: [
+            IconSlideAction(
+              caption: 'Duplicate',
+              color: Styles.infoBlue,
+              iconWidget: Icon(
+                CupertinoIcons.doc_on_doc,
+                size: 20,
+              ),
+              onTap: () => duplicateWorkoutMove(workoutMove.sortPosition),
             ),
-            onTap: () => duplicateWorkoutMove(workoutMove.sortPosition),
+          ],
+          child: WorkoutMoveDisplay(
+            workoutMove,
+            isLast: isLast,
           ),
-        ],
-        child: WorkoutMoveDisplay(
-          workoutMove,
-          isLast: isLast,
         ),
       ),
     );
