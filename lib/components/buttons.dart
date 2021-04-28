@@ -446,26 +446,39 @@ class SortByButton extends StatelessWidget {
 class CreateTextIconButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
-  CreateTextIconButton({required this.onPressed, this.text = 'Create'});
+  final bool loading;
+  CreateTextIconButton(
+      {required this.onPressed, this.text = 'Create', this.loading = false});
+
+  List<Widget> _buildChildren() {
+    return loading
+        ? [
+            LoadingDots(
+              size: 14,
+            ),
+          ]
+        : [
+            Icon(
+              CupertinoIcons.add,
+              size: 22,
+            ),
+            SizedBox(width: 2),
+            MyText(
+              text,
+              weight: FontWeight.bold,
+            )
+          ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: onPressed,
+      onPressed: loading ? null : onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            CupertinoIcons.add,
-            size: 22,
-          ),
-          SizedBox(width: 2),
-          MyText(
-            text,
-            weight: FontWeight.bold,
-          )
-        ],
+        children: _buildChildren(),
       ),
     );
   }
@@ -500,7 +513,7 @@ class NavBarSaveButton extends StatelessWidget {
       children: [
         CupertinoButton(
             padding: EdgeInsets.zero,
-            onPressed: onPressed,
+            onPressed: loading ? null : onPressed,
             child: loading
                 ? LoadingDots(
                     size: 12,

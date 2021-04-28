@@ -40,6 +40,9 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   late WorkoutSection _workoutSection;
   late List<WorkoutSet> _sortedWorkoutSets;
 
+  /// Disable multiple fast clicks from generating multiple actions which will cause errors.
+  bool _processing = false;
+
   void _checkForNewData() {
     if (_bloc.workout.workoutSections.length > widget.sectionIndex) {
       final updatedWorkoutSection =
@@ -97,14 +100,19 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   void _createEmptyWorkoutSet(
       {bool openWorkoutMoveSelector = false,
       bool workoutMoveIgnoreReps = false,
-      Map<String, dynamic> defaults = const {}}) {
+      Map<String, dynamic> defaults = const {}}) async {
+    if (_processing) {
+      return;
+    }
+
+    setState(() => _processing = true);
     // Create default set.
-    _bloc.createWorkoutSet(widget.sectionIndex, defaults: defaults);
+    await _bloc.createWorkoutSet(widget.sectionIndex, defaults: defaults);
 
     if (openWorkoutMoveSelector) {
       // Open workout move creator to add first move.
       // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
-      Navigator.push(
+      await Navigator.push(
         context,
         CupertinoPageRoute(
           builder: (context) =>
@@ -121,15 +129,23 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         ),
       );
     }
+    setState(() => _processing = false);
   }
 
   // Creates a new set and then adds a workout move (rest) to it.
   // TODO: Consider on boot of app, saving these static default object types into a global repo somewhere.
   void _createRestSet(Move move, {Map<String, dynamic>? defaults}) async {
+    if (_processing) {
+      return;
+    }
+
+    setState(() => _processing = true);
+
+    /// [shouldNotifyListeners: false]. This will happen once _bloc.createWorkoutMove is complete.
     final workoutSet = await _bloc.createWorkoutSet(widget.sectionIndex,
-        defaults: defaults ?? {});
+        defaults: defaults ?? {}, shouldNotifyListeners: false);
     if (workoutSet != null) {
-      _bloc.createWorkoutMove(
+      await _bloc.createWorkoutMove(
           widget.sectionIndex,
           workoutSet.sortPosition,
           DefaultObjectfactory.defaultWorkoutMove(
@@ -138,6 +154,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
               timeAmount: 1,
               timeUnit: TimeUnit.minutes));
     }
+    setState(() => _processing = false);
   }
 
   Widget _buildSectionTypeCreator(
@@ -145,6 +162,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   ) {
     switch (workoutSectionType.name) {
       case kFreeSession:
+      case kForTime:
         return FreeSessionCreator(
             sortedWorkoutSets: _sortedWorkoutSets,
             sectionIndex: widget.sectionIndex,

@@ -1547,6 +1547,7 @@ WorkoutSectionSummary _$WorkoutSectionSummaryFromJson(
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..name = json['name'] as String?
+    ..sortPosition = json['sortPosition'] as int
     ..timecap = json['timecap'] as int?
     ..workoutSectionType = WorkoutSectionType.fromJson(
         json['WorkoutSectionType'] as Map<String, dynamic>)
@@ -1561,6 +1562,7 @@ Map<String, dynamic> _$WorkoutSectionSummaryToJson(
       '__typename': instance.$$typename,
       'id': instance.id,
       'name': instance.name,
+      'sortPosition': instance.sortPosition,
       'timecap': instance.timecap,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
       'WorkoutSets': instance.workoutSets.map((e) => e.toJson()).toList(),

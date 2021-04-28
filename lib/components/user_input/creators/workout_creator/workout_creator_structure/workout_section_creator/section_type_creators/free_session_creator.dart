@@ -2,10 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
+import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:provider/provider.dart';
 
+/// Used for creating [Free Session], [For Time].
+/// Completely open - user can create more or less anything.
 class FreeSessionCreator extends StatelessWidget {
   final int sectionIndex;
   final List<WorkoutSet> sortedWorkoutSets;
@@ -49,6 +53,8 @@ class FreeSessionCreator extends StatelessWidget {
             children: [
               CreateTextIconButton(
                 text: 'Add Set',
+                loading: context
+                    .select<WorkoutCreatorBloc, bool>((b) => b.creatingSet),
                 onPressed: createSet,
               ),
             ],

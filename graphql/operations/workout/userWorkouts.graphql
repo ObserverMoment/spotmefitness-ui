@@ -21,6 +21,7 @@ query userWorkouts {
       __typename
       id
       name
+      sortPosition
       timecap
       WorkoutSectionType {
         ...WorkoutSectionType

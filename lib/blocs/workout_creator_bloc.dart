@@ -10,7 +10,7 @@ import 'package:spotmefitness_ui/services/type_converters.dart';
 /// All updates to workout or descendants follow this pattern.
 /// 1: Update local data
 /// 2. Notify listeners so UI rebuilds optimistically
-/// 3. Call API mutation.
+/// 3. Call API mutation (if not a create op).
 /// 4. Check response is what was expected.
 /// 5. If not then roll back local state changes and display error message.
 /// 6: If ok then action is complete.
@@ -18,11 +18,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   final Workout initialWorkout;
   final BuildContext context;
 
-  int _sectionId = 0;
   int _setId = 0;
   int _workoutMoveId = 0;
 
   bool formIsDirty = false;
+
+  /// Use when creating new objects which have to wait for network responses before updating the UI with their presence. Anything that has children is an issue to update optimistically as the object ids will be [temp] until the network request comes back with the uid from the DB.
+  bool creatingSection = false;
+  bool creatingSet = false;
+
   Workout workout;
 
   /// Before every update we make a copy of the last workout here.
@@ -140,17 +144,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   ////// WorkoutSection CRUD //////
-  void createWorkoutSection(WorkoutSectionType type) async {
+  Future<void> createWorkoutSection(WorkoutSectionType type) async {
     _backupAndMarkDirty();
+    creatingSection = true;
+    notifyListeners();
 
     /// New sections go in last position by default.
     final nextIndex = workout.workoutSections.length;
 
-    /// Client / Optimistic
-    workout.workoutSections.add(_genDefaultWorkoutSection(type, nextIndex));
-    notifyListeners();
-
-    /// Api
+    /// Api only for creates.
     final variables = CreateWorkoutSectionArguments(
         data: CreateWorkoutSectionInput(
             sortPosition: nextIndex,
@@ -164,12 +166,13 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      workout.workoutSections.last = WorkoutSection.fromJson(
+      workout.workoutSections.add(WorkoutSection.fromJson(
           CreateWorkoutSection$Mutation.fromJson(result.data!)
               .createWorkoutSection
-              .toJson());
+              .toJson()));
     }
 
+    creatingSection = false;
     notifyListeners();
   }
 
@@ -291,38 +294,26 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     });
   }
 
-  /// Internal: Client
-  WorkoutSection _genDefaultWorkoutSection(
-          WorkoutSectionType type, int sortPosition) =>
-      WorkoutSection()
-        ..$$typename = 'WorkoutSection'
-        ..id = 'temp-${_sectionId++}'
-        ..rounds = 1
-        ..workoutSectionType = type
-        ..sortPosition = sortPosition
-        ..workoutSets = [];
-
   ////// WorkoutSet CRUD //////
   /// Either empty default or from a pre made set passed as arg.
+  /// [shouldNotifyListeners]: Used if you want to create a set, then a move, and then update the UI. Initially implemented for creating a workoutRestSet (i.e) a set with only a rest in it and ensuring a smooth UI update.
+  /// Function is returning a workoutSet so that the caller can then immediately create a workoutMove to go in it if needed. Works in combination with [shouldNotifyListeners]. When done - Creating the workout move will call notifyListeners() and all UI will be updated.
   Future<WorkoutSet?> createWorkoutSet(int sectionIndex,
-      {Map<String, dynamic> defaults = const {}}) async {
+      {bool shouldNotifyListeners = true,
+      Map<String, dynamic> defaults = const {}}) async {
     _backupAndMarkDirty();
+    creatingSet = true;
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
 
-    /// Client / Optimistic.
     final oldSection = workout.workoutSections[sectionIndex];
-    final oldWorkoutSetsCopy = [...oldSection.workoutSets];
     final newWorkoutSet = WorkoutSet.fromJson({
-      ..._genDefaultWorkoutSet(oldWorkoutSetsCopy.length).toJson(),
+      ..._genDefaultWorkoutSet(oldSection.workoutSets.length).toJson(),
       ...defaults,
     });
 
-    workout.workoutSections[sectionIndex].workoutSets = [
-      ...oldWorkoutSetsCopy,
-      newWorkoutSet
-    ];
-    notifyListeners();
-
-    /// Api
+    /// Api only for create.
     final variables = CreateWorkoutSetArguments(
         data: CreateWorkoutSetInput.fromJson({
       ...newWorkoutSet.toJson(),
@@ -335,16 +326,24 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final success = _checkApiResult(result);
 
+    WorkoutSet? createdSet;
+
     if (success) {
-      final createdSet = WorkoutSet.fromJson({
+      createdSet = WorkoutSet.fromJson({
         ...CreateWorkoutSet$Mutation.fromJson(result.data!)
             .createWorkoutSet
             .toJson(),
         'WorkoutMoves': []
       });
-      workout.workoutSections[sectionIndex].workoutSets.last = createdSet;
-      return createdSet;
+      workout.workoutSections[sectionIndex].workoutSets.add(createdSet);
     }
+
+    creatingSet = false;
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
+
+    return createdSet;
   }
 
   void editWorkoutSet(
@@ -380,6 +379,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
             .toJson(),
       });
     }
+
+    notifyListeners();
   }
 
   void duplicateWorkoutSet(int sectionIndex, int setIndex) async {
@@ -499,6 +500,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
   }
 
+  /// Internal: Client
   WorkoutSet _genDefaultWorkoutSet(int sortPosition) => WorkoutSet()
     ..$$typename = 'WorkoutSet'
     ..id = (_setId++).toString()
@@ -506,6 +508,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     ..sortPosition = sortPosition
     ..workoutMoves = [];
 
+  /// Internal: Client
   void _updateWorkoutSetsSortPosition(List<WorkoutSet> workoutSets) {
     workoutSets.forEachIndexed((i, workoutSet) {
       workoutSet.sortPosition = i;
@@ -514,7 +517,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
   ////// WorkoutMove CRUD //////
   /// Add a workoutMove to a set.
-  void createWorkoutMove(
+  Future<void> createWorkoutMove(
       int sectionIndex, int setIndex, WorkoutMove workoutMove) async {
     _backupAndMarkDirty();
 
@@ -524,12 +527,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final workoutSetId =
         workout.workoutSections[sectionIndex].workoutSets[setIndex].id;
 
-    /// Client.
-    workout.workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves
-        .add(workoutMove);
-    notifyListeners();
-
-    /// Api.
+    /// Api only for create.
     final variables = CreateWorkoutMoveArguments(
         data: CreateWorkoutMoveInput(
             sortPosition: workoutMove.sortPosition,
@@ -553,13 +551,12 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     if (success) {
       workout.workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves
-          .last = WorkoutMove.fromJson(
+          .add(WorkoutMove.fromJson(
         CreateWorkoutMove$Mutation.fromJson(result.data!)
             .createWorkoutMove
             .toJson(),
-      );
+      ));
     }
-
     notifyListeners();
   }
 
@@ -638,11 +635,11 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       int sectionIndex, int setIndex, int workoutMoveIndex) async {
     _backupAndMarkDirty();
 
-    /// Client.
     final workoutMoves = workout
         .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
     final toDuplicate = workoutMoves[workoutMoveIndex];
 
+    /// Need to do a client side insert so that we can update the sort positions in all client side workoutMoves.
     workoutMoves.insert(
         workoutMoveIndex + 1,
         WorkoutMove.fromJson({
@@ -652,9 +649,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     _updateWorkoutMovesSortPosition(workoutMoves);
 
-    notifyListeners();
-
-    /// Api.
+    /// Api only for duplication
+    /// If we do optimistic client update then the user can immediately click to edit a workoutMove with a temp id that does not exist in the DB - causing network error on an update mutation request.
     final variables = DuplicateWorkoutMoveByIdArguments(id: toDuplicate.id);
 
     final result = await context.graphQLClient.mutate(MutationOptions(

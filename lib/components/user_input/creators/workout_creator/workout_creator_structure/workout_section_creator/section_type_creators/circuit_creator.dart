@@ -3,19 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
+import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_station_set_creator.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/default_object_factory.dart';
+import 'package:provider/provider.dart';
 
 class CircuitCreator extends StatelessWidget {
   final int sectionIndex;
   final List<WorkoutSet> sortedWorkoutSets;
   final void Function(Map<String, dynamic> defaults) createWorkoutSet;
   final void Function(Move move, Duration duration) createRestSet;
+
   CircuitCreator({
     required this.sortedWorkoutSets,
     required this.sectionIndex,
@@ -25,6 +27,9 @@ class CircuitCreator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final creatingSet =
+        context.select<WorkoutCreatorBloc, bool>((b) => b.creatingSet);
+
     return Flexible(
         child: QueryResponseBuilder(
             options: QueryOptions(
@@ -67,6 +72,7 @@ class CircuitCreator extends StatelessWidget {
                     children: [
                       CreateTextIconButton(
                         text: 'Add Station',
+                        loading: creatingSet,
                         onPressed: () =>
                             createWorkoutSet({'duration': 60}), // Seconds
                       ),
@@ -74,6 +80,7 @@ class CircuitCreator extends StatelessWidget {
                         FadeIn(
                           child: CreateTextIconButton(
                             text: 'Add Rest',
+                            loading: creatingSet,
                             onPressed: () =>
                                 createRestSet(rest, Duration(seconds: 30)),
                           ),

@@ -76,7 +76,7 @@ class WorkoutDetailsSection extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     height: 20,
                     fit: BoxFit.fitWidth,
-                    color: context.theme.background,
+                    color: context.theme.primary,
                   ),
                   text: 'Body',
                   onPressed: () => context.push(

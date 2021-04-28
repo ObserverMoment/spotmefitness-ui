@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
   final WorkoutSummary workoutSummary;
@@ -69,6 +70,7 @@ class WorkoutCard extends StatelessWidget {
                 spacing: 4,
                 runSpacing: 4,
                 children: workoutSummary.workoutSections
+                    .sortedBy<num>((section) => section.sortPosition)
                     .map((section) => WorkoutSectionTypeTag(
                         Utils.textNotNull(section.name)
                             ? section.name!

@@ -7,6 +7,7 @@ const kMiniButtonIconSize = 24.0;
 /// WorkoutSectionTypeNames
 const kFreeSession = 'Free Session';
 const kHIITCircuit = 'HIIT Circuit';
+const kForTime = 'For Time';
 
 /// BodyArea selector SVG viewbox sizes.
 /// Required to correctly render custom path clips on top of graphical SVG elements.

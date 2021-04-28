@@ -53,10 +53,10 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
     _bloc.addListener(_checkForNewData);
   }
 
-  void _openCreateSection() {
+  void _openCreateSection() async {
     final nextIndex = _sortedworkoutSections.length;
     // Create a default section as a placeholder until user selects the type.
-    _bloc
+    await _bloc
         .createWorkoutSection(DefaultObjectfactory.defaultWorkoutSectionType());
 
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
@@ -132,6 +132,8 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
                   children: [
                     CreateTextIconButton(
                       text: 'Add Section',
+                      loading: context.select<WorkoutCreatorBloc, bool>(
+                          (b) => b.creatingSection),
                       onPressed: _openCreateSection,
                     ),
                   ],

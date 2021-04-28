@@ -1781,6 +1781,8 @@ class WorkoutSectionSummary extends JsonSerializable with EquatableMixin {
 
   String? name;
 
+  late int sortPosition;
+
   int? timecap;
 
   @JsonKey(name: 'WorkoutSectionType')
@@ -1790,8 +1792,15 @@ class WorkoutSectionSummary extends JsonSerializable with EquatableMixin {
   late List<WorkoutSetSummary> workoutSets;
 
   @override
-  List<Object?> get props =>
-      [$$typename, id, name, timecap, workoutSectionType, workoutSets];
+  List<Object?> get props => [
+        $$typename,
+        id,
+        name,
+        sortPosition,
+        timecap,
+        workoutSectionType,
+        workoutSets
+      ];
   Map<String, dynamic> toJson() => _$WorkoutSectionSummaryToJson(this);
 }
 
@@ -7487,6 +7496,12 @@ class UserWorkoutsQuery
                           selectionSet: null),
                       FieldNode(
                           name: NameNode(value: 'name'),
+                          alias: null,
+                          arguments: [],
+                          directives: [],
+                          selectionSet: null),
+                      FieldNode(
+                          name: NameNode(value: 'sortPosition'),
                           alias: null,
                           arguments: [],
                           directives: [],

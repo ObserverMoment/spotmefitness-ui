@@ -244,9 +244,7 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: Tag(
                               tag: 'REST',
-                              color: Styles.colorThree,
-                              textColor: Styles.white,
-                              fontSize: FONTSIZE.MAIN,
+                              fontSize: FONTSIZE.SMALL,
                             ),
                           ),
                         if (_sortedWorkoutMoves.length > 3)
