@@ -25,10 +25,12 @@ extension BuildContextExtension on BuildContext {
       {double? width,
       double? height,
       double sigmaX = 8,
-      double sigmaY = 8}) async {
+      double sigmaY = 8,
+      bool barrierDismissible = true}) async {
     T? returned = await showCupertinoModalPopup(
       filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
       context: this,
+      barrierDismissible: barrierDismissible,
       builder: (context) => Center(
           child: Container(
               width: width ?? MediaQuery.of(context).size.width * 0.90,

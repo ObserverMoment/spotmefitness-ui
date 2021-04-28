@@ -1,59 +1,53 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
-import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
-import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/services/default_object_factory.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-/// Displays a workout set with user interactions cuch as
-/// For [Free Session], [AMRAP]
-/// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
-class WorkoutSetCreator extends StatefulWidget {
+/// For [Tabata Style] workouts.
+class WorkoutTabataSetCreator extends StatefulWidget {
   final Key key;
   final int sectionIndex;
   final int setIndex;
   final bool scrollable;
   final bool allowReorder;
-  WorkoutSetCreator({
+  final Move restMove;
+  WorkoutTabataSetCreator({
     required this.key,
     required this.sectionIndex,
     required this.setIndex,
+    required this.restMove,
     this.scrollable = false,
     this.allowReorder = false,
   });
 
   @override
-  _WorkoutSetCreatorState createState() => _WorkoutSetCreatorState();
+  _WorkoutTabataSetCreatorState createState() =>
+      _WorkoutTabataSetCreatorState();
 }
 
-class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
+class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
   late List<WorkoutMove> _sortedWorkoutMoves;
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
-  late bool _showFullSetInfo;
 
   void _checkForNewData() {
-    setState(() {
-      _showFullSetInfo = _bloc.showFullSetInfo;
-    });
-
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
     if (_bloc.workout.workoutSections[widget.sectionIndex].workoutSets.length >
         widget.setIndex) {
@@ -61,10 +55,11 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
           .workoutSets[widget.setIndex];
       final updatedWorkoutMoves = updatedSet.workoutMoves;
 
-      if (_workoutSet != updatedSet)
+      if (_workoutSet != updatedSet) {
         setState(() {
           _workoutSet = WorkoutSet.fromJson(updatedSet.toJson());
         });
+      }
 
       if (!_sortedWorkoutMoves.equals(updatedWorkoutMoves))
         setState(() {
@@ -78,13 +73,9 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
-
-    _showFullSetInfo = _bloc.showFullSetInfo;
-
     _workoutSet = WorkoutSet.fromJson(_bloc.workout
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
         .toJson());
-
     _sortedWorkoutMoves = _bloc.workout.workoutSections[widget.sectionIndex]
         .workoutSets[widget.setIndex].workoutMoves
         .sortedBy<num>((wm) => wm.sortPosition);
@@ -126,10 +117,22 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
             sectionIndex: widget.sectionIndex,
             setIndex: widget.setIndex,
             workoutMoveIndex: _sortedWorkoutMoves.length,
+            fixedTimeReps: FixedTimeReps(reps: 20),
           ),
         ),
       ),
     );
+  }
+
+  void _addRestMoveToSet() {
+    _bloc.createWorkoutMove(
+        widget.sectionIndex,
+        widget.setIndex,
+        DefaultObjectfactory.defaultRestWorkoutMove(
+            move: widget.restMove,
+            sortPosition: _sortedWorkoutMoves.length,
+            timeAmount: 10,
+            timeUnit: TimeUnit.seconds));
   }
 
   void _openEditWorkoutMove(WorkoutMove workoutMove) {
@@ -140,12 +143,13 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
         builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
           value: _bloc,
           child: WorkoutMoveCreator(
-            workoutMove: workoutMove,
-            pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: workoutMove.sortPosition,
-          ),
+              workoutMove: workoutMove,
+              pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+              sectionIndex: widget.sectionIndex,
+              setIndex: widget.setIndex,
+              workoutMoveIndex: workoutMove.sortPosition,
+              // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
+              ignoreReps: _sortedWorkoutMoves.length == 1),
         ),
       ),
     );
@@ -165,6 +169,15 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
   }
 
+  String _buildStationTimeText() {
+    if (_workoutSet.duration == null) {
+      throw Exception(
+          '_workoutSet.duration should be set when a new station (workoutSet) is created. It should never be null at this point.');
+    } else {
+      return _workoutSet.duration!.secondsToTimeDisplay();
+    }
+  }
+
   @override
   void dispose() {
     _bloc.removeListener(_checkForNewData);
@@ -173,6 +186,9 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
   @override
   Widget build(BuildContext context) {
+    final isRestSet = _sortedWorkoutMoves.length == 1 &&
+        _sortedWorkoutMoves[0].move.id == kRestMoveId;
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -182,54 +198,47 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
+            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 3),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    MiniButton(
-                        text:
-                            'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
-                        onPressed: () => context.showBottomSheet<int>(
-                                child: NumberInputModal<int>(
-                              value: _workoutSet.rounds,
-                              // Need to cast to dynamic because of this.
-                              // https://github.com/dart-lang/sdk/issues/32042
-                              saveValue: <int>(dynamic r) => context
-                                  .read<WorkoutCreatorBloc>()
-                                  .editWorkoutSet(widget.sectionIndex,
-                                      widget.setIndex, {'rounds': r}),
-                              title: 'How many repeats?',
-                            ))),
-                    if (_sortedWorkoutMoves.length > 3)
+                    CircularBox(
+                      child: MyText(
+                        '${widget.setIndex + 1}',
+                        color: Styles.white,
+                        weight: FontWeight.bold,
+                      ),
+                      color: Styles.colorOne,
+                      padding: const EdgeInsets.all(9),
+                    ),
+                    if (isRestSet)
                       Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'GIANTSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Row(
+                          children: [
+                            MiniButton(
+                                text: _buildStationTimeText(),
+                                onPressed: () => context.showBottomSheet(
+                                    child: DurationPicker(
+                                        duration: _workoutSet.duration!,
+                                        updateDuration: (seconds) => context
+                                            .read<WorkoutCreatorBloc>()
+                                            .editWorkoutSet(
+                                                widget.sectionIndex,
+                                                widget.setIndex,
+                                                {'duration': seconds})))),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Tag(
+                                tag: 'REST',
+                                fontSize: FONTSIZE.SMALL,
+                              ),
+                            ),
+                          ],
                         ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 3)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'TRISET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 2)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'SUPERSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
+                      ),
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -257,40 +266,44 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
               ],
             ),
           ),
-          if (!_showFullSetInfo) CommaSeparatedMovesList(_sortedWorkoutMoves),
-          GrowInOut(
-            show: _showFullSetInfo,
-            child: Column(
+          if (!isRestSet)
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              height: _sortedWorkoutMoves.length * 62,
+              child: ReorderableListView.builder(
+                  proxyDecorator: (child, index, animation) =>
+                      DraggedItem(child: child),
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: _sortedWorkoutMoves.length,
+                  itemBuilder: (context, index) => WorkoutMoveInSet(
+                        key: Key(
+                            '$index-workout_tabata_set_creator-${_sortedWorkoutMoves[index].id}'),
+                        workoutMove: _sortedWorkoutMoves[index],
+                        deleteWorkoutMove: _deleteWorkoutMove,
+                        duplicateWorkoutMove: _duplicateWorkoutMove,
+                        openEditWorkoutMove: _openEditWorkoutMove,
+                        isLast: index == _sortedWorkoutMoves.length - 1,
+                        showReps: _sortedWorkoutMoves.length > 1,
+                      ),
+                  onReorder: _reorderWorkoutMoves),
+            ),
+          if (!isRestSet)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  height:
-                      _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
-                  child: ReorderableListView.builder(
-                      proxyDecorator: (child, index, animation) =>
-                          DraggedItem(child: child),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _sortedWorkoutMoves.length,
-                      itemBuilder: (context, index) => WorkoutMoveInSet(
-                            key: Key(
-                                '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
-                            workoutMove: _sortedWorkoutMoves[index],
-                            deleteWorkoutMove: _deleteWorkoutMove,
-                            duplicateWorkoutMove: _duplicateWorkoutMove,
-                            openEditWorkoutMove: _openEditWorkoutMove,
-                            isLast: index == _sortedWorkoutMoves.length - 1,
-                          ),
-                      onReorder: _reorderWorkoutMoves),
-                ),
                 CreateTextIconButton(
                   text: 'Add Move',
                   onPressed: _openAddWorkoutMoveToSet,
                 ),
+                if (_sortedWorkoutMoves.isNotEmpty)
+                  CreateTextIconButton(
+                    text: 'Add Rest',
+                    onPressed: _addRestMoveToSet,
+                  ),
               ],
             ),
-          ),
         ],
       ),
     );

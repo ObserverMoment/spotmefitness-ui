@@ -11,7 +11,9 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/tim
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/circuit_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/emom_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/free_session_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/tabata_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -92,7 +94,29 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     });
   }
 
-  void _updateSection(Map<String, dynamic> data) {
+  void _updateWorkoutSectionType(WorkoutSectionType type) async {
+    /// Request any required inputs before the workoutSection is updated.
+    /// And adjust / reset anything that needs to be changed when section type is changed.
+    if (type.name == kAMRAPName) {
+      await context.openBlurModalPopup<Duration>(
+          TimecapPopup(
+            timecap: Duration(minutes: 10),
+            allowNoTimecap: false,
+            title: 'AMRAP in how long?',
+            saveTimecap: (timecap) => _updateWorkoutSection({
+              'timecap': (timecap ?? Duration(minutes: 10)).inSeconds,
+              'WorkoutSectionType': type.toJson()
+            }),
+          ),
+          height: 400,
+          // An input is required - clicking outside the modal should not close it.
+          barrierDismissible: false);
+    } else {
+      _updateWorkoutSection({'WorkoutSectionType': type.toJson()});
+    }
+  }
+
+  void _updateWorkoutSection(Map<String, dynamic> data) {
     _bloc.updateWorkoutSection(widget.sectionIndex, data);
   }
 
@@ -133,8 +157,9 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
   }
 
   // Creates a new set and then adds a workout move (rest) to it.
-  // TODO: Consider on boot of app, saving these static default object types into a global repo somewhere.
-  void _createRestSet(Move move, {Map<String, dynamic>? defaults}) async {
+  // TODO: Consider on boot of app:
+  // saving these static default object types into a global repo somewhere.
+  void _createRestSet(Move restMove, {Map<String, dynamic>? defaults}) async {
     if (_processing) {
       return;
     }
@@ -148,8 +173,8 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
       await _bloc.createWorkoutMove(
           widget.sectionIndex,
           workoutSet.sortPosition,
-          DefaultObjectfactory.defaultWorkoutMove(
-              move: move,
+          DefaultObjectfactory.defaultRestWorkoutMove(
+              move: restMove,
               sortPosition: 0,
               timeAmount: 1,
               timeUnit: TimeUnit.minutes));
@@ -157,22 +182,33 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     setState(() => _processing = false);
   }
 
+  void toggleShowFullSetInfo() => _bloc.toggleShowFullSetInfo();
+
   Widget _buildSectionTypeCreator(
     WorkoutSectionType workoutSectionType,
   ) {
     switch (workoutSectionType.name) {
-      case kFreeSession:
-      case kForTime:
+      case kFreeSessionName:
+      case kForTimeName:
+      case kAMRAPName:
         return FreeSessionCreator(
             sortedWorkoutSets: _sortedWorkoutSets,
             sectionIndex: widget.sectionIndex,
+            totalRounds: _workoutSection.rounds,
+            timecap: _workoutSection.timecap,
+            freeSessionCreatorType: workoutSectionType.name == kFreeSessionName
+                ? FreeSessionCreatorType.freeSession
+                : workoutSectionType.name == kForTimeName
+                    ? FreeSessionCreatorType.forTime
+                    : FreeSessionCreatorType.amrap,
             createSet: () =>
                 _createEmptyWorkoutSet(openWorkoutMoveSelector: true));
-      case kHIITCircuit:
+      case kHIITCircuitName:
         return CircuitCreator(
             sortedWorkoutSets: _sortedWorkoutSets,
             sectionIndex: widget.sectionIndex,
-            // IgnoreReps is used when creating a workout move for a timed workout set.
+            totalRounds: _workoutSection.rounds,
+            // workoutMoveIgnoreReps is used when creating a workout move for a timed workout set.
             // No need to set the reps and the length of time working is determined by workoutSet.duration.
             createWorkoutSet: (defaults) => _createEmptyWorkoutSet(
                 openWorkoutMoveSelector: true,
@@ -181,16 +217,48 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             createRestSet: (restMoveObj, duration) => _createRestSet(
                 restMoveObj,
                 defaults: {'duration': duration.inSeconds}));
+      case kEMOMName:
+      case kLastStandingName:
+        return EMOMCreator(
+            sortedWorkoutSets: _sortedWorkoutSets,
+            sectionIndex: widget.sectionIndex,
+            totalRounds: _workoutSection.rounds,
+            timecap: _workoutSection.timecap,
+            creatorType: workoutSectionType.name == kEMOMName
+                ? EMOMCreatorType.emom
+                : EMOMCreatorType.lastOneStanding,
+            createSet: (defaults) => _createEmptyWorkoutSet(
+                openWorkoutMoveSelector: true, defaults: defaults));
+      case kTabataName:
+        return TabataCreator(
+            sortedWorkoutSets: _sortedWorkoutSets,
+            sectionIndex: widget.sectionIndex,
+            totalRounds: _workoutSection.rounds,
+            // workoutMoveIgnoreReps is used when creating a workout move for a timed workout set.
+            // No need to set the reps and the length of time working is determined by workoutSet.duration.
+            createWorkoutSet: _createEmptyWorkoutSet,
+            createRestSet: (restMoveObj, duration) => _createRestSet(
+                restMoveObj,
+                defaults: {'duration': duration.inSeconds}));
+
       default:
         return Container();
     }
   }
 
-  String _buildTitle(WorkoutSection workoutSection) {
-    final first = 'Section ${(workoutSection.sortPosition + 1).toString()}';
-    final second =
-        workoutSection.name != null ? ' - ${workoutSection.name}' : '';
-    return '$first $second';
+  Widget _buildTitle(WorkoutSection workoutSection) {
+    return SizedBox(
+      height: 30,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          WorkoutSectionTypeTag(
+              _workoutSection.workoutSectionType.name.toUpperCase()),
+          if (workoutSection.name != null)
+            NavBarTitle(' - ${workoutSection.name!}'),
+        ],
+      ),
+    );
   }
 
   @override
@@ -202,9 +270,12 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
 
   @override
   Widget build(BuildContext context) {
+    final bool showFullSetInfo =
+        context.select<WorkoutCreatorBloc, bool>((b) => b.showFullSetInfo);
+
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-        middle: NavBarTitle(_buildTitle(_workoutSection)),
+        middle: _buildTitle(_workoutSection),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(
                 items: [
@@ -218,7 +289,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                       title: 'Name',
                       inputValidation: (text) => true,
                       initialValue: _workoutSection.name,
-                      onSave: (text) => _updateSection({'name': text}),
+                      onSave: (text) => _updateWorkoutSection({'name': text}),
                     )),
                   ),
                   ContextMenuItem(
@@ -241,7 +312,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                   children: [
                     MyText('What do you want to create?'),
                     WorkoutSectionTypeSelector((WorkoutSectionType type) {
-                      _updateSection({'WorkoutSectionType': type.toJson()});
+                      _updateWorkoutSectionType(type);
                       _pageController.toPage(1);
                     }),
                   ],
@@ -252,28 +323,46 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        WorkoutSectionTypeTag(
-                            _workoutSection.workoutSectionType.name),
-                        RoundPicker(
-                          rounds: _workoutSection.rounds,
-                          saveValue: (value) =>
-                              _updateSection({'rounds': value}),
-                          modalTitle: 'How many rounds?',
-                        ),
-                        if (![kHIITCircuit]
+                        if (![kLastStandingName, kAMRAPName]
                             .contains(_workoutSection.workoutSectionType.name))
+                          RoundPicker(
+                            rounds: _workoutSection.rounds,
+                            saveValue: (value) =>
+                                _updateWorkoutSection({'rounds': value}),
+                            modalTitle: 'How many rounds?',
+                          ),
+                        if (![
+                          kHIITCircuitName,
+                          kEMOMName,
+                          kTabataName,
+                          kForTimeName,
+                        ].contains(_workoutSection.workoutSectionType.name))
                           TimecapPicker(
+                            allowNoTimecap:
+                                _workoutSection.workoutSectionType.name !=
+                                    kAMRAPName,
                             timecap: _workoutSection.timecap != null
                                 ? Duration(seconds: _workoutSection.timecap!)
                                 : null,
-                            saveTimecap: (duration) => _updateSection(
+                            saveTimecap: (duration) => _updateWorkoutSection(
                                 {'timecap': duration?.inSeconds}),
                           ),
                         NoteEditor(
                           title: 'Section Note',
                           note: _workoutSection.note,
-                          saveNote: (note) => _updateSection({'note': note}),
-                        )
+                          saveNote: (note) =>
+                              _updateWorkoutSection({'note': note}),
+                        ),
+                        CupertinoButton(
+                            pressedOpacity: 0.8,
+                            padding: EdgeInsets.zero,
+                            child: AnimatedSwitcher(
+                              duration: Duration(milliseconds: 250),
+                              child: showFullSetInfo
+                                  ? Icon(CupertinoIcons.eye_slash)
+                                  : Icon(CupertinoIcons.eye),
+                            ),
+                            onPressed: toggleShowFullSetInfo),
                       ],
                     ),
                     _buildSectionTypeCreator(

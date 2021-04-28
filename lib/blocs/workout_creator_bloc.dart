@@ -23,6 +23,14 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
   bool formIsDirty = false;
 
+  /// When false workout sets are displayed as a minimal single line item.
+  /// To allow clear overview and to make re-ordering more simple.
+  bool showFullSetInfo = true;
+  void toggleShowFullSetInfo() {
+    showFullSetInfo = !showFullSetInfo;
+    notifyListeners();
+  }
+
   /// Use when creating new objects which have to wait for network responses before updating the UI with their presence. Anything that has children is an issue to update optimistically as the object ids will be [temp] until the network request comes back with the uid from the DB.
   bool creatingSection = false;
   bool creatingSet = false;

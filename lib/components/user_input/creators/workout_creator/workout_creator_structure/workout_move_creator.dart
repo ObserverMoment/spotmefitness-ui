@@ -16,6 +16,13 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
 
+/// Theis builder will be fixed to these values and should not show any UI for adjusting them.
+class FixedTimeReps {
+  final double reps;
+  final TimeUnit timeUnit;
+  FixedTimeReps({required this.reps, this.timeUnit = TimeUnit.seconds});
+}
+
 /// Handles state internally the user is ready to save it and add it to the section.
 class WorkoutMoveCreator extends StatefulWidget {
   final String? pageTitle;
@@ -24,12 +31,14 @@ class WorkoutMoveCreator extends StatefulWidget {
   final int workoutMoveIndex;
   final WorkoutMove? workoutMove;
   final bool ignoreReps;
+  final FixedTimeReps? fixedTimeReps;
   WorkoutMoveCreator(
       {required this.sectionIndex,
       required this.setIndex,
       required this.workoutMoveIndex,
       this.pageTitle,
       this.ignoreReps = false,
+      this.fixedTimeReps,
       this.workoutMove});
 
   @override
@@ -66,11 +75,19 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
       ..id = _activeWorkoutMove?.id ?? 'tempId'
       ..sortPosition = widget.workoutMoveIndex
       ..equipment = null
-      ..reps = _activeWorkoutMove?.reps ?? 10
-      ..repType = move.validRepTypes.first
+      ..reps = widget.fixedTimeReps != null
+          ? widget.fixedTimeReps!.reps
+          : _activeWorkoutMove?.reps ?? 10
+      ..repType = widget.fixedTimeReps != null
+          ? WorkoutMoveRepType.time
+          : move.validRepTypes.contains(WorkoutMoveRepType.reps)
+              ? WorkoutMoveRepType.reps
+              : move.validRepTypes.first
       ..distanceUnit = _activeWorkoutMove?.distanceUnit ?? DistanceUnit.metres
       ..loadUnit = _activeWorkoutMove?.loadUnit ?? LoadUnit.kg
-      ..timeUnit = _activeWorkoutMove?.timeUnit ?? TimeUnit.minutes
+      ..timeUnit = widget.fixedTimeReps != null
+          ? widget.fixedTimeReps!.timeUnit
+          : _activeWorkoutMove?.timeUnit ?? TimeUnit.seconds
       ..loadAmount = 0
       ..move = move;
     _pageController.toPage(1);
@@ -250,7 +267,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     alignment: WrapAlignment.spaceEvenly,
                                     runAlignment: WrapAlignment.spaceEvenly,
                                     children: [
-                                      if (!widget.ignoreReps)
+                                      if (!widget.ignoreReps &&
+                                          widget.fixedTimeReps == null)
                                         RepPickerDisplay(
                                           reps: _activeWorkoutMove!.reps,
                                           validRepTypes: _activeWorkoutMove!

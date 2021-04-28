@@ -3,11 +3,16 @@ const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 
 const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
 const kMiniButtonIconSize = 24.0;
+const kWorkoutMoveListItemHeight = 65.0;
 
 /// WorkoutSectionTypeNames
-const kFreeSession = 'Free Session';
-const kHIITCircuit = 'HIIT Circuit';
-const kForTime = 'For Time';
+const kFreeSessionName = 'Free Session';
+const kHIITCircuitName = 'HIIT Circuit';
+const kForTimeName = 'For Time';
+const kEMOMName = 'EMOM';
+const kLastStandingName = 'Last One Standing';
+const kAMRAPName = 'AMRAP';
+const kTabataName = 'Tabata Style';
 
 /// BodyArea selector SVG viewbox sizes.
 /// Required to correctly render custom path clips on top of graphical SVG elements.

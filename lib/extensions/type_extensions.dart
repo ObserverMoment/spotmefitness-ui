@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
@@ -103,6 +101,28 @@ extension DurationExtension on Duration {
         '${this.inSeconds.remainder(60).toString().padLeft(2, '0')}';
 
     return '$_hours$_minutes$_seconds';
+  }
+}
+
+extension IntExtension on int {
+  String secondsToTimeDisplay() {
+    final String amount;
+    final String unit;
+    if (this >= 3600) {
+      // Hours
+      amount = (this / 3600).stringMyDouble();
+      unit = amount == '1' ? 'hour' : 'hours';
+    } else if (this >= 60) {
+      // Minutes
+      amount = (this / 60).stringMyDouble();
+      unit = amount == '1' ? 'minute' : 'minutes';
+    } else {
+      // Seconds
+      amount = this.toString();
+      unit = amount == '1' ? 'second' : 'seconds';
+    }
+
+    return '$amount $unit';
   }
 }
 

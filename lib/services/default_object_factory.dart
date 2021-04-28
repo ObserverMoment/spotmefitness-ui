@@ -9,13 +9,13 @@ class DefaultObjectfactory {
       ..description = '';
   }
 
-  static WorkoutMove defaultWorkoutMove(
+  static WorkoutMove defaultRestWorkoutMove(
       {required Move move,
       required int sortPosition,
       required int timeAmount,
       required TimeUnit timeUnit}) {
     return WorkoutMove()
-      ..id = 'rest-tempId-$sortPosition'
+      ..id = 'move-temp-$sortPosition'
       ..sortPosition = sortPosition
       ..equipment = null
       ..reps = timeAmount.toDouble()

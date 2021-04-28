@@ -1,37 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:provider/provider.dart';
 
-/// Displays a workout set with user interactions cuch as
-/// For [Free Session], [AMRAP]
+/// For [EMOM], [Last Standing]
+/// Displays a workout set with user interactions such as
 /// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
-class WorkoutSetCreator extends StatefulWidget {
+class WorkoutEMOMSetCreator extends StatefulWidget {
   final Key key;
   final int sectionIndex;
   final int setIndex;
   final bool scrollable;
   final bool allowReorder;
-  WorkoutSetCreator({
+  WorkoutEMOMSetCreator({
     required this.key,
     required this.sectionIndex,
     required this.setIndex,
@@ -40,20 +35,15 @@ class WorkoutSetCreator extends StatefulWidget {
   });
 
   @override
-  _WorkoutSetCreatorState createState() => _WorkoutSetCreatorState();
+  _WorkoutEMOMSetCreatorState createState() => _WorkoutEMOMSetCreatorState();
 }
 
-class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
+class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
   late List<WorkoutMove> _sortedWorkoutMoves;
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
-  late bool _showFullSetInfo;
 
   void _checkForNewData() {
-    setState(() {
-      _showFullSetInfo = _bloc.showFullSetInfo;
-    });
-
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
     if (_bloc.workout.workoutSections[widget.sectionIndex].workoutSets.length >
         widget.setIndex) {
@@ -78,13 +68,9 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   void initState() {
     super.initState();
     _bloc = context.read<WorkoutCreatorBloc>();
-
-    _showFullSetInfo = _bloc.showFullSetInfo;
-
     _workoutSet = WorkoutSet.fromJson(_bloc.workout
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
         .toJson());
-
     _sortedWorkoutMoves = _bloc.workout.workoutSections[widget.sectionIndex]
         .workoutSets[widget.setIndex].workoutMoves
         .sortedBy<num>((wm) => wm.sortPosition);
@@ -165,6 +151,15 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
   }
 
+  String _buildPeriodTimeText() {
+    if (_workoutSet.duration == null) {
+      throw Exception(
+          '_workoutSet.duration should be set when a new period (workoutSet) is created. It should never be null at this point.');
+    } else {
+      return _workoutSet.duration!.secondsToTimeDisplay();
+    }
+  }
+
   @override
   void dispose() {
     _bloc.removeListener(_checkForNewData);
@@ -203,33 +198,18 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                                       widget.setIndex, {'rounds': r}),
                               title: 'How many repeats?',
                             ))),
-                    if (_sortedWorkoutMoves.length > 3)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'GIANTSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 3)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'TRISET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 2)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'SUPERSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
+                    MyText(' within '),
+                    MiniButton(
+                        text: _buildPeriodTimeText(),
+                        onPressed: () => context.showBottomSheet(
+                            child: DurationPicker(
+                                duration: _workoutSet.duration!,
+                                updateDuration: (seconds) => context
+                                    .read<WorkoutCreatorBloc>()
+                                    .editWorkoutSet(
+                                        widget.sectionIndex,
+                                        widget.setIndex,
+                                        {'duration': seconds})))),
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -257,39 +237,30 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
               ],
             ),
           ),
-          if (!_showFullSetInfo) CommaSeparatedMovesList(_sortedWorkoutMoves),
-          GrowInOut(
-            show: _showFullSetInfo,
-            child: Column(
-              children: [
-                AnimatedContainer(
-                  duration: Duration(milliseconds: 200),
-                  curve: Curves.easeInOut,
-                  height:
-                      _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
-                  child: ReorderableListView.builder(
-                      proxyDecorator: (child, index, animation) =>
-                          DraggedItem(child: child),
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _sortedWorkoutMoves.length,
-                      itemBuilder: (context, index) => WorkoutMoveInSet(
-                            key: Key(
-                                '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
-                            workoutMove: _sortedWorkoutMoves[index],
-                            deleteWorkoutMove: _deleteWorkoutMove,
-                            duplicateWorkoutMove: _duplicateWorkoutMove,
-                            openEditWorkoutMove: _openEditWorkoutMove,
-                            isLast: index == _sortedWorkoutMoves.length - 1,
-                          ),
-                      onReorder: _reorderWorkoutMoves),
-                ),
-                CreateTextIconButton(
-                  text: 'Add Move',
-                  onPressed: _openAddWorkoutMoveToSet,
-                ),
-              ],
-            ),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            height: _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
+            child: ReorderableListView.builder(
+                proxyDecorator: (child, index, animation) =>
+                    DraggedItem(child: child),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: _sortedWorkoutMoves.length,
+                itemBuilder: (context, index) => WorkoutMoveInSet(
+                      key: Key(
+                          '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
+                      workoutMove: _sortedWorkoutMoves[index],
+                      deleteWorkoutMove: _deleteWorkoutMove,
+                      duplicateWorkoutMove: _duplicateWorkoutMove,
+                      openEditWorkoutMove: _openEditWorkoutMove,
+                      isLast: index == _sortedWorkoutMoves.length - 1,
+                    ),
+                onReorder: _reorderWorkoutMoves),
+          ),
+          CreateTextIconButton(
+            text: 'Add Move',
+            onPressed: _openAddWorkoutMoveToSet,
           ),
         ],
       ),

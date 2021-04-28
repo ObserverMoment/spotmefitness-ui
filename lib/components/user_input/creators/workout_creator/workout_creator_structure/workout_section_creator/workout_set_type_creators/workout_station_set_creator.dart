@@ -3,25 +3,23 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/menus.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-/// Part of the workout creator suite of components.
+/// For [HIITCircuit] workouts.
 /// Displays a workout station (for circuits) set with user interactions cuch as
 /// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
 /// A station can have one or moves moves.
@@ -165,25 +163,9 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
   String _buildStationTimeText() {
     if (_workoutSet.duration == null) {
       throw Exception(
-          '_workoutSet.duration should be set when a new station is created. It should never be null at this point.');
+          '_workoutSet.duration should be set when a new station (workoutSet) is created. It should never be null at this point.');
     } else {
-      final String amount;
-      final String unit;
-      if (_workoutSet.duration! >= 3600) {
-        // Hours
-        amount = (_workoutSet.duration! / 3600).stringMyDouble();
-        unit = amount == '1' ? 'hour' : 'hours';
-      } else if (_workoutSet.duration! >= 60) {
-        // Minutes
-        amount = (_workoutSet.duration! / 60).stringMyDouble();
-        unit = amount == '1' ? 'minute' : 'minutes';
-      } else {
-        // Seconds
-        amount = (_workoutSet.duration!).toString();
-        unit = amount == '1' ? 'second' : 'seconds';
-      }
-
-      return 'For $amount $unit';
+      return _workoutSet.duration!.secondsToTimeDisplay();
     }
   }
 
@@ -307,14 +289,14 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
             AnimatedContainer(
               duration: Duration(milliseconds: 200),
               curve: Curves.easeInOut,
-              height: _sortedWorkoutMoves.length * 62,
+              height: _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
               child: ReorderableListView.builder(
                   proxyDecorator: (child, index, animation) =>
                       DraggedItem(child: child),
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: _sortedWorkoutMoves.length,
-                  itemBuilder: (context, index) => WorkoutMoveInStationSet(
+                  itemBuilder: (context, index) => WorkoutMoveInSet(
                         key: Key(
                             '$index-workout_station_set_creator-${_sortedWorkoutMoves[index].id}'),
                         workoutMove: _sortedWorkoutMoves[index],
@@ -328,56 +310,10 @@ class _WorkoutStationSetCreatorState extends State<WorkoutStationSetCreator> {
             ),
           if (!isRest)
             CreateTextIconButton(
-              text: 'Add move',
+              text: 'Add Move',
               onPressed: _openAddWorkoutMoveToSet,
             ),
         ],
-      ),
-    );
-  }
-}
-
-class WorkoutMoveInStationSet extends StatelessWidget {
-  final Key key;
-  final WorkoutMove workoutMove;
-  final void Function(WorkoutMove workoutMove) openEditWorkoutMove;
-  final void Function(int index) duplicateWorkoutMove;
-  final void Function(int index) deleteWorkoutMove;
-  final bool showReps;
-  final bool isLast;
-  WorkoutMoveInStationSet(
-      {required this.key,
-      required this.workoutMove,
-      required this.openEditWorkoutMove,
-      required this.duplicateWorkoutMove,
-      required this.deleteWorkoutMove,
-      this.showReps = true,
-      this.isLast = false});
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => openEditWorkoutMove(workoutMove),
-      child: AnimatedSlidable(
-        key: key,
-        index: workoutMove.sortPosition,
-        itemType: 'Move',
-        removeItem: deleteWorkoutMove,
-        secondaryActions: [
-          IconSlideAction(
-            caption: 'Duplicate',
-            color: Styles.infoBlue,
-            iconWidget: Icon(
-              CupertinoIcons.doc_on_doc,
-              size: 20,
-            ),
-            onTap: () => duplicateWorkoutMove(workoutMove.sortPosition),
-          ),
-        ],
-        child: WorkoutMoveDisplay(
-          workoutMove,
-          isLast: isLast,
-          showReps: showReps,
-        ),
       ),
     );
   }

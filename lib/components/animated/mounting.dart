@@ -147,7 +147,8 @@ class _GrowInOutState extends State<GrowInOut>
     _sizeFactor = Tween<double>(begin: 0, end: 1)
         .animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
-    _runAnimation();
+    _controller.animateTo(widget.show ? 1 : 0,
+        duration: Duration(milliseconds: 1));
   }
 
   @override

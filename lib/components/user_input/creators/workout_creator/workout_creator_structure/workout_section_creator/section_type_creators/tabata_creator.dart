@@ -9,25 +9,29 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_station_set_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_tabata_set_creator.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
 
-class CircuitCreator extends StatelessWidget {
+class TabataCreator extends StatelessWidget {
   final int sectionIndex;
   final List<WorkoutSet> sortedWorkoutSets;
   final int totalRounds;
-  final void Function(Map<String, dynamic> defaults) createWorkoutSet;
+  final void Function() createWorkoutSet;
   final void Function(Move move, Duration duration) createRestSet;
 
-  CircuitCreator({
+  TabataCreator({
     required this.sortedWorkoutSets,
     required this.sectionIndex,
     required this.totalRounds,
     required this.createWorkoutSet,
     required this.createRestSet,
   });
+
+  String _buildRoundsText() =>
+      '$totalRounds time${totalRounds == 1 ? "" : "s"}';
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +63,13 @@ class CircuitCreator extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 4.0, horizontal: 6),
-                        child: WorkoutStationSetCreator(
+                        child: WorkoutTabataSetCreator(
                             key: Key(
-                                'session_creator-$sectionIndex-${item.sortPosition}'),
+                                'tabata_creator-$sectionIndex-${item.sortPosition}'),
                             sectionIndex: sectionIndex,
                             setIndex: item.sortPosition,
-                            allowReorder: sortedWorkoutSets.length > 1),
+                            allowReorder: sortedWorkoutSets.length > 1,
+                            restMove: rest),
                       ),
                     );
                   },
@@ -79,7 +84,7 @@ class CircuitCreator extends StatelessWidget {
                         children: [
                           Expanded(
                             child: MyText(
-                              'Repeat all the above $totalRounds time${totalRounds == 1 ? "" : "s"}',
+                              'Complete all the above ${_buildRoundsText()}',
                               color: Styles.infoBlue,
                               weight: FontWeight.bold,
                               maxLines: 3,
@@ -96,10 +101,9 @@ class CircuitCreator extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CreateTextIconButton(
-                        text: 'Add Station',
+                        text: 'Add Tabata',
                         loading: creatingSet,
-                        onPressed: () =>
-                            createWorkoutSet({'duration': 60}), // Seconds
+                        onPressed: createWorkoutSet, // Seconds
                       ),
                       if (sortedWorkoutSets.isNotEmpty)
                         FadeIn(
