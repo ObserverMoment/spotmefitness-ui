@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Box with rounded corners. No elevation. Card background color.
@@ -16,7 +14,7 @@ class ContentBox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
           color: context.theme.cardBackground,
-          borderRadius: BorderRadius.circular(6)),
+          borderRadius: BorderRadius.circular(8)),
       child: child,
     );
   }

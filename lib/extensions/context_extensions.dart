@@ -171,12 +171,13 @@ extension BuildContextExtension on BuildContext {
         barrierColor: Styles.black.withOpacity(0.9),
         builder: (context) => showDragHandle
             ? Column(
+                mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DragBarHandle(),
                   ),
-                  child,
+                  Builder(builder: (context) => child),
                 ],
               )
             : child);

@@ -1,14 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
+import 'package:get_it/get_it.dart';
+import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -120,10 +126,91 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           final List<WorkoutSection> sortedWorkoutSections =
               workout.workoutSections.sortedBy<num>((ws) => ws.sortPosition);
 
+          final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
+          final bool isOwner = workout.user?.id == authedUserId;
+
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
               middle: NavBarTitle(workout.name),
-              trailing: Icon(CupertinoIcons.ellipsis),
+              trailing: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(CupertinoIcons.ellipsis_circle),
+                onPressed: () => context.showBottomSheet(
+                    child: BottomSheetMenu(
+                        header: Row(
+                          children: [
+                            if (Utils.textNotNull(workout.coverImageUri))
+                              Padding(
+                                padding: const EdgeInsets.only(right: 12.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: SizedUploadcareImage(
+                                    workout.coverImageUri!,
+                                    displaySize: Size(70, 70),
+                                  ),
+                                ),
+                              ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  MyText(
+                                    workout.name,
+                                    weight: FontWeight.bold,
+                                    size: FONTSIZE.BIG,
+                                  ),
+                                  MyText(
+                                    'Workout',
+                                    subtext: true,
+                                    weight: FontWeight.bold,
+                                    size: FONTSIZE.BIG,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        items: [
+                      BottomSheetMenuItem(
+                          text: 'Do it',
+                          icon: Icon(CupertinoIcons.arrow_right_square),
+                          onPressed: () => print('do')),
+                      BottomSheetMenuItem(
+                          text: 'Log it',
+                          icon: Icon(CupertinoIcons.graph_square),
+                          onPressed: () => print('log')),
+                      BottomSheetMenuItem(
+                          text: 'Share',
+                          icon: Icon(CupertinoIcons.share),
+                          onPressed: () => print('share')),
+                      if (isOwner)
+                        BottomSheetMenuItem(
+                            text: 'Edit',
+                            icon: Icon(CupertinoIcons.pencil),
+                            onPressed: () => context.push(
+                                    child: WorkoutCreator(
+                                  workout: workout,
+                                ))),
+                      if (isOwner ||
+                          workout.contentAccessScope ==
+                              ContentAccessScope.public)
+                        BottomSheetMenuItem(
+                            text: 'Duplicate',
+                            icon: Icon(CupertinoIcons.doc_on_doc),
+                            onPressed: () => print('duplicate')),
+                      if (isOwner)
+                        BottomSheetMenuItem(
+                            text: 'Archive',
+                            icon: Icon(
+                              CupertinoIcons.archivebox,
+                              color: Styles.errorRed,
+                            ),
+                            isDestructive: true,
+                            onPressed: () => print('archive')),
+                    ])),
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(6.0),
@@ -140,11 +227,11 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                           children: [
                             CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                onPressed: () => {},
+                                onPressed: () => print('save to collection'),
                                 child: Icon(CupertinoIcons.heart)),
                             CupertinoButton(
                               padding: EdgeInsets.zero,
-                              onPressed: () => {},
+                              onPressed: () => print('schedule it'),
                               child: Icon(CupertinoIcons.calendar),
                             ),
                           ],
