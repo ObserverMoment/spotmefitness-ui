@@ -196,11 +196,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            freeSessionCreatorType: workoutSectionType.name == kFreeSessionName
-                ? FreeSessionCreatorType.freeSession
-                : workoutSectionType.name == kForTimeName
-                    ? FreeSessionCreatorType.forTime
-                    : FreeSessionCreatorType.amrap,
+            typeName: workoutSectionType.name,
             createSet: () =>
                 _createEmptyWorkoutSet(openWorkoutMoveSelector: true));
       case kHIITCircuitName:
@@ -224,9 +220,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            creatorType: workoutSectionType.name == kEMOMName
-                ? EMOMCreatorType.emom
-                : EMOMCreatorType.lastOneStanding,
+            typeName: workoutSectionType.name,
             createSet: (defaults) => _createEmptyWorkoutSet(
                 openWorkoutMoveSelector: true, defaults: defaults));
       case kTabataName:
@@ -248,7 +242,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
 
   Widget _buildTitle(WorkoutSection workoutSection) {
     return SizedBox(
-      height: 30,
+      height: 28,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

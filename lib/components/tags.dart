@@ -130,14 +130,17 @@ class DifficultyLevelTag extends StatelessWidget {
               : null,
           borderRadius: BorderRadius.circular(30),
           color: difficultyLevel.displayColor),
-      child: Center(
-        child: MyText(
-          difficultyLevel.display,
-          size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
-          color: Styles.white,
-          lineHeight: 1.1,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          MyText(
+            difficultyLevel.display,
+            size: FONTSIZE.TINY,
+            weight: FontWeight.bold,
+            color: Styles.white,
+            lineHeight: 1.1,
+          ),
+        ],
       ),
     );
   }
@@ -146,10 +149,13 @@ class DifficultyLevelTag extends StatelessWidget {
 class WorkoutSectionTypeTag extends StatelessWidget {
   final String name;
   final int? timecap; // Seconds
-  WorkoutSectionTypeTag(this.name, {this.timecap});
+  final FONTSIZE fontSize;
+  WorkoutSectionTypeTag(this.name,
+      {this.timecap, this.fontSize = FONTSIZE.SMALL});
+
   @override
   Widget build(BuildContext context) {
-    final Color _color = context.theme.primary;
+    final Color _color = Styles.white;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -157,7 +163,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Styles.grey,
+            color: Styles.black.withOpacity(0.7),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
@@ -167,7 +173,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                 name,
                 weight: FontWeight.bold,
                 lineHeight: 1.2,
-                size: FONTSIZE.SMALL,
+                size: fontSize,
                 color: _color,
                 textAlign: TextAlign.center,
               ),
@@ -176,7 +182,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   ' - ${timecap! ~/ 60} mins',
                   weight: FontWeight.bold,
                   lineHeight: 1.15,
-                  size: FONTSIZE.SMALL,
+                  size: fontSize,
                   color: _color,
                   textAlign: TextAlign.center,
                 )

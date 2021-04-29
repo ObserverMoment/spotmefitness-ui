@@ -30,7 +30,7 @@ class TargetedBodyAreasScoreIndicator extends StatelessWidget {
       required this.bodyAreaMoveScores,
       required this.frontBack,
       required this.allBodyAreas,
-      this.height = 300,
+      this.height = 350,
       this.indicatePercentWithColor = false});
 
   Color calculateColorBasedOnScore(BuildContext context, BodyArea bodyArea) {
@@ -64,24 +64,26 @@ class TargetedBodyAreasScoreIndicator extends StatelessWidget {
 
     final bool isFront = frontBack == BodyAreaFrontBack.front;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        SvgPicture.asset(
-            isFront
-                ? 'assets/body_areas/front/background_front.svg'
-                : 'assets/body_areas/back/background_back.svg',
-            height: height,
-            color: nonActiveColor),
-        ...bodyAreasToDisplay
-            .map(
-              (bodyArea) => SvgPicture.asset(
-                  'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
-                  height: height,
-                  color: calculateColorBasedOnScore(context, bodyArea)),
-            )
-            .toList()
-      ],
+    return SizedBox(
+      height: height,
+      child: Stack(
+        children: [
+          SvgPicture.asset(
+              isFront
+                  ? 'assets/body_areas/front/background_front.svg'
+                  : 'assets/body_areas/back/background_back.svg',
+              height: height,
+              color: nonActiveColor),
+          ...bodyAreasToDisplay
+              .map(
+                (bodyArea) => SvgPicture.asset(
+                    'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
+                    height: height,
+                    color: calculateColorBasedOnScore(context, bodyArea)),
+              )
+              .toList()
+        ],
+      ),
     );
   }
 }
@@ -101,7 +103,7 @@ class TargetedBodyAreasSelectedIndicator extends StatelessWidget {
     required this.selectedBodyAreas,
     required this.frontBack,
     required this.allBodyAreas,
-    this.height = 300,
+    this.height = 350,
   });
 
   @override
@@ -116,26 +118,28 @@ class TargetedBodyAreasSelectedIndicator extends StatelessWidget {
 
     final bool isFront = frontBack == BodyAreaFrontBack.front;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        SvgPicture.asset(
-            isFront
-                ? 'assets/body_areas/front/background_front.svg'
-                : 'assets/body_areas/back/background_back.svg',
-            height: height,
-            color: nonActiveColor),
-        ...bodyAreasToDisplay
-            .map(
-              (bodyArea) => SvgPicture.asset(
-                  'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
-                  height: height,
-                  color: selectedBodyAreas.contains(bodyArea)
-                      ? _activeColor
-                      : nonActiveColor),
-            )
-            .toList()
-      ],
+    return SizedBox(
+      height: height,
+      child: Stack(
+        children: [
+          SvgPicture.asset(
+              isFront
+                  ? 'assets/body_areas/front/background_front.svg'
+                  : 'assets/body_areas/back/background_back.svg',
+              height: height,
+              color: nonActiveColor),
+          ...bodyAreasToDisplay
+              .map(
+                (bodyArea) => SvgPicture.asset(
+                    'assets/body_areas/${isFront ? "front" : "back"}/${Utils.getSvgAssetUriFromBodyAreaName(bodyArea.name)}.svg',
+                    height: height,
+                    color: selectedBodyAreas.contains(bodyArea)
+                        ? _activeColor
+                        : nonActiveColor),
+              )
+              .toList()
+        ],
+      ),
     );
   }
 }

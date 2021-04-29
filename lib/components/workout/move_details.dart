@@ -139,6 +139,7 @@ class MoveDetails extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Center(
                           child: H3(

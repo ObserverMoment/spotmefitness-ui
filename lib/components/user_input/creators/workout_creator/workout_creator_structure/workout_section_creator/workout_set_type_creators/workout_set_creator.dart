@@ -15,7 +15,6 @@ import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
@@ -48,11 +47,13 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
   late bool _showFullSetInfo;
+  bool _shouldRebuild = false;
 
   void _checkForNewData() {
-    setState(() {
+    if (_showFullSetInfo != _bloc.showFullSetInfo) {
       _showFullSetInfo = _bloc.showFullSetInfo;
-    });
+      _shouldRebuild = true;
+    }
 
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
     if (_bloc.workout.workoutSections[widget.sectionIndex].workoutSets.length >
@@ -61,17 +62,22 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
           .workoutSets[widget.setIndex];
       final updatedWorkoutMoves = updatedSet.workoutMoves;
 
-      if (_workoutSet != updatedSet)
-        setState(() {
-          _workoutSet = WorkoutSet.fromJson(updatedSet.toJson());
-        });
+      if (_workoutSet != updatedSet) {
+        _shouldRebuild = true;
+        _workoutSet = WorkoutSet.fromJson(updatedSet.toJson());
+      }
 
-      if (!_sortedWorkoutMoves.equals(updatedWorkoutMoves))
-        setState(() {
-          _sortedWorkoutMoves =
-              updatedWorkoutMoves.sortedBy<num>((wm) => wm.sortPosition);
-        });
+      if (!_sortedWorkoutMoves.equals(updatedWorkoutMoves)) {
+        _shouldRebuild = true;
+        _sortedWorkoutMoves =
+            updatedWorkoutMoves.sortedBy<num>((wm) => wm.sortPosition);
+      }
     }
+
+    if (_shouldRebuild) {
+      setState(() {});
+    }
+    _shouldRebuild = false;
   }
 
   @override
@@ -257,10 +263,10 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
               ],
             ),
           ),
-          if (!_showFullSetInfo) CommaSeparatedMovesList(_sortedWorkoutMoves),
-          GrowInOut(
-            show: _showFullSetInfo,
-            child: Column(
+          if (!_showFullSetInfo)
+            CommaSeparatedMovesList(_sortedWorkoutMoves)
+          else
+            Column(
               children: [
                 AnimatedContainer(
                   duration: Duration(milliseconds: 200),
@@ -290,7 +296,6 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                 ),
               ],
             ),
-          ),
         ],
       ),
     );

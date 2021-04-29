@@ -8,14 +8,14 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_emom_set_creator.dart';
+import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// [emom] section has rounds but no timecap (it is a non competitive timed workout)
 /// [lastOneStanding]  section has timecap but no rounds (it is a competitive, potentially open ended workout - i.e. the timecap is optional).
-enum EMOMCreatorType { emom, lastOneStanding }
-
 /// Used for creating [EMOM], [Last One Standing].
 class EMOMCreator extends StatelessWidget {
   final int sectionIndex;
@@ -23,14 +23,17 @@ class EMOMCreator extends StatelessWidget {
   final int totalRounds;
   final int? timecap;
   final void Function(Map<String, dynamic> defaults) createSet;
-  final EMOMCreatorType creatorType;
+  final String typeName;
+
   EMOMCreator(
       {required this.sortedWorkoutSets,
       required this.totalRounds,
       required this.sectionIndex,
       this.timecap,
-      required this.creatorType,
-      required this.createSet});
+      required this.typeName,
+      required this.createSet})
+      : assert([kEMOMName, kLastStandingName].contains(typeName),
+            'EMOMCreator can only be used for EMOMs and Last One Standing Workouts, not $typeName.');
 
   @override
   Widget build(BuildContext context) {
@@ -58,46 +61,14 @@ class EMOMCreator extends StatelessWidget {
             );
           },
         ),
-        if (sortedWorkoutSets.isNotEmpty &&
-            creatorType == EMOMCreatorType.emom &&
-            totalRounds > 1)
+        if (sortedWorkoutSets.isNotEmpty)
           FadeIn(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MyText(
-                    'Then repeat all the above $totalRounds times.',
-                    color: Styles.infoBlue,
-                    weight: FontWeight.bold,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ),
-            ),
-          ),
-        if (sortedWorkoutSets.isNotEmpty &&
-            creatorType == EMOMCreatorType.lastOneStanding &&
-            timecap != null)
-          FadeIn(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: MyText(
-                      'Then repeat all the above for ${timecap!.secondsToTimeDisplay()}...if you can!',
-                      color: Styles.infoBlue,
-                      weight: FontWeight.bold,
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                ],
+              child: WorkoutSectionInstructions(
+                typeName: typeName,
+                rounds: totalRounds,
+                timecap: timecap,
               ),
             ),
           ),

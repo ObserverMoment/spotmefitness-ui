@@ -59,7 +59,7 @@ abstract class Utils {
   /// Checks that text is not null and not an empty string.
   static bool textNotNull(String? text) => (text != null && text != '');
 
-  /// returns true is any items in the list exist (are not null).
+  /// returns true if any items in the list exist (are not null).
   static bool anyNotNull(List list) => list.any((e) => e != null);
 
   /// Checks that load is not null and not zero.

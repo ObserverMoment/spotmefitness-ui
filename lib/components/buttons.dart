@@ -349,8 +349,11 @@ class MiniButton extends StatelessWidget {
   final Widget? prefix;
   final String? text;
   final void Function() onPressed;
-  MiniButton({this.prefix, this.text, required this.onPressed})
+  final bool withBorder;
+  MiniButton(
+      {this.prefix, this.text, required this.onPressed, this.withBorder = true})
       : assert(prefix != null || text != null);
+
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -361,7 +364,8 @@ class MiniButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: context.theme.primary)),
+            border:
+                withBorder ? Border.all(color: context.theme.primary) : null),
         child: Row(
           children: [
             if (prefix != null) prefix!,

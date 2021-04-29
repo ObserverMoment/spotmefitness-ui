@@ -148,7 +148,7 @@ class _GrowInOutState extends State<GrowInOut>
         .animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     _controller.animateTo(widget.show ? 1 : 0,
-        duration: Duration(milliseconds: 1));
+        duration: Duration(milliseconds: 0));
   }
 
   @override

@@ -18,6 +18,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
   Widget _buildRepDisplay() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         MyText(
           workoutMove.reps.stringMyDouble(),
@@ -74,6 +75,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
