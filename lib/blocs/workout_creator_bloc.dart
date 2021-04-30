@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/type_converters.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// All updates to workout or descendants follow this pattern.
 /// 1: Update local data
@@ -49,8 +50,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       BuildContext context, Workout? prevWorkout) async {
     try {
       if (prevWorkout != null) {
-        // User is editing a previous workout - just return a copy.
-        return Workout.fromJson(prevWorkout.toJson());
+        // User is editing a previous workout - return a copy.
+        // First ensure that all child lists are sorted by sort position.
+        /// Reordering ops in this bloc use [list.remove] and [list.insert] whch requires that the initial sort order is correct.
+        return prevWorkout.copyAndSortAllChildren;
       } else {
         // User is creating - make an empty workout in the db and return.
         final variables = CreateWorkoutArguments(
@@ -225,6 +228,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       /// Client.
       final inTransit = workout.workoutSections.removeAt(from);
+
       workout.workoutSections.insert(to, inTransit);
 
       _updateWorkoutSectionsSortPosition(workout.workoutSections);

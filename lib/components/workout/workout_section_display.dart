@@ -111,16 +111,10 @@ class WorkoutDetailsSection extends StatelessWidget {
                 spacing: 6,
                 runSpacing: 4,
                 children: allEquipments
-                    .map((e) => Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: context.theme.cardBackground),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 3),
-                          child: MyText(
-                            e.name,
-                            size: FONTSIZE.SMALL,
-                          ),
+                    .map((e) => Tag(
+                          tag: e.name,
+                          color: context.theme.background,
+                          textColor: context.theme.primary,
                         ))
                     .toList(),
               ),

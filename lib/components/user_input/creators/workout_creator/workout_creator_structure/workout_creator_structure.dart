@@ -289,13 +289,13 @@ class WorkoutSectionInWorkout extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(2.0),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
                 crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 14,
-                runSpacing: 14,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   WorkoutSectionTypeTag(
                     workoutSection.workoutSectionType.name,
@@ -309,16 +309,43 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                             fontSize: FONTSIZE.SMALL,
                           ))
                       .toList(),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                runSpacing: 2,
+                children: [
+                  ...data.bodyAreas
+                      .map((ba) => RoundedBox(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 2, vertical: 2),
+                          child: MyText(ba)))
+                      .toList()
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 16,
+                runSpacing: 2,
+                children: [
                   ...data.equipments
                       .map((e) => SizedBox(
                           width: 26,
                           height: 26,
                           child: Utils.getEquipmentIcon(context, e,
-                              color: context.theme.primary.withOpacity(0.8))))
+                              color: context.theme.primary)))
                       .toList(),
-                  ...data.bodyAreas
-                      .map((ba) => RoundedBox(child: MyText(ba)))
-                      .toList()
                 ],
               ),
             ),

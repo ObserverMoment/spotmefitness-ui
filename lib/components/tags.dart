@@ -163,7 +163,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Styles.black.withOpacity(0.7),
+            color: Styles.colorOne,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
