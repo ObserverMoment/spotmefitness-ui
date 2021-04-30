@@ -1039,6 +1039,19 @@ Map<String, dynamic> _$MoveTypes$QueryToJson(MoveTypes$Query instance) =>
       'moveTypes': instance.moveTypes.map((e) => e.toJson()).toList(),
     };
 
+StandardMoves$Query _$StandardMoves$QueryFromJson(Map<String, dynamic> json) {
+  return StandardMoves$Query()
+    ..standardMoves = (json['standardMoves'] as List<dynamic>)
+        .map((e) => Move.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$StandardMoves$QueryToJson(
+        StandardMoves$Query instance) =>
+    <String, dynamic>{
+      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
+    };
+
 WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
   return WorkoutGoal()
     ..$$typename = json['__typename'] as String?
@@ -1757,19 +1770,6 @@ WorkoutById$Query _$WorkoutById$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
     <String, dynamic>{
       'workoutById': instance.workoutById.toJson(),
-    };
-
-StandardMoves$Query _$StandardMoves$QueryFromJson(Map<String, dynamic> json) {
-  return StandardMoves$Query()
-    ..standardMoves = (json['standardMoves'] as List<dynamic>)
-        .map((e) => Move.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$StandardMoves$QueryToJson(
-        StandardMoves$Query instance) =>
-    <String, dynamic>{
-      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(

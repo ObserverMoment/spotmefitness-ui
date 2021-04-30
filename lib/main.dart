@@ -1,15 +1,19 @@
+import 'package:artemis/client.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql/client.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
@@ -18,21 +22,22 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initHiveForFlutter();
+  await Hive.initFlutter();
+  await Hive.openBox('graphql_cache');
   await Hive.openBox(kSettingsHiveBoxName);
 
-  final cache = Hive.box(HiveStore.defaultBoxName);
+  // final cache = Hive.box(HiveStore.defaultBoxName);
 
-  for (String key in cache.keys) {
-    // print(key);
-    if (key == 'Query') {
-      print(cache.get(key));
-    }
-    if (key.contains('Workout:')) {
-      print(key);
-      print(cache.get(key));
-    }
-  }
+  // for (String key in cache.keys) {
+  //   // print(key);
+  //   if (key == 'Query') {
+  //     print(cache.get(key));
+  //   }
+  //   if (key.contains('Workout:')) {
+  //     print(key);
+  //     print(cache.get(key));
+  //   }
+  // }
 
   await Firebase.initializeApp();
 
@@ -62,6 +67,40 @@ class _AuthRouterState extends State<AuthRouter> {
   void initState() {
     super.initState();
     GetIt.I.registerSingleton<AuthBloc>(_authBloc);
+    test();
+  }
+
+  void test() async {
+    final HttpLink _httpLink = HttpLink(
+      EnvironmentConfig.graphqlEndpoint,
+    );
+
+    final AuthLink _authLink = AuthLink(
+        getToken: () async =>
+            'Bearer ${await GetIt.I<AuthBloc>().getIdToken()}');
+
+    final Link _link = _authLink.concat(_httpLink);
+
+    final artemisClient = ArtemisClient.fromLink(_link);
+
+    final result = await artemisClient.execute(UserWorkoutsQuery());
+    print(result.data?.userWorkouts);
+    final authedUser = await artemisClient.execute(AuthedUserQuery());
+    print(authedUser.data?.authedUser);
+
+    /// Nice!
+    final result2 = await artemisClient.execute(UpdateWorkoutMoveMutation(
+        variables: UpdateWorkoutMoveArguments(
+            data: UpdateWorkoutMoveInput(id: '72728'))));
+    print(result2.data?.updateWorkoutMove);
+
+    /// Keep in mind this will not close clients whose Artemis client
+    /// was instantiated from [ArtemisClient.fromLink]. If you're using
+    /// this constructor, you need to close your own links.
+    /// ...like so.
+    _httpLink.dispose();
+
+    artemisClient.dispose();
   }
 
   @override

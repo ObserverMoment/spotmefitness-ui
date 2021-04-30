@@ -21,7 +21,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 @CupertinoAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
-    AutoRoute(path: '/', page: GlobalPage, usesTabsRouter: true, children: [
+    AutoRoute(path: '/', page: GlobalPage, children: [
       AutoRoute(
           path: 'home',
           name: 'homeStack',
@@ -36,27 +36,19 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
             AutoRoute(path: 'your-moves', page: YourMovesPage),
             RedirectRoute(path: '*', redirectTo: '')
           ]),
-      AutoRoute(
-          path: 'discover',
-          page: DiscoverPage,
-          usesTabsRouter: true,
-          children: [
-            AutoRoute(path: 'you', page: DiscoverYouPage),
-            AutoRoute(path: 'workouts', page: DiscoverWorkoutsPage),
-            AutoRoute(path: 'plans', page: DiscoverPlansPage),
-            RedirectRoute(path: '*', redirectTo: 'personal')
-          ]),
+      AutoRoute(path: 'discover', page: DiscoverPage, children: [
+        AutoRoute(path: 'you', page: DiscoverYouPage),
+        AutoRoute(path: 'workouts', page: DiscoverWorkoutsPage),
+        AutoRoute(path: 'plans', page: DiscoverPlansPage),
+        RedirectRoute(path: '*', redirectTo: 'personal')
+      ]),
       AutoRoute(path: 'social', page: SocialPage),
       AutoRoute(path: 'journal', page: JournalPage),
-      AutoRoute(
-          path: 'profile',
-          page: ProfilePage,
-          usesTabsRouter: true,
-          children: [
-            AutoRoute(path: 'personal', page: ProfilePersonalPage),
-            AutoRoute(path: 'gym-profiles', page: ProfileGymProfilesPage),
-            RedirectRoute(path: '*', redirectTo: 'personal')
-          ]),
+      AutoRoute(path: 'profile', page: ProfilePage, children: [
+        AutoRoute(path: 'personal', page: ProfilePersonalPage),
+        AutoRoute(path: 'gym-profiles', page: ProfileGymProfilesPage),
+        RedirectRoute(path: '*', redirectTo: 'personal')
+      ]),
     ]),
     AutoRoute(path: '/workout/:id', page: WorkoutDetailsPage),
     RedirectRoute(path: '*', redirectTo: '/')
