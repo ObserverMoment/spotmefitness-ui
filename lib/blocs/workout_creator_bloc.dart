@@ -96,11 +96,11 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     /// The alias type of the [userWorkouts] query is [WorkoutSummary]
     /// So this is the data type that needs to be passed to this update.
-    GraphQL.updateCacheListQuery(
-        client: context.graphQLClient,
-        queryDocument: query.document,
-        queryOperationNameOrAlias: query.operationName,
-        data: Converters.fromWorkoutToWorkoutSummary(workout).toJson());
+    // GraphQL.updateCacheListQuery(
+    //     client: context.graphQLClient,
+    //     queryDocument: query.document,
+    //     queryOperationNameOrAlias: query.operationName,
+    //     data: Converters.fromWorkoutToWorkoutSummary(workout).toJson());
   }
 
   /// Should run at the start of all CRUD ops.

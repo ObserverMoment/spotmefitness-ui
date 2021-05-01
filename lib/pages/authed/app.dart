@@ -15,6 +15,7 @@ import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 class App extends StatelessWidget {
   final AuthedUser authedUser;
@@ -29,6 +30,7 @@ class App extends StatelessWidget {
         client: _graphql.clientNotifier,
         child: MultiProvider(
           providers: [
+            Provider(create: (_) => GraphQLStore()),
             ChangeNotifierProvider(create: (_) => ThemeBloc()),
             ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
           ],

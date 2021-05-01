@@ -32,7 +32,6 @@ class MoveSelector extends StatefulWidget {
 class _MoveSelectorState extends State<MoveSelector> {
   /// 0 is standard moves, 1 is custom moves.
   int _activeTabIndex = 0;
-  String _textFilter = '';
 
   Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();

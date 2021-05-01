@@ -19,6 +19,7 @@ extension BuildContextExtension on BuildContext {
     return read<ThemeBloc>();
   }
 
+  @deprecated
   GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
 
   Future<T?> openBlurModalPopup<T>(Widget child,

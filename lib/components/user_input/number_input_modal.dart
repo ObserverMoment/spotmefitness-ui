@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';

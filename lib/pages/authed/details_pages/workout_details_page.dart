@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_it/get_it.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';

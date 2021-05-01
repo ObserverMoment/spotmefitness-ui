@@ -28,9 +28,9 @@ type Query {
   userWorkoutTags: [WorkoutTag!]!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
-  officialWorkouts: [WorkoutSummary!]!
-  publicWorkouts: [WorkoutSummary!]!
-  userWorkouts: [WorkoutSummary!]!
+  officialWorkouts: [Workout!]!
+  publicWorkouts: [Workout!]!
+  userWorkouts: [Workout!]!
   workoutById(id: ID!): Workout!
   officialWorkoutPrograms: [WorkoutProgram!]!
   publicWorkoutPrograms: [WorkoutProgram!]!

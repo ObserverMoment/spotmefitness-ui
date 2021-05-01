@@ -1,7 +1,5 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:fullscreen/fullscreen.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/video/video_controls_overlay.dart';

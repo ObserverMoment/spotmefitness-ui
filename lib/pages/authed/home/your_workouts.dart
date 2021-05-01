@@ -1,17 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/observable_query_builder.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class YourWorkoutsPage extends StatefulWidget {
   @override
@@ -23,16 +23,15 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-      options: QueryOptions(
-        document: UserWorkoutsQuery().document,
-        fetchPolicy: FetchPolicy.cacheAndNetwork,
-
-        // These are user created workouts
-      ),
+    return ObservableQueryBuilder(
+      key: Key(UserWorkoutsQuery().operationName),
+      query: UserWorkoutsQuery(),
+      fetchPolicy: QueryFetchPolicy.networkOnly,
       builder: (result, {fetchMore, refetch}) {
-        final workouts = UserWorkouts$Query.fromJson(result.data ?? {})
-            .userWorkouts
+        print('YourWorkoutsPage');
+        print(result.data);
+
+        final workouts = []
             .where((workoutSummary) => Utils.textNotNull(_searchString)
                 ? workoutSummary.name
                     .toLowerCase()

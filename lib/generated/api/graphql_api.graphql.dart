@@ -1727,122 +1727,11 @@ class UserSummary extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class MoveSummary extends JsonSerializable with EquatableMixin {
-  MoveSummary();
+class Workout extends JsonSerializable with EquatableMixin, WorkoutFieldsMixin {
+  Workout();
 
-  factory MoveSummary.fromJson(Map<String, dynamic> json) =>
-      _$MoveSummaryFromJson(json);
-
-  @JsonKey(name: '__typename')
-  String? $$typename;
-
-  late String id;
-
-  late String name;
-
-  @JsonKey(name: 'RequiredEquipments')
-  late List<Equipment> requiredEquipments;
-
-  @override
-  List<Object?> get props => [$$typename, id, name, requiredEquipments];
-  Map<String, dynamic> toJson() => _$MoveSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class WorkoutMoveSummary extends JsonSerializable with EquatableMixin {
-  WorkoutMoveSummary();
-
-  factory WorkoutMoveSummary.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutMoveSummaryFromJson(json);
-
-  @JsonKey(name: 'Equipment')
-  Equipment? equipment;
-
-  @JsonKey(name: 'Move')
-  late MoveSummary move;
-
-  @override
-  List<Object?> get props => [equipment, move];
-  Map<String, dynamic> toJson() => _$WorkoutMoveSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class WorkoutSetSummary extends JsonSerializable with EquatableMixin {
-  WorkoutSetSummary();
-
-  factory WorkoutSetSummary.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSetSummaryFromJson(json);
-
-  @JsonKey(name: 'WorkoutMoves')
-  late List<WorkoutMoveSummary> workoutMoves;
-
-  @override
-  List<Object?> get props => [workoutMoves];
-  Map<String, dynamic> toJson() => _$WorkoutSetSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class WorkoutSectionSummary extends JsonSerializable with EquatableMixin {
-  WorkoutSectionSummary();
-
-  factory WorkoutSectionSummary.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSectionSummaryFromJson(json);
-
-  @JsonKey(name: '__typename')
-  String? $$typename;
-
-  late String id;
-
-  String? name;
-
-  late int sortPosition;
-
-  int? timecap;
-
-  @JsonKey(name: 'WorkoutSectionType')
-  late WorkoutSectionType workoutSectionType;
-
-  @JsonKey(name: 'WorkoutSets')
-  late List<WorkoutSetSummary> workoutSets;
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        name,
-        sortPosition,
-        timecap,
-        workoutSectionType,
-        workoutSets
-      ];
-  Map<String, dynamic> toJson() => _$WorkoutSectionSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class WorkoutSummary extends JsonSerializable with EquatableMixin {
-  WorkoutSummary();
-
-  factory WorkoutSummary.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSummaryFromJson(json);
-
-  @JsonKey(name: '__typename')
-  String? $$typename;
-
-  late String id;
-
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  DateTime? createdAt;
-
-  late String name;
-
-  String? description;
-
-  @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
-  late DifficultyLevel difficultyLevel;
-
-  String? coverImageUri;
+  factory Workout.fromJson(Map<String, dynamic> json) =>
+      _$WorkoutFromJson(json);
 
   @JsonKey(name: 'User')
   UserSummary? user;
@@ -1854,7 +1743,7 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
   late List<WorkoutTag> workoutTags;
 
   @JsonKey(name: 'WorkoutSections')
-  late List<WorkoutSectionSummary> workoutSections;
+  late List<WorkoutSection> workoutSections;
 
   @override
   List<Object?> get props => [
@@ -1865,12 +1754,16 @@ class WorkoutSummary extends JsonSerializable with EquatableMixin {
         description,
         difficultyLevel,
         coverImageUri,
+        contentAccessScope,
+        introVideoUri,
+        introVideoThumbUri,
+        introAudioUri,
         user,
         workoutGoals,
         workoutTags,
         workoutSections
       ];
-  Map<String, dynamic> toJson() => _$WorkoutSummaryToJson(this);
+  Map<String, dynamic> toJson() => _$WorkoutToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1880,7 +1773,7 @@ class UserWorkouts$Query extends JsonSerializable with EquatableMixin {
   factory UserWorkouts$Query.fromJson(Map<String, dynamic> json) =>
       _$UserWorkouts$QueryFromJson(json);
 
-  late List<WorkoutSummary> userWorkouts;
+  late List<Workout> userWorkouts;
 
   @override
   List<Object?> get props => [userWorkouts];
@@ -1955,46 +1848,6 @@ class CreateWorkoutInput extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [name, difficultyLevel, contentAccessScope];
   Map<String, dynamic> toJson() => _$CreateWorkoutInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class Workout extends JsonSerializable with EquatableMixin, WorkoutFieldsMixin {
-  Workout();
-
-  factory Workout.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutFromJson(json);
-
-  @JsonKey(name: 'User')
-  UserSummary? user;
-
-  @JsonKey(name: 'WorkoutGoals')
-  late List<WorkoutGoal> workoutGoals;
-
-  @JsonKey(name: 'WorkoutTags')
-  late List<WorkoutTag> workoutTags;
-
-  @JsonKey(name: 'WorkoutSections')
-  late List<WorkoutSection> workoutSections;
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        createdAt,
-        name,
-        description,
-        difficultyLevel,
-        coverImageUri,
-        contentAccessScope,
-        introVideoUri,
-        introVideoThumbUri,
-        introAudioUri,
-        user,
-        workoutGoals,
-        workoutTags,
-        workoutSections
-      ];
-  Map<String, dynamic> toJson() => _$WorkoutToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -7706,48 +7559,8 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             arguments: [],
             directives: [],
             selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                  name: NameNode(value: '__typename'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'id'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'createdAt'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'name'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'description'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'difficultyLevel'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'coverImageUri'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
+              FragmentSpreadNode(
+                  name: NameNode(value: 'WorkoutFields'), directives: []),
               FieldNode(
                   name: NameNode(value: 'User'),
                   alias: null,
@@ -7781,36 +7594,9 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
-                    FieldNode(
-                        name: NameNode(value: '__typename'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'id'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'name'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'sortPosition'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null),
-                    FieldNode(
-                        name: NameNode(value: 'timecap'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null),
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'WorkoutSection'),
+                        directives: []),
                     FieldNode(
                         name: NameNode(value: 'WorkoutSectionType'),
                         alias: null,
@@ -7827,12 +7613,18 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                         arguments: [],
                         directives: [],
                         selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'WorkoutSet'),
+                              directives: []),
                           FieldNode(
                               name: NameNode(value: 'WorkoutMoves'),
                               alias: null,
                               arguments: [],
                               directives: [],
                               selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'WorkoutMove'),
+                                    directives: []),
                                 FieldNode(
                                     name: NameNode(value: 'Equipment'),
                                     alias: null,
@@ -7849,27 +7641,66 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                                     arguments: [],
                                     directives: [],
                                     selectionSet: SelectionSetNode(selections: [
+                                      FragmentSpreadNode(
+                                          name: NameNode(value: 'Move'),
+                                          directives: []),
                                       FieldNode(
-                                          name: NameNode(value: '__typename'),
+                                          name: NameNode(value: 'MoveType'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
-                                          selectionSet: null),
+                                          selectionSet:
+                                              SelectionSetNode(selections: [
+                                            FragmentSpreadNode(
+                                                name:
+                                                    NameNode(value: 'MoveType'),
+                                                directives: [])
+                                          ])),
                                       FieldNode(
-                                          name: NameNode(value: 'id'),
+                                          name: NameNode(
+                                              value: 'BodyAreaMoveScores'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'name'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
+                                          selectionSet:
+                                              SelectionSetNode(selections: [
+                                            FieldNode(
+                                                name: NameNode(value: 'score'),
+                                                alias: null,
+                                                arguments: [],
+                                                directives: [],
+                                                selectionSet: null),
+                                            FieldNode(
+                                                name:
+                                                    NameNode(value: 'BodyArea'),
+                                                alias: null,
+                                                arguments: [],
+                                                directives: [],
+                                                selectionSet: SelectionSetNode(
+                                                    selections: [
+                                                      FragmentSpreadNode(
+                                                          name: NameNode(
+                                                              value:
+                                                                  'BodyArea'),
+                                                          directives: [])
+                                                    ]))
+                                          ])),
                                       FieldNode(
                                           name: NameNode(
                                               value: 'RequiredEquipments'),
+                                          alias: null,
+                                          arguments: [],
+                                          directives: [],
+                                          selectionSet: SelectionSetNode(
+                                              selections: [
+                                                FragmentSpreadNode(
+                                                    name: NameNode(
+                                                        value: 'Equipment'),
+                                                    directives: [])
+                                              ])),
+                                      FieldNode(
+                                          name: NameNode(
+                                              value: 'SelectableEquipments'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
@@ -8035,6 +7866,421 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'loadAdjustable'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'MoveType'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'MoveType'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'imageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'BodyArea'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'BodyArea'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'frontBack'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'upperLower'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'Move'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(name: NameNode(value: 'Move'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'searchTerms'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'demoVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'demoVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'scope'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'validRepTypes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'WorkoutMove'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'WorkoutMove'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'sortPosition'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'reps'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'repType'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'distanceUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'loadAmount'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'loadUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'timeUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'WorkoutSet'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'WorkoutSet'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'sortPosition'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'rounds'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'duration'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'WorkoutSection'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'WorkoutSection'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'rounds'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'timecap'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'sortPosition'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'classVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'classVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'classAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'outroVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'outroVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'outroAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'WorkoutFields'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'Workout'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'difficultyLevel'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'contentAccessScope'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
             alias: null,
             arguments: [],
             directives: [],
