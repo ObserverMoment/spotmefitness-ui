@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -15,8 +14,9 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
@@ -112,15 +112,12 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _queryVars = WorkoutByIdArguments(id: widget.id);
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            document: WorkoutByIdQuery(variables: _queryVars).document,
-            fetchPolicy: FetchPolicy.cacheAndNetwork,
-            variables: _queryVars.toJson()),
-        builder: (result, {fetchMore, refetch}) {
-          final Workout workout =
-              WorkoutById$Query.fromJson(result.data ?? {}).workoutById;
+    return QueryObserver<WorkoutById$Query, WorkoutByIdArguments>(
+        key: Key('YourWorkoutsPage - ${UserWorkoutsQuery().operationName}'),
+        query: WorkoutByIdQuery(variables: WorkoutByIdArguments(id: widget.id)),
+        fetchPolicy: QueryFetchPolicy.networkOnly,
+        builder: (data) {
+          final Workout workout = data.workoutById;
 
           final List<WorkoutSection> sortedWorkoutSections =
               workout.workoutSections.sortedBy<num>((ws) => ws.sortPosition);

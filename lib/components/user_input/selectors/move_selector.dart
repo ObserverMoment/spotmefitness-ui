@@ -106,6 +106,13 @@ class _MoveSelectorState extends State<MoveSelector> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  FilterButton(
+                                    hasActiveFilters:
+                                        moveFiltersBloc.hasActiveFilters,
+                                    onPressed: () => context.push(
+                                        child: MoveFiltersScreen()),
+                                  ),
+                                  SizedBox(width: 4),
                                   OpenTextSearchButton(
                                     onPressed: () => context.push(
                                         fullscreenDialog: true,
@@ -117,13 +124,6 @@ class _MoveSelectorState extends State<MoveSelector> {
                                           selectMove: widget.selectMove,
                                         )),
                                   ),
-                                  SizedBox(width: 4),
-                                  FilterButton(
-                                    hasActiveFilters:
-                                        moveFiltersBloc.hasActiveFilters,
-                                    onPressed: () => context.push(
-                                        child: MoveFiltersScreen()),
-                                  )
                                 ],
                               ),
                               // If showing custom moves.

@@ -52,13 +52,18 @@ class MoveFiltersBloc extends ChangeNotifier {
   }
 
   bool _moveEquipmentIsOk(Move move) {
+    /// This is a move where the user has not added any equipment.
+    /// If the user is requesting this equipment then it is assumed that they do want to see moves that use this equipment...not just moves that can be done given that you have it.
+    /// i.e. all bodyweight moves can be done if you have a dumbbell...but this is probably not what the user is searching for.
     if (move.requiredEquipments.isEmpty && move.selectableEquipments.isEmpty) {
-      return true;
+      return false;
     } else {
-      return move.requiredEquipments.every((e) =>
-          _moveFilters.equipments.contains(e) &&
+      // return false;
+      return (move.requiredEquipments.isEmpty ||
+              move.requiredEquipments
+                  .every((e) => _moveFilters.equipments.contains(e))) &&
           move.selectableEquipments
-              .any((e) => _moveFilters.equipments.contains(e)));
+              .any((e) => _moveFilters.equipments.contains(e));
     }
   }
 

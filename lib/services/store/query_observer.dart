@@ -6,16 +6,20 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
-/// Listens to an ObservableQuery stream of type [ObservableQueryResult<T>] and rebuilds on new data.
-class ObservableQueryBuilder extends StatefulWidget {
+/// Listens to an ObservableQuery stream of type [ObservableQueryResult<R>] and rebuilds on new data.
+/// [T] is the query type.
+/// [U] is the expected response type.
+class QueryObserver<TData, TVars extends json.JsonSerializable>
+    extends StatefulWidget {
   final Key key;
-  final GraphQLQuery query;
+  final GraphQLQuery<TData, TVars> query;
   final QueryFetchPolicy fetchPolicy;
-  final Widget Function(GraphQLResponse res) builder;
+  final Widget Function(TData response) builder;
   final Widget? loadingIndicator;
 
-  const ObservableQueryBuilder({
+  const QueryObserver({
     required this.key,
     required this.query,
     this.fetchPolicy = QueryFetchPolicy.storeAndNetwork,
@@ -24,58 +28,53 @@ class ObservableQueryBuilder extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  ObservableQueryBuilderState createState() => ObservableQueryBuilderState();
+  QueryObserverState<TData, TVars> createState() =>
+      QueryObserverState<TData, TVars>();
 }
 
-class ObservableQueryBuilderState extends State<ObservableQueryBuilder> {
-  late ObservableQuery _observableQuery;
+class QueryObserverState<TData, TVars extends json.JsonSerializable>
+    extends State<QueryObserver<TData, TVars>> {
+  late ObservableQuery<TData, TVars> _observableQuery;
   late GraphQLStore _store;
 
-  @override
-  void initState() {
-    super.initState();
+  void _initObservableQuery() {
     _store = context.read<GraphQLStore>();
-    _observableQuery = _store.registerObservableQuery(widget.query);
+    _observableQuery = _store.registerObserver<TData, TVars>(widget.query);
     _store.fetchQuery(widget.query.operationName!, widget.fetchPolicy);
   }
 
   @override
+  void initState() {
+    super.initState();
+    _initObservableQuery();
+  }
+
+  @override
+  void didUpdateWidget(QueryObserver<TData, TVars> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.query != widget.query) {
+      setState(() => _initObservableQuery());
+    }
+  }
+
+  @override
   void dispose() {
-    _store.unregisterObservableQuery(widget.query.operationName!);
+    _store.unregisterObserver(widget.query.operationName!);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ObservableQueryResult>(
-        initialData: _observableQuery.latest ?? ObservableQueryResult.loading(),
+    return StreamBuilder<GraphQLResponse>(
+        initialData: _observableQuery.latest,
         stream: _observableQuery.subject.stream,
-        builder: (
-          BuildContext buildContext,
-          AsyncSnapshot<ObservableQueryResult> snapshot,
-        ) {
-          print('new snapshot');
-          if (snapshot.hasError) {
-            print('snapshot.hasError');
-            print(snapshot.error);
-            return RetrievalErrorScreen();
-          } else if (snapshot.hasData) {
-            print('snapshot.hasData');
-            print(snapshot.data!);
-            print('snapshot.data!.data');
-            print(snapshot.data!.data);
-            print(snapshot.data!.state);
-            print(snapshot.data!.state);
-            if (snapshot.data!.hasException) {
-              print('snapshot.data!.exception');
-              print(snapshot.data!.exception);
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data!.hasErrors) {
+              print(snapshot.data!.errors);
               return RetrievalErrorScreen();
-            } else if (snapshot.data!.isLoading) {
-              print('snapshot.data!.isLoading');
-              return widget.loadingIndicator ?? Center(child: LoadingCircle());
             } else {
-              print('snapshot.data!.data!');
-              print(snapshot.data!.data!);
+              /// [ObservableQueryResult.data] will be [TData].
               return widget.builder(snapshot.data!.data!);
             }
           } else {

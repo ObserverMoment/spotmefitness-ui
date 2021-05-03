@@ -17,7 +17,7 @@ class FreeSessionCreator extends StatelessWidget {
   final int sectionIndex;
   final List<WorkoutSet> sortedWorkoutSets;
   final void Function() createSet;
-  final String typeName;
+  final WorkoutSectionType workoutSectionType;
   final int totalRounds;
   final int? timecap;
 
@@ -26,11 +26,13 @@ class FreeSessionCreator extends StatelessWidget {
     required this.sectionIndex,
     required this.createSet,
     required this.totalRounds,
-    required this.typeName,
+    required this.workoutSectionType,
     this.timecap,
-  })  : assert(typeName != kAMRAPName || timecap != null),
-        assert([kFreeSessionName, kForTimeName, kAMRAPName].contains(typeName),
-            'FreeSessionCreator is only for FreeSessions, AMRAPs and ForTime workouts, not $typeName.');
+  })  : assert(workoutSectionType.name != kAMRAPName || timecap != null),
+        assert(
+            [kFreeSessionName, kForTimeName, kAMRAPName]
+                .contains(workoutSectionType.name),
+            'FreeSessionCreator is only for FreeSessions, AMRAPs and ForTime workouts, not ${workoutSectionType.name}.');
 
   /// Shows instruction at the end of the lists of moves with regards to how to act on them.
   Widget _buildInstructions() => FadeIn(
@@ -38,7 +40,7 @@ class FreeSessionCreator extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
           child: WorkoutSectionInstructions(
             rounds: totalRounds,
-            typeName: kAMRAPName,
+            typeName: workoutSectionType.name,
             timecap: timecap,
           ),
         ),

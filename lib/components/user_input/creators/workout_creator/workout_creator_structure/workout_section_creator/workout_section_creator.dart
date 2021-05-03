@@ -196,7 +196,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            typeName: workoutSectionType.name,
+            workoutSectionType: workoutSectionType,
             createSet: () =>
                 _createEmptyWorkoutSet(openWorkoutMoveSelector: true));
       case kHIITCircuitName:
@@ -220,7 +220,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            typeName: workoutSectionType.name,
+            workoutSectionType: workoutSectionType,
             createSet: (defaults) => _createEmptyWorkoutSet(
                 openWorkoutMoveSelector: true, defaults: defaults));
       case kTabataName:

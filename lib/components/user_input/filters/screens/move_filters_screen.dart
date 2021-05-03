@@ -258,6 +258,7 @@ class _MoveFiltersBodyState extends State<MoveFiltersBody> {
   PageController _pageController = PageController();
   Duration _animDuration = Duration(milliseconds: 250);
   Curve _animCurve = Curves.fastOutSlowIn;
+  final double kBodyGraphicHeight = 550;
 
   void _animateToPage(int page) => _pageController.animateToPage(page,
       duration: _animDuration, curve: _animCurve);
@@ -272,72 +273,75 @@ class _MoveFiltersBodyState extends State<MoveFiltersBody> {
           final allBodyAreas =
               BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
 
-          return Column(
-            children: [
-              if (widget.selectedBodyAreas.isNotEmpty)
-                FadeIn(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        text: 'Clear all',
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        destructive: true,
-                        underline: false,
-                        onPressed: widget.clearAllBodyAreas,
-                      ),
-                    ],
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                if (widget.selectedBodyAreas.isNotEmpty)
+                  FadeIn(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          text: 'Clear all',
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          destructive: true,
+                          underline: false,
+                          onPressed: widget.clearAllBodyAreas,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TargetedBodyAreasList(widget.selectedBodyAreas),
-              ),
-              Expanded(
-                child: Padding(
+                Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: PageView(
-                    controller: _pageController,
-                    children: [
-                      Stack(alignment: Alignment.topCenter, children: [
-                        Positioned(child: H3('Front')),
-                        Positioned(
-                            right: 0,
-                            child: CupertinoButton(
-                                child: MyText('Back >'),
-                                onPressed: () => _animateToPage(1))),
-                        Padding(
-                          padding: const EdgeInsets.all(40.0),
-                          child: BodyAreaSelectorIndicator(
-                            selectedBodyAreas: widget.selectedBodyAreas,
-                            frontBack: BodyAreaFrontBack.front,
-                            allBodyAreas: allBodyAreas,
-                            handleTapBodyArea: widget.handleTapBodyArea,
+                  child: TargetedBodyAreasList(widget.selectedBodyAreas),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: kBodyGraphicHeight,
+                    child: PageView(
+                      controller: _pageController,
+                      children: [
+                        Stack(alignment: Alignment.topCenter, children: [
+                          Positioned(child: H3('Front')),
+                          Positioned(
+                              right: 0,
+                              child: CupertinoButton(
+                                  child: MyText('Back >'),
+                                  onPressed: () => _animateToPage(1))),
+                          Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: BodyAreaSelectorIndicator(
+                                selectedBodyAreas: widget.selectedBodyAreas,
+                                frontBack: BodyAreaFrontBack.front,
+                                allBodyAreas: allBodyAreas,
+                                handleTapBodyArea: widget.handleTapBodyArea,
+                                height: kBodyGraphicHeight),
                           ),
-                        ),
-                      ]),
-                      Stack(alignment: Alignment.topCenter, children: [
-                        Positioned(child: H3('Back')),
-                        Positioned(
-                            left: 0,
-                            child: CupertinoButton(
-                                child: MyText('< Front'),
-                                onPressed: () => _animateToPage(0))),
-                        Padding(
-                          padding: const EdgeInsets.all(40.0),
-                          child: BodyAreaSelectorIndicator(
-                            selectedBodyAreas: widget.selectedBodyAreas,
-                            frontBack: BodyAreaFrontBack.back,
-                            allBodyAreas: allBodyAreas,
-                            handleTapBodyArea: widget.handleTapBodyArea,
+                        ]),
+                        Stack(alignment: Alignment.topCenter, children: [
+                          Positioned(child: H3('Back')),
+                          Positioned(
+                              left: 0,
+                              child: CupertinoButton(
+                                  child: MyText('< Front'),
+                                  onPressed: () => _animateToPage(0))),
+                          Padding(
+                            padding: const EdgeInsets.all(40.0),
+                            child: BodyAreaSelectorIndicator(
+                                selectedBodyAreas: widget.selectedBodyAreas,
+                                frontBack: BodyAreaFrontBack.back,
+                                allBodyAreas: allBodyAreas,
+                                handleTapBodyArea: widget.handleTapBodyArea,
+                                height: kBodyGraphicHeight),
                           ),
-                        ),
-                      ]),
-                    ],
+                        ]),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         });
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_view.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
@@ -132,13 +134,21 @@ class WorkoutDetailsSection extends StatelessWidget {
                     ],
                   ),
                 MiniButton(
-                  prefix: SvgPicture.asset(
-                    'assets/body_areas/full_front.svg',
-                    width: 50,
-                    alignment: Alignment.topCenter,
-                    height: 26,
-                    fit: BoxFit.cover,
-                    color: context.theme.primary,
+                  prefix: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/body_areas/body_button.svg',
+                        width: 46,
+                        alignment: Alignment.topCenter,
+                        color: context.theme.primary.withOpacity(0.3),
+                      ),
+                      Icon(
+                        CupertinoIcons.smallcircle_circle_fill,
+                        color: Styles.infoBlue,
+                        size: 24,
+                      ),
+                    ],
                   ),
                   withBorder: false,
                   onPressed: () => context.push(

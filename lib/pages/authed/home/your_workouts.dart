@@ -9,9 +9,10 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
-import 'package:spotmefitness_ui/services/store/observable_query_builder.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class YourWorkoutsPage extends StatefulWidget {
   @override
@@ -23,17 +24,14 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ObservableQueryBuilder(
-      key: Key(UserWorkoutsQuery().operationName),
+    return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
+      key: Key('YourWorkoutsPage - ${UserWorkoutsQuery().operationName}'),
       query: UserWorkoutsQuery(),
-      fetchPolicy: QueryFetchPolicy.networkOnly,
-      builder: (result, {fetchMore, refetch}) {
-        print('YourWorkoutsPage');
-        print(result.data);
-
-        final workouts = []
-            .where((workoutSummary) => Utils.textNotNull(_searchString)
-                ? workoutSummary.name
+      fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+      builder: (data) {
+        final workouts = data.userWorkouts
+            .where((workout) => Utils.textNotNull(_searchString)
+                ? workout.name
                     .toLowerCase()
                     .contains(_searchString!.toLowerCase())
                 : true)

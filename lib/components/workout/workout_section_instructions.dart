@@ -13,7 +13,9 @@ class WorkoutSectionInstructions extends StatelessWidget {
   final int? timecap;
   WorkoutSectionInstructions(
       {required this.typeName, required this.rounds, this.timecap})
-      : assert(typeName != kAMRAPName || timecap != null,
+      : assert(
+            (typeName == kAMRAPName && timecap != null) ||
+                typeName != kAMRAPName,
             'AMRAP requires a timecap, so it cannot be null.');
 
   String _getRoundsText() => '$rounds time${rounds == 1 ? "" : "s"}';

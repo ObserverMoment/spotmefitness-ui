@@ -30,19 +30,6 @@ void main() async {
   await Hive.openBox(GraphQLStore.boxName);
   await Hive.openBox(kSettingsHiveBoxName);
 
-  // final cache = Hive.box(HiveStore.defaultBoxName);
-
-  // for (String key in cache.keys) {
-  //   // print(key);
-  //   if (key == 'Query') {
-  //     print(cache.get(key));
-  //   }
-  //   if (key.contains('Workout:')) {
-  //     print(key);
-  //     print(cache.get(key));
-  //   }
-  // }
-
   await Firebase.initializeApp();
 
   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);

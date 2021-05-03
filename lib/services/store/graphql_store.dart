@@ -5,6 +5,9 @@ import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/env_config.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
+import 'package:normalize/normalize.dart';
 
 class GraphQLStore {
   static const String boxName = 'graphql-cache';
@@ -13,7 +16,6 @@ class GraphQLStore {
   late AuthLink _authLink;
   late Link _link;
   late Box hiveBox;
-  late StoreManager _storeManager;
   late QueryManager _queryManager;
 
   GraphQLStore() {
@@ -29,123 +31,125 @@ class GraphQLStore {
 
     _artemisClient = ArtemisClient.fromLink(_link);
 
-    _storeManager = StoreManager(boxName);
-    _queryManager = QueryManager(_artemisClient);
+    _queryManager = QueryManager(_link, GraphQLStore.boxName);
   }
 
-  ObservableQuery registerObservableQuery(GraphQLQuery query) {
-    return _queryManager.registerObservableQuery(query);
+  ObservableQuery<TData, TVars>
+      registerObserver<TData, TVars extends json.JsonSerializable>(
+          GraphQLQuery<TData, TVars> query) {
+    return _queryManager.registerObserver<TData, TVars>(query);
   }
 
-  String unregisterObservableQuery(String id) {
-    _queryManager.unregisterObservableQuery(id);
+  String unregisterObserver(String id) {
+    _queryManager.unregisterObserver(id);
     return id;
   }
 
-  void fetchQuery(String id, QueryFetchPolicy fetchPolicy) {
+  void fetchQuery<TData, TVars extends json.JsonSerializable>(
+      String id, QueryFetchPolicy fetchPolicy) {
     _queryManager.fetchQuery(id, fetchPolicy);
   }
 
   void dispose() {
     _httpLink.dispose();
-    _storeManager.dispose();
     _queryManager.dispose();
     _artemisClient.dispose();
   }
 }
 
-/// Manages data in and out of store [Hive box].
-class StoreManager {
+/// Tracks and manages all [ObservableQuery] listeners.
+/// Manages the store data in the Hive box.
+class QueryManager {
+  final Link _link;
   final String boxName;
-  Box? _box;
-  StoreManager(this.boxName);
+  late Box _box;
+  QueryManager(this._link, this.boxName) {
+    Hive.openBox(boxName).then((v) {
+      _box = v;
+    });
+  }
 
-  Future<Box> get box async {
-    if (_box == null) {
-      _box = await Hive.openBox(boxName);
-      return _box!;
+  Future<void> writeNormalized(String key, dynamic value) async {
+    if (value is Map<String, Object>) {
+      final existing = _box.get(key);
+      _box.put(
+        key,
+        existing != null
+            ? StoreUtils.deeplyMergeLeft([existing, value])
+            : value,
+      );
     } else {
-      return _box!;
+      _box.put(key, value);
     }
   }
 
-  void putNormalized() {}
-  void retrieveNormalized() {}
-
-  void normalize() {}
-  void denormalize() {}
-
-  void clearCache() => _box?.clear();
-
-  void dispose() {
-    _box?.close();
+  Map<String, dynamic> readNormalized(String key) {
+    return Map<String, dynamic>.from(_box.get(key) ?? {});
   }
-}
 
-/// Tracks and manages all [ObservableQuery] listeners.
-class QueryManager {
-  final ArtemisClient _artemisClient;
-  QueryManager(this._artemisClient);
+  Map<String, ObservableQuery> observableQueries =
+      Map<String, ObservableQuery>();
 
-  Map<String, ObservableQuery> queryBuilders = {};
+  ObservableQuery<TData, TVars>
+      getQuerybyId<TData, TVars extends json.JsonSerializable>(String id) =>
+          observableQueries[id] as ObservableQuery<TData, TVars>;
 
-  ObservableQuery registerObservableQuery(GraphQLQuery query) {
-    print('registerObservableQuery');
+  /// [T] is query type. [U] is variables / args type.
+  ObservableQuery<TData, TVars>
+      registerObserver<TData, TVars extends json.JsonSerializable>(
+          GraphQLQuery<TData, TVars> query) {
     if (query.operationName == null) {
       throw Exception(
-          '[query.operationName] cannot be null when registering an observale query.');
+          '[query.operationName] cannot be null when registering an observable query.');
     } else {
       final String id = query.operationName!;
-      if (!queryBuilders.containsKey(query.operationName)) {
+      if (!observableQueries.containsKey(id)) {
         /// No one is listening to this id - create a new stream.
-        queryBuilders[id] = ObservableQuery(
-            id: id,
-            subject: BehaviorSubject<ObservableQueryResult>(),
-            query: query);
+        observableQueries[id] = ObservableQuery<TData, TVars>(
+            subject: BehaviorSubject<GraphQLResponse>(), query: query);
       } else {
         // A stream with this id already has one or more listeners.
         // Increment the observer count.
-        queryBuilders[id]!.observers++;
+        observableQueries[id]!.observers++;
       }
 
-      return queryBuilders[id]!;
+      return observableQueries[id]! as ObservableQuery<TData, TVars>;
     }
   }
 
-  void unregisterObservableQuery(String id) {
-    if (!queryBuilders.containsKey(id)) {
+  void unregisterObserver(String id) {
+    if (!observableQueries.containsKey(id)) {
       throw QueryNotFoundException(id);
     } else {
-      if (queryBuilders[id]!.observers == 1) {
+      if (observableQueries[id]!.observers == 1) {
         // There is only one observer. Close the stream.
-        queryBuilders[id]!.dispose();
+        observableQueries[id]!.dispose();
         // Remove it from the map.
-        queryBuilders.remove(id);
+        observableQueries.remove(id);
       } else {
         // Reduce the number of active listeners by one.
-        queryBuilders[id]!.observers--;
+        observableQueries[id]!.observers--;
       }
     }
   }
 
   void fetchQuery(String id, QueryFetchPolicy fetchPolicy) async {
-    print('fetchQuery');
-    if (!queryBuilders.containsKey(id)) {
+    if (!observableQueries.containsKey(id)) {
       throw QueryNotFoundException(id);
     } else {
       switch (fetchPolicy) {
         case QueryFetchPolicy.storeAndNetwork:
-          queryCache(id);
+          queryStore(id);
           await queryNetwork(id);
           break;
         case QueryFetchPolicy.storeFirst:
-          final success = queryCache(id);
+          final success = queryStore(id);
           if (!success) {
             await queryNetwork(id);
           }
           break;
         case QueryFetchPolicy.storeOnly:
-          queryCache(id);
+          queryStore(id);
           break;
         case QueryFetchPolicy.networkOnly:
           await queryNetwork(id);
@@ -156,96 +160,110 @@ class QueryManager {
     }
   }
 
-  bool queryCache(String id) {
-    if (!queryBuilders.containsKey(id)) {
+  bool queryStore(String id) {
+    if (!observableQueries.containsKey(id)) {
       throw QueryNotFoundException(id);
     } else {
-      // If the cache does not have a key for this query.
-      // return false;
-      // final result = _cacheClient.execute(queryBuilders[id]!.query);
-      // Denormalize the result.
-      // Broadcast the query.
-      broadcast([id]);
-      return true;
+      try {
+        final observableQuery = getQuerybyId(id);
+        final GraphQLQuery query = observableQuery.query;
+        // Denormalize the data
+        final data = denormalizeOperation(
+            document: query.document, read: (dataId) => readNormalized(dataId));
+        // Add to the stream to broadcast to all listeners.
+        observableQuery.subject
+            .add(GraphQLResponse(data: query.parse(data ?? {})));
+        broadcast([id]);
+        return true;
+      } catch (e) {
+        print(e);
+        return false;
+      }
     }
   }
 
   Future<bool> queryNetwork(String id) async {
-    print('queryNetwork');
-    print(id);
-    if (!queryBuilders.containsKey(id)) {
+    if (!observableQueries.containsKey(id)) {
       throw QueryNotFoundException(id);
     } else {
-      final result = await _artemisClient.execute(queryBuilders[id]!.query);
-      print('network result.data');
-      print(result.data);
-      // Normalize the result
-      // Add it do the stores
-      // Broadcast the query
-      print('queryBuilders[id]');
-      print(queryBuilders[id]);
-      queryBuilders[id]!.subject.sink.add(ObservableQueryResult(
-          state: QueryResultState.complete,
-          data: result,
-          exception: Exception('Hello?')));
-      broadcast([id]);
-      return true;
+      final observableQuery = getQuerybyId(id);
+      final GraphQLQuery query = observableQuery.query;
+
+      final request = Request(
+        operation: Operation(
+          document: query.document,
+          operationName: query.operationName,
+        ),
+        variables: query.getVariablesMap(),
+      );
+
+      final response = await _link.request(request).first;
+
+      if (response.errors != null && response.errors!.isNotEmpty) {
+        // Broadcast the error. Do not update the store.
+        observableQuery.subject.add(GraphQLResponse(
+            data: query.parse(response.data ?? {}), errors: response.errors));
+        return false;
+      } else {
+        try {
+          // Normalize the result and deep merge with current store data.
+          normalizeOperation(
+            data: Map<String, dynamic>.from(response.data!),
+            document: query.document,
+            operationName: query.operationName,
+            write: (dataId, value) => writeNormalized(dataId, value),
+            read: (dataId) => readNormalized(dataId),
+          );
+          // Broadcast the updated data.
+          broadcast([id]);
+          return true;
+        } catch (e) {
+          print(e);
+          return false;
+        }
+      }
     }
   }
 
   void broadcast(List<String> ids) {
     ids.forEach((id) {
       // Query the cache based on
-      // queryBuilders[id].queryDocument
-      // denormalize the data
+      // observableQueries[id].queryDocument
+      final observableQuery = getQuerybyId(id);
+      final GraphQLQuery query = observableQuery.query;
+      // Denormalize the data
+      final data = denormalizeOperation(
+          document: query.document, read: (dataId) => readNormalized(dataId));
       // Add to the stream to broadcast to all listeners.
-      queryBuilders[id]!.subject.sink.add(ObservableQueryResult.loading());
+      observableQuery.subject
+          .add(GraphQLResponse(data: query.parse(data ?? {})));
     });
   }
 
   void dispose() {
-    queryBuilders.forEach((k, v) {
+    observableQueries.forEach((k, v) {
       v.dispose();
     });
+    _box.close();
   }
 }
 
 /// A single stream for a single executable [GraphQLQuery].
-class ObservableQuery {
-  final String id;
-  final BehaviorSubject<ObservableQueryResult> subject;
-  final GraphQLQuery query;
+class ObservableQuery<TData, TVars extends json.JsonSerializable> {
+  final BehaviorSubject<GraphQLResponse> subject;
+  final GraphQLQuery<TData, TVars> query;
 
-  /// The last result passed into the stream. Useful for initialising stream data in the instance where a [QueryBuilder] is listening to an already running stream.
-  final ObservableQueryResult? latest;
+  /// The last result passed into the stream. Useful for initialising stream data in the instance where a [QueryObserver] is listening to an already running stream.
+  final GraphQLResponse? latest;
 
-  /// Tracks how many [QueryBuilders are listening to the stream].
+  /// Tracks how many [QueryObserver]s are listening to the stream.
   int observers = 1;
 
-  ObservableQuery(
-      {required this.id,
-      required this.subject,
-      required this.query,
-      this.latest});
+  ObservableQuery({required this.subject, required this.query, this.latest});
 
   void dispose() {
     subject.close();
   }
-}
-
-enum QueryResultState { loading, exception, complete }
-
-class ObservableQueryResult {
-  final QueryResultState state;
-  final Exception? exception;
-  final GraphQLResponse? data;
-  ObservableQueryResult({required this.state, this.exception, this.data});
-
-  factory ObservableQueryResult.loading() =>
-      ObservableQueryResult(state: QueryResultState.loading);
-
-  bool get isLoading => state == QueryResultState.loading;
-  bool get hasException => exception != null;
 }
 
 class QueryNotFoundException implements Exception {

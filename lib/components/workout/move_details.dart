@@ -15,6 +15,8 @@ class MoveDetails extends StatelessWidget {
   final Move move;
   MoveDetails(this.move);
 
+  final double kBodyGraphicHeight = 380;
+
   Widget _buildEquipmentLists(Move move) => Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -160,12 +162,14 @@ class MoveDetails extends StatelessWidget {
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.front,
-                                        allBodyAreas: allBodyAreas),
+                                        allBodyAreas: allBodyAreas,
+                                        height: kBodyGraphicHeight),
                                     TargetedBodyAreasScoreIndicator(
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.back,
-                                        allBodyAreas: allBodyAreas)
+                                        allBodyAreas: allBodyAreas,
+                                        height: kBodyGraphicHeight)
                                   ],
                                 )
                               : MyText('Body areas not specified'),

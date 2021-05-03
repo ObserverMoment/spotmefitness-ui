@@ -20,17 +20,17 @@ class EMOMCreator extends StatelessWidget {
   final int totalRounds;
   final int? timecap;
   final void Function(Map<String, dynamic> defaults) createSet;
-  final String typeName;
+  final WorkoutSectionType workoutSectionType;
 
   EMOMCreator(
       {required this.sortedWorkoutSets,
       required this.totalRounds,
       required this.sectionIndex,
       this.timecap,
-      required this.typeName,
+      required this.workoutSectionType,
       required this.createSet})
-      : assert([kEMOMName, kLastStandingName].contains(typeName),
-            'EMOMCreator can only be used for EMOMs and Last One Standing Workouts, not $typeName.');
+      : assert([kEMOMName, kLastStandingName].contains(workoutSectionType.name),
+            'EMOMCreator can only be used for EMOMs and Last One Standing Workouts, not ${workoutSectionType.name}.');
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class EMOMCreator extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: WorkoutSectionInstructions(
-                typeName: typeName,
+                typeName: workoutSectionType.name,
                 rounds: totalRounds,
                 timecap: timecap,
               ),

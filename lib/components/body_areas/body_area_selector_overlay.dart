@@ -14,11 +14,13 @@ class BodyAreaSelectorOverlay extends StatelessWidget {
   final BodyAreaFrontBack frontBack;
   final List<BodyArea> allBodyAreas;
   final Function(BodyArea bodyArea) onTapBodyArea;
+  final double height;
 
   BodyAreaSelectorOverlay(
       {required this.frontBack,
       required this.onTapBodyArea,
-      required this.allBodyAreas});
+      required this.allBodyAreas,
+      required this.height});
 
   Future<String> readFile(String filePath) async {
     return rootBundle.loadString(filePath);
@@ -72,43 +74,39 @@ class BodyAreaSelectorOverlay extends StatelessWidget {
             ba.frontBack == frontBack || ba.frontBack == BodyAreaFrontBack.both)
         .toList();
 
-    return LayoutBuilder(
-        builder: (context, constraints) => FutureBuilder(
-              future: _getAllSelectablePaths(bodyAreasToDraw),
-              builder: (BuildContext context,
-                  AsyncSnapshot<List<PathBodyAreaMap>> snapshot) {
-                if (snapshot.hasData) {
-                  return SizedBox(
-                    height: constraints.maxHeight,
-                    width: constraints.maxHeight *
-                        (kBodyAreaSelector_svg_width /
-                            kBodyAreaSelector_svg_height),
-                    child: Stack(
-                        fit: StackFit.expand,
-                        alignment: Alignment.topCenter,
-                        children: snapshot.data!
-                            .map(
-                              (pathBodyAreaMap) => ClipPath(
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      onTapBodyArea(pathBodyAreaMap.bodyArea),
-                                ),
-                                clipper: PathClipper(pathBodyAreaMap.path),
-                              ),
-                            )
-                            .toList()),
-                  );
-                } else if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:
-                        MyText('Sorry, there was an error: ${snapshot.error}'),
-                  );
-                } else {
-                  return Center(child: LoadingCircle());
-                }
-              },
-            ));
+    return FutureBuilder(
+      future: _getAllSelectablePaths(bodyAreasToDraw),
+      builder: (BuildContext context,
+          AsyncSnapshot<List<PathBodyAreaMap>> snapshot) {
+        if (snapshot.hasData) {
+          return SizedBox(
+            height: height,
+            width: height *
+                (kBodyAreaSelector_svg_width / kBodyAreaSelector_svg_height),
+            child: Stack(
+                fit: StackFit.expand,
+                alignment: Alignment.topCenter,
+                children: snapshot.data!
+                    .map(
+                      (pathBodyAreaMap) => ClipPath(
+                        child: GestureDetector(
+                          onTap: () => onTapBodyArea(pathBodyAreaMap.bodyArea),
+                        ),
+                        clipper: PathClipper(pathBodyAreaMap.path),
+                      ),
+                    )
+                    .toList()),
+          );
+        } else if (snapshot.hasError) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyText('Sorry, there was an error: ${snapshot.error}'),
+          );
+        } else {
+          return Center(child: LoadingCircle());
+        }
+      },
+    );
   }
 }
 

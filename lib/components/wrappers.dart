@@ -8,6 +8,8 @@ import 'package:spotmefitness_ui/components/text.dart';
 
 /// Wraps flutter_graphql [Query] widget, handles error states in a consistent way.
 /// Then uses the returned result to build the screen via builder.
+/// @deprecated - now use custom [QueryObserver] widget.
+@deprecated
 class QueryResponseBuilder extends StatelessWidget {
   final QueryOptions options;
   final Widget Function(QueryResult,
