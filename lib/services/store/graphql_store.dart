@@ -15,8 +15,7 @@ class GraphQLStore {
   late HttpLink _httpLink;
   late AuthLink _authLink;
   late Link _link;
-  late Box hiveBox;
-  late QueryManager _queryManager;
+  late Box _box;
 
   GraphQLStore() {
     _httpLink = HttpLink(
@@ -29,62 +28,7 @@ class GraphQLStore {
 
     _link = _authLink.concat(_httpLink);
 
-    _artemisClient = ArtemisClient.fromLink(_link);
-
-    _queryManager = QueryManager(_link, GraphQLStore.boxName);
-  }
-
-  ObservableQuery<TData, TVars>
-      registerObserver<TData, TVars extends json.JsonSerializable>(
-          GraphQLQuery<TData, TVars> query) {
-    return _queryManager.registerObserver<TData, TVars>(query);
-  }
-
-  String unregisterObserver(String id) {
-    _queryManager.unregisterObserver(id);
-    return id;
-  }
-
-  void fetchQuery<TData, TVars extends json.JsonSerializable>(
-      String id, QueryFetchPolicy fetchPolicy) {
-    _queryManager.fetchQuery(id, fetchPolicy);
-  }
-
-  void dispose() {
-    _httpLink.dispose();
-    _queryManager.dispose();
-    _artemisClient.dispose();
-  }
-}
-
-/// Tracks and manages all [ObservableQuery] listeners.
-/// Manages the store data in the Hive box.
-class QueryManager {
-  final Link _link;
-  final String boxName;
-  late Box _box;
-  QueryManager(this._link, this.boxName) {
-    Hive.openBox(boxName).then((v) {
-      _box = v;
-    });
-  }
-
-  Future<void> writeNormalized(String key, dynamic value) async {
-    if (value is Map<String, Object>) {
-      final existing = _box.get(key);
-      _box.put(
-        key,
-        existing != null
-            ? StoreUtils.deeplyMergeLeft([existing, value])
-            : value,
-      );
-    } else {
-      _box.put(key, value);
-    }
-  }
-
-  Map<String, dynamic> readNormalized(String key) {
-    return Map<String, dynamic>.from(_box.get(key) ?? {});
+    _box = Hive.box(boxName);
   }
 
   Map<String, ObservableQuery> observableQueries =
@@ -189,15 +133,7 @@ class QueryManager {
       final observableQuery = getQuerybyId(id);
       final GraphQLQuery query = observableQuery.query;
 
-      final request = Request(
-        operation: Operation(
-          document: query.document,
-          operationName: query.operationName,
-        ),
-        variables: query.getVariablesMap(),
-      );
-
-      final response = await _link.request(request).first;
+      final response = await execute(query);
 
       if (response.errors != null && response.errors!.isNotEmpty) {
         // Broadcast the error. Do not update the store.
@@ -240,7 +176,54 @@ class QueryManager {
     });
   }
 
+  //// Request executions ////
+  /// Standard execution that returns unparsed graphql response.
+  /// Can parse with [query.parse(data)] if needed.
+  Future<Response> execute(GraphQLQuery query) async {
+    final request = Request(
+      operation: Operation(
+        document: query.document,
+        operationName: query.operationName,
+      ),
+      variables: query.getVariablesMap(),
+    );
+
+    final response = await _link.request(request).first;
+    return response;
+  }
+
+  /// TODO: Mutation with optional optimism.
+  /// Wrapp execute function - add cache writing and broadcasting.
+  /// Update the store with the returned data then read + broadcast data to specified ids.
+  Future<void> mutate(
+      {required GraphQLQuery mutation,
+      required List<String> broadcastQueryIds,
+
+      /// Should [optimisticData] be typed data rather than a map? [TData] as type arg?
+      Map<String, dynamic>? optimisticData}) {}
+
+  /// Hive box reads and writes
+  Future<void> writeNormalized(String key, dynamic value) async {
+    if (value is Map<String, Object>) {
+      final existing = _box.get(key);
+      _box.put(
+        key,
+        existing != null
+            ? StoreUtils.deeplyMergeLeft([existing, value])
+            : value,
+      );
+    } else {
+      _box.put(key, value);
+    }
+  }
+
+  Map<String, dynamic> readNormalized(String key) {
+    return Map<String, dynamic>.from(_box.get(key) ?? {});
+  }
+
   void dispose() {
+    _httpLink.dispose();
+    _artemisClient.dispose();
     observableQueries.forEach((k, v) {
       v.dispose();
     });
