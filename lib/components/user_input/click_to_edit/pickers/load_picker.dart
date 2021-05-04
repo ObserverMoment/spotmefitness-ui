@@ -14,15 +14,18 @@ class LoadPickerDisplay extends StatelessWidget {
   final void Function(double loadAmount) updateLoadAmount;
   final LoadUnit loadUnit;
   final void Function(LoadUnit loadUnit) updateLoadUnit;
+  final bool expandPopup;
   LoadPickerDisplay(
       {required this.loadAmount,
       required this.updateLoadAmount,
       required this.loadUnit,
-      required this.updateLoadUnit});
+      required this.updateLoadUnit,
+      this.expandPopup = false});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.showBottomSheet(
+          expand: expandPopup,
           child: LoadPickerModal(
               loadAmount: loadAmount,
               updateLoadAmount: updateLoadAmount,

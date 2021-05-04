@@ -43,9 +43,17 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
   late bool _showFullSetInfo;
+  late WorkoutSectionType _workoutSectionType;
   bool _shouldRebuild = false;
 
   void _checkForNewData() {
+    if (_workoutSectionType !=
+        _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType) {
+      _workoutSectionType =
+          _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType;
+      _shouldRebuild = true;
+    }
+
     if (_showFullSetInfo != _bloc.showFullSetInfo) {
       _showFullSetInfo = _bloc.showFullSetInfo;
       _shouldRebuild = true;
@@ -82,6 +90,9 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     _bloc = context.read<WorkoutCreatorBloc>();
 
     _showFullSetInfo = _bloc.showFullSetInfo;
+
+    _workoutSectionType =
+        _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType;
 
     _workoutSet = WorkoutSet.fromJson(_bloc.workout
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
@@ -191,20 +202,23 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    MiniButton(
-                        text:
-                            'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
-                        onPressed: () => context.showBottomSheet<int>(
-                                child: NumberInputModal<int>(
-                              value: _workoutSet.rounds,
-                              // Need to cast to dynamic because of this.
-                              // https://github.com/dart-lang/sdk/issues/32042
-                              saveValue: <int>(dynamic r) => context
-                                  .read<WorkoutCreatorBloc>()
-                                  .editWorkoutSet(widget.sectionIndex,
-                                      widget.setIndex, {'rounds': r}),
-                              title: 'How many repeats?',
-                            ))),
+                    /// Assumes that allowReorder is based on their being more than one set.
+                    if (widget.allowReorder ||
+                        _workoutSectionType.name != kAMRAPName)
+                      MiniButton(
+                          text:
+                              'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
+                          onPressed: () => context.showBottomSheet<int>(
+                                  child: NumberInputModal<int>(
+                                value: _workoutSet.rounds,
+                                // Need to cast to dynamic because of this.
+                                // https://github.com/dart-lang/sdk/issues/32042
+                                saveValue: <int>(dynamic r) => context
+                                    .read<WorkoutCreatorBloc>()
+                                    .editWorkoutSet(widget.sectionIndex,
+                                        widget.setIndex, {'rounds': r}),
+                                title: 'How many repeats?',
+                              ))),
                     if (_sortedWorkoutMoves.length > 3)
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),

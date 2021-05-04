@@ -90,6 +90,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
           : _activeWorkoutMove?.timeUnit ?? TimeUnit.seconds
       ..loadAmount = 0
       ..move = move;
+
     _pageController.toPage(1);
     setState(() {});
   }
@@ -270,6 +271,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                       if (!widget.ignoreReps &&
                                           widget.fixedTimeReps == null)
                                         RepPickerDisplay(
+                                          expandPopup: true,
                                           reps: _activeWorkoutMove!.reps,
                                           validRepTypes: _activeWorkoutMove!
                                               .move.validRepTypes,
@@ -298,6 +300,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                       if (_showLoadPicker())
                                         FadeIn(
                                           child: LoadPickerDisplay(
+                                            expandPopup: true,
                                             loadAmount:
                                                 _activeWorkoutMove!.loadAmount,
                                             loadUnit:

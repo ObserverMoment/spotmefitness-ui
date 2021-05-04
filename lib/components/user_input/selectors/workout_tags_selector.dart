@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -7,10 +6,12 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Also lets you create a new tag and then select it.
 class WorkoutTagsSelector extends StatefulWidget {
@@ -98,14 +99,12 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
             ],
           ),
         ),
-        child: QueryResponseBuilder(
-            options: QueryOptions(
-                document: UserWorkoutTagsQuery().document,
-                fetchPolicy: FetchPolicy.cacheAndNetwork),
-            builder: (result, {fetchMore, refetch}) {
-              final _workoutTags =
-                  UserWorkoutTags$Query.fromJson(result.data ?? {})
-                      .userWorkoutTags;
+        child: QueryObserver<UserWorkoutTags$Query, json.JsonSerializable>(
+            key: Key(
+                'WorkoutTagsSelector - ${UserWorkoutTagsQuery().operationName}'),
+            query: UserWorkoutTagsQuery(),
+            fetchPolicy: QueryFetchPolicy.storeFirst,
+            builder: (data) {
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -124,7 +123,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: _workoutTags.reversed
+                          children: data.userWorkoutTags.reversed
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(

@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class CustomMoveCreatorEquipment extends StatelessWidget {
   final Move move;
@@ -14,13 +15,13 @@ class CustomMoveCreatorEquipment extends StatelessWidget {
   CustomMoveCreatorEquipment({required this.move, required this.updateMove});
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            fetchPolicy: FetchPolicy.cacheFirst,
-            document: EquipmentsQuery().document),
-        builder: (result, {fetchMore, refetch}) {
-          final allEquipments =
-              Equipments$Query.fromJson(result.data ?? {}).equipments;
+    return QueryObserver<Equipments$Query, json.JsonSerializable>(
+        key: Key(
+            'CustomMoveCreatorEquipment - ${EquipmentsQuery().operationName}'),
+        query: EquipmentsQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
+          final allEquipments = data.equipments;
 
           return SingleChildScrollView(
             child: Padding(

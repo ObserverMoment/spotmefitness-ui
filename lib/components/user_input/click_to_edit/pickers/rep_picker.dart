@@ -23,17 +23,19 @@ class RepPickerDisplay extends StatelessWidget {
   final void Function(DistanceUnit distanceUnit) updateDistanceUnit;
   final TimeUnit timeUnit;
   final void Function(TimeUnit timeUnit) updateTimeUnit;
-  RepPickerDisplay({
-    required this.validRepTypes,
-    required this.reps,
-    required this.updateReps,
-    required this.repType,
-    required this.updateRepType,
-    required this.distanceUnit,
-    required this.updateDistanceUnit,
-    required this.timeUnit,
-    required this.updateTimeUnit,
-  });
+  final bool expandPopup;
+
+  RepPickerDisplay(
+      {required this.validRepTypes,
+      required this.reps,
+      required this.updateReps,
+      required this.repType,
+      required this.updateRepType,
+      required this.distanceUnit,
+      required this.updateDistanceUnit,
+      required this.timeUnit,
+      required this.updateTimeUnit,
+      this.expandPopup = false});
 
   Widget _buildRepTypeDisplay() {
     switch (repType) {
@@ -59,17 +61,18 @@ class RepPickerDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.showBottomSheet(
+          expand: expandPopup,
           child: RepPickerModal(
-        reps: reps,
-        updateReps: updateReps,
-        repType: repType,
-        validRepTypes: validRepTypes,
-        updateRepType: updateRepType,
-        distanceUnit: distanceUnit,
-        updateDistanceUnit: updateDistanceUnit,
-        timeUnit: timeUnit,
-        updateTimeUnit: updateTimeUnit,
-      )),
+            reps: reps,
+            updateReps: updateReps,
+            repType: repType,
+            validRepTypes: validRepTypes,
+            updateRepType: updateRepType,
+            distanceUnit: distanceUnit,
+            updateDistanceUnit: updateDistanceUnit,
+            timeUnit: timeUnit,
+            updateTimeUnit: updateTimeUnit,
+          )),
       child: ContentBox(
         child: Row(
           mainAxisSize: MainAxisSize.min,

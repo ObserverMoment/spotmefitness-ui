@@ -7,13 +7,15 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_ro
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/country_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/date_selector.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/country.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class ProfilePersonalPage extends StatelessWidget {
   Future<void> updateUserFields(
@@ -43,13 +45,12 @@ class ProfilePersonalPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-          document: AuthedUserQuery().document,
-        ),
-        builder: (result, {fetchMore, refetch}) {
-          final User user =
-              AuthedUser$Query.fromJson(result.data ?? {}).authedUser;
+    return QueryObserver<AuthedUser$Query, json.JsonSerializable>(
+        key: Key('ProfilePersonalPage - ${AuthedUserQuery().operationName}'),
+        query: AuthedUserQuery(),
+        fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+        builder: (data) {
+          final User user = data.authedUser;
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView(

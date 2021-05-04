@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_score_adjuster.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 
 class CustomMoveCreatorBody extends StatefulWidget {
   final Move move;
@@ -42,13 +43,12 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
 
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            fetchPolicy: FetchPolicy.cacheFirst,
-            document: BodyAreasQuery().document),
-        builder: (result, {fetchMore, refetch}) {
-          final allBodyAreas =
-              BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
+    return QueryObserver<BodyAreas$Query, json.JsonSerializable>(
+        key: Key('CustomMoveCreatorBody - ${BodyAreasQuery().operationName}'),
+        query: BodyAreasQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
+          final allBodyAreas = data.bodyAreas;
 
           return SingleChildScrollView(
             child: Column(

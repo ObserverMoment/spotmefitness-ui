@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
@@ -11,12 +10,14 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Screen for inputting MoveFilter settings.
 /// Also handles persisting the selected settings to Hive box on the device and retrieving them on initial build.
@@ -138,13 +139,12 @@ class MoveFiltersTypes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            fetchPolicy: FetchPolicy.cacheFirst,
-            document: MoveTypesQuery().document),
-        builder: (result, {refetch, fetchMore}) {
-          final allMoveTypes =
-              MoveTypes$Query.fromJson(result.data ?? {}).moveTypes;
+    return QueryObserver<MoveTypes$Query, json.JsonSerializable>(
+        key: Key('MoveFiltersTypes - ${MoveTypesQuery().operationName}'),
+        query: MoveTypesQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
+          final allMoveTypes = data.moveTypes;
 
           return Container(
             padding: const EdgeInsets.only(top: 4, left: 8),
@@ -215,14 +215,13 @@ class MoveFiltersEquipment extends StatelessWidget {
             child: FadeIn(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: QueryResponseBuilder(
-                    options: QueryOptions(
-                        fetchPolicy: FetchPolicy.cacheFirst,
-                        document: EquipmentsQuery().document),
-                    builder: (result, {fetchMore, refetch}) {
-                      final allEquipments =
-                          Equipments$Query.fromJson(result.data ?? {})
-                              .equipments;
+                child: QueryObserver<Equipments$Query, json.JsonSerializable>(
+                    key: Key(
+                        'MoveFiltersEquipment - ${EquipmentsQuery().operationName}'),
+                    query: EquipmentsQuery(),
+                    fetchPolicy: QueryFetchPolicy.storeFirst,
+                    builder: (data) {
+                      final allEquipments = data.equipments;
 
                       return EquipmentMultiSelector(
                           selectedEquipments: selectedEquipments,
@@ -265,13 +264,12 @@ class _MoveFiltersBodyState extends State<MoveFiltersBody> {
 
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            fetchPolicy: FetchPolicy.cacheFirst,
-            document: BodyAreasQuery().document),
-        builder: (result, {fetchMore, refetch}) {
-          final allBodyAreas =
-              BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
+    return QueryObserver<BodyAreas$Query, json.JsonSerializable>(
+        key: Key('MoveFiltersBody - ${BodyAreasQuery().operationName}'),
+        query: BodyAreasQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
+          final allBodyAreas = data.bodyAreas;
 
           return SingleChildScrollView(
             child: Column(

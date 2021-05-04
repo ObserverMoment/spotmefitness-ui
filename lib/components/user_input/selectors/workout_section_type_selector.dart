@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// The user is required to select a type before moving on to the workout section creator.
 /// As the type selected detemines exactly how the UI is displayed and which defaults are used.
@@ -16,18 +17,15 @@ class WorkoutSectionTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: QueryResponseBuilder(
-          options: QueryOptions(
-              document: WorkoutSectionTypesQuery().document,
-              fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) {
-            final _workoutSectionTypes =
-                WorkoutSectionTypes$Query.fromJson(result.data ?? {})
-                    .workoutSectionTypes;
-
+      child: QueryObserver<WorkoutSectionTypes$Query, json.JsonSerializable>(
+          key: Key(
+              'WorkoutSectionTypeSelector - ${WorkoutSectionTypesQuery().operationName}'),
+          query: WorkoutSectionTypesQuery(),
+          fetchPolicy: QueryFetchPolicy.storeFirst,
+          builder: (data) {
             return ListView(
               shrinkWrap: true,
-              children: _workoutSectionTypes
+              children: data.workoutSectionTypes
                   .sortedBy<num>((type) => int.parse(type.id))
                   .map((type) => GestureDetector(
                         onTap: () => selectWorkoutSectionType(type),

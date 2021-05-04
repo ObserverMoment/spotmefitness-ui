@@ -1,15 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
 import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/settings_and_info.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -38,20 +39,19 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            QueryResponseBuilder(
-                options: QueryOptions(
-                  document: AuthedUserQuery().document,
-                ),
-                builder: (result, {fetchMore, refetch}) {
-                  final _user =
-                      AuthedUser$Query.fromJson(result.data ?? {}).authedUser;
+            QueryObserver<AuthedUser$Query, json.JsonSerializable>(
+                key: Key('ProfilePage - ${AuthedUserQuery().operationName}'),
+                query: AuthedUserQuery(),
+                fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+                builder: (data) {
+                  final user = data.authedUser;
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
                           UserAvatarUploader(
-                            avatarUri: _user.avatarUri,
+                            avatarUri: user.avatarUri,
                             displaySize: Size(100, 100),
                           ),
                           MyText('Photo')
@@ -60,8 +60,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Column(
                         children: [
                           UserIntroVideoUploader(
-                            introVideoUri: _user.introVideoUri,
-                            introVideoThumbUri: _user.introVideoThumbUri,
+                            introVideoUri: user.introVideoUri,
+                            introVideoThumbUri: user.introVideoThumbUri,
                             displaySize: Size(100, 100),
                           ),
                           MyText('Video')

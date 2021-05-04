@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -8,12 +7,14 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class GymProfileCreator extends StatefulWidget {
   final GymProfile? gymProfile;
@@ -24,6 +25,7 @@ class GymProfileCreator extends StatefulWidget {
 
 class _GymProfileCreatorState extends State<GymProfileCreator> {
   bool _formIsDirty = false;
+  late bool _isCreate;
 
   Map<String, dynamic>? _backupJson;
   late GymProfile _activeGymProfile;
@@ -38,6 +40,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   @override
   void initState() {
     super.initState();
+    _isCreate = widget.gymProfile == null;
     _backupJson = widget.gymProfile?.toJson();
     _activeGymProfile = _initGymProfile();
 
@@ -233,7 +236,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
                   child: _GymProfileCreatorDetails(
                       nameController: _nameController,
                       descriptionController: _descriptionController,
-                      handleDelete: _handleDelete),
+                      handleDelete: _isCreate ? null : _handleDelete),
                 ),
                 _GymProfileCreatorEquipment(
                   clearAllEquipment: _clearAllEquipment,
@@ -252,11 +255,11 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 class _GymProfileCreatorDetails extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController descriptionController;
-  final void Function() handleDelete;
+  final void Function()? handleDelete;
   _GymProfileCreatorDetails(
       {required this.nameController,
       required this.descriptionController,
-      required this.handleDelete});
+      this.handleDelete});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -274,20 +277,21 @@ class _GymProfileCreatorDetails extends StatelessWidget {
                 controller: descriptionController),
           ]),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DestructiveButton(
-                prefix: Icon(
-                  CupertinoIcons.delete,
-                  color: Styles.white,
-                  size: 18,
-                ),
-                text: 'Delete',
-                withMinWidth: false,
-                onPressed: handleDelete)
-          ],
-        )
+        if (handleDelete != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DestructiveButton(
+                  prefix: Icon(
+                    CupertinoIcons.delete,
+                    color: Styles.white,
+                    size: 18,
+                  ),
+                  text: 'Delete',
+                  withMinWidth: false,
+                  onPressed: handleDelete!)
+            ],
+          )
       ],
     );
   }
@@ -330,13 +334,14 @@ class _GymProfileCreatorEquipment extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: QueryResponseBuilder(
-              options: QueryOptions(
-                  document: EquipmentsQuery().document,
-                  fetchPolicy: FetchPolicy.cacheFirst),
-              builder: (result, {fetchMore, refetch}) {
-                final List<Equipment> equipments =
-                    Equipments$Query.fromJson(result.data ?? {}).equipments;
+          child: QueryObserver<Equipments$Query, json.JsonSerializable>(
+              key:
+                  Key('GymProfileCreator - ${EquipmentsQuery().operationName}'),
+              query: EquipmentsQuery(),
+              fetchPolicy: QueryFetchPolicy.storeFirst,
+              builder: (data) {
+                final List<Equipment> equipments = data.equipments;
+
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),

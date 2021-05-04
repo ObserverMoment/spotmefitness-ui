@@ -27,6 +27,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
     return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
       key: Key('YourWorkoutsPage - ${UserWorkoutsQuery().operationName}'),
       query: UserWorkoutsQuery(),
+      garbageCollectAfterFetch: true,
       fetchPolicy: QueryFetchPolicy.storeAndNetwork,
       builder: (data) {
         final workouts = data.userWorkouts

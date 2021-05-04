@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Info about and exercise. Video and description.
 class MoveDetails extends StatelessWidget {
@@ -106,14 +107,11 @@ class MoveDetails extends StatelessWidget {
     final bool _bodyWeightOnly =
         move.requiredEquipments.isEmpty && move.selectableEquipments.isEmpty;
 
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            document: BodyAreasQuery().document,
-            fetchPolicy: FetchPolicy.cacheFirst),
-        builder: (result, {refetch, fetchMore}) {
-          final List<BodyArea> allBodyAreas =
-              BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
-
+    return QueryObserver<BodyAreas$Query, json.JsonSerializable>(
+        key: Key('MoveDetails - ${BodyAreasQuery().operationName}'),
+        query: BodyAreasQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
               middle: NavBarTitle(move.name),
@@ -162,13 +160,13 @@ class MoveDetails extends StatelessWidget {
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.front,
-                                        allBodyAreas: allBodyAreas,
+                                        allBodyAreas: data.bodyAreas,
                                         height: kBodyGraphicHeight),
                                     TargetedBodyAreasScoreIndicator(
                                         bodyAreaMoveScores:
                                             move.bodyAreaMoveScores,
                                         frontBack: BodyAreaFrontBack.back,
-                                        allBodyAreas: allBodyAreas,
+                                        allBodyAreas: data.bodyAreas,
                                         height: kBodyGraphicHeight)
                                   ],
                                 )

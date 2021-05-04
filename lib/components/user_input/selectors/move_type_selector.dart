@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class MoveTypeSelector extends StatelessWidget {
   final MoveType? moveType;
@@ -33,13 +34,12 @@ class MoveTypeSelector extends StatelessWidget {
             onPressed: context.pop),
         middle: NavBarTitle('Move Types'),
       ),
-      child: QueryResponseBuilder(
-          options: QueryOptions(
-              document: MoveTypesQuery().document,
-              fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) {
-            final moveTypes =
-                MoveTypes$Query.fromJson(result.data ?? {}).moveTypes;
+      child: QueryObserver<MoveTypes$Query, json.JsonSerializable>(
+          key: Key('MoveTypeSelector - ${MoveTypesQuery().operationName}'),
+          query: MoveTypesQuery(),
+          fetchPolicy: QueryFetchPolicy.storeFirst,
+          builder: (data) {
+            final moveTypes = data.moveTypes;
 
             return Padding(
               padding: const EdgeInsets.all(8.0),

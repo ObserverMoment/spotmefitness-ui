@@ -326,17 +326,29 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                       body: Column(
                         children: [
                           HorizontalLine(),
-                          Padding(
+                          if (workout.workoutSections.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.all(24.0),
+                              child: MyText('Nothing here yet...'),
+                            ),
+                          if (workout.workoutSections.length > 1)
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 12, bottom: 8),
+                                child: MyTabBarNav(
+                                    titles:
+                                        _sectionTitles(sortedWorkoutSections),
+                                    handleTabChange: _handleTabChange,
+                                    activeTabIndex: _activeSectionTabIndex)),
+                          if (workout.workoutSections.length == 1 &&
+                              Utils.textNotNull(
+                                  workout.workoutSections[0].name))
+                            Padding(
                               padding:
                                   const EdgeInsets.only(top: 12, bottom: 8),
-                              child: workout.workoutSections.length > 1
-                                  ? MyTabBarNav(
-                                      titles:
-                                          _sectionTitles(sortedWorkoutSections),
-                                      handleTabChange: _handleTabChange,
-                                      activeTabIndex: _activeSectionTabIndex)
-                                  : UnderlineTitle(
-                                      workout.workoutSections[0].name!)),
+                              child: UnderlineTitle(
+                                  workout.workoutSections[0].name!),
+                            ),
                           if (sortedWorkoutSections.isNotEmpty)
                             Expanded(
                               child: PageView(

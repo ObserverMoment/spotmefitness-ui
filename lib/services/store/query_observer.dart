@@ -19,13 +19,18 @@ class QueryObserver<TData, TVars extends json.JsonSerializable>
   final Widget Function(TData response) builder;
   final Widget? loadingIndicator;
 
-  const QueryObserver({
-    required this.key,
-    required this.query,
-    this.fetchPolicy = QueryFetchPolicy.storeAndNetwork,
-    required this.builder,
-    this.loadingIndicator,
-  }) : super(key: key);
+  /// Do you want to clean up unreferenced objects from the store once this query has been fetched.
+  /// Useful if the query is a list which can change every time new variables are provided.
+  final bool garbageCollectAfterFetch;
+
+  const QueryObserver(
+      {required this.key,
+      required this.query,
+      this.fetchPolicy = QueryFetchPolicy.storeAndNetwork,
+      required this.builder,
+      this.loadingIndicator,
+      this.garbageCollectAfterFetch = false})
+      : super(key: key);
 
   @override
   QueryObserverState<TData, TVars> createState() =>
@@ -40,7 +45,10 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
   void _initObservableQuery() {
     _store = context.read<GraphQLStore>();
     _observableQuery = _store.registerObserver<TData, TVars>(widget.query);
-    _store.fetchQuery(widget.query.operationName!, widget.fetchPolicy);
+    _store.fetchInitialQuery(
+        id: widget.query.operationName!,
+        fetchPolicy: widget.fetchPolicy,
+        garbageCollectAfterFetch: widget.garbageCollectAfterFetch);
   }
 
   @override

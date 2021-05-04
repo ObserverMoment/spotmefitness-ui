@@ -19,12 +19,14 @@ import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 class AudioUploader extends StatefulWidget {
   final String? audioUri;
   final Size displaySize;
+  final void Function()? onUploadStart;
   final void Function(String uploadedUri) onUploadSuccess;
   final void Function() removeAudio;
   AudioUploader(
       {this.audioUri,
       this.displaySize = const Size(120, 120),
       required this.onUploadSuccess,
+      this.onUploadStart,
       required this.removeAudio});
 
   @override
@@ -58,6 +60,9 @@ class _AudioUploaderState extends State<AudioUploader> {
   }
 
   Future<void> _uploadFile(File file) async {
+    if (widget.onUploadStart != null) {
+      widget.onUploadStart!();
+    }
     await GetIt.I<UploadcareService>().uploadFile(
         file: SharedFile(file),
         onComplete: (uri) {

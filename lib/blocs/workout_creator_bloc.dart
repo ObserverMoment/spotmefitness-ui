@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
-import 'package:spotmefitness_ui/services/type_converters.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// All updates to workout or descendants follow this pattern.
@@ -18,6 +16,7 @@ import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 class WorkoutCreatorBloc extends ChangeNotifier {
   final Workout initialWorkout;
   final BuildContext context;
+  final bool isCreate;
 
   int _setId = 0;
   int _workoutMoveId = 0;
@@ -36,13 +35,25 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   bool creatingSection = false;
   bool creatingSet = false;
 
+  /// Users should not be able to navigate away from the media page while this in in progress.
+  /// Otherwise the upload will fail and throw an error.
+  /// The top right 'done' button should also be disabled.
+  bool uploadingMedia = false;
+  void setUploadingMedia(bool uploading) {
+    uploadingMedia = uploading;
+    notifyListeners();
+  }
+
   Workout workout;
 
   /// Before every update we make a copy of the last workout here.
   /// If there is an issue calling the api then this is reverted to.
   Map<String, dynamic> backupJson = {};
 
-  WorkoutCreatorBloc(this.initialWorkout, this.context)
+  WorkoutCreatorBloc(
+      {required this.initialWorkout,
+      required this.context,
+      required this.isCreate})
       : workout = initialWorkout;
 
   /// Run this before constructing the bloc
@@ -63,23 +74,17 @@ class WorkoutCreatorBloc extends ChangeNotifier {
               contentAccessScope: ContentAccessScope.private),
         );
 
-        final result = await context.graphQLClient.mutate(
-          MutationOptions(
-              variables: variables.toJson(),
-              document: CreateWorkoutMutation(variables: variables).document),
-        );
+        final result = await context.graphQLStore
+            .mutate<CreateWorkout$Mutation, CreateWorkoutArguments>(
+                mutation: CreateWorkoutMutation(variables: variables));
 
-        if (result.hasException || result.data == null) {
+        if (result.hasErrors) {
           throw Exception(
               'There was a problem creating a new workout in the database.');
         }
 
-        final newWorkout = Workout.fromJson({
-          ...CreateWorkout$Mutation.fromJson(result.data!)
-              .createWorkout
-              .toJson(),
-          'WorkoutSections': []
-        });
+        final newWorkout = Workout.fromJson(
+            {...result.data.createWorkout.toJson(), 'WorkoutSections': []});
 
         context.showToast(message: 'Workout Created');
         return newWorkout;
@@ -89,18 +94,20 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
   }
 
-  /// Send all new data to the device cache so that gql query streams get updated.
-  /// The api has been updated incrementally so does not need further update here.
+  /// Send all new data to the graphql store and broadcast new data to streams.
+  /// The api has been updating incrementally so does not need further update here.
+  /// Doing this to avoid unecessary UI builds in non displaying widgets everytime and update is made by the user during the creating / editing process.
   Future<void> saveAllChanges(BuildContext context) async {
-    final query = UserWorkoutsQuery();
-
-    /// The alias type of the [userWorkouts] query is [WorkoutSummary]
-    /// So this is the data type that needs to be passed to this update.
-    // GraphQL.updateCacheListQuery(
-    //     client: context.graphQLClient,
-    //     queryDocument: query.document,
-    //     queryOperationNameOrAlias: query.operationName,
-    //     data: Converters.fromWorkoutToWorkoutSummary(workout).toJson());
+    context.graphQLStore.writeObjectQuery(
+        data: workout.toJson(),
+        query:
+            WorkoutByIdQuery(variables: WorkoutByIdArguments(id: workout.id)),
+        additionalUpdates: [
+          QueryUpdate(
+              objectId: 'Workout:${workout.id}',
+              queryIds: ['userWorkouts'],
+              type: isCreate ? QueryUpdateType.add : QueryUpdateType.broadcast)
+        ]);
   }
 
   /// Should run at the start of all CRUD ops.
@@ -109,19 +116,21 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     backupJson = workout.toJson();
   }
 
-  void _revertChanges(OperationException? exception) {
+  void _revertChanges(List<Object>? errors) {
     // There was an error so revert to backup, notify listeners and show error toast.
     workout = Workout.fromJson(backupJson);
-    if (exception != null) {
-      print(exception);
+    if (errors != null && errors.isNotEmpty) {
+      for (final e in errors) {
+        print(e.toString());
+      }
     }
     context.showToast(
         message: 'There was a problem, changes not saved', isError: true);
   }
 
-  bool _checkApiResult(QueryResult result) {
-    if (result.hasException || result.data == null) {
-      _revertChanges(result.exception!);
+  bool _checkApiResult(MutationResult result) {
+    if (result.hasErrors) {
+      _revertChanges(result.errors!);
       return false;
     } else {
       return true;
@@ -138,17 +147,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final variables = UpdateWorkoutArguments(
         data: UpdateWorkoutInput.fromJson({...workout.toJson(), ...data}));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: UpdateWorkoutMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkout$Mutation, UpdateWorkoutArguments>(
+            mutation: UpdateWorkoutMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      workout = Workout.fromJson({
-        ...workout.toJson(),
-        ...UpdateWorkout$Mutation.fromJson(result.data!).updateWorkout.toJson()
-      });
+      workout = Workout.fromJson(
+          {...workout.toJson(), ...result.data.updateWorkout.toJson()});
     }
 
     notifyListeners();
@@ -170,17 +177,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
             workout: ConnectRelationInput(id: workout.id),
             workoutSectionType: ConnectRelationInput(id: type.id)));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: CreateWorkoutSectionMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<CreateWorkoutSection$Mutation, CreateWorkoutSectionArguments>(
+            mutation: CreateWorkoutSectionMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      workout.workoutSections.add(WorkoutSection.fromJson(
-          CreateWorkoutSection$Mutation.fromJson(result.data!)
-              .createWorkoutSection
-              .toJson()));
+      workout.workoutSections.add(
+          WorkoutSection.fromJson(result.data.createWorkoutSection.toJson()));
     }
 
     creatingSection = false;
@@ -203,18 +208,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
         data:
             UpdateWorkoutSectionInput.fromJson(updatedWorkoutSection.toJson()));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: UpdateWorkoutSectionMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkoutSection$Mutation, UpdateWorkoutSectionArguments>(
+            mutation: UpdateWorkoutSectionMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
       workout.workoutSections[index] = WorkoutSection.fromJson({
         ...updatedWorkoutSection.toJson(),
-        ...UpdateWorkoutSection$Mutation.fromJson(result.data!)
-            .updateWorkoutSection
-            .toJson()
+        ...result.data.updateWorkoutSection.toJson()
       });
     }
 
@@ -242,18 +245,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
                   id: s.id, sortPosition: s.sortPosition))
               .toList());
 
-      final result = await context.graphQLClient.mutate(MutationOptions(
-          document:
-              ReorderWorkoutSectionsMutation(variables: variables).document,
-          variables: variables.toJson()));
+      final result = await context.graphQLStore.mutate<
+              ReorderWorkoutSections$Mutation, ReorderWorkoutSectionsArguments>(
+          mutation: ReorderWorkoutSectionsMutation(variables: variables));
 
       final success = _checkApiResult(result);
 
       if (success) {
-        /// Write new sort positions.
-        final positions = ReorderWorkoutSections$Mutation.fromJson(result.data!)
-            .reorderWorkoutSections;
+        final positions = result.data.reorderWorkoutSections;
 
+        /// Write new sort positions.
         workout.workoutSections.forEach((ws) {
           ws.sortPosition =
               positions.firstWhere((p) => p.id == ws.id).sortPosition;
@@ -279,20 +280,19 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// Api.
     final variables = DeleteWorkoutSectionByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document:
-            DeleteWorkoutSectionByIdMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore.mutate<
+            DeleteWorkoutSectionById$Mutation,
+            DeleteWorkoutSectionByIdArguments>(
+        mutation: DeleteWorkoutSectionByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = DeleteWorkoutSectionById$Mutation.fromJson(result.data!)
-          .deleteWorkoutSectionById;
+      final deletedId = result.data.deleteWorkoutSectionById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
-        _revertChanges(result.exception);
+        _revertChanges(result.errors);
         notifyListeners();
       }
     }
@@ -332,21 +332,17 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       'WorkoutSection': ConnectRelationInput(id: oldSection.id).toJson()
     }));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: CreateWorkoutSetMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<CreateWorkoutSet$Mutation, CreateWorkoutSetArguments>(
+            mutation: CreateWorkoutSetMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     WorkoutSet? createdSet;
 
     if (success) {
-      createdSet = WorkoutSet.fromJson({
-        ...CreateWorkoutSet$Mutation.fromJson(result.data!)
-            .createWorkoutSet
-            .toJson(),
-        'WorkoutMoves': []
-      });
+      createdSet = WorkoutSet.fromJson(
+          {...result.data.createWorkoutSet.toJson(), 'WorkoutMoves': []});
       workout.workoutSections[sectionIndex].workoutSets.add(createdSet);
     }
 
@@ -376,9 +372,9 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final variables = UpdateWorkoutSetArguments(
         data: UpdateWorkoutSetInput.fromJson(updatedWorkoutSet.toJson()));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: UpdateWorkoutSetMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkoutSet$Mutation, UpdateWorkoutSetArguments>(
+            mutation: UpdateWorkoutSetMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
@@ -386,9 +382,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       workout.workoutSections[sectionIndex].workoutSets[setIndex] =
           WorkoutSet.fromJson({
         ...updatedWorkoutSet.toJson(),
-        ...UpdateWorkoutSet$Mutation.fromJson(result.data!)
-            .updateWorkoutSet
-            .toJson(),
+        ...result.data.updateWorkoutSet.toJson(),
       });
     }
 
@@ -416,18 +410,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// Api
     final variables = DuplicateWorkoutSetByIdArguments(id: toDuplicate.id);
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document:
-            DuplicateWorkoutSetByIdMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore.mutate<
+            DuplicateWorkoutSetById$Mutation, DuplicateWorkoutSetByIdArguments>(
+        mutation: DuplicateWorkoutSetByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      workoutSets[setIndex + 1] = WorkoutSet.fromJson(
-          DuplicateWorkoutSetById$Mutation.fromJson(result.data!)
-              .duplicateWorkoutSetById
-              .toJson());
+      workoutSets[setIndex + 1] =
+          WorkoutSet.fromJson(result.data.duplicateWorkoutSetById.toJson());
     }
 
     notifyListeners();
@@ -456,16 +447,15 @@ class WorkoutCreatorBloc extends ChangeNotifier {
                   id: s.id, sortPosition: s.sortPosition))
               .toList());
 
-      final result = await context.graphQLClient.mutate(MutationOptions(
-          document: ReorderWorkoutSetsMutation(variables: variables).document,
-          variables: variables.toJson()));
+      final result = await context.graphQLStore
+          .mutate<ReorderWorkoutSets$Mutation, ReorderWorkoutSetsArguments>(
+              mutation: ReorderWorkoutSetsMutation(variables: variables));
 
       final success = _checkApiResult(result);
 
       if (success) {
         /// Write new sort positions.
-        final positions = ReorderWorkoutSets$Mutation.fromJson(result.data!)
-            .reorderWorkoutSets;
+        final positions = result.data.reorderWorkoutSets;
 
         workoutSets.forEach((ws) {
           ws.sortPosition =
@@ -494,19 +484,18 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// Api.
     final variables = DeleteWorkoutSetByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: DeleteWorkoutSetByIdMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<DeleteWorkoutSetById$Mutation, DeleteWorkoutSetByIdArguments>(
+            mutation: DeleteWorkoutSetByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = DeleteWorkoutSetById$Mutation.fromJson(result.data!)
-          .deleteWorkoutSetById;
+      final deletedId = result.data.deleteWorkoutSetById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
-        _revertChanges(result.exception);
+        _revertChanges(result.errors);
         notifyListeners();
       }
     }
@@ -555,18 +544,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
             move: ConnectRelationInput(id: workoutMove.move.id),
             workoutSet: ConnectRelationInput(id: workoutSetId)));
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: CreateWorkoutMoveMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<CreateWorkoutMove$Mutation, CreateWorkoutMoveArguments>(
+            mutation: CreateWorkoutMoveMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
       workout.workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves
           .add(WorkoutMove.fromJson(
-        CreateWorkoutMove$Mutation.fromJson(result.data!)
-            .createWorkoutMove
-            .toJson(),
+        result.data.createWorkoutMove.toJson(),
       ));
     }
     notifyListeners();
@@ -585,21 +572,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final variables = UpdateWorkoutMoveArguments(
         data: UpdateWorkoutMoveInput.fromJson(workoutMove.toJson()));
 
-    final result = await context.graphQLClient.mutate(
-      MutationOptions(
-        document: UpdateWorkoutMoveMutation(variables: variables).document,
-        variables: variables.toJson(),
-      ),
-    );
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkoutMove$Mutation, UpdateWorkoutMoveArguments>(
+            mutation: UpdateWorkoutMoveMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
       workout.workoutSections[sectionIndex].workoutSets[setIndex]
           .workoutMoves[workoutMove.sortPosition] = WorkoutMove.fromJson(
-        UpdateWorkoutMove$Mutation.fromJson(result.data!)
-            .updateWorkoutMove
-            .toJson(),
+        result.data.updateWorkoutMove.toJson(),
       );
     }
 
@@ -625,19 +607,18 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     // Api.
     final variables = DeleteWorkoutMoveByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document: DeleteWorkoutMoveByIdMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore
+        .mutate<DeleteWorkoutMoveById$Mutation, DeleteWorkoutMoveByIdArguments>(
+            mutation: DeleteWorkoutMoveByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = DeleteWorkoutMoveById$Mutation.fromJson(result.data!)
-          .deleteWorkoutMoveById;
+      final deletedId = result.data.deleteWorkoutMoveById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
-        _revertChanges(result.exception);
+        _revertChanges(result.errors);
         notifyListeners();
       }
     }
@@ -665,18 +646,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// If we do optimistic client update then the user can immediately click to edit a workoutMove with a temp id that does not exist in the DB - causing network error on an update mutation request.
     final variables = DuplicateWorkoutMoveByIdArguments(id: toDuplicate.id);
 
-    final result = await context.graphQLClient.mutate(MutationOptions(
-        document:
-            DuplicateWorkoutMoveByIdMutation(variables: variables).document,
-        variables: variables.toJson()));
+    final result = await context.graphQLStore.mutate<
+            DuplicateWorkoutMoveById$Mutation,
+            DuplicateWorkoutMoveByIdArguments>(
+        mutation: DuplicateWorkoutMoveByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
     if (success) {
-      workoutMoves[workoutMoveIndex + 1] = WorkoutMove.fromJson(
-          DuplicateWorkoutMoveById$Mutation.fromJson(result.data!)
-              .duplicateWorkoutMoveById
-              .toJson());
+      workoutMoves[workoutMoveIndex + 1] =
+          WorkoutMove.fromJson(result.data.duplicateWorkoutMoveById.toJson());
     }
 
     notifyListeners();
@@ -712,17 +691,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
                   id: s.id, sortPosition: s.sortPosition))
               .toList());
 
-      final result = await context.graphQLClient.mutate(MutationOptions(
-          document: ReorderWorkoutMovesMutation(variables: variables).document,
-          variables: variables.toJson()));
+      final result = await context.graphQLStore
+          .mutate<ReorderWorkoutMoves$Mutation, ReorderWorkoutMovesArguments>(
+              mutation: ReorderWorkoutMovesMutation(variables: variables));
 
       final success = _checkApiResult(result);
 
       if (success) {
-        /// Write new sort positions.
-        final positions = ReorderWorkoutMoves$Mutation.fromJson(result.data!)
-            .reorderWorkoutMoves;
+        final positions = result.data.reorderWorkoutMoves;
 
+        // Write new sort positions.
         workoutMoves.forEach((wm) {
           wm.sortPosition =
               positions.firstWhere((p) => p.id == wm.id).sortPosition;

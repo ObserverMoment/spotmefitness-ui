@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeBloc get theme {
@@ -21,6 +22,8 @@ extension BuildContextExtension on BuildContext {
 
   @deprecated
   GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
+
+  GraphQLStore get graphQLStore => read<GraphQLStore>();
 
   Future<T?> openBlurModalPopup<T>(Widget child,
       {double? width,
@@ -207,19 +210,24 @@ extension BuildContextExtension on BuildContext {
   }
 
   void showToast(
-          {required String message, Widget? icon, bool isError = false}) =>
+          {required String message,
+          Widget? icon,
+          bool isError = false,
+          bool rootNavigator = false}) =>
       Flushbar(
         backgroundColor:
             isError ? Styles.errorRed : CupertinoColors.darkBackgroundGray,
         icon: icon,
-        maxWidth: 500,
+        maxWidth: 400,
         animationDuration: Duration(milliseconds: 300),
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+        borderRadius: BorderRadius.circular(20),
+        margin: const EdgeInsets.only(bottom: 8, left: 18, right: 18),
         messageText: MyText(
           message,
           color: Styles.white,
           weight: FontWeight.bold,
+          size: FONTSIZE.SMALL,
+          textAlign: TextAlign.center,
         ),
         duration: Duration(seconds: 3),
       )..show(this);

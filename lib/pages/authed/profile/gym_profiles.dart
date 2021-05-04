@@ -1,25 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/gym_profile_creator.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 
 class ProfileGymProfilesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return QueryResponseBuilder(
-        options: QueryOptions(
-          fetchPolicy: FetchPolicy.cacheAndNetwork,
-          document: GymProfilesQuery().document,
-        ),
-        builder: (result, {fetchMore, refetch}) {
-          final gymProfiles =
-              GymProfiles$Query.fromJson(result.data ?? {}).gymProfiles;
+    return QueryObserver<GymProfiles$Query, json.JsonSerializable>(
+        key:
+            Key('ProfileGymProfilesPage - ${GymProfilesQuery().operationName}'),
+        query: GymProfilesQuery(),
+        fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+        builder: (data) {
+          final gymProfiles = data.gymProfiles;
           return StackAndFloatingButton(
             buttonIconData: CupertinoIcons.add,
             onPressed: () => context.push(

@@ -20,12 +20,14 @@ class VideoUploader extends StatefulWidget {
   final String? videoUri;
   final String? videoThumbUri;
   final Size displaySize;
+  final void Function()? onUploadStart;
   final void Function(String videoUri, String videoThumbUri) onUploadSuccess;
   final void Function() removeVideo;
   VideoUploader(
       {this.videoUri,
       this.videoThumbUri,
       this.displaySize = const Size(120, 120),
+      this.onUploadStart,
       required this.onUploadSuccess,
       required this.removeVideo});
 
@@ -67,6 +69,9 @@ class _VideoUploaderState extends State<VideoUploader> {
   }
 
   Future<void> _uploadFile(File _file) async {
+    if (widget.onUploadStart != null) {
+      widget.onUploadStart!();
+    }
     try {
       setState(() => _uploading = true);
       await GetIt.I<UploadcareService>().uploadVideo(
