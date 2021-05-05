@@ -16,13 +16,13 @@ class SettingsAndInfo extends StatefulWidget {
 }
 
 class _SettingsAndInfoState extends State<SettingsAndInfo> {
-  bool _clearingCache = false;
+  bool _loading = false;
   Widget _spacer() => SizedBox(height: 10);
 
   Future<void> _cleareCache(BuildContext context) async {
-    setState(() => _clearingCache = true);
-    await context.graphQLClient.resetStore();
-    setState(() => _clearingCache = false);
+    setState(() => _loading = true);
+    await context.graphQLStore.clear();
+    setState(() => _loading = false);
     context.showToast(message: 'Cache cleared.');
   }
 
@@ -56,7 +56,7 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
                       children: <ThemeName, Widget>{
                         ThemeName.dark: Icon(
                           CupertinoIcons.moon_fill,
-                          color: CupertinoColors.black,
+                          color: CupertinoColors.white,
                         ),
                         ThemeName.light: Icon(
                           CupertinoIcons.sun_max_fill,
@@ -106,7 +106,7 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
               linkText: 'Clear cache',
               onPress: () => _cleareCache(context),
               icon: Icon(Icons.cached_rounded),
-              loading: _clearingCache,
+              loading: _loading,
             ),
             _spacer(),
             MyText(

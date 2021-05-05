@@ -318,9 +318,9 @@ type User {
   bio: String
   tagline: String
   birthdate: DateTime
-  city: String
+  townCity: String
   countryCode: String
-  displayName: String!
+  displayName: String
   instagramUrl: String
   tiktokUrl: String
   youtubeUrl: String
@@ -348,7 +348,7 @@ input UpdateUserInput {
   bio: String
   tagline: String
   birthdate: DateTime
-  city: String
+  townCity: String
   countryCode: String
   displayName: String
   instagramUrl: String
@@ -369,6 +369,7 @@ type UserPublicProfile {
   introVideoThumbUri: String
   bio: String
   tagline: String
+  townCity: String
   instagramUrl: String
   tiktokUrl: String
   youtubeUrl: String
@@ -398,14 +399,14 @@ type GymProfile {
 input CreateGymProfileInput {
   name: String!
   description: String
-  Equipments: [ID!]!
+  Equipments: [ConnectRelationInput!]
 }
 
 input UpdateGymProfileInput {
   id: ID!
   name: String
   description: String
-  Equipments: [ID!]
+  Equipments: [ConnectRelationInput!]
 }
 
 type LoggedWorkout {

@@ -5,6 +5,20 @@ const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
 
+/// QueryNames
+const kGymProfilesQuery = 'gymProfiles';
+const kAuthedUserQuery = 'authedUser';
+const kUserWorkoutsQuery = 'userWorkouts';
+
+/// Object Type names for the store.
+/// For use in [__typename:id] normalization and store ops.
+const kGymProfileType = 'GymProfile';
+const kUserType = 'User';
+const kWorkoutType = 'Workout';
+const kWorkoutSectionType = 'WorkoutSection';
+const kWorkoutSetType = 'WorkoutSet';
+const kWorkoutMoveType = 'WorkoutMove';
+
 /// WorkoutSectionTypeNames
 const kFreeSessionName = 'Free Session';
 const kHIITCircuitName = 'HIIT Circuit';

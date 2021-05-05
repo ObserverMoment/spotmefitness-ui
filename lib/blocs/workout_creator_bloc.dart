@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -105,7 +106,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
         additionalUpdates: [
           QueryUpdate(
               objectId: 'Workout:${workout.id}',
-              queryIds: ['userWorkouts'],
+              queryIds: [kUserWorkoutsQuery],
               type: isCreate ? QueryUpdateType.add : QueryUpdateType.broadcast)
         ]);
   }

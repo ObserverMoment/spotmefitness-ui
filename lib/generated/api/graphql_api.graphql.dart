@@ -74,7 +74,7 @@ mixin UserMixin {
       toJson: fromDartDateTimeToGraphQLDateTime)
   DateTime? birthdate;
   String? countryCode;
-  late String displayName;
+  String? displayName;
   String? introVideoUri;
   String? introVideoThumbUri;
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
@@ -578,7 +578,7 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
       this.bio,
       this.tagline,
       this.birthdate,
-      this.city,
+      this.townCity,
       this.countryCode,
       this.displayName,
       this.instagramUrl,
@@ -612,7 +612,7 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
       toJson: fromDartDateTimeToGraphQLDateTime)
   DateTime? birthdate;
 
-  String? city;
+  String? townCity;
 
   String? countryCode;
 
@@ -646,7 +646,7 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
         bio,
         tagline,
         birthdate,
-        city,
+        townCity,
         countryCode,
         displayName,
         instagramUrl,
@@ -912,7 +912,7 @@ class CreateGymProfile$Mutation extends JsonSerializable with EquatableMixin {
 @JsonSerializable(explicitToJson: true)
 class CreateGymProfileInput extends JsonSerializable with EquatableMixin {
   CreateGymProfileInput(
-      {required this.name, this.description, required this.equipments});
+      {required this.name, this.description, this.equipments});
 
   factory CreateGymProfileInput.fromJson(Map<String, dynamic> json) =>
       _$CreateGymProfileInputFromJson(json);
@@ -922,7 +922,7 @@ class CreateGymProfileInput extends JsonSerializable with EquatableMixin {
   String? description;
 
   @JsonKey(name: 'Equipments')
-  late List<String> equipments;
+  List<ConnectRelationInput>? equipments;
 
   @override
   List<Object?> get props => [name, description, equipments];
@@ -972,7 +972,7 @@ class UpdateGymProfileInput extends JsonSerializable with EquatableMixin {
   String? description;
 
   @JsonKey(name: 'Equipments')
-  List<String>? equipments;
+  List<ConnectRelationInput>? equipments;
 
   @override
   List<Object?> get props => [id, name, description, equipments];

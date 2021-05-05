@@ -1,4 +1,111 @@
-Map<String, dynamic>? _recursivelyAddAll(
+const kStoreReferenceKey = '\$ref';
+
+/// Accepts hierarchical data and write it to a normalized key value store [Hive] box.
+/// All objects must have two fields, [__typename] and [id] to generate a unique id.
+void normalizeToStore(
+    {required bool isQuery,
+    required Map<String, dynamic> data,
+    required void Function(String key, Object? data) write,
+    required Map<String, dynamic> Function(String key) read,
+    String referenceKey = kStoreReferenceKey}) {
+  Map<String, dynamic> normalizedResult = {};
+
+  try {
+    /// Create the normalized map.
+    if (isQuery) {
+      /// Top data.keys will be the query names. Usually just one.
+      /// { userWorkouts: [obj, obj, obj] }.
+      normalizedResult['Query'] =
+          data.keys.fold<Map<String, dynamic>>({}, (obj, key) {
+        obj[key] =
+            normalizeObject(normalized: normalizedResult, data: data[key]);
+        return obj;
+      });
+    } else {
+      normalizeObject(normalized: normalizedResult, data: data);
+    }
+
+    /// Write each key in the normalized map to the store. Overwriting previous data.
+    normalizedResult.entries.forEach((entry) {
+      write(entry.key, {
+        ...read(entry.key),
+        ...entry.value,
+      });
+    });
+  } catch (e) {
+    print(e);
+    print('normalizeToStore falied - no data written.');
+  }
+}
+
+/// Recursively traverses the object.
+Object? normalizeObject(
+    {required Object? data,
+    required Map<String, dynamic> normalized,
+    String referenceKey = kStoreReferenceKey}) {
+  if (data is Map<String, dynamic>) {
+    final normalizedData =
+        data.entries.fold<Map<String, dynamic>>({}, (obj, entry) {
+      obj[entry.key] =
+          normalizeObject(normalized: normalized, data: entry.value);
+      return obj;
+    });
+
+    final dataId = resolveDataId(data);
+    if (dataId == null) {
+      /// Do not normalize and return unnormalized raw data.
+      return data;
+    } else {
+      normalized[dataId] = normalizedData;
+      return {referenceKey: resolveDataId(data)};
+    }
+  } else if (data is List) {
+    return data
+        .map((obj) => normalizeObject(normalized: normalized, data: obj))
+        .toList();
+  } else {
+    /// If data is scalar or null then return it to be written.
+    return data;
+  }
+}
+
+String? resolveDataId(Map<String, dynamic> data) {
+  if (data['__typename'] == null) {
+    /// Cannot normalize an object without a data["__typename"] field as this is required to resolve the unique id.
+    return null;
+  }
+  if (data['id'] == null) {
+    /// Cannot normalize an object without a data["id"] field as this is required to resolve the unique id.
+    return null;
+  }
+  return '${data["__typename"]}:${data["id"]}';
+}
+
+Object? recursiveMapRemoveRefsToId(
+    {required Object data,
+    required String id,
+    String referenceKey = kStoreReferenceKey}) {
+  if (data is Map) {
+    if (data.keys.length == 1 && data[kStoreReferenceKey] == id) {
+      return null;
+    } else {
+      return data.entries.fold<Map>({}, (obj, entry) {
+        obj[entry.key] = recursiveMapRemoveRefsToId(data: entry.value, id: id);
+        return obj;
+      });
+    }
+  } else if (data is List) {
+    /// Lists get recursive mapped.
+    return data
+        .map((obj) => recursiveMapRemoveRefsToId(data: obj, id: id))
+        .toList();
+  } else {
+    /// Nulls and scalars just get returned.
+    return data;
+  }
+}
+
+Map<String, dynamic>? recursivelyAddAll(
   Map<String, dynamic>? target,
   Map<String, dynamic>? source,
 ) {
@@ -8,7 +115,7 @@ Map<String, dynamic>? _recursivelyAddAll(
         target[key] is Map<String, dynamic> &&
         value != null &&
         value is Map<String, dynamic>) {
-      target[key] = _recursivelyAddAll(
+      target[key] = recursivelyAddAll(
         target[key] as Map<String, dynamic>,
         value,
       );
@@ -37,7 +144,7 @@ Map<String, dynamic>? deeplyMergeLeft(
   Iterable<Map<String, dynamic>?> maps,
 ) {
   // prepend an empty literal for functional immutability
-  return (<Map<String, dynamic>?>[{}]..addAll(maps)).reduce(_recursivelyAddAll);
+  return (<Map<String, dynamic>?>[{}]..addAll(maps)).reduce(recursivelyAddAll);
 }
 
 /// Returns a set of all IDs reachable from the given data ID.
@@ -59,10 +166,6 @@ Set<String> _idsInObject(
 ) {
   if (object is Map) {
     if (object.containsKey(referenceKey)) {
-      if (object[referenceKey] ==
-          'Workout:cbc79d39-ebbd-4a21-b3d6-314d63d23bb7') {
-        print(object);
-      }
       if (visited.contains(object[referenceKey])) return {};
       return {object[referenceKey]}..addAll(
           _idsInObject(

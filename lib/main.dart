@@ -27,6 +27,9 @@ void main() async {
   await Hive.openBox(GraphQLStore.boxName);
   await Hive.openBox(kSettingsHiveBoxName);
 
+  Hive.box(kSettingsHiveBoxName).clear();
+  Hive.box(GraphQLStore.boxName).clear();
+
   await Firebase.initializeApp();
 
   SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);

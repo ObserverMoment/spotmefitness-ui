@@ -23,12 +23,17 @@ class QueryObserver<TData, TVars extends json.JsonSerializable>
   /// Useful if the query is a list which can change every time new variables are provided.
   final bool garbageCollectAfterFetch;
 
+  /// If true then data will be saved into the store at a key that includes details of the query variables.
+  /// Defaults to false.
+  final bool parameterizeQuery;
+
   const QueryObserver(
       {required this.key,
       required this.query,
       this.fetchPolicy = QueryFetchPolicy.storeAndNetwork,
       required this.builder,
       this.loadingIndicator,
+      this.parameterizeQuery = false,
       this.garbageCollectAfterFetch = false})
       : super(key: key);
 
@@ -44,7 +49,10 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
 
   void _initObservableQuery() {
     _store = context.read<GraphQLStore>();
-    _observableQuery = _store.registerObserver<TData, TVars>(widget.query);
+
+    _observableQuery = _store.registerObserver<TData, TVars>(widget.query,
+        parameterizeQuery: widget.parameterizeQuery);
+
     _store.fetchInitialQuery(
         id: widget.query.operationName!,
         fetchPolicy: widget.fetchPolicy,

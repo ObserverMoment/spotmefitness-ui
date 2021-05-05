@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -139,6 +141,7 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
   final String saveText;
   final Function() handleClose;
   final bool inputValid;
+  final bool loading;
   CreateEditPageNavBar(
       {required this.title,
       required this.formIsDirty,
@@ -146,40 +149,59 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
       this.handleUndo,
       required this.handleSave,
       required this.handleClose,
-      required this.inputValid})
+      required this.inputValid,
+      this.loading = false})
       : super(
           border: null,
           leading:
               Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (formIsDirty && handleUndo != null)
-                FadeIn(
-                  child: TextButton(
-                      destructive: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      text: 'Undo all',
-                      underline: false,
-                      onPressed: handleUndo),
-                ),
-              if (formIsDirty && inputValid)
-                FadeIn(
-                  child: TextButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      confirm: true,
-                      underline: false,
-                      text: saveText,
-                      onPressed: handleSave),
-                ),
-              if (!formIsDirty)
-                TextButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    underline: false,
-                    text: 'Close',
-                    onPressed: handleClose),
-            ],
-          ),
+          trailing: AnimatedSwitcher(
+              duration: Duration(milliseconds: 250),
+              child: loading
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: LoadingDots(
+                            size: 12,
+                            color: Styles.infoBlue,
+                          ),
+                        )
+                      ],
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (formIsDirty && handleUndo != null)
+                          FadeIn(
+                            child: TextButton(
+                                destructive: true,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                text: 'Undo all',
+                                underline: false,
+                                onPressed: handleUndo),
+                          ),
+                        if (formIsDirty && inputValid)
+                          FadeIn(
+                            child: TextButton(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                confirm: true,
+                                underline: false,
+                                text: saveText,
+                                onPressed: handleSave),
+                          ),
+                        if (!formIsDirty)
+                          TextButton(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              underline: false,
+                              text: 'Close',
+                              onPressed: handleClose),
+                      ],
+                    )),
         );
 }
 

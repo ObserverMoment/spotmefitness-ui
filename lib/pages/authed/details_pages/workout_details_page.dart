@@ -115,7 +115,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     return QueryObserver<WorkoutById$Query, WorkoutByIdArguments>(
         key: Key('YourWorkoutsPage - ${UserWorkoutsQuery().operationName}'),
         query: WorkoutByIdQuery(variables: WorkoutByIdArguments(id: widget.id)),
-        fetchPolicy: QueryFetchPolicy.networkOnly,
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        parameterizeQuery: true,
         builder: (data) {
           final Workout workout = data.workoutById;
 

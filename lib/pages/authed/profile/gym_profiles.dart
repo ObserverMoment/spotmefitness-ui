@@ -17,7 +17,7 @@ class ProfileGymProfilesPage extends StatelessWidget {
         key:
             Key('ProfileGymProfilesPage - ${GymProfilesQuery().operationName}'),
         query: GymProfilesQuery(),
-        fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+        fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
           final gymProfiles = data.gymProfiles;
           return StackAndFloatingButton(

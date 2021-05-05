@@ -434,7 +434,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..bio = json['bio'] as String?
     ..birthdate = fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?)
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String
+    ..displayName = json['displayName'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
     ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
@@ -494,7 +494,7 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
     bio: json['bio'] as String?,
     tagline: json['tagline'] as String?,
     birthdate: fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?),
-    city: json['city'] as String?,
+    townCity: json['townCity'] as String?,
     countryCode: json['countryCode'] as String?,
     displayName: json['displayName'] as String?,
     instagramUrl: json['instagramUrl'] as String?,
@@ -519,7 +519,7 @@ Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
       'bio': instance.bio,
       'tagline': instance.tagline,
       'birthdate': fromDartDateTimeToGraphQLDateTime(instance.birthdate),
-      'city': instance.city,
+      'townCity': instance.townCity,
       'countryCode': instance.countryCode,
       'displayName': instance.displayName,
       'instagramUrl': instance.instagramUrl,
@@ -752,8 +752,9 @@ CreateGymProfileInput _$CreateGymProfileInputFromJson(
   return CreateGymProfileInput(
     name: json['name'] as String,
     description: json['description'] as String?,
-    equipments:
-        (json['Equipments'] as List<dynamic>).map((e) => e as String).toList(),
+    equipments: (json['Equipments'] as List<dynamic>?)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -762,7 +763,7 @@ Map<String, dynamic> _$CreateGymProfileInputToJson(
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
-      'Equipments': instance.equipments,
+      'Equipments': instance.equipments?.map((e) => e.toJson()).toList(),
     };
 
 GymProfiles$Query _$GymProfiles$QueryFromJson(Map<String, dynamic> json) {
@@ -797,7 +798,7 @@ UpdateGymProfileInput _$UpdateGymProfileInputFromJson(
     name: json['name'] as String?,
     description: json['description'] as String?,
     equipments: (json['Equipments'] as List<dynamic>?)
-        ?.map((e) => e as String)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -808,7 +809,7 @@ Map<String, dynamic> _$UpdateGymProfileInputToJson(
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
-      'Equipments': instance.equipments,
+      'Equipments': instance.equipments?.map((e) => e.toJson()).toList(),
     };
 
 WorkoutTag _$WorkoutTagFromJson(Map<String, dynamic> json) {
