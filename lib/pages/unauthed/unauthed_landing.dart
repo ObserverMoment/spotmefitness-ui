@@ -70,7 +70,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
       child: Column(
         children: <Widget>[
           SvgPicture.asset(
-            'assets/logos/spotme_fitness_logo.svg',
+            'assets/logos/spotme_logo.svg',
             width: 60.0,
             color: ThemeData.cupertinoDarkData.primaryColor,
           ),

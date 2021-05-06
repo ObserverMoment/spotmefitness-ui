@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -11,7 +10,6 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.da
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/debounce.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WelcomeModal extends StatefulWidget {
@@ -45,16 +43,15 @@ class _WelcomeModalState extends State<WelcomeModal> {
 
   void _checkNameIsUnique() async {
     if (_nameController.text.length > 2) {
-      final _vars =
+      final variables =
           CheckUniqueDisplayNameArguments(displayName: _nameController.text);
 
-      final _res = await GraphQL().client.query(QueryOptions(
-          document: CheckUniqueDisplayNameQuery(variables: _vars).document,
-          variables: _vars.toJson()));
+      final res = await context.graphQLStore
+          .execute(CheckUniqueDisplayNameQuery(variables: variables));
 
-      final _isUnique = CheckUniqueDisplayName$Query.fromJson(_res.data ?? {})
+      final isUnique = CheckUniqueDisplayName$Query.fromJson(res.data ?? {})
           .checkUniqueDisplayName;
-      setState(() => _nameIsUnique = _isUnique);
+      setState(() => _nameIsUnique = isUnique);
     }
   }
 
@@ -65,17 +62,14 @@ class _WelcomeModalState extends State<WelcomeModal> {
 
   Future<void> _handleExit() async {
     if (_validateName()) {
-      final _vars = UpdateUserArguments(
+      final variables = UpdateUserArguments(
           data: UpdateUserInput(
-              displayName: _nameController.text, hasOnboarded: true));
+              displayName: _nameController.text,
+              hasOnboarded: true,
+              avatarUri: _avatarUri));
 
-      await GraphQL().client.mutate(
-            MutationOptions(
-              document: UpdateUserMutation(variables: _vars).document,
-              variables: _vars.toJson(),
-              onError: (e) => throw new Exception(e),
-            ),
-          );
+      await context.graphQLStore
+          .mutate(mutation: UpdateUserMutation(variables: variables));
     }
     Navigator.pop(context);
   }

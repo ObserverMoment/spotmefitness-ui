@@ -5,6 +5,7 @@ import 'package:graphql/client.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
@@ -20,6 +21,15 @@ class GraphQLStore {
 
   final _refKey = '\$ref';
   final _queryRootKey = 'Query';
+
+  /// See [normalize -> Policies -> TypePolicy]
+  /// These objects will not be normalized as root objects and will instead sit inside their parent as raw json data.
+  /// Generate the policy object from the list of excluded typenames at [kExcludeFromNormalization]
+  final Map<String, TypePolicy> _typePolicies = kExcludeFromNormalization
+      .fold<Map<String, TypePolicy>>({}, (policyObj, typename) {
+    policyObj[typename] = TypePolicy(keyFields: {});
+    return policyObj;
+  });
 
   GraphQLStore() {
     _httpLink = HttpLink(
@@ -188,6 +198,7 @@ class GraphQLStore {
               variables: observableQuery.parameterize
                   ? query.variables?.toJson() ?? const {}
                   : const {},
+              typePolicies: _typePolicies,
               read: readNormalized,
               write: mergeWriteNormalized);
 
@@ -226,6 +237,29 @@ class GraphQLStore {
 
     final response = await _link.request(request).first;
     return response;
+  }
+
+  Future<MutationResult<TData>>
+      query<TData, TVars extends json.JsonSerializable>(
+          {required GraphQLQuery<TData, TVars> query,
+          List<String> broadcastQueryIds = const []}) async {
+    final response = await execute(query);
+
+    final result = MutationResult<TData>(
+        data: query.parse(response.data ?? {}), errors: response.errors);
+
+    if (!result.hasErrors) {
+      normalizeOperation(
+        data: {query.operationName!: result.data},
+        document: query.document,
+        operationName: query.operationName,
+        write: (dataId, value) => mergeWriteNormalized(dataId, value),
+        read: (dataId) => readNormalized(dataId),
+      );
+      _broadcast(broadcastQueryIds);
+    }
+
+    return result;
   }
 
   Future<MutationResult<TData>>
@@ -286,6 +320,7 @@ class GraphQLStore {
   /// Network mutation with optional optimism.
   /// Wrap execute function - add cache writing and _broadcasting.
   /// Update the store with returned (after normalizing) data, then _broadcast (_broadcast is really a store read follwed by a _broadcast) to specified ids.
+  /// [customVariablesMap] - if you do not want to pass all the fields of the object to the API. If you pass null fields then those fields will be set null in the DB.
   Future<MutationResult<TData>>
       mutate<TData, TVars extends json.JsonSerializable>(
           {required GraphQLQuery<TData, TVars> mutation,
@@ -358,33 +393,37 @@ class GraphQLStore {
     return result;
   }
 
-  /// Write data for a query directly to the store and then re_broadcast.
-  /// Normalize, then write, then _broadcast.
-  void writeObjectQuery<TData, TVars extends json.JsonSerializable>({
-    required GraphQLQuery<TData, TVars> query,
-    required Map<String, dynamic> data,
-    List<QueryUpdate> additionalUpdates = const [],
-  }) {
-    normalizeOperation(
-      data: {query.operationName!: data},
-      document: query.document,
-      operationName: query.operationName,
-      write: (dataId, value) => mergeWriteNormalized(dataId, value),
-      read: (dataId) => readNormalized(dataId),
-    );
+  /// No action on the client side store.
+  Future<MutationResult<TData>>
+      networkOnlyDelete<TData, TVars extends json.JsonSerializable>({
+    required GraphQLQuery<TData, TVars> mutation,
+    List<String> removeRefFromQueries = const [],
+  }) async {
+    final response = await execute(mutation);
 
-    for (final update in additionalUpdates) {
-      if (update.type == QueryUpdateType.add) {
-        _addRefToQueries(objectId: update.objectId, queryIds: update.queryIds);
-      } else if (update.type == QueryUpdateType.remove) {
-        _removeRefFromQueries(
-            objectId: update.objectId, queryIds: update.queryIds);
-      } else if (update.type == QueryUpdateType.broadcast) {
-        _broadcast(update.queryIds);
-      }
+    final result = MutationResult<TData>(
+        data: mutation.parse(response.data ?? {}), errors: response.errors);
+
+    return result;
+  }
+
+  /// Client side (Store) write.
+  /// Will merge / overwrite with previous data, or creating it if not present.
+  bool writeDataToStore(
+      {required Map<String, dynamic> data,
+      List<String> broadcastQueryIds = const []}) {
+    try {
+      normalizeToStore(
+          data: data,
+          isQuery: false,
+          write: mergeWriteNormalized,
+          read: readNormalized);
+      _broadcast(broadcastQueryIds);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
-
-    _broadcast([query.operationName!]);
   }
 
   /// [objectId] must be in the format [type:id] as a string.
@@ -465,8 +504,9 @@ class GraphQLStore {
   bool _hasQueryDataInStore(String queryName, Map<String, dynamic>? variables) {
     /// Creates the queryKey in the same way an the normalize package does via its [FieldKey] class.
     /// As this is what is being used by [normalizeOperation] and [denormalizeOperation] to read and write queries from the store.
-    final String queryKey =
-        variables != null ? '$queryName(${jsonEncode(variables)})' : queryName;
+    final String queryKey = variables != null
+        ? getParameterizedQueryId(queryName, variables)
+        : queryName;
     return _box.get(_queryRootKey, defaultValue: {})[queryKey] != null;
   }
 
@@ -505,6 +545,13 @@ class GraphQLStore {
 
   Future<void> clear() async {
     await _box.clear();
+  }
+
+  /// For example [workoutById({"id": id})]
+  /// Same was as the [normalize] package does this.
+  String getParameterizedQueryId(
+      String queryName, Map<String, dynamic> variables) {
+    return '$queryName(${jsonEncode(variables)})';
   }
 
   void dispose() {

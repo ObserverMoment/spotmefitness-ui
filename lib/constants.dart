@@ -9,15 +9,24 @@ const kWorkoutMoveListItemHeight = 65.0;
 const kGymProfilesQuery = 'gymProfiles';
 const kAuthedUserQuery = 'authedUser';
 const kUserWorkoutsQuery = 'userWorkouts';
+const kUserCustomMovesQuery = 'userCustomMoves';
+const kUserWorkoutTagsQuery = 'userWorkoutTags';
+const kWorkoutByIdQuery = 'workoutById';
 
 /// Object Type names for the store.
 /// For use in [__typename:id] normalization and store ops.
-const kGymProfileType = 'GymProfile';
-const kUserType = 'User';
-const kWorkoutType = 'Workout';
-const kWorkoutSectionType = 'WorkoutSection';
-const kWorkoutSetType = 'WorkoutSet';
-const kWorkoutMoveType = 'WorkoutMove';
+const kGymProfileTypename = 'GymProfile';
+const kUserTypename = 'User';
+const kWorkoutTypename = 'Workout';
+const kWorkoutSectionTypename = 'WorkoutSection';
+const kWorkoutSetTypename = 'WorkoutSet';
+const kWorkoutMoveTypename = 'WorkoutMove';
+
+const kExcludeFromNormalization = [
+  kWorkoutSectionTypename,
+  kWorkoutSetTypename,
+  kWorkoutMoveTypename
+];
 
 /// WorkoutSectionTypeNames
 const kFreeSessionName = 'Free Session';

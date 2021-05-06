@@ -1,3 +1,5 @@
+import 'package:spotmefitness_ui/constants.dart';
+
 const kStoreReferenceKey = '\$ref';
 
 /// Accepts hierarchical data and write it to a normalized key value store [Hive] box.
@@ -53,7 +55,7 @@ Object? normalizeObject(
 
     final dataId = resolveDataId(data);
     if (dataId == null) {
-      /// Do not normalize and return unnormalized raw data.
+      /// Do not normalize and return un-normalized raw data.
       return data;
     } else {
       normalized[dataId] = normalizedData;
@@ -73,12 +75,16 @@ String? resolveDataId(Map<String, dynamic> data) {
   if (data['__typename'] == null) {
     /// Cannot normalize an object without a data["__typename"] field as this is required to resolve the unique id.
     return null;
-  }
-  if (data['id'] == null) {
+  } else if (data['id'] == null) {
     /// Cannot normalize an object without a data["id"] field as this is required to resolve the unique id.
     return null;
+  } else if (kExcludeFromNormalization.contains(data['__typename'])) {
+    /// We do not want to normalize these objects - they are always children and should be considered only in relation to their parent.
+    /// i.e. There should be no entry under [WorkoutMove:id]. This is never accessed directly and should be deleted if its parents [set, section, workout] are deleted.
+    return null;
+  } else {
+    return '${data["__typename"]}:${data["id"]}';
   }
-  return '${data["__typename"]}:${data["id"]}';
 }
 
 Object? recursiveMapRemoveRefsToId(

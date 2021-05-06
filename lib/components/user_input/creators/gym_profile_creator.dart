@@ -11,7 +11,6 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -162,7 +161,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
     final variables = DeleteGymProfileByIdArguments(id: _activeGymProfile.id);
 
     await context.graphQLStore.delete(
-        typeName: kGymProfileType,
+        typeName: kGymProfileTypename,
         objectId: _activeGymProfile.id,
         mutation: DeleteGymProfileByIdMutation(variables: variables),
         removeRefFromQueries: [kGymProfilesQuery]);

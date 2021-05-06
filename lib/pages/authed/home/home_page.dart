@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/schedule/weekly_calendar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -17,12 +18,21 @@ class HomePage extends StatelessWidget {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      H2('Today'),
-                      MyText('Workouts + Events in list'),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          H2('Home'),
+                          CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Icon(
+                                CupertinoIcons.calendar,
+                                size: 32,
+                              ),
+                              onPressed: () =>
+                                  context.router.push(YourScheduleRoute())),
+                        ]),
                   ),
                   WeeklyCalendar(),
                   Padding(

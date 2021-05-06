@@ -432,7 +432,8 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
     ..bio = json['bio'] as String?
-    ..birthdate = fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?)
+    ..birthdate =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['birthdate'] as int?)
     ..countryCode = json['countryCode'] as String?
     ..displayName = json['displayName'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
@@ -446,7 +447,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'id': instance.id,
       'avatarUri': instance.avatarUri,
       'bio': instance.bio,
-      'birthdate': fromDartDateTimeToGraphQLDateTime(instance.birthdate),
+      'birthdate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.birthdate),
       'countryCode': instance.countryCode,
       'displayName': instance.displayName,
       'introVideoUri': instance.introVideoUri,
@@ -493,7 +495,8 @@ UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
     introVideoThumbUri: json['introVideoThumbUri'] as String?,
     bio: json['bio'] as String?,
     tagline: json['tagline'] as String?,
-    birthdate: fromGraphQLDateTimeToDartDateTime(json['birthdate'] as int?),
+    birthdate:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['birthdate'] as int?),
     townCity: json['townCity'] as String?,
     countryCode: json['countryCode'] as String?,
     displayName: json['displayName'] as String?,
@@ -518,7 +521,8 @@ Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
       'introVideoThumbUri': instance.introVideoThumbUri,
       'bio': instance.bio,
       'tagline': instance.tagline,
-      'birthdate': fromDartDateTimeToGraphQLDateTime(instance.birthdate),
+      'birthdate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.birthdate),
       'townCity': instance.townCity,
       'countryCode': instance.countryCode,
       'displayName': instance.displayName,
@@ -1381,11 +1385,149 @@ Map<String, dynamic> _$DeleteWorkoutSectionById$MutationToJson(
       'deleteWorkoutSectionById': instance.deleteWorkoutSectionById,
     };
 
+UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
+  return UserSummary()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..displayName = json['displayName'] as String;
+}
+
+Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'displayName': instance.displayName,
+    };
+
+Workout _$WorkoutFromJson(Map<String, dynamic> json) {
+  return Workout()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['createdAt'] as int?)
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..difficultyLevel = _$enumDecode(
+        _$DifficultyLevelEnumMap, json['difficultyLevel'],
+        unknownValue: DifficultyLevel.artemisUnknown)
+    ..coverImageUri = json['coverImageUri'] as String?
+    ..contentAccessScope = _$enumDecode(
+        _$ContentAccessScopeEnumMap, json['contentAccessScope'],
+        unknownValue: ContentAccessScope.artemisUnknown)
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
+    ..introAudioUri = json['introAudioUri'] as String?
+    ..user = json['User'] == null
+        ? null
+        : UserSummary.fromJson(json['User'] as Map<String, dynamic>)
+    ..workoutGoals = (json['WorkoutGoals'] as List<dynamic>)
+        .map((e) => WorkoutGoal.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..workoutTags = (json['WorkoutTags'] as List<dynamic>)
+        .map((e) => WorkoutTag.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..workoutSections = (json['WorkoutSections'] as List<dynamic>)
+        .map((e) => WorkoutSection.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$WorkoutToJson(Workout instance) => <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.createdAt),
+      'name': instance.name,
+      'description': instance.description,
+      'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
+      'coverImageUri': instance.coverImageUri,
+      'contentAccessScope':
+          _$ContentAccessScopeEnumMap[instance.contentAccessScope],
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+      'introAudioUri': instance.introAudioUri,
+      'User': instance.user?.toJson(),
+      'WorkoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
+      'WorkoutTags': instance.workoutTags.map((e) => e.toJson()).toList(),
+      'WorkoutSections':
+          instance.workoutSections.map((e) => e.toJson()).toList(),
+    };
+
+const _$DifficultyLevelEnumMap = {
+  DifficultyLevel.light: 'LIGHT',
+  DifficultyLevel.challenging: 'CHALLENGING',
+  DifficultyLevel.intermediate: 'INTERMEDIATE',
+  DifficultyLevel.advanced: 'ADVANCED',
+  DifficultyLevel.elite: 'ELITE',
+  DifficultyLevel.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+const _$ContentAccessScopeEnumMap = {
+  ContentAccessScope.private: 'PRIVATE',
+  ContentAccessScope.public: 'PUBLIC',
+  ContentAccessScope.group: 'GROUP',
+  ContentAccessScope.official: 'OFFICIAL',
+  ContentAccessScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
+  return LoggedWorkout()..id = json['id'] as String;
+}
+
+Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
+  return ScheduledWorkout()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..scheduledAt =
+        fromGraphQLDateTimeToDartDateTime(json['scheduledAt'] as int)
+    ..note = json['note'] as String?
+    ..workout = Workout.fromJson(json['Workout'] as Map<String, dynamic>)
+    ..loggedWorkout = json['LoggedWorkout'] == null
+        ? null
+        : LoggedWorkout.fromJson(json['LoggedWorkout'] as Map<String, dynamic>)
+    ..gymProfile = json['GymProfile'] == null
+        ? null
+        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$ScheduledWorkoutToJson(ScheduledWorkout instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'scheduledAt': fromDartDateTimeToGraphQLDateTime(instance.scheduledAt),
+      'note': instance.note,
+      'Workout': instance.workout.toJson(),
+      'LoggedWorkout': instance.loggedWorkout?.toJson(),
+      'GymProfile': instance.gymProfile?.toJson(),
+    };
+
+UserScheduledWorkouts$Query _$UserScheduledWorkouts$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserScheduledWorkouts$Query()
+    ..userScheduledWorkouts = (json['userScheduledWorkouts'] as List<dynamic>)
+        .map((e) => ScheduledWorkout.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserScheduledWorkouts$QueryToJson(
+        UserScheduledWorkouts$Query instance) =>
+    <String, dynamic>{
+      'userScheduledWorkouts':
+          instance.userScheduledWorkouts.map((e) => e.toJson()).toList(),
+    };
+
 UpdateWorkout _$UpdateWorkoutFromJson(Map<String, dynamic> json) {
   return UpdateWorkout()
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int?)
+    ..createdAt =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['createdAt'] as int?)
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..difficultyLevel = _$enumDecode(
@@ -1410,7 +1552,8 @@ Map<String, dynamic> _$UpdateWorkoutToJson(UpdateWorkout instance) =>
     <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'createdAt':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.createdAt),
       'name': instance.name,
       'description': instance.description,
       'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
@@ -1423,23 +1566,6 @@ Map<String, dynamic> _$UpdateWorkoutToJson(UpdateWorkout instance) =>
       'WorkoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
       'WorkoutTags': instance.workoutTags.map((e) => e.toJson()).toList(),
     };
-
-const _$DifficultyLevelEnumMap = {
-  DifficultyLevel.light: 'LIGHT',
-  DifficultyLevel.challenging: 'CHALLENGING',
-  DifficultyLevel.intermediate: 'INTERMEDIATE',
-  DifficultyLevel.advanced: 'ADVANCED',
-  DifficultyLevel.elite: 'ELITE',
-  DifficultyLevel.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
-
-const _$ContentAccessScopeEnumMap = {
-  ContentAccessScope.private: 'PRIVATE',
-  ContentAccessScope.public: 'PUBLIC',
-  ContentAccessScope.group: 'GROUP',
-  ContentAccessScope.official: 'OFFICIAL',
-  ContentAccessScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
 
 UpdateWorkout$Mutation _$UpdateWorkout$MutationFromJson(
     Map<String, dynamic> json) {
@@ -1494,73 +1620,6 @@ Map<String, dynamic> _$UpdateWorkoutInputToJson(UpdateWorkoutInput instance) =>
       'WorkoutTags': instance.workoutTags?.map((e) => e.toJson()).toList(),
     };
 
-UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
-  return UserSummary()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String;
-}
-
-Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'avatarUri': instance.avatarUri,
-      'displayName': instance.displayName,
-    };
-
-Workout _$WorkoutFromJson(Map<String, dynamic> json) {
-  return Workout()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int?)
-    ..name = json['name'] as String
-    ..description = json['description'] as String?
-    ..difficultyLevel = _$enumDecode(
-        _$DifficultyLevelEnumMap, json['difficultyLevel'],
-        unknownValue: DifficultyLevel.artemisUnknown)
-    ..coverImageUri = json['coverImageUri'] as String?
-    ..contentAccessScope = _$enumDecode(
-        _$ContentAccessScopeEnumMap, json['contentAccessScope'],
-        unknownValue: ContentAccessScope.artemisUnknown)
-    ..introVideoUri = json['introVideoUri'] as String?
-    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
-    ..introAudioUri = json['introAudioUri'] as String?
-    ..user = json['User'] == null
-        ? null
-        : UserSummary.fromJson(json['User'] as Map<String, dynamic>)
-    ..workoutGoals = (json['WorkoutGoals'] as List<dynamic>)
-        .map((e) => WorkoutGoal.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..workoutTags = (json['WorkoutTags'] as List<dynamic>)
-        .map((e) => WorkoutTag.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..workoutSections = (json['WorkoutSections'] as List<dynamic>)
-        .map((e) => WorkoutSection.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$WorkoutToJson(Workout instance) => <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'name': instance.name,
-      'description': instance.description,
-      'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
-      'coverImageUri': instance.coverImageUri,
-      'contentAccessScope':
-          _$ContentAccessScopeEnumMap[instance.contentAccessScope],
-      'introVideoUri': instance.introVideoUri,
-      'introVideoThumbUri': instance.introVideoThumbUri,
-      'introAudioUri': instance.introAudioUri,
-      'User': instance.user?.toJson(),
-      'WorkoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
-      'WorkoutTags': instance.workoutTags.map((e) => e.toJson()).toList(),
-      'WorkoutSections':
-          instance.workoutSections.map((e) => e.toJson()).toList(),
-    };
-
 UserWorkouts$Query _$UserWorkouts$QueryFromJson(Map<String, dynamic> json) {
   return UserWorkouts$Query()
     ..userWorkouts = (json['userWorkouts'] as List<dynamic>)
@@ -1573,11 +1632,37 @@ Map<String, dynamic> _$UserWorkouts$QueryToJson(UserWorkouts$Query instance) =>
       'userWorkouts': instance.userWorkouts.map((e) => e.toJson()).toList(),
     };
 
+DuplicateWorkoutById$Mutation _$DuplicateWorkoutById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DuplicateWorkoutById$Mutation()
+    ..duplicateWorkoutById =
+        Workout.fromJson(json['duplicateWorkoutById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$DuplicateWorkoutById$MutationToJson(
+        DuplicateWorkoutById$Mutation instance) =>
+    <String, dynamic>{
+      'duplicateWorkoutById': instance.duplicateWorkoutById.toJson(),
+    };
+
+SoftDeleteWorkoutById$Mutation _$SoftDeleteWorkoutById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return SoftDeleteWorkoutById$Mutation()
+    ..softDeleteWorkoutById = json['softDeleteWorkoutById'] as String?;
+}
+
+Map<String, dynamic> _$SoftDeleteWorkoutById$MutationToJson(
+        SoftDeleteWorkoutById$Mutation instance) =>
+    <String, dynamic>{
+      'softDeleteWorkoutById': instance.softDeleteWorkoutById,
+    };
+
 CreateWorkout _$CreateWorkoutFromJson(Map<String, dynamic> json) {
   return CreateWorkout()
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int?)
+    ..createdAt =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['createdAt'] as int?)
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..difficultyLevel = _$enumDecode(
@@ -1602,7 +1687,8 @@ Map<String, dynamic> _$CreateWorkoutToJson(CreateWorkout instance) =>
     <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'createdAt':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.createdAt),
       'name': instance.name,
       'description': instance.description,
       'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
@@ -1975,6 +2061,32 @@ Map<String, dynamic> _$UpdateWorkoutArgumentsToJson(
         UpdateWorkoutArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
+    };
+
+DuplicateWorkoutByIdArguments _$DuplicateWorkoutByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DuplicateWorkoutByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DuplicateWorkoutByIdArgumentsToJson(
+        DuplicateWorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+SoftDeleteWorkoutByIdArguments _$SoftDeleteWorkoutByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return SoftDeleteWorkoutByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$SoftDeleteWorkoutByIdArgumentsToJson(
+        SoftDeleteWorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
     };
 
 CreateWorkoutArguments _$CreateWorkoutArgumentsFromJson(

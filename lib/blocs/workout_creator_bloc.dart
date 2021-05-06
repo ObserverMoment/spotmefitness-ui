@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
@@ -98,17 +99,18 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   /// Send all new data to the graphql store and broadcast new data to streams.
   /// The api has been updating incrementally so does not need further update here.
   /// Doing this to avoid unecessary UI builds in non displaying widgets everytime and update is made by the user during the creating / editing process.
-  Future<void> saveAllChanges(BuildContext context) async {
-    context.graphQLStore.writeObjectQuery(
-        data: workout.toJson(),
-        query:
-            WorkoutByIdQuery(variables: WorkoutByIdArguments(id: workout.id)),
-        additionalUpdates: [
-          QueryUpdate(
-              objectId: 'Workout:${workout.id}',
-              queryIds: [kUserWorkoutsQuery],
-              type: isCreate ? QueryUpdateType.add : QueryUpdateType.broadcast)
-        ]);
+  bool saveAllChanges(BuildContext context) {
+    /// When editing you have (currently!) come from the workout details page which is being fed by an observable query with id [workoutById({id: id})].
+    /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
+    final queryIdsToUpdate = isCreate
+        ? [kUserWorkoutsQuery]
+        : [kUserWorkoutsQuery, kWorkoutByIdQuery];
+
+    final success = context.graphQLStore.writeDataToStore(
+      data: workout.toJson(),
+      broadcastQueryIds: queryIdsToUpdate,
+    );
+    return success;
   }
 
   /// Should run at the start of all CRUD ops.
@@ -126,7 +128,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       }
     }
     context.showToast(
-        message: 'There was a problem, changes not saved', isError: true);
+        message: 'There was a problem, changes not saved',
+        toastType: ToastType.destructive);
   }
 
   bool _checkApiResult(MutationResult result) {
@@ -281,7 +284,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// Api.
     final variables = DeleteWorkoutSectionByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLStore.mutate<
+    final result = await context.graphQLStore.networkOnlyDelete<
             DeleteWorkoutSectionById$Mutation,
             DeleteWorkoutSectionByIdArguments>(
         mutation: DeleteWorkoutSectionByIdMutation(variables: variables));
@@ -485,9 +488,9 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     /// Api.
     final variables = DeleteWorkoutSetByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLStore
-        .mutate<DeleteWorkoutSetById$Mutation, DeleteWorkoutSetByIdArguments>(
-            mutation: DeleteWorkoutSetByIdMutation(variables: variables));
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutSetById$Mutation, DeleteWorkoutSetByIdArguments>(
+        mutation: DeleteWorkoutSetByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 
@@ -608,9 +611,9 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     // Api.
     final variables = DeleteWorkoutMoveByIdArguments(id: idToDelete);
 
-    final result = await context.graphQLStore
-        .mutate<DeleteWorkoutMoveById$Mutation, DeleteWorkoutMoveByIdArguments>(
-            mutation: DeleteWorkoutMoveByIdMutation(variables: variables));
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutMoveById$Mutation, DeleteWorkoutMoveByIdArguments>(
+        mutation: DeleteWorkoutMoveByIdMutation(variables: variables));
 
     final success = _checkApiResult(result);
 

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -18,6 +19,10 @@ class ProfileGymProfilesPage extends StatelessWidget {
             Key('ProfileGymProfilesPage - ${GymProfilesQuery().operationName}'),
         query: GymProfilesQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
+        loadingIndicator: ShimmerCardList(
+          itemCount: 8,
+          cardHeight: 160,
+        ),
         builder: (data) {
           final gymProfiles = data.gymProfiles;
           return StackAndFloatingButton(

@@ -11,6 +11,7 @@ import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_moves.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
@@ -28,6 +29,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
           page: EmptyRouterPage,
           children: [
             AutoRoute(path: '', page: HomePage),
+            AutoRoute(path: 'your-schedule', page: YourSchedulePage),
             AutoRoute(path: 'your-collections', page: YourCollectionsPage),
             AutoRoute(path: 'your-workouts', page: YourWorkoutsPage),
             AutoRoute(path: 'your-plans', page: YourPlansPage),

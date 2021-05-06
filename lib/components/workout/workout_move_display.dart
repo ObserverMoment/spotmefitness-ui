@@ -56,13 +56,22 @@ class WorkoutMoveDisplay extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final List<String> _equipmentNames = [
+  Widget _buildEquipmentNames() {
+    final List<String> equipmentNames = [
       if (Utils.textNotNull(workoutMove.equipment?.name))
         workoutMove.equipment!.name,
       ...workoutMove.move.requiredEquipments.map((e) => e.name).toList()
     ];
+
+    return MyText(
+      equipmentNames.join(', '),
+      size: FONTSIZE.SMALL,
+      color: Styles.colorTwo,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
       decoration: BoxDecoration(
@@ -74,27 +83,15 @@ class WorkoutMoveDisplay extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyText(workoutMove.move.name),
-              Row(
-                  children: _equipmentNames
-                      .asMap()
-                      .map((index, name) => MapEntry(
-                          index,
-                          MyText(
-                            index == _equipmentNames.length - 1
-                                ? name
-                                : '$name, ',
-                            size: FONTSIZE.SMALL,
-                            color: Styles.colorTwo,
-                          )))
-                      .values
-                      .toList())
-            ],
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyText(workoutMove.move.name),
+                _buildEquipmentNames(),
+              ],
+            ),
           ),
           Row(
             children: [

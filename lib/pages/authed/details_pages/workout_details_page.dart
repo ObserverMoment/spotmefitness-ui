@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -14,7 +16,10 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -54,6 +59,75 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
       _pageController.jumpToPage(index);
     }
     setState(() => _activeSectionTabIndex = index);
+  }
+
+  Future<void> _duplicateWorkout(String id) async {
+    await context.showConfirmDialog(
+        title: 'Make a copy of this Workout?',
+        content: MyText(
+          'Note: Any media on this workout will not be copied across.',
+          maxLines: 3,
+        ),
+        onConfirm: () async {
+          context.showLoadingAlert('Making a copy...',
+              icon: Icon(CupertinoIcons.doc_on_doc));
+          final result = await context.graphQLStore.create<
+                  DuplicateWorkoutById$Mutation, DuplicateWorkoutByIdArguments>(
+              mutation: DuplicateWorkoutByIdMutation(
+                  variables: DuplicateWorkoutByIdArguments(id: id)),
+              addRefToQueries: [kUserWorkoutsQuery]);
+
+          if (result.hasErrors) {
+            context.pop(); // The showLoadingAlert
+            context.showErrorAlert(
+                'Something went wrong, the workout was not duplicated correctly.');
+          } else {
+            context.pop(); // The showLoadingAlert
+            context.pop(
+                result: ToastRequest(
+                    type: ToastType.success,
+                    message:
+                        'Workout copy created.')); // Main screen - back to userWorkouts
+          }
+        });
+  }
+
+  Future<void> _archiveWorkout(String id) async {
+    await context.showConfirmDialog(
+        title: 'Archive this workout?',
+        content: MyText(
+          'It will be moved to your archive where it can be retrieved if needed.',
+          maxLines: 3,
+        ),
+        onConfirm: () async {
+          context.showLoadingAlert('Archiving...',
+              icon: Icon(
+                CupertinoIcons.archivebox,
+                color: Styles.errorRed,
+              ));
+
+          final result = await context.graphQLStore.delete<
+                  SoftDeleteWorkoutById$Mutation,
+                  SoftDeleteWorkoutByIdArguments>(
+              mutation: SoftDeleteWorkoutByIdMutation(
+                  variables: SoftDeleteWorkoutByIdArguments(id: id)),
+              objectId: id,
+              typeName: kWorkoutTypename,
+              removeRefFromQueries: [kUserWorkoutsQuery]);
+
+          if (result.hasErrors) {
+            context.pop(); // The showLoadingAlert
+            context.showErrorAlert(
+                'Something went wrong, the workout was not archived correctly');
+          } else {
+            context.pop(); // The showLoadingAlert
+            context.pop(
+                result: ToastRequest(
+                    type: ToastType.destructive,
+                    message:
+                        'Workout archived.')); // Main screen - back to userWorkouts
+          }
+        });
   }
 
   Widget _buildAvatar(Workout workout) {
@@ -113,10 +187,12 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return QueryObserver<WorkoutById$Query, WorkoutByIdArguments>(
-        key: Key('YourWorkoutsPage - ${UserWorkoutsQuery().operationName}'),
+        key: Key(
+            'YourWorkoutsPage - ${UserWorkoutsQuery().operationName}-${widget.id}'),
         query: WorkoutByIdQuery(variables: WorkoutByIdArguments(id: widget.id)),
-        fetchPolicy: QueryFetchPolicy.storeFirst,
+        fetchPolicy: QueryFetchPolicy.storeAndNetwork,
         parameterizeQuery: true,
+        loadingIndicator: ShimmerDetailsPage(title: 'Workout Details'),
         builder: (data) {
           final Workout workout = data.workoutById;
 
@@ -183,20 +259,25 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                           icon: Icon(CupertinoIcons.share),
                           onPressed: () => print('share')),
                       if (isOwner)
-                        BottomSheetMenuItem(
-                            text: 'Edit',
-                            icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () => context.push(
-                                    child: WorkoutCreator(
-                                  workout: workout,
-                                ))),
+                        if (isOwner)
+                          BottomSheetMenuItem(
+                              text: 'Edit',
+                              icon: Icon(CupertinoIcons.pencil),
+                              onPressed: () => context.push(
+                                      child: WorkoutCreator(
+                                    workout: workout,
+                                  ))),
                       if (isOwner ||
                           workout.contentAccessScope ==
                               ContentAccessScope.public)
                         BottomSheetMenuItem(
                             text: 'Duplicate',
                             icon: Icon(CupertinoIcons.doc_on_doc),
-                            onPressed: () => print('duplicate')),
+                            onPressed: () => _duplicateWorkout(workout.id)),
+                      BottomSheetMenuItem(
+                          text: 'Export',
+                          icon: Icon(CupertinoIcons.download_circle),
+                          onPressed: () => print('export')),
                       if (isOwner)
                         BottomSheetMenuItem(
                             text: 'Archive',
@@ -205,7 +286,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                               color: Styles.errorRed,
                             ),
                             isDestructive: true,
-                            onPressed: () => print('archive')),
+                            onPressed: () => _archiveWorkout(workout.id)),
                     ])),
               ),
             ),

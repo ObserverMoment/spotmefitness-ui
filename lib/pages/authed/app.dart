@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -13,7 +12,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
@@ -25,34 +23,31 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _graphql = GraphQL();
-    return GraphQLProvider(
-        client: _graphql.clientNotifier,
-        child: MultiProvider(
-          providers: [
-            Provider(create: (_) => GraphQLStore()),
-            ChangeNotifierProvider(create: (_) => ThemeBloc()),
-            ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
-          ],
-          child: Builder(
-              builder: (context) => CupertinoApp.router(
-                    debugShowCheckedModeBanner: false,
-                    theme: context.theme.cupertinoThemeData,
-                    routerDelegate: _appRouter.delegate(),
-                    routeInformationParser: _appRouter.defaultRouteParser(),
-                    localizationsDelegates: [
-                      DefaultMaterialLocalizations.delegate,
-                      DefaultCupertinoLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: [
-                      const Locale('en', 'US'),
-                      const Locale('en', 'GB'),
-                    ],
-                  )),
-        ));
+    return MultiProvider(
+      providers: [
+        Provider(create: (_) => GraphQLStore()),
+        ChangeNotifierProvider(create: (_) => ThemeBloc()),
+        ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
+      ],
+      child: Builder(
+          builder: (context) => CupertinoApp.router(
+                debugShowCheckedModeBanner: false,
+                theme: context.theme.cupertinoThemeData,
+                routerDelegate: _appRouter.delegate(),
+                routeInformationParser: _appRouter.defaultRouteParser(),
+                localizationsDelegates: [
+                  DefaultMaterialLocalizations.delegate,
+                  DefaultCupertinoLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en', 'US'),
+                  const Locale('en', 'GB'),
+                ],
+              )),
+    );
   }
 }
 

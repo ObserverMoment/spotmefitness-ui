@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/coercers.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
@@ -43,6 +44,11 @@ class ProfilePersonalPage extends StatelessWidget {
         key: Key('ProfilePersonalPage - ${AuthedUserQuery().operationName}'),
         query: AuthedUserQuery(),
         fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+        loadingIndicator: ShimmerCardList(
+          itemCount: 12,
+          cardHeight: 20,
+          cardPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+        ),
         builder: (data) {
           final User user = data.authedUser;
           return Padding(

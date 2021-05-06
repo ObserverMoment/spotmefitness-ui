@@ -16,7 +16,7 @@ class QueryObserver<TData, TVars extends json.JsonSerializable>
   final Key key;
   final GraphQLQuery<TData, TVars> query;
   final QueryFetchPolicy fetchPolicy;
-  final Widget Function(TData response) builder;
+  final Widget Function(TData data) builder;
   final Widget? loadingIndicator;
 
   /// Do you want to clean up unreferenced objects from the store once this query has been fetched.

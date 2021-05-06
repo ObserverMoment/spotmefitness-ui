@@ -3,12 +3,13 @@ import 'dart:ui';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 extension BuildContextExtension on BuildContext {
@@ -19,9 +20,6 @@ extension BuildContextExtension on BuildContext {
   ThemeBloc get readTheme {
     return read<ThemeBloc>();
   }
-
-  @deprecated
-  GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
 
   GraphQLStore get graphQLStore => read<GraphQLStore>();
 
@@ -71,6 +69,33 @@ extension BuildContextExtension on BuildContext {
             content: content,
             actions: actions));
     return res;
+  }
+
+  Future<void> showLoadingAlert(String message, {Widget? icon}) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null)
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: icon,
+                  ),
+                H3(message, textAlign: TextAlign.center),
+              ],
+            ),
+            content: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: LoadingCircle(
+                  size: 18,
+                ),
+              ),
+            ),
+            actions: []));
   }
 
   /// Standardise dialog with two options - Confirm or Cancel.
@@ -212,11 +237,14 @@ extension BuildContextExtension on BuildContext {
   void showToast(
           {required String message,
           Widget? icon,
-          bool isError = false,
+          ToastType toastType = ToastType.standard,
           bool rootNavigator = false}) =>
       Flushbar(
-        backgroundColor:
-            isError ? Styles.errorRed : CupertinoColors.darkBackgroundGray,
+        backgroundColor: toastType == ToastType.destructive
+            ? Styles.errorRed
+            : toastType == ToastType.success
+                ? Styles.infoBlue
+                : CupertinoColors.darkBackgroundGray,
         icon: icon,
         maxWidth: 400,
         animationDuration: Duration(milliseconds: 300),

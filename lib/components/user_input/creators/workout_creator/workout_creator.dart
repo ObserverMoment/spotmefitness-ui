@@ -52,9 +52,14 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
     setState(() => _activeTabIndex = index);
   }
 
-  Future<void> _saveAndClose(BuildContext context) async {
-    await context.read<WorkoutCreatorBloc>().saveAllChanges(context);
-    context.pop();
+  void _saveAndClose(BuildContext context) {
+    final success = context.read<WorkoutCreatorBloc>().saveAllChanges(context);
+    if (success) {
+      context.pop();
+    } else {
+      context.showErrorAlert(
+          'Sorry there was a problem updating, please try again.');
+    }
   }
 
   @override

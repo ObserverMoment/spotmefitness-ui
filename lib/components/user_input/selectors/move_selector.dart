@@ -355,14 +355,11 @@ class MoveSelectorItem extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Flexible(
-                  child: MyText(
-                    move.name,
-                  ),
+                MyText(
+                  move.name,
                 ),
                 SizedBox(width: 8),
-                Flexible(
-                    child: MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY))
+                MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY)
               ],
             ),
           ),

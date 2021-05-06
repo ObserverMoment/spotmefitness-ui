@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
 import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploader.dart';
@@ -43,6 +44,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 key: Key('ProfilePage - ${AuthedUserQuery().operationName}'),
                 query: AuthedUserQuery(),
                 fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+                loadingIndicator: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ShimmerCircle(diameter: 100),
+                    ShimmerCircle(diameter: 100)
+                  ],
+                ),
                 builder: (data) {
                   final user = data.authedUser;
                   return Row(

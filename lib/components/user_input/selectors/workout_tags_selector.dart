@@ -4,11 +4,11 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -56,18 +56,12 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   }
 
   Future<void> _createNewTag(String tag) async {
-    final _vars =
+    final variables =
         CreateWorkoutTagArguments(data: CreateWorkoutTagInput(tag: tag));
-    await GraphQL.mutateWithQueryUpdate(
-      mutationType: MutationType.create,
-      client: context.graphQLClient,
-      mutationDocument: CreateWorkoutTagMutation(variables: _vars).document,
-      mutationOperationName:
-          CreateWorkoutTagMutation(variables: _vars).operationName,
-      mutationVariables: _vars.toJson(),
-      queryDocument: UserWorkoutTagsQuery().document,
-      queryOperationName: UserWorkoutTagsQuery().operationName,
-    );
+
+    await context.graphQLStore.create(
+        mutation: CreateWorkoutTagMutation(variables: variables),
+        addRefToQueries: [kUserWorkoutTagsQuery]);
   }
 
   @override

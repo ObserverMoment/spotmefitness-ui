@@ -245,7 +245,9 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    H2(_activeWorkoutMove!.move.name),
+                                    Flexible(
+                                        child:
+                                            H3(_activeWorkoutMove!.move.name)),
                                     SizedBox(
                                       width: 16,
                                     ),

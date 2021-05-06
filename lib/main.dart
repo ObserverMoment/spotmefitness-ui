@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -20,14 +19,9 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// TODO: remove once graphql flutter is gone.
-  await initHiveForFlutter();
-
   await Hive.initFlutter();
-  await Hive.openBox(GraphQLStore.boxName);
   await Hive.openBox(kSettingsHiveBoxName);
-
-  Hive.box(kSettingsHiveBoxName).clear();
+  await Hive.openBox(GraphQLStore.boxName);
   Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();
