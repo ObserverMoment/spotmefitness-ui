@@ -383,6 +383,46 @@ class MiniButton extends StatelessWidget {
   }
 }
 
+class DoItButton extends StatelessWidget {
+  final String text;
+  final void Function() onPressed;
+  DoItButton({this.text = 'Do it!', required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: const EdgeInsets.all(4),
+      pressedOpacity: 0.8,
+      onPressed: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Styles.infoBlue,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          children: [
+            MyText(
+              text,
+              weight: FontWeight.bold,
+              size: FONTSIZE.SMALL,
+              color: Styles.white,
+            ),
+            SizedBox(
+              width: 3,
+            ),
+            Icon(
+              CupertinoIcons.chevron_right_2,
+              size: 12,
+              color: Styles.white,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class FilterButton extends StatelessWidget {
   final void Function() onPressed;
   final bool hasActiveFilters;

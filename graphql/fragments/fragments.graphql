@@ -64,6 +64,7 @@ fragment WorkoutFields on Workout {
   __typename
   id
   createdAt
+  archived
   name
   description
   difficultyLevel

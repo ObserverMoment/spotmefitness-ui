@@ -9,23 +9,23 @@ import 'package:flutter/material.dart' as _i2;
 
 import 'pages/authed/app.dart' as _i3;
 import 'pages/authed/details_pages/workout_details_page.dart' as _i4;
-import 'pages/authed/discover/discover_page.dart' as _i5;
+import 'pages/authed/discover/discover_page.dart' as _i6;
 import 'pages/authed/discover/plans.dart' as _i19;
 import 'pages/authed/discover/workouts.dart' as _i18;
 import 'pages/authed/discover/you.dart' as _i17;
-import 'pages/authed/home/home_page.dart' as _i9;
+import 'pages/authed/home/home_page.dart' as _i10;
 import 'pages/authed/home/your_clubs.dart' as _i15;
 import 'pages/authed/home/your_collections.dart' as _i11;
 import 'pages/authed/home/your_events.dart' as _i14;
 import 'pages/authed/home/your_moves.dart' as _i16;
 import 'pages/authed/home/your_plans.dart' as _i13;
-import 'pages/authed/home/your_schedule.dart' as _i10;
+import 'pages/authed/home/your_schedule.dart' as _i5;
 import 'pages/authed/home/your_workouts.dart' as _i12;
-import 'pages/authed/journal/journal_page.dart' as _i7;
+import 'pages/authed/journal/journal_page.dart' as _i8;
 import 'pages/authed/profile/gym_profiles.dart' as _i21;
 import 'pages/authed/profile/personal_page.dart' as _i20;
-import 'pages/authed/profile/profile_page.dart' as _i8;
-import 'pages/authed/social/social_page.dart' as _i6;
+import 'pages/authed/profile/profile_page.dart' as _i9;
+import 'pages/authed/social/social_page.dart' as _i7;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -33,90 +33,110 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    GlobalRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i3.GlobalPage());
-    },
-    WorkoutDetailsRoute.name: (routeData) {
-      var pathParams = routeData.pathParams;
-      final args = routeData.argsAs<WorkoutDetailsRouteArgs>(
-          orElse: () =>
-              WorkoutDetailsRouteArgs(id: pathParams.getString('id')));
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i4.WorkoutDetailsPage(id: args.id));
-    },
-    HomeStack.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: const _i1.EmptyRouterPage());
-    },
-    DiscoverRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i5.DiscoverPage());
-    },
-    SocialRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i6.SocialPage());
-    },
-    JournalRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i7.JournalPage());
-    },
-    ProfileRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i8.ProfilePage());
-    },
-    HomeRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i9.HomePage());
-    },
-    YourScheduleRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i10.YourSchedulePage());
-    },
-    YourCollectionsRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i11.YourCollectionsPage());
-    },
-    YourWorkoutsRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i12.YourWorkoutsPage());
-    },
-    YourPlansRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i13.YourPlansPage());
-    },
-    YourEventsRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i14.YourEventsPage());
-    },
-    YourClubsRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i15.YourClubsPage());
-    },
-    YourMovesRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i16.YourMovesPage());
-    },
-    DiscoverYouRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i17.DiscoverYouPage());
-    },
-    DiscoverWorkoutsRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i18.DiscoverWorkoutsPage());
-    },
-    DiscoverPlansRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i19.DiscoverPlansPage());
-    },
-    ProfilePersonalRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i20.ProfilePersonalPage());
-    },
-    ProfileGymProfilesRoute.name: (routeData) {
-      return _i1.CupertinoPageX<dynamic>(
-          routeData: routeData, child: _i21.ProfileGymProfilesPage());
-    }
+    GlobalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i3.GlobalPage();
+        }),
+    WorkoutDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final pathParams = data.pathParams;
+          final args = data.argsAs<WorkoutDetailsRouteArgs>(
+              orElse: () =>
+                  WorkoutDetailsRouteArgs(id: pathParams.getString('id')));
+          return _i4.WorkoutDetailsPage(id: args.id);
+        }),
+    YourScheduleRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i5.YourSchedulePage();
+        }),
+    HomeStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i1.EmptyRouterPage();
+        }),
+    DiscoverRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i6.DiscoverPage();
+        }),
+    SocialRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i7.SocialPage();
+        }),
+    JournalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i8.JournalPage();
+        }),
+    ProfileRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i9.ProfilePage();
+        }),
+    HomeRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i10.HomePage();
+        }),
+    YourCollectionsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i11.YourCollectionsPage();
+        }),
+    YourWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i12.YourWorkoutsPage();
+        }),
+    YourPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i13.YourPlansPage();
+        }),
+    YourEventsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i14.YourEventsPage();
+        }),
+    YourClubsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i15.YourClubsPage();
+        }),
+    YourMovesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i16.YourMovesPage();
+        }),
+    DiscoverYouRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i17.DiscoverYouPage();
+        }),
+    DiscoverWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i18.DiscoverWorkoutsPage();
+        }),
+    DiscoverPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i19.DiscoverPlansPage();
+        }),
+    ProfilePersonalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i20.ProfilePersonalPage();
+        }),
+    ProfileGymProfilesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i21.ProfileGymProfilesPage();
+        })
   };
 
   @override
@@ -124,7 +144,6 @@ class AppRouter extends _i1.RootStackRouter {
         _i1.RouteConfig(GlobalRoute.name, path: '/', children: [
           _i1.RouteConfig(HomeStack.name, path: 'home', children: [
             _i1.RouteConfig(HomeRoute.name, path: ''),
-            _i1.RouteConfig(YourScheduleRoute.name, path: 'your-schedule'),
             _i1.RouteConfig(YourCollectionsRoute.name,
                 path: 'your-collections'),
             _i1.RouteConfig(YourWorkoutsRoute.name, path: 'your-workouts'),
@@ -152,6 +171,7 @@ class AppRouter extends _i1.RootStackRouter {
           ])
         ]),
         _i1.RouteConfig(WorkoutDetailsRoute.name, path: '/workout/:id'),
+        _i1.RouteConfig(YourScheduleRoute.name, path: 'your-schedule'),
         _i1.RouteConfig('*#redirect',
             path: '*', redirectTo: '/', fullMatch: true)
       ];
@@ -159,7 +179,7 @@ class AppRouter extends _i1.RootStackRouter {
 
 class GlobalRoute extends _i1.PageRouteInfo {
   const GlobalRoute({List<_i1.PageRouteInfo>? children})
-      : super(name, path: '/', children: children);
+      : super(name, path: '/', initialChildren: children);
 
   static const String name = 'GlobalRoute';
 }
@@ -169,7 +189,7 @@ class WorkoutDetailsRoute extends _i1.PageRouteInfo<WorkoutDetailsRouteArgs> {
       : super(name,
             path: '/workout/:id',
             args: WorkoutDetailsRouteArgs(id: id),
-            params: {'id': id});
+            rawPathParams: {'id': id});
 
   static const String name = 'WorkoutDetailsRoute';
 }
@@ -180,16 +200,22 @@ class WorkoutDetailsRouteArgs {
   final String id;
 }
 
+class YourScheduleRoute extends _i1.PageRouteInfo {
+  const YourScheduleRoute() : super(name, path: 'your-schedule');
+
+  static const String name = 'YourScheduleRoute';
+}
+
 class HomeStack extends _i1.PageRouteInfo {
   const HomeStack({List<_i1.PageRouteInfo>? children})
-      : super(name, path: 'home', children: children);
+      : super(name, path: 'home', initialChildren: children);
 
   static const String name = 'HomeStack';
 }
 
 class DiscoverRoute extends _i1.PageRouteInfo {
   const DiscoverRoute({List<_i1.PageRouteInfo>? children})
-      : super(name, path: 'discover', children: children);
+      : super(name, path: 'discover', initialChildren: children);
 
   static const String name = 'DiscoverRoute';
 }
@@ -208,7 +234,7 @@ class JournalRoute extends _i1.PageRouteInfo {
 
 class ProfileRoute extends _i1.PageRouteInfo {
   const ProfileRoute({List<_i1.PageRouteInfo>? children})
-      : super(name, path: 'profile', children: children);
+      : super(name, path: 'profile', initialChildren: children);
 
   static const String name = 'ProfileRoute';
 }
@@ -217,12 +243,6 @@ class HomeRoute extends _i1.PageRouteInfo {
   const HomeRoute() : super(name, path: '');
 
   static const String name = 'HomeRoute';
-}
-
-class YourScheduleRoute extends _i1.PageRouteInfo {
-  const YourScheduleRoute() : super(name, path: 'your-schedule');
-
-  static const String name = 'YourScheduleRoute';
 }
 
 class YourCollectionsRoute extends _i1.PageRouteInfo {

@@ -10,7 +10,13 @@ import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
   final Workout workout;
-  WorkoutCard(this.workout);
+  final Color? backgroundColor;
+  final bool withBoxShadow;
+  final EdgeInsets padding;
+  WorkoutCard(this.workout,
+      {this.backgroundColor,
+      this.withBoxShadow = true,
+      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
 
   final double cardHeight = 120;
 
@@ -47,6 +53,9 @@ class WorkoutCard extends StatelessWidget {
 
     return Card(
       backgroundImageUri: workout.coverImageUri,
+      backgroundColor: backgroundColor,
+      withBoxShadow: withBoxShadow,
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

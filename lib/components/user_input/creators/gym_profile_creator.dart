@@ -161,7 +161,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
     final variables = DeleteGymProfileByIdArguments(id: _activeGymProfile.id);
 
     await context.graphQLStore.delete(
-        typeName: kGymProfileTypename,
+        typename: kGymProfileTypename,
         objectId: _activeGymProfile.id,
         mutation: DeleteGymProfileByIdMutation(variables: variables),
         removeRefFromQueries: [kGymProfilesQuery]);

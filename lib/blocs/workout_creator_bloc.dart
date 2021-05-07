@@ -102,13 +102,13 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   bool saveAllChanges(BuildContext context) {
     /// When editing you have (currently!) come from the workout details page which is being fed by an observable query with id [workoutById({id: id})].
     /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
-    final queryIdsToUpdate = isCreate
-        ? [kUserWorkoutsQuery]
-        : [kUserWorkoutsQuery, kWorkoutByIdQuery];
-
     final success = context.graphQLStore.writeDataToStore(
       data: workout.toJson(),
-      broadcastQueryIds: queryIdsToUpdate,
+
+      /// [addRefToQueries] does a broadcast automatically when done.
+      addRefToQueries: isCreate ? [kUserWorkoutsQuery] : [],
+      broadcastQueryIds:
+          isCreate ? [] : [kWorkoutByIdQuery, kUserWorkoutsQuery],
     );
     return success;
   }

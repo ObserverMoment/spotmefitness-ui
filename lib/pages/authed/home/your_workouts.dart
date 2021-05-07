@@ -8,7 +8,6 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
@@ -18,12 +17,8 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 class YourWorkoutsPage extends StatelessWidget {
-  Future<void> _openWorkoutDetails(BuildContext context, String id) async {
-    dynamic? response =
-        await context.router.root.push(WorkoutDetailsRoute(id: id));
-    if (response is ToastRequest) {
-      context.showToast(message: response.message, toastType: response.type);
-    }
+  void _openWorkoutDetails(BuildContext context, String id) {
+    context.router.root.push(WorkoutDetailsRoute(id: id));
   }
 
   @override
@@ -79,7 +74,8 @@ class YourWorkoutsPage extends StatelessWidget {
                     child: Row(
                       children: [
                         FilterButton(
-                          onPressed: () => {},
+                          onPressed: () =>
+                              print('TODO - implement workout filters'),
                         ),
                         SizedBox(width: 6),
                         OpenTextSearchButton(

@@ -675,17 +675,17 @@ type ScheduledWorkout {
 input CreateScheduledWorkoutInput {
   scheduledAt: DateTime!
   note: String
-  Workout: ID!
-  GymProfile: ID
+  Workout: ConnectRelationInput!
+  GymProfile: ConnectRelationInput
 }
 
 input UpdateScheduledWorkoutInput {
   id: ID!
   scheduledAt: DateTime
   note: String
-  Workout: ID
-  LoggedWorkout: ID
-  GymProfile: ID
+  Workout: ConnectRelationInput
+  LoggedWorkout: ConnectRelationInput
+  GymProfile: ConnectRelationInput
 }
 
 type TextSearchWorkoutResult {
@@ -757,6 +757,7 @@ type Workout {
   id: ID!
   createdAt: DateTime
   User: UserSummary
+  archived: Boolean!
   name: String!
   description: String
   introVideoUri: String
@@ -778,6 +779,7 @@ input CreateWorkoutInput {
 
 input UpdateWorkoutInput {
   id: ID!
+  archived: Boolean
   name: String
   description: String
   introVideoUri: String

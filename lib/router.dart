@@ -29,7 +29,6 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
           page: EmptyRouterPage,
           children: [
             AutoRoute(path: '', page: HomePage),
-            AutoRoute(path: 'your-schedule', page: YourSchedulePage),
             AutoRoute(path: 'your-collections', page: YourCollectionsPage),
             AutoRoute(path: 'your-workouts', page: YourWorkoutsPage),
             AutoRoute(path: 'your-plans', page: YourPlansPage),
@@ -53,6 +52,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
       ]),
     ]),
     AutoRoute(path: '/workout/:id', page: WorkoutDetailsPage),
+    AutoRoute(path: 'your-schedule', page: YourSchedulePage),
     RedirectRoute(path: '*', redirectTo: '/')
   ],
 )

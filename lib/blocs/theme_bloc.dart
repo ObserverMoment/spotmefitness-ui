@@ -33,6 +33,8 @@ class ThemeBloc extends ChangeNotifier {
   /// Rather than context.watch<ThemeBloc>()
   CupertinoThemeData get cupertinoThemeData => theme.cupertinoThemeData;
   CustomThemeData get customThemeData => theme.customThemeData;
+  Brightness get brightness =>
+      themeName == ThemeName.dark ? Brightness.dark : Brightness.light;
   Color get primary => theme.cupertinoThemeData.primaryColor;
   Color get background => theme.cupertinoThemeData.scaffoldBackgroundColor;
   Color get activeIcon => theme.customThemeData.activeIcon;

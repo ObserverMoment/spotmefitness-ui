@@ -6,6 +6,7 @@ const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
 
 /// QueryNames
+/// TODO: Move to using new syntax like QueryName().operationName
 const kGymProfilesQuery = 'gymProfiles';
 const kAuthedUserQuery = 'authedUser';
 const kUserWorkoutsQuery = 'userWorkouts';
@@ -18,6 +19,7 @@ const kWorkoutByIdQuery = 'workoutById';
 const kGymProfileTypename = 'GymProfile';
 const kUserTypename = 'User';
 const kWorkoutTypename = 'Workout';
+const kScheduledWorkoutTypename = 'ScheduledWorkout';
 const kWorkoutSectionTypename = 'WorkoutSection';
 const kWorkoutSetTypename = 'WorkoutSet';
 const kWorkoutMoveTypename = 'WorkoutMove';

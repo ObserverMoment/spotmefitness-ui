@@ -139,7 +139,9 @@ class GraphQLStore {
   /// Broadcasts data if query is successful.
   bool _queryStore(String id) {
     if (!observableQueries.containsKey(id)) {
-      throw QueryNotFoundException(id);
+      print(
+          '_queryStore: QueryNotFoundOrNotInitialized: There is no ObservableQuery with this id: userScheduledWorkouts');
+      return false;
     } else {
       try {
         final observableQuery = getQuerybyId(id);
@@ -178,7 +180,9 @@ class GraphQLStore {
   /// Get data from the network, normalize it, add it to the store, _broadcast to the observable query.
   Future<bool> _queryNetwork(String id) async {
     if (!observableQueries.containsKey(id)) {
-      throw QueryNotFoundException(id);
+      print(
+          '_queryNetwork: QueryNotFoundOrNotInitialized: There is no ObservableQuery with this id: userScheduledWorkouts');
+      return false;
     } else {
       final observableQuery = getQuerybyId(id);
       final GraphQLQuery query = observableQuery.query;
@@ -280,9 +284,7 @@ class GraphQLStore {
             write: mergeWriteNormalized,
             read: readNormalized);
 
-        _addRefToQueries(
-            objectId: resolveDataId(optimisticData)!,
-            queryIds: addRefToQueries);
+        _addRefToQueries(data: optimisticData, queryIds: addRefToQueries);
         if (onOptimisticUpdate != null) {
           onOptimisticUpdate();
         }
@@ -300,18 +302,19 @@ class GraphQLStore {
       // If has network errors, and correct normalizable optimistic data provided, then need to rollback any optimistic updates.
       final objectId = resolveDataId(optimisticData)!;
       _box.delete(objectId);
-      _removeRefFromQueries(objectId: objectId, queryIds: addRefToQueries);
+      _removeRefFromQueries(data: optimisticData, queryIds: addRefToQueries);
     }
 
     if (!result.hasErrors) {
+      final data = response.data?[mutation.operationName] ?? {};
+
       normalizeToStore(
-          data: response.data![mutation.operationName],
+          data: data,
           isQuery: false,
           write: mergeWriteNormalized,
           read: readNormalized);
-      _addRefToQueries(
-          objectId: resolveDataId(response.data![mutation.operationName])!,
-          queryIds: addRefToQueries);
+
+      _addRefToQueries(data: data, queryIds: addRefToQueries);
     }
 
     return result;
@@ -320,28 +323,45 @@ class GraphQLStore {
   /// Network mutation with optional optimism.
   /// Wrap execute function - add cache writing and _broadcasting.
   /// Update the store with returned (after normalizing) data, then _broadcast (_broadcast is really a store read follwed by a _broadcast) to specified ids.
-  /// [customVariablesMap] - if you do not want to pass all the fields of the object to the API. If you pass null fields then those fields will be set null in the DB.
-  Future<MutationResult<TData>>
-      mutate<TData, TVars extends json.JsonSerializable>(
-          {required GraphQLQuery<TData, TVars> mutation,
-          List<String> broadcastQueryIds = const [],
-          Map<String, dynamic>? customVariablesMap,
-          Map<String, dynamic>? optimisticData,
-          void Function()? onOptimisticUpdate}) async {
+
+  Future<MutationResult<TData>> mutate<TData,
+          TVars extends json.JsonSerializable>(
+      {required GraphQLQuery<TData, TVars> mutation,
+      List<String> broadcastQueryIds = const [],
+
+      /// If you want to add / remove ref to / from queries the you have to provide [id] and [__typename] in the optimistic data and it must also be being returned by the api in the result object.
+      List<String> addRefToQueries = const [],
+      List<String> removeRefFromQueries = const [],
+
+      /// [customVariablesMap] - if you do not want to pass all the fields of the object to the API. If you pass null fields then those fields will be set null in the DB.
+      Map<String, dynamic>? customVariablesMap,
+      Map<String, dynamic>? optimisticData,
+      void Function()? onOptimisticUpdate}) async {
     /// If doing an optimistic update, take a backup of the object you are mutating.
     Map<String, dynamic>? backupData = optimisticData == null
         ? null
         : Map<String, dynamic>.from(
             _box.get(resolveDataId(optimisticData), defaultValue: {}));
 
-    if (optimisticData != null && broadcastQueryIds.isNotEmpty) {
-      /// Immediately write to store and _broadcast.
+    if (optimisticData != null) {
+      /// Immediately write to store, add refs to queries and _broadcast.
       normalizeToStore(
           data: optimisticData,
           isQuery: false,
           write: mergeWriteNormalized,
           read: readNormalized);
+
+      if (addRefToQueries.isNotEmpty) {
+        _addRefToQueries(data: optimisticData, queryIds: addRefToQueries);
+      }
+
+      if (removeRefFromQueries.isNotEmpty) {
+        _removeRefFromQueries(
+            data: optimisticData, queryIds: removeRefFromQueries);
+      }
+
       _broadcast(broadcastQueryIds);
+
       if (onOptimisticUpdate != null) {
         onOptimisticUpdate();
       }
@@ -353,17 +373,37 @@ class GraphQLStore {
     final result = MutationResult<TData>(
         data: mutation.parse(response.data ?? {}), errors: response.errors);
 
+    /// If has network errors then need to rollback any optimistic updates.
     if (optimisticData != null && result.hasErrors) {
-      // If has network errors then need to rollback any optimistic updates.
       _box.put(resolveDataId(optimisticData), backupData);
+
+      if (addRefToQueries.isNotEmpty) {
+        _removeRefFromQueries(data: optimisticData, queryIds: addRefToQueries);
+      }
+
+      if (removeRefFromQueries.isNotEmpty) {
+        _addRefToQueries(data: optimisticData, queryIds: removeRefFromQueries);
+      }
+      _broadcast(broadcastQueryIds);
     }
 
     if (!result.hasErrors) {
+      final data = response.data?[mutation.operationName] ?? {};
+
       normalizeToStore(
-          data: response.data![mutation.operationName],
+          data: data,
           isQuery: false,
           write: mergeWriteNormalized,
           read: readNormalized);
+
+      if (addRefToQueries.isNotEmpty) {
+        _addRefToQueries(data: data, queryIds: addRefToQueries);
+      }
+
+      if (removeRefFromQueries.isNotEmpty) {
+        _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
+      }
+
       _broadcast(broadcastQueryIds);
     }
 
@@ -373,21 +413,28 @@ class GraphQLStore {
   /// Delete ops should always return the ID of the deleted item.
   /// [objectId] as standard - [type:id]
   Future<MutationResult<TData>>
-      delete<TData, TVars extends json.JsonSerializable>({
-    required GraphQLQuery<TData, TVars> mutation,
-    required String objectId,
-    required String typeName,
-    List<String> removeRefFromQueries = const [],
-  }) async {
+      delete<TData, TVars extends json.JsonSerializable>(
+          {required GraphQLQuery<TData, TVars> mutation,
+          required String objectId,
+          required String typename,
+          List<String> removeRefFromQueries = const [],
+          List<String> broadcastQueryIds = const []}) async {
     final response = await execute(mutation);
 
     final result = MutationResult<TData>(
         data: mutation.parse(response.data ?? {}), errors: response.errors);
 
-    if (!result.hasErrors) {
-      final id = '$typeName:$objectId';
+    if (!result.hasErrors &&
+        response.data?[mutation.operationName] == objectId) {
+      final id = '$typename:$objectId';
       await _deleteRootObject(id);
-      _removeRefFromQueries(objectId: id, queryIds: removeRefFromQueries);
+      if (removeRefFromQueries.isNotEmpty) {
+        _removeRefFromQueries(
+            data: {'id': objectId, '__typename': typename},
+            queryIds: removeRefFromQueries);
+      }
+
+      _broadcast(broadcastQueryIds);
     }
 
     return result;
@@ -411,13 +458,19 @@ class GraphQLStore {
   /// Will merge / overwrite with previous data, or creating it if not present.
   bool writeDataToStore(
       {required Map<String, dynamic> data,
-      List<String> broadcastQueryIds = const []}) {
+      List<String> broadcastQueryIds = const [],
+      List<String> addRefToQueries = const []}) {
     try {
       normalizeToStore(
           data: data,
           isQuery: false,
           write: mergeWriteNormalized,
           read: readNormalized);
+
+      if (addRefToQueries.isNotEmpty) {
+        _addRefToQueries(data: data, queryIds: addRefToQueries);
+      }
+
       _broadcast(broadcastQueryIds);
       return true;
     } catch (e) {
@@ -428,8 +481,14 @@ class GraphQLStore {
 
   /// [objectId] must be in the format [type:id] as a string.
   /// If [_box.get(_queryRootKey)] is null then this key will be created.
-  void _addRefToQueries(
-      {required String objectId, required List<String> queryIds}) {
+  bool _addRefToQueries(
+      {required Map<String, dynamic> data, required List<String> queryIds}) {
+    final objectId = resolveDataId(data);
+    if (objectId == null) {
+      print(
+          'Warning: Could not resolveDataId in [data]. If you want to add a ref to queries then you need to provide [id] and [__typename] in the data.');
+      return false;
+    }
     final allQueries = _box.get(_queryRootKey);
 
     for (final queryId in queryIds) {
@@ -449,12 +508,19 @@ class GraphQLStore {
 
       _broadcast([queryId]);
     }
+    return true;
   }
 
   /// [objectId] must be in the format [type:id] as a string.
   /// If [_box.get(_queryRootKey)] is null then this key will be created.
-  void _removeRefFromQueries(
-      {required String objectId, required List<String> queryIds}) {
+  bool _removeRefFromQueries(
+      {required Map<String, dynamic> data, required List<String> queryIds}) {
+    final objectId = resolveDataId(data);
+    if (objectId == null) {
+      print(
+          'Warning: Could not resolveDataId in [data]. If you want to remove a ref from queries then you need to provide [id] and [__typename] in the data.');
+      return false;
+    }
     final allQueries = _box.get(_queryRootKey);
 
     for (final queryId in queryIds) {
@@ -474,6 +540,7 @@ class GraphQLStore {
 
       _broadcast([queryId]);
     }
+    return true;
   }
 
   /////////////////////////////////////
