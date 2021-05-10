@@ -66,6 +66,8 @@ extension LoadUnitExtension on LoadUnit {
         return 'lb';
       case LoadUnit.bodyweightpercent:
         return '% body';
+      case LoadUnit.percentmax:
+        return '% max';
       default:
         throw new Exception('This is not a valid LoadUnit enum: $this');
     }

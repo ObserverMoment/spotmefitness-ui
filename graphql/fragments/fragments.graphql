@@ -20,6 +20,11 @@ fragment GymProfile on GymProfile {
   description
 }
 
+fragment LoggedWorkoutFields on LoggedWorkout {
+  __typename
+  id
+}
+
 fragment Move on Move {
   __typename
   id

@@ -206,7 +206,7 @@ extension BuildContextExtension on BuildContext {
                     padding: const EdgeInsets.all(8.0),
                     child: DragBarHandle(),
                   ),
-                  Expanded(child: Builder(builder: (context) => child)),
+                  Flexible(child: Builder(builder: (context) => child)),
                 ],
               )
             : child);

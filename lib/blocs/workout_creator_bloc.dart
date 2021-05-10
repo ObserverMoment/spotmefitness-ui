@@ -20,6 +20,12 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   final BuildContext context;
   final bool isCreate;
 
+  WorkoutCreatorBloc(
+      {required this.initialWorkout,
+      required this.context,
+      required this.isCreate})
+      : workout = initialWorkout;
+
   int _setId = 0;
   int _workoutMoveId = 0;
 
@@ -52,12 +58,6 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   /// If there is an issue calling the api then this is reverted to.
   Map<String, dynamic> backupJson = {};
 
-  WorkoutCreatorBloc(
-      {required this.initialWorkout,
-      required this.context,
-      required this.isCreate})
-      : workout = initialWorkout;
-
   /// Run this before constructing the bloc
   static Future<Workout> initialize(
       BuildContext context, Workout? prevWorkout) async {
@@ -78,7 +78,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
         final result = await context.graphQLStore
             .mutate<CreateWorkout$Mutation, CreateWorkoutArguments>(
-                mutation: CreateWorkoutMutation(variables: variables));
+                mutation: CreateWorkoutMutation(variables: variables),
+                writeToStore: false);
 
         if (result.hasErrors) {
           throw Exception(
@@ -98,7 +99,12 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
   /// Send all new data to the graphql store and broadcast new data to streams.
   /// The api has been updating incrementally so does not need further update here.
-  /// Doing this to avoid unecessary UI builds in non displaying widgets everytime and update is made by the user during the creating / editing process.
+  /// When updating data in this bloc we write to the bloc data and to the network only.
+  /// Not to the client store. This is for two reasons.
+  /// 1. Sections, sets and workoutMoves do not get normalized in the store. The object of normalization is the workout. The data returned from a network update on a section or set, for example, does not contain the necessary data for it to be normalized into the store. I.e it would need to be returned within the full workout object.
+  /// 2. Witholding these store updates means that you get some optimisation in that UI in the background stack is not being updated every single time a small update is made by the user.
+  /// Store gets written and the UI gets updated when the user clicks [done].
+  /// This flow should be reviewed at some point.
   bool saveAllChanges(BuildContext context) {
     /// When editing you have (currently!) come from the workout details page which is being fed by an observable query with id [workoutById({id: id})].
     /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
@@ -153,7 +159,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<UpdateWorkout$Mutation, UpdateWorkoutArguments>(
-            mutation: UpdateWorkoutMutation(variables: variables));
+            mutation: UpdateWorkoutMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -183,7 +190,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<CreateWorkoutSection$Mutation, CreateWorkoutSectionArguments>(
-            mutation: CreateWorkoutSectionMutation(variables: variables));
+            mutation: CreateWorkoutSectionMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -214,7 +222,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<UpdateWorkoutSection$Mutation, UpdateWorkoutSectionArguments>(
-            mutation: UpdateWorkoutSectionMutation(variables: variables));
+            mutation: UpdateWorkoutSectionMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -251,7 +260,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       final result = await context.graphQLStore.mutate<
               ReorderWorkoutSections$Mutation, ReorderWorkoutSectionsArguments>(
-          mutation: ReorderWorkoutSectionsMutation(variables: variables));
+          mutation: ReorderWorkoutSectionsMutation(variables: variables),
+          writeToStore: false);
 
       final success = _checkApiResult(result);
 
@@ -338,7 +348,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<CreateWorkoutSet$Mutation, CreateWorkoutSetArguments>(
-            mutation: CreateWorkoutSetMutation(variables: variables));
+            mutation: CreateWorkoutSetMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -378,7 +389,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<UpdateWorkoutSet$Mutation, UpdateWorkoutSetArguments>(
-            mutation: UpdateWorkoutSetMutation(variables: variables));
+            mutation: UpdateWorkoutSetMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -416,7 +428,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore.mutate<
             DuplicateWorkoutSetById$Mutation, DuplicateWorkoutSetByIdArguments>(
-        mutation: DuplicateWorkoutSetByIdMutation(variables: variables));
+        mutation: DuplicateWorkoutSetByIdMutation(variables: variables),
+        writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -453,7 +466,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       final result = await context.graphQLStore
           .mutate<ReorderWorkoutSets$Mutation, ReorderWorkoutSetsArguments>(
-              mutation: ReorderWorkoutSetsMutation(variables: variables));
+              mutation: ReorderWorkoutSetsMutation(variables: variables),
+              writeToStore: false);
 
       final success = _checkApiResult(result);
 
@@ -550,7 +564,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<CreateWorkoutMove$Mutation, CreateWorkoutMoveArguments>(
-            mutation: CreateWorkoutMoveMutation(variables: variables));
+            mutation: CreateWorkoutMoveMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -578,7 +593,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore
         .mutate<UpdateWorkoutMove$Mutation, UpdateWorkoutMoveArguments>(
-            mutation: UpdateWorkoutMoveMutation(variables: variables));
+            mutation: UpdateWorkoutMoveMutation(variables: variables),
+            writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -653,7 +669,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final result = await context.graphQLStore.mutate<
             DuplicateWorkoutMoveById$Mutation,
             DuplicateWorkoutMoveByIdArguments>(
-        mutation: DuplicateWorkoutMoveByIdMutation(variables: variables));
+        mutation: DuplicateWorkoutMoveByIdMutation(variables: variables),
+        writeToStore: false);
 
     final success = _checkApiResult(result);
 
@@ -697,7 +714,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       final result = await context.graphQLStore
           .mutate<ReorderWorkoutMoves$Mutation, ReorderWorkoutMovesArguments>(
-              mutation: ReorderWorkoutMovesMutation(variables: variables));
+              mutation: ReorderWorkoutMovesMutation(variables: variables),
+              writeToStore: false);
 
       final success = _checkApiResult(result);
 

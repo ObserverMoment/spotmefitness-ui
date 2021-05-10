@@ -22,6 +22,8 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox(kSettingsHiveBoxName);
   await Hive.openBox(GraphQLStore.boxName);
+
+  /// TODO: Remove this before pushing anything to staging.
   Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();

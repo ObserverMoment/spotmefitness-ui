@@ -45,6 +45,15 @@ class CircuitCreator extends StatelessWidget {
                   data.standardMoves.firstWhere((m) => m.id == kRestMoveId);
 
               return ListView(shrinkWrap: true, children: [
+                if (sortedWorkoutSets.isNotEmpty)
+                  FadeIn(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: 8.0, left: 24, right: 24),
+                      child: WorkoutSectionInstructions(
+                          typeName: kHIITCircuitName, rounds: totalRounds),
+                    ),
+                  ),
                 ImplicitlyAnimatedList<WorkoutSet>(
                   items: sortedWorkoutSets,
                   shrinkWrap: true,
@@ -68,15 +77,6 @@ class CircuitCreator extends StatelessWidget {
                     );
                   },
                 ),
-                if (sortedWorkoutSets.isNotEmpty)
-                  FadeIn(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 24),
-                      child: WorkoutSectionInstructions(
-                          typeName: kHIITCircuitName, rounds: totalRounds),
-                    ),
-                  ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(

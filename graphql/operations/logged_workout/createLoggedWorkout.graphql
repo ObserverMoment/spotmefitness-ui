@@ -1,0 +1,5 @@
+mutation createLoggedWorkout($data: CreateLoggedWorkoutInput!) {
+  createLoggedWorkout(data: $data) {
+    ...LoggedWorkoutFields
+  }
+}

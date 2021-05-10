@@ -196,7 +196,7 @@ class _RepPickerModalState extends State<RepPickerModal> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: MyNumberInput(
                     _repsController,
-                    autoFocus: false,
+                    autoFocus: true,
                   ),
                 ),
               ),

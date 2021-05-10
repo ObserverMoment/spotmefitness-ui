@@ -15,6 +15,7 @@ import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.d
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
@@ -23,7 +24,6 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -199,47 +199,26 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   Widget _buildAvatar(Workout workout) {
     final radius = 40.0;
 
-    if (workout.contentAccessScope == ContentAccessScope.official) {
-      return Row(
-        children: [
-          SpotMeAvatar(
-            radius: radius,
-          ),
-          _displayName('SpotMe')
-        ],
-      );
-    } else if (workout.user?.avatarUri != null) {
-      return Row(
-        children: [
-          UserAvatar(
-            avatarUri: workout.user!.avatarUri!,
-            radius: radius,
-          ),
-          if (workout.user!.displayName != '')
-            _displayName(workout.user!.displayName),
-          if (workout.archived)
-            FadeIn(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Icon(
-                  CupertinoIcons.archivebox,
-                  color: Styles.errorRed,
-                ),
+    return Row(
+      children: [
+        UserAvatar(
+          avatarUri: workout.user.avatarUri!,
+          radius: radius,
+        ),
+        if (workout.user.displayName != '')
+          _displayName(workout.user.displayName),
+        if (workout.archived)
+          FadeIn(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(
+                CupertinoIcons.archivebox,
+                color: Styles.errorRed,
               ),
-            )
-        ],
-      );
-    } else {
-      return Row(
-        children: [
-          Icon(
-            CupertinoIcons.person,
-            size: radius,
-          ),
-          _displayName('By Unknown')
-        ],
-      );
-    }
+            ),
+          )
+      ],
+    );
   }
 
   List<String> _sectionTitles(List<WorkoutSection> sortedWorkoutSections) {
@@ -271,7 +250,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
               workout.workoutSections.sortedBy<num>((ws) => ws.sortPosition);
 
           final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
-          final bool isOwner = workout.user?.id == authedUserId;
+          final bool isOwner = workout.user.id == authedUserId;
 
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
@@ -320,7 +299,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                       BottomSheetMenuItem(
                           text: 'Log it',
                           icon: Icon(CupertinoIcons.graph_square),
-                          onPressed: () => print('log')),
+                          onPressed: () => context.push(
+                              child: LoggedWorkoutCreator(workout: workout))),
                       BottomSheetMenuItem(
                           text: 'Share',
                           icon: Icon(CupertinoIcons.share),

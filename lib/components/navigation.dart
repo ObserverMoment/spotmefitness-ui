@@ -38,6 +38,18 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
   }
 
   @override
+  void didUpdateWidget(covariant MyTabBarNav oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    globalTextBoxKeys = widget.titles.map((tab) => GlobalKey()).toList();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      // Get renderBox widths of the text elements.
+      tabRenderBoxWidths =
+          globalTextBoxKeys.map((k) => k.currentContext!.size!.width).toList();
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),

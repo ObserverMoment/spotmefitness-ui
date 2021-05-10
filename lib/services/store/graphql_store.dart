@@ -327,6 +327,9 @@ class GraphQLStore {
   Future<MutationResult<TData>> mutate<TData,
           TVars extends json.JsonSerializable>(
       {required GraphQLQuery<TData, TVars> mutation,
+
+      /// When false this operation is network only with no client store writes.
+      bool writeToStore = true,
       List<String> broadcastQueryIds = const [],
 
       /// If you want to add / remove ref to / from queries the you have to provide [id] and [__typename] in the optimistic data and it must also be being returned by the api in the result object.
@@ -343,7 +346,7 @@ class GraphQLStore {
         : Map<String, dynamic>.from(
             _box.get(resolveDataId(optimisticData), defaultValue: {}));
 
-    if (optimisticData != null) {
+    if (writeToStore && optimisticData != null) {
       /// Immediately write to store, add refs to queries and _broadcast.
       normalizeToStore(
           data: optimisticData,
@@ -374,7 +377,7 @@ class GraphQLStore {
         data: mutation.parse(response.data ?? {}), errors: response.errors);
 
     /// If has network errors then need to rollback any optimistic updates.
-    if (optimisticData != null && result.hasErrors) {
+    if (writeToStore && optimisticData != null && result.hasErrors) {
       _box.put(resolveDataId(optimisticData), backupData);
 
       if (addRefToQueries.isNotEmpty) {
@@ -387,7 +390,7 @@ class GraphQLStore {
       _broadcast(broadcastQueryIds);
     }
 
-    if (!result.hasErrors) {
+    if (writeToStore && !result.hasErrors) {
       final data = response.data?[mutation.operationName] ?? {};
 
       normalizeToStore(

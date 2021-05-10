@@ -161,6 +161,11 @@ mixin WorkoutFieldsMixin {
   String? introVideoThumbUri;
   String? introAudioUri;
 }
+mixin LoggedWorkoutFieldsMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+}
 
 @JsonSerializable(explicitToJson: true)
 class Equipment extends JsonSerializable with EquatableMixin, EquipmentMixin {
@@ -1627,7 +1632,7 @@ class Workout extends JsonSerializable with EquatableMixin, WorkoutFieldsMixin {
       _$WorkoutFromJson(json);
 
   @JsonKey(name: 'User')
-  UserSummary? user;
+  late UserSummary user;
 
   @JsonKey(name: 'WorkoutGoals')
   late List<WorkoutGoal> workoutGoals;
@@ -1661,16 +1666,15 @@ class Workout extends JsonSerializable with EquatableMixin, WorkoutFieldsMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class LoggedWorkout extends JsonSerializable with EquatableMixin {
+class LoggedWorkout extends JsonSerializable
+    with EquatableMixin, LoggedWorkoutFieldsMixin {
   LoggedWorkout();
 
   factory LoggedWorkout.fromJson(Map<String, dynamic> json) =>
       _$LoggedWorkoutFromJson(json);
 
-  late String id;
-
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [$$typename, id];
   Map<String, dynamic> toJson() => _$LoggedWorkoutToJson(this);
 }
 
@@ -1887,6 +1891,9 @@ class CreateWorkout extends JsonSerializable
   factory CreateWorkout.fromJson(Map<String, dynamic> json) =>
       _$CreateWorkoutFromJson(json);
 
+  @JsonKey(name: 'User')
+  late UserSummary user;
+
   @JsonKey(name: 'WorkoutGoals')
   late List<WorkoutGoal> workoutGoals;
 
@@ -1907,6 +1914,7 @@ class CreateWorkout extends JsonSerializable
         introVideoUri,
         introVideoThumbUri,
         introAudioUri,
+        user,
         workoutGoals,
         workoutTags
       ];
@@ -2079,6 +2087,212 @@ class DeleteScheduledWorkoutById$Mutation extends JsonSerializable
       _$DeleteScheduledWorkoutById$MutationToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkout$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkout$Mutation();
+
+  factory CreateLoggedWorkout$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$CreateLoggedWorkout$MutationFromJson(json);
+
+  late LoggedWorkout createLoggedWorkout;
+
+  @override
+  List<Object?> get props => [createLoggedWorkout];
+  Map<String, dynamic> toJson() => _$CreateLoggedWorkout$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
+  CreateLoggedWorkoutInput(
+      {required this.completedOn,
+      required this.name,
+      this.note,
+      required this.loggedWorkoutSections,
+      this.workout,
+      this.scheduledWorkout,
+      this.gymProfile,
+      this.workoutProgramWorkout,
+      this.workoutProgramEnrolment});
+
+  factory CreateLoggedWorkoutInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutInputFromJson(json);
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime completedOn;
+
+  late String name;
+
+  String? note;
+
+  @JsonKey(name: 'LoggedWorkoutSections')
+  late List<CreateLoggedWorkoutSectionInLoggedWorkoutInput>
+      loggedWorkoutSections;
+
+  @JsonKey(name: 'Workout')
+  ConnectRelationInput? workout;
+
+  @JsonKey(name: 'ScheduledWorkout')
+  ConnectRelationInput? scheduledWorkout;
+
+  @JsonKey(name: 'GymProfile')
+  ConnectRelationInput? gymProfile;
+
+  @JsonKey(name: 'WorkoutProgramWorkout')
+  ConnectRelationInput? workoutProgramWorkout;
+
+  @JsonKey(name: 'WorkoutProgramEnrolment')
+  ConnectRelationInput? workoutProgramEnrolment;
+
+  @override
+  List<Object?> get props => [
+        completedOn,
+        name,
+        note,
+        loggedWorkoutSections,
+        workout,
+        scheduledWorkout,
+        gymProfile,
+        workoutProgramWorkout,
+        workoutProgramEnrolment
+      ];
+  Map<String, dynamic> toJson() => _$CreateLoggedWorkoutInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutSectionInLoggedWorkoutInput(
+      {this.name,
+      required this.sectionIndex,
+      required this.roundIndex,
+      this.timeTakenMs,
+      this.note,
+      required this.workoutSectionType,
+      required this.loggedWorkoutSets});
+
+  factory CreateLoggedWorkoutSectionInLoggedWorkoutInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutSectionInLoggedWorkoutInputFromJson(json);
+
+  String? name;
+
+  late int sectionIndex;
+
+  late int roundIndex;
+
+  int? timeTakenMs;
+
+  String? note;
+
+  @JsonKey(name: 'WorkoutSectionType')
+  late ConnectRelationInput workoutSectionType;
+
+  @JsonKey(name: 'LoggedWorkoutSets')
+  late List<CreateLoggedWorkoutSetInLoggedSectionInput> loggedWorkoutSets;
+
+  @override
+  List<Object?> get props => [
+        name,
+        sectionIndex,
+        roundIndex,
+        timeTakenMs,
+        note,
+        workoutSectionType,
+        loggedWorkoutSets
+      ];
+  Map<String, dynamic> toJson() =>
+      _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutSetInLoggedSectionInput(
+      {required this.setIndex,
+      required this.roundIndex,
+      this.timeTakenMs,
+      required this.loggedWorkoutMoves});
+
+  factory CreateLoggedWorkoutSetInLoggedSectionInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutSetInLoggedSectionInputFromJson(json);
+
+  late int setIndex;
+
+  late int roundIndex;
+
+  int? timeTakenMs;
+
+  @JsonKey(name: 'LoggedWorkoutMoves')
+  late List<CreateLoggedWorkoutMoveInLoggedSetInput> loggedWorkoutMoves;
+
+  @override
+  List<Object?> get props =>
+      [setIndex, roundIndex, timeTakenMs, loggedWorkoutMoves];
+  Map<String, dynamic> toJson() =>
+      _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutMoveInLoggedSetInput(
+      {required this.sortPosition,
+      this.timeTakenMs,
+      required this.repType,
+      required this.reps,
+      this.distanceUnit,
+      this.loadAmount,
+      this.loadUnit,
+      required this.move,
+      this.equipment});
+
+  factory CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
+
+  late int sortPosition;
+
+  int? timeTakenMs;
+
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  late WorkoutMoveRepType repType;
+
+  late double reps;
+
+  @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
+  DistanceUnit? distanceUnit;
+
+  double? loadAmount;
+
+  @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
+  LoadUnit? loadUnit;
+
+  @JsonKey(name: 'Move')
+  late ConnectRelationInput move;
+
+  @JsonKey(name: 'Equipment')
+  ConnectRelationInput? equipment;
+
+  @override
+  List<Object?> get props => [
+        sortPosition,
+        timeTakenMs,
+        repType,
+        reps,
+        distanceUnit,
+        loadAmount,
+        loadUnit,
+        move,
+        equipment
+      ];
+  Map<String, dynamic> toJson() =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(this);
+}
+
 enum BodyAreaFrontBack {
   @JsonValue('BACK')
   back,
@@ -2118,6 +2332,8 @@ enum LoadUnit {
   lb,
   @JsonValue('BODYWEIGHTPERCENT')
   bodyweightpercent,
+  @JsonValue('PERCENTMAX')
+  percentmax,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -2178,8 +2394,6 @@ enum ContentAccessScope {
   public,
   @JsonValue('GROUP')
   group,
-  @JsonValue('OFFICIAL')
-  official,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -7767,12 +7981,9 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
-                    FieldNode(
-                        name: NameNode(value: 'id'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null)
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'LoggedWorkoutFields'),
+                        directives: [])
                   ])),
               FieldNode(
                   name: NameNode(value: 'GymProfile'),
@@ -8365,6 +8576,26 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'LoggedWorkoutFields'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
             alias: null,
             arguments: [],
             directives: [],
@@ -10309,6 +10540,15 @@ final CREATE_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
               FragmentSpreadNode(
                   name: NameNode(value: 'WorkoutFields'), directives: []),
               FieldNode(
+                  name: NameNode(value: 'User'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
                   name: NameNode(value: 'WorkoutGoals'),
                   alias: null,
                   arguments: [],
@@ -10327,6 +10567,38 @@ final CREATE_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                         name: NameNode(value: 'WorkoutTag'), directives: [])
                   ]))
             ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserSummary'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserSummary'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
       ])),
   FragmentDefinitionNode(
       name: NameNode(value: 'WorkoutGoal'),
@@ -11534,12 +11806,9 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
-                    FieldNode(
-                        name: NameNode(value: 'id'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null)
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'LoggedWorkoutFields'),
+                        directives: [])
                   ])),
               FieldNode(
                   name: NameNode(value: 'GymProfile'),
@@ -12132,6 +12401,26 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'LoggedWorkoutFields'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
             alias: null,
             arguments: [],
             directives: [],
@@ -12443,12 +12732,9 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
-                    FieldNode(
-                        name: NameNode(value: 'id'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: null)
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'LoggedWorkoutFields'),
+                        directives: [])
                   ])),
               FieldNode(
                   name: NameNode(value: 'GymProfile'),
@@ -13047,6 +13333,26 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
+      name: NameNode(value: 'LoggedWorkoutFields'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
       name: NameNode(value: 'GymProfile'),
       typeCondition: TypeConditionNode(
           on: NamedTypeNode(
@@ -13165,4 +13471,92 @@ class DeleteScheduledWorkoutByIdMutation extends GraphQLQuery<
   @override
   DeleteScheduledWorkoutById$Mutation parse(Map<String, dynamic> json) =>
       DeleteScheduledWorkoutById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutArguments({required this.data});
+
+  @override
+  factory CreateLoggedWorkoutArguments.fromJson(Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutArgumentsFromJson(json);
+
+  late CreateLoggedWorkoutInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$CreateLoggedWorkoutArgumentsToJson(this);
+}
+
+final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createLoggedWorkout'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateLoggedWorkoutInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createLoggedWorkout'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'LoggedWorkoutFields'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'LoggedWorkoutFields'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateLoggedWorkoutMutation extends GraphQLQuery<
+    CreateLoggedWorkout$Mutation, CreateLoggedWorkoutArguments> {
+  CreateLoggedWorkoutMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createLoggedWorkout';
+
+  @override
+  final CreateLoggedWorkoutArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateLoggedWorkout$Mutation parse(Map<String, dynamic> json) =>
+      CreateLoggedWorkout$Mutation.fromJson(json);
 }

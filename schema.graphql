@@ -28,11 +28,9 @@ type Query {
   userWorkoutTags: [WorkoutTag!]!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
-  officialWorkouts: [Workout!]!
   publicWorkouts: [Workout!]!
   userWorkouts: [Workout!]!
   workoutById(id: ID!): Workout!
-  officialWorkoutPrograms: [WorkoutProgram!]!
   publicWorkoutPrograms: [WorkoutProgram!]!
   workoutProgramById(id: ID!): WorkoutProgram!
   userWorkoutPrograms: [WorkoutProgram!]!
@@ -163,7 +161,6 @@ enum ContentAccessScope {
   PRIVATE
   PUBLIC
   GROUP
-  OFFICIAL
 }
 
 enum DifficultyLevel {
@@ -192,6 +189,7 @@ enum LoadUnit {
   KG
   LB
   BODYWEIGHTPERCENT
+  PERCENTMAX
 }
 
 """
@@ -414,7 +412,6 @@ type LoggedWorkout {
   completedOn: DateTime!
   name: String!
   note: String
-  imageUri: String
   LoggedWorkoutSections: [LoggedWorkoutSection!]!
   Workout: Workout!
   ScheduledWorkout: ScheduledWorkout
@@ -425,9 +422,10 @@ type LoggedWorkout {
 
 type LoggedWorkoutSection {
   id: ID!
+  name: String
   setIndex: Int!
   roundIndex: Int!
-  timeTakenMs: Int!
+  timeTakenMs: Int
   note: String
   WorkoutSectionType: WorkoutSectionType!
   LoggedWorkoutSets: [LoggedWorkoutSet!]!
@@ -459,21 +457,21 @@ input CreateLoggedWorkoutInput {
   completedOn: DateTime!
   name: String!
   note: String
-  imageUri: String
   LoggedWorkoutSections: [CreateLoggedWorkoutSectionInLoggedWorkoutInput!]!
-  Workout: ID!
-  ScheduledWorkout: ID
-  GymProfile: ID
-  WorkoutProgramWorkout: ID
-  WorkoutProgramEnrolment: ID
+  Workout: ConnectRelationInput
+  ScheduledWorkout: ConnectRelationInput
+  GymProfile: ConnectRelationInput
+  WorkoutProgramWorkout: ConnectRelationInput
+  WorkoutProgramEnrolment: ConnectRelationInput
 }
 
 input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
+  name: String
   sectionIndex: Int!
   roundIndex: Int!
-  timeTakenMs: Int!
+  timeTakenMs: Int
   note: String
-  WorkoutSectionType: ID!
+  WorkoutSectionType: ConnectRelationInput!
   LoggedWorkoutSets: [CreateLoggedWorkoutSetInLoggedSectionInput!]!
 }
 
@@ -492,24 +490,25 @@ input CreateLoggedWorkoutMoveInLoggedSetInput {
   distanceUnit: DistanceUnit
   loadAmount: Float
   loadUnit: LoadUnit
-  Move: ID!
-  Equipment: ID
+  Move: ConnectRelationInput!
+  Equipment: ConnectRelationInput
 }
 
 input CreateLoggedWorkoutSectionInput {
+  name: String
   sectionIndex: Int!
   roundIndex: Int!
-  timeTakenMs: Int!
+  timeTakenMs: Int
   note: String
-  WorkoutSectionType: ID!
-  LoggedWorkout: ID!
+  WorkoutSectionType: ConnectRelationInput!
+  LoggedWorkout: ConnectRelationInput!
 }
 
 input CreateLoggedWorkoutSetInput {
   setIndex: Int!
   roundIndex: Int!
   timeTakenMs: Int
-  LoggedWorkoutSection: ID!
+  LoggedWorkoutSection: ConnectRelationInput!
 }
 
 input CreateLoggedWorkoutMoveInput {
@@ -520,9 +519,9 @@ input CreateLoggedWorkoutMoveInput {
   distanceUnit: DistanceUnit
   loadAmount: Float
   loadUnit: LoadUnit
-  Move: ID!
-  Equipment: ID
-  LoggedWorkoutSet: ID!
+  Move: ConnectRelationInput!
+  Equipment: ConnectRelationInput
+  LoggedWorkoutSet: ConnectRelationInput!
 }
 
 input UpdateLoggedWorkoutInput {
@@ -530,15 +529,12 @@ input UpdateLoggedWorkoutInput {
   completedOn: DateTime
   name: String
   note: String
-  imageUri: String
-  ScheduledWorkout: ID
-  GymProfile: ID
-  WorkoutProgramWorkout: ID
-  WorkoutProgramEnrolment: ID
+  GymProfile: ConnectRelationInput
 }
 
 input UpdateLoggedWorkoutSectionInput {
   id: ID!
+  name: String
   timeTakenMs: Int
   note: String
 }
@@ -555,8 +551,8 @@ input UpdateLoggedWorkoutMoveInput {
   distanceUnit: DistanceUnit
   loadAmount: Float
   loadUnit: LoadUnit
-  Move: ID
-  Equipment: ID
+  Move: ConnectRelationInput
+  Equipment: ConnectRelationInput
 }
 
 type ProgressJournal {
@@ -756,7 +752,7 @@ type MoveSummary {
 type Workout {
   id: ID!
   createdAt: DateTime
-  User: UserSummary
+  User: UserSummary!
   archived: Boolean!
   name: String!
   description: String

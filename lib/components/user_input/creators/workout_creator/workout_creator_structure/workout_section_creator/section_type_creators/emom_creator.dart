@@ -36,6 +36,17 @@ class EMOMCreator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: ListView(shrinkWrap: true, children: [
+        if (sortedWorkoutSets.isNotEmpty)
+          FadeIn(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+              child: WorkoutSectionInstructions(
+                typeName: workoutSectionType.name,
+                rounds: totalRounds,
+                timecap: timecap,
+              ),
+            ),
+          ),
         ImplicitlyAnimatedList<WorkoutSet>(
           items: sortedWorkoutSets,
           shrinkWrap: true,
@@ -58,17 +69,6 @@ class EMOMCreator extends StatelessWidget {
             );
           },
         ),
-        if (sortedWorkoutSets.isNotEmpty)
-          FadeIn(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: WorkoutSectionInstructions(
-                typeName: workoutSectionType.name,
-                rounds: totalRounds,
-                timecap: timecap,
-              ),
-            ),
-          ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

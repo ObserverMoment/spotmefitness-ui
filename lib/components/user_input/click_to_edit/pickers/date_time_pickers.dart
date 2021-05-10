@@ -56,13 +56,15 @@ Widget _buildDateTimePickerTheme(BuildContext context, Widget child) {
 class DatePickerDisplay extends StatelessWidget {
   final DateTime? dateTime;
   final void Function(DateTime d) updateDateTime;
-  DatePickerDisplay({required this.updateDateTime, this.dateTime});
+  final DateTime? earliestAllowedDate;
+  DatePickerDisplay(
+      {required this.updateDateTime, this.dateTime, this.earliestAllowedDate});
 
   Future<void> _openDatePicker(BuildContext context) async {
     final DateTime? newDate = await showDatePicker(
       context: context,
       initialDate: dateTime ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: earliestAllowedDate ?? DateTime(DateTime.now().year - 10),
       lastDate: DateTime(DateTime.now().year + 10),
       helpText: 'Select a date',
       builder: (context, child) {

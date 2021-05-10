@@ -37,7 +37,7 @@ class FreeSessionCreator extends StatelessWidget {
   /// Shows instruction at the end of the lists of moves with regards to how to act on them.
   Widget _buildInstructions() => FadeIn(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
+          padding: const EdgeInsets.only(bottom: 8.0, left: 24, right: 24),
           child: WorkoutSectionInstructions(
             rounds: totalRounds,
             typeName: workoutSectionType.name,
@@ -50,6 +50,7 @@ class FreeSessionCreator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: ListView(shrinkWrap: true, children: [
+        if (sortedWorkoutSets.isNotEmpty) _buildInstructions(),
         ImplicitlyAnimatedList<WorkoutSet>(
           items: sortedWorkoutSets,
           shrinkWrap: true,
@@ -73,7 +74,6 @@ class FreeSessionCreator extends StatelessWidget {
             );
           },
         ),
-        if (sortedWorkoutSets.isNotEmpty) _buildInstructions(),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(

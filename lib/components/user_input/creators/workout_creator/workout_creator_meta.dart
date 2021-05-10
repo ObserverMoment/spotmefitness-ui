@@ -135,9 +135,8 @@ class WorkoutCreatorMeta extends StatelessWidget {
                     SlidingSelect<ContentAccessScope>(
                         value: workoutData.contentAccessScope,
                         children: <ContentAccessScope, Widget>{
-                          for (final v in ContentAccessScope.values.where((v) =>
-                              v != ContentAccessScope.artemisUnknown &&
-                              v != ContentAccessScope.official))
+                          for (final v in ContentAccessScope.values.where(
+                              (v) => v != ContentAccessScope.artemisUnknown))
                             v: MyText(v.display)
                         },
                         updateValue: (scope) => _updateWorkoutMeta(

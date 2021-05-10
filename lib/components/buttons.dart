@@ -641,3 +641,20 @@ class CreateIconButton extends StatelessWidget {
     );
   }
 }
+
+class CircularCheckbox extends StatelessWidget {
+  final void Function(bool v) onPressed;
+  final bool isSelected;
+  CircularCheckbox({required this.onPressed, required this.isSelected});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 250),
+            child: isSelected
+                ? Icon(CupertinoIcons.checkmark_alt_circle_fill)
+                : Icon(CupertinoIcons.circle)),
+        onPressed: () => onPressed(isSelected ? false : true));
+  }
+}

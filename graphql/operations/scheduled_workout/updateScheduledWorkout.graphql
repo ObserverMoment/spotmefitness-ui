@@ -50,7 +50,7 @@ mutation updateScheduledWorkout($data: UpdateScheduledWorkoutInput!) {
       }
     }
     LoggedWorkout {
-      id
+      ...LoggedWorkoutFields
     }
     GymProfile {
       ...GymProfile

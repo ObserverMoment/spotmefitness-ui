@@ -11,7 +11,7 @@ import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class GymProfileSelector extends StatefulWidget {
-  final void Function(GymProfile profile) selectGymProfile;
+  final void Function(GymProfile? profile) selectGymProfile;
   final GymProfile? selectedGymProfile;
   GymProfileSelector({required this.selectGymProfile, this.selectedGymProfile});
 
@@ -29,8 +29,14 @@ class _GymProfileSelectorState extends State<GymProfileSelector> {
   }
 
   void _handleSelection(GymProfile gymProfile) {
-    widget.selectGymProfile(gymProfile);
-    setState(() => _activeSelectedGymProfile = gymProfile);
+    /// Allow for toggle type interaction.
+    if (gymProfile == _activeSelectedGymProfile) {
+      widget.selectGymProfile(null);
+      setState(() => _activeSelectedGymProfile = null);
+    } else {
+      widget.selectGymProfile(gymProfile);
+      setState(() => _activeSelectedGymProfile = gymProfile);
+    }
   }
 
   @override
