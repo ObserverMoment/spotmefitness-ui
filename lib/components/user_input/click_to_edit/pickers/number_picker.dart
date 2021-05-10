@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class RoundPicker extends StatelessWidget {
-  final int rounds;
+class NumberPickerInt extends StatelessWidget {
+  final int number;
   final void Function(int value) saveValue;
   final String modalTitle;
-  RoundPicker(
-      {required this.rounds,
+  NumberPickerInt(
+      {required this.number,
       required this.saveValue,
-      this.modalTitle = 'How many rounds?'});
+      this.modalTitle = 'How many?'});
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +19,18 @@ class RoundPicker extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       onPressed: () => context.showBottomSheet<int>(
           child: NumberInputModal<int>(
-        value: rounds,
+        value: number,
         // Need to cast to dynamic because of this.
         // https://github.com/dart-lang/sdk/issues/32042
         saveValue: <int>(dynamic v) => saveValue(v),
         title: modalTitle,
       )),
-      child: NumberRoundsIcon(
-        rounds,
-        alignment: Axis.vertical,
+      child: ContentBox(
+        child: MyText(
+          number.toString(),
+          size: FONTSIZE.DISPLAY,
+          weight: FontWeight.bold,
+        ),
       ),
     );
   }

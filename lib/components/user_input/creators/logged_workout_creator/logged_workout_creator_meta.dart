@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 class LoggedWorkoutCreatorMeta extends StatefulWidget {
   @override
@@ -46,13 +47,18 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
     final sectionsToInclude =
         context.select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
             (b) => b.sectionsToIncludeInLog);
+
     final loggedWorkout =
         context.select<LoggedWorkoutCreatorBloc, CreateLoggedWorkoutInput>(
             (b) => b.loggedWorkout);
+
     final gymProfile = context
         .select<LoggedWorkoutCreatorBloc, GymProfile?>((b) => b.gymProfile);
-    final workout =
-        context.select<LoggedWorkoutCreatorBloc, Workout>((b) => b.workout);
+
+    final workoutSections = context
+        .select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
+            (b) => b.workout.workoutSections)
+        .sortedBy<num>((s) => s.sortPosition);
 
     return Column(
       children: [
@@ -105,19 +111,18 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
         HorizontalLine(),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: MyText('Choose sections to include in the log.'),
+          child: MyText('Sections to include in the log'),
         ),
         Flexible(
           child: ListView.separated(
               itemBuilder: (c, i) => IncludeWorkoutSectionSelector(
-                    workoutSection: workout.workoutSections[i],
-                    isSelected:
-                        sectionsToInclude.contains(workout.workoutSections[i]),
+                    workoutSection: workoutSections[i],
+                    isSelected: sectionsToInclude.contains(workoutSections[i]),
                     toggleSelection: () =>
-                        _bloc.toggleIncludeSection(workout.workoutSections[i]),
+                        _bloc.toggleIncludeSection(workoutSections[i]),
                   ),
               separatorBuilder: (c, i) => HorizontalLine(),
-              itemCount: workout.workoutSections.length),
+              itemCount: workoutSections.length),
         ),
       ],
     );
@@ -143,8 +148,8 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: MyText(
               Utils.textNotNull(workoutSection.name)
-                  ? workoutSection.name!
-                  : 'Section ${workoutSection.sortPosition}',
+                  ? '${workoutSection.sortPosition + 1}. ${workoutSection.name}'
+                  : '${workoutSection.sortPosition + 1}. ${workoutSection.workoutSectionType.name}',
               subtext: !isSelected,
             ),
           ),

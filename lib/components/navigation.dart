@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:collection/collection.dart';
 
 // Simple animated tabs which return a new tab index when clicked.
 class MyTabBarNav extends StatefulWidget {
@@ -21,18 +22,22 @@ class MyTabBarNav extends StatefulWidget {
 
 class _MyTabBarNavState extends State<MyTabBarNav> {
   // Create global keys that can track the actual rendered size of the tab text.
-  late List<GlobalKey> globalTextBoxKeys;
-  List<double>? tabRenderBoxWidths;
+  late List<GlobalKey> _globalTextBoxKeys;
+  List<double>? _tabRenderBoxWidths;
+
+  /// The titles list can be changed from the parent. When they are this list will be updated and new keys and box positions will be generated.
+  late List<String> _activeTitles;
 
   @override
   void initState() {
     super.initState();
-    globalTextBoxKeys = widget.titles.map((tab) => GlobalKey()).toList();
+    _activeTitles = [...widget.titles];
+    _globalTextBoxKeys = _activeTitles.map((tab) => GlobalKey()).toList();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       // Get renderBox widths of the text elements.
-      tabRenderBoxWidths =
-          globalTextBoxKeys.map((k) => k.currentContext!.size!.width).toList();
+      _tabRenderBoxWidths =
+          _globalTextBoxKeys.map((k) => k.currentContext!.size!.width).toList();
       setState(() {});
     });
   }
@@ -40,13 +45,22 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
   @override
   void didUpdateWidget(covariant MyTabBarNav oldWidget) {
     super.didUpdateWidget(oldWidget);
-    globalTextBoxKeys = widget.titles.map((tab) => GlobalKey()).toList();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // Get renderBox widths of the text elements.
-      tabRenderBoxWidths =
-          globalTextBoxKeys.map((k) => k.currentContext!.size!.width).toList();
-      setState(() {});
-    });
+    if (!oldWidget.titles.equals(widget.titles)) {
+      _activeTitles = [...widget.titles];
+      _globalTextBoxKeys = _activeTitles.map((tab) => GlobalKey()).toList();
+
+      /// They need to be refreshed after first frame is rendered.
+      /// Without this line the length of the list titles and the length if box widths arrays can diverge and cause index errors.
+      _tabRenderBoxWidths = null;
+
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        // Get renderBox widths of the text elements.
+        _tabRenderBoxWidths = _globalTextBoxKeys
+            .map((k) => k.currentContext!.size!.width)
+            .toList();
+        setState(() {});
+      });
+    }
   }
 
   @override
@@ -58,7 +72,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        children: widget.titles
+        children: _activeTitles
             .asMap()
             .map((index, title) => MapEntry(
                 index,
@@ -74,7 +88,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AnimatedOpacity(
-                          key: globalTextBoxKeys[index],
+                          key: _globalTextBoxKeys[index],
                           opacity: index == widget.activeTabIndex ? 1 : 0.7,
                           duration: Duration(milliseconds: 400),
                           child: MyText(
@@ -87,7 +101,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                             show: index == widget.activeTabIndex,
                             child: Container(
                               height: 3.5,
-                              width: tabRenderBoxWidths?[index] ?? 60,
+                              width: _tabRenderBoxWidths?[index] ?? 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
                                 color: Styles.colorOne,

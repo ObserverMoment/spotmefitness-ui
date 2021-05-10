@@ -10,10 +10,13 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   late CreateLoggedWorkoutInput loggedWorkout;
   late GymProfile? gymProfile;
   late List<WorkoutSection> sectionsToIncludeInLog;
+  late Workout workoutCopy;
 
   LoggedWorkoutCreatorBloc({required this.workout, this.scheduledWorkout}) {
     loggedWorkout = workoutToCreateLoggedWorkout(
         workout: workout, scheduledWorkout: scheduledWorkout);
+
+    workoutCopy = Workout.fromJson(workout.toJson());
 
     gymProfile = scheduledWorkout?.gymProfile;
 

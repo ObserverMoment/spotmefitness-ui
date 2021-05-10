@@ -31,23 +31,26 @@ class _DurationPickerState extends State<DurationPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (widget.title != null) H2(widget.title!),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ClosePicker(onClose: _saveAndClose),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CupertinoTimerPicker(
-              initialTimerDuration: _activeDuration,
-              mode: CupertinoTimerPickerMode.hms,
-              onTimerDurationChanged: (duration) =>
-                  setState(() => _activeDuration = duration)),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.title != null) H2(widget.title!),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClosePicker(onClose: _saveAndClose),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CupertinoTimerPicker(
+                initialTimerDuration: _activeDuration,
+                mode: CupertinoTimerPickerMode.hms,
+                onTimerDurationChanged: (duration) =>
+                    setState(() => _activeDuration = duration)),
+          ),
+        ],
+      ),
     );
   }
 }

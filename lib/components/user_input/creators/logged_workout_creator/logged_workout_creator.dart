@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -35,6 +37,35 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
     setState(() => _activeTabIndex = index);
   }
 
+  Widget _buildTabTitle(int index, List<WorkoutSection> sections) {
+    final isSelected = index == _activeTabIndex;
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => _changeTab(index),
+      child: Container(
+        margin: const EdgeInsets.only(right: 6),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 250),
+          decoration: BoxDecoration(
+              border: Border(
+            bottom: BorderSide(
+                width: 2,
+                color: isSelected ? Styles.colorOne : Colors.transparent),
+          )),
+          child: MyText(
+            index == 0
+                ? 'Overview'
+                : Utils.textNotNull(sections[index - 1].name)
+                    ? sections[index - 1].name!
+                    : sections[index - 1].workoutSectionType.name,
+            color: isSelected ? Styles.white : null,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -60,30 +91,17 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                 SizedBox(
                   height: 8,
                 ),
-                SizedBox(
-                  height: 30,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: includedSections.length,
-                      itemBuilder: (c, i) {
-                        if (i == 0) {
-                          return CupertinoButton(
-                              onPressed: () => _changeTab(i),
-                              padding: EdgeInsets.zero,
-                              child: MyText('Overview'));
-                        } else {
-                          final WorkoutSection s = includedSections[i];
-                          return CupertinoButton(
-                              onPressed: () => _changeTab(i),
-                              padding: EdgeInsets.zero,
-                              child: WorkoutSectionTypeTag(
-                                  Utils.textNotNull(s.name)
-                                      ? s.name!
-                                      : s.workoutSectionType.name,
-                                  timecap: s.timecap));
-                        }
-                      }),
-                ),
+                MyTabBarNav(
+                    titles: [
+                      'Overview',
+                      ...includedSections
+                          .map((s) => Utils.textNotNull(s.name)
+                              ? s.name!
+                              : s.workoutSectionType.name)
+                          .toList()
+                    ],
+                    handleTabChange: _changeTab,
+                    activeTabIndex: _activeTabIndex),
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -96,12 +114,10 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                         padding: const EdgeInsets.all(8.0),
                         child: LoggedWorkoutCreatorMeta(),
                       ),
-                      ...widget.workout.workoutSections
+                      ...includedSections
                           .map((section) => Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: LoggedWorkoutCreatorSection(
-                                    workoutSectionsToCreateLoggedWorkoutSections(
-                                        [section])),
+                                child: LoggedWorkoutCreatorSection(section),
                               ))
                           .toList()
                     ],

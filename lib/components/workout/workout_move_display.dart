@@ -89,7 +89,9 @@ class WorkoutMoveDisplay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MyText(workoutMove.move.name),
-                _buildEquipmentNames(),
+                if (workoutMove.equipment != null ||
+                    workoutMove.move.requiredEquipments.isNotEmpty)
+                  _buildEquipmentNames(),
               ],
             ),
           ),
