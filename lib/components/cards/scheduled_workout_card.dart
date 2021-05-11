@@ -22,12 +22,12 @@ class ScheduledWorkoutCard extends StatelessWidget {
   ScheduledWorkoutCard(this.scheduledWorkout);
 
   Widget? _buildMarker() {
-    final color = scheduledWorkout.loggedWorkout != null
+    final color = scheduledWorkout.loggedWorkoutSummary != null
         ? Styles.colorOne // Done
         : scheduledWorkout.scheduledAt.isBefore(DateTime.now())
             ? Styles.errorRed // Missed
             : Styles.colorFour; // Upcoming
-    final IconData icon = scheduledWorkout.loggedWorkout != null
+    final IconData icon = scheduledWorkout.loggedWorkoutSummary != null
         ? CupertinoIcons.checkmark_alt // Done
         : scheduledWorkout.scheduledAt.isBefore(DateTime.now())
             ? CupertinoIcons.exclamationmark // Missed
@@ -148,7 +148,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
                         iconData: CupertinoIcons.eye,
                         onTap: () => context.router.push(WorkoutDetailsRoute(
                             id: scheduledWorkout.workout.id))),
-                    if (scheduledWorkout.loggedWorkout != null)
+                    if (scheduledWorkout.loggedWorkoutSummary != null)
                       ContextMenuItem(
                         text: 'View log',
                         onTap: () => print('view log'),

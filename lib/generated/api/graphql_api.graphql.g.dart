@@ -1471,16 +1471,24 @@ const _$ContentAccessScopeEnumMap = {
   ContentAccessScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
-LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
-  return LoggedWorkout()
+LoggedWorkoutSummary _$LoggedWorkoutSummaryFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutSummary()
     ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String;
+    ..id = json['id'] as String
+    ..completedOn =
+        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
+    ..note = json['note'] as String?
+    ..name = json['name'] as String;
 }
 
-Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
+Map<String, dynamic> _$LoggedWorkoutSummaryToJson(
+        LoggedWorkoutSummary instance) =>
     <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'note': instance.note,
+      'name': instance.name,
     };
 
 ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
@@ -1491,9 +1499,10 @@ ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
         fromGraphQLDateTimeToDartDateTime(json['scheduledAt'] as int)
     ..note = json['note'] as String?
     ..workout = Workout.fromJson(json['Workout'] as Map<String, dynamic>)
-    ..loggedWorkout = json['LoggedWorkout'] == null
+    ..loggedWorkoutSummary = json['LoggedWorkoutSummary'] == null
         ? null
-        : LoggedWorkout.fromJson(json['LoggedWorkout'] as Map<String, dynamic>)
+        : LoggedWorkoutSummary.fromJson(
+            json['LoggedWorkoutSummary'] as Map<String, dynamic>)
     ..gymProfile = json['GymProfile'] == null
         ? null
         : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>);
@@ -1506,7 +1515,7 @@ Map<String, dynamic> _$ScheduledWorkoutToJson(ScheduledWorkout instance) =>
       'scheduledAt': fromDartDateTimeToGraphQLDateTime(instance.scheduledAt),
       'note': instance.note,
       'Workout': instance.workout.toJson(),
-      'LoggedWorkout': instance.loggedWorkout?.toJson(),
+      'LoggedWorkoutSummary': instance.loggedWorkoutSummary?.toJson(),
       'GymProfile': instance.gymProfile?.toJson(),
     };
 
@@ -1852,6 +1861,176 @@ Map<String, dynamic> _$DeleteScheduledWorkoutById$MutationToJson(
       'deleteScheduledWorkoutById': instance.deleteScheduledWorkoutById,
     };
 
+MoveSummary _$MoveSummaryFromJson(Map<String, dynamic> json) {
+  return MoveSummary()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..searchTerms = json['searchTerms'] as String?
+    ..description = json['description'] as String?
+    ..demoVideoUri = json['demoVideoUri'] as String?
+    ..demoVideoThumbUri = json['demoVideoThumbUri'] as String?
+    ..scope = _$enumDecode(_$MoveScopeEnumMap, json['scope'],
+        unknownValue: MoveScope.artemisUnknown)
+    ..validRepTypes = (json['validRepTypes'] as List<dynamic>)
+        .map((e) => _$enumDecode(_$WorkoutMoveRepTypeEnumMap, e,
+            unknownValue: WorkoutMoveRepType.artemisUnknown))
+        .toList()
+    ..requiredEquipments = (json['RequiredEquipments'] as List<dynamic>)
+        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..selectableEquipments = (json['SelectableEquipments'] as List<dynamic>)
+        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$MoveSummaryToJson(MoveSummary instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'searchTerms': instance.searchTerms,
+      'description': instance.description,
+      'demoVideoUri': instance.demoVideoUri,
+      'demoVideoThumbUri': instance.demoVideoThumbUri,
+      'scope': _$MoveScopeEnumMap[instance.scope],
+      'validRepTypes': instance.validRepTypes
+          .map((e) => _$WorkoutMoveRepTypeEnumMap[e])
+          .toList(),
+      'RequiredEquipments':
+          instance.requiredEquipments.map((e) => e.toJson()).toList(),
+      'SelectableEquipments':
+          instance.selectableEquipments.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkoutMove _$LoggedWorkoutMoveFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutMove()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..sortPosition = json['sortPosition'] as int
+    ..reps = (json['reps'] as num).toDouble()
+    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown)
+    ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown)
+    ..loadAmount = (json['loadAmount'] as num?)?.toDouble()
+    ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown)
+    ..timeTakenMs = json['timeTakenMs'] as int?
+    ..equipment = json['Equipment'] == null
+        ? null
+        : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
+    ..moveSummary =
+        MoveSummary.fromJson(json['MoveSummary'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$LoggedWorkoutMoveToJson(LoggedWorkoutMove instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'sortPosition': instance.sortPosition,
+      'reps': instance.reps,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeTakenMs': instance.timeTakenMs,
+      'Equipment': instance.equipment?.toJson(),
+      'MoveSummary': instance.moveSummary.toJson(),
+    };
+
+LoggedWorkoutSet _$LoggedWorkoutSetFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutSet()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..timeTakenMs = json['timeTakenMs'] as int?
+    ..laptimesMs =
+        (json['laptimesMs'] as List<dynamic>).map((e) => e as int).toList()
+    ..setIndex = json['setIndex'] as int
+    ..loggedWorkoutMoves = (json['LoggedWorkoutMoves'] as List<dynamic>)
+        .map((e) => LoggedWorkoutMove.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutSetToJson(LoggedWorkoutSet instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'roundsCompleted': instance.roundsCompleted,
+      'timeTakenMs': instance.timeTakenMs,
+      'laptimesMs': instance.laptimesMs,
+      'setIndex': instance.setIndex,
+      'LoggedWorkoutMoves':
+          instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkoutSection _$LoggedWorkoutSectionFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutSection()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String?
+    ..note = json['note'] as String?
+    ..timecap = json['timecap'] as int?
+    ..timeTakenMs = json['timeTakenMs'] as int?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..repScore = json['repScore'] as int?
+    ..laptimesMs =
+        (json['laptimesMs'] as List<dynamic>).map((e) => e as int).toList()
+    ..sectionIndex = json['sectionIndex'] as int
+    ..workoutSectionType = WorkoutSectionType.fromJson(
+        json['WorkoutSectionType'] as Map<String, dynamic>)
+    ..loggedWorkoutSets = (json['LoggedWorkoutSets'] as List<dynamic>)
+        .map((e) => LoggedWorkoutSet.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutSectionToJson(
+        LoggedWorkoutSection instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'note': instance.note,
+      'timecap': instance.timecap,
+      'timeTakenMs': instance.timeTakenMs,
+      'roundsCompleted': instance.roundsCompleted,
+      'repScore': instance.repScore,
+      'laptimesMs': instance.laptimesMs,
+      'sectionIndex': instance.sectionIndex,
+      'WorkoutSectionType': instance.workoutSectionType.toJson(),
+      'LoggedWorkoutSets':
+          instance.loggedWorkoutSets.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
+  return LoggedWorkout()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..completedOn =
+        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
+    ..note = json['note'] as String?
+    ..name = json['name'] as String
+    ..gymProfile = json['GymProfile'] == null
+        ? null
+        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>)
+    ..loggedWorkoutSections = (json['LoggedWorkoutSections'] as List<dynamic>)
+        .map((e) => LoggedWorkoutSection.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'note': instance.note,
+      'name': instance.name,
+      'GymProfile': instance.gymProfile?.toJson(),
+      'LoggedWorkoutSections':
+          instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
+    };
+
 CreateLoggedWorkout$Mutation _$CreateLoggedWorkout$MutationFromJson(
     Map<String, dynamic> json) {
   return CreateLoggedWorkout$Mutation()
@@ -1919,7 +2098,11 @@ CreateLoggedWorkoutSectionInLoggedWorkoutInput
   return CreateLoggedWorkoutSectionInLoggedWorkoutInput(
     name: json['name'] as String?,
     sectionIndex: json['sectionIndex'] as int,
-    roundIndex: json['roundIndex'] as int,
+    roundsCompleted: json['roundsCompleted'] as int,
+    laptimesMs:
+        (json['laptimesMs'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    repScore: json['repScore'] as int?,
+    timecap: json['timecap'] as int?,
     timeTakenMs: json['timeTakenMs'] as int?,
     note: json['note'] as String?,
     workoutSectionType: ConnectRelationInput.fromJson(
@@ -1936,7 +2119,10 @@ Map<String, dynamic> _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(
     <String, dynamic>{
       'name': instance.name,
       'sectionIndex': instance.sectionIndex,
-      'roundIndex': instance.roundIndex,
+      'roundsCompleted': instance.roundsCompleted,
+      'laptimesMs': instance.laptimesMs,
+      'repScore': instance.repScore,
+      'timecap': instance.timecap,
       'timeTakenMs': instance.timeTakenMs,
       'note': instance.note,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
@@ -1949,7 +2135,9 @@ CreateLoggedWorkoutSetInLoggedSectionInput
         Map<String, dynamic> json) {
   return CreateLoggedWorkoutSetInLoggedSectionInput(
     setIndex: json['setIndex'] as int,
-    roundIndex: json['roundIndex'] as int,
+    roundsCompleted: json['roundsCompleted'] as int,
+    laptimesMs:
+        (json['laptimesMs'] as List<dynamic>?)?.map((e) => e as int).toList(),
     timeTakenMs: json['timeTakenMs'] as int?,
     loggedWorkoutMoves: (json['LoggedWorkoutMoves'] as List<dynamic>)
         .map((e) => CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
@@ -1962,7 +2150,8 @@ Map<String, dynamic> _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(
         CreateLoggedWorkoutSetInLoggedSectionInput instance) =>
     <String, dynamic>{
       'setIndex': instance.setIndex,
-      'roundIndex': instance.roundIndex,
+      'roundsCompleted': instance.roundsCompleted,
+      'laptimesMs': instance.laptimesMs,
       'timeTakenMs': instance.timeTakenMs,
       'LoggedWorkoutMoves':
           instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),

@@ -49,7 +49,7 @@ query userScheduledWorkouts {
         }
       }
     }
-    LoggedWorkout {
+    LoggedWorkoutSummary: LoggedWorkout {
       ...LoggedWorkoutFields
     }
     GymProfile {

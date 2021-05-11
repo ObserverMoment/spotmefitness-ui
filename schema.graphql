@@ -423,9 +423,12 @@ type LoggedWorkout {
 type LoggedWorkoutSection {
   id: ID!
   name: String
-  setIndex: Int!
-  roundIndex: Int!
+  sectionIndex: Int!
+  timecap: Int
   timeTakenMs: Int
+  roundsCompleted: Int!
+  laptimesMs: [Int!]!
+  repScore: Int
   note: String
   WorkoutSectionType: WorkoutSectionType!
   LoggedWorkoutSets: [LoggedWorkoutSet!]!
@@ -435,7 +438,8 @@ type LoggedWorkoutSection {
 type LoggedWorkoutSet {
   id: ID!
   setIndex: Int!
-  roundIndex: Int!
+  roundsCompleted: Int!
+  laptimesMs: [Int!]!
   timeTakenMs: Int
   LoggedWorkoutMoves: [LoggedWorkoutMove!]!
 }
@@ -468,7 +472,10 @@ input CreateLoggedWorkoutInput {
 input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   name: String
   sectionIndex: Int!
-  roundIndex: Int!
+  roundsCompleted: Int!
+  laptimesMs: [Int!]
+  repScore: Int
+  timecap: Int
   timeTakenMs: Int
   note: String
   WorkoutSectionType: ConnectRelationInput!
@@ -477,7 +484,8 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
 
 input CreateLoggedWorkoutSetInLoggedSectionInput {
   setIndex: Int!
-  roundIndex: Int!
+  roundsCompleted: Int!
+  laptimesMs: [Int!]
   timeTakenMs: Int
   LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
 }
@@ -497,8 +505,11 @@ input CreateLoggedWorkoutMoveInLoggedSetInput {
 input CreateLoggedWorkoutSectionInput {
   name: String
   sectionIndex: Int!
-  roundIndex: Int!
+  roundsCompleted: Int!
+  laptimesMs: [Int!]
+  repScore: Int
   timeTakenMs: Int
+  timecap: Int
   note: String
   WorkoutSectionType: ConnectRelationInput!
   LoggedWorkout: ConnectRelationInput!
@@ -506,7 +517,8 @@ input CreateLoggedWorkoutSectionInput {
 
 input CreateLoggedWorkoutSetInput {
   setIndex: Int!
-  roundIndex: Int!
+  roundsCompleted: Int!
+  laptimesMs: [Int!]
   timeTakenMs: Int
   LoggedWorkoutSection: ConnectRelationInput!
 }
@@ -536,12 +548,18 @@ input UpdateLoggedWorkoutSectionInput {
   id: ID!
   name: String
   timeTakenMs: Int
+  roundsCompleted: Int
+  laptimesMs: [Int!]
+  timecap: Int
+  repScore: Int
   note: String
 }
 
 input UpdateLoggedWorkoutSetInput {
   id: ID!
   timeTakenMs: Int
+  roundsCompleted: Int
+  laptimesMs: [Int!]
 }
 
 input UpdateLoggedWorkoutMoveInput {

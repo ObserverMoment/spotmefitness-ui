@@ -2,18 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_meta.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_section.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoggedWorkoutCreator extends StatefulWidget {
@@ -37,56 +34,92 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
     setState(() => _activeTabIndex = index);
   }
 
-  Widget _buildTabTitle(int index, List<WorkoutSection> sections) {
-    final isSelected = index == _activeTabIndex;
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: () => _changeTab(index),
-      child: Container(
-        margin: const EdgeInsets.only(right: 6),
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 250),
-          decoration: BoxDecoration(
-              border: Border(
-            bottom: BorderSide(
-                width: 2,
-                color: isSelected ? Styles.colorOne : Colors.transparent),
-          )),
-          child: MyText(
-            index == 0
-                ? 'Overview'
-                : Utils.textNotNull(sections[index - 1].name)
-                    ? sections[index - 1].name!
-                    : sections[index - 1].workoutSectionType.name,
-            color: isSelected ? Styles.white : null,
-          ),
-        ),
-      ),
-    );
+  Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
+    final log = bloc.loggedWorkout;
+
+    final input = CreateLoggedWorkoutInput(
+        name: log.name,
+        note: log.note,
+        scheduledWorkout: null,
+        gymProfile: log.gymProfile != null
+            ? ConnectRelationInput(id: log.gymProfile!.id)
+            : null,
+        workoutProgramEnrolment: null,
+        workoutProgramWorkout: null,
+        completedOn: log.completedOn,
+        loggedWorkoutSections: log.loggedWorkoutSections
+            .map((section) => CreateLoggedWorkoutSectionInLoggedWorkoutInput(
+                name: section.name,
+                note: section.note,
+                sectionIndex: section.sectionIndex,
+                roundsCompleted: section.roundsCompleted,
+                laptimesMs: [],
+                repScore: section.repScore,
+                timeTakenMs: section.timeTakenMs,
+                timecap: section.timecap,
+                workoutSectionType:
+                    ConnectRelationInput(id: section.workoutSectionType.id),
+                loggedWorkoutSets: section.loggedWorkoutSets
+                    .map((logSet) => CreateLoggedWorkoutSetInLoggedSectionInput(
+                        setIndex: logSet.setIndex,
+                        roundsCompleted: logSet.roundsCompleted,
+                        laptimesMs: [],
+                        loggedWorkoutMoves: logSet.loggedWorkoutMoves
+                            .map((logWorkoutMove) =>
+                                CreateLoggedWorkoutMoveInLoggedSetInput(
+                                    sortPosition: logWorkoutMove.sortPosition,
+                                    timeTakenMs: logWorkoutMove.timeTakenMs,
+                                    repType: logWorkoutMove.repType,
+                                    reps: logWorkoutMove.reps,
+                                    distanceUnit: logWorkoutMove.distanceUnit,
+                                    loadAmount: logWorkoutMove.loadAmount,
+                                    loadUnit: logWorkoutMove.loadUnit,
+                                    equipment: logWorkoutMove.equipment != null
+                                        ? ConnectRelationInput(
+                                            id: logWorkoutMove.equipment!.id)
+                                        : null,
+                                    move: ConnectRelationInput(
+                                        id: logWorkoutMove.moveSummary.id)))
+                            .toList()))
+                    .toList()))
+            .toList());
+
+    final variables = CreateLoggedWorkoutArguments(data: input);
+
+    final result = await context.graphQLStore
+        .create(mutation: CreateLoggedWorkoutMutation(variables: variables));
+    print(result);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          leading: NavBarCancelButton(context.pop),
-          middle: NavBarTitle('Log Workout'),
-          trailing: NavBarSaveButton(
-            () => print('Log it'),
-            text: 'Log It',
-          ),
-        ),
-        child: ChangeNotifierProvider(
-          create: (context) =>
-              LoggedWorkoutCreatorBloc(workout: widget.workout),
-          builder: (context, child) {
-            final includedSections = context
-                .select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
-                    (b) => b.sectionsToIncludeInLog)
-                .sortedBy<num>((s) => s.sortPosition);
+    return ChangeNotifierProvider(
+      create: (context) => LoggedWorkoutCreatorBloc(workout: widget.workout),
+      builder: (context, child) {
+        final includedSections = context
+            .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
+                (b) => b.sectionsToIncludeInLog)
+            .sortedBy<num>((s) => s.sectionIndex);
 
-            return Column(
+        return CupertinoPageScaffold(
+            navigationBar: BasicNavBar(
+              leading: NavBarCancelButton(context.pop),
+              middle: NavBarTitle('Log Workout'),
+              trailing: includedSections.isNotEmpty
+                  ? NavBarSaveButton(
+                      () => _saveLogToDB(
+                          context.read<LoggedWorkoutCreatorBloc>()),
+                      text: 'Log It',
+                    )
+                  : null,
+            ),
+            child: Column(
               children: [
                 SizedBox(
                   height: 8,
@@ -115,17 +148,15 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                         child: LoggedWorkoutCreatorMeta(),
                       ),
                       ...includedSections
-                          .map((section) => Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: LoggedWorkoutCreatorSection(section),
-                              ))
+                          .map((section) =>
+                              LoggedWorkoutCreatorSection(section.sectionIndex))
                           .toList()
                     ],
                   ),
                 )),
               ],
-            );
-          },
-        ));
+            ));
+      },
+    );
   }
 }

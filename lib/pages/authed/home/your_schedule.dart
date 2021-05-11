@@ -39,7 +39,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   Widget? _buildSingleMarker(
       BuildContext context, DateTime dateTime, Object scheduled) {
-    final color = (scheduled as ScheduledWorkout).loggedWorkout != null
+    final color = (scheduled as ScheduledWorkout).loggedWorkoutSummary != null
         ? Styles.colorOne // Done
         : scheduled.scheduledAt.isBefore(DateTime.now())
             ? Styles.errorRed // Missed

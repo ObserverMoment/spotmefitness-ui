@@ -49,6 +49,7 @@ class WorkoutMoveInSet extends StatelessWidget {
           child: WorkoutMoveDisplay(
             workoutMove,
             isLast: isLast,
+            showReps: showReps,
           ),
         ),
       ),

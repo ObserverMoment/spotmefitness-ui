@@ -1,5 +1,35 @@
 mutation createLoggedWorkout($data: CreateLoggedWorkoutInput!) {
   createLoggedWorkout(data: $data) {
     ...LoggedWorkoutFields
+    GymProfile {
+      ...GymProfile
+      Equipments {
+        ...Equipment
+      }
+    }
+    LoggedWorkoutSections {
+      ...LoggedWorkoutSectionFields
+      WorkoutSectionType {
+        ...WorkoutSectionType
+      }
+      LoggedWorkoutSets {
+        ...LoggedWorkoutSetFields
+        LoggedWorkoutMoves {
+          ...LoggedWorkoutMoveFields
+          Equipment {
+            ...Equipment
+          }
+          MoveSummary: Move {
+            ...Move
+            RequiredEquipments {
+              ...Equipment
+            }
+            SelectableEquipments {
+              ...Equipment
+            }
+          }
+        }
+      }
+    }
   }
 }

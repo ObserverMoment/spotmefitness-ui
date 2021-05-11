@@ -5,10 +5,11 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_definition.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -132,14 +133,11 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: _sortedWorkoutMoves.length,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+          saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: _sortedWorkoutMoves.length,
         ),
       ),
     );
@@ -150,15 +148,12 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            workoutMove: workoutMove,
-            pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: workoutMove.sortPosition,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          workoutMove: workoutMove,
+          pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+          saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: workoutMove.sortPosition,
         ),
       ),
     );
@@ -219,33 +214,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                                         widget.setIndex, {'rounds': r}),
                                 title: 'How many repeats?',
                               ))),
-                    if (_sortedWorkoutMoves.length > 3)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'GIANTSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 3)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'TRISET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
-                    else if (_sortedWorkoutMoves.length == 2)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Tag(
-                          tag: 'SUPERSET',
-                          color: Styles.colorThree,
-                          textColor: Styles.white,
-                        ),
-                      )
+                    WorkoutSetDefinition(_workoutSet)
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -274,7 +243,8 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
             ),
           ),
           if (!_showFullSetInfo)
-            CommaSeparatedMovesList(_sortedWorkoutMoves)
+            CommaSeparatedList(
+                _sortedWorkoutMoves.map((wm) => wm.move.name).toList())
           else
             Column(
               children: [

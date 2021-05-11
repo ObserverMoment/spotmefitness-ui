@@ -119,7 +119,7 @@ extension IntExtension on int {
     } else {
       // Seconds
       amount = this.toString();
-      unit = amount == '1' ? 'second' : 'seconds';
+      unit = amount == '1' ? 'sec' : 'secs';
     }
 
     return '$amount $unit';

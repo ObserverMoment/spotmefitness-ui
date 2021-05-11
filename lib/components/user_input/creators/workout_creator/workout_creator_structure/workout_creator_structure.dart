@@ -289,7 +289,7 @@ class WorkoutSectionInWorkout extends StatelessWidget {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(6.0),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
@@ -313,7 +313,7 @@ class WorkoutSectionInWorkout extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(6.0),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
@@ -331,7 +331,7 @@ class WorkoutSectionInWorkout extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(8.0),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,

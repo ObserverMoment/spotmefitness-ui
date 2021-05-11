@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
@@ -121,14 +121,11 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: _sortedWorkoutMoves.length,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+          saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: _sortedWorkoutMoves.length,
         ),
       ),
     );
@@ -139,15 +136,12 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            workoutMove: workoutMove,
-            pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: workoutMove.sortPosition,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          workoutMove: workoutMove,
+          pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+          saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: workoutMove.sortPosition,
         ),
       ),
     );
@@ -219,13 +213,14 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                         text: _buildPeriodTimeText(),
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
-                                duration: _workoutSet.duration!,
-                                updateDuration: (seconds) => context
+                                duration:
+                                    Duration(seconds: _workoutSet.duration!),
+                                updateDuration: (duration) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(
                                         widget.sectionIndex,
                                         widget.setIndex,
-                                        {'duration': seconds})))),
+                                        {'duration': duration.inSeconds})))),
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -254,7 +249,8 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
             ),
           ),
           if (!_showFullSetInfo)
-            CommaSeparatedMovesList(_sortedWorkoutMoves)
+            CommaSeparatedList(
+                _sortedWorkoutMoves.map((wm) => wm.move.name).toList())
           else
             Column(
               children: [

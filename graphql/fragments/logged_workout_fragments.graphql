@@ -1,0 +1,41 @@
+fragment LoggedWorkoutFields on LoggedWorkout {
+  __typename
+  id
+  completedOn
+  note
+  name
+}
+
+fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
+  __typename
+  id
+  name
+  note
+  timecap
+  timeTakenMs
+  roundsCompleted
+  repScore
+  laptimesMs
+  sectionIndex
+}
+
+fragment LoggedWorkoutSetFields on LoggedWorkoutSet {
+  __typename
+  id
+  roundsCompleted
+  timeTakenMs
+  laptimesMs
+  setIndex
+}
+
+fragment LoggedWorkoutMoveFields on LoggedWorkoutMove {
+  __typename
+  id
+  sortPosition
+  reps
+  repType
+  distanceUnit
+  loadAmount
+  loadUnit
+  timeTakenMs
+}

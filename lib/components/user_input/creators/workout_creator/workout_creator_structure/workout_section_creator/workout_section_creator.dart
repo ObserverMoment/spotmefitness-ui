@@ -139,16 +139,14 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
       await Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) =>
-              ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-            value: _bloc,
-            child: WorkoutMoveCreator(
-              pageTitle: 'Add Set',
-              sectionIndex: widget.sectionIndex,
-              setIndex: _sortedWorkoutSets.length - 1,
-              workoutMoveIndex: 0,
-              ignoreReps: workoutMoveIgnoreReps,
-            ),
+          builder: (context) => WorkoutMoveCreator(
+            pageTitle: 'Add Set',
+            saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+                widget.sectionIndex,
+                _sortedWorkoutSets.length - 1,
+                workoutMove),
+            workoutMoveIndex: 0,
+            ignoreReps: workoutMoveIgnoreReps,
           ),
         ),
       );

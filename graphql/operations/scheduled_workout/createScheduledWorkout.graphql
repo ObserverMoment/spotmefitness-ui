@@ -49,7 +49,7 @@ mutation createScheduledWorkout($data: CreateScheduledWorkoutInput!) {
         }
       }
     }
-    LoggedWorkout {
+    LoggedWorkoutSummary: LoggedWorkout {
       ...LoggedWorkoutFields
     }
     GymProfile {
