@@ -71,4 +71,4 @@ LoggedWorkoutMove workoutMoveToLoggedWorkoutMove(WorkoutMove workoutMove) =>
       ..loadUnit = workoutMove.loadUnit
       ..timeUnit = workoutMove.timeUnit
       ..equipment = workoutMove.equipment
-      ..moveSummary = MoveSummary.fromJson(workoutMove.move.toJson());
+      ..move = workoutMove.move;

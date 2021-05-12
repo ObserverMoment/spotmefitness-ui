@@ -10,6 +10,7 @@ extension StringExtension on String {
 extension DateTimeFormatting on DateTime {
   /// Date only - July 10, 1996
   String get dateString => DateFormat.yMMMMd().format(this);
+  String get compactDateString => DateFormat('MMM d, yy').format(this);
 }
 
 extension DoubleExtension on double {

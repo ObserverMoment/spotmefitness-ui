@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart' as myTheme;
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
   return base.copyWith(
@@ -22,14 +23,14 @@ TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
 ColorScheme _buildColorScheme(BuildContext context) {
   final theme = context.theme;
   return ColorScheme(
-    primary: theme.primary,
+    primary: myTheme.Styles.infoBlue,
     primaryVariant: theme.primary,
-    secondary: theme.primary,
+    secondary: theme.background,
     secondaryVariant: theme.primary,
-    surface: theme.cardBackground,
-    background: theme.cardBackground,
+    surface: theme.background,
+    background: theme.background,
     error: myTheme.Styles.errorRed,
-    onPrimary: theme.background,
+    onPrimary: myTheme.Styles.white,
     onSecondary: theme.primary,
     onSurface: theme.primary,
     onBackground: theme.primary,
@@ -42,12 +43,18 @@ Widget _buildDateTimePickerTheme(BuildContext context, Widget child) {
   final ThemeData base = context.theme.themeName == myTheme.ThemeName.dark
       ? ThemeData.dark()
       : ThemeData.light();
+  final theme = context.theme;
   return Theme(
       data: base.copyWith(
         colorScheme: _buildColorScheme(context),
-        primaryColor: context.theme.primary, //Head background
-        accentColor: context.theme.primary, //Selection color
-        dialogBackgroundColor: context.theme.cardBackground,
+        appBarTheme: base.appBarTheme.copyWith(
+            backgroundColor:
+                theme.background), // Header background of range picker.
+        primaryColor: theme.primary, // Head of Date Picker background
+        accentColor: theme.primary, // Selection color for date picker
+        dialogBackgroundColor: theme.background,
+        scaffoldBackgroundColor:
+            theme.cardBackground, // Main background of range picker.
         textTheme: _buildShrineTextTheme(context, base.textTheme),
       ),
       child: child);
@@ -121,6 +128,64 @@ class TimePickerDisplay extends StatelessWidget {
               timeOfDay!.format(context),
               weight: FontWeight.bold,
             ),
+    );
+  }
+}
+
+class DateRangePickerDisplay extends StatelessWidget {
+  final DateTime? from;
+  final DateTime? to;
+  final void Function(DateTime? from, DateTime? to) updateRange;
+  DateRangePickerDisplay(
+      {required this.from, required this.to, required this.updateRange});
+
+  Future<void> _openDateRangePicker(BuildContext context) async {
+    final now = DateTime.now();
+    final DateTimeRange? range = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(
+          start: from ?? DateTime(now.year, now.month, now.day - 7),
+          end: to ?? now),
+      firstDate: DateTime(now.year - 10),
+      lastDate: DateTime(now.year + 10),
+      builder: (context, child) {
+        return _buildDateTimePickerTheme(context, child!);
+      },
+    );
+    if (range != null) {
+      updateRange(range.start, range.end);
+    }
+  }
+
+  Widget _text(String t) =>
+      MyText(t, size: FONTSIZE.SMALL, weight: FontWeight.bold);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => _openDateRangePicker(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: context.theme.primary)),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(CupertinoIcons.calendar),
+            SizedBox(width: 6),
+            if (from == null && to == null)
+              _text('All time')
+            else if (from == null && to != null)
+              _text('Before ${to!.compactDateString}')
+            else if ((from != null && to == null))
+              _text('After ${from!.compactDateString}')
+            else
+              _text('${from!.compactDateString} - ${to!.compactDateString}'),
+          ],
+        ),
+      ),
     );
   }
 }

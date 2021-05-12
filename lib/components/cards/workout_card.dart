@@ -20,10 +20,6 @@ class WorkoutCard extends StatelessWidget {
 
   final double cardHeight = 120;
 
-  Widget buildTag() {
-    return Tag(tag: 'text');
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<String> _allTags = [

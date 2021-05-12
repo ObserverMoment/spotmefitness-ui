@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/pages/authed/journal/recent_logged_workouts.dart';
 
 class JournalPage extends StatelessWidget {
   @override
@@ -27,12 +27,7 @@ class JournalPage extends StatelessWidget {
                 MyText('Journal Entries'),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText('Workout Logs'),
-              ],
-            ),
+            RecentLoggedWorkouts(),
           ],
         ),
       ),

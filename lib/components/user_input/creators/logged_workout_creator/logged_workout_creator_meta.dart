@@ -18,7 +18,6 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class LoggedWorkoutCreatorMeta extends StatefulWidget {
   @override

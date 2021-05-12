@@ -17,10 +17,6 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 class YourWorkoutsPage extends StatelessWidget {
-  void _openWorkoutDetails(BuildContext context, String id) {
-    context.router.root.push(WorkoutDetailsRoute(id: id));
-  }
-
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
@@ -64,49 +60,62 @@ class YourWorkoutsPage extends StatelessWidget {
                 ],
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 1.0, top: 3, left: 2),
-                    child: Row(
-                      children: [
-                        FilterButton(
-                          onPressed: () =>
-                              print('TODO - implement workout filters'),
-                        ),
-                        SizedBox(width: 6),
-                        OpenTextSearchButton(
-                          onPressed: () => context.push(
-                              fullscreenDialog: true,
-                              child: YourWorkoutsTextSearch(
-                                  allWorkouts: workouts,
-                                  selectWorkout: (w) =>
-                                      _openWorkoutDetails(context, w.id))),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: workouts.length,
-                        itemBuilder: (context, index) => GestureDetector(
-                              onTap: () => _openWorkoutDetails(
-                                  context, workouts[index].id),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 4.0),
-                                child: WorkoutCard(workouts[index]),
-                              ),
-                            )),
-                  ),
-                ],
-              ),
-            ));
+            child: FilterableWorkoutsList(workouts));
       },
+    );
+  }
+}
+
+/// TODO: When implementing filters - convert to stateful.
+class FilterableWorkoutsList extends StatelessWidget {
+  final List<Workout> workouts;
+  FilterableWorkoutsList(this.workouts);
+
+  void _openWorkoutDetails(BuildContext context, String id) {
+    context.router.root.push(WorkoutDetailsRoute(id: id));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1.0, top: 3, left: 2),
+            child: Row(
+              children: [
+                FilterButton(
+                  onPressed: () => print('TODO - implement workout filters'),
+                ),
+                SizedBox(width: 6),
+                OpenTextSearchButton(
+                  onPressed: () => context.push(
+                      fullscreenDialog: true,
+                      child: YourWorkoutsTextSearch(
+                          allWorkouts: workouts,
+                          selectWorkout: (w) =>
+                              _openWorkoutDetails(context, w.id))),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: workouts.length,
+                itemBuilder: (context, index) => GestureDetector(
+                      onTap: () =>
+                          _openWorkoutDetails(context, workouts[index].id),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 4.0),
+                        child: WorkoutCard(workouts[index]),
+                      ),
+                    )),
+          ),
+        ],
+      ),
     );
   }
 }

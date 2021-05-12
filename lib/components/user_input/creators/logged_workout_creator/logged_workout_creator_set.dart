@@ -264,9 +264,8 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
             ),
           ),
           if (!_showFullSetInfo)
-            CommaSeparatedList(_sortedLoggedWorkoutMoves
-                .map((lwm) => lwm.moveSummary.name)
-                .toList())
+            CommaSeparatedList(
+                _sortedLoggedWorkoutMoves.map((lwm) => lwm.move.name).toList())
           else
             Column(
               children: [

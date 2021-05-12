@@ -91,7 +91,7 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                                             id: logWorkoutMove.equipment!.id)
                                         : null,
                                     move: ConnectRelationInput(
-                                        id: logWorkoutMove.moveSummary.id)))
+                                        id: logWorkoutMove.move.id)))
                             .toList()))
                     .toList()))
             .toList());

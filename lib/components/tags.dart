@@ -13,6 +13,7 @@ class Tag extends StatelessWidget {
   final Widget? suffix;
   final FONTSIZE fontSize;
   final bool withBorder;
+  final EdgeInsets padding;
   Tag(
       {this.color,
       this.textColor,
@@ -20,13 +21,14 @@ class Tag extends StatelessWidget {
       this.prefix,
       this.suffix,
       this.withBorder = false,
+      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       this.fontSize = FONTSIZE.TINY});
   @override
   Widget build(BuildContext context) {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: padding,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: _color,

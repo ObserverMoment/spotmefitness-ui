@@ -1,5 +1,5 @@
-mutation createLoggedWorkout($data: CreateLoggedWorkoutInput!) {
-  createLoggedWorkout(data: $data) {
+query userLoggedWorkouts {
+  userLoggedWorkouts {
     ...LoggedWorkoutFields
     GymProfile {
       ...GymProfile

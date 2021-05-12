@@ -212,14 +212,15 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
   }
 
   bool _filter(ScheduledWorkout scheduledWorkout) {
-    return [
-      scheduledWorkout.workout.name,
-      ...scheduledWorkout.workout.workoutGoals.map((g) => g.name).toList(),
-      ...scheduledWorkout.workout.workoutTags.map((t) => t.tag).toList()
-    ]
-        .where((t) => Utils.textNotNull(t))
-        .map((t) => t.toLowerCase())
-        .any((t) => t.contains(_searchString));
+    return scheduledWorkout.workout != null &&
+        [
+          scheduledWorkout.workout!.name,
+          ...scheduledWorkout.workout!.workoutGoals.map((g) => g.name).toList(),
+          ...scheduledWorkout.workout!.workoutTags.map((t) => t.tag).toList()
+        ]
+            .where((t) => Utils.textNotNull(t))
+            .map((t) => t.toLowerCase())
+            .any((t) => t.contains(_searchString));
   }
 
   List<ScheduledWorkout> _filterBySearchString() {

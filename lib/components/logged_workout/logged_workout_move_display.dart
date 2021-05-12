@@ -56,9 +56,7 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
     final List<String> equipmentNames = [
       if (Utils.textNotNull(loggedWorkoutMove.equipment?.name))
         loggedWorkoutMove.equipment!.name,
-      ...loggedWorkoutMove.moveSummary.requiredEquipments
-          .map((e) => e.name)
-          .toList()
+      ...loggedWorkoutMove.move.requiredEquipments.map((e) => e.name).toList()
     ];
 
     return MyText(
@@ -86,9 +84,9 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MyText(loggedWorkoutMove.moveSummary.name),
+                MyText(loggedWorkoutMove.move.name),
                 if (loggedWorkoutMove.equipment != null ||
-                    loggedWorkoutMove.moveSummary.requiredEquipments.isNotEmpty)
+                    loggedWorkoutMove.move.requiredEquipments.isNotEmpty)
                   _buildEquipmentNames(),
               ],
             ),
