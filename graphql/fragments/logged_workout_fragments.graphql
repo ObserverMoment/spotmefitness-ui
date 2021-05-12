@@ -12,9 +12,9 @@ fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
   name
   note
   timecap
-  timeTakenMs
   roundsCompleted
   repScore
+  timeTakenMs
   laptimesMs
   sectionIndex
 }
@@ -22,8 +22,8 @@ fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
 fragment LoggedWorkoutSetFields on LoggedWorkoutSet {
   __typename
   id
+  note
   roundsCompleted
-  timeTakenMs
   laptimesMs
   setIndex
 }
@@ -31,11 +31,13 @@ fragment LoggedWorkoutSetFields on LoggedWorkoutSet {
 fragment LoggedWorkoutMoveFields on LoggedWorkoutMove {
   __typename
   id
+  note
   sortPosition
   reps
   repType
   distanceUnit
   loadAmount
   loadUnit
+  timeUnit
   timeTakenMs
 }

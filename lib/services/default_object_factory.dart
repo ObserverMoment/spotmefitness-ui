@@ -1,12 +1,25 @@
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
 class DefaultObjectfactory {
   /// [Free Session].
   static WorkoutSectionType defaultWorkoutSectionType() {
     return WorkoutSectionType()
+      ..$$typename
       ..id = 0.toString()
       ..name = 'Section'
       ..description = '';
+  }
+
+  static LoggedWorkoutSet defaultLoggedWorkoutSet(
+      {required int setIndex, List<int>? laptimesMs}) {
+    return LoggedWorkoutSet()
+      ..$$typename = kLoggedWorkoutSetTypename
+      ..id = 'temp-$kLoggedWorkoutSetTypename-$setIndex'
+      ..roundsCompleted = 1
+      ..laptimesMs = laptimesMs ?? []
+      ..setIndex = setIndex
+      ..loggedWorkoutMoves = [];
   }
 
   static WorkoutMove defaultRestWorkoutMove(
@@ -15,7 +28,8 @@ class DefaultObjectfactory {
       required int timeAmount,
       required TimeUnit timeUnit}) {
     return WorkoutMove()
-      ..id = 'move-temp-$sortPosition'
+      ..$$typename = kWorkoutMoveTypename
+      ..id = 'temp-$kWorkoutMoveTypename-$sortPosition'
       ..sortPosition = sortPosition
       ..equipment = null
       ..reps = timeAmount.toDouble()

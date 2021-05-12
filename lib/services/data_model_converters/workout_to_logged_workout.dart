@@ -28,6 +28,7 @@ List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
             .sortedBy<num>((ws) => ws.setIndex)
         ..roundsCompleted = ws.rounds
         ..laptimesMs = []
+        ..timecap = ws.timecap
         ..sectionIndex = ws.sortPosition
         ..workoutSectionType =
             WorkoutSectionType.fromJson(ws.workoutSectionType.toJson()))
@@ -41,9 +42,8 @@ List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
         ..id = 'temp - set - ${workoutSet.sortPosition}'
         ..setIndex = workoutSet.sortPosition
         ..roundsCompleted = workoutSet.rounds
-        ..laptimesMs = []
-        ..timeTakenMs =
-            workoutSet.duration != null ? workoutSet.duration! * 1000 : null
+        ..laptimesMs =
+            workoutSet.duration != null ? [workoutSet.duration! * 1000] : []
         ..loggedWorkoutMoves =
             workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
                 .sortedBy<num>((wm) => wm.sortPosition))
@@ -69,5 +69,6 @@ LoggedWorkoutMove workoutMoveToLoggedWorkoutMove(WorkoutMove workoutMove) =>
       ..distanceUnit = workoutMove.distanceUnit
       ..loadAmount = workoutMove.loadAmount
       ..loadUnit = workoutMove.loadUnit
+      ..timeUnit = workoutMove.timeUnit
       ..equipment = workoutMove.equipment
       ..moveSummary = MoveSummary.fromJson(workoutMove.move.toJson());

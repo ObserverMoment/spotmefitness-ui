@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -9,8 +10,7 @@ import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_me
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
@@ -199,12 +199,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
     final isRestSet = _sortedWorkoutMoves.length == 1 &&
         _sortedWorkoutMoves[0].move.id == kRestMoveId;
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -228,7 +223,8 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Row(
                           children: [
-                            MiniButton(
+                            BorderButton(
+                                mini: true,
                                 text: _buildStationTimeText(),
                                 onPressed: () => context.showBottomSheet(
                                     child: DurationPicker(
@@ -254,15 +250,14 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                     else
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: MiniButton(
+                        child: BorderButton(
+                            mini: true,
                             text:
                                 'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
                             onPressed: () => context.showBottomSheet<int>(
-                                    child: NumberInputModal<int>(
+                                    child: NumberInputModalInt(
                                   value: _workoutSet.rounds,
-                                  // Need to cast to dynamic because of this.
-                                  // https://github.com/dart-lang/sdk/issues/32042
-                                  saveValue: <int>(dynamic r) => context
+                                  saveValue: (r) => context
                                       .read<WorkoutCreatorBloc>()
                                       .editWorkoutSet(widget.sectionIndex,
                                           widget.setIndex, {'rounds': r}),
@@ -309,7 +304,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                         duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
                         height: _sortedWorkoutMoves.length * 62,
-                        child: ReorderableListView.builder(
+                        child: material.ReorderableListView.builder(
                             proxyDecorator: (child, index, animation) =>
                                 DraggedItem(child: child),
                             shrinkWrap: true,

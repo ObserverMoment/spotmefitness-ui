@@ -4,20 +4,22 @@ import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
+/// Need to separate these two widgets because of this. https://github.com/dart-lang/sdk/issues/32042.
+/// Originally this was a generic but was causing errors when trying to run [saveValue].
 /// [T] should be either [int] or [double]
-class NumberInputModal<T> extends StatefulWidget {
+/// [class NumberInputModal<T> extends StatefulWidget]
+
+class NumberInputModalInt extends StatefulWidget {
   final String title;
-  final T value;
-  final void Function<T>(T value) saveValue;
-  NumberInputModal(
-      {required this.value, required this.saveValue, this.title = 'Enter...'})
-      : assert(value is int || value is double,
-            'This widget only accepts ints or doubles.');
+  final int value;
+  final void Function(int value) saveValue;
+  NumberInputModalInt(
+      {required this.value, required this.saveValue, this.title = 'Enter...'});
   @override
-  _NumberInputModalState<T> createState() => _NumberInputModalState<T>();
+  _NumberInputModalIntState createState() => _NumberInputModalIntState();
 }
 
-class _NumberInputModalState<T> extends State<NumberInputModal> {
+class _NumberInputModalIntState<T> extends State<NumberInputModalInt> {
   late TextEditingController _controller;
 
   @override
@@ -35,9 +37,7 @@ class _NumberInputModalState<T> extends State<NumberInputModal> {
   void _saveValue() {
     if (Utils.textNotNull(_controller.text) &&
         _controller.text != widget.value.toString()) {
-      widget.value is int
-          ? widget.saveValue(int.parse(_controller.text))
-          : widget.saveValue(double.parse(_controller.text));
+      widget.saveValue(int.parse(_controller.text));
     }
     context.pop();
   }
@@ -63,7 +63,71 @@ class _NumberInputModalState<T> extends State<NumberInputModal> {
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
             child: MyNumberInput(
               _controller,
-              allowDouble: widget.value is double,
+              allowDouble: false,
+              autoFocus: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NumberInputModalDouble extends StatefulWidget {
+  final String title;
+  final double value;
+  final void Function(double value) saveValue;
+  NumberInputModalDouble(
+      {required this.value, required this.saveValue, this.title = 'Enter...'});
+  @override
+  _NumberInputModalDoubleState createState() => _NumberInputModalDoubleState();
+}
+
+class _NumberInputModalDoubleState<T> extends State<NumberInputModalDouble> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.value.toString());
+    // Auto select the previous input.
+    _controller.selection = TextSelection(
+        baseOffset: 0, extentOffset: _controller.value.text.length);
+    _controller.addListener(() {
+      setState(() {});
+    });
+  }
+
+  void _saveValue() {
+    if (Utils.textNotNull(_controller.text) &&
+        _controller.text != widget.value.toString()) {
+      widget.saveValue(double.parse(_controller.text));
+    }
+    context.pop();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalCupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
+      cancel: context.pop,
+      save: _saveValue,
+      validToSave: Utils.textNotNull(_controller.text),
+      title: widget.title,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
+            child: MyNumberInput(
+              _controller,
+              allowDouble: true,
               autoFocus: true,
             ),
           ),

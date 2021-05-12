@@ -16,7 +16,8 @@ class DurationPickerDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
+      mini: true,
       text: duration != null ? duration!.compactDisplay() : 'Duration...',
       prefix: Icon(CupertinoIcons.stopwatch, size: 13),
       onPressed: () => context.showBottomSheet(

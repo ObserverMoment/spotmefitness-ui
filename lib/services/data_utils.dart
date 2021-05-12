@@ -1,6 +1,7 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:collection/collection.dart';
 
 class DataUtils {
   /// Receives any list of bodyAreaMove scores and returns a new list.
@@ -30,11 +31,15 @@ class DataUtils {
       case kHIITCircuitName:
       case kEMOMName:
         return Duration(
-            seconds: workoutSection.workoutSets.sumBy((s) => s.duration!));
+            seconds: workoutSection.rounds *
+                workoutSection.workoutSets.sumBy((s) => s.duration!));
       case kTabataName:
         return Duration(
-            seconds: workoutSection.workoutSets.sumBy((s) => s.workoutMoves
-                .sumBy((wm) => workoutMoveTimeRepsInSeconds(wm))));
+            seconds: workoutSection.rounds *
+                workoutSection.workoutSets.sumBy((workoutSet) =>
+                    workoutSet.rounds *
+                    workoutSet.workoutMoves
+                        .sumBy((wm) => workoutMoveTimeRepsInSeconds(wm))));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${workoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
@@ -64,7 +69,7 @@ class DataUtils {
         return Duration(
             milliseconds: loggedWorkoutSection.roundsCompleted *
                 loggedWorkoutSection.loggedWorkoutSets
-                    .sumBy((s) => s.roundsCompleted * s.timeTakenMs!));
+                    .sumBy((s) => s.roundsCompleted * s.laptimesMs.sum));
       case kTabataName:
         return Duration(
             milliseconds: loggedWorkoutSection.roundsCompleted *
@@ -77,40 +82,42 @@ class DataUtils {
     }
   }
 
-  /// Time and distance moves: a workoutMove is one 'rep'.
+  /// Time and distance moves: a workoutMove counts as one 'rep'.
   static int totalRepsPerSectionRound<T>(T section) {
     assert(section is WorkoutSection || section is LoggedWorkoutSection,
         'DataUtils.totalRepsPerSectionRound: section must (currently) be WorkoutSection or LoggedWorkoutSection.');
     if (section is WorkoutSection) {
-      return section.workoutSets.fold(0, (acum, nextSet) {
-        return nextSet.rounds *
-            nextSet.workoutMoves.fold(0, (acum, nextMove) {
-              if ([
-                WorkoutMoveRepType.time,
-                WorkoutMoveRepType.distance,
-                WorkoutMoveRepType.artemisUnknown
-              ].contains(nextMove.repType)) {
-                return acum + 1;
-              } else {
-                return acum + nextMove.reps.round();
-              }
-            });
+      return section.workoutSets.fold(0, (sectionAcum, nextSet) {
+        return sectionAcum +
+            nextSet.rounds *
+                nextSet.workoutMoves.fold(0, (setAcum, nextMove) {
+                  if ([
+                    WorkoutMoveRepType.time,
+                    WorkoutMoveRepType.distance,
+                    WorkoutMoveRepType.artemisUnknown
+                  ].contains(nextMove.repType)) {
+                    return setAcum + 1;
+                  } else {
+                    return setAcum + nextMove.reps.round();
+                  }
+                });
       });
     } else {
       return (section as LoggedWorkoutSection).loggedWorkoutSets.fold(0,
-          (acum, nextSet) {
-        return nextSet.roundsCompleted *
-            nextSet.loggedWorkoutMoves.fold(0, (acum, nextMove) {
-              if ([
-                WorkoutMoveRepType.time,
-                WorkoutMoveRepType.distance,
-                WorkoutMoveRepType.artemisUnknown
-              ].contains(nextMove.repType)) {
-                return acum + 1;
-              } else {
-                return acum + nextMove.reps.round();
-              }
-            });
+          (sectionAcum, nextSet) {
+        return sectionAcum +
+            nextSet.roundsCompleted *
+                nextSet.loggedWorkoutMoves.fold(0, (setAcum, nextMove) {
+                  if ([
+                    WorkoutMoveRepType.time,
+                    WorkoutMoveRepType.distance,
+                    WorkoutMoveRepType.artemisUnknown
+                  ].contains(nextMove.repType)) {
+                    return setAcum + 1;
+                  } else {
+                    return setAcum + nextMove.reps.round();
+                  }
+                });
       });
     }
   }

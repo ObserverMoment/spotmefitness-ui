@@ -65,7 +65,8 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-            title: title != null ? H3(title) : null,
+            title:
+                title != null ? H3(title, textAlign: TextAlign.center) : null,
             content: content,
             actions: actions));
     return res;
@@ -213,6 +214,39 @@ extension BuildContextExtension on BuildContext {
     return result;
   }
 
+  Future<void> showSuccessAlert(
+    String title,
+    String? message,
+  ) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: Column(
+                  children: [
+                    Icon(
+                      CupertinoIcons.checkmark_alt,
+                      color: Styles.infoBlue,
+                    ),
+                    SizedBox(height: 6),
+                    H3(title),
+                  ],
+                ),
+                content: message != null
+                    ? MyText(
+                        message,
+                        maxLines: 8,
+                        textAlign: TextAlign.center,
+                      )
+                    : null,
+                actions: [
+                  CupertinoDialogAction(
+                    child: MyText('Ok'),
+                    onPressed: () => context.pop(),
+                  ),
+                ]));
+  }
+
   Future<void> showErrorAlert(
     String message,
   ) async {
@@ -225,6 +259,7 @@ extension BuildContextExtension on BuildContext {
                   message,
                   color: Styles.errorRed,
                   maxLines: 8,
+                  textAlign: TextAlign.center,
                 ),
                 actions: [
                   CupertinoDialogAction(

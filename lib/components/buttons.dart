@@ -144,6 +144,49 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
+class BorderButton extends StatelessWidget {
+  final Widget? prefix;
+  final String? text;
+  final void Function() onPressed;
+  final bool withBorder;
+  final bool mini;
+  BorderButton(
+      {this.prefix,
+      this.text,
+      required this.onPressed,
+      this.withBorder = true,
+      this.mini = false})
+      : assert(prefix != null || text != null);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: const EdgeInsets.all(4),
+      pressedOpacity: 0.8,
+      onPressed: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border:
+                withBorder ? Border.all(color: context.theme.primary) : null),
+        child: Row(
+          children: [
+            if (prefix != null) prefix!,
+            if (text != null && prefix != null) SizedBox(width: mini ? 4 : 6),
+            if (text != null)
+              MyText(
+                text!,
+                weight: FontWeight.bold,
+                size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
+              )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class DestructiveButton extends StatelessWidget {
   final Widget? prefix;
   final String text;
@@ -344,45 +387,6 @@ class PageLink extends StatelessWidget {
   }
 }
 
-/// Small simplified button with little padding. Use for eg filter button.
-class MiniButton extends StatelessWidget {
-  final Widget? prefix;
-  final String? text;
-  final void Function() onPressed;
-  final bool withBorder;
-  MiniButton(
-      {this.prefix, this.text, required this.onPressed, this.withBorder = true})
-      : assert(prefix != null || text != null);
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: const EdgeInsets.all(4),
-      pressedOpacity: 0.8,
-      onPressed: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border:
-                withBorder ? Border.all(color: context.theme.primary) : null),
-        child: Row(
-          children: [
-            if (prefix != null) prefix!,
-            if (text != null && prefix != null) SizedBox(width: 4),
-            if (text != null)
-              MyText(
-                text!,
-                weight: FontWeight.bold,
-                size: FONTSIZE.SMALL,
-              )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class DoItButton extends StatelessWidget {
   final String text;
   final void Function() onPressed;
@@ -432,7 +436,8 @@ class FilterButton extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        MiniButton(
+        BorderButton(
+          mini: true,
           onPressed: onPressed,
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,
@@ -460,7 +465,8 @@ class OpenTextSearchButton extends StatelessWidget {
   OpenTextSearchButton({required this.onPressed, this.text});
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
+      mini: true,
       onPressed: onPressed,
       text: text,
       prefix: Icon(
@@ -476,7 +482,8 @@ class SortByButton extends StatelessWidget {
   SortByButton({required this.onPressed});
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
+      mini: true,
       onPressed: () => {},
       prefix: Icon(
         Icons.sort_outlined,

@@ -4,8 +4,10 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_move_display.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/load_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
   final Key key;
@@ -21,14 +23,9 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
       required this.loggedWorkoutMove,
       this.isLast = false});
 
-  void _updateLoadUnit(LoadUnit loadUnit) {
+  void _updateLoad(double loadAmount, LoadUnit loadUnit) {
     final updated = LoggedWorkoutMove.fromJson(loggedWorkoutMove.toJson());
     updated.loadUnit = loadUnit;
-    updateLoggedWorkoutMove(updated);
-  }
-
-  void _updateLoadAmount(double loadAmount) {
-    final updated = LoggedWorkoutMove.fromJson(loggedWorkoutMove.toJson());
     updated.loadAmount = loadAmount;
     updateLoggedWorkoutMove(updated);
   }
@@ -39,6 +36,25 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
     updateLoggedWorkoutMove(updated);
   }
 
+  String _repUnitString() {
+    switch (loggedWorkoutMove.repType) {
+      case WorkoutMoveRepType.artemisUnknown:
+      case WorkoutMoveRepType.reps:
+      case WorkoutMoveRepType.calories:
+        return '';
+      case WorkoutMoveRepType.distance:
+        return ' - ${loggedWorkoutMove.distanceUnit.display}';
+      case WorkoutMoveRepType.time:
+        return ' - ${loggedWorkoutMove.timeUnit.display}';
+      default:
+        throw Exception(
+            'Error rendering a rep unit string for ${loggedWorkoutMove.repType}');
+    }
+  }
+
+  String _adjustRepTypeString() =>
+      '${loggedWorkoutMove.repType.display}${_repUnitString()} ';
+
   @override
   Widget build(BuildContext context) {
     return AnimatedSlidable(
@@ -48,28 +64,32 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
       removeItem: deleteLoggedWorkoutMove,
       secondaryActions: [
         IconSlideAction(
-          caption: 'Adjust reps',
+          caption: loggedWorkoutMove.repType.display,
           color: Styles.infoBlue,
           iconWidget: Icon(
-            CupertinoIcons.arrow_2_circlepath,
+            CupertinoIcons.plus_slash_minus,
             size: 20,
           ),
-          onTap: () => print(
-              'open adjust reps - need new simplified picker that just lets you adjust the rp type that is selected - not change between rep types etc.'),
+          onTap: () => context.showBottomSheet(
+              expand: true,
+              child: NumberInputModalDouble(
+                  title: _adjustRepTypeString(),
+                  value: loggedWorkoutMove.reps,
+                  saveValue: _updateReps)),
         ),
         IconSlideAction(
-          caption: 'Adjust load',
+          caption: 'Load',
           color: Styles.colorThree,
           iconWidget: Icon(
-            CupertinoIcons.arrow_up_arrow_down,
+            CupertinoIcons.plus_slash_minus,
             size: 20,
           ),
           onTap: () => context.showBottomSheet(
               child: LoadPickerModal(
-                  loadAmount: loggedWorkoutMove.loadAmount ?? 0,
-                  updateLoadAmount: _updateLoadAmount,
-                  loadUnit: loggedWorkoutMove.loadUnit,
-                  updateLoadUnit: _updateLoadUnit)),
+            loadAmount: loggedWorkoutMove.loadAmount ?? 0,
+            updateLoad: _updateLoad,
+            loadUnit: loggedWorkoutMove.loadUnit,
+          )),
         ),
       ],
       child: LoggedWorkoutMoveDisplay(loggedWorkoutMove),

@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
+import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_workout_move.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
@@ -17,6 +19,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Displays a workout set with user interactions cuch as
 /// For [Free Session], [AMRAP]
@@ -101,6 +104,24 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
     _bloc.addListener(_checkForNewData);
   }
 
+  void _updateSetNote(String note) {
+    final updated = LoggedWorkoutSet.fromJson(_loggedWorkoutSet.toJson());
+    updated.note = note;
+    _bloc.editLoggedWorkoutSet(widget.sectionIndex, widget.setIndex, updated);
+  }
+
+  void _updateSetRepeats(int repeats) {
+    final updated = LoggedWorkoutSet.fromJson(_loggedWorkoutSet.toJson());
+    updated.roundsCompleted = repeats;
+    _bloc.editLoggedWorkoutSet(widget.sectionIndex, widget.setIndex, updated);
+  }
+
+  void _updateSetDuration(Duration duration) {
+    final updated = LoggedWorkoutSet.fromJson(_loggedWorkoutSet.toJson());
+    updated.laptimesMs = [duration.inMilliseconds];
+    _bloc.editLoggedWorkoutSet(widget.sectionIndex, widget.setIndex, updated);
+  }
+
   void _deleteLoggedWorkoutSet() {
     context.showConfirmDeleteDialog(
         itemType: 'Set',
@@ -116,7 +137,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
       CupertinoPageRoute(
         builder: (context) => WorkoutMoveCreator(
           pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-          saveWorkoutMove: (workoutMove) => _bloc.createLoggedWorkoutMove(
+          saveWorkoutMove: (workoutMove) => _bloc.addLoggedWorkoutMove(
               widget.sectionIndex,
               widget.setIndex,
               workoutMoveToLoggedWorkoutMove(workoutMove)),
@@ -136,15 +157,14 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
         widget.sectionIndex, widget.setIndex, loggedWorkoutMoveIndex);
   }
 
-  Widget _buildSetRepeats() => MiniButton(
+  Widget _buildSetRepeats() => BorderButton(
+      mini: true,
       text:
           '${_loggedWorkoutSet.roundsCompleted} ${_loggedWorkoutSet.roundsCompleted == 1 ? "time" : "times"}',
       onPressed: () => context.showBottomSheet<int>(
-              child: NumberInputModal<int>(
+              child: NumberInputModalInt(
             value: _loggedWorkoutSet.roundsCompleted,
-            // Need to cast to dynamic because of this.
-            // https://github.com/dart-lang/sdk/issues/32042
-            saveValue: <int>(dynamic r) => print(r),
+            saveValue: _updateSetRepeats,
             title: 'How many repeats?',
           )));
 
@@ -177,12 +197,16 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
     );
   }
 
-  Widget _buildSetTime() => MiniButton(
-      text: (_loggedWorkoutSet.timeTakenMs! ~/ 1000).secondsToTimeDisplay(),
+  /// Currently replaces the whole lapTimeMs list with a single input.
+  /// To be improved once lap time UI is built and UX is clarified.
+  Widget _buildSetTime() => BorderButton(
+      mini: true,
+      text: (_loggedWorkoutSet.laptimesMs.sum ~/ 1000).secondsToTimeDisplay(),
       onPressed: () => context.showBottomSheet(
           child: DurationPicker(
-              duration: Duration(milliseconds: _loggedWorkoutSet.timeTakenMs!),
-              updateDuration: (duration) => print(duration))));
+              duration:
+                  Duration(milliseconds: _loggedWorkoutSet.laptimesMs.sum),
+              updateDuration: _updateSetDuration)));
 
   @override
   void dispose() {
@@ -192,12 +216,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -208,11 +227,32 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                 Row(
                   children: [
                     _buildSetRepeats(),
-                    if (_loggedWorkoutSet.timeTakenMs != null) _buildSetTime(),
+                    if (_loggedWorkoutSet.laptimesMs.isNotEmpty)
+                      _buildSetTime(),
                     _buildSetDefinition(),
+                    if (Utils.textNotNull(_loggedWorkoutSet.note))
+                      CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          child: NotesIcon(),
+                          onPressed: () => context.showBottomSheet(
+                              expand: true,
+                              child: TextViewer(
+                                  _loggedWorkoutSet.note!, 'Set Notes')))
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                  ContextMenuItem(
+                    text: Utils.textNotNull(_loggedWorkoutSet.note)
+                        ? 'Edit note'
+                        : 'Add note',
+                    iconData: CupertinoIcons.doc_text_fill,
+                    onTap: () => context.push(
+                        child: FullScreenTextEditing(
+                            title: 'Set Note',
+                            initialValue: _loggedWorkoutSet.note,
+                            onSave: _updateSetNote,
+                            inputValidation: (t) => true)),
+                  ),
                   ContextMenuItem(
                     text: 'Delete',
                     iconData: CupertinoIcons.delete_simple,

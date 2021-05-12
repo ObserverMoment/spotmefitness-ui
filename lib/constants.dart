@@ -24,6 +24,8 @@ const kWorkoutSectionTypename = 'WorkoutSection';
 const kWorkoutSetTypename = 'WorkoutSet';
 const kWorkoutMoveTypename = 'WorkoutMove';
 
+const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
+
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,
   kWorkoutSetTypename,

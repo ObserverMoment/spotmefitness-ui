@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
         middle: NavBarTitle(
-          'PROFILE',
+          'Profile',
         ),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,

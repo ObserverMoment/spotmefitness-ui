@@ -220,7 +220,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                MiniButton(
+                                BorderButton(
+                                    mini: true,
                                     prefix: Icon(
                                       CupertinoIcons.arrow_left_right_square,
                                       color: context.theme.background,
@@ -241,7 +242,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     SizedBox(
                                       width: 16,
                                     ),
-                                    MiniButton(
+                                    BorderButton(
+                                        mini: true,
                                         prefix: Icon(
                                           CupertinoIcons.arrow_left_right,
                                           size: 20,
@@ -297,11 +299,10 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                                 _activeWorkoutMove!.loadAmount,
                                             loadUnit:
                                                 _activeWorkoutMove!.loadUnit,
-                                            updateLoadAmount: (loadAmount) =>
-                                                _updateWorkoutMove(
-                                                    {'loadAmount': loadAmount}),
-                                            updateLoadUnit: (loadUnit) =>
-                                                _updateWorkoutMove({
+                                            updateLoad:
+                                                (loadAmount, loadUnit) =>
+                                                    _updateWorkoutMove({
+                                              'loadAmount': loadAmount,
                                               'loadUnit': loadUnit.apiValue
                                             }),
                                           ),

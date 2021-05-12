@@ -133,7 +133,8 @@ class WorkoutDetailsSection extends StatelessWidget {
                       NumberRoundsIcon(workoutSection.rounds),
                     ],
                   ),
-                MiniButton(
+                BorderButton(
+                  mini: true,
                   prefix: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -185,7 +186,7 @@ class WorkoutDetailsSection extends StatelessWidget {
                 shrinkWrap: true,
                 children: sortedSets
                     .map((workoutSet) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: WorkoutSetDisplay(
                               workoutSet: workoutSet,
                               workoutSectionType:

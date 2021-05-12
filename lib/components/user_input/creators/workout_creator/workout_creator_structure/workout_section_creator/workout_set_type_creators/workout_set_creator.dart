@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_definition.dart';
@@ -181,12 +180,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -200,15 +194,14 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                     /// Assumes that allowReorder is based on their being more than one set.
                     if (widget.allowReorder ||
                         _workoutSectionType.name != kAMRAPName)
-                      MiniButton(
+                      BorderButton(
+                          mini: true,
                           text:
                               'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
                           onPressed: () => context.showBottomSheet<int>(
-                                  child: NumberInputModal<int>(
+                                  child: NumberInputModalInt(
                                 value: _workoutSet.rounds,
-                                // Need to cast to dynamic because of this.
-                                // https://github.com/dart-lang/sdk/issues/32042
-                                saveValue: <int>(dynamic r) => context
+                                saveValue: (r) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(widget.sectionIndex,
                                         widget.setIndex, {'rounds': r}),
@@ -253,7 +246,7 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                   curve: Curves.easeInOut,
                   height:
                       _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
-                  child: ReorderableListView.builder(
+                  child: material.ReorderableListView.builder(
                       proxyDecorator: (child, index, animation) =>
                           DraggedItem(child: child),
                       shrinkWrap: true,

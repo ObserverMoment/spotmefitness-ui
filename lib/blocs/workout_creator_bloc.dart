@@ -358,6 +358,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     if (success) {
       createdSet = WorkoutSet.fromJson(
           {...result.data.createWorkoutSet.toJson(), 'WorkoutMoves': []});
+
       workout.workoutSections[sectionIndex].workoutSets.add(createdSet);
     }
 
@@ -434,8 +435,16 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      workoutSets[setIndex + 1] =
-          WorkoutSet.fromJson(result.data.duplicateWorkoutSetById.toJson());
+      final updated = result.data.duplicateWorkoutSetById;
+      // Write over the client write above.
+      workoutSets[setIndex + 1] = WorkoutSet()
+        ..$$typename = updated.$$typename
+        ..id = updated.id
+        ..sortPosition = updated.sortPosition
+        ..rounds = updated.rounds
+        ..duration = updated.duration
+        ..workoutMoves =
+            updated.workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
     }
 
     notifyListeners();

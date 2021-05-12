@@ -11,15 +11,13 @@ import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoadPickerDisplay extends StatelessWidget {
   final double loadAmount;
-  final void Function(double loadAmount) updateLoadAmount;
+  final void Function(double loadAmount, LoadUnit loadUnit) updateLoad;
   final LoadUnit loadUnit;
-  final void Function(LoadUnit loadUnit) updateLoadUnit;
   final bool expandPopup;
   LoadPickerDisplay(
       {required this.loadAmount,
-      required this.updateLoadAmount,
+      required this.updateLoad,
       required this.loadUnit,
-      required this.updateLoadUnit,
       this.expandPopup = false});
   @override
   Widget build(BuildContext context) {
@@ -27,10 +25,10 @@ class LoadPickerDisplay extends StatelessWidget {
       onTap: () => context.showBottomSheet(
           expand: expandPopup,
           child: LoadPickerModal(
-              loadAmount: loadAmount,
-              updateLoadAmount: updateLoadAmount,
-              loadUnit: loadUnit,
-              updateLoadUnit: updateLoadUnit)),
+            loadAmount: loadAmount,
+            updateLoad: updateLoad,
+            loadUnit: loadUnit,
+          )),
       child: ContentBox(
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -55,14 +53,12 @@ class LoadPickerDisplay extends StatelessWidget {
 
 class LoadPickerModal extends StatefulWidget {
   final double loadAmount;
-  final void Function(double loadAmount) updateLoadAmount;
+  final void Function(double loadAmount, LoadUnit loadUnit) updateLoad;
   final LoadUnit loadUnit;
-  final void Function(LoadUnit loadUnit) updateLoadUnit;
   LoadPickerModal(
       {required this.loadAmount,
-      required this.updateLoadAmount,
       required this.loadUnit,
-      required this.updateLoadUnit});
+      required this.updateLoad});
 
   @override
   _LoadPickerModalState createState() => _LoadPickerModalState();
@@ -92,11 +88,9 @@ class _LoadPickerModalState extends State<LoadPickerModal> {
   }
 
   void _saveChanges() {
-    if (_activeLoadAmount != widget.loadAmount) {
-      widget.updateLoadAmount(_activeLoadAmount);
-    }
-    if (_activeLoadUnit != widget.loadUnit) {
-      widget.updateLoadUnit(_activeLoadUnit);
+    if (_activeLoadAmount != widget.loadAmount ||
+        _activeLoadUnit != widget.loadUnit) {
+      widget.updateLoad(_activeLoadAmount, _activeLoadUnit);
     }
     context.pop();
   }

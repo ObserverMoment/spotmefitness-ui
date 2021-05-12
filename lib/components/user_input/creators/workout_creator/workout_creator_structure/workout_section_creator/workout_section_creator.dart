@@ -19,6 +19,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
@@ -315,6 +316,15 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        if ([kHIITCircuitName, kTabataName, kEMOMName]
+                            .contains(_workoutSection.workoutSectionType.name))
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+                            child: ContentBox(
+                              child: MyText(
+                                  'Duration: ${DataUtils.calculateTimedSectionDuration(_workoutSection).compactDisplay()}'),
+                            ),
+                          ),
                         if (![kLastStandingName, kAMRAPName]
                             .contains(_workoutSection.workoutSectionType.name))
                           RoundPicker(

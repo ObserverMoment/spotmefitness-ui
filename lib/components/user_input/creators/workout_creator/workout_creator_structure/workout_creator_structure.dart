@@ -14,10 +14,13 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_cl
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutCreatorStructure extends StatefulWidget {
@@ -297,10 +300,28 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  WorkoutSectionTypeTag(
-                    workoutSection.workoutSectionType.name,
-                    timecap: workoutSection.timecap,
-                  ),
+                  WorkoutSectionTypeTag(workoutSection.workoutSectionType.name),
+                  if ([kHIITCircuitName, kTabataName, kEMOMName]
+                      .contains(workoutSection.workoutSectionType.name))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+                      child: ContentBox(
+                        child: MyText(
+                          'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}',
+                          color: Styles.colorTwo,
+                        ),
+                      ),
+                    ),
+                  if (workoutSection.timecap != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+                      child: ContentBox(
+                        child: MyText(
+                          'Timecap: ${workoutSection.timecap!.secondsToTimeDisplay()}',
+                          color: Styles.colorTwo,
+                        ),
+                      ),
+                    ),
                   ...data.moves
                       .map((m) => Tag(
                             color: context.theme.background,

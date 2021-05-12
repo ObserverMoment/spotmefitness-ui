@@ -297,7 +297,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         ),
                         items: [
                       BottomSheetMenuItem(
-                          text: 'Log it',
+                          text: 'Log',
                           icon: Icon(CupertinoIcons.graph_square),
                           onPressed: () => context.push(
                               child: LoggedWorkoutCreator(workout: workout))),

@@ -19,9 +19,9 @@ class RepsScoreDisplay<T> extends StatelessWidget {
             'section must (currently) be WorkoutSection or LoggedWorkoutSection.');
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
       text: score != null ? '$score reps' : 'Reps...',
-      prefix: Icon(CupertinoIcons.chart_bar, size: 13),
+      prefix: Icon(CupertinoIcons.chart_bar, size: 16),
       onPressed: () => context.showBottomSheet(
           expand: true,
           child: RepsScorePicker(

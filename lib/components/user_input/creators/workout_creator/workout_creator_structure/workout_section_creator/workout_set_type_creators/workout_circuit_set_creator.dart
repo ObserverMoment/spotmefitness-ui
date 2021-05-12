@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -10,7 +11,7 @@ import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_me
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
@@ -190,12 +191,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
     final isRest = _sortedWorkoutMoves.length == 1 &&
         _sortedWorkoutMoves[0].move.id == kRestMoveId;
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -217,7 +213,8 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
                     SizedBox(
                       width: 10,
                     ),
-                    MiniButton(
+                    BorderButton(
+                        mini: true,
                         text: _buildStationTimeText(),
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
@@ -284,7 +281,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
                         curve: Curves.easeInOut,
                         height: _sortedWorkoutMoves.length *
                             kWorkoutMoveListItemHeight,
-                        child: ReorderableListView.builder(
+                        child: material.ReorderableListView.builder(
                             proxyDecorator: (child, index, animation) =>
                                 DraggedItem(child: child),
                             shrinkWrap: true,

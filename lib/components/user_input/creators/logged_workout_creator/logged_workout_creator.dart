@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -35,7 +36,14 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
   }
 
   Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
+    context.showLoadingAlert('Logging...',
+        icon: Icon(
+          CupertinoIcons.doc_plaintext,
+          color: Styles.infoBlue,
+        ));
+
     final log = bloc.loggedWorkout;
+    final sectionsToIncludeInLog = bloc.sectionsToIncludeInLog;
 
     final input = CreateLoggedWorkoutInput(
         name: log.name,
@@ -48,6 +56,7 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
         workoutProgramWorkout: null,
         completedOn: log.completedOn,
         loggedWorkoutSections: log.loggedWorkoutSections
+            .where((section) => sectionsToIncludeInLog.contains(section))
             .map((section) => CreateLoggedWorkoutSectionInLoggedWorkoutInput(
                 name: section.name,
                 note: section.note,
@@ -62,18 +71,21 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                 loggedWorkoutSets: section.loggedWorkoutSets
                     .map((logSet) => CreateLoggedWorkoutSetInLoggedSectionInput(
                         setIndex: logSet.setIndex,
+                        note: logSet.note,
                         roundsCompleted: logSet.roundsCompleted,
-                        laptimesMs: [],
+                        laptimesMs: logSet.laptimesMs,
                         loggedWorkoutMoves: logSet.loggedWorkoutMoves
                             .map((logWorkoutMove) =>
                                 CreateLoggedWorkoutMoveInLoggedSetInput(
                                     sortPosition: logWorkoutMove.sortPosition,
                                     timeTakenMs: logWorkoutMove.timeTakenMs,
+                                    note: logWorkoutMove.note,
                                     repType: logWorkoutMove.repType,
                                     reps: logWorkoutMove.reps,
                                     distanceUnit: logWorkoutMove.distanceUnit,
                                     loadAmount: logWorkoutMove.loadAmount,
                                     loadUnit: logWorkoutMove.loadUnit,
+                                    timeUnit: logWorkoutMove.timeUnit,
                                     equipment: logWorkoutMove.equipment != null
                                         ? ConnectRelationInput(
                                             id: logWorkoutMove.equipment!.id)
@@ -86,9 +98,23 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
 
     final variables = CreateLoggedWorkoutArguments(data: input);
 
+    /// TODO: Once the query exists you need to add a ref to this new workout log to the
+    /// [userLoggedWorkouts] query.
     final result = await context.graphQLStore
         .create(mutation: CreateLoggedWorkoutMutation(variables: variables));
-    print(result);
+
+    context.pop(); // Close loading alert.
+
+    if (result.hasErrors) {
+      context
+          .showErrorAlert('Sorry, there was a problem logging this workout!');
+    } else {
+      await context.showSuccessAlert(
+        'Workout Logged!',
+        'You can go to Journals -> Logs to view it.',
+      );
+      context.pop(); // Close the logged workout creator.
+    }
   }
 
   @override
