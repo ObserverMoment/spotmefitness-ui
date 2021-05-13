@@ -42,66 +42,8 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
           color: Styles.infoBlue,
         ));
 
-    final log = bloc.loggedWorkout;
-    final sectionsToIncludeInLog = bloc.sectionsToIncludeInLog;
-
-    final input = CreateLoggedWorkoutInput(
-        name: log.name,
-        note: log.note,
-        scheduledWorkout: null,
-        gymProfile: log.gymProfile != null
-            ? ConnectRelationInput(id: log.gymProfile!.id)
-            : null,
-        workoutProgramEnrolment: null,
-        workoutProgramWorkout: null,
-        completedOn: log.completedOn,
-        loggedWorkoutSections: log.loggedWorkoutSections
-            .where((section) => sectionsToIncludeInLog.contains(section))
-            .map((section) => CreateLoggedWorkoutSectionInLoggedWorkoutInput(
-                name: section.name,
-                note: section.note,
-                sectionIndex: section.sectionIndex,
-                roundsCompleted: section.roundsCompleted,
-                laptimesMs: [],
-                repScore: section.repScore,
-                timeTakenMs: section.timeTakenMs,
-                timecap: section.timecap,
-                workoutSectionType:
-                    ConnectRelationInput(id: section.workoutSectionType.id),
-                loggedWorkoutSets: section.loggedWorkoutSets
-                    .map((logSet) => CreateLoggedWorkoutSetInLoggedSectionInput(
-                        setIndex: logSet.setIndex,
-                        note: logSet.note,
-                        roundsCompleted: logSet.roundsCompleted,
-                        laptimesMs: logSet.laptimesMs,
-                        loggedWorkoutMoves: logSet.loggedWorkoutMoves
-                            .map((logWorkoutMove) =>
-                                CreateLoggedWorkoutMoveInLoggedSetInput(
-                                    sortPosition: logWorkoutMove.sortPosition,
-                                    timeTakenMs: logWorkoutMove.timeTakenMs,
-                                    note: logWorkoutMove.note,
-                                    repType: logWorkoutMove.repType,
-                                    reps: logWorkoutMove.reps,
-                                    distanceUnit: logWorkoutMove.distanceUnit,
-                                    loadAmount: logWorkoutMove.loadAmount,
-                                    loadUnit: logWorkoutMove.loadUnit,
-                                    timeUnit: logWorkoutMove.timeUnit,
-                                    equipment: logWorkoutMove.equipment != null
-                                        ? ConnectRelationInput(
-                                            id: logWorkoutMove.equipment!.id)
-                                        : null,
-                                    move: ConnectRelationInput(
-                                        id: logWorkoutMove.move.id)))
-                            .toList()))
-                    .toList()))
-            .toList());
-
-    final variables = CreateLoggedWorkoutArguments(data: input);
-
-    /// TODO: Once the query exists you need to add a ref to this new workout log to the
-    /// [userLoggedWorkouts] query.
-    final result = await context.graphQLStore
-        .create(mutation: CreateLoggedWorkoutMutation(variables: variables));
+    final result =
+        await context.read<LoggedWorkoutCreatorBloc>().createAndSave(context);
 
     context.pop(); // Close loading alert.
 

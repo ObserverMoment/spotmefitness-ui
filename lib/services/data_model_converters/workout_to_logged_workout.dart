@@ -27,7 +27,7 @@ List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
         ..loggedWorkoutSets = workoutSetsToLoggedWorkoutSets(ws.workoutSets)
             .sortedBy<num>((ws) => ws.setIndex)
         ..roundsCompleted = ws.rounds
-        ..laptimesMs = []
+        ..roundTimesMs = {}
         ..timecap = ws.timecap
         ..sectionIndex = ws.sortPosition
         ..workoutSectionType =
@@ -42,8 +42,7 @@ List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
         ..id = 'temp - set - ${workoutSet.sortPosition}'
         ..setIndex = workoutSet.sortPosition
         ..roundsCompleted = workoutSet.rounds
-        ..laptimesMs =
-            workoutSet.duration != null ? [workoutSet.duration! * 1000] : []
+        ..roundTimesMs = {}
         ..loggedWorkoutMoves =
             workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
                 .sortedBy<num>((wm) => wm.sortPosition))

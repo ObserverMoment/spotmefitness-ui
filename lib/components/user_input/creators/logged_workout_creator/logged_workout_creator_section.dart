@@ -22,13 +22,15 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
 
   void _addLoggedWorkoutSet(
       BuildContext context, LoggedWorkoutSet templateSet) {
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .addLoggedWorkoutSet(sectionIndex, laptimesMs: templateSet.laptimesMs);
+    context.read<LoggedWorkoutCreatorBloc>().addLoggedWorkoutSet(sectionIndex,
+        roundTimesMs: templateSet.roundTimesMs);
   }
 
   Widget _buildSectionRepeats(
       BuildContext context, LoggedWorkoutSection loggedWorkoutSection) {
+    final roundsCompleted = context.select<LoggedWorkoutCreatorBloc, int>((b) =>
+        b.loggedWorkout.loggedWorkoutSections[sectionIndex].roundsCompleted);
+
     switch (loggedWorkoutSection.workoutSectionType.name) {
       case kAMRAPName:
         return MyText(
@@ -45,11 +47,10 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 6.0),
               child: BorderButton(
                   mini: true,
-                  text:
-                      '${loggedWorkoutSection.roundsCompleted} ${once ? "time" : "times"}',
+                  text: '$roundsCompleted ${once ? "time" : "times"}',
                   onPressed: () => context.showBottomSheet<int>(
                           child: NumberInputModalInt(
-                        value: loggedWorkoutSection.roundsCompleted,
+                        value: roundsCompleted,
                         saveValue: (r) => context
                             .read<LoggedWorkoutCreatorBloc>()
                             .updateSectionRoundsCompleted(sectionIndex, r),
@@ -67,6 +68,12 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
         context.select<LoggedWorkoutCreatorBloc, LoggedWorkoutSection>(
             (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex]);
 
+    final sectionTimeTakenMs = context.select<LoggedWorkoutCreatorBloc, int?>(
+        (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex].timeTakenMs);
+
+    final repScore = context.select<LoggedWorkoutCreatorBloc, int?>(
+        (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex].repScore);
+
     final loggedWorkoutSets = context
         .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSet>>((b) => b
             .loggedWorkout
@@ -83,8 +90,8 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
             if ([kFreeSessionName, kForTimeName]
                 .contains(loggedWorkoutSection.workoutSectionType.name))
               DurationPickerDisplay(
-                duration: loggedWorkoutSection.timeTakenMs != null
-                    ? Duration(milliseconds: loggedWorkoutSection.timeTakenMs!)
+                duration: sectionTimeTakenMs != null
+                    ? Duration(milliseconds: sectionTimeTakenMs)
                     : null,
                 updateDuration: (duration) => context
                     .read<LoggedWorkoutCreatorBloc>()
@@ -109,7 +116,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                     weight: FontWeight.bold,
                   ),
                   RepsScoreDisplay(
-                      score: loggedWorkoutSection.repScore,
+                      score: repScore,
                       section: loggedWorkoutSection,
                       updateScore: (int score) => context
                           .read<LoggedWorkoutCreatorBloc>()

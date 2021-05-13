@@ -24,12 +24,17 @@ const kWorkoutSectionTypename = 'WorkoutSection';
 const kWorkoutSetTypename = 'WorkoutSet';
 const kWorkoutMoveTypename = 'WorkoutMove';
 
+const kLoggedWorkoutSectionTypename = 'LoggedWorkoutSection';
 const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
+const kLoggedWorkoutMoveTypename = 'LoggedWorkoutMove';
 
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,
   kWorkoutSetTypename,
-  kWorkoutMoveTypename
+  kWorkoutMoveTypename,
+  kLoggedWorkoutSectionTypename,
+  kLoggedWorkoutSetTypename,
+  kLoggedWorkoutMoveTypename
 ];
 
 /// WorkoutSectionTypeNames

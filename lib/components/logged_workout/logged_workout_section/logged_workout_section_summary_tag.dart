@@ -35,6 +35,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
       case kLastStandingName:
       case kAMRAPName:
         return [
+          SizedBox(width: 4),
           _text('${_repsScore() ?? _reps()} reps'),
           if (time != null) _text(' in '),
           if (time != null) _text(Duration(seconds: time).compactDisplay())
@@ -42,6 +43,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
       case kFreeSessionName:
       case kForTimeName:
         return [
+          SizedBox(width: 4),
           MyText('${_reps()} reps'),
           if (time != null) _text(' in '),
           if (time != null) _text(Duration(seconds: time).compactDisplay())
@@ -50,7 +52,11 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
       case kHIITCircuitName:
       case kTabataName:
         return [
-          if (time != null) _text(Duration(seconds: time).compactDisplay())
+          if (time != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: _text(Duration(seconds: time).compactDisplay()),
+            )
         ];
       default:
         throw Exception(
@@ -69,7 +75,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             MyText(
-              '${section.workoutSectionType.name} ',
+              '${section.workoutSectionType.name}',
               size: fontsize,
               color: Styles.colorTwo,
             ),

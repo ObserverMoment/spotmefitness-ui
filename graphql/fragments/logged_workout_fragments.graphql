@@ -15,7 +15,7 @@ fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
   roundsCompleted
   repScore
   timeTakenMs
-  laptimesMs
+  roundTimesMs
   sectionIndex
 }
 
@@ -24,7 +24,7 @@ fragment LoggedWorkoutSetFields on LoggedWorkoutSet {
   id
   note
   roundsCompleted
-  laptimesMs
+  roundTimesMs
   setIndex
 }
 

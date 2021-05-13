@@ -5,6 +5,8 @@ schema {
 
 scalar DateTime
 
+scalar JSON
+
 type Query {
   validateToken: Boolean!
   bodyAreas: [BodyArea!]!
@@ -428,7 +430,7 @@ type LoggedWorkoutSection {
   timecap: Int
   roundsCompleted: Int!
   timeTakenMs: Int
-  laptimesMs: [Int!]!
+  roundTimesMs: JSON!
   repScore: Int
   note: String
   WorkoutSectionType: WorkoutSectionType!
@@ -441,7 +443,7 @@ type LoggedWorkoutSet {
   note: String
   setIndex: Int!
   roundsCompleted: Int!
-  laptimesMs: [Int!]!
+  roundTimesMs: JSON!
   LoggedWorkoutMoves: [LoggedWorkoutMove!]!
 }
 
@@ -478,7 +480,7 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   sectionIndex: Int!
   roundsCompleted: Int!
   timeTakenMs: Int
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
   repScore: Int
   timecap: Int
   WorkoutSectionType: ConnectRelationInput!
@@ -489,7 +491,7 @@ input CreateLoggedWorkoutSetInLoggedSectionInput {
   setIndex: Int!
   note: String
   roundsCompleted: Int!
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
   LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
 }
 
@@ -513,7 +515,7 @@ input CreateLoggedWorkoutSectionInput {
   sectionIndex: Int!
   roundsCompleted: Int!
   timeTakenMs: Int
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
   repScore: Int
   timecap: Int
   WorkoutSectionType: ConnectRelationInput!
@@ -524,7 +526,7 @@ input CreateLoggedWorkoutSetInput {
   setIndex: Int!
   note: String
   roundsCompleted: Int!
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
   LoggedWorkoutSection: ConnectRelationInput!
 }
 
@@ -555,7 +557,7 @@ input UpdateLoggedWorkoutSectionInput {
   name: String
   roundsCompleted: Int
   timeTakenMs: Int
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
   timecap: Int
   repScore: Int
   note: String
@@ -565,7 +567,7 @@ input UpdateLoggedWorkoutSetInput {
   id: ID!
   note: String
   roundsCompleted: Int
-  laptimesMs: [Int!]
+  roundTimesMs: JSON
 }
 
 input UpdateLoggedWorkoutMoveInput {

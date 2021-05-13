@@ -12,6 +12,9 @@ targets:
             - custom_parser_import: 'package:spotmefitness_ui/coercers.dart'
               graphql_type: DateTime
               dart_type: DateTime
+            - custom_parser_import: 'package:spotmefitness_ui/coercers.dart'
+              graphql_type: JSON
+              dart_type: Map
           schema_mapping:
             - schema: schema.graphql
               queries_glob: graphql/operations/**/**.graphql

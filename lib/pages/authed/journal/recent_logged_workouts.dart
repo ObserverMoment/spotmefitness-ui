@@ -36,46 +36,51 @@ class RecentLoggedWorkouts extends StatelessWidget {
               .sortedBy<DateTime>((l) => l.completedOn)
               .reversed
               .toList();
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return logs.isNotEmpty
+              ? Column(
                   children: [
-                    MyText(
-                      'Recent Logs',
-                      weight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          MyText(
+                            'Recent Logs',
+                            weight: FontWeight.bold,
+                          ),
+                          CreateTextIconButton(
+                              text: 'Add Log',
+                              onPressed: () => print('add log')),
+                          TextButton(
+                            onPressed: () =>
+                                context.pushRoute(YourLoggedWorkoutsRoute()),
+                            underline: false,
+                            text: 'View all',
+                          )
+                        ],
+                      ),
                     ),
-                    CreateTextIconButton(
-                        text: 'Add Log', onPressed: () => print('add log')),
-                    TextButton(
-                      onPressed: () =>
-                          context.pushRoute(YourLoggedWorkoutsRoute()),
-                      underline: false,
-                      text: 'View all',
-                    )
+                    LayoutBuilder(
+                        builder: (context, constraints) =>
+                            CarouselSlider.builder(
+                              options: CarouselOptions(
+                                height: 240,
+                                viewportFraction: 0.93,
+                                enableInfiniteScroll: false,
+                              ),
+                              itemCount: logs.length,
+                              itemBuilder: (c, i, _) => Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: GestureDetector(
+                                    onTap: () => context.pushRoute(
+                                        LoggedWorkoutDetailsRoute(
+                                            id: logs[i].id)),
+                                    child: LoggedWorkoutCard(logs[i])),
+                              ),
+                            )),
                   ],
-                ),
-              ),
-              LayoutBuilder(
-                  builder: (context, constraints) => CarouselSlider.builder(
-                        options: CarouselOptions(
-                          height: 240,
-                          viewportFraction: 0.93,
-                          enableInfiniteScroll: false,
-                        ),
-                        itemCount: logs.length,
-                        itemBuilder: (c, i, _) => Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: GestureDetector(
-                              onTap: () => context.pushRoute(
-                                  LoggedWorkoutDetailsRoute(id: logs[i].id)),
-                              child: LoggedWorkoutCard(logs[i])),
-                        ),
-                      )),
-            ],
-          );
+                )
+              : Center(child: MyText('No recent logs...'));
         });
   }
 }

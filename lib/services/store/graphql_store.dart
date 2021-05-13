@@ -23,7 +23,7 @@ class GraphQLStore {
   final _queryRootKey = 'Query';
 
   /// See [normalize -> Policies -> TypePolicy]
-  /// These objects will not be normalized as root objects and will instead sit inside their parent as raw json data.
+  /// These objects will NOT be normalized as root objects and will instead sit inside their parent as raw json data.
   /// Generate the policy object from the list of excluded typenames at [kExcludeFromNormalization]
   final Map<String, TypePolicy> _typePolicies = kExcludeFromNormalization
       .fold<Map<String, TypePolicy>>({}, (policyObj, typename) {

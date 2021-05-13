@@ -68,8 +68,9 @@ class DataUtils {
       case kEMOMName:
         return Duration(
             milliseconds: loggedWorkoutSection.roundsCompleted *
-                loggedWorkoutSection.loggedWorkoutSets
-                    .sumBy((s) => s.roundsCompleted * s.laptimesMs.sum));
+                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
+                    s.roundsCompleted *
+                    (s.roundTimesMs.values as List<int>).sum));
       case kTabataName:
         return Duration(
             milliseconds: loggedWorkoutSection.roundsCompleted *
@@ -120,5 +121,28 @@ class DataUtils {
                 });
       });
     }
+  }
+
+  static List<BodyArea> bodyAreasInWorkoutSection(WorkoutSection section) {
+    List<BodyArea> bodyAreas = [];
+    for (final s in section.workoutSets) {
+      for (final m in s.workoutMoves) {
+        bodyAreas.addAll(
+            m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
+      }
+    }
+    return bodyAreas;
+  }
+
+  static List<BodyArea> bodyAreasInLoggedWorkoutSection(
+      LoggedWorkoutSection section) {
+    List<BodyArea> bodyAreas = [];
+    for (final s in section.loggedWorkoutSets) {
+      for (final m in s.loggedWorkoutMoves) {
+        bodyAreas.addAll(
+            m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
+      }
+    }
+    return bodyAreas;
   }
 }

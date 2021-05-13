@@ -21,9 +21,6 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-/// Displays a workout set with user interactions cuch as
-/// For [Free Session], [AMRAP]
-/// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
 class LoggedWorkoutCreatorSet extends StatefulWidget {
   final int sectionIndex;
   final int setIndex;
@@ -118,7 +115,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
 
   void _updateSetDuration(Duration duration) {
     final updated = LoggedWorkoutSet.fromJson(_loggedWorkoutSet.toJson());
-    updated.laptimesMs = [duration.inMilliseconds];
+    updated.roundTimesMs = {'0': duration.inMilliseconds};
     _bloc.editLoggedWorkoutSet(widget.sectionIndex, widget.setIndex, updated);
   }
 
@@ -199,14 +196,18 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
 
   /// Currently replaces the whole lapTimeMs list with a single input.
   /// To be improved once lap time UI is built and UX is clarified.
-  Widget _buildSetTime() => BorderButton(
-      mini: true,
-      text: (_loggedWorkoutSet.laptimesMs.sum ~/ 1000).secondsToTimeDisplay(),
-      onPressed: () => context.showBottomSheet(
-          child: DurationPicker(
-              duration:
-                  Duration(milliseconds: _loggedWorkoutSet.laptimesMs.sum),
-              updateDuration: _updateSetDuration)));
+  Widget _buildSetTime() {
+    final int ms = (_loggedWorkoutSet.roundTimesMs.values)
+        .fold<num>(0, (acum, next) => acum + next)
+        .toInt();
+    final duration = Duration(milliseconds: ms);
+    return BorderButton(
+        mini: true,
+        text: duration.compactDisplay(),
+        onPressed: () => context.showBottomSheet(
+            child: DurationPicker(
+                duration: duration, updateDuration: _updateSetDuration)));
+  }
 
   @override
   void dispose() {
@@ -227,7 +228,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                 Row(
                   children: [
                     _buildSetRepeats(),
-                    if (_loggedWorkoutSet.laptimesMs.isNotEmpty)
+                    if (_loggedWorkoutSet.roundTimesMs.isNotEmpty)
                       _buildSetTime(),
                     _buildSetDefinition(),
                     if (Utils.textNotNull(_loggedWorkoutSet.note))

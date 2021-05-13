@@ -23,14 +23,14 @@ TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
 ColorScheme _buildColorScheme(BuildContext context) {
   final theme = context.theme;
   return ColorScheme(
-    primary: myTheme.Styles.infoBlue,
+    primary: theme.primary,
     primaryVariant: theme.primary,
     secondary: theme.background,
     secondaryVariant: theme.primary,
     surface: theme.background,
     background: theme.background,
     error: myTheme.Styles.errorRed,
-    onPrimary: myTheme.Styles.white,
+    onPrimary: theme.background,
     onSecondary: theme.primary,
     onSurface: theme.primary,
     onBackground: theme.primary,

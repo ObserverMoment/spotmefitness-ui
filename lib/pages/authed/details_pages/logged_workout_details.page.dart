@@ -1,13 +1,19 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -17,6 +23,19 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class LoggedWorkoutDetailsPage extends StatelessWidget {
   final String id;
   LoggedWorkoutDetailsPage({@PathParam('id') required this.id});
+
+  void _updateCompletedOnDate(LoggedWorkoutCreatorBloc bloc, DateTime date) {
+    final prev = bloc.loggedWorkout.completedOn;
+    bloc.updateCompletedOn(DateTime(
+        date.year, date.month, date.day, prev.hour, prev.minute, prev.second));
+  }
+
+  void _updateCompletedOnTime(LoggedWorkoutCreatorBloc bloc, TimeOfDay time) {
+    final prev = bloc.loggedWorkout.completedOn;
+    bloc.updateCompletedOn(
+        DateTime(prev.year, prev.month, prev.day, time.hour, time.minute));
+  }
+
   @override
   Widget build(BuildContext context) {
     final query =
@@ -29,29 +48,121 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         builder: (data) {
           final log = data.loggedWorkoutById;
 
-          final sortedSections =
-              log.loggedWorkoutSections.sortedBy<num>((s) => s.sectionIndex);
-
           return ChangeNotifierProvider(
             create: (context) =>
                 LoggedWorkoutCreatorBloc(initialLoggedWorkout: log),
-            builder: (context, child) => CupertinoPageScaffold(
-              navigationBar: BasicNavBar(
-                middle: NavBarTitle(log.name),
-                trailing: NavBarEllipsisMenu(
-                  items: [],
+            builder: (context, child) {
+              final bloc = context.read<LoggedWorkoutCreatorBloc>();
+
+              final sortedSections = context
+                  .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
+                      (b) => b.loggedWorkout.loggedWorkoutSections)
+                  .sortedBy<num>((s) => s.sectionIndex);
+
+              final note = context.select<LoggedWorkoutCreatorBloc, String?>(
+                  (b) => b.loggedWorkout.note);
+
+              final gymProfile =
+                  context.select<LoggedWorkoutCreatorBloc, GymProfile?>(
+                      (b) => b.loggedWorkout.gymProfile);
+
+              final completedOn =
+                  context.select<LoggedWorkoutCreatorBloc, DateTime>(
+                      (b) => b.loggedWorkout.completedOn);
+
+              return CupertinoPageScaffold(
+                navigationBar: BasicNavBar(
+                  middle: NavBarTitle(log.name),
+                  trailing: NavBarEllipsisMenu(
+                    items: [],
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ListView.separated(
-                  itemCount: sortedSections.length,
-                  separatorBuilder: (_, __) => HorizontalLine(),
-                  itemBuilder: (c, i) =>
-                      LoggedWorkoutSectionSummary(sortedSections[i]),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          DatePickerDisplay(
+                            dateTime: completedOn,
+                            updateDateTime: (d) =>
+                                _updateCompletedOnDate(bloc, d),
+                          ),
+                          SizedBox(height: 12),
+                          TimePickerDisplay(
+                            timeOfDay: TimeOfDay.fromDateTime(completedOn),
+                            updateTimeOfDay: (t) =>
+                                _updateCompletedOnTime(bloc, t),
+                          ),
+                          SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TappableRow(
+                                  onTap: () => context.showBottomSheet(
+                                      child: SafeArea(
+                                          child: GymProfileSelector(
+                                    selectedGymProfile: gymProfile,
+                                    selectGymProfile: (p) =>
+                                        bloc.updateGymProfile(p),
+                                  ))),
+                                  title: 'Gym Profile',
+                                  display: gymProfile == null
+                                      ? MyText(
+                                          'Select...',
+                                          subtext: true,
+                                        )
+                                      : MyText(gymProfile.name),
+                                ),
+                              ),
+                              CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: Icon(
+                                    CupertinoIcons.clear_thick,
+                                    color: Styles.errorRed,
+                                    size: 20,
+                                  ),
+                                  onPressed: () => bloc.updateGymProfile(null))
+                            ],
+                          ),
+                          EditableTextAreaRow(
+                            title: 'Note',
+                            text: note ?? '',
+                            onSave: (t) => bloc.updateNote(t),
+                            inputValidation: (t) => true,
+                            maxDisplayLines: 6,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText(
+                        'Logged Sections',
+                        weight: FontWeight.bold,
+                        textAlign: TextAlign.center,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    HorizontalLine(),
+                    ...sortedSections
+                        .map((s) => GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                    builder: (c) => ChangeNotifierProvider.value(
+                                        value: context
+                                            .read<LoggedWorkoutCreatorBloc>(),
+                                        child:
+                                            LoggedWorkoutSectionDetailsEditable(
+                                                s.sectionIndex)))),
+                            child: LoggedWorkoutSectionSummary(s)))
+                        .toList()
+                  ],
                 ),
-              ),
-            ),
+              );
+            },
           );
         });
   }
@@ -59,7 +170,9 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
 
 class LoggedWorkoutSectionSummary extends StatelessWidget {
   final LoggedWorkoutSection loggedWorkoutSection;
-  LoggedWorkoutSectionSummary(this.loggedWorkoutSection);
+  final bool showBodyAreas;
+  LoggedWorkoutSectionSummary(this.loggedWorkoutSection,
+      {this.showBodyAreas = true});
   @override
   Widget build(BuildContext context) {
     Set<BodyArea> bodyAreas = {};
@@ -74,65 +187,58 @@ class LoggedWorkoutSectionSummary extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).push(CupertinoPageRoute(
-          builder: (c) => ChangeNotifierProvider.value(
-              value: context.read<LoggedWorkoutCreatorBloc>(),
-              child: LoggedWorkoutSectionDetailsEditable(
-                  loggedWorkoutSection: loggedWorkoutSection,
-                  uniqueBodyAreas: bodyAreas.toList())))),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            LoggedWorkoutSectionSummaryTag(
-              loggedWorkoutSection,
-              fontsize: FONTSIZE.MAIN,
-            ),
-            if (Utils.textNotNull(loggedWorkoutSection.name))
-              H3('"${loggedWorkoutSection.name!}"'),
-            if (Utils.textNotNull(loggedWorkoutSection.note))
-              MyText(loggedWorkoutSection.note!),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [
-                    ...moveTypes
-                        .map((moveType) => Tag(
-                              tag: moveType.name,
-                              withBorder: true,
-                              color: context.theme.background,
-                              textColor: context.theme.primary,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 6),
-                            ))
-                        .toList(),
-                  ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [
-                    ...bodyAreas
-                        .map((bodyArea) => Tag(
-                            tag: bodyArea.name,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 4)))
-                        .toList(),
-                  ]),
-            ),
-          ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: LoggedWorkoutSectionSummaryTag(
+            loggedWorkoutSection,
+            fontsize: FONTSIZE.MAIN,
+          ),
         ),
-      ),
+        if (Utils.textNotNull(loggedWorkoutSection.name))
+          H3('"${loggedWorkoutSection.name!}"'),
+        if (Utils.textNotNull(loggedWorkoutSection.note))
+          MyText(loggedWorkoutSection.note!),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Wrap(
+              alignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.center,
+              spacing: 4,
+              runSpacing: 4,
+              children: [
+                ...moveTypes
+                    .map((moveType) => Tag(
+                          tag: moveType.name,
+                          withBorder: true,
+                          color: context.theme.background,
+                          textColor: context.theme.primary,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 6),
+                        ))
+                    .toList(),
+              ]),
+        ),
+        if (showBodyAreas)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                spacing: 4,
+                runSpacing: 4,
+                children: [
+                  ...bodyAreas
+                      .map((bodyArea) => Tag(
+                          tag: bodyArea.name,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 4)))
+                      .toList(),
+                ]),
+          ),
+        HorizontalLine(verticalPadding: 8)
+      ],
     );
   }
 }

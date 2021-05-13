@@ -108,8 +108,9 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
 
               /// Timed moves show no rep info as this is handled by [timeTakenMs] field in the loggedWorkoutMove.
               if (loggedWorkoutMove.repType != WorkoutMoveRepType.time)
-                _buildRepDisplay(),
-              if (loggedWorkoutMove.timeTakenMs != null)
+                _buildRepDisplay()
+              else if (loggedWorkoutMove.timeTakenMs != null &&
+                  loggedWorkoutMove.timeTakenMs! ~/ 1000 != 0)
                 MyText(
                   '${(loggedWorkoutMove.timeTakenMs! ~/ 1000).secondsToTimeDisplay()}',
                   weight: FontWeight.bold,
