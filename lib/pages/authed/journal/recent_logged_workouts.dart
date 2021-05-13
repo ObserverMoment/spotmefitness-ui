@@ -1,6 +1,6 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_card_swipper/flutter_card_swiper.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
@@ -58,25 +58,22 @@ class RecentLoggedWorkouts extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 230,
-                child: LayoutBuilder(
-                    builder: (context, constraints) => Swiper(
-                        itemBuilder: (c, i) => Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: GestureDetector(
-                                  onTap: () => context.pushRoute(
-                                      LoggedWorkoutDetailsRoute(
-                                          id: logs[i].id)),
-                                  child: LoggedWorkoutCard(logs[i])),
-                            ),
+              LayoutBuilder(
+                  builder: (context, constraints) => CarouselSlider.builder(
+                        options: CarouselOptions(
+                          height: 240,
+                          viewportFraction: 0.93,
+                          enableInfiniteScroll: false,
+                        ),
                         itemCount: logs.length,
-                        itemWidth: constraints.maxWidth,
-                        itemHeight: 220,
-                        viewportFraction: 0.93,
-                        scale: 0.97,
-                        loop: false)),
-              ),
+                        itemBuilder: (c, i, _) => Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: GestureDetector(
+                              onTap: () => context.pushRoute(
+                                  LoggedWorkoutDetailsRoute(id: logs[i].id)),
+                              child: LoggedWorkoutCard(logs[i])),
+                        ),
+                      )),
             ],
           );
         });

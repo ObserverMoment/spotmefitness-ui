@@ -10,7 +10,9 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 
 class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
   final LoggedWorkoutSection section;
-  LoggedWorkoutSectionSummaryTag(this.section);
+  final FONTSIZE fontsize;
+  LoggedWorkoutSectionSummaryTag(this.section,
+      {this.fontsize = FONTSIZE.SMALL});
 
   /// The number of reps as specified by the workout plan. For AMRAPs etc use [repsScore].
   int _reps() =>
@@ -21,7 +23,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
 
   Widget _text(String t) => MyText(
         t,
-        size: FONTSIZE.SMALL,
+        size: fontsize,
       );
 
   List<Widget> _build() {
@@ -68,7 +70,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
           children: [
             MyText(
               '${section.workoutSectionType.name} ',
-              size: FONTSIZE.SMALL,
+              size: fontsize,
               color: Styles.colorTwo,
             ),
             Row(

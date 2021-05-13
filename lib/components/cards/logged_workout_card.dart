@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section_summary_tag.dart';
+import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -36,6 +36,7 @@ class LoggedWorkoutCard extends StatelessWidget {
         }
       }
     }
+
     final bool sectionTagsOverflow =
         loggedWorkout.loggedWorkoutSections.length > kNumSectionTags;
 

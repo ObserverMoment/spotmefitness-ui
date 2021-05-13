@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 class LoggedWorkoutCreatorSection extends StatelessWidget {
   final int sectionIndex;
@@ -70,7 +71,8 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
         .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSet>>((b) => b
             .loggedWorkout
             .loggedWorkoutSections[sectionIndex]
-            .loggedWorkoutSets);
+            .loggedWorkoutSets)
+        .sortedBy<num>((s) => s.setIndex);
 
     return Column(
       children: [

@@ -5,16 +5,27 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:collection/collection.dart';
 
+/// Can either create a new logged workout or edit (in real time) and already existing one.
+/// Create: The full object is constructed on the client and then saved as a whole to the API when the user is done.
+/// Edit: Edits are made an saved to the API in real time incrementally.
 class LoggedWorkoutCreatorBloc extends ChangeNotifier {
-  final Workout workout;
+  final Workout? workout;
   final ScheduledWorkout? scheduledWorkout;
+  final LoggedWorkout? initialLoggedWorkout;
 
   late LoggedWorkout loggedWorkout;
   List<LoggedWorkoutSection> sectionsToIncludeInLog = [];
 
-  LoggedWorkoutCreatorBloc({required this.workout, this.scheduledWorkout}) {
-    loggedWorkout = workoutToLoggedWorkout(
-        workout: workout, scheduledWorkout: scheduledWorkout);
+  LoggedWorkoutCreatorBloc(
+      {this.initialLoggedWorkout, this.workout, this.scheduledWorkout})
+      : assert(workout != null || initialLoggedWorkout != null,
+            'Must provide either a workout (to creating a logged workout from) or a loggedWorkout (to edit)') {
+    if (initialLoggedWorkout != null) {
+      loggedWorkout = LoggedWorkout.fromJson(initialLoggedWorkout!.toJson());
+    } else {
+      loggedWorkout = workoutToLoggedWorkout(
+          workout: workout, scheduledWorkout: scheduledWorkout);
+    }
   }
 
   bool showFullSetInfo = true;
