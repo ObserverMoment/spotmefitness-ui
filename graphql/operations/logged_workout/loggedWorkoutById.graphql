@@ -1,6 +1,6 @@
 query loggedWorkoutById($id: ID!) {
   loggedWorkoutById(id: $id) {
-    ...LoggedWorkoutFields
+    ...LoggedWorkout
     GymProfile {
       ...GymProfile
       Equipments {
@@ -8,14 +8,14 @@ query loggedWorkoutById($id: ID!) {
       }
     }
     LoggedWorkoutSections {
-      ...LoggedWorkoutSectionFields
+      ...LoggedWorkoutSection
       WorkoutSectionType {
         ...WorkoutSectionType
       }
       LoggedWorkoutSets {
-        ...LoggedWorkoutSetFields
+        ...LoggedWorkoutSet
         LoggedWorkoutMoves {
-          ...LoggedWorkoutMoveFields
+          ...LoggedWorkoutMove
           Equipment {
             ...Equipment
           }

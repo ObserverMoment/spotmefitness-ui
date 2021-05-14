@@ -4,12 +4,12 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_body.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_times.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_section.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details.page.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class LoggedWorkoutSectionDetailsEditable extends StatefulWidget {
   final int sectionIndex;
@@ -39,6 +39,13 @@ class _LoggedWorkoutSectionDetailsEditableState
     setState(() => _activeTabIndex = index);
   }
 
+  void _undoAllChanges() {
+    context.showConfirmDialog(
+        title: 'Undo all changes?',
+        onConfirm: () =>
+            context.read<LoggedWorkoutCreatorBloc>().revertChangesToSection());
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -51,11 +58,20 @@ class _LoggedWorkoutSectionDetailsEditableState
         context.select<LoggedWorkoutCreatorBloc, LoggedWorkoutSection>(
             (b) => b.loggedWorkout.loggedWorkoutSections[widget.sectionIndex]);
 
+    final sectionHasUnsavedChanges =
+        context.select<LoggedWorkoutCreatorBloc, bool>(
+            (b) => b.sectionHasUnsavedChanges);
+
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          middle: NavBarTitle(Utils.textNotNull(section.name)
+        navigationBar: CreateEditPageNavBar(
+          formIsDirty: sectionHasUnsavedChanges,
+          handleClose: context.pop,
+          handleSave: () =>
+              context.read<LoggedWorkoutCreatorBloc>().saveAllChanges(),
+          inputValid: true,
+          title: Utils.textNotNull(section.name)
               ? section.name!
-              : 'Section ${widget.sectionIndex + 1} Log'),
+              : 'Section ${widget.sectionIndex + 1} Log',
         ),
         child: Column(
           children: [
@@ -82,7 +98,10 @@ class _LoggedWorkoutSectionDetailsEditableState
                                   showBodyAreas: false))
                         ];
                       },
-                      body: LoggedWorkoutCreatorSection(widget.sectionIndex),
+                      body: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: LoggedWorkoutCreatorSection(widget.sectionIndex),
+                      ),
                     ),
                   ),
                   LoggedWorkoutSectionBody(widget.sectionIndex),

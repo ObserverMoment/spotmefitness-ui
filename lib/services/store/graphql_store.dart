@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:artemis/artemis.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
@@ -306,7 +307,9 @@ class GraphQLStore {
     }
 
     if (!result.hasErrors) {
-      final data = response.data?[mutation.operationName] ?? {};
+      /// Check for a top level field alias - these are needed sometimes due to the way Artemis generates return types for operations.
+      final alias = extractRootFieldAliasFromOperation(mutation);
+      final data = response.data?[alias ?? mutation.operationName] ?? {};
 
       normalizeToStore(
           data: data,
@@ -391,7 +394,10 @@ class GraphQLStore {
     }
 
     if (writeToStore && !result.hasErrors) {
-      final data = response.data?[mutation.operationName] ?? {};
+      /// Check for a top level field alias - these are needed sometimes due to the way Artemis generates return types for operations.
+      final alias = extractRootFieldAliasFromOperation(mutation);
+
+      final data = response.data?[alias ?? mutation.operationName] ?? {};
 
       normalizeToStore(
           data: data,
@@ -415,6 +421,7 @@ class GraphQLStore {
 
   /// Delete ops should always return the ID of the deleted item.
   /// [objectId] as standard - [type:id]
+  /// Runs [_deleteRootObject()] so (currently) should only be used to delete root objects that are being normalized, not nested objects.
   Future<MutationResult<TData>>
       delete<TData, TVars extends json.JsonSerializable>(
           {required GraphQLQuery<TData, TVars> mutation,

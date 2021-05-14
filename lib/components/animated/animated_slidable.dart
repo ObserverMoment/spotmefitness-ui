@@ -21,6 +21,7 @@ class AnimatedSlidable extends StatefulWidget {
   final bool enabled;
   final String itemType;
   final String? itemName;
+  final String? confirmMessage;
   AnimatedSlidable({
     required this.key,
     required this.child,
@@ -30,6 +31,7 @@ class AnimatedSlidable extends StatefulWidget {
     this.enabled = true,
     required this.itemType,
     this.itemName,
+    this.confirmMessage,
   });
   @override
   _AnimatedSlidableState createState() => _AnimatedSlidableState();
@@ -104,6 +106,7 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
     context.showConfirmDeleteDialog(
         itemType: widget.itemType,
         itemName: widget.itemName,
+        message: widget.confirmMessage,
         onConfirm: _beginExitAnimation);
   }
 

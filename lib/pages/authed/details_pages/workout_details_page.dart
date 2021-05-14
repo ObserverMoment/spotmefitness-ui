@@ -306,14 +306,13 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                           icon: Icon(CupertinoIcons.share),
                           onPressed: () => print('share')),
                       if (isOwner)
-                        if (isOwner)
-                          BottomSheetMenuItem(
-                              text: 'Edit',
-                              icon: Icon(CupertinoIcons.pencil),
-                              onPressed: () => context.push(
-                                      child: WorkoutCreator(
-                                    workout: workout,
-                                  ))),
+                        BottomSheetMenuItem(
+                            text: 'Edit',
+                            icon: Icon(CupertinoIcons.pencil),
+                            onPressed: () => context.push(
+                                    child: WorkoutCreator(
+                                  workout: workout,
+                                ))),
                       if (isOwner ||
                           workout.contentAccessScope ==
                               ContentAccessScope.public)

@@ -24,6 +24,7 @@ const kWorkoutSectionTypename = 'WorkoutSection';
 const kWorkoutSetTypename = 'WorkoutSet';
 const kWorkoutMoveTypename = 'WorkoutMove';
 
+const kLoggedWorkoutTypename = 'LoggedWorkout';
 const kLoggedWorkoutSectionTypename = 'LoggedWorkoutSection';
 const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
 const kLoggedWorkoutMoveTypename = 'LoggedWorkoutMove';

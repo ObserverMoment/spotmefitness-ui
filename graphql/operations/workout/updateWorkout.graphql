@@ -1,6 +1,6 @@
 mutation updateWorkout($data: UpdateWorkoutInput!) {
   updateWorkout: updateWorkout(data: $data) {
-    ...WorkoutFields
+    ...Workout
     WorkoutGoals {
       ...WorkoutGoal
     }

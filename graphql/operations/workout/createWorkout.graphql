@@ -1,6 +1,6 @@
 mutation createWorkout($data: CreateWorkoutInput!) {
   createWorkout: createWorkout(data: $data) {
-    ...WorkoutFields
+    ...Workout
     User {
       ...UserSummary
     }

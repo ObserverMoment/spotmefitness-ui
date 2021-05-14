@@ -29,7 +29,7 @@ class ProfilePersonalPage extends StatelessWidget {
           'data': {key: value}
         },
         broadcastQueryIds: [
-          kAuthedUserQuery
+          AuthedUserQuery().operationName
         ],
         optimisticData: {
           '__typename': 'User',

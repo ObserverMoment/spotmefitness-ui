@@ -42,8 +42,7 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
           color: Styles.infoBlue,
         ));
 
-    final result =
-        await context.read<LoggedWorkoutCreatorBloc>().createAndSave(context);
+    final result = await bloc.createAndSave(context);
 
     context.pop(); // Close loading alert.
 
@@ -53,7 +52,7 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
     } else {
       await context.showSuccessAlert(
         'Workout Logged!',
-        'You can go to Journals -> Logs to view it.',
+        'You can go to Journals > Logs to view it.',
       );
       context.pop(); // Close the logged workout creator.
     }
@@ -68,12 +67,13 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => LoggedWorkoutCreatorBloc(workout: widget.workout),
+      create: (context) =>
+          LoggedWorkoutCreatorBloc(context: context, workout: widget.workout),
       builder: (context, child) {
         final includedSections = context
             .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
                 (b) => b.sectionsToIncludeInLog)
-            .sortedBy<num>((s) => s.sectionIndex);
+            .sortedBy<num>((s) => s.sortPosition);
 
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
@@ -116,8 +116,10 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
                         child: LoggedWorkoutCreatorMeta(),
                       ),
                       ...includedSections
-                          .map((section) =>
-                              LoggedWorkoutCreatorSection(section.sectionIndex))
+                          .map((section) => LoggedWorkoutCreatorSection(
+                                section.sortPosition,
+                                showLapTimesButton: true,
+                              ))
                           .toList()
                     ],
                   ),

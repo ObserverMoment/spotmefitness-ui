@@ -1,6 +1,6 @@
 mutation duplicateWorkoutById($id: ID!) {
   duplicateWorkoutById(id: $id) {
-    ...WorkoutFields
+    ...Workout
     User {
       ...UserSummary
     }

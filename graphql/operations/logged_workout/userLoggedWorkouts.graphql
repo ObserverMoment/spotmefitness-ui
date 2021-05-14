@@ -1,6 +1,6 @@
 query userLoggedWorkouts {
   userLoggedWorkouts {
-    ...LoggedWorkoutFields
+    ...LoggedWorkout
     GymProfile {
       ...GymProfile
       Equipments {
@@ -8,14 +8,14 @@ query userLoggedWorkouts {
       }
     }
     LoggedWorkoutSections {
-      ...LoggedWorkoutSectionFields
+      ...LoggedWorkoutSection
       WorkoutSectionType {
         ...WorkoutSectionType
       }
       LoggedWorkoutSets {
-        ...LoggedWorkoutSetFields
+        ...LoggedWorkoutSet
         LoggedWorkoutMoves {
-          ...LoggedWorkoutMoveFields
+          ...LoggedWorkoutMove
           Equipment {
             ...Equipment
           }

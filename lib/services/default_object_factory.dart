@@ -12,13 +12,13 @@ class DefaultObjectfactory {
   }
 
   static LoggedWorkoutSet defaultLoggedWorkoutSet(
-      {required int setIndex, Map? roundTimesMs}) {
+      {required int sortPosition, Map? roundTimesMs}) {
     return LoggedWorkoutSet()
       ..$$typename = kLoggedWorkoutSetTypename
-      ..id = 'temp-$kLoggedWorkoutSetTypename-$setIndex'
+      ..id = 'temp-$kLoggedWorkoutSetTypename-$sortPosition'
       ..roundsCompleted = 1
       ..roundTimesMs = roundTimesMs ?? {}
-      ..setIndex = setIndex
+      ..sortPosition = sortPosition
       ..loggedWorkoutMoves = [];
   }
 

@@ -1,6 +1,6 @@
 mutation createLoggedWorkout($data: CreateLoggedWorkoutInput!) {
   createLoggedWorkout(data: $data) {
-    ...LoggedWorkoutFields
+    ...LoggedWorkout
     GymProfile {
       ...GymProfile
       Equipments {
@@ -8,14 +8,14 @@ mutation createLoggedWorkout($data: CreateLoggedWorkoutInput!) {
       }
     }
     LoggedWorkoutSections {
-      ...LoggedWorkoutSectionFields
+      ...LoggedWorkoutSection
       WorkoutSectionType {
         ...WorkoutSectionType
       }
       LoggedWorkoutSets {
-        ...LoggedWorkoutSetFields
+        ...LoggedWorkoutSet
         LoggedWorkoutMoves {
-          ...LoggedWorkoutMoveFields
+          ...LoggedWorkoutMove
           Equipment {
             ...Equipment
           }

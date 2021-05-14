@@ -1,4 +1,4 @@
-fragment LoggedWorkoutFields on LoggedWorkout {
+fragment LoggedWorkout on LoggedWorkout {
   __typename
   id
   completedOn
@@ -6,7 +6,7 @@ fragment LoggedWorkoutFields on LoggedWorkout {
   name
 }
 
-fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
+fragment LoggedWorkoutSection on LoggedWorkoutSection {
   __typename
   id
   name
@@ -16,19 +16,20 @@ fragment LoggedWorkoutSectionFields on LoggedWorkoutSection {
   repScore
   timeTakenMs
   roundTimesMs
-  sectionIndex
+  sortPosition
 }
 
-fragment LoggedWorkoutSetFields on LoggedWorkoutSet {
+fragment LoggedWorkoutSet on LoggedWorkoutSet {
   __typename
   id
   note
   roundsCompleted
+  duration
   roundTimesMs
-  setIndex
+  sortPosition
 }
 
-fragment LoggedWorkoutMoveFields on LoggedWorkoutMove {
+fragment LoggedWorkoutMove on LoggedWorkoutMove {
   __typename
   id
   note

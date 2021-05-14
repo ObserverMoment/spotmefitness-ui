@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
@@ -12,13 +13,15 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class LoggedWorkoutDetailsPage extends StatelessWidget {
   final String id;
@@ -36,6 +39,47 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         DateTime(prev.year, prev.month, prev.day, time.hour, time.minute));
   }
 
+  Future<void> _deleteLoggedWorkout(BuildContext context) async {
+    await context.showConfirmDialog(
+        title: 'Delete this workout log?',
+        content: MyText(
+          'This cannot be undone.',
+          maxLines: 3,
+        ),
+        onConfirm: () async {
+          context.showLoadingAlert('Deleting...',
+              icon: Icon(
+                CupertinoIcons.delete_simple,
+                color: Styles.errorRed,
+              ));
+
+          final result = await context.graphQLStore
+              .delete<DeleteLoggedWorkoutById$Mutation, json.JsonSerializable>(
+            typename: kLoggedWorkoutTypename,
+            objectId: id,
+            mutation: DeleteLoggedWorkoutByIdMutation(
+              variables: DeleteLoggedWorkoutByIdArguments(id: id),
+            ),
+            removeRefFromQueries: [UserLoggedWorkoutsQuery().operationName],
+            broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName],
+          );
+
+          if (result.hasErrors) {
+            context.pop(); // The showLoadingAlert
+            context.showErrorAlert(
+                'Something went wrong, the log was not deleted correctly');
+          } else {
+            context.pop(); // The showLoadingAlert
+            context.pop(); // The screen.
+          }
+        });
+  }
+
+  Future<void> _deleteLoggedWorkoutSection(
+      LoggedWorkoutCreatorBloc bloc, int sectionIndex) async {
+    await bloc.deleteLoggedWorkoutSection(sectionIndex);
+  }
+
   @override
   Widget build(BuildContext context) {
     final query =
@@ -49,15 +93,18 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
           final log = data.loggedWorkoutById;
 
           return ChangeNotifierProvider(
-            create: (context) =>
-                LoggedWorkoutCreatorBloc(initialLoggedWorkout: log),
+            create: (context) => LoggedWorkoutCreatorBloc(
+                context: context, initialLoggedWorkout: log),
             builder: (context, child) {
               final bloc = context.read<LoggedWorkoutCreatorBloc>();
 
               final sortedSections = context
                   .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
                       (b) => b.loggedWorkout.loggedWorkoutSections)
-                  .sortedBy<num>((s) => s.sectionIndex);
+                  .sortedBy<num>((s) => s.sortPosition);
+
+              final name = context.select<LoggedWorkoutCreatorBloc, String>(
+                  (b) => b.loggedWorkout.name);
 
               final note = context.select<LoggedWorkoutCreatorBloc, String?>(
                   (b) => b.loggedWorkout.note);
@@ -73,8 +120,62 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
               return CupertinoPageScaffold(
                 navigationBar: BasicNavBar(
                   middle: NavBarTitle(log.name),
-                  trailing: NavBarEllipsisMenu(
-                    items: [],
+                  trailing: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: Icon(CupertinoIcons.ellipsis_circle),
+                    onPressed: () => context.showBottomSheet(
+                        child: BottomSheetMenu(
+                            header: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      MyText(
+                                        name,
+                                        weight: FontWeight.bold,
+                                        size: FONTSIZE.BIG,
+                                      ),
+                                      MyText(
+                                        'Logged Workout',
+                                        subtext: true,
+                                        weight: FontWeight.bold,
+                                        size: FONTSIZE.BIG,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            items: [
+                          BottomSheetMenuItem(
+                              text: 'Share',
+                              icon: Icon(CupertinoIcons.share),
+                              onPressed: () => print('share flow')),
+                          BottomSheetMenuItem(
+                              text: 'Do again',
+                              icon: Icon(CupertinoIcons.repeat),
+                              onPressed: () => print('repeat flow')),
+                          BottomSheetMenuItem(
+                              text: 'Original workout',
+                              icon: Icon(CupertinoIcons.eye),
+                              onPressed: () => print('go to original workout')),
+                          BottomSheetMenuItem(
+                              text: 'Export',
+                              icon: Icon(CupertinoIcons.download_circle),
+                              onPressed: () => print('export')),
+                          BottomSheetMenuItem(
+                              text: 'Delete',
+                              icon: Icon(
+                                CupertinoIcons.delete_simple,
+                                color: Styles.errorRed,
+                              ),
+                              isDestructive: true,
+                              onPressed: () => _deleteLoggedWorkout(context)),
+                        ])),
                   ),
                 ),
                 child: ListView(
@@ -137,15 +238,14 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(6.0),
                       child: MyText(
                         'Logged Sections',
                         weight: FontWeight.bold,
                         textAlign: TextAlign.center,
-                        decoration: TextDecoration.underline,
                       ),
                     ),
-                    HorizontalLine(),
+                    HorizontalLine(verticalPadding: 0),
                     ...sortedSections
                         .map((s) => GestureDetector(
                             behavior: HitTestBehavior.opaque,
@@ -156,8 +256,17 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                                             .read<LoggedWorkoutCreatorBloc>(),
                                         child:
                                             LoggedWorkoutSectionDetailsEditable(
-                                                s.sectionIndex)))),
-                            child: LoggedWorkoutSectionSummary(s)))
+                                                s.sortPosition)))),
+                            child: AnimatedSlidable(
+                                key: Key('Index - ${s.sortPosition} - ${s.id}'),
+                                child: LoggedWorkoutSectionSummary(s),
+                                removeItem: (index) =>
+                                    _deleteLoggedWorkoutSection(bloc, index),
+                                secondaryActions: [],
+                                index: s.sortPosition,
+                                confirmMessage:
+                                    'This cannot be undone. Are you sure?',
+                                itemType: 'Logged Section')))
                         .toList()
                   ],
                 ),
@@ -191,53 +300,60 @@ class LoggedWorkoutSectionSummary extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: LoggedWorkoutSectionSummaryTag(
-            loggedWorkoutSection,
-            fontsize: FONTSIZE.MAIN,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: LoggedWorkoutSectionSummaryTag(
+                  loggedWorkoutSection,
+                  fontsize: FONTSIZE.MAIN,
+                ),
+              ),
+              if (Utils.textNotNull(loggedWorkoutSection.name))
+                H3('"${loggedWorkoutSection.name!}"'),
+              if (Utils.textNotNull(loggedWorkoutSection.note))
+                MyText(loggedWorkoutSection.note!),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: [
+                      ...moveTypes
+                          .map((moveType) => Tag(
+                                tag: moveType.name,
+                                withBorder: true,
+                                color: context.theme.background,
+                                textColor: context.theme.primary,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 6),
+                              ))
+                          .toList(),
+                    ]),
+              ),
+              if (showBodyAreas)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                      alignment: WrapAlignment.center,
+                      runAlignment: WrapAlignment.center,
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: [
+                        ...bodyAreas
+                            .map((bodyArea) => Tag(
+                                tag: bodyArea.name,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 4)))
+                            .toList(),
+                      ]),
+                ),
+            ],
           ),
         ),
-        if (Utils.textNotNull(loggedWorkoutSection.name))
-          H3('"${loggedWorkoutSection.name!}"'),
-        if (Utils.textNotNull(loggedWorkoutSection.note))
-          MyText(loggedWorkoutSection.note!),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Wrap(
-              alignment: WrapAlignment.center,
-              runAlignment: WrapAlignment.center,
-              spacing: 4,
-              runSpacing: 4,
-              children: [
-                ...moveTypes
-                    .map((moveType) => Tag(
-                          tag: moveType.name,
-                          withBorder: true,
-                          color: context.theme.background,
-                          textColor: context.theme.primary,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 6),
-                        ))
-                    .toList(),
-              ]),
-        ),
-        if (showBodyAreas)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                spacing: 4,
-                runSpacing: 4,
-                children: [
-                  ...bodyAreas
-                      .map((bodyArea) => Tag(
-                          tag: bodyArea.name,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 4)))
-                      .toList(),
-                ]),
-          ),
-        HorizontalLine(verticalPadding: 8)
+        HorizontalLine(verticalPadding: 0)
       ],
     );
   }

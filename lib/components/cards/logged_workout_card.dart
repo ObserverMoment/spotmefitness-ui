@@ -24,7 +24,7 @@ class LoggedWorkoutCard extends StatelessWidget {
     Set<MoveType> moveTypes = {};
 
     final sortedSections = loggedWorkout.loggedWorkoutSections
-        .sortedBy<num>((s) => s.sectionIndex);
+        .sortedBy<num>((s) => s.sortPosition);
 
     for (final workoutSection in sortedSections) {
       for (final workoutSet in workoutSection.loggedWorkoutSets) {

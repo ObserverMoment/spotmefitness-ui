@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_times.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/logging/reps_score_picker.dart';
@@ -18,12 +20,23 @@ import 'package:collection/collection.dart';
 
 class LoggedWorkoutCreatorSection extends StatelessWidget {
   final int sectionIndex;
-  LoggedWorkoutCreatorSection(this.sectionIndex);
+
+  /// In the LoggedWorkoutCreator (create from a workout) you need to show this button on the section screen. When in the editable logged workout details component you do not need to show this because each section has its own tab called 'Laptimes' where this detail can be viewed / edited.
+  final bool showLapTimesButton;
+  LoggedWorkoutCreatorSection(this.sectionIndex,
+      {this.showLapTimesButton = false});
 
   void _addLoggedWorkoutSet(
       BuildContext context, LoggedWorkoutSet templateSet) {
     context.read<LoggedWorkoutCreatorBloc>().addLoggedWorkoutSet(sectionIndex,
         roundTimesMs: templateSet.roundTimesMs);
+  }
+
+  Future<void> _openLapTimes(BuildContext context) async {
+    final bloc = context.read<LoggedWorkoutCreatorBloc>();
+    context.showBottomSheet(
+        child: ChangeNotifierProvider.value(
+            value: bloc, child: LoggedWorkoutSectionTimes(sectionIndex)));
   }
 
   Widget _buildSectionRepeats(
@@ -79,14 +92,17 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
             .loggedWorkout
             .loggedWorkoutSections[sectionIndex]
             .loggedWorkoutSets)
-        .sortedBy<num>((s) => s.setIndex);
+        .sortedBy<num>((s) => s.sortPosition);
 
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            WorkoutSectionTypeTag(loggedWorkoutSection.workoutSectionType.name),
+            WorkoutSectionTypeTag(
+              loggedWorkoutSection.workoutSectionType.name,
+              timecap: loggedWorkoutSection.timecap,
+            ),
             if ([kFreeSessionName, kForTimeName]
                 .contains(loggedWorkoutSection.workoutSectionType.name))
               DurationPickerDisplay(
@@ -95,7 +111,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                     : null,
                 updateDuration: (duration) => context
                     .read<LoggedWorkoutCreatorBloc>()
-                    .updateSectionTimeTakenMs(loggedWorkoutSection.sectionIndex,
+                    .updateSectionTimeTakenMs(loggedWorkoutSection.sortPosition,
                         duration.inMilliseconds),
               ),
             if ([kEMOMName, kHIITCircuitName, kTabataName]
@@ -109,21 +125,24 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
               ),
             if ([kAMRAPName, kLastStandingName]
                 .contains(loggedWorkoutSection.workoutSectionType.name))
-              Row(
-                children: [
-                  MyText(
-                    'Score: ',
-                    weight: FontWeight.bold,
+              RepsScoreDisplay(
+                  score: repScore,
+                  section: loggedWorkoutSection,
+                  updateScore: (int score) => context
+                      .read<LoggedWorkoutCreatorBloc>()
+                      .updateSectionRepsScore(
+                          loggedWorkoutSection.sortPosition, score)),
+            if (showLapTimesButton &&
+                !([kEMOMName, kHIITCircuitName, kTabataName]
+                    .contains(loggedWorkoutSection.workoutSectionType.name)))
+              BorderButton(
+                  text: 'Times',
+                  prefix: Icon(
+                    CupertinoIcons.timer,
+                    size: 14,
                   ),
-                  RepsScoreDisplay(
-                      score: repScore,
-                      section: loggedWorkoutSection,
-                      updateScore: (int score) => context
-                          .read<LoggedWorkoutCreatorBloc>()
-                          .updateSectionRepsScore(
-                              loggedWorkoutSection.sectionIndex, score)),
-                ],
-              )
+                  onPressed: () => _openLapTimes(context),
+                  mini: true)
           ],
         ),
         SizedBox(height: 6),
@@ -151,7 +170,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 3.0),
                       child: LoggedWorkoutCreatorSet(
-                        sectionIndex: loggedWorkoutSection.sectionIndex,
+                        sectionIndex: loggedWorkoutSection.sortPosition,
                         setIndex: i,
                       ),
                     );

@@ -5,7 +5,7 @@ query userScheduledWorkouts {
     scheduledAt
     note
     Workout {
-      ...WorkoutFields
+      ...Workout
       User {
         ...UserSummary
       }
@@ -50,7 +50,7 @@ query userScheduledWorkouts {
       }
     }
     LoggedWorkoutSummary: LoggedWorkout {
-      ...LoggedWorkoutFields
+      ...LoggedWorkout
     }
     GymProfile {
       ...GymProfile

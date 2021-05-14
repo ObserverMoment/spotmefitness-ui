@@ -105,7 +105,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   /// 2. Witholding these store updates means that you get some optimisation in that UI in the background stack is not being updated every single time a small update is made by the user.
   /// Store gets written and the UI gets updated when the user clicks [done].
   /// This flow should be reviewed at some point.
-  bool saveAllChanges(BuildContext context) {
+  bool saveAllChanges() {
     /// When editing you have (currently!) come from the workout details page which is being fed by an observable query with id [workoutById({id: id})].
     /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
     final success = context.graphQLStore.writeDataToStore(

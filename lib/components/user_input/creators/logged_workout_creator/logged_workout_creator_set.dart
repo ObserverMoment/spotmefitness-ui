@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_c
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -115,7 +116,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
 
   void _updateSetDuration(Duration duration) {
     final updated = LoggedWorkoutSet.fromJson(_loggedWorkoutSet.toJson());
-    updated.roundTimesMs = {'0': duration.inMilliseconds};
+    updated.duration = duration.inSeconds;
     _bloc.editLoggedWorkoutSet(widget.sectionIndex, widget.setIndex, updated);
   }
 
@@ -197,16 +198,18 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
   /// Currently replaces the whole lapTimeMs list with a single input.
   /// To be improved once lap time UI is built and UX is clarified.
   Widget _buildSetTime() {
-    final int ms = (_loggedWorkoutSet.roundTimesMs.values)
-        .fold<num>(0, (acum, next) => acum + next)
-        .toInt();
-    final duration = Duration(milliseconds: ms);
-    return BorderButton(
-        mini: true,
-        text: duration.compactDisplay(),
-        onPressed: () => context.showBottomSheet(
-            child: DurationPicker(
-                duration: duration, updateDuration: _updateSetDuration)));
+    if (_loggedWorkoutSet.duration == null) {
+      throw Exception(
+          'Building set time is only valid for timed workuts EMOM and HIIT Circuit - loggedWorkoutSet.duration should never be null for these types');
+    } else {
+      final duration = Duration(seconds: _loggedWorkoutSet.duration!);
+      return BorderButton(
+          mini: true,
+          text: duration.compactDisplay(),
+          onPressed: () => context.showBottomSheet(
+              child: DurationPicker(
+                  duration: duration, updateDuration: _updateSetDuration)));
+    }
   }
 
   @override
@@ -217,6 +220,9 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
 
   @override
   Widget build(BuildContext context) {
+    final workoutSectionTypename = _bloc.loggedWorkout
+        .loggedWorkoutSections[widget.sectionIndex].workoutSectionType.name;
+
     return Card(
       child: Column(
         children: [
@@ -227,9 +233,10 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
               children: [
                 Row(
                   children: [
-                    _buildSetRepeats(),
-                    if (_loggedWorkoutSet.roundTimesMs.isNotEmpty)
-                      _buildSetTime(),
+                    /// HIIT Circuit - you just loop around the moves in the set - set rounds is always 1.
+                    if (workoutSectionTypename != kHIITCircuitName)
+                      _buildSetRepeats(),
+                    if (_loggedWorkoutSet.duration != null) _buildSetTime(),
                     _buildSetDefinition(),
                     if (Utils.textNotNull(_loggedWorkoutSet.note))
                       CupertinoButton(
@@ -282,7 +289,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                       updateLoggedWorkoutMove: _updateLoggedWorkoutMove,
                       deleteLoggedWorkoutMove: _deleteLoggedWorkoutMove,
                       key: Key(
-                          '${_loggedWorkoutSet.setIndex} - LoggedWorkoutCreatorSet - $index.'),
+                          '${_loggedWorkoutSet.sortPosition} - LoggedWorkoutCreatorSet - $index.'),
                       loggedWorkoutMove: _sortedLoggedWorkoutMoves[index],
                     ),
                   ),

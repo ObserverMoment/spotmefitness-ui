@@ -1,4 +1,4 @@
-fragment WorkoutFields on Workout {
+fragment Workout on Workout {
   __typename
   id
   createdAt

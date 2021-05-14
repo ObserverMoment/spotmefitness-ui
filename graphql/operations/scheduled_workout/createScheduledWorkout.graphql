@@ -5,7 +5,7 @@ mutation createScheduledWorkout($data: CreateScheduledWorkoutInput!) {
     scheduledAt
     note
     Workout {
-      ...WorkoutFields
+      ...Workout
       User {
         ...UserSummary
       }
@@ -50,7 +50,7 @@ mutation createScheduledWorkout($data: CreateScheduledWorkoutInput!) {
       }
     }
     LoggedWorkoutSummary: LoggedWorkout {
-      ...LoggedWorkoutFields
+      ...LoggedWorkout
     }
     GymProfile {
       ...GymProfile

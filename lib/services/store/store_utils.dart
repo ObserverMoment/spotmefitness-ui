@@ -1,4 +1,6 @@
+import 'package:gql/ast.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:artemis/artemis.dart';
 
 const kStoreReferenceKey = '\$ref';
 
@@ -211,4 +213,17 @@ Set<String> _idsInObject(
     );
   }
   return {};
+}
+
+/// TODO: Needs some further research and testing.
+/// Returns null if no alias found.
+String? extractRootFieldAliasFromOperation(GraphQLQuery operation) {
+  final OperationDefinitionNode operationDefinitionNode = operation
+          .document.definitions
+          .firstWhere((node) => node is OperationDefinitionNode)
+      as OperationDefinitionNode;
+
+  return (operationDefinitionNode.selectionSet.selections[0] as FieldNode)
+      .alias
+      ?.value;
 }

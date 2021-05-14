@@ -53,7 +53,7 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
   }
 
   void _saveAndClose(BuildContext context) {
-    final success = context.read<WorkoutCreatorBloc>().saveAllChanges(context);
+    final success = context.read<WorkoutCreatorBloc>().saveAllChanges();
     if (success) {
       context.pop();
     } else {

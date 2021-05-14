@@ -46,6 +46,28 @@ class DataUtils {
     }
   }
 
+  /// Used when creating a log.
+  static Duration calculateTimedLoggedSectionDuration(
+      LoggedWorkoutSection loggedWorkoutSection) {
+    switch (loggedWorkoutSection.workoutSectionType.name) {
+      case kHIITCircuitName:
+      case kEMOMName:
+        return Duration(
+            milliseconds: loggedWorkoutSection.roundsCompleted *
+                loggedWorkoutSection.loggedWorkoutSets
+                    .sumBy((s) => s.duration! * 1000));
+      case kTabataName:
+        return Duration(
+            milliseconds: loggedWorkoutSection.roundsCompleted *
+                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
+                    s.roundsCompleted *
+                    s.loggedWorkoutMoves.sumBy((lwm) => lwm.timeTakenMs!)));
+      default:
+        throw Exception(
+            'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
+    }
+  }
+
   static int workoutMoveTimeRepsInSeconds(WorkoutMove workoutMove) {
     switch (workoutMove.timeUnit) {
       case TimeUnit.hours:
@@ -57,29 +79,6 @@ class DataUtils {
       default:
         throw Exception(
             'DataUtils.workoutMoveTimeRepsInSeconds: ${workoutMove.timeUnit} is not a time unit that we can process.');
-    }
-  }
-
-  /// Used when creating a log.
-  static Duration calculateTimedLoggedSectionDuration(
-      LoggedWorkoutSection loggedWorkoutSection) {
-    switch (loggedWorkoutSection.workoutSectionType.name) {
-      case kHIITCircuitName:
-      case kEMOMName:
-        return Duration(
-            milliseconds: loggedWorkoutSection.roundsCompleted *
-                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
-                    s.roundsCompleted *
-                    (s.roundTimesMs.values as List<int>).sum));
-      case kTabataName:
-        return Duration(
-            milliseconds: loggedWorkoutSection.roundsCompleted *
-                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
-                    s.roundsCompleted *
-                    s.loggedWorkoutMoves.sumBy((lwm) => lwm.timeTakenMs!)));
-      default:
-        throw Exception(
-            'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
     }
   }
 

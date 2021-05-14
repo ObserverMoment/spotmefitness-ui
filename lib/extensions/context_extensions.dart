@@ -144,6 +144,7 @@ extension BuildContextExtension on BuildContext {
   Future<T> showConfirmDeleteDialog<T>({
     required String itemType,
     String? itemName,
+    String? message,
     required void Function() onConfirm,
   }) async {
     final BuildContext context = this;
@@ -162,7 +163,9 @@ extension BuildContextExtension on BuildContext {
                         child: MyText('"$itemName"'),
                       ),
                     MyText(
-                      'Are you sure?',
+                      message ?? 'Are you sure?',
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -192,11 +195,13 @@ extension BuildContextExtension on BuildContext {
   Future<T?> showBottomSheet<T>(
       {required Widget child,
       bool expand = false,
+      bool useRootNavigator = false,
       bool showDragHandle = true}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
+        useRootNavigator: useRootNavigator,
         backgroundColor: context.readTheme.modalBackground,
         barrierColor: Styles.black.withOpacity(0.9),
         builder: (context) => showDragHandle

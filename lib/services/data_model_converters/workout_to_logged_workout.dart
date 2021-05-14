@@ -11,7 +11,7 @@ LoggedWorkout workoutToLoggedWorkout(
     ..completedOn = scheduledWorkout?.scheduledAt ?? DateTime.now()
     ..loggedWorkoutSections = workout != null
         ? workoutSectionsToLoggedWorkoutSections(workout.workoutSections)
-            .sortedBy<num>((ws) => ws.sectionIndex)
+            .sortedBy<num>((ws) => ws.sortPosition)
         : []
     ..gymProfile = scheduledWorkout?.gymProfile
     ..name = name;
@@ -25,11 +25,11 @@ List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
         ..id = 'temp - section - ${ws.sortPosition}'
         ..name = ws.name
         ..loggedWorkoutSets = workoutSetsToLoggedWorkoutSets(ws.workoutSets)
-            .sortedBy<num>((ws) => ws.setIndex)
+            .sortedBy<num>((ws) => ws.sortPosition)
         ..roundsCompleted = ws.rounds
         ..roundTimesMs = {}
         ..timecap = ws.timecap
-        ..sectionIndex = ws.sortPosition
+        ..sortPosition = ws.sortPosition
         ..workoutSectionType =
             WorkoutSectionType.fromJson(ws.workoutSectionType.toJson()))
       .toList();
@@ -40,8 +40,9 @@ List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
   return workoutSets
       .map((workoutSet) => LoggedWorkoutSet()
         ..id = 'temp - set - ${workoutSet.sortPosition}'
-        ..setIndex = workoutSet.sortPosition
+        ..sortPosition = workoutSet.sortPosition
         ..roundsCompleted = workoutSet.rounds
+        ..duration = workoutSet.duration
         ..roundTimesMs = {}
         ..loggedWorkoutMoves =
             workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)

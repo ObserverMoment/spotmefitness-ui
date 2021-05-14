@@ -90,7 +90,7 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
                               duration: duration,
                               updateDuration: (d) => _updateSectionLapTime(
                                   loggedWorkoutSection, sectionRound, d))),
-                      title: 'Round ${sectionRound + 1}',
+                      title: 'Section Round ${sectionRound + 1}',
                       display: duration != null
                           ? MyText(duration.compactDisplay())
                           : MyText(
@@ -103,7 +103,7 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 32.0),
                           child: SetRoundsLogTimes(
-                              loggedWorkoutSection.sectionIndex),
+                              loggedWorkoutSection.sortPosition),
                         ),
                       ),
                     HorizontalLine()
@@ -128,9 +128,8 @@ class SetRoundsLogTimes extends StatelessWidget {
 
     updated.roundTimesMs[roundIndex.toString()] = duration.inMilliseconds;
 
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .editLoggedWorkoutSet(sectionIndex, loggedWorkoutSet.setIndex, updated);
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSet(
+        sectionIndex, loggedWorkoutSet.sortPosition, updated);
   }
 
   @override
@@ -140,7 +139,7 @@ class SetRoundsLogTimes extends StatelessWidget {
             .loggedWorkout
             .loggedWorkoutSections[sectionIndex]
             .loggedWorkoutSets)
-        .sortedBy<num>((s) => s.setIndex);
+        .sortedBy<num>((s) => s.sortPosition);
 
     return ListView.builder(
       shrinkWrap: true,
@@ -148,33 +147,43 @@ class SetRoundsLogTimes extends StatelessWidget {
       itemCount: loggedWorkoutSets.length,
       itemBuilder: (c, i) {
         final workoutSet = loggedWorkoutSets[i];
-        return ListView(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          children: List.generate(
-            workoutSet.roundsCompleted,
-            (setRound) {
-              final setLapTimeMs = workoutSet.roundTimesMs[setRound.toString()];
-              final duration = setLapTimeMs != null
-                  ? Duration(milliseconds: setLapTimeMs)
-                  : null;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MyText('Set ${workoutSet.sortPosition + 1}'),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: ListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: List.generate(
+                  workoutSet.roundsCompleted,
+                  (setRound) {
+                    final setLapTimeMs =
+                        workoutSet.roundTimesMs[setRound.toString()];
+                    final duration = setLapTimeMs != null
+                        ? Duration(milliseconds: setLapTimeMs)
+                        : null;
 
-              return TappableRow(
-                onTap: () => context.showBottomSheet(
-                    child: DurationPicker(
-                        duration: duration,
-                        updateDuration: (d) => _updateSetLapTime(
-                            context, workoutSet, setRound, d))),
-                title: 'Set ${workoutSet.setIndex + 1} - Round ${setRound + 1}',
-                display: duration != null
-                    ? MyText(duration.compactDisplay())
-                    : MyText(
-                        'Add time...',
-                        subtext: true,
-                      ),
-              );
-            },
-          ),
+                    return TappableRow(
+                      onTap: () => context.showBottomSheet(
+                          child: DurationPicker(
+                              duration: duration,
+                              updateDuration: (d) => _updateSetLapTime(
+                                  context, workoutSet, setRound, d))),
+                      title: 'Round ${setRound + 1}',
+                      display: duration != null
+                          ? MyText(duration.compactDisplay())
+                          : MyText(
+                              'Add time...',
+                              subtext: true,
+                            ),
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
         );
       },
     );

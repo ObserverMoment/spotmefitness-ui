@@ -1,0 +1,3 @@
+mutation deleteLoggedWorkoutMoveById($id: ID!) {
+  deleteLoggedWorkoutMoveById(id: $id)
+}

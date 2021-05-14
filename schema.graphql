@@ -426,7 +426,7 @@ type LoggedWorkout {
 type LoggedWorkoutSection {
   id: ID!
   name: String
-  sectionIndex: Int!
+  sortPosition: Int!
   timecap: Int
   roundsCompleted: Int!
   timeTakenMs: Int
@@ -441,8 +441,9 @@ type LoggedWorkoutSection {
 type LoggedWorkoutSet {
   id: ID!
   note: String
-  setIndex: Int!
+  sortPosition: Int!
   roundsCompleted: Int!
+  duration: Int
   roundTimesMs: JSON!
   LoggedWorkoutMoves: [LoggedWorkoutMove!]!
 }
@@ -477,7 +478,7 @@ input CreateLoggedWorkoutInput {
 input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   name: String
   note: String
-  sectionIndex: Int!
+  sortPosition: Int!
   roundsCompleted: Int!
   timeTakenMs: Int
   roundTimesMs: JSON
@@ -488,9 +489,10 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
 }
 
 input CreateLoggedWorkoutSetInLoggedSectionInput {
-  setIndex: Int!
+  sortPosition: Int!
   note: String
   roundsCompleted: Int!
+  duration: Int
   roundTimesMs: JSON
   LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
 }
@@ -512,7 +514,7 @@ input CreateLoggedWorkoutMoveInLoggedSetInput {
 input CreateLoggedWorkoutSectionInput {
   name: String
   note: String
-  sectionIndex: Int!
+  sortPosition: Int!
   roundsCompleted: Int!
   timeTakenMs: Int
   roundTimesMs: JSON
@@ -523,9 +525,10 @@ input CreateLoggedWorkoutSectionInput {
 }
 
 input CreateLoggedWorkoutSetInput {
-  setIndex: Int!
+  sortPosition: Int!
   note: String
   roundsCompleted: Int!
+  duration: Int
   roundTimesMs: JSON
   LoggedWorkoutSection: ConnectRelationInput!
 }
@@ -566,6 +569,7 @@ input UpdateLoggedWorkoutSectionInput {
 input UpdateLoggedWorkoutSetInput {
   id: ID!
   note: String
+  duration: Int
   roundsCompleted: Int
   roundTimesMs: JSON
 }
