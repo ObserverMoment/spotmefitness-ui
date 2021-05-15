@@ -236,10 +236,12 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final query =
+        WorkoutByIdQuery(variables: WorkoutByIdArguments(id: widget.id));
+
     return QueryObserver<WorkoutById$Query, WorkoutByIdArguments>(
-        key: Key(
-            'YourWorkoutsPage - ${UserWorkoutsQuery().operationName}-${widget.id}'),
-        query: WorkoutByIdQuery(variables: WorkoutByIdArguments(id: widget.id)),
+        key: Key('YourWorkoutsPage - ${query.operationName}-${widget.id}'),
+        query: query,
         fetchPolicy: QueryFetchPolicy.storeAndNetwork,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Workout Details'),

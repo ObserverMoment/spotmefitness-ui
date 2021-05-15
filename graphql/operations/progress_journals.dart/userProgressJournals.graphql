@@ -1,0 +1,8 @@
+query userProgressJournals {
+  userProgressJournals {
+    ...ProgressJournal
+    ProgressJournalEntries {
+      ...ProgressJournalEntry
+    }
+  }
+}

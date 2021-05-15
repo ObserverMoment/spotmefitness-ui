@@ -25,7 +25,6 @@ fragment LoggedWorkoutSet on LoggedWorkoutSet {
   note
   roundsCompleted
   duration
-  roundTimesMs
   sortPosition
 }
 
@@ -40,5 +39,4 @@ fragment LoggedWorkoutMove on LoggedWorkoutMove {
   loadAmount
   loadUnit
   timeUnit
-  timeTakenMs
 }

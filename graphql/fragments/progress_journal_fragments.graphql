@@ -1,0 +1,40 @@
+fragment ProgressJournal on ProgressJournal {
+  __typename
+  id
+  createdAt
+  name
+  description
+}
+
+fragment ProgressJournalEntry on ProgressJournalEntry {
+  __typename
+  id
+  createdAt
+  note
+  voiceNoteUri
+  # Always save in KGs
+  bodyweight
+  moodScore
+  energyScore
+  stressScore
+  motivationScore
+  progressPhotoUris
+}
+
+fragment ProgressJournalGoal on ProgressJournalGoal {
+  __typename
+  id
+  createdAt
+  name
+  description
+  deadline
+  completedDate
+}
+
+fragment ProgressJournalGoalTag on ProgressJournalGoalTag {
+  __typename
+  id
+  createdAt
+  tag
+  hexColor
+}

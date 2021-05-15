@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -12,13 +11,15 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
-class RecentLoggedWorkouts extends StatelessWidget {
+class RecentJournalEntries extends StatelessWidget {
+  final kJournalEntryCardHeight = 200.0;
+
   @override
   Widget build(BuildContext context) {
-    return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
+    return QueryObserver<UserProgressJournals$Query, json.JsonSerializable>(
         key: Key(
-            'RecentLoggedWorkouts - ${UserLoggedWorkoutsQuery().operationName}'),
-        query: UserLoggedWorkoutsQuery(),
+            'RecentJournalEntries - ${UserProgressJournalsQuery().operationName}'),
+        query: UserProgressJournalsQuery(),
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -26,18 +27,22 @@ class RecentLoggedWorkouts extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
                 child: ShimmerCard(
-                  height: 200,
+                  height: kJournalEntryCardHeight - 30,
                 ),
               ),
             ),
           ],
         ),
         builder: (data) {
-          final logs = data.userLoggedWorkouts
-              .sortedBy<DateTime>((l) => l.completedOn)
+          final entries = data.userProgressJournals
+              .fold<List<ProgressJournalEntry>>(
+                  [],
+                  (entries, next) =>
+                      [...entries, ...next.progressJournalEntries])
+              .sortedBy<DateTime>((entry) => entry.createdAt)
               .reversed
               .toList();
-          return logs.isNotEmpty
+          return entries.isNotEmpty
               ? Column(
                   children: [
                     Padding(
@@ -46,17 +51,14 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            'Recent Logs',
+                            'Recent Journals',
                             weight: FontWeight.bold,
                           ),
-                          CreateTextIconButton(
-                              text: 'Add Log',
-                              onPressed: () => print('add log')),
                           TextButton(
                             onPressed: () =>
-                                context.pushRoute(YourLoggedWorkoutsRoute()),
+                                context.pushRoute(YourProgressJournalsRoute()),
                             underline: false,
-                            text: 'View all',
+                            text: 'View journals',
                           )
                         ],
                       ),
@@ -65,18 +67,18 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         builder: (context, constraints) =>
                             CarouselSlider.builder(
                               options: CarouselOptions(
-                                height: 240,
+                                height: kJournalEntryCardHeight,
                                 viewportFraction: 0.93,
                                 enableInfiniteScroll: false,
                               ),
-                              itemCount: logs.length,
+                              itemCount: entries.length,
                               itemBuilder: (c, i, _) => Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: GestureDetector(
-                                    onTap: () => context.pushRoute(
-                                        LoggedWorkoutDetailsRoute(
-                                            id: logs[i].id)),
-                                    child: LoggedWorkoutCard(logs[i])),
+                                    onTap: () => print('open journal details'),
+                                    child: Card(
+                                        child: MyText(
+                                            entries[i].createdAt.toString()))),
                               ),
                             )),
                   ],
@@ -89,12 +91,13 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           MyText(
-                            'No recent logs',
+                            'No recent journal entries',
                             subtext: true,
                           ),
                           CreateTextIconButton(
-                              text: 'Add Log',
-                              onPressed: () => print('open add log flow'))
+                              text: 'Add Journal',
+                              onPressed: () => context
+                                  .pushRoute(YourProgressJournalsRoute()))
                         ],
                       )),
                 );

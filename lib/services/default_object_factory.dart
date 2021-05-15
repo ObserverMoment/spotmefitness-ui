@@ -1,5 +1,6 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:uuid/uuid.dart';
 
 class DefaultObjectfactory {
   /// [Free Session].
@@ -11,13 +12,11 @@ class DefaultObjectfactory {
       ..description = '';
   }
 
-  static LoggedWorkoutSet defaultLoggedWorkoutSet(
-      {required int sortPosition, Map? roundTimesMs}) {
+  static LoggedWorkoutSet defaultLoggedWorkoutSet({required int sortPosition}) {
     return LoggedWorkoutSet()
       ..$$typename = kLoggedWorkoutSetTypename
-      ..id = 'temp-$kLoggedWorkoutSetTypename-$sortPosition'
+      ..id = 'temp-$kLoggedWorkoutSetTypename:${Uuid().v1()}'
       ..roundsCompleted = 1
-      ..roundTimesMs = roundTimesMs ?? {}
       ..sortPosition = sortPosition
       ..loggedWorkoutMoves = [];
   }
@@ -29,7 +28,7 @@ class DefaultObjectfactory {
       required TimeUnit timeUnit}) {
     return WorkoutMove()
       ..$$typename = kWorkoutMoveTypename
-      ..id = 'temp-$kWorkoutMoveTypename-$sortPosition'
+      ..id = 'temp-$kWorkoutMoveTypename:${Uuid().v1()}'
       ..sortPosition = sortPosition
       ..equipment = null
       ..reps = timeAmount.toDouble()

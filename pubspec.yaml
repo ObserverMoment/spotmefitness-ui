@@ -66,6 +66,7 @@ dependencies:
   sleek_circular_slider: ^2.0.0
   table_calendar: ^3.0.0
   timeline_tile: ^2.0.0
+  uuid: ^3.0.4
   uploadcare_flutter: ^1.0.2
 
 dev_dependencies:

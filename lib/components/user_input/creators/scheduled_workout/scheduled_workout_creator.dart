@@ -63,12 +63,12 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
           mutation: CreateScheduledWorkoutMutation(variables: createVariables),
           addRefToQueries: [UserScheduledWorkoutsQuery().operationName]);
 
-      if (result.hasErrors) {
+      if (result.hasErrors || result.data == null) {
         context.showErrorAlert(
             'Sorry there was a problem, the workout was not scheduled.');
       } else {
         final String dateString =
-            _formatDateTime(result.data.createScheduledWorkout.scheduledAt);
+            _formatDateTime(result.data!.createScheduledWorkout.scheduledAt);
         context.pop(
             result: ToastRequest(
                 message: 'Workout scheduled for $dateString.',
@@ -83,12 +83,12 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
           mutation: UpdateScheduledWorkoutMutation(variables: updateVariables),
           broadcastQueryIds: [UserScheduledWorkoutsQuery().operationName]);
 
-      if (result.hasErrors) {
+      if (result.hasErrors || result.data == null) {
         context.showErrorAlert(
             'Sorry there was a problem, the schedule was not updated.');
       } else {
         final String dateString =
-            _formatDateTime(result.data.updateScheduledWorkout.scheduledAt);
+            _formatDateTime(result.data!.updateScheduledWorkout.scheduledAt);
         context.pop(
             result: ToastRequest(
                 message: 'Workout re-scheduled for $dateString.',

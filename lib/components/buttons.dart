@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -629,6 +631,21 @@ class InfoPopupButton extends StatelessWidget {
           )),
       child: Icon(CupertinoIcons.info, size: Styles.buttonIconSize),
     );
+  }
+}
+
+/// Shows a notes icon and opens the note up full screen onpress.
+class NoteIconViewerButton extends StatelessWidget {
+  final String note;
+  final String modalTitle;
+  NoteIconViewerButton(this.note, {this.modalTitle = 'Note'});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: NotesIcon(),
+        onPressed: () => context.showBottomSheet(
+            expand: true, child: TextViewer(note, modalTitle)));
   }
 }
 

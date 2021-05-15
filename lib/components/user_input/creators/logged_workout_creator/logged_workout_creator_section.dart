@@ -26,10 +26,10 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
   LoggedWorkoutCreatorSection(this.sectionIndex,
       {this.showLapTimesButton = false});
 
-  void _addLoggedWorkoutSet(
-      BuildContext context, LoggedWorkoutSet templateSet) {
-    context.read<LoggedWorkoutCreatorBloc>().addLoggedWorkoutSet(sectionIndex,
-        roundTimesMs: templateSet.roundTimesMs);
+  void _addLoggedWorkoutSet(BuildContext context) {
+    context.read<LoggedWorkoutCreatorBloc>().addLoggedWorkoutSet(
+          sectionIndex,
+        );
   }
 
   Future<void> _openLapTimes(BuildContext context) async {
@@ -160,8 +160,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                         children: [
                           CreateTextIconButton(
                             text: 'Add Set',
-                            onPressed: () => _addLoggedWorkoutSet(
-                                context, loggedWorkoutSets.last),
+                            onPressed: () => _addLoggedWorkoutSet(context),
                           ),
                         ],
                       ),

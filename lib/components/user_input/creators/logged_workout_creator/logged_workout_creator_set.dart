@@ -239,13 +239,8 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                     if (_loggedWorkoutSet.duration != null) _buildSetTime(),
                     _buildSetDefinition(),
                     if (Utils.textNotNull(_loggedWorkoutSet.note))
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          child: NotesIcon(),
-                          onPressed: () => context.showBottomSheet(
-                              expand: true,
-                              child: TextViewer(
-                                  _loggedWorkoutSet.note!, 'Set Notes')))
+                      NoteIconViewerButton(_loggedWorkoutSet.note!,
+                          modalTitle: 'Set Note')
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -289,7 +284,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                       updateLoggedWorkoutMove: _updateLoggedWorkoutMove,
                       deleteLoggedWorkoutMove: _deleteLoggedWorkoutMove,
                       key: Key(
-                          '${_loggedWorkoutSet.sortPosition} - LoggedWorkoutCreatorSet - $index.'),
+                          'LoggedWorkoutCreatorWorkoutMove - ${_sortedLoggedWorkoutMoves[index].id}'),
                       loggedWorkoutMove: _sortedLoggedWorkoutMoves[index],
                     ),
                   ),

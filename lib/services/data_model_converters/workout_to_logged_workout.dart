@@ -1,6 +1,7 @@
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:uuid/uuid.dart';
 
 // /// Converts a workout logged workout by first converting each workout section to a logged workout section. The process of doing this depends on the type of workout section.
 LoggedWorkout workoutToLoggedWorkout(
@@ -19,10 +20,11 @@ LoggedWorkout workoutToLoggedWorkout(
 
 List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
     List<WorkoutSection> workoutSections) {
+  final uuid = Uuid();
   return workoutSections
       .sortedBy<num>((ws) => ws.sortPosition)
       .map((ws) => LoggedWorkoutSection()
-        ..id = 'temp - section - ${ws.sortPosition}'
+        ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
         ..name = ws.name
         ..loggedWorkoutSets = workoutSetsToLoggedWorkoutSets(ws.workoutSets)
             .sortedBy<num>((ws) => ws.sortPosition)
@@ -37,13 +39,13 @@ List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
 
 List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
     List<WorkoutSet> workoutSets) {
+  final uuid = Uuid();
   return workoutSets
       .map((workoutSet) => LoggedWorkoutSet()
-        ..id = 'temp - set - ${workoutSet.sortPosition}'
+        ..id = 'temp - loggedWorkoutSet:${uuid.v1()}'
         ..sortPosition = workoutSet.sortPosition
         ..roundsCompleted = workoutSet.rounds
         ..duration = workoutSet.duration
-        ..roundTimesMs = {}
         ..loggedWorkoutMoves =
             workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
                 .sortedBy<num>((wm) => wm.sortPosition))
@@ -53,17 +55,16 @@ List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
 List<LoggedWorkoutMove> workoutMovesToLoggedWorkoutMoves(
     List<WorkoutMove> workoutMoves) {
   return workoutMoves
-      .map((workoutMove) => workoutMoveToLoggedWorkoutMove(workoutMove))
+      .map((workoutMove) => workoutMoveToLoggedWorkoutMove(
+            workoutMove,
+          ))
       .toList();
 }
 
 LoggedWorkoutMove workoutMoveToLoggedWorkoutMove(WorkoutMove workoutMove) =>
     LoggedWorkoutMove()
-      ..id = 'temp - loggedWorkoutMove - ${workoutMove.sortPosition}'
+      ..id = 'temp - LoggedWorkoutMove:${Uuid().v1()}'
       ..sortPosition = workoutMove.sortPosition
-      ..timeTakenMs = workoutMove.repType == WorkoutMoveRepType.time
-          ? (workoutMove.reps * 1000).round()
-          : null
       ..repType = workoutMove.repType
       ..reps = workoutMove.reps
       ..distanceUnit = workoutMove.distanceUnit

@@ -1,7 +1,6 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:collection/collection.dart';
 
 class DataUtils {
   /// Receives any list of bodyAreaMove scores and returns a new list.
@@ -61,7 +60,8 @@ class DataUtils {
             milliseconds: loggedWorkoutSection.roundsCompleted *
                 loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
                     s.roundsCompleted *
-                    s.loggedWorkoutMoves.sumBy((lwm) => lwm.timeTakenMs!)));
+                    s.loggedWorkoutMoves
+                        .sumBy((lwm) => lwm.reps.toInt() * 1000)));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');

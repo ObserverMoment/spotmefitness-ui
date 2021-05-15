@@ -188,7 +188,6 @@ mixin LoggedWorkoutMoveMixin {
   late LoadUnit loadUnit;
   @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
   late TimeUnit timeUnit;
-  int? timeTakenMs;
 }
 mixin LoggedWorkoutSetMixin {
   @JsonKey(name: '__typename')
@@ -197,8 +196,6 @@ mixin LoggedWorkoutSetMixin {
   String? note;
   late int roundsCompleted;
   int? duration;
-  @JsonKey(fromJson: fromGraphQLJsonToDartMap, toJson: fromDartMapToGraphQLJson)
-  late Map roundTimesMs;
   late int sortPosition;
 }
 mixin LoggedWorkoutSectionMixin {
@@ -214,6 +211,34 @@ mixin LoggedWorkoutSectionMixin {
   @JsonKey(fromJson: fromGraphQLJsonToDartMap, toJson: fromDartMapToGraphQLJson)
   late Map roundTimesMs;
   late int sortPosition;
+}
+mixin ProgressJournalEntryMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  String? note;
+  String? voiceNoteUri;
+  double? bodyweight;
+  double? moodScore;
+  double? energyScore;
+  double? stressScore;
+  double? motivationScore;
+  late List<String> progressPhotoUris;
+}
+mixin ProgressJournalMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  late String name;
+  String? description;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -2167,7 +2192,6 @@ class LoggedWorkoutMove extends JsonSerializable
         loadAmount,
         loadUnit,
         timeUnit,
-        timeTakenMs,
         equipment,
         move
       ];
@@ -2192,7 +2216,6 @@ class LoggedWorkoutSet extends JsonSerializable
         note,
         roundsCompleted,
         duration,
-        roundTimesMs,
         sortPosition,
         loggedWorkoutMoves
       ];
@@ -2505,7 +2528,6 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
       this.note,
       required this.roundsCompleted,
       this.duration,
-      this.roundTimesMs,
       required this.loggedWorkoutMoves});
 
   factory CreateLoggedWorkoutSetInLoggedSectionInput.fromJson(
@@ -2520,23 +2542,12 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
 
   int? duration;
 
-  @JsonKey(
-      fromJson: fromGraphQLJsonToDartMapNullable,
-      toJson: fromDartMapToGraphQLJsonNullable)
-  Map? roundTimesMs;
-
   @JsonKey(name: 'LoggedWorkoutMoves')
   late List<CreateLoggedWorkoutMoveInLoggedSetInput> loggedWorkoutMoves;
 
   @override
-  List<Object?> get props => [
-        sortPosition,
-        note,
-        roundsCompleted,
-        duration,
-        roundTimesMs,
-        loggedWorkoutMoves
-      ];
+  List<Object?> get props =>
+      [sortPosition, note, roundsCompleted, duration, loggedWorkoutMoves];
   Map<String, dynamic> toJson() =>
       _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(this);
 }
@@ -2546,7 +2557,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
     with EquatableMixin {
   CreateLoggedWorkoutMoveInLoggedSetInput(
       {required this.sortPosition,
-      this.timeTakenMs,
       this.note,
       required this.repType,
       required this.reps,
@@ -2562,8 +2572,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
       _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
 
   late int sortPosition;
-
-  int? timeTakenMs;
 
   String? note;
 
@@ -2592,7 +2600,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
   @override
   List<Object?> get props => [
         sortPosition,
-        timeTakenMs,
         note,
         repType,
         reps,
@@ -2633,15 +2640,8 @@ class CreateLoggedWorkoutSet extends JsonSerializable
       _$CreateLoggedWorkoutSetFromJson(json);
 
   @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        note,
-        roundsCompleted,
-        duration,
-        roundTimesMs,
-        sortPosition
-      ];
+  List<Object?> get props =>
+      [$$typename, id, note, roundsCompleted, duration, sortPosition];
   Map<String, dynamic> toJson() => _$CreateLoggedWorkoutSetToJson(this);
 }
 
@@ -2668,7 +2668,6 @@ class CreateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
       this.note,
       required this.roundsCompleted,
       this.duration,
-      this.roundTimesMs,
       required this.loggedWorkoutSection});
 
   factory CreateLoggedWorkoutSetInput.fromJson(Map<String, dynamic> json) =>
@@ -2682,23 +2681,12 @@ class CreateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
 
   int? duration;
 
-  @JsonKey(
-      fromJson: fromGraphQLJsonToDartMapNullable,
-      toJson: fromDartMapToGraphQLJsonNullable)
-  Map? roundTimesMs;
-
   @JsonKey(name: 'LoggedWorkoutSection')
   late ConnectRelationInput loggedWorkoutSection;
 
   @override
-  List<Object?> get props => [
-        sortPosition,
-        note,
-        roundsCompleted,
-        duration,
-        roundTimesMs,
-        loggedWorkoutSection
-      ];
+  List<Object?> get props =>
+      [sortPosition, note, roundsCompleted, duration, loggedWorkoutSection];
   Map<String, dynamic> toJson() => _$CreateLoggedWorkoutSetInputToJson(this);
 }
 
@@ -2711,15 +2699,8 @@ class UpdateLoggedWorkoutSet extends JsonSerializable
       _$UpdateLoggedWorkoutSetFromJson(json);
 
   @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        note,
-        roundsCompleted,
-        duration,
-        roundTimesMs,
-        sortPosition
-      ];
+  List<Object?> get props =>
+      [$$typename, id, note, roundsCompleted, duration, sortPosition];
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutSetToJson(this);
 }
 
@@ -2742,11 +2723,7 @@ class UpdateLoggedWorkoutSet$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class UpdateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
   UpdateLoggedWorkoutSetInput(
-      {required this.id,
-      this.note,
-      this.duration,
-      this.roundsCompleted,
-      this.roundTimesMs});
+      {required this.id, this.note, this.duration, this.roundsCompleted});
 
   factory UpdateLoggedWorkoutSetInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateLoggedWorkoutSetInputFromJson(json);
@@ -2759,14 +2736,8 @@ class UpdateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
 
   int? roundsCompleted;
 
-  @JsonKey(
-      fromJson: fromGraphQLJsonToDartMapNullable,
-      toJson: fromDartMapToGraphQLJsonNullable)
-  Map? roundTimesMs;
-
   @override
-  List<Object?> get props =>
-      [id, note, duration, roundsCompleted, roundTimesMs];
+  List<Object?> get props => [id, note, duration, roundsCompleted];
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutSetInputToJson(this);
 }
 
@@ -2922,7 +2893,6 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
   UpdateLoggedWorkoutMoveInput(
       {required this.id,
       this.note,
-      this.timeTakenMs,
       this.reps,
       this.distanceUnit,
       this.loadAmount,
@@ -2937,8 +2907,6 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
   late String id;
 
   String? note;
-
-  int? timeTakenMs;
 
   double? reps;
 
@@ -2963,7 +2931,6 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
   List<Object?> get props => [
         id,
         note,
-        timeTakenMs,
         reps,
         distanceUnit,
         loadAmount,
@@ -3055,6 +3022,76 @@ class CreateLoggedWorkoutMoveInput extends JsonSerializable
         loggedWorkoutSet
       ];
   Map<String, dynamic> toJson() => _$CreateLoggedWorkoutMoveInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ProgressJournalEntry extends JsonSerializable
+    with EquatableMixin, ProgressJournalEntryMixin {
+  ProgressJournalEntry();
+
+  factory ProgressJournalEntry.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalEntryFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        createdAt,
+        note,
+        voiceNoteUri,
+        bodyweight,
+        moodScore,
+        energyScore,
+        stressScore,
+        motivationScore,
+        progressPhotoUris
+      ];
+  Map<String, dynamic> toJson() => _$ProgressJournalEntryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ProgressJournal extends JsonSerializable
+    with EquatableMixin, ProgressJournalMixin {
+  ProgressJournal();
+
+  factory ProgressJournal.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalFromJson(json);
+
+  @JsonKey(name: 'ProgressJournalEntries')
+  late List<ProgressJournalEntry> progressJournalEntries;
+
+  @override
+  List<Object?> get props =>
+      [$$typename, id, createdAt, name, description, progressJournalEntries];
+  Map<String, dynamic> toJson() => _$ProgressJournalToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserProgressJournals$Query extends JsonSerializable with EquatableMixin {
+  UserProgressJournals$Query();
+
+  factory UserProgressJournals$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserProgressJournals$QueryFromJson(json);
+
+  late List<ProgressJournal> userProgressJournals;
+
+  @override
+  List<Object?> get props => [userProgressJournals];
+  Map<String, dynamic> toJson() => _$UserProgressJournals$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ProgressJournalById$Query extends JsonSerializable with EquatableMixin {
+  ProgressJournalById$Query();
+
+  factory ProgressJournalById$Query.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalById$QueryFromJson(json);
+
+  late ProgressJournal progressJournalById;
+
+  @override
+  List<Object?> get props => [progressJournalById];
+  Map<String, dynamic> toJson() => _$ProgressJournalById$QueryToJson(this);
 }
 
 enum BodyAreaFrontBack {
@@ -14775,12 +14812,6 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'timeTakenMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -14816,12 +14847,6 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'duration'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -15489,12 +15514,6 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'timeTakenMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -15530,12 +15549,6 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'duration'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -16269,12 +16282,6 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'timeTakenMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -16310,12 +16317,6 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'duration'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -16607,12 +16608,6 @@ final CREATE_LOGGED_WORKOUT_SET_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'sortPosition'),
             alias: null,
             arguments: [],
@@ -16721,12 +16716,6 @@ final UPDATE_LOGGED_WORKOUT_SET_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'duration'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -17431,12 +17420,6 @@ final UPDATE_LOGGED_WORKOUT_MOVE_MUTATION_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'timeTakenMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
             selectionSet: null)
       ]))
 ]);
@@ -17814,12 +17797,6 @@ final CREATE_LOGGED_WORKOUT_MOVE_MUTATION_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'timeTakenMs'),
-            alias: null,
-            arguments: [],
-            directives: [],
             selectionSet: null)
       ]))
 ]);
@@ -17842,4 +17819,350 @@ class CreateLoggedWorkoutMoveMutation extends GraphQLQuery<
   @override
   CreateLoggedWorkoutMove$Mutation parse(Map<String, dynamic> json) =>
       CreateLoggedWorkoutMove$Mutation.fromJson(json);
+}
+
+final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userProgressJournals'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userProgressJournals'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalEntries'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalEntry'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserProgressJournalsQuery
+    extends GraphQLQuery<UserProgressJournals$Query, JsonSerializable> {
+  UserProgressJournalsQuery();
+
+  @override
+  final DocumentNode document = USER_PROGRESS_JOURNALS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userProgressJournals';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  UserProgressJournals$Query parse(Map<String, dynamic> json) =>
+      UserProgressJournals$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ProgressJournalByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  ProgressJournalByIdArguments({required this.id});
+
+  @override
+  factory ProgressJournalByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$ProgressJournalByIdArgumentsToJson(this);
+}
+
+final PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'progressJournalById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'progressJournalById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalEntries'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalEntry'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class ProgressJournalByIdQuery extends GraphQLQuery<ProgressJournalById$Query,
+    ProgressJournalByIdArguments> {
+  ProgressJournalByIdQuery({required this.variables});
+
+  @override
+  final DocumentNode document = PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'progressJournalById';
+
+  @override
+  final ProgressJournalByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  ProgressJournalById$Query parse(Map<String, dynamic> json) =>
+      ProgressJournalById$Query.fromJson(json);
 }

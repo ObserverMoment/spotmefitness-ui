@@ -19,7 +19,7 @@ type Query {
   standardMoves: [Move!]!
   userCustomMoves: [Move!]!
   userProgressJournals: [ProgressJournal!]!
-  progressJournalById(progressJournalId: ID!): ProgressJournal!
+  progressJournalById(id: ID!): ProgressJournal!
   progressJournalGoalTags: [ProgressJournalGoalTag!]!
   userScheduledWorkouts: [ScheduledWorkout!]!
   textSearchWorkouts(text: String!): [TextSearchWorkoutResult!]
@@ -444,7 +444,6 @@ type LoggedWorkoutSet {
   sortPosition: Int!
   roundsCompleted: Int!
   duration: Int
-  roundTimesMs: JSON!
   LoggedWorkoutMoves: [LoggedWorkoutMove!]!
 }
 
@@ -452,7 +451,6 @@ type LoggedWorkoutMove {
   id: ID!
   sortPosition: Int!
   note: String
-  timeTakenMs: Int
   repType: WorkoutMoveRepType!
   reps: Float!
   distanceUnit: DistanceUnit!
@@ -493,13 +491,11 @@ input CreateLoggedWorkoutSetInLoggedSectionInput {
   note: String
   roundsCompleted: Int!
   duration: Int
-  roundTimesMs: JSON
   LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
 }
 
 input CreateLoggedWorkoutMoveInLoggedSetInput {
   sortPosition: Int!
-  timeTakenMs: Int
   note: String
   repType: WorkoutMoveRepType!
   reps: Float!
@@ -529,7 +525,6 @@ input CreateLoggedWorkoutSetInput {
   note: String
   roundsCompleted: Int!
   duration: Int
-  roundTimesMs: JSON
   LoggedWorkoutSection: ConnectRelationInput!
 }
 
@@ -571,13 +566,11 @@ input UpdateLoggedWorkoutSetInput {
   note: String
   duration: Int
   roundsCompleted: Int
-  roundTimesMs: JSON
 }
 
 input UpdateLoggedWorkoutMoveInput {
   id: ID!
   note: String
-  timeTakenMs: Int
   reps: Float
   distanceUnit: DistanceUnit
   loadAmount: Float
@@ -592,8 +585,8 @@ type ProgressJournal {
   createdAt: DateTime!
   name: String!
   description: String
-  ProgressJournalEntries: [ProgressJournalEntry!]
-  ProgressJournalGoals: [ProgressJournalGoal!]
+  ProgressJournalEntries: [ProgressJournalEntry!]!
+  ProgressJournalGoals: [ProgressJournalGoal!]!
 }
 
 input CreateProgressJournalInput {
@@ -617,7 +610,7 @@ type ProgressJournalEntry {
   energyScore: Float
   stressScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]
+  progressPhotoUris: [String!]!
   ProgressJournal: ProgressJournal!
 }
 
@@ -629,8 +622,8 @@ input CreateProgressJournalEntryInput {
   energyScore: Float
   stressScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]
-  ProgressJournal: ID!
+  progressPhotoUris: [String!]!
+  ProgressJournal: ConnectRelationInput!
 }
 
 input UpdateProgressJournalEntryInput {
@@ -642,7 +635,7 @@ input UpdateProgressJournalEntryInput {
   energyScore: Float
   stressScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]
+  progressPhotoUris: [String!]!
 }
 
 type ProgressJournalGoal {
@@ -652,15 +645,15 @@ type ProgressJournalGoal {
   description: String
   deadline: DateTime
   completedDate: DateTime
-  ProgressJournalGoalTags: [ProgressJournalGoalTag!]
+  ProgressJournalGoalTags: [ProgressJournalGoalTag!]!
 }
 
 input CreateProgressJournalGoalInput {
   name: String!
   description: String
   deadline: DateTime
-  ProgressJournal: ID!
-  ProgressJournalGoalTags: [ID!]
+  ProgressJournal: ConnectRelationInput!
+  ProgressJournalGoalTags: [ConnectRelationInput!]
 }
 
 input UpdateProgressJournalGoalInput {
@@ -669,7 +662,7 @@ input UpdateProgressJournalGoalInput {
   description: String
   completedDate: DateTime
   deadline: DateTime
-  ProgressJournalGoalTags: [ID!]
+  ProgressJournalGoalTags: [ConnectRelationInput!]
 }
 
 type ProgressJournalGoalTag {

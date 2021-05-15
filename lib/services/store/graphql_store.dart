@@ -377,7 +377,8 @@ class GraphQLStore {
         await execute(mutation, customVariablesMap: customVariablesMap);
 
     final result = MutationResult<TData>(
-        data: mutation.parse(response.data ?? {}), errors: response.errors);
+        data: response.data != null ? mutation.parse(response.data!) : null,
+        errors: response.errors);
 
     /// If has network errors then need to rollback any optimistic updates.
     if (writeToStore && optimisticData != null && result.hasErrors) {
@@ -671,11 +672,11 @@ class ObservableQuery<TData, TVars extends json.JsonSerializable> {
 }
 
 class MutationResult<TData> {
-  final TData data;
+  final TData? data;
   final List<Object>? errors;
   bool get hasErrors => errors != null && errors!.isNotEmpty;
 
-  MutationResult({required this.data, this.errors});
+  MutationResult({this.data, this.errors});
 }
 
 /// [add] and [remove] will both also _broadcast their updates once complete.

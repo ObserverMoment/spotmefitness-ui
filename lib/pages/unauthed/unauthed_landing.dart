@@ -72,7 +72,6 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
           SvgPicture.asset(
             'assets/logos/spotme_logo.svg',
             width: 60.0,
-            color: ThemeData.cupertinoDarkData.primaryColor,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 6, bottom: 10.0),

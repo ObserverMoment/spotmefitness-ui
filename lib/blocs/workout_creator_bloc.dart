@@ -81,13 +81,13 @@ class WorkoutCreatorBloc extends ChangeNotifier {
                 mutation: CreateWorkoutMutation(variables: variables),
                 writeToStore: false);
 
-        if (result.hasErrors) {
+        if (result.hasErrors || result.data == null) {
           throw Exception(
               'There was a problem creating a new workout in the database.');
         }
 
         final newWorkout = Workout.fromJson(
-            {...result.data.createWorkout.toJson(), 'WorkoutSections': []});
+            {...result.data!.createWorkout.toJson(), 'WorkoutSections': []});
 
         context.showToast(message: 'Workout Created');
         return newWorkout;
@@ -139,7 +139,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   bool _checkApiResult(MutationResult result) {
-    if (result.hasErrors) {
+    if (result.hasErrors || result.data == null) {
       _revertChanges(result.errors!);
       return false;
     } else {
@@ -166,7 +166,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     if (success) {
       workout = Workout.fromJson(
-          {...workout.toJson(), ...result.data.updateWorkout.toJson()});
+          {...workout.toJson(), ...result.data!.updateWorkout.toJson()});
     }
 
     notifyListeners();
@@ -197,7 +197,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     if (success) {
       workout.workoutSections.add(
-          WorkoutSection.fromJson(result.data.createWorkoutSection.toJson()));
+          WorkoutSection.fromJson(result.data!.createWorkoutSection.toJson()));
     }
 
     creatingSection = false;
@@ -230,7 +230,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     if (success) {
       workout.workoutSections[index] = WorkoutSection.fromJson({
         ...updatedWorkoutSection.toJson(),
-        ...result.data.updateWorkoutSection.toJson()
+        ...result.data!.updateWorkoutSection.toJson()
       });
     }
 
@@ -266,7 +266,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       final success = _checkApiResult(result);
 
       if (success) {
-        final positions = result.data.reorderWorkoutSections;
+        final positions = result.data!.reorderWorkoutSections;
 
         /// Write new sort positions.
         workout.workoutSections.forEach((ws) {
@@ -302,7 +302,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = result.data.deleteWorkoutSectionById;
+      final deletedId = result.data!.deleteWorkoutSectionById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
@@ -357,7 +357,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     if (success) {
       createdSet = WorkoutSet.fromJson(
-          {...result.data.createWorkoutSet.toJson(), 'WorkoutMoves': []});
+          {...result.data!.createWorkoutSet.toJson(), 'WorkoutMoves': []});
 
       workout.workoutSections[sectionIndex].workoutSets.add(createdSet);
     }
@@ -399,7 +399,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       workout.workoutSections[sectionIndex].workoutSets[setIndex] =
           WorkoutSet.fromJson({
         ...updatedWorkoutSet.toJson(),
-        ...result.data.updateWorkoutSet.toJson(),
+        ...result.data!.updateWorkoutSet.toJson(),
       });
     }
 
@@ -435,7 +435,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      final updated = result.data.duplicateWorkoutSetById;
+      final updated = result.data!.duplicateWorkoutSetById;
       // Write over the client write above.
       workoutSets[setIndex + 1] = WorkoutSet()
         ..$$typename = updated.$$typename
@@ -482,7 +482,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       if (success) {
         /// Write new sort positions.
-        final positions = result.data.reorderWorkoutSets;
+        final positions = result.data!.reorderWorkoutSets;
 
         workoutSets.forEach((ws) {
           ws.sortPosition =
@@ -518,7 +518,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = result.data.deleteWorkoutSetById;
+      final deletedId = result.data!.deleteWorkoutSetById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
@@ -581,7 +581,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     if (success) {
       workout.workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves
           .add(WorkoutMove.fromJson(
-        result.data.createWorkoutMove.toJson(),
+        result.data!.createWorkoutMove.toJson(),
       ));
     }
     notifyListeners();
@@ -610,7 +610,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     if (success) {
       workout.workoutSections[sectionIndex].workoutSets[setIndex]
           .workoutMoves[workoutMove.sortPosition] = WorkoutMove.fromJson(
-        result.data.updateWorkoutMove.toJson(),
+        result.data!.updateWorkoutMove.toJson(),
       );
     }
 
@@ -643,7 +643,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final success = _checkApiResult(result);
 
     if (success) {
-      final deletedId = result.data.deleteWorkoutMoveById;
+      final deletedId = result.data!.deleteWorkoutMoveById;
 
       // If the ids do not match then there was a problem - revert the changes.
       if (idToDelete != deletedId) {
@@ -685,7 +685,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
     if (success) {
       workoutMoves[workoutMoveIndex + 1] =
-          WorkoutMove.fromJson(result.data.duplicateWorkoutMoveById.toJson());
+          WorkoutMove.fromJson(result.data!.duplicateWorkoutMoveById.toJson());
     }
 
     notifyListeners();
@@ -729,7 +729,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       final success = _checkApiResult(result);
 
       if (success) {
-        final positions = result.data.reorderWorkoutMoves;
+        final positions = result.data!.reorderWorkoutMoves;
 
         // Write new sort positions.
         workoutMoves.forEach((wm) {

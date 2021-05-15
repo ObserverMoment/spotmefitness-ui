@@ -39,11 +39,9 @@ class _LoggedWorkoutSectionDetailsEditableState
     setState(() => _activeTabIndex = index);
   }
 
-  void _undoAllChanges() {
-    context.showConfirmDialog(
-        title: 'Undo all changes?',
-        onConfirm: () =>
-            context.read<LoggedWorkoutCreatorBloc>().revertChangesToSection());
+  Future<void> _saveAndClose(BuildContext context) async {
+    context.read<LoggedWorkoutCreatorBloc>().writeAllChangesToStore();
+    context.pop();
   }
 
   @override
@@ -66,8 +64,7 @@ class _LoggedWorkoutSectionDetailsEditableState
         navigationBar: CreateEditPageNavBar(
           formIsDirty: sectionHasUnsavedChanges,
           handleClose: context.pop,
-          handleSave: () =>
-              context.read<LoggedWorkoutCreatorBloc>().saveAllChanges(),
+          handleSave: () => _saveAndClose(context),
           inputValid: true,
           title: Utils.textNotNull(section.name)
               ? section.name!
