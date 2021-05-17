@@ -61,7 +61,8 @@ class LoggedWorkoutCard extends StatelessWidget {
                 ),
                 MyText(
                   loggedWorkout.completedOn.compactDateString,
-                  color: Styles.colorTwo,
+                  color: Styles.infoBlue,
+                  weight: FontWeight.bold,
                 )
               ],
             ),

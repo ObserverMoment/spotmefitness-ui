@@ -1,5 +1,5 @@
-query progressJournalById($id: ID!) {
-  progressJournalById(id: $id) {
+mutation createProgressJournal($data: CreateProgressJournalInput!) {
+  createProgressJournal(data: $data) {
     ...ProgressJournal
     ProgressJournalEntries {
       ...ProgressJournalEntry

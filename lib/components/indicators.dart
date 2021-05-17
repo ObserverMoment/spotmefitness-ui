@@ -206,3 +206,21 @@ class LinearProgressIndicator extends StatelessWidget {
     );
   }
 }
+
+class Dot extends StatelessWidget {
+  final Color? color;
+  final double diameter;
+  Dot({this.color, required this.diameter});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: diameter,
+      height: diameter,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color ?? context.theme.primary,
+      ),
+    );
+  }
+}

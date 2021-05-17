@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart' as myTheme;
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
@@ -64,8 +63,12 @@ class DatePickerDisplay extends StatelessWidget {
   final DateTime? dateTime;
   final void Function(DateTime d) updateDateTime;
   final DateTime? earliestAllowedDate;
+  final String title;
   DatePickerDisplay(
-      {required this.updateDateTime, this.dateTime, this.earliestAllowedDate});
+      {required this.updateDateTime,
+      this.title = 'Date',
+      this.dateTime,
+      this.earliestAllowedDate});
 
   Future<void> _openDatePicker(BuildContext context) async {
     final DateTime? newDate = await showDatePicker(
@@ -87,11 +90,11 @@ class DatePickerDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return TappableRow(
       onTap: () => _openDatePicker(context),
-      title: 'Date',
+      title: title,
       display: dateTime == null
           ? MyText('select date...')
           : MyText(
-              DateFormat.MMMMd().format(dateTime!),
+              dateTime!.compactDateString,
               weight: FontWeight.bold,
             ),
     );
@@ -101,7 +104,9 @@ class DatePickerDisplay extends StatelessWidget {
 class TimePickerDisplay extends StatelessWidget {
   final TimeOfDay? timeOfDay;
   final void Function(TimeOfDay t) updateTimeOfDay;
-  TimePickerDisplay({required this.updateTimeOfDay, this.timeOfDay});
+  final String title;
+  TimePickerDisplay(
+      {required this.updateTimeOfDay, this.timeOfDay, this.title = 'Time'});
 
   Future<void> _openTimePicker(BuildContext context) async {
     final TimeOfDay? newTime = await showTimePicker(
@@ -121,7 +126,7 @@ class TimePickerDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return TappableRow(
       onTap: () => _openTimePicker(context),
-      title: 'Time',
+      title: title,
       display: timeOfDay == null
           ? MyText('select date...')
           : MyText(

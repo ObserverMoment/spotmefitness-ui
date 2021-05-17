@@ -229,6 +229,15 @@ abstract class Styles {
         0.3, // Move to bottom Vertically
       ));
 
+  static final BoxShadow colorPickerSelectorBoxShadow = BoxShadow(
+      color: CupertinoColors.black.withOpacity(0.2),
+      blurRadius: 2, // soften the shadow
+      spreadRadius: 1.5, //extend the shadow
+      offset: Offset(
+        0.2, // Move to right horizontally
+        0.2, // Move to bottom Vertically
+      ));
+
   static final BoxShadow cardBoxShadow = BoxShadow(
       color: CupertinoColors.black.withOpacity(0.1),
       blurRadius: 3.0, // soften the shadow
@@ -240,71 +249,4 @@ abstract class Styles {
 
   /// For use in nav bars, headers and buttons.
   static final double buttonIconSize = 25.0;
-
-  // static final BorderRadius sharpRadius = BorderRadius.circular(4);
-  // static final BorderRadius mediumSharpRadius = BorderRadius.circular(6);
-  // static final BorderRadius mediumRadius = BorderRadius.circular(8);
-  // static final BorderRadius roundedRadius = BorderRadius.circular(12);
-  // static final BorderRadius pillRadius = BorderRadius.circular(24);
-  // static final BorderRadius circleRadius = BorderRadius.circular(32);
-
-  // static const double fontSizeH1 = 22;
-  // static const double fontSizeH2 = 20;
-  // static const double fontSizeH3 = 18;
-  // static const double fontSizeMain = 16;
-  // static const double fontSizeSmall = 14;
-  // static const double fontSizeTiny = 12;
-  // static const double fontSizeNano = 10;
-
-  // static final actionSheetDestructive = TextStyle(color: Styles.errorRed);
-
-  // static final roundedContainerDecoration = BoxDecoration(
-  //     borderRadius: BorderRadius.only(
-  //         bottomLeft: Radius.circular(40), bottomRight: Radius.circular(40)),
-  //     color: Styles.black);
-
-  // static final blackBGGradient = LinearGradient(
-  //   begin: Alignment.topLeft,
-  //   end: Alignment.bottomRight,
-  //   colors: [
-  //     Styles.black.withOpacity(1),
-  //     Styles.black.withOpacity(0.95),
-  //     Styles.black.withOpacity(1),
-  //     Styles.black.withOpacity(0.95),
-  //     Styles.black.withOpacity(1),
-  //   ],
-  //   stops: [0.1, 0.3, 0.5, 0.7, 0.9],
-  // );
-
-  // static const Color highlightTwo = Color.fromRGBO(252, 116, 54, 1); // Yellow
-  // static const Color highlightThree = Color.fromRGBO(101, 69, 151, 1); // Purple
-
-  // static const highlightFour = Color.fromRGBO(87, 75, 226, 1); // Blue
-  // static const highlightFive = Color.fromRGBO(249, 244, 233, 1); // Ivory
-
-  // static final colorOneGradient = LinearGradient(
-  //   begin: Alignment.topLeft,
-  //   end: Alignment.bottomRight,
-  //   colors: [
-  //     Styles.colorOne,
-  //     Color.lerp(Styles.colorOne, Styles.white, 0.4)
-  //   ],
-  //   stops: [0.1, 0.9],
-  // );
-
-  // static final highlightTwoGradient = LinearGradient(
-  //   begin: Alignment.topLeft,
-  //   end: Alignment.bottomRight,
-  //   colors: [
-  //     Styles.highlightTwo,
-  //     Color.lerp(Styles.highlightTwo, Styles.white, 0.2)
-  //   ],
-  //   stops: [0.1, 0.9],
-  // );
-
-  // // Padding and spacing
-  // static final onboardingPagePadding =
-  //     EdgeInsets.only(left: 30, right: 30, top: 60, bottom: 60);
-
-  // static final double inlineInputRowHeight = 64;
 }

@@ -1,6 +1,7 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:uuid/uuid.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DefaultObjectfactory {
   /// [Free Session].
@@ -38,5 +39,22 @@ class DefaultObjectfactory {
       ..timeUnit = timeUnit
       ..loadAmount = 0
       ..move = move;
+  }
+
+  static ProgressJournal defaultProgressJournal() {
+    return ProgressJournal()
+      ..$$typename
+      ..id = 'temp-$kProgressJournalTypename:${Uuid().v1()}'
+      ..name = 'Journal ${DateTime.now().compactDateString}'
+      ..createdAt = DateTime.now()
+      ..progressJournalGoals = [];
+  }
+
+  static ProgressJournalGoal defaultProgressJournalGoal() {
+    return ProgressJournalGoal()
+      ..$$typename
+      ..id = 'temp-$kProgressJournalGoalTypename:${Uuid().v1()}'
+      ..name = 'Goal ${DateTime.now().compactDateString}'
+      ..progressJournalGoalTags = [];
   }
 }

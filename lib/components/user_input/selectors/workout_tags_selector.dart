@@ -121,7 +121,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(
-                                      child: SelectableTag(
+                                      child: SelectableWorkoutTag(
                                         tag: tag,
                                         isSelected: _activeSelectedWorkoutTags
                                             .contains(tag),
@@ -139,10 +139,10 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   }
 }
 
-class SelectableTag extends StatelessWidget {
+class SelectableWorkoutTag extends StatelessWidget {
   final WorkoutTag tag;
   final bool isSelected;
-  SelectableTag({required this.tag, this.isSelected = false});
+  SelectableWorkoutTag({required this.tag, this.isSelected = false});
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(

@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -58,7 +59,7 @@ class RecentJournalEntries extends StatelessWidget {
                             onPressed: () =>
                                 context.pushRoute(YourProgressJournalsRoute()),
                             underline: false,
-                            text: 'View journals',
+                            text: 'View all',
                           )
                         ],
                       ),
@@ -75,10 +76,15 @@ class RecentJournalEntries extends StatelessWidget {
                               itemBuilder: (c, i, _) => Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: GestureDetector(
-                                    onTap: () => print('open journal details'),
-                                    child: Card(
-                                        child: MyText(
-                                            entries[i].createdAt.toString()))),
+                                    onTap: () => context.pushRoute(
+                                        ProgressJournalDetailsRoute(
+                                            id: data.userProgressJournals
+                                                .firstWhere((j) => j
+                                                    .progressJournalEntries
+                                                    .contains(entries[i]))
+                                                .id)),
+                                    child:
+                                        ProgressJournalEntryCard(entries[i])),
                               ),
                             )),
                   ],

@@ -11,6 +11,7 @@ class MyTextFormFieldRow extends StatefulWidget {
   final List<String>? autofillHints;
   final bool obscureText;
   final bool autofocus;
+  final String? validationMessage;
   final bool Function()? validator;
 
   /// Pass a controller OR an initial value with and onChange function.
@@ -28,6 +29,7 @@ class MyTextFormFieldRow extends StatefulWidget {
       this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
+      this.validationMessage,
       this.validator})
       : assert(
             controller != null || (initialValue != null && onChanged != null));
@@ -47,40 +49,54 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        CupertinoTextFormFieldRow(
-            controller: widget.controller,
-            initialValue: widget.initialValue,
-            onChanged: widget.onChanged,
-            padding: EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
-            prefix: widget.prefix,
-            autofocus: widget.autofocus,
-            placeholder: widget.placeholder,
-            keyboardType: widget.keyboardType,
-            style: TextStyle(fontSize: 18),
-            autofillHints: widget.autofillHints,
-            obscureText: widget.obscureText),
-        if (_controller.text.length > 0)
-          Positioned(
-              left: 18,
-              top: 5,
-              child: FadeIn(
-                child: MyText(
-                  widget.placeholder,
-                  size: FONTSIZE.TINY,
-                  weight: FontWeight.bold,
-                ),
-              )),
-        if (widget.validator != null && widget.validator!())
-          Positioned(
-              right: 6,
-              bottom: 16,
-              child: FadeIn(
-                  child: Icon(
-                CupertinoIcons.checkmark_alt,
-                color: CupertinoColors.systemBlue,
-              ))),
+        Stack(
+          children: [
+            CupertinoTextFormFieldRow(
+                controller: widget.controller,
+                initialValue: widget.initialValue,
+                onChanged: widget.onChanged,
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: context.theme.primary))),
+                padding:
+                    EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
+                prefix: widget.prefix,
+                autofocus: widget.autofocus,
+                placeholder: widget.placeholder,
+                keyboardType: widget.keyboardType,
+                style: TextStyle(fontSize: 18),
+                placeholderStyle: TextStyle(fontSize: 16),
+                autofillHints: widget.autofillHints,
+                obscureText: widget.obscureText),
+            if (_controller.text.length > 0)
+              Positioned(
+                  left: 18,
+                  top: 5,
+                  child: FadeIn(
+                    child: MyText(
+                      widget.placeholder,
+                      size: FONTSIZE.TINY,
+                      weight: FontWeight.bold,
+                    ),
+                  )),
+            if (widget.validator != null && widget.validator!())
+              Positioned(
+                  right: 6,
+                  bottom: 16,
+                  child: FadeIn(
+                      child: Icon(
+                    CupertinoIcons.checkmark_alt,
+                    color: CupertinoColors.systemBlue,
+                  ))),
+          ],
+        ),
+        if (widget.validationMessage != null)
+          MyText(
+            '(${widget.validationMessage!})',
+            size: FONTSIZE.SMALL,
+          ),
       ],
     );
   }

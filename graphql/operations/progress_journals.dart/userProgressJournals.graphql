@@ -4,5 +4,11 @@ query userProgressJournals {
     ProgressJournalEntries {
       ...ProgressJournalEntry
     }
+    ProgressJournalGoals {
+      ...ProgressJournalGoal
+      ProgressJournalGoalTags {
+        ...ProgressJournalGoalTag
+      }
+    }
   }
 }

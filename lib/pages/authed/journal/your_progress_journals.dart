@@ -5,11 +5,13 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class YourProgressJournalsPage extends StatelessWidget {
   @override
@@ -33,7 +35,8 @@ class YourProgressJournalsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CreateIconButton(
-                    onPressed: () => print('Create new journal flow'),
+                    onPressed: () =>
+                        context.push(child: ProgressJournalCreator()),
                   ),
                   InfoPopupButton(infoWidget: MyText('Info about the journals'))
                 ],

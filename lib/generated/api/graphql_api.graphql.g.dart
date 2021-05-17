@@ -7,6 +7,21 @@ part of 'graphql_api.graphql.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
+  return Equipment()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..loadAdjustable = json['loadAdjustable'] as bool;
+}
+
+Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'loadAdjustable': instance.loadAdjustable,
+    };
+
 MoveType _$MoveTypeFromJson(Map<String, dynamic> json) {
   return MoveType()
     ..$$typename = json['__typename'] as String?
@@ -22,18 +37,6 @@ Map<String, dynamic> _$MoveTypeToJson(MoveType instance) => <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
       'imageUri': instance.imageUri,
-    };
-
-MoveTypes$Query _$MoveTypes$QueryFromJson(Map<String, dynamic> json) {
-  return MoveTypes$Query()
-    ..moveTypes = (json['moveTypes'] as List<dynamic>)
-        .map((e) => MoveType.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$MoveTypes$QueryToJson(MoveTypes$Query instance) =>
-    <String, dynamic>{
-      'moveTypes': instance.moveTypes.map((e) => e.toJson()).toList(),
     };
 
 BodyArea _$BodyAreaFromJson(Map<String, dynamic> json) {
@@ -107,21 +110,6 @@ Map<String, dynamic> _$BodyAreaMoveScoreToJson(BodyAreaMoveScore instance) =>
       'BodyArea': instance.bodyArea.toJson(),
     };
 
-Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
-  return Equipment()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..loadAdjustable = json['loadAdjustable'] as bool;
-}
-
-Map<String, dynamic> _$EquipmentToJson(Equipment instance) => <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'loadAdjustable': instance.loadAdjustable,
-    };
-
 Move _$MoveFromJson(Map<String, dynamic> json) {
   return Move()
     ..$$typename = json['__typename'] as String?
@@ -183,114 +171,6 @@ const _$WorkoutMoveRepTypeEnumMap = {
   WorkoutMoveRepType.time: 'TIME',
   WorkoutMoveRepType.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
-
-StandardMoves$Query _$StandardMoves$QueryFromJson(Map<String, dynamic> json) {
-  return StandardMoves$Query()
-    ..standardMoves = (json['standardMoves'] as List<dynamic>)
-        .map((e) => Move.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$StandardMoves$QueryToJson(
-        StandardMoves$Query instance) =>
-    <String, dynamic>{
-      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
-    };
-
-WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
-  return WorkoutGoal()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..description = json['description'] as String;
-}
-
-Map<String, dynamic> _$WorkoutGoalToJson(WorkoutGoal instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-    };
-
-WorkoutGoals$Query _$WorkoutGoals$QueryFromJson(Map<String, dynamic> json) {
-  return WorkoutGoals$Query()
-    ..workoutGoals = (json['workoutGoals'] as List<dynamic>)
-        .map((e) => WorkoutGoal.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$WorkoutGoals$QueryToJson(WorkoutGoals$Query instance) =>
-    <String, dynamic>{
-      'workoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
-    };
-
-CheckUniqueDisplayName$Query _$CheckUniqueDisplayName$QueryFromJson(
-    Map<String, dynamic> json) {
-  return CheckUniqueDisplayName$Query()
-    ..checkUniqueDisplayName = json['checkUniqueDisplayName'] as bool;
-}
-
-Map<String, dynamic> _$CheckUniqueDisplayName$QueryToJson(
-        CheckUniqueDisplayName$Query instance) =>
-    <String, dynamic>{
-      'checkUniqueDisplayName': instance.checkUniqueDisplayName,
-    };
-
-WorkoutSectionType _$WorkoutSectionTypeFromJson(Map<String, dynamic> json) {
-  return WorkoutSectionType()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..description = json['description'] as String;
-}
-
-Map<String, dynamic> _$WorkoutSectionTypeToJson(WorkoutSectionType instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-    };
-
-WorkoutSectionTypes$Query _$WorkoutSectionTypes$QueryFromJson(
-    Map<String, dynamic> json) {
-  return WorkoutSectionTypes$Query()
-    ..workoutSectionTypes = (json['workoutSectionTypes'] as List<dynamic>)
-        .map((e) => WorkoutSectionType.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$WorkoutSectionTypes$QueryToJson(
-        WorkoutSectionTypes$Query instance) =>
-    <String, dynamic>{
-      'workoutSectionTypes':
-          instance.workoutSectionTypes.map((e) => e.toJson()).toList(),
-    };
-
-BodyAreas$Query _$BodyAreas$QueryFromJson(Map<String, dynamic> json) {
-  return BodyAreas$Query()
-    ..bodyAreas = (json['bodyAreas'] as List<dynamic>)
-        .map((e) => BodyArea.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$BodyAreas$QueryToJson(BodyAreas$Query instance) =>
-    <String, dynamic>{
-      'bodyAreas': instance.bodyAreas.map((e) => e.toJson()).toList(),
-    };
-
-Equipments$Query _$Equipments$QueryFromJson(Map<String, dynamic> json) {
-  return Equipments$Query()
-    ..equipments = (json['equipments'] as List<dynamic>)
-        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$Equipments$QueryToJson(Equipments$Query instance) =>
-    <String, dynamic>{
-      'equipments': instance.equipments.map((e) => e.toJson()).toList(),
-    };
 
 WorkoutMove _$WorkoutMoveFromJson(Map<String, dynamic> json) {
   return WorkoutMove()
@@ -545,6 +425,697 @@ Map<String, dynamic> _$UpdateWorkoutMoveInputToJson(
       'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
       'Move': instance.move?.toJson(),
       'Equipment': instance.equipment?.toJson(),
+    };
+
+ProgressJournalEntry _$ProgressJournalEntryFromJson(Map<String, dynamic> json) {
+  return ProgressJournalEntry()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..note = json['note'] as String?
+    ..voiceNoteUri = json['voiceNoteUri'] as String?
+    ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
+    ..moodScore = (json['moodScore'] as num?)?.toDouble()
+    ..energyScore = (json['energyScore'] as num?)?.toDouble()
+    ..stressScore = (json['stressScore'] as num?)?.toDouble()
+    ..motivationScore = (json['motivationScore'] as num?)?.toDouble()
+    ..progressPhotoUris = (json['progressPhotoUris'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList();
+}
+
+Map<String, dynamic> _$ProgressJournalEntryToJson(
+        ProgressJournalEntry instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'note': instance.note,
+      'voiceNoteUri': instance.voiceNoteUri,
+      'bodyweight': instance.bodyweight,
+      'moodScore': instance.moodScore,
+      'energyScore': instance.energyScore,
+      'stressScore': instance.stressScore,
+      'motivationScore': instance.motivationScore,
+      'progressPhotoUris': instance.progressPhotoUris,
+    };
+
+ProgressJournalGoalTag _$ProgressJournalGoalTagFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalGoalTag()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..tag = json['tag'] as String
+    ..hexColor = json['hexColor'] as String;
+}
+
+Map<String, dynamic> _$ProgressJournalGoalTagToJson(
+        ProgressJournalGoalTag instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
+    };
+
+ProgressJournalGoal _$ProgressJournalGoalFromJson(Map<String, dynamic> json) {
+  return ProgressJournalGoal()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..deadline =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?)
+    ..completedDate =
+        fromGraphQLDateTimeToDartDateTimeNullable(json['completedDate'] as int?)
+    ..progressJournalGoalTags = (json['ProgressJournalGoalTags']
+            as List<dynamic>)
+        .map((e) => ProgressJournalGoalTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ProgressJournalGoalToJson(
+        ProgressJournalGoal instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'name': instance.name,
+      'description': instance.description,
+      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
+      'completedDate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedDate),
+      'ProgressJournalGoalTags':
+          instance.progressJournalGoalTags.map((e) => e.toJson()).toList(),
+    };
+
+ProgressJournal _$ProgressJournalFromJson(Map<String, dynamic> json) {
+  return ProgressJournal()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..progressJournalEntries = (json['ProgressJournalEntries'] as List<dynamic>)
+        .map((e) => ProgressJournalEntry.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..progressJournalGoals = (json['ProgressJournalGoals'] as List<dynamic>)
+        .map((e) => ProgressJournalGoal.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ProgressJournalToJson(ProgressJournal instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'name': instance.name,
+      'description': instance.description,
+      'ProgressJournalEntries':
+          instance.progressJournalEntries.map((e) => e.toJson()).toList(),
+      'ProgressJournalGoals':
+          instance.progressJournalGoals.map((e) => e.toJson()).toList(),
+    };
+
+ProgressJournalById$Query _$ProgressJournalById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalById$Query()
+    ..progressJournalById = ProgressJournal.fromJson(
+        json['progressJournalById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$ProgressJournalById$QueryToJson(
+        ProgressJournalById$Query instance) =>
+    <String, dynamic>{
+      'progressJournalById': instance.progressJournalById.toJson(),
+    };
+
+UserProgressJournals$Query _$UserProgressJournals$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserProgressJournals$Query()
+    ..userProgressJournals = (json['userProgressJournals'] as List<dynamic>)
+        .map((e) => ProgressJournal.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserProgressJournals$QueryToJson(
+        UserProgressJournals$Query instance) =>
+    <String, dynamic>{
+      'userProgressJournals':
+          instance.userProgressJournals.map((e) => e.toJson()).toList(),
+    };
+
+GymProfile _$GymProfileFromJson(Map<String, dynamic> json) {
+  return GymProfile()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..equipments = (json['Equipments'] as List<dynamic>)
+        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$GymProfileToJson(GymProfile instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'Equipments': instance.equipments.map((e) => e.toJson()).toList(),
+    };
+
+WorkoutSectionType _$WorkoutSectionTypeFromJson(Map<String, dynamic> json) {
+  return WorkoutSectionType()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String;
+}
+
+Map<String, dynamic> _$WorkoutSectionTypeToJson(WorkoutSectionType instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+LoggedWorkoutMove _$LoggedWorkoutMoveFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutMove()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..note = json['note'] as String?
+    ..sortPosition = json['sortPosition'] as int
+    ..reps = (json['reps'] as num).toDouble()
+    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown)
+    ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown)
+    ..loadAmount = (json['loadAmount'] as num?)?.toDouble()
+    ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown)
+    ..timeUnit = _$enumDecode(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown)
+    ..equipment = json['Equipment'] == null
+        ? null
+        : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
+    ..move = Move.fromJson(json['Move'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$LoggedWorkoutMoveToJson(LoggedWorkoutMove instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'note': instance.note,
+      'sortPosition': instance.sortPosition,
+      'reps': instance.reps,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
+      'Equipment': instance.equipment?.toJson(),
+      'Move': instance.move.toJson(),
+    };
+
+LoggedWorkoutSet _$LoggedWorkoutSetFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutSet()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..note = json['note'] as String?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..duration = json['duration'] as int?
+    ..sortPosition = json['sortPosition'] as int
+    ..loggedWorkoutMoves = (json['LoggedWorkoutMoves'] as List<dynamic>)
+        .map((e) => LoggedWorkoutMove.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutSetToJson(LoggedWorkoutSet instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'note': instance.note,
+      'roundsCompleted': instance.roundsCompleted,
+      'duration': instance.duration,
+      'sortPosition': instance.sortPosition,
+      'LoggedWorkoutMoves':
+          instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkoutSection _$LoggedWorkoutSectionFromJson(Map<String, dynamic> json) {
+  return LoggedWorkoutSection()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String?
+    ..note = json['note'] as String?
+    ..timecap = json['timecap'] as int?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..repScore = json['repScore'] as int?
+    ..timeTakenMs = json['timeTakenMs'] as int?
+    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
+    ..sortPosition = json['sortPosition'] as int
+    ..workoutSectionType = WorkoutSectionType.fromJson(
+        json['WorkoutSectionType'] as Map<String, dynamic>)
+    ..loggedWorkoutSets = (json['LoggedWorkoutSets'] as List<dynamic>)
+        .map((e) => LoggedWorkoutSet.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutSectionToJson(
+        LoggedWorkoutSection instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'note': instance.note,
+      'timecap': instance.timecap,
+      'roundsCompleted': instance.roundsCompleted,
+      'repScore': instance.repScore,
+      'timeTakenMs': instance.timeTakenMs,
+      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
+      'sortPosition': instance.sortPosition,
+      'WorkoutSectionType': instance.workoutSectionType.toJson(),
+      'LoggedWorkoutSets':
+          instance.loggedWorkoutSets.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
+  return LoggedWorkout()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..completedOn =
+        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
+    ..note = json['note'] as String?
+    ..name = json['name'] as String
+    ..gymProfile = json['GymProfile'] == null
+        ? null
+        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>)
+    ..loggedWorkoutSections = (json['LoggedWorkoutSections'] as List<dynamic>)
+        .map((e) => LoggedWorkoutSection.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'note': instance.note,
+      'name': instance.name,
+      'GymProfile': instance.gymProfile?.toJson(),
+      'LoggedWorkoutSections':
+          instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
+    };
+
+LoggedWorkoutById$Query _$LoggedWorkoutById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return LoggedWorkoutById$Query()
+    ..loggedWorkoutById = LoggedWorkout.fromJson(
+        json['loggedWorkoutById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$LoggedWorkoutById$QueryToJson(
+        LoggedWorkoutById$Query instance) =>
+    <String, dynamic>{
+      'loggedWorkoutById': instance.loggedWorkoutById.toJson(),
+    };
+
+DeleteLoggedWorkoutById$Mutation _$DeleteLoggedWorkoutById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutById$Mutation()
+    ..deleteLoggedWorkoutById = json['deleteLoggedWorkoutById'] as String;
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutById$MutationToJson(
+        DeleteLoggedWorkoutById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteLoggedWorkoutById': instance.deleteLoggedWorkoutById,
+    };
+
+UserLoggedWorkouts$Query _$UserLoggedWorkouts$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserLoggedWorkouts$Query()
+    ..userLoggedWorkouts = (json['userLoggedWorkouts'] as List<dynamic>)
+        .map((e) => LoggedWorkout.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserLoggedWorkouts$QueryToJson(
+        UserLoggedWorkouts$Query instance) =>
+    <String, dynamic>{
+      'userLoggedWorkouts':
+          instance.userLoggedWorkouts.map((e) => e.toJson()).toList(),
+    };
+
+UpdateLoggedWorkout _$UpdateLoggedWorkoutFromJson(Map<String, dynamic> json) {
+  return UpdateLoggedWorkout()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..completedOn =
+        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
+    ..note = json['note'] as String?
+    ..name = json['name'] as String;
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutToJson(
+        UpdateLoggedWorkout instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'note': instance.note,
+      'name': instance.name,
+    };
+
+UpdateLoggedWorkout$Mutation _$UpdateLoggedWorkout$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkout$Mutation()
+    ..updateLoggedWorkout = UpdateLoggedWorkout.fromJson(
+        json['updateLoggedWorkout'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkout$MutationToJson(
+        UpdateLoggedWorkout$Mutation instance) =>
+    <String, dynamic>{
+      'updateLoggedWorkout': instance.updateLoggedWorkout.toJson(),
+    };
+
+UpdateLoggedWorkoutInput _$UpdateLoggedWorkoutInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutInput(
+    id: json['id'] as String,
+    completedOn:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['completedOn'] as int?),
+    name: json['name'] as String?,
+    note: json['note'] as String?,
+    gymProfile: json['GymProfile'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['GymProfile'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutInputToJson(
+        UpdateLoggedWorkoutInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'completedOn':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedOn),
+      'name': instance.name,
+      'note': instance.note,
+      'GymProfile': instance.gymProfile?.toJson(),
+    };
+
+CreateLoggedWorkout$Mutation _$CreateLoggedWorkout$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkout$Mutation()
+    ..createLoggedWorkout = LoggedWorkout.fromJson(
+        json['createLoggedWorkout'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateLoggedWorkout$MutationToJson(
+        CreateLoggedWorkout$Mutation instance) =>
+    <String, dynamic>{
+      'createLoggedWorkout': instance.createLoggedWorkout.toJson(),
+    };
+
+CreateLoggedWorkoutInput _$CreateLoggedWorkoutInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutInput(
+    completedOn: fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int),
+    name: json['name'] as String,
+    note: json['note'] as String?,
+    loggedWorkoutSections: (json['LoggedWorkoutSections'] as List<dynamic>)
+        .map((e) => CreateLoggedWorkoutSectionInLoggedWorkoutInput.fromJson(
+            e as Map<String, dynamic>))
+        .toList(),
+    workout: json['Workout'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Workout'] as Map<String, dynamic>),
+    scheduledWorkout: json['ScheduledWorkout'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['ScheduledWorkout'] as Map<String, dynamic>),
+    gymProfile: json['GymProfile'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['GymProfile'] as Map<String, dynamic>),
+    workoutProgramWorkout: json['WorkoutProgramWorkout'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutProgramWorkout'] as Map<String, dynamic>),
+    workoutProgramEnrolment: json['WorkoutProgramEnrolment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutProgramEnrolment'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutInputToJson(
+        CreateLoggedWorkoutInput instance) =>
+    <String, dynamic>{
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'name': instance.name,
+      'note': instance.note,
+      'LoggedWorkoutSections':
+          instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
+      'Workout': instance.workout?.toJson(),
+      'ScheduledWorkout': instance.scheduledWorkout?.toJson(),
+      'GymProfile': instance.gymProfile?.toJson(),
+      'WorkoutProgramWorkout': instance.workoutProgramWorkout?.toJson(),
+      'WorkoutProgramEnrolment': instance.workoutProgramEnrolment?.toJson(),
+    };
+
+CreateLoggedWorkoutSectionInLoggedWorkoutInput
+    _$CreateLoggedWorkoutSectionInLoggedWorkoutInputFromJson(
+        Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSectionInLoggedWorkoutInput(
+    name: json['name'] as String?,
+    note: json['note'] as String?,
+    sortPosition: json['sortPosition'] as int,
+    roundsCompleted: json['roundsCompleted'] as int,
+    timeTakenMs: json['timeTakenMs'] as int?,
+    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
+    repScore: json['repScore'] as int?,
+    timecap: json['timecap'] as int?,
+    workoutSectionType: ConnectRelationInput.fromJson(
+        json['WorkoutSectionType'] as Map<String, dynamic>),
+    loggedWorkoutSets: (json['LoggedWorkoutSets'] as List<dynamic>)
+        .map((e) => CreateLoggedWorkoutSetInLoggedSectionInput.fromJson(
+            e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(
+        CreateLoggedWorkoutSectionInLoggedWorkoutInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'note': instance.note,
+      'sortPosition': instance.sortPosition,
+      'roundsCompleted': instance.roundsCompleted,
+      'timeTakenMs': instance.timeTakenMs,
+      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
+      'repScore': instance.repScore,
+      'timecap': instance.timecap,
+      'WorkoutSectionType': instance.workoutSectionType.toJson(),
+      'LoggedWorkoutSets':
+          instance.loggedWorkoutSets.map((e) => e.toJson()).toList(),
+    };
+
+CreateLoggedWorkoutSetInLoggedSectionInput
+    _$CreateLoggedWorkoutSetInLoggedSectionInputFromJson(
+        Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSetInLoggedSectionInput(
+    sortPosition: json['sortPosition'] as int,
+    note: json['note'] as String?,
+    roundsCompleted: json['roundsCompleted'] as int,
+    duration: json['duration'] as int?,
+    loggedWorkoutMoves: (json['LoggedWorkoutMoves'] as List<dynamic>)
+        .map((e) => CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
+            e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(
+        CreateLoggedWorkoutSetInLoggedSectionInput instance) =>
+    <String, dynamic>{
+      'sortPosition': instance.sortPosition,
+      'note': instance.note,
+      'roundsCompleted': instance.roundsCompleted,
+      'duration': instance.duration,
+      'LoggedWorkoutMoves':
+          instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
+    };
+
+CreateLoggedWorkoutMoveInLoggedSetInput
+    _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(
+        Map<String, dynamic> json) {
+  return CreateLoggedWorkoutMoveInLoggedSetInput(
+    sortPosition: json['sortPosition'] as int,
+    note: json['note'] as String?,
+    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    reps: (json['reps'] as num).toDouble(),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
+    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(
+        CreateLoggedWorkoutMoveInLoggedSetInput instance) =>
+    <String, dynamic>{
+      'sortPosition': instance.sortPosition,
+      'note': instance.note,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'reps': instance.reps,
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
+      'Move': instance.move.toJson(),
+      'Equipment': instance.equipment?.toJson(),
+    };
+
+DeleteLoggedWorkoutSetById$Mutation
+    _$DeleteLoggedWorkoutSetById$MutationFromJson(Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutSetById$Mutation()
+    ..deleteLoggedWorkoutSetById = json['deleteLoggedWorkoutSetById'] as String;
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutSetById$MutationToJson(
+        DeleteLoggedWorkoutSetById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteLoggedWorkoutSetById': instance.deleteLoggedWorkoutSetById,
+    };
+
+CreateLoggedWorkoutSet _$CreateLoggedWorkoutSetFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSet()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..note = json['note'] as String?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..duration = json['duration'] as int?
+    ..sortPosition = json['sortPosition'] as int;
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSetToJson(
+        CreateLoggedWorkoutSet instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'note': instance.note,
+      'roundsCompleted': instance.roundsCompleted,
+      'duration': instance.duration,
+      'sortPosition': instance.sortPosition,
+    };
+
+CreateLoggedWorkoutSet$Mutation _$CreateLoggedWorkoutSet$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSet$Mutation()
+    ..createLoggedWorkoutSet = CreateLoggedWorkoutSet.fromJson(
+        json['createLoggedWorkoutSet'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSet$MutationToJson(
+        CreateLoggedWorkoutSet$Mutation instance) =>
+    <String, dynamic>{
+      'createLoggedWorkoutSet': instance.createLoggedWorkoutSet.toJson(),
+    };
+
+CreateLoggedWorkoutSetInput _$CreateLoggedWorkoutSetInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSetInput(
+    sortPosition: json['sortPosition'] as int,
+    note: json['note'] as String?,
+    roundsCompleted: json['roundsCompleted'] as int,
+    duration: json['duration'] as int?,
+    loggedWorkoutSection: ConnectRelationInput.fromJson(
+        json['LoggedWorkoutSection'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSetInputToJson(
+        CreateLoggedWorkoutSetInput instance) =>
+    <String, dynamic>{
+      'sortPosition': instance.sortPosition,
+      'note': instance.note,
+      'roundsCompleted': instance.roundsCompleted,
+      'duration': instance.duration,
+      'LoggedWorkoutSection': instance.loggedWorkoutSection.toJson(),
+    };
+
+UpdateLoggedWorkoutSet _$UpdateLoggedWorkoutSetFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSet()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..note = json['note'] as String?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..duration = json['duration'] as int?
+    ..sortPosition = json['sortPosition'] as int;
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSetToJson(
+        UpdateLoggedWorkoutSet instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'note': instance.note,
+      'roundsCompleted': instance.roundsCompleted,
+      'duration': instance.duration,
+      'sortPosition': instance.sortPosition,
+    };
+
+UpdateLoggedWorkoutSet$Mutation _$UpdateLoggedWorkoutSet$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSet$Mutation()
+    ..updateLoggedWorkoutSet = UpdateLoggedWorkoutSet.fromJson(
+        json['updateLoggedWorkoutSet'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSet$MutationToJson(
+        UpdateLoggedWorkoutSet$Mutation instance) =>
+    <String, dynamic>{
+      'updateLoggedWorkoutSet': instance.updateLoggedWorkoutSet.toJson(),
+    };
+
+UpdateLoggedWorkoutSetInput _$UpdateLoggedWorkoutSetInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSetInput(
+    id: json['id'] as String,
+    note: json['note'] as String?,
+    duration: json['duration'] as int?,
+    roundsCompleted: json['roundsCompleted'] as int?,
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSetInputToJson(
+        UpdateLoggedWorkoutSetInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'note': instance.note,
+      'duration': instance.duration,
+      'roundsCompleted': instance.roundsCompleted,
     };
 
 User _$UserFromJson(Map<String, dynamic> json) {
@@ -839,26 +1410,6 @@ Map<String, dynamic> _$DeleteGymProfileById$MutationToJson(
       'deleteGymProfileById': instance.deleteGymProfileById,
     };
 
-GymProfile _$GymProfileFromJson(Map<String, dynamic> json) {
-  return GymProfile()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..description = json['description'] as String?
-    ..equipments = (json['Equipments'] as List<dynamic>)
-        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$GymProfileToJson(GymProfile instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'Equipments': instance.equipments.map((e) => e.toJson()).toList(),
-    };
-
 CreateGymProfile$Mutation _$CreateGymProfile$MutationFromJson(
     Map<String, dynamic> json) {
   return CreateGymProfile$Mutation()
@@ -990,6 +1541,94 @@ Map<String, dynamic> _$CreateWorkoutTagInputToJson(
         CreateWorkoutTagInput instance) =>
     <String, dynamic>{
       'tag': instance.tag,
+    };
+
+DeleteLoggedWorkoutSectionById$Mutation
+    _$DeleteLoggedWorkoutSectionById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutSectionById$Mutation()
+    ..deleteLoggedWorkoutSectionById =
+        json['deleteLoggedWorkoutSectionById'] as String;
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutSectionById$MutationToJson(
+        DeleteLoggedWorkoutSectionById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteLoggedWorkoutSectionById': instance.deleteLoggedWorkoutSectionById,
+    };
+
+UpdateLoggedWorkoutSection _$UpdateLoggedWorkoutSectionFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSection()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String?
+    ..note = json['note'] as String?
+    ..timecap = json['timecap'] as int?
+    ..roundsCompleted = json['roundsCompleted'] as int
+    ..repScore = json['repScore'] as int?
+    ..timeTakenMs = json['timeTakenMs'] as int?
+    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
+    ..sortPosition = json['sortPosition'] as int
+    ..workoutSectionType = WorkoutSectionType.fromJson(
+        json['WorkoutSectionType'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSectionToJson(
+        UpdateLoggedWorkoutSection instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'note': instance.note,
+      'timecap': instance.timecap,
+      'roundsCompleted': instance.roundsCompleted,
+      'repScore': instance.repScore,
+      'timeTakenMs': instance.timeTakenMs,
+      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
+      'sortPosition': instance.sortPosition,
+      'WorkoutSectionType': instance.workoutSectionType.toJson(),
+    };
+
+UpdateLoggedWorkoutSection$Mutation
+    _$UpdateLoggedWorkoutSection$MutationFromJson(Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSection$Mutation()
+    ..updateLoggedWorkoutSection = UpdateLoggedWorkoutSection.fromJson(
+        json['updateLoggedWorkoutSection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSection$MutationToJson(
+        UpdateLoggedWorkoutSection$Mutation instance) =>
+    <String, dynamic>{
+      'updateLoggedWorkoutSection':
+          instance.updateLoggedWorkoutSection.toJson(),
+    };
+
+UpdateLoggedWorkoutSectionInput _$UpdateLoggedWorkoutSectionInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSectionInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    roundsCompleted: json['roundsCompleted'] as int?,
+    timeTakenMs: json['timeTakenMs'] as int?,
+    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
+    timecap: json['timecap'] as int?,
+    repScore: json['repScore'] as int?,
+    note: json['note'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSectionInputToJson(
+        UpdateLoggedWorkoutSectionInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'roundsCompleted': instance.roundsCompleted,
+      'timeTakenMs': instance.timeTakenMs,
+      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
+      'timecap': instance.timecap,
+      'repScore': instance.repScore,
+      'note': instance.note,
     };
 
 UpdateWorkoutSet _$UpdateWorkoutSetFromJson(Map<String, dynamic> json) {
@@ -1151,6 +1790,229 @@ Map<String, dynamic> _$DeleteWorkoutSetById$MutationToJson(
         DeleteWorkoutSetById$Mutation instance) =>
     <String, dynamic>{
       'deleteWorkoutSetById': instance.deleteWorkoutSetById,
+    };
+
+MoveTypes$Query _$MoveTypes$QueryFromJson(Map<String, dynamic> json) {
+  return MoveTypes$Query()
+    ..moveTypes = (json['moveTypes'] as List<dynamic>)
+        .map((e) => MoveType.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$MoveTypes$QueryToJson(MoveTypes$Query instance) =>
+    <String, dynamic>{
+      'moveTypes': instance.moveTypes.map((e) => e.toJson()).toList(),
+    };
+
+StandardMoves$Query _$StandardMoves$QueryFromJson(Map<String, dynamic> json) {
+  return StandardMoves$Query()
+    ..standardMoves = (json['standardMoves'] as List<dynamic>)
+        .map((e) => Move.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$StandardMoves$QueryToJson(
+        StandardMoves$Query instance) =>
+    <String, dynamic>{
+      'standardMoves': instance.standardMoves.map((e) => e.toJson()).toList(),
+    };
+
+WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
+  return WorkoutGoal()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String;
+}
+
+Map<String, dynamic> _$WorkoutGoalToJson(WorkoutGoal instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+WorkoutGoals$Query _$WorkoutGoals$QueryFromJson(Map<String, dynamic> json) {
+  return WorkoutGoals$Query()
+    ..workoutGoals = (json['workoutGoals'] as List<dynamic>)
+        .map((e) => WorkoutGoal.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$WorkoutGoals$QueryToJson(WorkoutGoals$Query instance) =>
+    <String, dynamic>{
+      'workoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
+    };
+
+CheckUniqueDisplayName$Query _$CheckUniqueDisplayName$QueryFromJson(
+    Map<String, dynamic> json) {
+  return CheckUniqueDisplayName$Query()
+    ..checkUniqueDisplayName = json['checkUniqueDisplayName'] as bool;
+}
+
+Map<String, dynamic> _$CheckUniqueDisplayName$QueryToJson(
+        CheckUniqueDisplayName$Query instance) =>
+    <String, dynamic>{
+      'checkUniqueDisplayName': instance.checkUniqueDisplayName,
+    };
+
+WorkoutSectionTypes$Query _$WorkoutSectionTypes$QueryFromJson(
+    Map<String, dynamic> json) {
+  return WorkoutSectionTypes$Query()
+    ..workoutSectionTypes = (json['workoutSectionTypes'] as List<dynamic>)
+        .map((e) => WorkoutSectionType.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$WorkoutSectionTypes$QueryToJson(
+        WorkoutSectionTypes$Query instance) =>
+    <String, dynamic>{
+      'workoutSectionTypes':
+          instance.workoutSectionTypes.map((e) => e.toJson()).toList(),
+    };
+
+BodyAreas$Query _$BodyAreas$QueryFromJson(Map<String, dynamic> json) {
+  return BodyAreas$Query()
+    ..bodyAreas = (json['bodyAreas'] as List<dynamic>)
+        .map((e) => BodyArea.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$BodyAreas$QueryToJson(BodyAreas$Query instance) =>
+    <String, dynamic>{
+      'bodyAreas': instance.bodyAreas.map((e) => e.toJson()).toList(),
+    };
+
+Equipments$Query _$Equipments$QueryFromJson(Map<String, dynamic> json) {
+  return Equipments$Query()
+    ..equipments = (json['equipments'] as List<dynamic>)
+        .map((e) => Equipment.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$Equipments$QueryToJson(Equipments$Query instance) =>
+    <String, dynamic>{
+      'equipments': instance.equipments.map((e) => e.toJson()).toList(),
+    };
+
+DeleteLoggedWorkoutMoveById$Mutation
+    _$DeleteLoggedWorkoutMoveById$MutationFromJson(Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutMoveById$Mutation()
+    ..deleteLoggedWorkoutMoveById =
+        json['deleteLoggedWorkoutMoveById'] as String;
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutMoveById$MutationToJson(
+        DeleteLoggedWorkoutMoveById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteLoggedWorkoutMoveById': instance.deleteLoggedWorkoutMoveById,
+    };
+
+UpdateLoggedWorkoutMove$Mutation _$UpdateLoggedWorkoutMove$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutMove$Mutation()
+    ..updateLoggedWorkoutMove = LoggedWorkoutMove.fromJson(
+        json['updateLoggedWorkoutMove'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutMove$MutationToJson(
+        UpdateLoggedWorkoutMove$Mutation instance) =>
+    <String, dynamic>{
+      'updateLoggedWorkoutMove': instance.updateLoggedWorkoutMove.toJson(),
+    };
+
+UpdateLoggedWorkoutMoveInput _$UpdateLoggedWorkoutMoveInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutMoveInput(
+    id: json['id'] as String,
+    note: json['note'] as String?,
+    reps: (json['reps'] as num?)?.toDouble(),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
+    move: json['Move'] == null
+        ? null
+        : ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutMoveInputToJson(
+        UpdateLoggedWorkoutMoveInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'note': instance.note,
+      'reps': instance.reps,
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
+      'Move': instance.move?.toJson(),
+      'Equipment': instance.equipment?.toJson(),
+    };
+
+CreateLoggedWorkoutMove$Mutation _$CreateLoggedWorkoutMove$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutMove$Mutation()
+    ..createLoggedWorkoutMove = LoggedWorkoutMove.fromJson(
+        json['createLoggedWorkoutMove'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutMove$MutationToJson(
+        CreateLoggedWorkoutMove$Mutation instance) =>
+    <String, dynamic>{
+      'createLoggedWorkoutMove': instance.createLoggedWorkoutMove.toJson(),
+    };
+
+CreateLoggedWorkoutMoveInput _$CreateLoggedWorkoutMoveInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutMoveInput(
+    sortPosition: json['sortPosition'] as int,
+    note: json['note'] as String?,
+    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    reps: (json['reps'] as num).toDouble(),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
+    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+    loggedWorkoutSet: ConnectRelationInput.fromJson(
+        json['LoggedWorkoutSet'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutMoveInputToJson(
+        CreateLoggedWorkoutMoveInput instance) =>
+    <String, dynamic>{
+      'sortPosition': instance.sortPosition,
+      'note': instance.note,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'reps': instance.reps,
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
+      'Move': instance.move.toJson(),
+      'Equipment': instance.equipment?.toJson(),
+      'LoggedWorkoutSet': instance.loggedWorkoutSet.toJson(),
     };
 
 UpdateWorkoutSection _$UpdateWorkoutSectionFromJson(Map<String, dynamic> json) {
@@ -1863,822 +2725,260 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
-LoggedWorkoutMove _$LoggedWorkoutMoveFromJson(Map<String, dynamic> json) {
-  return LoggedWorkoutMove()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..note = json['note'] as String?
-    ..sortPosition = json['sortPosition'] as int
-    ..reps = (json['reps'] as num).toDouble()
-    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown)
-    ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
-        unknownValue: DistanceUnit.artemisUnknown)
-    ..loadAmount = (json['loadAmount'] as num?)?.toDouble()
-    ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
-        unknownValue: LoadUnit.artemisUnknown)
-    ..timeUnit = _$enumDecode(_$TimeUnitEnumMap, json['timeUnit'],
-        unknownValue: TimeUnit.artemisUnknown)
-    ..equipment = json['Equipment'] == null
-        ? null
-        : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
-    ..move = Move.fromJson(json['Move'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$LoggedWorkoutMoveToJson(LoggedWorkoutMove instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'note': instance.note,
-      'sortPosition': instance.sortPosition,
-      'reps': instance.reps,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
-      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'loadAmount': instance.loadAmount,
-      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
-      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
-      'Equipment': instance.equipment?.toJson(),
-      'Move': instance.move.toJson(),
-    };
-
-LoggedWorkoutSet _$LoggedWorkoutSetFromJson(Map<String, dynamic> json) {
-  return LoggedWorkoutSet()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..note = json['note'] as String?
-    ..roundsCompleted = json['roundsCompleted'] as int
-    ..duration = json['duration'] as int?
-    ..sortPosition = json['sortPosition'] as int
-    ..loggedWorkoutMoves = (json['LoggedWorkoutMoves'] as List<dynamic>)
-        .map((e) => LoggedWorkoutMove.fromJson(e as Map<String, dynamic>))
+ProgressJournalGoalTags$Query _$ProgressJournalGoalTags$QueryFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalGoalTags$Query()
+    ..progressJournalGoalTags = (json['progressJournalGoalTags']
+            as List<dynamic>)
+        .map((e) => ProgressJournalGoalTag.fromJson(e as Map<String, dynamic>))
         .toList();
 }
 
-Map<String, dynamic> _$LoggedWorkoutSetToJson(LoggedWorkoutSet instance) =>
+Map<String, dynamic> _$ProgressJournalGoalTags$QueryToJson(
+        ProgressJournalGoalTags$Query instance) =>
     <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'note': instance.note,
-      'roundsCompleted': instance.roundsCompleted,
-      'duration': instance.duration,
-      'sortPosition': instance.sortPosition,
-      'LoggedWorkoutMoves':
-          instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
+      'progressJournalGoalTags':
+          instance.progressJournalGoalTags.map((e) => e.toJson()).toList(),
     };
 
-LoggedWorkoutSection _$LoggedWorkoutSectionFromJson(Map<String, dynamic> json) {
-  return LoggedWorkoutSection()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String?
-    ..note = json['note'] as String?
-    ..timecap = json['timecap'] as int?
-    ..roundsCompleted = json['roundsCompleted'] as int
-    ..repScore = json['repScore'] as int?
-    ..timeTakenMs = json['timeTakenMs'] as int?
-    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
-    ..sortPosition = json['sortPosition'] as int
-    ..workoutSectionType = WorkoutSectionType.fromJson(
-        json['WorkoutSectionType'] as Map<String, dynamic>)
-    ..loggedWorkoutSets = (json['LoggedWorkoutSets'] as List<dynamic>)
-        .map((e) => LoggedWorkoutSet.fromJson(e as Map<String, dynamic>))
-        .toList();
+UpdateProgressJournalGoalTag$Mutation
+    _$UpdateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalTag$Mutation()
+    ..updateProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
+        json['updateProgressJournalGoalTag'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$LoggedWorkoutSectionToJson(
-        LoggedWorkoutSection instance) =>
+Map<String, dynamic> _$UpdateProgressJournalGoalTag$MutationToJson(
+        UpdateProgressJournalGoalTag$Mutation instance) =>
     <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'note': instance.note,
-      'timecap': instance.timecap,
-      'roundsCompleted': instance.roundsCompleted,
-      'repScore': instance.repScore,
-      'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
-      'sortPosition': instance.sortPosition,
-      'WorkoutSectionType': instance.workoutSectionType.toJson(),
-      'LoggedWorkoutSets':
-          instance.loggedWorkoutSets.map((e) => e.toJson()).toList(),
+      'updateProgressJournalGoalTag':
+          instance.updateProgressJournalGoalTag.toJson(),
     };
 
-LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
-  return LoggedWorkout()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..completedOn =
-        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
-    ..note = json['note'] as String?
-    ..name = json['name'] as String
-    ..gymProfile = json['GymProfile'] == null
-        ? null
-        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>)
-    ..loggedWorkoutSections = (json['LoggedWorkoutSections'] as List<dynamic>)
-        .map((e) => LoggedWorkoutSection.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
-      'note': instance.note,
-      'name': instance.name,
-      'GymProfile': instance.gymProfile?.toJson(),
-      'LoggedWorkoutSections':
-          instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
-    };
-
-LoggedWorkoutById$Query _$LoggedWorkoutById$QueryFromJson(
+UpdateProgressJournalGoalTagInput _$UpdateProgressJournalGoalTagInputFromJson(
     Map<String, dynamic> json) {
-  return LoggedWorkoutById$Query()
-    ..loggedWorkoutById = LoggedWorkout.fromJson(
-        json['loggedWorkoutById'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$LoggedWorkoutById$QueryToJson(
-        LoggedWorkoutById$Query instance) =>
-    <String, dynamic>{
-      'loggedWorkoutById': instance.loggedWorkoutById.toJson(),
-    };
-
-DeleteLoggedWorkoutById$Mutation _$DeleteLoggedWorkoutById$MutationFromJson(
-    Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutById$Mutation()
-    ..deleteLoggedWorkoutById = json['deleteLoggedWorkoutById'] as String;
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutById$MutationToJson(
-        DeleteLoggedWorkoutById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteLoggedWorkoutById': instance.deleteLoggedWorkoutById,
-    };
-
-UserLoggedWorkouts$Query _$UserLoggedWorkouts$QueryFromJson(
-    Map<String, dynamic> json) {
-  return UserLoggedWorkouts$Query()
-    ..userLoggedWorkouts = (json['userLoggedWorkouts'] as List<dynamic>)
-        .map((e) => LoggedWorkout.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$UserLoggedWorkouts$QueryToJson(
-        UserLoggedWorkouts$Query instance) =>
-    <String, dynamic>{
-      'userLoggedWorkouts':
-          instance.userLoggedWorkouts.map((e) => e.toJson()).toList(),
-    };
-
-UpdateLoggedWorkout _$UpdateLoggedWorkoutFromJson(Map<String, dynamic> json) {
-  return UpdateLoggedWorkout()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..completedOn =
-        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
-    ..note = json['note'] as String?
-    ..name = json['name'] as String;
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutToJson(
-        UpdateLoggedWorkout instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
-      'note': instance.note,
-      'name': instance.name,
-    };
-
-UpdateLoggedWorkout$Mutation _$UpdateLoggedWorkout$MutationFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkout$Mutation()
-    ..updateLoggedWorkout = UpdateLoggedWorkout.fromJson(
-        json['updateLoggedWorkout'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkout$MutationToJson(
-        UpdateLoggedWorkout$Mutation instance) =>
-    <String, dynamic>{
-      'updateLoggedWorkout': instance.updateLoggedWorkout.toJson(),
-    };
-
-UpdateLoggedWorkoutInput _$UpdateLoggedWorkoutInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutInput(
+  return UpdateProgressJournalGoalTagInput(
     id: json['id'] as String,
-    completedOn:
-        fromGraphQLDateTimeToDartDateTimeNullable(json['completedOn'] as int?),
-    name: json['name'] as String?,
-    note: json['note'] as String?,
-    gymProfile: json['GymProfile'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['GymProfile'] as Map<String, dynamic>),
+    tag: json['tag'] as String?,
+    hexColor: json['hexColor'] as String?,
   );
 }
 
-Map<String, dynamic> _$UpdateLoggedWorkoutInputToJson(
-        UpdateLoggedWorkoutInput instance) =>
+Map<String, dynamic> _$UpdateProgressJournalGoalTagInputToJson(
+        UpdateProgressJournalGoalTagInput instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'completedOn':
-          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedOn),
-      'name': instance.name,
-      'note': instance.note,
-      'GymProfile': instance.gymProfile?.toJson(),
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
     };
 
-CreateLoggedWorkout$Mutation _$CreateLoggedWorkout$MutationFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkout$Mutation()
-    ..createLoggedWorkout = LoggedWorkout.fromJson(
-        json['createLoggedWorkout'] as Map<String, dynamic>);
+CreateProgressJournalGoalTag$Mutation
+    _$CreateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalGoalTag$Mutation()
+    ..createProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
+        json['createProgressJournalGoalTag'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$CreateLoggedWorkout$MutationToJson(
-        CreateLoggedWorkout$Mutation instance) =>
+Map<String, dynamic> _$CreateProgressJournalGoalTag$MutationToJson(
+        CreateProgressJournalGoalTag$Mutation instance) =>
     <String, dynamic>{
-      'createLoggedWorkout': instance.createLoggedWorkout.toJson(),
+      'createProgressJournalGoalTag':
+          instance.createProgressJournalGoalTag.toJson(),
     };
 
-CreateLoggedWorkoutInput _$CreateLoggedWorkoutInputFromJson(
+CreateProgressJournalGoalTagInput _$CreateProgressJournalGoalTagInputFromJson(
     Map<String, dynamic> json) {
-  return CreateLoggedWorkoutInput(
-    completedOn: fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int),
+  return CreateProgressJournalGoalTagInput(
+    tag: json['tag'] as String,
+    hexColor: json['hexColor'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalTagInputToJson(
+        CreateProgressJournalGoalTagInput instance) =>
+    <String, dynamic>{
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
+    };
+
+DeleteProgressJournalGoalTagById$Mutation
+    _$DeleteProgressJournalGoalTagById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalTagById$Mutation()
+    ..deleteProgressJournalGoalTagById =
+        json['deleteProgressJournalGoalTagById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalTagById$MutationToJson(
+        DeleteProgressJournalGoalTagById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalGoalTagById':
+          instance.deleteProgressJournalGoalTagById,
+    };
+
+CreateProgressJournalGoal$Mutation _$CreateProgressJournalGoal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoal$Mutation()
+    ..createProgressJournalGoal = ProgressJournalGoal.fromJson(
+        json['createProgressJournalGoal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoal$MutationToJson(
+        CreateProgressJournalGoal$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournalGoal': instance.createProgressJournalGoal.toJson(),
+    };
+
+CreateProgressJournalGoalInput _$CreateProgressJournalGoalInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoalInput(
     name: json['name'] as String,
-    note: json['note'] as String?,
-    loggedWorkoutSections: (json['LoggedWorkoutSections'] as List<dynamic>)
-        .map((e) => CreateLoggedWorkoutSectionInLoggedWorkoutInput.fromJson(
-            e as Map<String, dynamic>))
-        .toList(),
-    workout: json['Workout'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['Workout'] as Map<String, dynamic>),
-    scheduledWorkout: json['ScheduledWorkout'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['ScheduledWorkout'] as Map<String, dynamic>),
-    gymProfile: json['GymProfile'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['GymProfile'] as Map<String, dynamic>),
-    workoutProgramWorkout: json['WorkoutProgramWorkout'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['WorkoutProgramWorkout'] as Map<String, dynamic>),
-    workoutProgramEnrolment: json['WorkoutProgramEnrolment'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['WorkoutProgramEnrolment'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutInputToJson(
-        CreateLoggedWorkoutInput instance) =>
-    <String, dynamic>{
-      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
-      'name': instance.name,
-      'note': instance.note,
-      'LoggedWorkoutSections':
-          instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
-      'Workout': instance.workout?.toJson(),
-      'ScheduledWorkout': instance.scheduledWorkout?.toJson(),
-      'GymProfile': instance.gymProfile?.toJson(),
-      'WorkoutProgramWorkout': instance.workoutProgramWorkout?.toJson(),
-      'WorkoutProgramEnrolment': instance.workoutProgramEnrolment?.toJson(),
-    };
-
-CreateLoggedWorkoutSectionInLoggedWorkoutInput
-    _$CreateLoggedWorkoutSectionInLoggedWorkoutInputFromJson(
-        Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSectionInLoggedWorkoutInput(
-    name: json['name'] as String?,
-    note: json['note'] as String?,
-    sortPosition: json['sortPosition'] as int,
-    roundsCompleted: json['roundsCompleted'] as int,
-    timeTakenMs: json['timeTakenMs'] as int?,
-    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
-    repScore: json['repScore'] as int?,
-    timecap: json['timecap'] as int?,
-    workoutSectionType: ConnectRelationInput.fromJson(
-        json['WorkoutSectionType'] as Map<String, dynamic>),
-    loggedWorkoutSets: (json['LoggedWorkoutSets'] as List<dynamic>)
-        .map((e) => CreateLoggedWorkoutSetInLoggedSectionInput.fromJson(
-            e as Map<String, dynamic>))
+    description: json['description'] as String?,
+    deadline:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
+    progressJournal: ConnectRelationInput.fromJson(
+        json['ProgressJournal'] as Map<String, dynamic>),
+    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
 
-Map<String, dynamic> _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(
-        CreateLoggedWorkoutSectionInLoggedWorkoutInput instance) =>
+Map<String, dynamic> _$CreateProgressJournalGoalInputToJson(
+        CreateProgressJournalGoalInput instance) =>
     <String, dynamic>{
-      'name': instance.name,
-      'note': instance.note,
-      'sortPosition': instance.sortPosition,
-      'roundsCompleted': instance.roundsCompleted,
-      'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
-      'repScore': instance.repScore,
-      'timecap': instance.timecap,
-      'WorkoutSectionType': instance.workoutSectionType.toJson(),
-      'LoggedWorkoutSets':
-          instance.loggedWorkoutSets.map((e) => e.toJson()).toList(),
-    };
-
-CreateLoggedWorkoutSetInLoggedSectionInput
-    _$CreateLoggedWorkoutSetInLoggedSectionInputFromJson(
-        Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSetInLoggedSectionInput(
-    sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
-    roundsCompleted: json['roundsCompleted'] as int,
-    duration: json['duration'] as int?,
-    loggedWorkoutMoves: (json['LoggedWorkoutMoves'] as List<dynamic>)
-        .map((e) => CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
-            e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(
-        CreateLoggedWorkoutSetInLoggedSectionInput instance) =>
-    <String, dynamic>{
-      'sortPosition': instance.sortPosition,
-      'note': instance.note,
-      'roundsCompleted': instance.roundsCompleted,
-      'duration': instance.duration,
-      'LoggedWorkoutMoves':
-          instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
-    };
-
-CreateLoggedWorkoutMoveInLoggedSetInput
-    _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(
-        Map<String, dynamic> json) {
-  return CreateLoggedWorkoutMoveInLoggedSetInput(
-    sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
-    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown),
-    reps: (json['reps'] as num).toDouble(),
-    distanceUnit: _$enumDecodeNullable(
-        _$DistanceUnitEnumMap, json['distanceUnit'],
-        unknownValue: DistanceUnit.artemisUnknown),
-    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
-    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
-        unknownValue: LoadUnit.artemisUnknown),
-    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
-        unknownValue: TimeUnit.artemisUnknown),
-    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
-    equipment: json['Equipment'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['Equipment'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(
-        CreateLoggedWorkoutMoveInLoggedSetInput instance) =>
-    <String, dynamic>{
-      'sortPosition': instance.sortPosition,
-      'note': instance.note,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
-      'reps': instance.reps,
-      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'loadAmount': instance.loadAmount,
-      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
-      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
-      'Move': instance.move.toJson(),
-      'Equipment': instance.equipment?.toJson(),
-    };
-
-DeleteLoggedWorkoutSetById$Mutation
-    _$DeleteLoggedWorkoutSetById$MutationFromJson(Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutSetById$Mutation()
-    ..deleteLoggedWorkoutSetById = json['deleteLoggedWorkoutSetById'] as String;
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutSetById$MutationToJson(
-        DeleteLoggedWorkoutSetById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteLoggedWorkoutSetById': instance.deleteLoggedWorkoutSetById,
-    };
-
-CreateLoggedWorkoutSet _$CreateLoggedWorkoutSetFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSet()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..note = json['note'] as String?
-    ..roundsCompleted = json['roundsCompleted'] as int
-    ..duration = json['duration'] as int?
-    ..sortPosition = json['sortPosition'] as int;
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutSetToJson(
-        CreateLoggedWorkoutSet instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'note': instance.note,
-      'roundsCompleted': instance.roundsCompleted,
-      'duration': instance.duration,
-      'sortPosition': instance.sortPosition,
-    };
-
-CreateLoggedWorkoutSet$Mutation _$CreateLoggedWorkoutSet$MutationFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSet$Mutation()
-    ..createLoggedWorkoutSet = CreateLoggedWorkoutSet.fromJson(
-        json['createLoggedWorkoutSet'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutSet$MutationToJson(
-        CreateLoggedWorkoutSet$Mutation instance) =>
-    <String, dynamic>{
-      'createLoggedWorkoutSet': instance.createLoggedWorkoutSet.toJson(),
-    };
-
-CreateLoggedWorkoutSetInput _$CreateLoggedWorkoutSetInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSetInput(
-    sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
-    roundsCompleted: json['roundsCompleted'] as int,
-    duration: json['duration'] as int?,
-    loggedWorkoutSection: ConnectRelationInput.fromJson(
-        json['LoggedWorkoutSection'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutSetInputToJson(
-        CreateLoggedWorkoutSetInput instance) =>
-    <String, dynamic>{
-      'sortPosition': instance.sortPosition,
-      'note': instance.note,
-      'roundsCompleted': instance.roundsCompleted,
-      'duration': instance.duration,
-      'LoggedWorkoutSection': instance.loggedWorkoutSection.toJson(),
-    };
-
-UpdateLoggedWorkoutSet _$UpdateLoggedWorkoutSetFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSet()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..note = json['note'] as String?
-    ..roundsCompleted = json['roundsCompleted'] as int
-    ..duration = json['duration'] as int?
-    ..sortPosition = json['sortPosition'] as int;
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSetToJson(
-        UpdateLoggedWorkoutSet instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'note': instance.note,
-      'roundsCompleted': instance.roundsCompleted,
-      'duration': instance.duration,
-      'sortPosition': instance.sortPosition,
-    };
-
-UpdateLoggedWorkoutSet$Mutation _$UpdateLoggedWorkoutSet$MutationFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSet$Mutation()
-    ..updateLoggedWorkoutSet = UpdateLoggedWorkoutSet.fromJson(
-        json['updateLoggedWorkoutSet'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSet$MutationToJson(
-        UpdateLoggedWorkoutSet$Mutation instance) =>
-    <String, dynamic>{
-      'updateLoggedWorkoutSet': instance.updateLoggedWorkoutSet.toJson(),
-    };
-
-UpdateLoggedWorkoutSetInput _$UpdateLoggedWorkoutSetInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSetInput(
-    id: json['id'] as String,
-    note: json['note'] as String?,
-    duration: json['duration'] as int?,
-    roundsCompleted: json['roundsCompleted'] as int?,
-  );
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSetInputToJson(
-        UpdateLoggedWorkoutSetInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'note': instance.note,
-      'duration': instance.duration,
-      'roundsCompleted': instance.roundsCompleted,
-    };
-
-DeleteLoggedWorkoutSectionById$Mutation
-    _$DeleteLoggedWorkoutSectionById$MutationFromJson(
-        Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutSectionById$Mutation()
-    ..deleteLoggedWorkoutSectionById =
-        json['deleteLoggedWorkoutSectionById'] as String;
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutSectionById$MutationToJson(
-        DeleteLoggedWorkoutSectionById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteLoggedWorkoutSectionById': instance.deleteLoggedWorkoutSectionById,
-    };
-
-UpdateLoggedWorkoutSection _$UpdateLoggedWorkoutSectionFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSection()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..name = json['name'] as String?
-    ..note = json['note'] as String?
-    ..timecap = json['timecap'] as int?
-    ..roundsCompleted = json['roundsCompleted'] as int
-    ..repScore = json['repScore'] as int?
-    ..timeTakenMs = json['timeTakenMs'] as int?
-    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
-    ..sortPosition = json['sortPosition'] as int
-    ..workoutSectionType = WorkoutSectionType.fromJson(
-        json['WorkoutSectionType'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSectionToJson(
-        UpdateLoggedWorkoutSection instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'note': instance.note,
-      'timecap': instance.timecap,
-      'roundsCompleted': instance.roundsCompleted,
-      'repScore': instance.repScore,
-      'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
-      'sortPosition': instance.sortPosition,
-      'WorkoutSectionType': instance.workoutSectionType.toJson(),
-    };
-
-UpdateLoggedWorkoutSection$Mutation
-    _$UpdateLoggedWorkoutSection$MutationFromJson(Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSection$Mutation()
-    ..updateLoggedWorkoutSection = UpdateLoggedWorkoutSection.fromJson(
-        json['updateLoggedWorkoutSection'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSection$MutationToJson(
-        UpdateLoggedWorkoutSection$Mutation instance) =>
-    <String, dynamic>{
-      'updateLoggedWorkoutSection':
-          instance.updateLoggedWorkoutSection.toJson(),
-    };
-
-UpdateLoggedWorkoutSectionInput _$UpdateLoggedWorkoutSectionInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSectionInput(
-    id: json['id'] as String,
-    name: json['name'] as String?,
-    roundsCompleted: json['roundsCompleted'] as int?,
-    timeTakenMs: json['timeTakenMs'] as int?,
-    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
-    timecap: json['timecap'] as int?,
-    repScore: json['repScore'] as int?,
-    note: json['note'] as String?,
-  );
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutSectionInputToJson(
-        UpdateLoggedWorkoutSectionInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'roundsCompleted': instance.roundsCompleted,
-      'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
-      'timecap': instance.timecap,
-      'repScore': instance.repScore,
-      'note': instance.note,
-    };
-
-DeleteLoggedWorkoutMoveById$Mutation
-    _$DeleteLoggedWorkoutMoveById$MutationFromJson(Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutMoveById$Mutation()
-    ..deleteLoggedWorkoutMoveById =
-        json['deleteLoggedWorkoutMoveById'] as String;
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutMoveById$MutationToJson(
-        DeleteLoggedWorkoutMoveById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteLoggedWorkoutMoveById': instance.deleteLoggedWorkoutMoveById,
-    };
-
-UpdateLoggedWorkoutMove$Mutation _$UpdateLoggedWorkoutMove$MutationFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutMove$Mutation()
-    ..updateLoggedWorkoutMove = LoggedWorkoutMove.fromJson(
-        json['updateLoggedWorkoutMove'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutMove$MutationToJson(
-        UpdateLoggedWorkoutMove$Mutation instance) =>
-    <String, dynamic>{
-      'updateLoggedWorkoutMove': instance.updateLoggedWorkoutMove.toJson(),
-    };
-
-UpdateLoggedWorkoutMoveInput _$UpdateLoggedWorkoutMoveInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutMoveInput(
-    id: json['id'] as String,
-    note: json['note'] as String?,
-    reps: (json['reps'] as num?)?.toDouble(),
-    distanceUnit: _$enumDecodeNullable(
-        _$DistanceUnitEnumMap, json['distanceUnit'],
-        unknownValue: DistanceUnit.artemisUnknown),
-    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
-    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
-        unknownValue: LoadUnit.artemisUnknown),
-    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
-        unknownValue: TimeUnit.artemisUnknown),
-    move: json['Move'] == null
-        ? null
-        : ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
-    equipment: json['Equipment'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['Equipment'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutMoveInputToJson(
-        UpdateLoggedWorkoutMoveInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'note': instance.note,
-      'reps': instance.reps,
-      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'loadAmount': instance.loadAmount,
-      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
-      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
-      'Move': instance.move?.toJson(),
-      'Equipment': instance.equipment?.toJson(),
-    };
-
-CreateLoggedWorkoutMove$Mutation _$CreateLoggedWorkoutMove$MutationFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutMove$Mutation()
-    ..createLoggedWorkoutMove = LoggedWorkoutMove.fromJson(
-        json['createLoggedWorkoutMove'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutMove$MutationToJson(
-        CreateLoggedWorkoutMove$Mutation instance) =>
-    <String, dynamic>{
-      'createLoggedWorkoutMove': instance.createLoggedWorkoutMove.toJson(),
-    };
-
-CreateLoggedWorkoutMoveInput _$CreateLoggedWorkoutMoveInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutMoveInput(
-    sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
-    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown),
-    reps: (json['reps'] as num).toDouble(),
-    distanceUnit: _$enumDecodeNullable(
-        _$DistanceUnitEnumMap, json['distanceUnit'],
-        unknownValue: DistanceUnit.artemisUnknown),
-    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
-    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
-        unknownValue: LoadUnit.artemisUnknown),
-    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
-        unknownValue: TimeUnit.artemisUnknown),
-    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
-    equipment: json['Equipment'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['Equipment'] as Map<String, dynamic>),
-    loggedWorkoutSet: ConnectRelationInput.fromJson(
-        json['LoggedWorkoutSet'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutMoveInputToJson(
-        CreateLoggedWorkoutMoveInput instance) =>
-    <String, dynamic>{
-      'sortPosition': instance.sortPosition,
-      'note': instance.note,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
-      'reps': instance.reps,
-      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'loadAmount': instance.loadAmount,
-      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
-      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
-      'Move': instance.move.toJson(),
-      'Equipment': instance.equipment?.toJson(),
-      'LoggedWorkoutSet': instance.loggedWorkoutSet.toJson(),
-    };
-
-ProgressJournalEntry _$ProgressJournalEntryFromJson(Map<String, dynamic> json) {
-  return ProgressJournalEntry()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..note = json['note'] as String?
-    ..voiceNoteUri = json['voiceNoteUri'] as String?
-    ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
-    ..moodScore = (json['moodScore'] as num?)?.toDouble()
-    ..energyScore = (json['energyScore'] as num?)?.toDouble()
-    ..stressScore = (json['stressScore'] as num?)?.toDouble()
-    ..motivationScore = (json['motivationScore'] as num?)?.toDouble()
-    ..progressPhotoUris = (json['progressPhotoUris'] as List<dynamic>)
-        .map((e) => e as String)
-        .toList();
-}
-
-Map<String, dynamic> _$ProgressJournalEntryToJson(
-        ProgressJournalEntry instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'note': instance.note,
-      'voiceNoteUri': instance.voiceNoteUri,
-      'bodyweight': instance.bodyweight,
-      'moodScore': instance.moodScore,
-      'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
-      'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
-    };
-
-ProgressJournal _$ProgressJournalFromJson(Map<String, dynamic> json) {
-  return ProgressJournal()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..name = json['name'] as String
-    ..description = json['description'] as String?
-    ..progressJournalEntries = (json['ProgressJournalEntries'] as List<dynamic>)
-        .map((e) => ProgressJournalEntry.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$ProgressJournalToJson(ProgressJournal instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
       'name': instance.name,
       'description': instance.description,
-      'ProgressJournalEntries':
-          instance.progressJournalEntries.map((e) => e.toJson()).toList(),
+      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
+      'ProgressJournal': instance.progressJournal.toJson(),
+      'ProgressJournalGoalTags':
+          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
     };
 
-UserProgressJournals$Query _$UserProgressJournals$QueryFromJson(
+UpdateProgressJournalGoal$Mutation _$UpdateProgressJournalGoal$MutationFromJson(
     Map<String, dynamic> json) {
-  return UserProgressJournals$Query()
-    ..userProgressJournals = (json['userProgressJournals'] as List<dynamic>)
-        .map((e) => ProgressJournal.fromJson(e as Map<String, dynamic>))
-        .toList();
+  return UpdateProgressJournalGoal$Mutation()
+    ..updateProgressJournalGoal = ProgressJournalGoal.fromJson(
+        json['updateProgressJournalGoal'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$UserProgressJournals$QueryToJson(
-        UserProgressJournals$Query instance) =>
+Map<String, dynamic> _$UpdateProgressJournalGoal$MutationToJson(
+        UpdateProgressJournalGoal$Mutation instance) =>
     <String, dynamic>{
-      'userProgressJournals':
-          instance.userProgressJournals.map((e) => e.toJson()).toList(),
+      'updateProgressJournalGoal': instance.updateProgressJournalGoal.toJson(),
     };
 
-ProgressJournalById$Query _$ProgressJournalById$QueryFromJson(
+UpdateProgressJournalGoalInput _$UpdateProgressJournalGoalInputFromJson(
     Map<String, dynamic> json) {
-  return ProgressJournalById$Query()
-    ..progressJournalById = ProgressJournal.fromJson(
-        json['progressJournalById'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$ProgressJournalById$QueryToJson(
-        ProgressJournalById$Query instance) =>
-    <String, dynamic>{
-      'progressJournalById': instance.progressJournalById.toJson(),
-    };
-
-CheckUniqueDisplayNameArguments _$CheckUniqueDisplayNameArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CheckUniqueDisplayNameArguments(
-    displayName: json['displayName'] as String,
+  return UpdateProgressJournalGoalInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+    completedDate: fromGraphQLDateTimeToDartDateTimeNullable(
+        json['completedDate'] as int?),
+    deadline:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
+    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
-Map<String, dynamic> _$CheckUniqueDisplayNameArgumentsToJson(
-        CheckUniqueDisplayNameArguments instance) =>
+Map<String, dynamic> _$UpdateProgressJournalGoalInputToJson(
+        UpdateProgressJournalGoalInput instance) =>
     <String, dynamic>{
-      'displayName': instance.displayName,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'completedDate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedDate),
+      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
+      'ProgressJournalGoalTags':
+          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
+    };
+
+DeleteProgressJournalGoalById$Mutation
+    _$DeleteProgressJournalGoalById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalById$Mutation()
+    ..deleteProgressJournalGoalById =
+        json['deleteProgressJournalGoalById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalById$MutationToJson(
+        DeleteProgressJournalGoalById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalGoalById': instance.deleteProgressJournalGoalById,
+    };
+
+DeleteProgressJournalById$Mutation _$DeleteProgressJournalById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteProgressJournalById$Mutation()
+    ..deleteProgressJournalById = json['deleteProgressJournalById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalById$MutationToJson(
+        DeleteProgressJournalById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalById': instance.deleteProgressJournalById,
+    };
+
+CreateProgressJournal$Mutation _$CreateProgressJournal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournal$Mutation()
+    ..createProgressJournal = ProgressJournal.fromJson(
+        json['createProgressJournal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournal$MutationToJson(
+        CreateProgressJournal$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournal': instance.createProgressJournal.toJson(),
+    };
+
+CreateProgressJournalInput _$CreateProgressJournalInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalInputToJson(
+        CreateProgressJournalInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+UpdateProgressJournal$Mutation _$UpdateProgressJournal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournal$Mutation()
+    ..updateProgressJournal = ProgressJournal.fromJson(
+        json['updateProgressJournal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateProgressJournal$MutationToJson(
+        UpdateProgressJournal$Mutation instance) =>
+    <String, dynamic>{
+      'updateProgressJournal': instance.updateProgressJournal.toJson(),
+    };
+
+UpdateProgressJournalInput _$UpdateProgressJournalInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalInputToJson(
+        UpdateProgressJournalInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
@@ -2744,6 +3044,114 @@ UpdateWorkoutMoveArguments _$UpdateWorkoutMoveArgumentsFromJson(
 
 Map<String, dynamic> _$UpdateWorkoutMoveArgumentsToJson(
         UpdateWorkoutMoveArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+ProgressJournalByIdArguments _$ProgressJournalByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$ProgressJournalByIdArgumentsToJson(
+        ProgressJournalByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+LoggedWorkoutByIdArguments _$LoggedWorkoutByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return LoggedWorkoutByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$LoggedWorkoutByIdArgumentsToJson(
+        LoggedWorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+DeleteLoggedWorkoutByIdArguments _$DeleteLoggedWorkoutByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutByIdArgumentsToJson(
+        DeleteLoggedWorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateLoggedWorkoutArguments _$UpdateLoggedWorkoutArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutArguments(
+    data:
+        UpdateLoggedWorkoutInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutArgumentsToJson(
+        UpdateLoggedWorkoutArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateLoggedWorkoutArguments _$CreateLoggedWorkoutArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutArguments(
+    data:
+        CreateLoggedWorkoutInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutArgumentsToJson(
+        CreateLoggedWorkoutArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteLoggedWorkoutSetByIdArguments
+    _$DeleteLoggedWorkoutSetByIdArgumentsFromJson(Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutSetByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutSetByIdArgumentsToJson(
+        DeleteLoggedWorkoutSetByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CreateLoggedWorkoutSetArguments _$CreateLoggedWorkoutSetArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutSetArguments(
+    data: CreateLoggedWorkoutSetInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutSetArgumentsToJson(
+        CreateLoggedWorkoutSetArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateLoggedWorkoutSetArguments _$UpdateLoggedWorkoutSetArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSetArguments(
+    data: UpdateLoggedWorkoutSetInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSetArgumentsToJson(
+        UpdateLoggedWorkoutSetArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };
@@ -2849,6 +3257,34 @@ Map<String, dynamic> _$CreateWorkoutTagArgumentsToJson(
       'data': instance.data.toJson(),
     };
 
+DeleteLoggedWorkoutSectionByIdArguments
+    _$DeleteLoggedWorkoutSectionByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutSectionByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutSectionByIdArgumentsToJson(
+        DeleteLoggedWorkoutSectionByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateLoggedWorkoutSectionArguments
+    _$UpdateLoggedWorkoutSectionArgumentsFromJson(Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutSectionArguments(
+    data: UpdateLoggedWorkoutSectionInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutSectionArgumentsToJson(
+        UpdateLoggedWorkoutSectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
 UpdateWorkoutSetArguments _$UpdateWorkoutSetArgumentsFromJson(
     Map<String, dynamic> json) {
   return UpdateWorkoutSetArguments(
@@ -2914,6 +3350,60 @@ Map<String, dynamic> _$DeleteWorkoutSetByIdArgumentsToJson(
         DeleteWorkoutSetByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+CheckUniqueDisplayNameArguments _$CheckUniqueDisplayNameArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CheckUniqueDisplayNameArguments(
+    displayName: json['displayName'] as String,
+  );
+}
+
+Map<String, dynamic> _$CheckUniqueDisplayNameArgumentsToJson(
+        CheckUniqueDisplayNameArguments instance) =>
+    <String, dynamic>{
+      'displayName': instance.displayName,
+    };
+
+DeleteLoggedWorkoutMoveByIdArguments
+    _$DeleteLoggedWorkoutMoveByIdArgumentsFromJson(Map<String, dynamic> json) {
+  return DeleteLoggedWorkoutMoveByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteLoggedWorkoutMoveByIdArgumentsToJson(
+        DeleteLoggedWorkoutMoveByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateLoggedWorkoutMoveArguments _$UpdateLoggedWorkoutMoveArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateLoggedWorkoutMoveArguments(
+    data: UpdateLoggedWorkoutMoveInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateLoggedWorkoutMoveArgumentsToJson(
+        UpdateLoggedWorkoutMoveArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateLoggedWorkoutMoveArguments _$CreateLoggedWorkoutMoveArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateLoggedWorkoutMoveArguments(
+    data: CreateLoggedWorkoutMoveInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutMoveArgumentsToJson(
+        CreateLoggedWorkoutMoveArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
     };
 
 UpdateWorkoutSectionArguments _$UpdateWorkoutSectionArgumentsFromJson(
@@ -3077,179 +3567,127 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
       'id': instance.id,
     };
 
-LoggedWorkoutByIdArguments _$LoggedWorkoutByIdArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return LoggedWorkoutByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$LoggedWorkoutByIdArgumentsToJson(
-        LoggedWorkoutByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-DeleteLoggedWorkoutByIdArguments _$DeleteLoggedWorkoutByIdArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutByIdArgumentsToJson(
-        DeleteLoggedWorkoutByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-UpdateLoggedWorkoutArguments _$UpdateLoggedWorkoutArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutArguments(
-    data:
-        UpdateLoggedWorkoutInput.fromJson(json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutArgumentsToJson(
-        UpdateLoggedWorkoutArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-CreateLoggedWorkoutArguments _$CreateLoggedWorkoutArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutArguments(
-    data:
-        CreateLoggedWorkoutInput.fromJson(json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutArgumentsToJson(
-        CreateLoggedWorkoutArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-DeleteLoggedWorkoutSetByIdArguments
-    _$DeleteLoggedWorkoutSetByIdArgumentsFromJson(Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutSetByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteLoggedWorkoutSetByIdArgumentsToJson(
-        DeleteLoggedWorkoutSetByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-CreateLoggedWorkoutSetArguments _$CreateLoggedWorkoutSetArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutSetArguments(
-    data: CreateLoggedWorkoutSetInput.fromJson(
+UpdateProgressJournalGoalTagArguments
+    _$UpdateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalTagArguments(
+    data: UpdateProgressJournalGoalTagInput.fromJson(
         json['data'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$CreateLoggedWorkoutSetArgumentsToJson(
-        CreateLoggedWorkoutSetArguments instance) =>
+Map<String, dynamic> _$UpdateProgressJournalGoalTagArgumentsToJson(
+        UpdateProgressJournalGoalTagArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };
 
-UpdateLoggedWorkoutSetArguments _$UpdateLoggedWorkoutSetArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSetArguments(
-    data: UpdateLoggedWorkoutSetInput.fromJson(
+CreateProgressJournalGoalTagArguments
+    _$CreateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalGoalTagArguments(
+    data: CreateProgressJournalGoalTagInput.fromJson(
         json['data'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$UpdateLoggedWorkoutSetArgumentsToJson(
-        UpdateLoggedWorkoutSetArguments instance) =>
+Map<String, dynamic> _$CreateProgressJournalGoalTagArgumentsToJson(
+        CreateProgressJournalGoalTagArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };
 
-DeleteLoggedWorkoutSectionByIdArguments
-    _$DeleteLoggedWorkoutSectionByIdArgumentsFromJson(
+DeleteProgressJournalGoalTagByIdArguments
+    _$DeleteProgressJournalGoalTagByIdArgumentsFromJson(
         Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutSectionByIdArguments(
+  return DeleteProgressJournalGoalTagByIdArguments(
     id: json['id'] as String,
   );
 }
 
-Map<String, dynamic> _$DeleteLoggedWorkoutSectionByIdArgumentsToJson(
-        DeleteLoggedWorkoutSectionByIdArguments instance) =>
+Map<String, dynamic> _$DeleteProgressJournalGoalTagByIdArgumentsToJson(
+        DeleteProgressJournalGoalTagByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };
 
-UpdateLoggedWorkoutSectionArguments
-    _$UpdateLoggedWorkoutSectionArgumentsFromJson(Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutSectionArguments(
-    data: UpdateLoggedWorkoutSectionInput.fromJson(
+CreateProgressJournalGoalArguments _$CreateProgressJournalGoalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoalArguments(
+    data: CreateProgressJournalGoalInput.fromJson(
         json['data'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$UpdateLoggedWorkoutSectionArgumentsToJson(
-        UpdateLoggedWorkoutSectionArguments instance) =>
+Map<String, dynamic> _$CreateProgressJournalGoalArgumentsToJson(
+        CreateProgressJournalGoalArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };
 
-DeleteLoggedWorkoutMoveByIdArguments
-    _$DeleteLoggedWorkoutMoveByIdArgumentsFromJson(Map<String, dynamic> json) {
-  return DeleteLoggedWorkoutMoveByIdArguments(
+UpdateProgressJournalGoalArguments _$UpdateProgressJournalGoalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalArguments(
+    data: UpdateProgressJournalGoalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalArgumentsToJson(
+        UpdateProgressJournalGoalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteProgressJournalGoalByIdArguments
+    _$DeleteProgressJournalGoalByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalByIdArguments(
     id: json['id'] as String,
   );
 }
 
-Map<String, dynamic> _$DeleteLoggedWorkoutMoveByIdArgumentsToJson(
-        DeleteLoggedWorkoutMoveByIdArguments instance) =>
+Map<String, dynamic> _$DeleteProgressJournalGoalByIdArgumentsToJson(
+        DeleteProgressJournalGoalByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };
 
-UpdateLoggedWorkoutMoveArguments _$UpdateLoggedWorkoutMoveArgumentsFromJson(
+DeleteProgressJournalByIdArguments _$DeleteProgressJournalByIdArgumentsFromJson(
     Map<String, dynamic> json) {
-  return UpdateLoggedWorkoutMoveArguments(
-    data: UpdateLoggedWorkoutMoveInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateLoggedWorkoutMoveArgumentsToJson(
-        UpdateLoggedWorkoutMoveArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-CreateLoggedWorkoutMoveArguments _$CreateLoggedWorkoutMoveArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CreateLoggedWorkoutMoveArguments(
-    data: CreateLoggedWorkoutMoveInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutMoveArgumentsToJson(
-        CreateLoggedWorkoutMoveArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-ProgressJournalByIdArguments _$ProgressJournalByIdArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return ProgressJournalByIdArguments(
+  return DeleteProgressJournalByIdArguments(
     id: json['id'] as String,
   );
 }
 
-Map<String, dynamic> _$ProgressJournalByIdArgumentsToJson(
-        ProgressJournalByIdArguments instance) =>
+Map<String, dynamic> _$DeleteProgressJournalByIdArgumentsToJson(
+        DeleteProgressJournalByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+CreateProgressJournalArguments _$CreateProgressJournalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalArguments(
+    data: CreateProgressJournalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalArgumentsToJson(
+        CreateProgressJournalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateProgressJournalArguments _$UpdateProgressJournalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalArguments(
+    data: UpdateProgressJournalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalArgumentsToJson(
+        UpdateProgressJournalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
     };

@@ -112,46 +112,44 @@ class _WorkoutCreatorState extends State<WorkoutCreator> {
                     title:
                         widget.workout == null ? 'New Workout' : 'Edit Workout',
                   ),
-                  child: Container(
-                    child: Column(
-                      children: [
-                        if (uploadingMedia)
-                          FadeIn(
-                            child: Container(
-                                height: 30,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  children: [
-                                    MyText('Uploading media, please wait...'),
-                                    SizedBox(width: 8),
-                                    LoadingDots(
-                                      size: 12,
-                                    )
-                                  ],
-                                )),
-                          )
-                        else
-                          FadeIn(
-                            child: MyTabBarNav(
-                                titles: ['Meta', 'Structure', 'Media'],
-                                handleTabChange: _changeTab,
-                                activeTabIndex: _activeTabIndex),
-                          ),
-                        Expanded(
-                            child: PageView(
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _pageController,
-                          onPageChanged: _changeTab,
-                          children: [
-                            WorkoutCreatorMeta(),
-                            WorkoutCreatorStructure(),
-                            WorkoutCreatorMedia(),
-                          ],
-                        )),
-                      ],
-                    ),
+                  child: Column(
+                    children: [
+                      if (uploadingMedia)
+                        FadeIn(
+                          child: Container(
+                              height: 30,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  MyText('Uploading media, please wait...'),
+                                  SizedBox(width: 8),
+                                  LoadingDots(
+                                    size: 12,
+                                  )
+                                ],
+                              )),
+                        )
+                      else
+                        FadeIn(
+                          child: MyTabBarNav(
+                              titles: ['Meta', 'Structure', 'Media'],
+                              handleTabChange: _changeTab,
+                              activeTabIndex: _activeTabIndex),
+                        ),
+                      Expanded(
+                          child: PageView(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _pageController,
+                        onPageChanged: _changeTab,
+                        children: [
+                          WorkoutCreatorMeta(),
+                          WorkoutCreatorStructure(),
+                          WorkoutCreatorMedia(),
+                        ],
+                      )),
+                    ],
                   ),
                 );
               },

@@ -152,11 +152,15 @@ class BorderButton extends StatelessWidget {
   final void Function() onPressed;
   final bool withBorder;
   final bool mini;
+  final bool loading;
+  final bool disabled;
   BorderButton(
       {this.prefix,
       this.text,
       required this.onPressed,
       this.withBorder = true,
+      this.loading = false,
+      this.disabled = false,
       this.mini = false})
       : assert(prefix != null || text != null);
 
@@ -165,24 +169,48 @@ class BorderButton extends StatelessWidget {
     return CupertinoButton(
       padding: const EdgeInsets.all(4),
       pressedOpacity: 0.8,
-      onPressed: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border:
-                withBorder ? Border.all(color: context.theme.primary) : null),
-        child: Row(
-          children: [
-            if (prefix != null) prefix!,
-            if (text != null && prefix != null) SizedBox(width: mini ? 4 : 6),
-            if (text != null)
-              MyText(
-                text!,
-                weight: FontWeight.bold,
-                size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
-              )
-          ],
+      onPressed: disabled ? null : onPressed,
+      child: AnimatedOpacity(
+        opacity: disabled ? 0 : 1,
+        duration: Duration(milliseconds: 250),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border:
+                  withBorder ? Border.all(color: context.theme.primary) : null),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedOpacity(
+                opacity: loading ? 0 : 1,
+                duration: kStandardAnimationDuration,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (prefix != null) prefix!,
+                    if (text != null && prefix != null)
+                      SizedBox(width: mini ? 4 : 6),
+                    if (text != null)
+                      MyText(
+                        text!,
+                        weight: FontWeight.bold,
+                        size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
+                      )
+                  ],
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: loading ? 1 : 0,
+                duration: kStandardAnimationDuration,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [LoadingDots(size: 14)],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -549,6 +577,21 @@ class NavBarCancelButton extends StatelessWidget {
         child: MyText(
           'Cancel',
           color: Styles.errorRed,
+        ));
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
+class NavBarCloseButton extends StatelessWidget {
+  final void Function() onPressed;
+  NavBarCloseButton(this.onPressed);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: MyText(
+          'Close',
         ));
   }
 }

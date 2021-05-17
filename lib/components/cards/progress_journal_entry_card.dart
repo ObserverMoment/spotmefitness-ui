@@ -1,28 +1,46 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
+import 'package:spotmefitness_ui/components/media/images/full_screen_image_gallery.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class ProgressJournalEntryCard extends StatelessWidget {
   final ProgressJournalEntry progressJournalEntry;
   ProgressJournalEntryCard(this.progressJournalEntry);
 
-  void _openImageGallery() {}
-  // void _openImageGallery() => Navigator.push(
-  //     context,
-  //     MaterialWithModalsPageRoute(
-  //         builder: (context) => FullScreenImageGallery(
-  //               widget.progressJournalEntry.progressPhotoUrls,
-  //               pageTitle:
-  //                   'Photos ${DateFormat.yMMMd('en_US').format(widget.progressJournalEntry.createdAt)}',
-  //             )));
+  final kMaxScore = 10;
+
+  void _openImageGallery(BuildContext context) {
+    context.push(
+        child: FullScreenImageGallery(
+      progressJournalEntry.progressPhotoUris,
+      pageTitle: 'Progress Photos',
+    ));
+  }
+
+  double _calcOverallScore() {
+    final scores = [
+      for (final s in [
+        progressJournalEntry.moodScore,
+        progressJournalEntry.energyScore,
+        progressJournalEntry.motivationScore,
+        progressJournalEntry.stressScore,
+      ])
+        if (s != null) s
+    ];
+    return scores.average;
+  }
 
   bool _hasSubmittedScores() => [
         progressJournalEntry.moodScore,
@@ -31,8 +49,58 @@ class ProgressJournalEntryCard extends StatelessWidget {
         progressJournalEntry.stressScore
       ].any((s) => s != null);
 
+  List<Widget> _buildScoreIndicators() {
+    final tags = ['Mood', 'Energy', 'Motivate', 'Stress'];
+    final colors = [Styles.errorRed, Styles.infoBlue];
+    return [
+      for (final s in [
+        progressJournalEntry.moodScore,
+        progressJournalEntry.energyScore,
+        progressJournalEntry.motivationScore,
+        progressJournalEntry.stressScore,
+      ])
+        if (s != null) s
+    ]
+        .mapIndexed((i, s) => Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 6.0, right: 6.0, bottom: 3),
+                  child: CircularPercentIndicator(
+                    startAngle: 180,
+                    backgroundColor: Styles.colorOne.withOpacity(0.35),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    arcType: ArcType.HALF,
+                    radius: 28.0,
+                    lineWidth: 4.0,
+                    percent: s / kMaxScore,
+                    center: MyText(
+                      s.toInt().toString(),
+                      lineHeight: 1,
+                      weight: FontWeight.bold,
+                      size: FONTSIZE.SMALL,
+                    ),
+                    progressColor:
+                        Color.lerp(colors[0], colors[1], s / kMaxScore),
+                  ),
+                ),
+                Positioned(
+                  bottom: -3,
+                  child: MyText(
+                    tags[i],
+                    size: FONTSIZE.TINY,
+                    subtext: true,
+                  ),
+                ),
+              ],
+            ))
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final overall = _calcOverallScore();
     final int numPhotos = progressJournalEntry.progressPhotoUris.length;
     return Card(
       child: Column(
@@ -43,15 +111,15 @@ class ProgressJournalEntryCard extends StatelessWidget {
             children: [
               if (progressJournalEntry.progressPhotoUris.isNotEmpty)
                 GestureDetector(
-                  onTap: _openImageGallery,
+                  onTap: () => _openImageGallery(context),
                   child: Container(
-                    width: 100,
+                    width: 90,
                     child: Column(
                       children: [
                         PhotoStackDisplay(
                           fileIds: progressJournalEntry.progressPhotoUris,
-                          height: 90,
-                          width: 90,
+                          height: 80,
+                          width: 80,
                         ),
                         MyText(
                           '${progressJournalEntry.progressPhotoUris.length} ${numPhotos == 1 ? "photo" : "photos"}',
@@ -90,14 +158,10 @@ class ProgressJournalEntryCard extends StatelessWidget {
                       ),
                     SizedBox(height: 12),
                     Wrap(
+                      alignment: WrapAlignment.spaceEvenly,
                       spacing: 8,
                       runSpacing: 8,
-                      children: [
-                        MyText(progressJournalEntry.moodScore.toString()),
-                        MyText(progressJournalEntry.energyScore.toString()),
-                        MyText(progressJournalEntry.motivationScore.toString()),
-                        MyText(progressJournalEntry.stressScore.toString()),
-                      ],
+                      children: _buildScoreIndicators(),
                     )
                   ],
                 ),
@@ -109,10 +173,9 @@ class ProgressJournalEntryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               if (Utils.textNotNull(progressJournalEntry.voiceNoteUri))
-                Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: MyText(progressJournalEntry.voiceNoteUri!),
-                ),
+                AudioThumbnailPlayer(
+                    displaySize: Size(40, 40),
+                    audioUri: progressJournalEntry.voiceNoteUri!),
               if (progressJournalEntry.bodyweight != null)
                 MyText(
                   '${progressJournalEntry.bodyweight!.stringMyDouble()} kg',
@@ -123,7 +186,20 @@ class ProgressJournalEntryCard extends StatelessWidget {
               if (_hasSubmittedScores())
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6.0),
-                  child: MyText('Score display'),
+                  child: CircularPercentIndicator(
+                    startAngle: 180,
+                    backgroundColor: Styles.colorOne.withOpacity(0.35),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    radius: 40.0,
+                    lineWidth: 8.0,
+                    percent: overall / kMaxScore,
+                    center: MyText(
+                      overall.toInt().toString(),
+                      lineHeight: 1,
+                      weight: FontWeight.bold,
+                    ),
+                    linearGradient: Styles.neonBlueGradient,
+                  ),
                 ),
             ],
           ),
@@ -132,96 +208,6 @@ class ProgressJournalEntryCard extends StatelessWidget {
     );
   }
 }
-
-// class ProgressJournalEntryListTile extends StatefulWidget {
-//   final ProgressJournalEntry progressJournalEntry;
-//   ProgressJournalEntryListTile(this.progressJournalEntry);
-
-//   @override
-//   _ProgressJournalEntryListTileState createState() =>
-//       _ProgressJournalEntryListTileState();
-// }
-
-// class _ProgressJournalEntryListTileState
-//     extends State<ProgressJournalEntryListTile> {
-//   void _openViewEntryNotes() => showCupertinoModalBottomSheet(
-//       context: context,
-//       builder: (context) => FullPageTextViewer(
-//             widget.progressJournalEntry.notes,
-//           ));
-
-//   void _openEntryImageGallery() => Navigator.push(
-//       context,
-//       MaterialWithModalsPageRoute(
-//           builder: (context) => FullScreenImageGallery(
-//                 widget.progressJournalEntry.progressPhotoUrls,
-//                 pageTitle:
-//                     'Photos ${DateFormat.yMMMd('en_US').format(widget.progressJournalEntry.createdAt)}',
-//               )));
-
-//   double _calcOverallScore() => [
-//         widget.progressJournalEntry.moodScore,
-//         widget.progressJournalEntry.energyScore,
-//         widget.progressJournalEntry.motivationScore,
-//         widget.progressJournalEntry.stressScore,
-//       ].where((s) => s != null).average();
-
-//   Widget _buildScoreDisplay(String name, double value, {Color color}) =>
-//       Opacity(
-//         opacity: value == null ? 0.25 : 1,
-//         child: Container(
-//           height: 30,
-//           width: 110,
-//           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-//           decoration: BoxDecoration(
-//             borderRadius: Styles.mediumRadius,
-//             color: Styles.highlightThree.withOpacity(0.1),
-//           ),
-//           child: Row(
-//             mainAxisSize: MainAxisSize.min,
-//             mainAxisAlignment: MainAxisAlignment.start,
-//             children: [
-//               Container(
-//                 alignment: Alignment.center,
-//                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-//                 height: 22,
-//                 decoration: BoxDecoration(
-//                     border: value == null
-//                         ? null
-//                         : Border.all(color: color ?? Styles.infoBlue),
-//                     borderRadius: Styles.sharpRadius),
-//                 child: TinyText(
-//                   value == null ? '-' : Utility.stringMyDouble(value),
-//                   bold: value != null,
-//                   subtext: value == null,
-//                   color: Styles.white,
-//                 ),
-//               ),
-//               SizedBox(width: 6),
-//               TinyText(
-//                 name,
-//                 bold: value != null,
-//               )
-//             ],
-//           ),
-//         ),
-//       );
-
-//   bool _hasSubmittedScores() => [
-//         widget.progressJournalEntry.moodScore,
-//         widget.progressJournalEntry.energyScore,
-//         widget.progressJournalEntry.motivationScore,
-//         widget.progressJournalEntry.stressScore
-//       ].any((s) => s != null);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final int _numPhotos = widget.progressJournalEntry.progressPhotoUrls.length;
-//     return MyCard(
-//         padding: const EdgeInsets.only(top: 6, left: 8, right: 8),
-//         child: );
-//   }
-// }
 
 /// Something like this https://dribbble.com/shots/794208-Photo-Stack-UI-Sketch
 class PhotoStackDisplay extends StatelessWidget {

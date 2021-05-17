@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class Tag extends StatelessWidget {
   final Color? color;
@@ -48,8 +52,14 @@ class SelectableTag extends StatelessWidget {
   final bool isSelected;
   final void Function() onPressed;
   final String text;
+  final Color selectedColor;
+  final FONTSIZE fontSize;
   SelectableTag(
-      {required this.isSelected, required this.onPressed, required this.text});
+      {required this.isSelected,
+      required this.onPressed,
+      required this.text,
+      this.fontSize = FONTSIZE.SMALL,
+      this.selectedColor = Styles.colorOne});
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -60,14 +70,14 @@ class SelectableTag extends StatelessWidget {
         duration: Duration(milliseconds: 300),
         decoration: BoxDecoration(
             border: isSelected
-                ? Border.all(color: Styles.colorOne)
+                ? Border.all(color: selectedColor)
                 : Border.all(color: context.theme.primary.withOpacity(0.5)),
-            color: isSelected ? Styles.colorOne : context.theme.background,
+            color: isSelected ? selectedColor : context.theme.background,
             borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         child: MyText(
           text,
-          size: FONTSIZE.SMALL,
+          size: fontSize,
         ),
       ),
     );
@@ -192,6 +202,46 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ProgressJournalGoalAndTagsTag extends StatelessWidget {
+  final ProgressJournalGoal progressJournalGoal;
+  ProgressJournalGoalAndTagsTag(this.progressJournalGoal);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: context.theme.primary)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MyText(
+            progressJournalGoal.name,
+            size: FONTSIZE.SMALL,
+            decoration: progressJournalGoal.completedDate != null
+                ? TextDecoration.lineThrough
+                : null,
+          ),
+          if (progressJournalGoal.progressJournalGoalTags.isNotEmpty)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: progressJournalGoal.progressJournalGoalTags
+                  .map((t) => Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Dot(
+                            diameter: 10, color: HexColor.fromHex(t.hexColor)),
+                      ))
+                  .toList(),
+            )
+        ],
+      ),
     );
   }
 }

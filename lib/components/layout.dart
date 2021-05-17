@@ -9,13 +9,14 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// Box with rounded corners. No elevation. Card background color.
 class ContentBox extends StatelessWidget {
   final Widget child;
-  ContentBox({required this.child});
+  final Color? backgroundColor;
+  ContentBox({required this.child, this.backgroundColor});
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
-          color: context.theme.cardBackground,
+          color: backgroundColor ?? context.theme.cardBackground,
           borderRadius: BorderRadius.circular(8)),
       child: child,
     );

@@ -5,6 +5,8 @@ const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
 
+const kStandardAnimationDuration = const Duration(milliseconds: 250);
+
 /// QueryNames
 /// TODO: Move to using new syntax like QueryName().operationName
 const kGymProfilesQuery = 'gymProfiles';
@@ -28,6 +30,9 @@ const kLoggedWorkoutTypename = 'LoggedWorkout';
 const kLoggedWorkoutSectionTypename = 'LoggedWorkoutSection';
 const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
 const kLoggedWorkoutMoveTypename = 'LoggedWorkoutMove';
+
+const kProgressJournalTypename = 'ProgressJournal';
+const kProgressJournalGoalTypename = 'ProgressJournalGoal';
 
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,
