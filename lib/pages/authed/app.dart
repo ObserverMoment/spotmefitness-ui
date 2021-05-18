@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -96,11 +97,12 @@ class _GlobalPageState extends State<GlobalPage> {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
+        duration: Duration(milliseconds: 0),
         routes: [
           HomeStack(),
           DiscoverRoute(),
           SocialRoute(),
-          JournalRoute(),
+          JournalStack(),
           ProfileRoute()
         ],
         builder: (context, child, animation) {
@@ -110,7 +112,6 @@ class _GlobalPageState extends State<GlobalPage> {
           final _activeIndex = _tabsRouter.activeIndex;
           final _activeColor = context.theme.activeIcon;
           final _inActiveColor = context.theme.primary;
-          final _bottomNavBarHeight = 68.0;
 
           return Stack(
             fit: StackFit.expand,
@@ -121,7 +122,7 @@ class _GlobalPageState extends State<GlobalPage> {
                   child: MediaQuery(
                       data: _mediaQuery.copyWith(
                           padding: _mediaQuery.padding
-                              .copyWith(bottom: _bottomNavBarHeight + 4)),
+                              .copyWith(bottom: kBottomNavBarHeight + 4)),
                       child: child),
                   opacity: animation),
               Align(
@@ -140,7 +141,7 @@ class _GlobalPageState extends State<GlobalPage> {
                               border: Border.all(
                                   color:
                                       context.theme.primary.withOpacity(0.15))),
-                          height: _bottomNavBarHeight,
+                          height: kBottomNavBarHeight,
                           width: _size.width - 28,
                           child: Row(
                             mainAxisSize: MainAxisSize.max,

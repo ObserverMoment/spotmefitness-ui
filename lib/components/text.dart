@@ -121,6 +121,25 @@ class H3 extends StatelessWidget {
   }
 }
 
+/// Use top left of a top nav bar in an IOs-ish style.
+class NavBarLargeTitle extends StatelessWidget {
+  final String title;
+  NavBarLargeTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        H1(
+          title,
+          textAlign: TextAlign.start,
+        ),
+      ],
+    );
+  }
+}
+
 /// Small size, bold, uppercase letters
 class NavBarTitle extends StatelessWidget {
   final String text;

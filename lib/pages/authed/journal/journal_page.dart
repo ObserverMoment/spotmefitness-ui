@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/recent_journal_entries.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/recent_logged_workouts.dart';
@@ -11,11 +12,19 @@ class JournalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SafeArea(
+      key: Key('JournalPage-CupertinoPageScaffold'),
+      navigationBar: BasicNavBar(
+        key: Key('JournalPage-BasicNavBar'),
+        leading: NavBarLargeTitle('Journal'),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
         child: ListView(
+          shrinkWrap: true,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4, horizontal: 16.0),
               child: Card(
                   height: 100,
                   child: Column(

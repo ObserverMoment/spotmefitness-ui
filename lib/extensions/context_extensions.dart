@@ -112,7 +112,9 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: title != null ? H3(title) : null,
+                title: title != null
+                    ? H3(title, textAlign: TextAlign.center)
+                    : null,
                 content: content,
                 actions: [
                   CupertinoDialogAction(

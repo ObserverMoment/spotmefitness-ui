@@ -11,11 +11,13 @@ class AudioThumbnailPlayer extends StatelessWidget {
   final String playerTitle;
   final Size displaySize;
   final String? tag;
+  final IconData iconData;
 
   AudioThumbnailPlayer(
       {required this.audioUri,
       this.playerTitle = 'Preview Audio',
       this.tag,
+      this.iconData = CupertinoIcons.waveform,
       this.displaySize = const Size(120, 120)});
 
   Future<void> _listenToAudio(BuildContext context) async {
@@ -48,7 +50,7 @@ class AudioThumbnailPlayer extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Icon(CupertinoIcons.waveform,
+                Icon(iconData,
                     color: Styles.white.withOpacity(0.3),
                     size: displaySize.width / 1.2),
                 Icon(

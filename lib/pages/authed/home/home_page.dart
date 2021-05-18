@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/schedule/weekly_calendar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -10,44 +11,40 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      key: Key('HomePage-CupertinoPageScaffold'),
+      navigationBar: BasicNavBar(
+        key: Key('HomePage-BasicNavBar'),
+        leading: NavBarLargeTitle('Home'),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(
+              CupertinoIcons.calendar,
+              size: 30,
+            ),
+            onPressed: () => context.pushRoute(YourScheduleRoute())),
+      ),
       child: Column(
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
+              padding: const EdgeInsets.only(left: 8.0, right: 8, bottom: 12),
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          H2('Home'),
-                          CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              child: Icon(
-                                CupertinoIcons.calendar,
-                                size: 32,
-                              ),
-                              onPressed: () =>
-                                  context.router.push(YourScheduleRoute())),
-                        ]),
-                  ),
                   WeeklyCalendar(),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: H2('News and articles - coming soon'),
                   ),
                   GridView.count(
+                    padding: EdgeInsets.zero,
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     childAspectRatio: 1.5,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       GestureDetector(
-                        onTap: () =>
-                            context.router.push(YourCollectionsRoute()),
+                        onTap: () => context.pushRoute(YourCollectionsRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Collections',
@@ -63,7 +60,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.router.push(YourWorkoutsRoute()),
+                        onTap: () => context.pushRoute(YourWorkoutsRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Workouts',
@@ -79,7 +76,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.router.push(YourPlansRoute()),
+                        onTap: () => context.pushRoute(YourPlansRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Plans',
@@ -95,7 +92,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.router.push(YourEventsRoute()),
+                        onTap: () => context.pushRoute(YourEventsRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Events',
@@ -111,7 +108,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.router.push(YourClubsRoute()),
+                        onTap: () => context.pushRoute(YourClubsRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Clubs',
@@ -127,7 +124,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => context.router.push(YourMovesRoute()),
+                        onTap: () => context.pushRoute(YourMovesRoute()),
                         child: HomeScreenCard(
                           content: H2(
                             'Moves',

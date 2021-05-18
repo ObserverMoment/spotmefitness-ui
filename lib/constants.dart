@@ -1,9 +1,17 @@
+import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+
 const kBodyweightEquipmentId = 'b95da267-c036-4caa-9294-d1fab9b3d2e8';
 const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 
-const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+/// Layout
+const kAssumedDefaultTopNotchHeight = 54.0;
+const kAssumedFloatingButtonHeight = 64.0;
+const kBottomNavBarHeight = 68.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
+
+const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);
 
@@ -64,6 +72,10 @@ const String kSettingsHiveBoxName = 'settings_box';
 const String kSettingsHiveBoxThemeKey = 'theme_name';
 const String kSettingsLightThemeKey = 'light';
 const String kSettingsDarkThemeKey = 'dark';
+
+/// Journal Entry Scoring ///
+const Color kGoodScoreColor = Styles.infoBlue;
+final Color kBadScoreColor = Styles.errorRed;
 
 /// Move Filters ///
 const String kSettingsHiveBoxMoveFiltersKey = 'move_filters';

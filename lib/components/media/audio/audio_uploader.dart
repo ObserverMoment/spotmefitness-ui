@@ -22,11 +22,13 @@ class AudioUploader extends StatefulWidget {
   final void Function()? onUploadStart;
   final void Function(String uploadedUri) onUploadSuccess;
   final void Function() removeAudio;
+  final IconData iconData;
   AudioUploader(
       {this.audioUri,
       this.displaySize = const Size(120, 120),
       required this.onUploadSuccess,
       this.onUploadStart,
+      this.iconData = CupertinoIcons.waveform,
       required this.removeAudio});
 
   @override
@@ -163,7 +165,7 @@ class _AudioUploaderState extends State<AudioUploader> {
                       color: background.withOpacity(0.4),
                     )
                   : Icon(
-                      CupertinoIcons.waveform,
+                      widget.iconData,
                       color:
                           hasAudio ? Styles.white : background.withOpacity(0.4),
                       size: widget.displaySize.width / 1.5,

@@ -46,7 +46,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            'Recent Logs',
+                            'Latest Logs',
                             weight: FontWeight.bold,
                           ),
                           CreateTextIconButton(
@@ -66,7 +66,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
                             CarouselSlider.builder(
                               options: CarouselOptions(
                                 height: 240,
-                                viewportFraction: 0.93,
+                                viewportFraction: 0.94,
                                 enableInfiniteScroll: false,
                               ),
                               itemCount: logs.length,

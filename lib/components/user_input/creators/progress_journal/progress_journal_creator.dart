@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -44,9 +47,19 @@ class _ProgressJournalCreatorState extends State<ProgressJournalCreator> {
         _activeProgressJournal.description = description;
       });
 
+  void _handleClose() {
+    if (_formIsDirty) {
+      context.showConfirmDialog(
+          title: 'Close without saving?', onConfirm: context.pop);
+    } else {
+      context.pop();
+    }
+  }
+
   void _handleSave() async {
     setState(() => _isLoading = true);
     if (_isEditing) {
+      print(_activeProgressJournal.description);
       final variables = UpdateProgressJournalArguments(
           data: UpdateProgressJournalInput(
               id: _activeProgressJournal.id,
@@ -55,7 +68,13 @@ class _ProgressJournalCreatorState extends State<ProgressJournalCreator> {
 
       final result = await context.graphQLStore.mutate(
           mutation: UpdateProgressJournalMutation(variables: variables),
-          broadcastQueryIds: [UserProgressJournalsQuery().operationName]);
+          broadcastQueryIds: [
+            UserProgressJournalsQuery().operationName,
+            ProgressJournalByIdQuery(
+                    variables: ProgressJournalByIdArguments(
+                        id: _activeProgressJournal.id))
+                .operationName
+          ]);
 
       setState(() => _isLoading = false);
 
@@ -91,13 +110,35 @@ class _ProgressJournalCreatorState extends State<ProgressJournalCreator> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CreateEditPageNavBar(
-          title: _isEditing ? 'Edit Journal' : 'Create Journal',
-          formIsDirty: _formIsDirty,
-          handleSave: _handleSave,
-          handleClose: context.pop,
-          loading: _isLoading,
-          inputValid: true),
+      // Non standard nav bar (not [CreateEdit] version as the journal is not created on init of this widget, but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
+      navigationBar: BasicNavBar(
+        leading: NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (_isLoading)
+              LoadingDots(
+                size: 14,
+              ),
+            if (!_isLoading && !_isEditing)
+              Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: NavBarCancelButton(_handleClose),
+              ),
+            if (!_isLoading && _isEditing && !_formIsDirty)
+              Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: NavBarCloseButton(_handleClose),
+              ),
+            if (!_isLoading && _formIsDirty)
+              Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: NavBarSaveButton(_handleSave),
+              ),
+          ],
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(

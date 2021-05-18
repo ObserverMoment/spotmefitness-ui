@@ -65,7 +65,7 @@ class _FilterableLoggedWorkoutsListState
   DateTime? _filterTo;
 
   void _openLoggedWorkoutDetails(BuildContext context, String id) {
-    context.router.root.push(LoggedWorkoutDetailsRoute(id: id));
+    context.pushRoute(LoggedWorkoutDetailsRoute(id: id));
   }
 
   void _clearDateRange() => setState(() {

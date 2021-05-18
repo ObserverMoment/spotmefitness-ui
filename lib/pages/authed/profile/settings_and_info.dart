@@ -10,12 +10,12 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class SettingsAndInfo extends StatefulWidget {
+class SettingsAndInfoPage extends StatefulWidget {
   @override
-  _SettingsAndInfoState createState() => _SettingsAndInfoState();
+  _SettingsAndInfoPageState createState() => _SettingsAndInfoPageState();
 }
 
-class _SettingsAndInfoState extends State<SettingsAndInfo> {
+class _SettingsAndInfoPageState extends State<SettingsAndInfoPage> {
   bool _loading = false;
   Widget _spacer() => SizedBox(height: 10);
 

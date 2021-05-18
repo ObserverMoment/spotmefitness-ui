@@ -52,6 +52,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// The main data that gets edited on the client by the user.
   Workout workout;
 
   /// Before every update we make a copy of the last workout here.

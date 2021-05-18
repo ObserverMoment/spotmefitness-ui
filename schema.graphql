@@ -160,6 +160,11 @@ enum BodyAreaUpperLower {
   UPPER
 }
 
+enum BodyweightUnit {
+  KG
+  LB
+}
+
 enum ContentAccessScope {
   PRIVATE
   PUBLIC
@@ -606,6 +611,7 @@ type ProgressJournalEntry {
   note: String
   voiceNoteUri: String
   bodyweight: Float
+  bodyweightUnit: BodyweightUnit!
   moodScore: Float
   energyScore: Float
   stressScore: Float
@@ -618,6 +624,7 @@ input CreateProgressJournalEntryInput {
   note: String
   voiceNoteUri: String
   bodyweight: Float
+  bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
   stressScore: Float
@@ -631,6 +638,7 @@ input UpdateProgressJournalEntryInput {
   note: String
   voiceNoteUri: String
   bodyweight: Float
+  bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
   stressScore: Float

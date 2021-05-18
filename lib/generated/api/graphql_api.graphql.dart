@@ -74,6 +74,8 @@ mixin ProgressJournalEntryMixin {
   String? note;
   String? voiceNoteUri;
   double? bodyweight;
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  late BodyweightUnit bodyweightUnit;
   double? moodScore;
   double? energyScore;
   double? stressScore;
@@ -644,6 +646,7 @@ class ProgressJournalEntry extends JsonSerializable
         note,
         voiceNoteUri,
         bodyweight,
+        bodyweightUnit,
         moodScore,
         energyScore,
         stressScore,
@@ -3485,6 +3488,170 @@ class UpdateProgressJournalInput extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$UpdateProgressJournalInputToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntry$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntry$Mutation();
+
+  factory CreateProgressJournalEntry$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntry$MutationFromJson(json);
+
+  late ProgressJournalEntry createProgressJournalEntry;
+
+  @override
+  List<Object?> get props => [createProgressJournalEntry];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntry$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntryInput extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntryInput(
+      {this.note,
+      this.voiceNoteUri,
+      this.bodyweight,
+      this.bodyweightUnit,
+      this.moodScore,
+      this.energyScore,
+      this.stressScore,
+      this.motivationScore,
+      required this.progressPhotoUris,
+      required this.progressJournal});
+
+  factory CreateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntryInputFromJson(json);
+
+  String? note;
+
+  String? voiceNoteUri;
+
+  double? bodyweight;
+
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
+  double? moodScore;
+
+  double? energyScore;
+
+  double? stressScore;
+
+  double? motivationScore;
+
+  late List<String> progressPhotoUris;
+
+  @JsonKey(name: 'ProgressJournal')
+  late ConnectRelationInput progressJournal;
+
+  @override
+  List<Object?> get props => [
+        note,
+        voiceNoteUri,
+        bodyweight,
+        bodyweightUnit,
+        moodScore,
+        energyScore,
+        stressScore,
+        motivationScore,
+        progressPhotoUris,
+        progressJournal
+      ];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntryInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalEntryById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalEntryById$Mutation();
+
+  factory DeleteProgressJournalEntryById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalEntryById$MutationFromJson(json);
+
+  late String deleteProgressJournalEntryById;
+
+  @override
+  List<Object?> get props => [deleteProgressJournalEntryById];
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalEntryById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntry$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntry$Mutation();
+
+  factory UpdateProgressJournalEntry$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntry$MutationFromJson(json);
+
+  late ProgressJournalEntry updateProgressJournalEntry;
+
+  @override
+  List<Object?> get props => [updateProgressJournalEntry];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntry$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntryInput extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntryInput(
+      {required this.id,
+      this.note,
+      this.voiceNoteUri,
+      this.bodyweight,
+      this.bodyweightUnit,
+      this.moodScore,
+      this.energyScore,
+      this.stressScore,
+      this.motivationScore,
+      required this.progressPhotoUris});
+
+  factory UpdateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntryInputFromJson(json);
+
+  late String id;
+
+  String? note;
+
+  String? voiceNoteUri;
+
+  double? bodyweight;
+
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
+  double? moodScore;
+
+  double? energyScore;
+
+  double? stressScore;
+
+  double? motivationScore;
+
+  late List<String> progressPhotoUris;
+
+  @override
+  List<Object?> get props => [
+        id,
+        note,
+        voiceNoteUri,
+        bodyweight,
+        bodyweightUnit,
+        moodScore,
+        energyScore,
+        stressScore,
+        motivationScore,
+        progressPhotoUris
+      ];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntryInputToJson(this);
+}
+
 enum BodyAreaFrontBack {
   @JsonValue('BACK')
   back,
@@ -3556,6 +3723,14 @@ enum WorkoutMoveRepType {
   distance,
   @JsonValue('TIME')
   time,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum BodyweightUnit {
+  @JsonValue('KG')
+  kg,
+  @JsonValue('LB')
+  lb,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -4971,6 +5146,12 @@ final PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -5236,6 +5417,12 @@ final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -19741,6 +19928,12 @@ final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -20040,6 +20233,12 @@ final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -20217,4 +20416,374 @@ class UpdateProgressJournalMutation extends GraphQLQuery<
   @override
   UpdateProgressJournal$Mutation parse(Map<String, dynamic> json) =>
       UpdateProgressJournal$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntryArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntryArguments({required this.data});
+
+  @override
+  factory CreateProgressJournalEntryArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntryArgumentsFromJson(json);
+
+  late CreateProgressJournalEntryInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntryArgumentsToJson(this);
+}
+
+final CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createProgressJournalEntry'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateProgressJournalEntryInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createProgressJournalEntry'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateProgressJournalEntryMutation extends GraphQLQuery<
+    CreateProgressJournalEntry$Mutation, CreateProgressJournalEntryArguments> {
+  CreateProgressJournalEntryMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createProgressJournalEntry';
+
+  @override
+  final CreateProgressJournalEntryArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
+      CreateProgressJournalEntry$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalEntryByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalEntryByIdArguments({required this.id});
+
+  @override
+  factory DeleteProgressJournalEntryByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalEntryByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalEntryByIdArgumentsToJson(this);
+}
+
+final DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteProgressJournalEntryById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteProgressJournalEntryById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteProgressJournalEntryByIdMutation extends GraphQLQuery<
+    DeleteProgressJournalEntryById$Mutation,
+    DeleteProgressJournalEntryByIdArguments> {
+  DeleteProgressJournalEntryByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteProgressJournalEntryById';
+
+  @override
+  final DeleteProgressJournalEntryByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteProgressJournalEntryById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteProgressJournalEntryById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntryArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntryArguments({required this.data});
+
+  @override
+  factory UpdateProgressJournalEntryArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntryArgumentsFromJson(json);
+
+  late UpdateProgressJournalEntryInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntryArgumentsToJson(this);
+}
+
+final UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateProgressJournalEntry'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateProgressJournalEntryInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateProgressJournalEntry'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateProgressJournalEntryMutation extends GraphQLQuery<
+    UpdateProgressJournalEntry$Mutation, UpdateProgressJournalEntryArguments> {
+  UpdateProgressJournalEntryMutation({required this.variables});
+
+  @override
+  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateProgressJournalEntry';
+
+  @override
+  final UpdateProgressJournalEntryArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
+      UpdateProgressJournalEntry$Mutation.fromJson(json);
 }

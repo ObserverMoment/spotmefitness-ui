@@ -1,4 +1,5 @@
 import 'package:gql/ast.dart';
+import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:artemis/artemis.dart';
 
@@ -69,6 +70,33 @@ Object? normalizeObject(
         .toList();
   } else {
     /// If data is scalar or null then return it to be written.
+    return data;
+  }
+}
+
+/// Read a key from the store and recursively denormalize all the $refs.
+Map<String, dynamic> readFromStoreDenormalized(String key, Box box) {
+  final normalized = Map<String, dynamic>.from(box.get(key) ?? {});
+  return Map<String, dynamic>.from(
+      denormalizeObject(data: normalized, box: box) as Map<String, dynamic>);
+}
+
+/// Recursive function which will denormalize a normalized object in [box].
+Object? denormalizeObject({required Object? data, required Box box}) {
+  if (data is Map<String, dynamic>) {
+    return data.entries.fold<Map<String, dynamic>>({}, (acum, e) {
+      if (e.key == kStoreReferenceKey) {
+        final refData = Map<String, dynamic>.from(box.get(e.value));
+        return Map<String, dynamic>.from(
+            denormalizeObject(data: refData, box: box) as Map<String, dynamic>);
+      } else {
+        acum[e.key] = denormalizeObject(data: e.value, box: box);
+        return acum;
+      }
+    });
+  } else if (data is List) {
+    return data.map((obj) => denormalizeObject(data: obj, box: box)).toList();
+  } else {
     return data;
   }
 }

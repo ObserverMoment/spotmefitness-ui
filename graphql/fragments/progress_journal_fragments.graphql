@@ -14,6 +14,7 @@ fragment ProgressJournalEntry on ProgressJournalEntry {
   voiceNoteUri
   # Always save in KGs
   bodyweight
+  bodyweightUnit
   moodScore
   energyScore
   stressScore

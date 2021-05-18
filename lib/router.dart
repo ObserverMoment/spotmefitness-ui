@@ -21,6 +21,7 @@ import 'package:spotmefitness_ui/pages/authed/journal/your_progress_journals.dar
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/settings_and_info.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 
 @CupertinoAutoRouter(
@@ -39,28 +40,38 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
             AutoRoute(path: 'your-events', page: YourEventsPage),
             AutoRoute(path: 'your-clubs', page: YourClubsPage),
             AutoRoute(path: 'your-moves', page: YourMovesPage),
-            RedirectRoute(path: '*', redirectTo: '')
+            AutoRoute(path: 'your-schedule', page: YourSchedulePage),
+            RedirectRoute(path: '*', redirectTo: 'home')
           ]),
       AutoRoute(path: 'discover', page: DiscoverPage, children: [
         AutoRoute(path: 'you', page: DiscoverYouPage),
         AutoRoute(path: 'workouts', page: DiscoverWorkoutsPage),
         AutoRoute(path: 'plans', page: DiscoverPlansPage),
-        RedirectRoute(path: '*', redirectTo: 'personal')
+        RedirectRoute(path: '*', redirectTo: 'you')
       ]),
       AutoRoute(path: 'social', page: SocialPage),
-      AutoRoute(path: 'journal', page: JournalPage),
+      AutoRoute(
+          path: 'journal',
+          name: 'journalStack',
+          page: EmptyRouterPage,
+          children: [
+            AutoRoute(path: '', page: JournalPage),
+            AutoRoute(
+                path: 'your-logged-workouts', page: YourLoggedWorkoutsPage),
+            AutoRoute(
+                path: 'your-progress-journals', page: YourProgressJournalsPage),
+            RedirectRoute(path: '*', redirectTo: 'journal')
+          ]),
       AutoRoute(path: 'profile', page: ProfilePage, children: [
         AutoRoute(path: 'personal', page: ProfilePersonalPage),
         AutoRoute(path: 'gym-profiles', page: ProfileGymProfilesPage),
         RedirectRoute(path: '*', redirectTo: 'personal')
       ]),
     ]),
-    AutoRoute(path: '/workout/:id', page: WorkoutDetailsPage),
-    AutoRoute(path: '/logged-workout/:id', page: LoggedWorkoutDetailsPage),
-    AutoRoute(path: '/progress-journal/:id', page: ProgressJournalDetailsPage),
-    AutoRoute(path: 'your-logged-workouts', page: YourLoggedWorkoutsPage),
-    AutoRoute(path: 'your-progress-journals', page: YourProgressJournalsPage),
-    AutoRoute(path: 'your-schedule', page: YourSchedulePage),
+    AutoRoute(path: 'workout/:id', page: WorkoutDetailsPage),
+    AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),
+    AutoRoute(path: 'progress-journal/:id', page: ProgressJournalDetailsPage),
+    AutoRoute(path: 'settings', page: SettingsAndInfoPage),
     RedirectRoute(path: '*', redirectTo: '/')
   ],
 )

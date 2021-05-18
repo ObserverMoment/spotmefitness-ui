@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.d
 import 'package:spotmefitness_ui/components/media/images/full_screen_image_gallery.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -29,7 +30,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
     ));
   }
 
-  double _calcOverallScore() {
+  double _calcOverallAverage() {
     final scores = [
       for (final s in [
         progressJournalEntry.moodScore,
@@ -51,7 +52,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
 
   List<Widget> _buildScoreIndicators() {
     final tags = ['Mood', 'Energy', 'Motivate', 'Stress'];
-    final colors = [Styles.errorRed, Styles.infoBlue];
+
     return [
       for (final s in [
         progressJournalEntry.moodScore,
@@ -81,8 +82,8 @@ class ProgressJournalEntryCard extends StatelessWidget {
                       weight: FontWeight.bold,
                       size: FONTSIZE.SMALL,
                     ),
-                    progressColor:
-                        Color.lerp(colors[0], colors[1], s / kMaxScore),
+                    progressColor: Color.lerp(
+                        kBadScoreColor, kGoodScoreColor, s / kMaxScore),
                   ),
                 ),
                 Positioned(
@@ -100,7 +101,6 @@ class ProgressJournalEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final overall = _calcOverallScore();
     final int numPhotos = progressJournalEntry.progressPhotoUris.length;
     return Card(
       child: Column(
@@ -109,31 +109,8 @@ class ProgressJournalEntryCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (progressJournalEntry.progressPhotoUris.isNotEmpty)
-                GestureDetector(
-                  onTap: () => _openImageGallery(context),
-                  child: Container(
-                    width: 90,
-                    child: Column(
-                      children: [
-                        PhotoStackDisplay(
-                          fileIds: progressJournalEntry.progressPhotoUris,
-                          height: 80,
-                          width: 80,
-                        ),
-                        MyText(
-                          '${progressJournalEntry.progressPhotoUris.length} ${numPhotos == 1 ? "photo" : "photos"}',
-                          size: FONTSIZE.TINY,
-                          weight: FontWeight.bold,
-                          subtext: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     MyText(
                       progressJournalEntry.createdAt.compactDateString,
@@ -166,6 +143,28 @@ class ProgressJournalEntryCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (progressJournalEntry.progressPhotoUris.isNotEmpty)
+                GestureDetector(
+                  onTap: () => _openImageGallery(context),
+                  child: Container(
+                    width: 90,
+                    child: Column(
+                      children: [
+                        PhotoStackDisplay(
+                          fileIds: progressJournalEntry.progressPhotoUris,
+                          height: 80,
+                          width: 80,
+                        ),
+                        MyText(
+                          '${progressJournalEntry.progressPhotoUris.length} ${numPhotos == 1 ? "photo" : "photos"}',
+                          size: FONTSIZE.TINY,
+                          weight: FontWeight.bold,
+                          subtext: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
           SizedBox(height: 6),
@@ -175,6 +174,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
               if (Utils.textNotNull(progressJournalEntry.voiceNoteUri))
                 AudioThumbnailPlayer(
                     displaySize: Size(40, 40),
+                    iconData: CupertinoIcons.mic_fill,
                     audioUri: progressJournalEntry.voiceNoteUri!),
               if (progressJournalEntry.bodyweight != null)
                 MyText(
@@ -191,14 +191,15 @@ class ProgressJournalEntryCard extends StatelessWidget {
                     backgroundColor: Styles.colorOne.withOpacity(0.35),
                     circularStrokeCap: CircularStrokeCap.round,
                     radius: 40.0,
-                    lineWidth: 8.0,
-                    percent: overall / kMaxScore,
+                    lineWidth: 7.0,
+                    percent: _calcOverallAverage() / kMaxScore,
                     center: MyText(
-                      overall.toInt().toString(),
+                      _calcOverallAverage().toInt().toString(),
                       lineHeight: 1,
                       weight: FontWeight.bold,
                     ),
-                    linearGradient: Styles.neonBlueGradient,
+                    progressColor: Color.lerp(kBadScoreColor, kGoodScoreColor,
+                        _calcOverallAverage() / kMaxScore),
                   ),
                 ),
             ],

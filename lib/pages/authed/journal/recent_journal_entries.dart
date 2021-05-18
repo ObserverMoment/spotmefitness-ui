@@ -26,7 +26,7 @@ class RecentJournalEntries extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24),
                 child: ShimmerCard(
                   height: kJournalEntryCardHeight - 30,
                 ),
@@ -52,7 +52,7 @@ class RecentJournalEntries extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            'Recent Journals',
+                            'Latest Journals',
                             weight: FontWeight.bold,
                           ),
                           TextButton(
@@ -69,7 +69,7 @@ class RecentJournalEntries extends StatelessWidget {
                             CarouselSlider.builder(
                               options: CarouselOptions(
                                 height: kJournalEntryCardHeight,
-                                viewportFraction: 0.93,
+                                viewportFraction: 0.94,
                                 enableInfiniteScroll: false,
                               ),
                               itemCount: entries.length,

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:artemis/artemis.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
@@ -470,6 +469,8 @@ class GraphQLStore {
   bool writeDataToStore(
       {required Map<String, dynamic> data,
       List<String> broadcastQueryIds = const [],
+
+      /// Only queries whose data is a list of refs can accept refs like this.
       List<String> addRefToQueries = const []}) {
     try {
       normalizeToStore(
@@ -570,6 +571,14 @@ class GraphQLStore {
     }
   }
 
+  /// Retrieves data from a key and then recursively retrieves all of its children.
+  /// Children can be scalar or [$ref] objects and plain json Map is returned.
+  Map<String, dynamic> readDenomalized(String key) {
+    return readFromStoreDenormalized(key, _box);
+  }
+
+  /// Retrieves the raw normalized data.
+  /// Normalized children will be [$ref] objects. Not plain json maps.
   Map<String, dynamic> readNormalized(String key) {
     return Map<String, dynamic>.from(_box.get(key) ?? {});
   }

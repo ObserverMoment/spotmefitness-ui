@@ -1,17 +1,22 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_entry_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:collection/collection.dart';
 
 class ProgressJournalDetailsPage extends StatefulWidget {
   final String id;
@@ -27,12 +32,58 @@ class _ProgressJournalDetailsPageState
   int _activeTabIndex = 0;
   final PageController _pageController = PageController();
 
+  void _openEditJournalMeta(ProgressJournal journal) {
+    context.push(child: ProgressJournalCreator(progressJournal: journal));
+  }
+
+  void _handleDeleteJournal() {
+    context.showConfirmDeleteDialog(
+        itemType: 'Journal',
+        message:
+            'The journal, all entries and all goals will be deleted. Are you sure?',
+        onConfirm: _deleteJournal);
+  }
+
+  Future<void> _deleteJournal() async {
+    context.showLoadingAlert('Deleting Journal',
+        icon: Icon(
+          CupertinoIcons.delete_simple,
+          color: Styles.errorRed,
+        ));
+
+    final variables = DeleteProgressJournalByIdArguments(id: widget.id);
+
+    final result = await context.graphQLStore.delete(
+        mutation: DeleteProgressJournalByIdMutation(variables: variables),
+        objectId: widget.id,
+        typename: kProgressJournalTypename,
+        removeRefFromQueries: [UserProgressJournalsQuery().operationName]);
+
+    context.pop(); // Loading alert;
+
+    if (result.hasErrors ||
+        result.data?.deleteProgressJournalById != widget.id) {
+      context.showToast(
+          message:
+              'Sorry, something went wrong, we were not able to delete this journal.',
+          toastType: ToastType.destructive);
+    } else {
+      context.pop(); // Screen
+    }
+  }
+
   void _changeTab(int index) {
     _pageController.jumpToPage(
       index,
     );
     Utils.hideKeyboard(context);
     setState(() => _activeTabIndex = index);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,12 +107,12 @@ class _ProgressJournalDetailsPageState
                   ContextMenuItem(
                       iconData: CupertinoIcons.info,
                       text: 'Edit Journal Meta',
-                      onTap: () => print('open journal creator')),
+                      onTap: () => _openEditJournalMeta(journal)),
                   ContextMenuItem(
                       iconData: CupertinoIcons.delete_simple,
                       destructive: true,
                       text: 'Delete Journal',
-                      onTap: () => print('delete journal flow')),
+                      onTap: _handleDeleteJournal),
                 ]),
               ),
               child: Column(
@@ -72,14 +123,16 @@ class _ProgressJournalDetailsPageState
                       activeTabIndex: _activeTabIndex),
                   Expanded(
                       child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 4, vertical: 12.0),
+                    padding:
+                        const EdgeInsets.only(left: 4, right: 4, top: 12.0),
                     child: PageView(
                       physics: NeverScrollableScrollPhysics(),
                       controller: _pageController,
                       onPageChanged: _changeTab,
                       children: [
-                        _JournalEntriesList(journal.progressJournalEntries),
+                        ProgressJournalEntriesList(
+                            parentJournalId: journal.id,
+                            entries: journal.progressJournalEntries),
                         ProgressJournalGoalsList(journal.progressJournalGoals),
                       ],
                     ),
@@ -90,14 +143,57 @@ class _ProgressJournalDetailsPageState
   }
 }
 
-class _JournalEntriesList extends StatelessWidget {
+class ProgressJournalEntriesList extends StatelessWidget {
+  final String parentJournalId;
   final List<ProgressJournalEntry> entries;
-  _JournalEntriesList(this.entries);
+  ProgressJournalEntriesList(
+      {required this.entries, required this.parentJournalId});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: entries.map((e) => ProgressJournalEntryCard(e)).toList(),
+    final sortedEntries =
+        entries.sortedBy<DateTime>((e) => e.createdAt).reversed.toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: StackAndFloatingButton(
+        onPressed: () => context.push(
+            child: ProgressJournalEntryCreator(
+          parentJournalId: parentJournalId,
+        )),
+        pageHasBottomNavBar: false,
+        buttonIconData: CupertinoIcons.add,
+        child: entries.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MyText(
+                  'No entries yet',
+                  textAlign: TextAlign.center,
+                  subtext: true,
+                ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
+                itemCount: entries.length + 1,
+                itemBuilder: (c, i) {
+                  if (i == entries.length) {
+                    return SizedBox(height: kAssumedFloatingButtonHeight);
+                  } else {
+                    return GestureDetector(
+                        onTap: () => context.push(
+                                child: ProgressJournalEntryCreator(
+                              parentJournalId: parentJournalId,
+                              progressJournalEntry: sortedEntries[i],
+                            )),
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: ProgressJournalEntryCard(sortedEntries[i])));
+                  }
+                },
+              ),
+      ),
     );
   }
 }
@@ -108,8 +204,38 @@ class ProgressJournalGoalsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: goals.map((g) => ProgressJournalGoalCard(g)).toList(),
+    final sortedGoals =
+        goals.sortedBy<DateTime>((e) => e.createdAt).reversed.toList();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: StackAndFloatingButton(
+        onPressed: () => print('add goal'),
+        pageHasBottomNavBar: false,
+        buttonIconData: CupertinoIcons.add,
+        child: goals.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MyText(
+                  'No goals yet',
+                  textAlign: TextAlign.center,
+                  subtext: true,
+                ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
+                itemCount: sortedGoals.length + 1,
+                itemBuilder: (c, i) {
+                  if (i == sortedGoals.length) {
+                    return SizedBox(height: kAssumedFloatingButtonHeight);
+                  } else {
+                    return ProgressJournalGoalCard(sortedGoals[i]);
+                  }
+                },
+              ),
+      ),
     );
   }
 }

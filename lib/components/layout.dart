@@ -117,11 +117,7 @@ class StackAndFloatingButton extends StatelessWidget {
       fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
-        Padding(
-          /// Padding allow content to scroll up and clear floating button.
-          padding: const EdgeInsets.only(bottom: 54.0),
-          child: child,
-        ),
+        child,
         Positioned(
             bottom: pageHasBottomNavBar ? 72 : 8,
             right: 0,
@@ -208,19 +204,23 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
 
 /// Removes the bottom border from all nav bars.
 class BasicNavBar extends CupertinoNavigationBar {
+  final Key? key;
   final bool automaticallyImplyLeading;
   final Widget? leading;
   final Widget? middle;
   final Widget? trailing;
   final Color? backgroundColor;
   BasicNavBar(
-      {this.automaticallyImplyLeading = true,
+      {this.key,
+      this.automaticallyImplyLeading = true,
       this.leading,
       this.middle,
       this.trailing,
       this.backgroundColor})
       : super(
+            key: key,
             border: null,
+            transitionBetweenRoutes: true,
             backgroundColor: backgroundColor,
             leading: leading,
             middle: middle,

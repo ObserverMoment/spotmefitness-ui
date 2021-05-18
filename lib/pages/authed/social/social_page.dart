@@ -6,18 +6,25 @@ class SocialPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      key: Key('SocialPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
-        middle: NavBarTitle('Social Page'),
+        key: Key('SocialPage-BasicNavBar'),
+        leading: NavBarLargeTitle('Social'),
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MyText('Social Page'),
-            ],
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText('Social Page'),
+                  ]),
+            ),
+          ],
+        ),
       ),
     );
   }
