@@ -119,8 +119,8 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar ? 72 : 8,
-            right: 0,
+            bottom: pageHasBottomNavBar ? 82 : 18,
+            right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))
       ],
@@ -206,26 +206,39 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
 class BasicNavBar extends CupertinoNavigationBar {
   final Key? key;
   final bool automaticallyImplyLeading;
-  final Widget? leading;
+  final Widget? customLeading;
   final Widget? middle;
   final Widget? trailing;
   final Color? backgroundColor;
   BasicNavBar(
       {this.key,
       this.automaticallyImplyLeading = true,
-      this.leading,
+      this.customLeading,
       this.middle,
       this.trailing,
       this.backgroundColor})
       : super(
             key: key,
-            border: null,
-            transitionBetweenRoutes: true,
-            backgroundColor: backgroundColor,
-            leading: leading,
-            middle: middle,
-            trailing: trailing,
-            automaticallyImplyLeading: automaticallyImplyLeading);
+            leading: customLeading ?? const _BackButton(),
+            border: null);
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      alignment: Alignment.centerLeft,
+      onPressed: () {
+        Navigator.maybePop(context);
+      },
+      child: Icon(
+        CupertinoIcons.arrow_left,
+        size: 22,
+      ),
+    );
+  }
 }
 
 class ModalCupertinoPageScaffold extends StatelessWidget {
@@ -249,7 +262,7 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
       navigationBar: BasicNavBar(
-        leading: cancel != null ? NavBarCancelButton(cancel!) : null,
+        customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),
         trailing: save != null && validToSave

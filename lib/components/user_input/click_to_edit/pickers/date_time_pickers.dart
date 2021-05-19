@@ -24,10 +24,10 @@ ColorScheme _buildColorScheme(BuildContext context) {
   return ColorScheme(
     primary: theme.primary,
     primaryVariant: theme.primary,
-    secondary: theme.background,
+    secondary: theme.cardBackground,
     secondaryVariant: theme.primary,
-    surface: theme.background,
-    background: theme.background,
+    surface: theme.cardBackground,
+    background: theme.cardBackground,
     error: myTheme.Styles.errorRed,
     onPrimary: theme.background,
     onSecondary: theme.primary,
@@ -48,10 +48,10 @@ Widget _buildDateTimePickerTheme(BuildContext context, Widget child) {
         colorScheme: _buildColorScheme(context),
         appBarTheme: base.appBarTheme.copyWith(
             backgroundColor:
-                theme.background), // Header background of range picker.
+                theme.cardBackground), // Header background of range picker.
         primaryColor: theme.primary, // Head of Date Picker background
         accentColor: theme.primary, // Selection color for date picker
-        dialogBackgroundColor: theme.background,
+        dialogBackgroundColor: theme.cardBackground,
         scaffoldBackgroundColor:
             theme.cardBackground, // Main background of range picker.
         textTheme: _buildShrineTextTheme(context, base.textTheme),

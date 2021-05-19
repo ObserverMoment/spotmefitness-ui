@@ -9,7 +9,7 @@ class SocialPage extends StatelessWidget {
       key: Key('SocialPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
         key: Key('SocialPage-BasicNavBar'),
-        leading: NavBarLargeTitle('Social'),
+        customLeading: NavBarLargeTitle('Social'),
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),

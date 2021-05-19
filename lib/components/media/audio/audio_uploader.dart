@@ -154,7 +154,7 @@ class _AudioUploaderState extends State<AudioUploader> {
             height: widget.displaySize.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: hasAudio ? Styles.colorOne : primary.withOpacity(0.7),
+              color: hasAudio ? Styles.colorOne : primary.withOpacity(0.2),
               boxShadow: [Styles.avatarBoxShadow],
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,

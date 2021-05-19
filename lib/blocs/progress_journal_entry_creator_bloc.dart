@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
-import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// Follows a similar pattern to the [WorkoutCreatorBloc]. Mutations are sent to the DB incrementally and the local UI state is updated immediately (optimistically). However the global graphql store is only updated at the end of the session.
 /// Updates are processed locally optimistically, then to the network. If there is an error from the network then changes are rolled back via [backupJson].

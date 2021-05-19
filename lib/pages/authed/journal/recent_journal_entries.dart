@@ -69,14 +69,14 @@ class RecentJournalEntries extends StatelessWidget {
                             CarouselSlider.builder(
                               options: CarouselOptions(
                                 height: kJournalEntryCardHeight,
-                                viewportFraction: 0.94,
+                                viewportFraction: 0.9,
                                 enableInfiniteScroll: false,
                               ),
                               itemCount: entries.length,
                               itemBuilder: (c, i, _) => Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: GestureDetector(
-                                    onTap: () => context.pushRoute(
+                                    onTap: () => context.navigateTo(
                                         ProgressJournalDetailsRoute(
                                             id: data.userProgressJournals
                                                 .firstWhere((j) => j

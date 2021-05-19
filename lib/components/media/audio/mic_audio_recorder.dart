@@ -161,7 +161,8 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-          leading: NavBarCancelButton(() => _handleCancelAndClose(context)),
+          customLeading:
+              NavBarCancelButton(() => _handleCancelAndClose(context)),
           middle: NavBarTitle('Record Mic'),
           trailing: InfoPopupButton(
               infoWidget: MyText('Explains how the audio recorder works'))),

@@ -117,26 +117,37 @@ String? resolveDataId(Map<String, dynamic> data) {
   }
 }
 
-Object? recursiveMapRemoveRefsToId(
-    {required Object data,
+/// Traverses the data object and removes any ref objects that match the id provided.
+/// Returns a cleaned version of the data.
+Object? recursiveRemoveRefsToId(
+    {required Object? data,
     required String id,
     String referenceKey = kStoreReferenceKey}) {
   if (data is Map) {
-    if (data.keys.length == 1 && data[kStoreReferenceKey] == id) {
-      return null;
-    } else {
-      return data.entries.fold<Map>({}, (obj, entry) {
-        obj[entry.key] = recursiveMapRemoveRefsToId(data: entry.value, id: id);
+    return data.entries.fold<Map<String, dynamic>>({}, (obj, entry) {
+      if (entry.key == kStoreReferenceKey && entry.value == id) {
+        /// This is an entry we want to delete. Ignore
         return obj;
-      });
-    }
+      } else {
+        obj[entry.key] = recursiveRemoveRefsToId(data: entry.value, id: id);
+        return obj;
+      }
+    });
   } else if (data is List) {
-    /// Lists get recursive mapped.
     return data
-        .map((obj) => recursiveMapRemoveRefsToId(data: obj, id: id))
+        .map((e) {
+          if (e is Map &&
+              e.entries.length == 1 &&
+              e[kStoreReferenceKey] == id) {
+            return null;
+          } else {
+            return recursiveRemoveRefsToId(data: e, id: id);
+          }
+        })
+        .where((e) => e != null)
         .toList();
   } else {
-    /// Nulls and scalars just get returned.
+    /// Nulls and scalars return.
     return data;
   }
 }

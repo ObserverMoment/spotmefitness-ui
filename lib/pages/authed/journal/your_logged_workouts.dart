@@ -30,7 +30,9 @@ class YourLoggedWorkoutsPage extends StatelessWidget {
               .reversed
               .toList();
           return CupertinoPageScaffold(
+            key: Key('YourLoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              key: Key('YourLoggedWorkoutsPage - BasicNavBar'),
               middle: NavBarTitle('Workout Logs'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -65,7 +67,7 @@ class _FilterableLoggedWorkoutsListState
   DateTime? _filterTo;
 
   void _openLoggedWorkoutDetails(BuildContext context, String id) {
-    context.pushRoute(LoggedWorkoutDetailsRoute(id: id));
+    context.navigateTo(LoggedWorkoutDetailsRoute(id: id));
   }
 
   void _clearDateRange() => setState(() {

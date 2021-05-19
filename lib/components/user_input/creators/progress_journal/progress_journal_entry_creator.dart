@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_uploader.dart';
+import 'package:spotmefitness_ui/components/media/images/image_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/bodyweight_picker.dart';
@@ -168,7 +169,11 @@ class _ProgressJournalEntryCreatorState
                                 vertical: 6.0, horizontal: 12),
                             child: ProgressJournalEntryCreatorScores(),
                           ),
-                          MyText('Photos'),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 6.0, horizontal: 12),
+                            child: ProgressJournalEntryPhotos(),
+                          ),
                         ],
                       )),
                     ],
@@ -259,6 +264,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
 
     final bodyweight = context.select<ProgressJournalEntryCreatorBloc, double?>(
         (b) => b.entry.bodyweight);
+
     final bodyweightUnit =
         context.select<ProgressJournalEntryCreatorBloc, BodyweightUnit>(
             (b) => b.entry.bodyweightUnit);
@@ -435,6 +441,93 @@ class _JournalEntryScoreInputState extends State<JournalEntryScoreInput> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ProgressJournalEntryPhotos extends StatelessWidget {
+  final kMaxPhotos = 6;
+
+  @override
+  Widget build(BuildContext context) {
+    final progressPhotoUris =
+        context.select<ProgressJournalEntryCreatorBloc, List<String>>(
+            (b) => b.entry.progressPhotoUris);
+
+    return Container(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText(
+                  'Transformation Photos',
+                  weight: FontWeight.bold,
+                ),
+                InfoPopupButton(
+                    pageTitle: 'Transformation Tracking',
+                    infoWidget: MyText(
+                      'Explains how to use these photos and why you might want to take them.',
+                      maxLines: 6,
+                      textAlign: TextAlign.center,
+                    ))
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              children: List.generate(
+                  kMaxPhotos,
+                  (index) => Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ImageUploader(
+                          imageUri: progressPhotoUris.length > index
+                              ? progressPhotoUris[index]
+                              : null,
+                          onUploadStart: () => context
+                              .read<ProgressJournalEntryCreatorBloc>()
+                              .setUploadingMedia(true),
+                          onUploadSuccess: (uri) async {
+                            final bloc =
+                                context.read<ProgressJournalEntryCreatorBloc>();
+
+                            /// Are we adding a new image uri to the list or are we replacing one that is already there?
+                            final isEdit = progressPhotoUris.length > index;
+
+                            final updatedUriList = [...progressPhotoUris];
+
+                            if (isEdit) {
+                              updatedUriList.removeAt(index);
+                              updatedUriList.insert(index, uri);
+                            } else {
+                              updatedUriList.add(uri);
+                            }
+
+                            await bloc.updateEntry(
+                                {'progressPhotoUris': updatedUriList});
+                            bloc.setUploadingMedia(false);
+                          },
+                          removeImage: (uri) async {
+                            await context
+                                .read<ProgressJournalEntryCreatorBloc>()
+                                .updateEntry({
+                              'progressPhotoUris':
+                                  progressPhotoUris.toggleItem<String>(uri)
+                            });
+                          },
+                        ),
+                      )),
+            ),
+          )
+        ],
       ),
     );
   }

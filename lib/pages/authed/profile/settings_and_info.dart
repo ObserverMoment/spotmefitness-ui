@@ -32,8 +32,10 @@ class _SettingsAndInfoPageState extends State<SettingsAndInfoPage> {
         CupertinoTheme.of(context).primaryColor.withOpacity(0.70);
 
     return CupertinoPageScaffold(
+      key: Key('SettingsAndInfoPage - CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
-        middle: NavBarTitle('SETTINGS'),
+        key: Key('SettingsAndInfoPage - BasicNavBar'),
+        middle: NavBarTitle('Settings'),
       ),
       child: SingleChildScrollView(
           child: Padding(

@@ -427,6 +427,57 @@ Map<String, dynamic> _$UpdateWorkoutMoveInputToJson(
       'Equipment': instance.equipment?.toJson(),
     };
 
+ProgressJournalGoalTag _$ProgressJournalGoalTagFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalGoalTag()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..tag = json['tag'] as String
+    ..hexColor = json['hexColor'] as String;
+}
+
+Map<String, dynamic> _$ProgressJournalGoalTagToJson(
+        ProgressJournalGoalTag instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
+    };
+
+UpdateProgressJournalGoalTag$Mutation
+    _$UpdateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalTag$Mutation()
+    ..updateProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
+        json['updateProgressJournalGoalTag'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalTag$MutationToJson(
+        UpdateProgressJournalGoalTag$Mutation instance) =>
+    <String, dynamic>{
+      'updateProgressJournalGoalTag':
+          instance.updateProgressJournalGoalTag.toJson(),
+    };
+
+UpdateProgressJournalGoalTagInput _$UpdateProgressJournalGoalTagInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalTagInput(
+    id: json['id'] as String,
+    tag: json['tag'] as String?,
+    hexColor: json['hexColor'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalTagInputToJson(
+        UpdateProgressJournalGoalTagInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
+    };
+
 ProgressJournalEntry _$ProgressJournalEntryFromJson(Map<String, dynamic> json) {
   return ProgressJournalEntry()
     ..$$typename = json['__typename'] as String?
@@ -469,26 +520,6 @@ const _$BodyweightUnitEnumMap = {
   BodyweightUnit.lb: 'LB',
   BodyweightUnit.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
-
-ProgressJournalGoalTag _$ProgressJournalGoalTagFromJson(
-    Map<String, dynamic> json) {
-  return ProgressJournalGoalTag()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..tag = json['tag'] as String
-    ..hexColor = json['hexColor'] as String;
-}
-
-Map<String, dynamic> _$ProgressJournalGoalTagToJson(
-        ProgressJournalGoalTag instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'tag': instance.tag,
-      'hexColor': instance.hexColor,
-    };
 
 ProgressJournalGoal _$ProgressJournalGoalFromJson(Map<String, dynamic> json) {
   return ProgressJournalGoal()
@@ -563,6 +594,228 @@ Map<String, dynamic> _$ProgressJournalById$QueryToJson(
       'progressJournalById': instance.progressJournalById.toJson(),
     };
 
+CreateProgressJournalEntry$Mutation
+    _$CreateProgressJournalEntry$MutationFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalEntry$Mutation()
+    ..createProgressJournalEntry = ProgressJournalEntry.fromJson(
+        json['createProgressJournalEntry'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournalEntry$MutationToJson(
+        CreateProgressJournalEntry$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournalEntry':
+          instance.createProgressJournalEntry.toJson(),
+    };
+
+CreateProgressJournalEntryInput _$CreateProgressJournalEntryInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalEntryInput(
+    note: json['note'] as String?,
+    voiceNoteUri: json['voiceNoteUri'] as String?,
+    bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+    bodyweightUnit: _$enumDecodeNullable(
+        _$BodyweightUnitEnumMap, json['bodyweightUnit'],
+        unknownValue: BodyweightUnit.artemisUnknown),
+    moodScore: (json['moodScore'] as num?)?.toDouble(),
+    energyScore: (json['energyScore'] as num?)?.toDouble(),
+    stressScore: (json['stressScore'] as num?)?.toDouble(),
+    motivationScore: (json['motivationScore'] as num?)?.toDouble(),
+    progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    progressJournal: ConnectRelationInput.fromJson(
+        json['ProgressJournal'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalEntryInputToJson(
+        CreateProgressJournalEntryInput instance) =>
+    <String, dynamic>{
+      'note': instance.note,
+      'voiceNoteUri': instance.voiceNoteUri,
+      'bodyweight': instance.bodyweight,
+      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
+      'moodScore': instance.moodScore,
+      'energyScore': instance.energyScore,
+      'stressScore': instance.stressScore,
+      'motivationScore': instance.motivationScore,
+      'progressPhotoUris': instance.progressPhotoUris,
+      'ProgressJournal': instance.progressJournal.toJson(),
+    };
+
+DeleteProgressJournalById$Mutation _$DeleteProgressJournalById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteProgressJournalById$Mutation()
+    ..deleteProgressJournalById = json['deleteProgressJournalById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalById$MutationToJson(
+        DeleteProgressJournalById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalById': instance.deleteProgressJournalById,
+    };
+
+CreateProgressJournal$Mutation _$CreateProgressJournal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournal$Mutation()
+    ..createProgressJournal = ProgressJournal.fromJson(
+        json['createProgressJournal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournal$MutationToJson(
+        CreateProgressJournal$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournal': instance.createProgressJournal.toJson(),
+    };
+
+CreateProgressJournalInput _$CreateProgressJournalInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalInputToJson(
+        CreateProgressJournalInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+UpdateProgressJournal$Mutation _$UpdateProgressJournal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournal$Mutation()
+    ..updateProgressJournal = ProgressJournal.fromJson(
+        json['updateProgressJournal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateProgressJournal$MutationToJson(
+        UpdateProgressJournal$Mutation instance) =>
+    <String, dynamic>{
+      'updateProgressJournal': instance.updateProgressJournal.toJson(),
+    };
+
+UpdateProgressJournalInput _$UpdateProgressJournalInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalInputToJson(
+        UpdateProgressJournalInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+DeleteProgressJournalEntryById$Mutation
+    _$DeleteProgressJournalEntryById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalEntryById$Mutation()
+    ..deleteProgressJournalEntryById =
+        json['deleteProgressJournalEntryById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalEntryById$MutationToJson(
+        DeleteProgressJournalEntryById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalEntryById': instance.deleteProgressJournalEntryById,
+    };
+
+UpdateProgressJournalEntry$Mutation
+    _$UpdateProgressJournalEntry$MutationFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalEntry$Mutation()
+    ..updateProgressJournalEntry = ProgressJournalEntry.fromJson(
+        json['updateProgressJournalEntry'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateProgressJournalEntry$MutationToJson(
+        UpdateProgressJournalEntry$Mutation instance) =>
+    <String, dynamic>{
+      'updateProgressJournalEntry':
+          instance.updateProgressJournalEntry.toJson(),
+    };
+
+UpdateProgressJournalEntryInput _$UpdateProgressJournalEntryInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalEntryInput(
+    id: json['id'] as String,
+    note: json['note'] as String?,
+    voiceNoteUri: json['voiceNoteUri'] as String?,
+    bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+    bodyweightUnit: _$enumDecodeNullable(
+        _$BodyweightUnitEnumMap, json['bodyweightUnit'],
+        unknownValue: BodyweightUnit.artemisUnknown),
+    moodScore: (json['moodScore'] as num?)?.toDouble(),
+    energyScore: (json['energyScore'] as num?)?.toDouble(),
+    stressScore: (json['stressScore'] as num?)?.toDouble(),
+    motivationScore: (json['motivationScore'] as num?)?.toDouble(),
+    progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalEntryInputToJson(
+        UpdateProgressJournalEntryInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'note': instance.note,
+      'voiceNoteUri': instance.voiceNoteUri,
+      'bodyweight': instance.bodyweight,
+      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
+      'moodScore': instance.moodScore,
+      'energyScore': instance.energyScore,
+      'stressScore': instance.stressScore,
+      'motivationScore': instance.motivationScore,
+      'progressPhotoUris': instance.progressPhotoUris,
+    };
+
+CreateProgressJournalGoal$Mutation _$CreateProgressJournalGoal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoal$Mutation()
+    ..createProgressJournalGoal = ProgressJournalGoal.fromJson(
+        json['createProgressJournalGoal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoal$MutationToJson(
+        CreateProgressJournalGoal$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournalGoal': instance.createProgressJournalGoal.toJson(),
+    };
+
+CreateProgressJournalGoalInput _$CreateProgressJournalGoalInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoalInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+    deadline:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
+    progressJournal: ConnectRelationInput.fromJson(
+        json['ProgressJournal'] as Map<String, dynamic>),
+    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalInputToJson(
+        CreateProgressJournalGoalInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
+      'ProgressJournal': instance.progressJournal.toJson(),
+      'ProgressJournalGoalTags':
+          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
+    };
+
 UserProgressJournals$Query _$UserProgressJournals$QueryFromJson(
     Map<String, dynamic> json) {
   return UserProgressJournals$Query()
@@ -576,6 +829,122 @@ Map<String, dynamic> _$UserProgressJournals$QueryToJson(
     <String, dynamic>{
       'userProgressJournals':
           instance.userProgressJournals.map((e) => e.toJson()).toList(),
+    };
+
+UpdateProgressJournalGoal$Mutation _$UpdateProgressJournalGoal$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalGoal$Mutation()
+    ..updateProgressJournalGoal = ProgressJournalGoal.fromJson(
+        json['updateProgressJournalGoal'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoal$MutationToJson(
+        UpdateProgressJournalGoal$Mutation instance) =>
+    <String, dynamic>{
+      'updateProgressJournalGoal': instance.updateProgressJournalGoal.toJson(),
+    };
+
+UpdateProgressJournalGoalInput _$UpdateProgressJournalGoalInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+    completedDate: fromGraphQLDateTimeToDartDateTimeNullable(
+        json['completedDate'] as int?),
+    deadline:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
+    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
+        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalInputToJson(
+        UpdateProgressJournalGoalInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'completedDate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedDate),
+      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
+      'ProgressJournalGoalTags':
+          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
+    };
+
+CreateProgressJournalGoalTag$Mutation
+    _$CreateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalGoalTag$Mutation()
+    ..createProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
+        json['createProgressJournalGoalTag'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalTag$MutationToJson(
+        CreateProgressJournalGoalTag$Mutation instance) =>
+    <String, dynamic>{
+      'createProgressJournalGoalTag':
+          instance.createProgressJournalGoalTag.toJson(),
+    };
+
+CreateProgressJournalGoalTagInput _$CreateProgressJournalGoalTagInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoalTagInput(
+    tag: json['tag'] as String,
+    hexColor: json['hexColor'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalTagInputToJson(
+        CreateProgressJournalGoalTagInput instance) =>
+    <String, dynamic>{
+      'tag': instance.tag,
+      'hexColor': instance.hexColor,
+    };
+
+DeleteProgressJournalGoalById$Mutation
+    _$DeleteProgressJournalGoalById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalById$Mutation()
+    ..deleteProgressJournalGoalById =
+        json['deleteProgressJournalGoalById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalById$MutationToJson(
+        DeleteProgressJournalGoalById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalGoalById': instance.deleteProgressJournalGoalById,
+    };
+
+DeleteProgressJournalGoalTagById$Mutation
+    _$DeleteProgressJournalGoalTagById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalTagById$Mutation()
+    ..deleteProgressJournalGoalTagById =
+        json['deleteProgressJournalGoalTagById'] as String;
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalTagById$MutationToJson(
+        DeleteProgressJournalGoalTagById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteProgressJournalGoalTagById':
+          instance.deleteProgressJournalGoalTagById,
+    };
+
+ProgressJournalGoalTags$Query _$ProgressJournalGoalTags$QueryFromJson(
+    Map<String, dynamic> json) {
+  return ProgressJournalGoalTags$Query()
+    ..progressJournalGoalTags = (json['progressJournalGoalTags']
+            as List<dynamic>)
+        .map((e) => ProgressJournalGoalTag.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ProgressJournalGoalTags$QueryToJson(
+        ProgressJournalGoalTags$Query instance) =>
+    <String, dynamic>{
+      'progressJournalGoalTags':
+          instance.progressJournalGoalTags.map((e) => e.toJson()).toList(),
     };
 
 GymProfile _$GymProfileFromJson(Map<String, dynamic> json) {
@@ -2735,375 +3104,6 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
-ProgressJournalGoalTags$Query _$ProgressJournalGoalTags$QueryFromJson(
-    Map<String, dynamic> json) {
-  return ProgressJournalGoalTags$Query()
-    ..progressJournalGoalTags = (json['progressJournalGoalTags']
-            as List<dynamic>)
-        .map((e) => ProgressJournalGoalTag.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$ProgressJournalGoalTags$QueryToJson(
-        ProgressJournalGoalTags$Query instance) =>
-    <String, dynamic>{
-      'progressJournalGoalTags':
-          instance.progressJournalGoalTags.map((e) => e.toJson()).toList(),
-    };
-
-UpdateProgressJournalGoalTag$Mutation
-    _$UpdateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
-  return UpdateProgressJournalGoalTag$Mutation()
-    ..updateProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
-        json['updateProgressJournalGoalTag'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoalTag$MutationToJson(
-        UpdateProgressJournalGoalTag$Mutation instance) =>
-    <String, dynamic>{
-      'updateProgressJournalGoalTag':
-          instance.updateProgressJournalGoalTag.toJson(),
-    };
-
-UpdateProgressJournalGoalTagInput _$UpdateProgressJournalGoalTagInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalGoalTagInput(
-    id: json['id'] as String,
-    tag: json['tag'] as String?,
-    hexColor: json['hexColor'] as String?,
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoalTagInputToJson(
-        UpdateProgressJournalGoalTagInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'tag': instance.tag,
-      'hexColor': instance.hexColor,
-    };
-
-CreateProgressJournalGoalTag$Mutation
-    _$CreateProgressJournalGoalTag$MutationFromJson(Map<String, dynamic> json) {
-  return CreateProgressJournalGoalTag$Mutation()
-    ..createProgressJournalGoalTag = ProgressJournalGoalTag.fromJson(
-        json['createProgressJournalGoalTag'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoalTag$MutationToJson(
-        CreateProgressJournalGoalTag$Mutation instance) =>
-    <String, dynamic>{
-      'createProgressJournalGoalTag':
-          instance.createProgressJournalGoalTag.toJson(),
-    };
-
-CreateProgressJournalGoalTagInput _$CreateProgressJournalGoalTagInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalGoalTagInput(
-    tag: json['tag'] as String,
-    hexColor: json['hexColor'] as String,
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoalTagInputToJson(
-        CreateProgressJournalGoalTagInput instance) =>
-    <String, dynamic>{
-      'tag': instance.tag,
-      'hexColor': instance.hexColor,
-    };
-
-DeleteProgressJournalGoalTagById$Mutation
-    _$DeleteProgressJournalGoalTagById$MutationFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalGoalTagById$Mutation()
-    ..deleteProgressJournalGoalTagById =
-        json['deleteProgressJournalGoalTagById'] as String;
-}
-
-Map<String, dynamic> _$DeleteProgressJournalGoalTagById$MutationToJson(
-        DeleteProgressJournalGoalTagById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteProgressJournalGoalTagById':
-          instance.deleteProgressJournalGoalTagById,
-    };
-
-CreateProgressJournalGoal$Mutation _$CreateProgressJournalGoal$MutationFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalGoal$Mutation()
-    ..createProgressJournalGoal = ProgressJournalGoal.fromJson(
-        json['createProgressJournalGoal'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoal$MutationToJson(
-        CreateProgressJournalGoal$Mutation instance) =>
-    <String, dynamic>{
-      'createProgressJournalGoal': instance.createProgressJournalGoal.toJson(),
-    };
-
-CreateProgressJournalGoalInput _$CreateProgressJournalGoalInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalGoalInput(
-    name: json['name'] as String,
-    description: json['description'] as String?,
-    deadline:
-        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
-    progressJournal: ConnectRelationInput.fromJson(
-        json['ProgressJournal'] as Map<String, dynamic>),
-    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
-        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoalInputToJson(
-        CreateProgressJournalGoalInput instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
-      'ProgressJournal': instance.progressJournal.toJson(),
-      'ProgressJournalGoalTags':
-          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
-    };
-
-UpdateProgressJournalGoal$Mutation _$UpdateProgressJournalGoal$MutationFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalGoal$Mutation()
-    ..updateProgressJournalGoal = ProgressJournalGoal.fromJson(
-        json['updateProgressJournalGoal'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoal$MutationToJson(
-        UpdateProgressJournalGoal$Mutation instance) =>
-    <String, dynamic>{
-      'updateProgressJournalGoal': instance.updateProgressJournalGoal.toJson(),
-    };
-
-UpdateProgressJournalGoalInput _$UpdateProgressJournalGoalInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalGoalInput(
-    id: json['id'] as String,
-    name: json['name'] as String?,
-    description: json['description'] as String?,
-    completedDate: fromGraphQLDateTimeToDartDateTimeNullable(
-        json['completedDate'] as int?),
-    deadline:
-        fromGraphQLDateTimeToDartDateTimeNullable(json['deadline'] as int?),
-    progressJournalGoalTags: (json['ProgressJournalGoalTags'] as List<dynamic>?)
-        ?.map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoalInputToJson(
-        UpdateProgressJournalGoalInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'completedDate':
-          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedDate),
-      'deadline': fromDartDateTimeToGraphQLDateTimeNullable(instance.deadline),
-      'ProgressJournalGoalTags':
-          instance.progressJournalGoalTags?.map((e) => e.toJson()).toList(),
-    };
-
-DeleteProgressJournalGoalById$Mutation
-    _$DeleteProgressJournalGoalById$MutationFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalGoalById$Mutation()
-    ..deleteProgressJournalGoalById =
-        json['deleteProgressJournalGoalById'] as String;
-}
-
-Map<String, dynamic> _$DeleteProgressJournalGoalById$MutationToJson(
-        DeleteProgressJournalGoalById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteProgressJournalGoalById': instance.deleteProgressJournalGoalById,
-    };
-
-DeleteProgressJournalById$Mutation _$DeleteProgressJournalById$MutationFromJson(
-    Map<String, dynamic> json) {
-  return DeleteProgressJournalById$Mutation()
-    ..deleteProgressJournalById = json['deleteProgressJournalById'] as String;
-}
-
-Map<String, dynamic> _$DeleteProgressJournalById$MutationToJson(
-        DeleteProgressJournalById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteProgressJournalById': instance.deleteProgressJournalById,
-    };
-
-CreateProgressJournal$Mutation _$CreateProgressJournal$MutationFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournal$Mutation()
-    ..createProgressJournal = ProgressJournal.fromJson(
-        json['createProgressJournal'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateProgressJournal$MutationToJson(
-        CreateProgressJournal$Mutation instance) =>
-    <String, dynamic>{
-      'createProgressJournal': instance.createProgressJournal.toJson(),
-    };
-
-CreateProgressJournalInput _$CreateProgressJournalInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalInput(
-    name: json['name'] as String,
-    description: json['description'] as String?,
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalInputToJson(
-        CreateProgressJournalInput instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-    };
-
-UpdateProgressJournal$Mutation _$UpdateProgressJournal$MutationFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournal$Mutation()
-    ..updateProgressJournal = ProgressJournal.fromJson(
-        json['updateProgressJournal'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateProgressJournal$MutationToJson(
-        UpdateProgressJournal$Mutation instance) =>
-    <String, dynamic>{
-      'updateProgressJournal': instance.updateProgressJournal.toJson(),
-    };
-
-UpdateProgressJournalInput _$UpdateProgressJournalInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalInput(
-    id: json['id'] as String,
-    name: json['name'] as String?,
-    description: json['description'] as String?,
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalInputToJson(
-        UpdateProgressJournalInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-    };
-
-CreateProgressJournalEntry$Mutation
-    _$CreateProgressJournalEntry$MutationFromJson(Map<String, dynamic> json) {
-  return CreateProgressJournalEntry$Mutation()
-    ..createProgressJournalEntry = ProgressJournalEntry.fromJson(
-        json['createProgressJournalEntry'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$CreateProgressJournalEntry$MutationToJson(
-        CreateProgressJournalEntry$Mutation instance) =>
-    <String, dynamic>{
-      'createProgressJournalEntry':
-          instance.createProgressJournalEntry.toJson(),
-    };
-
-CreateProgressJournalEntryInput _$CreateProgressJournalEntryInputFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalEntryInput(
-    note: json['note'] as String?,
-    voiceNoteUri: json['voiceNoteUri'] as String?,
-    bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-    bodyweightUnit: _$enumDecodeNullable(
-        _$BodyweightUnitEnumMap, json['bodyweightUnit'],
-        unknownValue: BodyweightUnit.artemisUnknown),
-    moodScore: (json['moodScore'] as num?)?.toDouble(),
-    energyScore: (json['energyScore'] as num?)?.toDouble(),
-    stressScore: (json['stressScore'] as num?)?.toDouble(),
-    motivationScore: (json['motivationScore'] as num?)?.toDouble(),
-    progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
-        .map((e) => e as String)
-        .toList(),
-    progressJournal: ConnectRelationInput.fromJson(
-        json['ProgressJournal'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalEntryInputToJson(
-        CreateProgressJournalEntryInput instance) =>
-    <String, dynamic>{
-      'note': instance.note,
-      'voiceNoteUri': instance.voiceNoteUri,
-      'bodyweight': instance.bodyweight,
-      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
-      'moodScore': instance.moodScore,
-      'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
-      'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
-      'ProgressJournal': instance.progressJournal.toJson(),
-    };
-
-DeleteProgressJournalEntryById$Mutation
-    _$DeleteProgressJournalEntryById$MutationFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalEntryById$Mutation()
-    ..deleteProgressJournalEntryById =
-        json['deleteProgressJournalEntryById'] as String;
-}
-
-Map<String, dynamic> _$DeleteProgressJournalEntryById$MutationToJson(
-        DeleteProgressJournalEntryById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteProgressJournalEntryById': instance.deleteProgressJournalEntryById,
-    };
-
-UpdateProgressJournalEntry$Mutation
-    _$UpdateProgressJournalEntry$MutationFromJson(Map<String, dynamic> json) {
-  return UpdateProgressJournalEntry$Mutation()
-    ..updateProgressJournalEntry = ProgressJournalEntry.fromJson(
-        json['updateProgressJournalEntry'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UpdateProgressJournalEntry$MutationToJson(
-        UpdateProgressJournalEntry$Mutation instance) =>
-    <String, dynamic>{
-      'updateProgressJournalEntry':
-          instance.updateProgressJournalEntry.toJson(),
-    };
-
-UpdateProgressJournalEntryInput _$UpdateProgressJournalEntryInputFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalEntryInput(
-    id: json['id'] as String,
-    note: json['note'] as String?,
-    voiceNoteUri: json['voiceNoteUri'] as String?,
-    bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-    bodyweightUnit: _$enumDecodeNullable(
-        _$BodyweightUnitEnumMap, json['bodyweightUnit'],
-        unknownValue: BodyweightUnit.artemisUnknown),
-    moodScore: (json['moodScore'] as num?)?.toDouble(),
-    energyScore: (json['energyScore'] as num?)?.toDouble(),
-    stressScore: (json['stressScore'] as num?)?.toDouble(),
-    motivationScore: (json['motivationScore'] as num?)?.toDouble(),
-    progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
-        .map((e) => e as String)
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalEntryInputToJson(
-        UpdateProgressJournalEntryInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'note': instance.note,
-      'voiceNoteUri': instance.voiceNoteUri,
-      'bodyweight': instance.bodyweight,
-      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
-      'moodScore': instance.moodScore,
-      'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
-      'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
-    };
-
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -3171,6 +3171,20 @@ Map<String, dynamic> _$UpdateWorkoutMoveArgumentsToJson(
       'data': instance.data.toJson(),
     };
 
+UpdateProgressJournalGoalTagArguments
+    _$UpdateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalTagArguments(
+    data: UpdateProgressJournalGoalTagInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalTagArgumentsToJson(
+        UpdateProgressJournalGoalTagArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
 ProgressJournalByIdArguments _$ProgressJournalByIdArgumentsFromJson(
     Map<String, dynamic> json) {
   return ProgressJournalByIdArguments(
@@ -3180,6 +3194,159 @@ ProgressJournalByIdArguments _$ProgressJournalByIdArgumentsFromJson(
 
 Map<String, dynamic> _$ProgressJournalByIdArgumentsToJson(
         ProgressJournalByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CreateProgressJournalEntryArguments
+    _$CreateProgressJournalEntryArgumentsFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalEntryArguments(
+    data: CreateProgressJournalEntryInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalEntryArgumentsToJson(
+        CreateProgressJournalEntryArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteProgressJournalByIdArguments _$DeleteProgressJournalByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteProgressJournalByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteProgressJournalByIdArgumentsToJson(
+        DeleteProgressJournalByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CreateProgressJournalArguments _$CreateProgressJournalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalArguments(
+    data: CreateProgressJournalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalArgumentsToJson(
+        CreateProgressJournalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateProgressJournalArguments _$UpdateProgressJournalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalArguments(
+    data: UpdateProgressJournalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalArgumentsToJson(
+        UpdateProgressJournalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteProgressJournalEntryByIdArguments
+    _$DeleteProgressJournalEntryByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalEntryByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteProgressJournalEntryByIdArgumentsToJson(
+        DeleteProgressJournalEntryByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateProgressJournalEntryArguments
+    _$UpdateProgressJournalEntryArgumentsFromJson(Map<String, dynamic> json) {
+  return UpdateProgressJournalEntryArguments(
+    data: UpdateProgressJournalEntryInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalEntryArgumentsToJson(
+        UpdateProgressJournalEntryArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateProgressJournalGoalArguments _$CreateProgressJournalGoalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateProgressJournalGoalArguments(
+    data: CreateProgressJournalGoalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalArgumentsToJson(
+        CreateProgressJournalGoalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateProgressJournalGoalArguments _$UpdateProgressJournalGoalArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateProgressJournalGoalArguments(
+    data: UpdateProgressJournalGoalInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateProgressJournalGoalArgumentsToJson(
+        UpdateProgressJournalGoalArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateProgressJournalGoalTagArguments
+    _$CreateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
+  return CreateProgressJournalGoalTagArguments(
+    data: CreateProgressJournalGoalTagInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateProgressJournalGoalTagArgumentsToJson(
+        CreateProgressJournalGoalTagArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteProgressJournalGoalByIdArguments
+    _$DeleteProgressJournalGoalByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalByIdArgumentsToJson(
+        DeleteProgressJournalGoalByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+DeleteProgressJournalGoalTagByIdArguments
+    _$DeleteProgressJournalGoalTagByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteProgressJournalGoalTagByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteProgressJournalGoalTagByIdArgumentsToJson(
+        DeleteProgressJournalGoalTagByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };
@@ -3688,171 +3855,4 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
-    };
-
-UpdateProgressJournalGoalTagArguments
-    _$UpdateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
-  return UpdateProgressJournalGoalTagArguments(
-    data: UpdateProgressJournalGoalTagInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoalTagArgumentsToJson(
-        UpdateProgressJournalGoalTagArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-CreateProgressJournalGoalTagArguments
-    _$CreateProgressJournalGoalTagArgumentsFromJson(Map<String, dynamic> json) {
-  return CreateProgressJournalGoalTagArguments(
-    data: CreateProgressJournalGoalTagInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoalTagArgumentsToJson(
-        CreateProgressJournalGoalTagArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-DeleteProgressJournalGoalTagByIdArguments
-    _$DeleteProgressJournalGoalTagByIdArgumentsFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalGoalTagByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteProgressJournalGoalTagByIdArgumentsToJson(
-        DeleteProgressJournalGoalTagByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-CreateProgressJournalGoalArguments _$CreateProgressJournalGoalArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalGoalArguments(
-    data: CreateProgressJournalGoalInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalGoalArgumentsToJson(
-        CreateProgressJournalGoalArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-UpdateProgressJournalGoalArguments _$UpdateProgressJournalGoalArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalGoalArguments(
-    data: UpdateProgressJournalGoalInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalGoalArgumentsToJson(
-        UpdateProgressJournalGoalArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-DeleteProgressJournalGoalByIdArguments
-    _$DeleteProgressJournalGoalByIdArgumentsFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalGoalByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteProgressJournalGoalByIdArgumentsToJson(
-        DeleteProgressJournalGoalByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-DeleteProgressJournalByIdArguments _$DeleteProgressJournalByIdArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return DeleteProgressJournalByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteProgressJournalByIdArgumentsToJson(
-        DeleteProgressJournalByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-CreateProgressJournalArguments _$CreateProgressJournalArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return CreateProgressJournalArguments(
-    data: CreateProgressJournalInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalArgumentsToJson(
-        CreateProgressJournalArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-UpdateProgressJournalArguments _$UpdateProgressJournalArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return UpdateProgressJournalArguments(
-    data: UpdateProgressJournalInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalArgumentsToJson(
-        UpdateProgressJournalArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-CreateProgressJournalEntryArguments
-    _$CreateProgressJournalEntryArgumentsFromJson(Map<String, dynamic> json) {
-  return CreateProgressJournalEntryArguments(
-    data: CreateProgressJournalEntryInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateProgressJournalEntryArgumentsToJson(
-        CreateProgressJournalEntryArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-DeleteProgressJournalEntryByIdArguments
-    _$DeleteProgressJournalEntryByIdArgumentsFromJson(
-        Map<String, dynamic> json) {
-  return DeleteProgressJournalEntryByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$DeleteProgressJournalEntryByIdArgumentsToJson(
-        DeleteProgressJournalEntryByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-UpdateProgressJournalEntryArguments
-    _$UpdateProgressJournalEntryArgumentsFromJson(Map<String, dynamic> json) {
-  return UpdateProgressJournalEntryArguments(
-    data: UpdateProgressJournalEntryInput.fromJson(
-        json['data'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateProgressJournalEntryArgumentsToJson(
-        UpdateProgressJournalEntryArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
     };

@@ -28,7 +28,9 @@ class YourProgressJournalsPage extends StatelessWidget {
               .toList();
 
           return CupertinoPageScaffold(
+            key: Key('YourProgressJournalsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              key: Key('YourProgressJournalsPage - BasicNavBar'),
               middle: NavBarTitle('Journals'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -49,9 +51,10 @@ class YourProgressJournalsPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final ProgressJournal journal = journals[index];
                   return Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 5),
                     child: GestureDetector(
-                        onTap: () => context.pushRoute(
+                        onTap: () => context.navigateTo(
                             ProgressJournalDetailsRoute(id: journal.id)),
                         child: ProgressJournalCard(journal)),
                   );

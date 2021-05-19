@@ -15,7 +15,7 @@ class JournalPage extends StatelessWidget {
       key: Key('JournalPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
         key: Key('JournalPage-BasicNavBar'),
-        leading: NavBarLargeTitle('Journal'),
+        customLeading: NavBarLargeTitle('Journal'),
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),

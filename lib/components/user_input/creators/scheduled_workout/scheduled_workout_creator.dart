@@ -137,7 +137,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
       backgroundColor: context.theme.modalBackground,
       navigationBar: BasicNavBar(
         backgroundColor: context.theme.modalBackground,
-        leading: NavBarCancelButton(_cancel),
+        customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Schedule Workout'),
         trailing: AnimatedSwitcher(
             duration: Duration(milliseconds: 250),

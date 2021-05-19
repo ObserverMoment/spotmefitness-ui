@@ -421,12 +421,13 @@ class GraphQLStore {
 
   /// Delete ops should always return the ID of the deleted item.
   /// [objectId] as standard - [type:id]
-  /// Runs [_deleteRootObject()] so (currently) should only be used to delete root objects that are being normalized, not nested objects.
+  /// Runs [_deleteRootObject()] so (currently) should only be used to delete objects that are being normalized. If the object is not a top level $ref in a query but rather a ref nested inside of another object within queries - you can set [removeAllRefsToId] to true. This may be expensive as it searches the entire store for refs to this ID and removes them so use sparingly.
   Future<MutationResult<TData>>
       delete<TData, TVars extends json.JsonSerializable>(
           {required GraphQLQuery<TData, TVars> mutation,
           required String objectId,
           required String typename,
+          bool removeAllRefsToId = false,
           List<String> removeRefFromQueries = const [],
           List<String> broadcastQueryIds = const []}) async {
     final response = await execute(mutation);
@@ -438,6 +439,11 @@ class GraphQLStore {
         response.data?[mutation.operationName] == objectId) {
       final id = '$typename:$objectId';
       await _deleteRootObject(id);
+
+      if (removeAllRefsToId) {
+        _removeAllRefsToId(id);
+      }
+
       if (removeRefFromQueries.isNotEmpty) {
         _removeRefFromQueries(
             data: {'id': objectId, '__typename': typename},
@@ -607,8 +613,8 @@ class GraphQLStore {
   /// Will remove all objects in the store which = {_refKey: key}
   void _removeAllRefsToId(String id) {
     _box.keys.forEach((rootKey) {
-      final oldData = _box.get(rootKey);
-      _box.put(rootKey, recursiveMapRemoveRefsToId(data: oldData, id: id));
+      final data = _box.get(rootKey);
+      _box.put(rootKey, recursiveRemoveRefsToId(data: data, id: id));
     });
   }
 

@@ -28,14 +28,14 @@ class _ProfilePageState extends State<ProfilePage> {
       key: Key('ProfilePage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
           key: Key('ProfilePage-BasicNavBar'),
-          leading: NavBarLargeTitle('Profile'),
+          customLeading: NavBarLargeTitle('Profile'),
           trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               child: Icon(
                 CupertinoIcons.gear_solid,
                 size: 28,
               ),
-              onPressed: () => context.pushRoute(SettingsAndInfoRoute()))),
+              onPressed: () => context.navigateTo(SettingsAndInfoRoute()))),
       child: Padding(
         padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 12),
         child: Column(

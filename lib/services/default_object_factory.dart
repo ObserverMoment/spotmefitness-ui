@@ -54,6 +54,7 @@ class DefaultObjectfactory {
     return ProgressJournalGoal()
       ..$$typename
       ..id = 'temp-$kProgressJournalGoalTypename:${Uuid().v1()}'
+      ..createdAt = DateTime.now()
       ..name = 'Goal ${DateTime.now().compactDateString}'
       ..progressJournalGoalTags = [];
   }

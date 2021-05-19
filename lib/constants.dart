@@ -6,7 +6,7 @@ const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 
 /// Layout
 const kAssumedDefaultTopNotchHeight = 54.0;
-const kAssumedFloatingButtonHeight = 64.0;
+const kAssumedFloatingButtonHeight = 72.0;
 const kBottomNavBarHeight = 68.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
@@ -23,6 +23,7 @@ const kUserWorkoutsQuery = 'userWorkouts';
 const kUserCustomMovesQuery = 'userCustomMoves';
 const kUserWorkoutTagsQuery = 'userWorkoutTags';
 const kWorkoutByIdQuery = 'workoutById';
+const kProgressJournalByIdQuery = 'progressJournalById';
 
 /// Object Type names for the store.
 /// For use in [__typename:id] normalization and store ops.
@@ -40,7 +41,9 @@ const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
 const kLoggedWorkoutMoveTypename = 'LoggedWorkoutMove';
 
 const kProgressJournalTypename = 'ProgressJournal';
+const kProgressJournalEntryTypename = 'ProgressJournalEntry';
 const kProgressJournalGoalTypename = 'ProgressJournalGoal';
+const kProgressJournalGoalTagTypename = 'ProgressJournalGoalTag';
 
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/color_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -48,7 +50,40 @@ class _ProgressJournalGoalTagsManagerState
     context.showConfirmDeleteDialog(
         itemType: 'Goal Tag',
         message: 'This cannot be undone and may affect your journal goals.',
-        onConfirm: () => print('delete the tag'));
+        onConfirm: () => _deleteGoalTag(tag));
+  }
+
+  void _deleteGoalTag(ProgressJournalGoalTag tag) async {
+    setState(() => _isLoading = true);
+
+    final variables = DeleteProgressJournalGoalTagByIdArguments(id: tag.id);
+    final result = await context.graphQLStore.delete(
+        mutation:
+            DeleteProgressJournalGoalTagByIdMutation(variables: variables),
+        objectId: tag.id,
+        typename: kProgressJournalGoalTagTypename,
+        removeAllRefsToId: true,
+        removeRefFromQueries: [
+          ProgressJournalGoalTagsQuery().operationName
+        ],
+        broadcastQueryIds: [
+          UserProgressJournalsQuery().operationName,
+          // Using the raw string as there is no easy way to get the journal id required for the usual ProgressJournalByIdQuery(variables: ProgressJournalByIdArguments(id: id)) syntax.
+          // May need a re-think on this pattern.
+          kProgressJournalByIdQuery
+        ]);
+
+    setState(() => _isLoading = false);
+    if (result.hasErrors ||
+        result.data?.deleteProgressJournalGoalTagById != tag.id) {
+      context.showToast(
+          message: 'Sorry, there was a problem deleting the tag',
+          toastType: ToastType.destructive);
+    } else {
+      context.showToast(
+        message: 'Tag Deleted',
+      );
+    }
   }
 
   bool get _canSaveNewTag =>
@@ -93,6 +128,17 @@ class _ProgressJournalGoalTagsManagerState
       navigationBar: BasicNavBar(
         automaticallyImplyLeading: !_isLoading,
         middle: NavBarTitle('Goal Tags'),
+        trailing: _isLoading
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LoadingDots(
+                    size: 14,
+                  )
+                ],
+              )
+            : null,
       ),
       child: QueryObserver<ProgressJournalGoalTags$Query,
               json.JsonSerializable>(

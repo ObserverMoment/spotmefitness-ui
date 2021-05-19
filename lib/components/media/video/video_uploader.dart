@@ -165,7 +165,7 @@ class _VideoUploaderState extends State<VideoUploader> {
         height: widget.displaySize.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: _primary.withOpacity(0.7),
+          color: _primary.withOpacity(0.2),
           boxShadow: [Styles.avatarBoxShadow],
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,

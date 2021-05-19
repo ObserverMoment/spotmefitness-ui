@@ -66,14 +66,14 @@ class RecentLoggedWorkouts extends StatelessWidget {
                             CarouselSlider.builder(
                               options: CarouselOptions(
                                 height: 240,
-                                viewportFraction: 0.94,
+                                viewportFraction: 0.90,
                                 enableInfiniteScroll: false,
                               ),
                               itemCount: logs.length,
                               itemBuilder: (c, i, _) => Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: GestureDetector(
-                                    onTap: () => context.pushRoute(
+                                    onTap: () => context.navigateTo(
                                         LoggedWorkoutDetailsRoute(
                                             id: logs[i].id)),
                                     child: LoggedWorkoutCard(logs[i])),

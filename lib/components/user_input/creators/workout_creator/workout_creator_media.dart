@@ -89,7 +89,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           imageUri: _workout.coverImageUri,
                           onUploadSuccess: (uri) =>
                               _updateWorkoutData({'coverImageUri': uri}),
-                          removeImage: () =>
+                          removeImage: (_) =>
                               _updateWorkoutData({'coverImageUri': null}),
                         ),
                         MyText(

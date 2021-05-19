@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
       key: Key('HomePage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
         key: Key('HomePage-BasicNavBar'),
-        leading: NavBarLargeTitle('Home'),
+        customLeading: NavBarLargeTitle('Home'),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,
             child: Icon(

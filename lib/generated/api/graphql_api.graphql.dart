@@ -63,6 +63,17 @@ mixin WorkoutMoveMixin {
   @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
   late TimeUnit timeUnit;
 }
+mixin ProgressJournalGoalTagMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  late String tag;
+  late String hexColor;
+}
 mixin ProgressJournalEntryMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -81,17 +92,6 @@ mixin ProgressJournalEntryMixin {
   double? stressScore;
   double? motivationScore;
   late List<String> progressPhotoUris;
-}
-mixin ProgressJournalGoalTagMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime createdAt;
-  late String tag;
-  late String hexColor;
 }
 mixin ProgressJournalGoalMixin {
   @JsonKey(name: '__typename')
@@ -631,6 +631,58 @@ class UpdateWorkoutMoveInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class ProgressJournalGoalTag extends JsonSerializable
+    with EquatableMixin, ProgressJournalGoalTagMixin {
+  ProgressJournalGoalTag();
+
+  factory ProgressJournalGoalTag.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalGoalTagFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, createdAt, tag, hexColor];
+  Map<String, dynamic> toJson() => _$ProgressJournalGoalTagToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoalTag$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoalTag$Mutation();
+
+  factory UpdateProgressJournalGoalTag$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoalTag$MutationFromJson(json);
+
+  late ProgressJournalGoalTag updateProgressJournalGoalTag;
+
+  @override
+  List<Object?> get props => [updateProgressJournalGoalTag];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalGoalTag$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoalTagInput extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoalTagInput(
+      {required this.id, this.tag, this.hexColor});
+
+  factory UpdateProgressJournalGoalTagInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoalTagInputFromJson(json);
+
+  late String id;
+
+  String? tag;
+
+  String? hexColor;
+
+  @override
+  List<Object?> get props => [id, tag, hexColor];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalGoalTagInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class ProgressJournalEntry extends JsonSerializable
     with EquatableMixin, ProgressJournalEntryMixin {
   ProgressJournalEntry();
@@ -654,19 +706,6 @@ class ProgressJournalEntry extends JsonSerializable
         progressPhotoUris
       ];
   Map<String, dynamic> toJson() => _$ProgressJournalEntryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ProgressJournalGoalTag extends JsonSerializable
-    with EquatableMixin, ProgressJournalGoalTagMixin {
-  ProgressJournalGoalTag();
-
-  factory ProgressJournalGoalTag.fromJson(Map<String, dynamic> json) =>
-      _$ProgressJournalGoalTagFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, createdAt, tag, hexColor];
-  Map<String, dynamic> toJson() => _$ProgressJournalGoalTagToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -736,6 +775,302 @@ class ProgressJournalById$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntry$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntry$Mutation();
+
+  factory CreateProgressJournalEntry$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntry$MutationFromJson(json);
+
+  late ProgressJournalEntry createProgressJournalEntry;
+
+  @override
+  List<Object?> get props => [createProgressJournalEntry];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntry$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntryInput extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntryInput(
+      {this.note,
+      this.voiceNoteUri,
+      this.bodyweight,
+      this.bodyweightUnit,
+      this.moodScore,
+      this.energyScore,
+      this.stressScore,
+      this.motivationScore,
+      required this.progressPhotoUris,
+      required this.progressJournal});
+
+  factory CreateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntryInputFromJson(json);
+
+  String? note;
+
+  String? voiceNoteUri;
+
+  double? bodyweight;
+
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
+  double? moodScore;
+
+  double? energyScore;
+
+  double? stressScore;
+
+  double? motivationScore;
+
+  late List<String> progressPhotoUris;
+
+  @JsonKey(name: 'ProgressJournal')
+  late ConnectRelationInput progressJournal;
+
+  @override
+  List<Object?> get props => [
+        note,
+        voiceNoteUri,
+        bodyweight,
+        bodyweightUnit,
+        moodScore,
+        energyScore,
+        stressScore,
+        motivationScore,
+        progressPhotoUris,
+        progressJournal
+      ];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntryInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalById$Mutation();
+
+  factory DeleteProgressJournalById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalById$MutationFromJson(json);
+
+  late String deleteProgressJournalById;
+
+  @override
+  List<Object?> get props => [deleteProgressJournalById];
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournal$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournal$Mutation();
+
+  factory CreateProgressJournal$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournal$MutationFromJson(json);
+
+  late ProgressJournal createProgressJournal;
+
+  @override
+  List<Object?> get props => [createProgressJournal];
+  Map<String, dynamic> toJson() => _$CreateProgressJournal$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalInput extends JsonSerializable with EquatableMixin {
+  CreateProgressJournalInput({required this.name, this.description});
+
+  factory CreateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournalInputFromJson(json);
+
+  late String name;
+
+  String? description;
+
+  @override
+  List<Object?> get props => [name, description];
+  Map<String, dynamic> toJson() => _$CreateProgressJournalInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournal$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournal$Mutation();
+
+  factory UpdateProgressJournal$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournal$MutationFromJson(json);
+
+  late ProgressJournal updateProgressJournal;
+
+  @override
+  List<Object?> get props => [updateProgressJournal];
+  Map<String, dynamic> toJson() => _$UpdateProgressJournal$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalInput extends JsonSerializable with EquatableMixin {
+  UpdateProgressJournalInput({required this.id, this.name, this.description});
+
+  factory UpdateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournalInputFromJson(json);
+
+  late String id;
+
+  String? name;
+
+  String? description;
+
+  @override
+  List<Object?> get props => [id, name, description];
+  Map<String, dynamic> toJson() => _$UpdateProgressJournalInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalEntryById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalEntryById$Mutation();
+
+  factory DeleteProgressJournalEntryById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalEntryById$MutationFromJson(json);
+
+  late String deleteProgressJournalEntryById;
+
+  @override
+  List<Object?> get props => [deleteProgressJournalEntryById];
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalEntryById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntry$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntry$Mutation();
+
+  factory UpdateProgressJournalEntry$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntry$MutationFromJson(json);
+
+  late ProgressJournalEntry updateProgressJournalEntry;
+
+  @override
+  List<Object?> get props => [updateProgressJournalEntry];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntry$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntryInput extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntryInput(
+      {required this.id,
+      this.note,
+      this.voiceNoteUri,
+      this.bodyweight,
+      this.bodyweightUnit,
+      this.moodScore,
+      this.energyScore,
+      this.stressScore,
+      this.motivationScore,
+      required this.progressPhotoUris});
+
+  factory UpdateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntryInputFromJson(json);
+
+  late String id;
+
+  String? note;
+
+  String? voiceNoteUri;
+
+  double? bodyweight;
+
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
+  double? moodScore;
+
+  double? energyScore;
+
+  double? stressScore;
+
+  double? motivationScore;
+
+  late List<String> progressPhotoUris;
+
+  @override
+  List<Object?> get props => [
+        id,
+        note,
+        voiceNoteUri,
+        bodyweight,
+        bodyweightUnit,
+        moodScore,
+        energyScore,
+        stressScore,
+        motivationScore,
+        progressPhotoUris
+      ];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntryInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoal$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoal$Mutation();
+
+  factory CreateProgressJournalGoal$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoal$MutationFromJson(json);
+
+  late ProgressJournalGoal createProgressJournalGoal;
+
+  @override
+  List<Object?> get props => [createProgressJournalGoal];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalGoal$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoalInput extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoalInput(
+      {required this.name,
+      this.description,
+      this.deadline,
+      required this.progressJournal,
+      this.progressJournalGoalTags});
+
+  factory CreateProgressJournalGoalInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoalInputFromJson(json);
+
+  late String name;
+
+  String? description;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
+      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+  DateTime? deadline;
+
+  @JsonKey(name: 'ProgressJournal')
+  late ConnectRelationInput progressJournal;
+
+  @JsonKey(name: 'ProgressJournalGoalTags')
+  List<ConnectRelationInput>? progressJournalGoalTags;
+
+  @override
+  List<Object?> get props =>
+      [name, description, deadline, progressJournal, progressJournalGoalTags];
+  Map<String, dynamic> toJson() => _$CreateProgressJournalGoalInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class UserProgressJournals$Query extends JsonSerializable with EquatableMixin {
   UserProgressJournals$Query();
 
@@ -747,6 +1082,148 @@ class UserProgressJournals$Query extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [userProgressJournals];
   Map<String, dynamic> toJson() => _$UserProgressJournals$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoal$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoal$Mutation();
+
+  factory UpdateProgressJournalGoal$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoal$MutationFromJson(json);
+
+  late ProgressJournalGoal updateProgressJournalGoal;
+
+  @override
+  List<Object?> get props => [updateProgressJournalGoal];
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalGoal$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoalInput extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoalInput(
+      {required this.id,
+      this.name,
+      this.description,
+      this.completedDate,
+      this.deadline,
+      this.progressJournalGoalTags});
+
+  factory UpdateProgressJournalGoalInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoalInputFromJson(json);
+
+  late String id;
+
+  String? name;
+
+  String? description;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
+      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+  DateTime? completedDate;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
+      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+  DateTime? deadline;
+
+  @JsonKey(name: 'ProgressJournalGoalTags')
+  List<ConnectRelationInput>? progressJournalGoalTags;
+
+  @override
+  List<Object?> get props =>
+      [id, name, description, completedDate, deadline, progressJournalGoalTags];
+  Map<String, dynamic> toJson() => _$UpdateProgressJournalGoalInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoalTag$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoalTag$Mutation();
+
+  factory CreateProgressJournalGoalTag$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoalTag$MutationFromJson(json);
+
+  late ProgressJournalGoalTag createProgressJournalGoalTag;
+
+  @override
+  List<Object?> get props => [createProgressJournalGoalTag];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalGoalTag$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoalTagInput extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoalTagInput(
+      {required this.tag, required this.hexColor});
+
+  factory CreateProgressJournalGoalTagInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoalTagInputFromJson(json);
+
+  late String tag;
+
+  late String hexColor;
+
+  @override
+  List<Object?> get props => [tag, hexColor];
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalGoalTagInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalGoalById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalGoalById$Mutation();
+
+  factory DeleteProgressJournalGoalById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalGoalById$MutationFromJson(json);
+
+  late String deleteProgressJournalGoalById;
+
+  @override
+  List<Object?> get props => [deleteProgressJournalGoalById];
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalGoalById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalGoalTagById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalGoalTagById$Mutation();
+
+  factory DeleteProgressJournalGoalTagById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalGoalTagById$MutationFromJson(json);
+
+  late String deleteProgressJournalGoalTagById;
+
+  @override
+  List<Object?> get props => [deleteProgressJournalGoalTagById];
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalGoalTagById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ProgressJournalGoalTags$Query extends JsonSerializable
+    with EquatableMixin {
+  ProgressJournalGoalTags$Query();
+
+  factory ProgressJournalGoalTags$Query.fromJson(Map<String, dynamic> json) =>
+      _$ProgressJournalGoalTags$QueryFromJson(json);
+
+  late List<ProgressJournalGoalTag> progressJournalGoalTags;
+
+  @override
+  List<Object?> get props => [progressJournalGoalTags];
+  Map<String, dynamic> toJson() => _$ProgressJournalGoalTags$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -3175,483 +3652,6 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
-class ProgressJournalGoalTags$Query extends JsonSerializable
-    with EquatableMixin {
-  ProgressJournalGoalTags$Query();
-
-  factory ProgressJournalGoalTags$Query.fromJson(Map<String, dynamic> json) =>
-      _$ProgressJournalGoalTags$QueryFromJson(json);
-
-  late List<ProgressJournalGoalTag> progressJournalGoalTags;
-
-  @override
-  List<Object?> get props => [progressJournalGoalTags];
-  Map<String, dynamic> toJson() => _$ProgressJournalGoalTags$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoalTag$Mutation extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoalTag$Mutation();
-
-  factory UpdateProgressJournalGoalTag$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoalTag$MutationFromJson(json);
-
-  late ProgressJournalGoalTag updateProgressJournalGoalTag;
-
-  @override
-  List<Object?> get props => [updateProgressJournalGoalTag];
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalGoalTag$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoalTagInput extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoalTagInput(
-      {required this.id, this.tag, this.hexColor});
-
-  factory UpdateProgressJournalGoalTagInput.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoalTagInputFromJson(json);
-
-  late String id;
-
-  String? tag;
-
-  String? hexColor;
-
-  @override
-  List<Object?> get props => [id, tag, hexColor];
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalGoalTagInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoalTag$Mutation extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoalTag$Mutation();
-
-  factory CreateProgressJournalGoalTag$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoalTag$MutationFromJson(json);
-
-  late ProgressJournalGoalTag createProgressJournalGoalTag;
-
-  @override
-  List<Object?> get props => [createProgressJournalGoalTag];
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalGoalTag$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoalTagInput extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoalTagInput(
-      {required this.tag, required this.hexColor});
-
-  factory CreateProgressJournalGoalTagInput.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoalTagInputFromJson(json);
-
-  late String tag;
-
-  late String hexColor;
-
-  @override
-  List<Object?> get props => [tag, hexColor];
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalGoalTagInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalGoalTagById$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalGoalTagById$Mutation();
-
-  factory DeleteProgressJournalGoalTagById$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalGoalTagById$MutationFromJson(json);
-
-  late String deleteProgressJournalGoalTagById;
-
-  @override
-  List<Object?> get props => [deleteProgressJournalGoalTagById];
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalGoalTagById$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoal$Mutation extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoal$Mutation();
-
-  factory CreateProgressJournalGoal$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoal$MutationFromJson(json);
-
-  late ProgressJournalGoal createProgressJournalGoal;
-
-  @override
-  List<Object?> get props => [createProgressJournalGoal];
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalGoal$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoalInput extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoalInput(
-      {required this.name,
-      this.description,
-      this.deadline,
-      required this.progressJournal,
-      this.progressJournalGoalTags});
-
-  factory CreateProgressJournalGoalInput.fromJson(Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoalInputFromJson(json);
-
-  late String name;
-
-  String? description;
-
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
-  DateTime? deadline;
-
-  @JsonKey(name: 'ProgressJournal')
-  late ConnectRelationInput progressJournal;
-
-  @JsonKey(name: 'ProgressJournalGoalTags')
-  List<ConnectRelationInput>? progressJournalGoalTags;
-
-  @override
-  List<Object?> get props =>
-      [name, description, deadline, progressJournal, progressJournalGoalTags];
-  Map<String, dynamic> toJson() => _$CreateProgressJournalGoalInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoal$Mutation extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoal$Mutation();
-
-  factory UpdateProgressJournalGoal$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoal$MutationFromJson(json);
-
-  late ProgressJournalGoal updateProgressJournalGoal;
-
-  @override
-  List<Object?> get props => [updateProgressJournalGoal];
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalGoal$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoalInput extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoalInput(
-      {required this.id,
-      this.name,
-      this.description,
-      this.completedDate,
-      this.deadline,
-      this.progressJournalGoalTags});
-
-  factory UpdateProgressJournalGoalInput.fromJson(Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoalInputFromJson(json);
-
-  late String id;
-
-  String? name;
-
-  String? description;
-
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
-  DateTime? completedDate;
-
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
-  DateTime? deadline;
-
-  @JsonKey(name: 'ProgressJournalGoalTags')
-  List<ConnectRelationInput>? progressJournalGoalTags;
-
-  @override
-  List<Object?> get props =>
-      [id, name, description, completedDate, deadline, progressJournalGoalTags];
-  Map<String, dynamic> toJson() => _$UpdateProgressJournalGoalInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalGoalById$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalGoalById$Mutation();
-
-  factory DeleteProgressJournalGoalById$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalGoalById$MutationFromJson(json);
-
-  late String deleteProgressJournalGoalById;
-
-  @override
-  List<Object?> get props => [deleteProgressJournalGoalById];
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalGoalById$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalById$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalById$Mutation();
-
-  factory DeleteProgressJournalById$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalById$MutationFromJson(json);
-
-  late String deleteProgressJournalById;
-
-  @override
-  List<Object?> get props => [deleteProgressJournalById];
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalById$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournal$Mutation extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournal$Mutation();
-
-  factory CreateProgressJournal$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$CreateProgressJournal$MutationFromJson(json);
-
-  late ProgressJournal createProgressJournal;
-
-  @override
-  List<Object?> get props => [createProgressJournal];
-  Map<String, dynamic> toJson() => _$CreateProgressJournal$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalInput extends JsonSerializable with EquatableMixin {
-  CreateProgressJournalInput({required this.name, this.description});
-
-  factory CreateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
-      _$CreateProgressJournalInputFromJson(json);
-
-  late String name;
-
-  String? description;
-
-  @override
-  List<Object?> get props => [name, description];
-  Map<String, dynamic> toJson() => _$CreateProgressJournalInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournal$Mutation extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournal$Mutation();
-
-  factory UpdateProgressJournal$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$UpdateProgressJournal$MutationFromJson(json);
-
-  late ProgressJournal updateProgressJournal;
-
-  @override
-  List<Object?> get props => [updateProgressJournal];
-  Map<String, dynamic> toJson() => _$UpdateProgressJournal$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalInput extends JsonSerializable with EquatableMixin {
-  UpdateProgressJournalInput({required this.id, this.name, this.description});
-
-  factory UpdateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
-      _$UpdateProgressJournalInputFromJson(json);
-
-  late String id;
-
-  String? name;
-
-  String? description;
-
-  @override
-  List<Object?> get props => [id, name, description];
-  Map<String, dynamic> toJson() => _$UpdateProgressJournalInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalEntry$Mutation extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalEntry$Mutation();
-
-  factory CreateProgressJournalEntry$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalEntry$MutationFromJson(json);
-
-  late ProgressJournalEntry createProgressJournalEntry;
-
-  @override
-  List<Object?> get props => [createProgressJournalEntry];
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalEntry$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalEntryInput extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalEntryInput(
-      {this.note,
-      this.voiceNoteUri,
-      this.bodyweight,
-      this.bodyweightUnit,
-      this.moodScore,
-      this.energyScore,
-      this.stressScore,
-      this.motivationScore,
-      required this.progressPhotoUris,
-      required this.progressJournal});
-
-  factory CreateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
-      _$CreateProgressJournalEntryInputFromJson(json);
-
-  String? note;
-
-  String? voiceNoteUri;
-
-  double? bodyweight;
-
-  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
-  BodyweightUnit? bodyweightUnit;
-
-  double? moodScore;
-
-  double? energyScore;
-
-  double? stressScore;
-
-  double? motivationScore;
-
-  late List<String> progressPhotoUris;
-
-  @JsonKey(name: 'ProgressJournal')
-  late ConnectRelationInput progressJournal;
-
-  @override
-  List<Object?> get props => [
-        note,
-        voiceNoteUri,
-        bodyweight,
-        bodyweightUnit,
-        moodScore,
-        energyScore,
-        stressScore,
-        motivationScore,
-        progressPhotoUris,
-        progressJournal
-      ];
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalEntryInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalEntryById$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalEntryById$Mutation();
-
-  factory DeleteProgressJournalEntryById$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalEntryById$MutationFromJson(json);
-
-  late String deleteProgressJournalEntryById;
-
-  @override
-  List<Object?> get props => [deleteProgressJournalEntryById];
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalEntryById$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalEntry$Mutation extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalEntry$Mutation();
-
-  factory UpdateProgressJournalEntry$Mutation.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalEntry$MutationFromJson(json);
-
-  late ProgressJournalEntry updateProgressJournalEntry;
-
-  @override
-  List<Object?> get props => [updateProgressJournalEntry];
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalEntry$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalEntryInput extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalEntryInput(
-      {required this.id,
-      this.note,
-      this.voiceNoteUri,
-      this.bodyweight,
-      this.bodyweightUnit,
-      this.moodScore,
-      this.energyScore,
-      this.stressScore,
-      this.motivationScore,
-      required this.progressPhotoUris});
-
-  factory UpdateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
-      _$UpdateProgressJournalEntryInputFromJson(json);
-
-  late String id;
-
-  String? note;
-
-  String? voiceNoteUri;
-
-  double? bodyweight;
-
-  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
-  BodyweightUnit? bodyweightUnit;
-
-  double? moodScore;
-
-  double? energyScore;
-
-  double? stressScore;
-
-  double? motivationScore;
-
-  late List<String> progressPhotoUris;
-
-  @override
-  List<Object?> get props => [
-        id,
-        note,
-        voiceNoteUri,
-        bodyweight,
-        bodyweightUnit,
-        moodScore,
-        energyScore,
-        stressScore,
-        motivationScore,
-        progressPhotoUris
-      ];
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalEntryInputToJson(this);
-}
-
 enum BodyAreaFrontBack {
   @JsonValue('BACK')
   back,
@@ -5029,6 +5029,119 @@ class UpdateWorkoutMoveMutation extends GraphQLQuery<UpdateWorkoutMove$Mutation,
 }
 
 @JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoalTagArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoalTagArguments({required this.data});
+
+  @override
+  factory UpdateProgressJournalGoalTagArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoalTagArgumentsFromJson(json);
+
+  late UpdateProgressJournalGoalTagInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalGoalTagArgumentsToJson(this);
+}
+
+final UPDATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateProgressJournalGoalTag'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateProgressJournalGoalTagInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateProgressJournalGoalTag'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalGoalTag'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateProgressJournalGoalTagMutation extends GraphQLQuery<
+    UpdateProgressJournalGoalTag$Mutation,
+    UpdateProgressJournalGoalTagArguments> {
+  UpdateProgressJournalGoalTagMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      UPDATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateProgressJournalGoalTag';
+
+  @override
+  final UpdateProgressJournalGoalTagArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateProgressJournalGoalTag$Mutation parse(Map<String, dynamic> json) =>
+      UpdateProgressJournalGoalTag$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class ProgressJournalByIdArguments extends JsonSerializable
     with EquatableMixin {
   ProgressJournalByIdArguments({required this.id});
@@ -5331,6 +5444,1222 @@ class ProgressJournalByIdQuery extends GraphQLQuery<ProgressJournalById$Query,
       ProgressJournalById$Query.fromJson(json);
 }
 
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalEntryArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalEntryArguments({required this.data});
+
+  @override
+  factory CreateProgressJournalEntryArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalEntryArgumentsFromJson(json);
+
+  late CreateProgressJournalEntryInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalEntryArgumentsToJson(this);
+}
+
+final CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createProgressJournalEntry'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateProgressJournalEntryInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createProgressJournalEntry'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateProgressJournalEntryMutation extends GraphQLQuery<
+    CreateProgressJournalEntry$Mutation, CreateProgressJournalEntryArguments> {
+  CreateProgressJournalEntryMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createProgressJournalEntry';
+
+  @override
+  final CreateProgressJournalEntryArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
+      CreateProgressJournalEntry$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalByIdArguments({required this.id});
+
+  @override
+  factory DeleteProgressJournalByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalByIdArgumentsToJson(this);
+}
+
+final DELETE_PROGRESS_JOURNAL_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteProgressJournalById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteProgressJournalById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteProgressJournalByIdMutation extends GraphQLQuery<
+    DeleteProgressJournalById$Mutation, DeleteProgressJournalByIdArguments> {
+  DeleteProgressJournalByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document = DELETE_PROGRESS_JOURNAL_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteProgressJournalById';
+
+  @override
+  final DeleteProgressJournalByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteProgressJournalById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteProgressJournalById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalArguments({required this.data});
+
+  @override
+  factory CreateProgressJournalArguments.fromJson(Map<String, dynamic> json) =>
+      _$CreateProgressJournalArgumentsFromJson(json);
+
+  late CreateProgressJournalInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$CreateProgressJournalArgumentsToJson(this);
+}
+
+final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createProgressJournal'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateProgressJournalInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createProgressJournal'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalEntries'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalEntry'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalGoals'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalGoal'),
+                        directives: []),
+                    FieldNode(
+                        name: NameNode(value: 'ProgressJournalGoalTags'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'ProgressJournalGoalTag'),
+                              directives: [])
+                        ]))
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'deadline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'completedDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateProgressJournalMutation extends GraphQLQuery<
+    CreateProgressJournal$Mutation, CreateProgressJournalArguments> {
+  CreateProgressJournalMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createProgressJournal';
+
+  @override
+  final CreateProgressJournalArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateProgressJournal$Mutation parse(Map<String, dynamic> json) =>
+      CreateProgressJournal$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalArguments({required this.data});
+
+  @override
+  factory UpdateProgressJournalArguments.fromJson(Map<String, dynamic> json) =>
+      _$UpdateProgressJournalArgumentsFromJson(json);
+
+  late UpdateProgressJournalInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$UpdateProgressJournalArgumentsToJson(this);
+}
+
+final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateProgressJournal'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateProgressJournalInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateProgressJournal'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalEntries'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalEntry'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalGoals'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalGoal'),
+                        directives: []),
+                    FieldNode(
+                        name: NameNode(value: 'ProgressJournalGoalTags'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'ProgressJournalGoalTag'),
+                              directives: [])
+                        ]))
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'deadline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'completedDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateProgressJournalMutation extends GraphQLQuery<
+    UpdateProgressJournal$Mutation, UpdateProgressJournalArguments> {
+  UpdateProgressJournalMutation({required this.variables});
+
+  @override
+  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateProgressJournal';
+
+  @override
+  final UpdateProgressJournalArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateProgressJournal$Mutation parse(Map<String, dynamic> json) =>
+      UpdateProgressJournal$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalEntryByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalEntryByIdArguments({required this.id});
+
+  @override
+  factory DeleteProgressJournalEntryByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalEntryByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalEntryByIdArgumentsToJson(this);
+}
+
+final DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteProgressJournalEntryById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteProgressJournalEntryById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteProgressJournalEntryByIdMutation extends GraphQLQuery<
+    DeleteProgressJournalEntryById$Mutation,
+    DeleteProgressJournalEntryByIdArguments> {
+  DeleteProgressJournalEntryByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteProgressJournalEntryById';
+
+  @override
+  final DeleteProgressJournalEntryByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteProgressJournalEntryById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteProgressJournalEntryById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalEntryArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalEntryArguments({required this.data});
+
+  @override
+  factory UpdateProgressJournalEntryArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalEntryArgumentsFromJson(json);
+
+  late UpdateProgressJournalEntryInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalEntryArgumentsToJson(this);
+}
+
+final UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateProgressJournalEntry'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateProgressJournalEntryInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateProgressJournalEntry'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalEntry'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'voiceNoteUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'moodScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'energyScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'stressScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'motivationScore'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'progressPhotoUris'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateProgressJournalEntryMutation extends GraphQLQuery<
+    UpdateProgressJournalEntry$Mutation, UpdateProgressJournalEntryArguments> {
+  UpdateProgressJournalEntryMutation({required this.variables});
+
+  @override
+  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateProgressJournalEntry';
+
+  @override
+  final UpdateProgressJournalEntryArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
+      UpdateProgressJournalEntry$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoalArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoalArguments({required this.data});
+
+  @override
+  factory CreateProgressJournalGoalArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoalArgumentsFromJson(json);
+
+  late CreateProgressJournalGoalInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalGoalArgumentsToJson(this);
+}
+
+final CREATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createProgressJournalGoal'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateProgressJournalGoalInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createProgressJournalGoal'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalGoal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalGoalTags'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalGoalTag'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'deadline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'completedDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateProgressJournalGoalMutation extends GraphQLQuery<
+    CreateProgressJournalGoal$Mutation, CreateProgressJournalGoalArguments> {
+  CreateProgressJournalGoalMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createProgressJournalGoal';
+
+  @override
+  final CreateProgressJournalGoalArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateProgressJournalGoal$Mutation parse(Map<String, dynamic> json) =>
+      CreateProgressJournalGoal$Mutation.fromJson(json);
+}
+
 final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
   OperationDefinitionNode(
       type: OperationType.query,
@@ -5602,6 +6931,501 @@ class UserProgressJournalsQuery
   @override
   UserProgressJournals$Query parse(Map<String, dynamic> json) =>
       UserProgressJournals$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateProgressJournalGoalArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateProgressJournalGoalArguments({required this.data});
+
+  @override
+  factory UpdateProgressJournalGoalArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateProgressJournalGoalArgumentsFromJson(json);
+
+  late UpdateProgressJournalGoalInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateProgressJournalGoalArgumentsToJson(this);
+}
+
+final UPDATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateProgressJournalGoal'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateProgressJournalGoalInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateProgressJournalGoal'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalGoal'), directives: []),
+              FieldNode(
+                  name: NameNode(value: 'ProgressJournalGoalTags'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ProgressJournalGoalTag'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoal'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'deadline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'completedDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateProgressJournalGoalMutation extends GraphQLQuery<
+    UpdateProgressJournalGoal$Mutation, UpdateProgressJournalGoalArguments> {
+  UpdateProgressJournalGoalMutation({required this.variables});
+
+  @override
+  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateProgressJournalGoal';
+
+  @override
+  final UpdateProgressJournalGoalArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateProgressJournalGoal$Mutation parse(Map<String, dynamic> json) =>
+      UpdateProgressJournalGoal$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateProgressJournalGoalTagArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateProgressJournalGoalTagArguments({required this.data});
+
+  @override
+  factory CreateProgressJournalGoalTagArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateProgressJournalGoalTagArgumentsFromJson(json);
+
+  late CreateProgressJournalGoalTagInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateProgressJournalGoalTagArgumentsToJson(this);
+}
+
+final CREATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createProgressJournalGoalTag'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateProgressJournalGoalTagInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createProgressJournalGoalTag'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalGoalTag'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateProgressJournalGoalTagMutation extends GraphQLQuery<
+    CreateProgressJournalGoalTag$Mutation,
+    CreateProgressJournalGoalTagArguments> {
+  CreateProgressJournalGoalTagMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      CREATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createProgressJournalGoalTag';
+
+  @override
+  final CreateProgressJournalGoalTagArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateProgressJournalGoalTag$Mutation parse(Map<String, dynamic> json) =>
+      CreateProgressJournalGoalTag$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalGoalByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalGoalByIdArguments({required this.id});
+
+  @override
+  factory DeleteProgressJournalGoalByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalGoalByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalGoalByIdArgumentsToJson(this);
+}
+
+final DELETE_PROGRESS_JOURNAL_GOAL_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteProgressJournalGoalById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteProgressJournalGoalById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteProgressJournalGoalByIdMutation extends GraphQLQuery<
+    DeleteProgressJournalGoalById$Mutation,
+    DeleteProgressJournalGoalByIdArguments> {
+  DeleteProgressJournalGoalByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      DELETE_PROGRESS_JOURNAL_GOAL_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteProgressJournalGoalById';
+
+  @override
+  final DeleteProgressJournalGoalByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteProgressJournalGoalById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteProgressJournalGoalById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteProgressJournalGoalTagByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteProgressJournalGoalTagByIdArguments({required this.id});
+
+  @override
+  factory DeleteProgressJournalGoalTagByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteProgressJournalGoalTagByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteProgressJournalGoalTagByIdArgumentsToJson(this);
+}
+
+final DELETE_PROGRESS_JOURNAL_GOAL_TAG_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteProgressJournalGoalTagById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteProgressJournalGoalTagById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteProgressJournalGoalTagByIdMutation extends GraphQLQuery<
+    DeleteProgressJournalGoalTagById$Mutation,
+    DeleteProgressJournalGoalTagByIdArguments> {
+  DeleteProgressJournalGoalTagByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      DELETE_PROGRESS_JOURNAL_GOAL_TAG_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteProgressJournalGoalTagById';
+
+  @override
+  final DeleteProgressJournalGoalTagByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteProgressJournalGoalTagById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteProgressJournalGoalTagById$Mutation.fromJson(json);
+}
+
+final PROGRESS_JOURNAL_GOAL_TAGS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'progressJournalGoalTags'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'progressJournalGoalTags'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ProgressJournalGoalTag'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ProgressJournalGoalTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ProgressJournalGoalTag'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'hexColor'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class ProgressJournalGoalTagsQuery
+    extends GraphQLQuery<ProgressJournalGoalTags$Query, JsonSerializable> {
+  ProgressJournalGoalTagsQuery();
+
+  @override
+  final DocumentNode document = PROGRESS_JOURNAL_GOAL_TAGS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'progressJournalGoalTags';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  ProgressJournalGoalTags$Query parse(Map<String, dynamic> json) =>
+      ProgressJournalGoalTags$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -18962,1828 +20786,4 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
-}
-
-final PROGRESS_JOURNAL_GOAL_TAGS_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'progressJournalGoalTags'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'progressJournalGoalTags'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalGoalTag'),
-                  directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class ProgressJournalGoalTagsQuery
-    extends GraphQLQuery<ProgressJournalGoalTags$Query, JsonSerializable> {
-  ProgressJournalGoalTagsQuery();
-
-  @override
-  final DocumentNode document = PROGRESS_JOURNAL_GOAL_TAGS_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'progressJournalGoalTags';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  ProgressJournalGoalTags$Query parse(Map<String, dynamic> json) =>
-      ProgressJournalGoalTags$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoalTagArguments extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoalTagArguments({required this.data});
-
-  @override
-  factory UpdateProgressJournalGoalTagArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoalTagArgumentsFromJson(json);
-
-  late UpdateProgressJournalGoalTagInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalGoalTagArgumentsToJson(this);
-}
-
-final UPDATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'updateProgressJournalGoalTag'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'UpdateProgressJournalGoalTagInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'updateProgressJournalGoalTag'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalGoalTag'),
-                  directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UpdateProgressJournalGoalTagMutation extends GraphQLQuery<
-    UpdateProgressJournalGoalTag$Mutation,
-    UpdateProgressJournalGoalTagArguments> {
-  UpdateProgressJournalGoalTagMutation({required this.variables});
-
-  @override
-  final DocumentNode document =
-      UPDATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'updateProgressJournalGoalTag';
-
-  @override
-  final UpdateProgressJournalGoalTagArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UpdateProgressJournalGoalTag$Mutation parse(Map<String, dynamic> json) =>
-      UpdateProgressJournalGoalTag$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoalTagArguments extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoalTagArguments({required this.data});
-
-  @override
-  factory CreateProgressJournalGoalTagArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoalTagArgumentsFromJson(json);
-
-  late CreateProgressJournalGoalTagInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalGoalTagArgumentsToJson(this);
-}
-
-final CREATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'createProgressJournalGoalTag'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'CreateProgressJournalGoalTagInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'createProgressJournalGoalTag'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalGoalTag'),
-                  directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class CreateProgressJournalGoalTagMutation extends GraphQLQuery<
-    CreateProgressJournalGoalTag$Mutation,
-    CreateProgressJournalGoalTagArguments> {
-  CreateProgressJournalGoalTagMutation({required this.variables});
-
-  @override
-  final DocumentNode document =
-      CREATE_PROGRESS_JOURNAL_GOAL_TAG_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'createProgressJournalGoalTag';
-
-  @override
-  final CreateProgressJournalGoalTagArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CreateProgressJournalGoalTag$Mutation parse(Map<String, dynamic> json) =>
-      CreateProgressJournalGoalTag$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalGoalTagByIdArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalGoalTagByIdArguments({required this.id});
-
-  @override
-  factory DeleteProgressJournalGoalTagByIdArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalGoalTagByIdArgumentsFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalGoalTagByIdArgumentsToJson(this);
-}
-
-final DELETE_PROGRESS_JOURNAL_GOAL_TAG_BY_ID_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'deleteProgressJournalGoalTagById'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'id')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'deleteProgressJournalGoalTagById'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: VariableNode(name: NameNode(value: 'id')))
-            ],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DeleteProgressJournalGoalTagByIdMutation extends GraphQLQuery<
-    DeleteProgressJournalGoalTagById$Mutation,
-    DeleteProgressJournalGoalTagByIdArguments> {
-  DeleteProgressJournalGoalTagByIdMutation({required this.variables});
-
-  @override
-  final DocumentNode document =
-      DELETE_PROGRESS_JOURNAL_GOAL_TAG_BY_ID_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'deleteProgressJournalGoalTagById';
-
-  @override
-  final DeleteProgressJournalGoalTagByIdArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  DeleteProgressJournalGoalTagById$Mutation parse(Map<String, dynamic> json) =>
-      DeleteProgressJournalGoalTagById$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalGoalArguments extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalGoalArguments({required this.data});
-
-  @override
-  factory CreateProgressJournalGoalArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalGoalArgumentsFromJson(json);
-
-  late CreateProgressJournalGoalInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalGoalArgumentsToJson(this);
-}
-
-final CREATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'createProgressJournalGoal'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'CreateProgressJournalGoalInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'createProgressJournalGoal'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalGoal'), directives: []),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalGoalTags'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalGoalTag'),
-                        directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'deadline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedDate'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class CreateProgressJournalGoalMutation extends GraphQLQuery<
-    CreateProgressJournalGoal$Mutation, CreateProgressJournalGoalArguments> {
-  CreateProgressJournalGoalMutation({required this.variables});
-
-  @override
-  final DocumentNode document = CREATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'createProgressJournalGoal';
-
-  @override
-  final CreateProgressJournalGoalArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CreateProgressJournalGoal$Mutation parse(Map<String, dynamic> json) =>
-      CreateProgressJournalGoal$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalGoalArguments extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalGoalArguments({required this.data});
-
-  @override
-  factory UpdateProgressJournalGoalArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalGoalArgumentsFromJson(json);
-
-  late UpdateProgressJournalGoalInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalGoalArgumentsToJson(this);
-}
-
-final UPDATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'updateProgressJournalGoal'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'UpdateProgressJournalGoalInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'updateProgressJournalGoal'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalGoal'), directives: []),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalGoalTags'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalGoalTag'),
-                        directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'deadline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedDate'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UpdateProgressJournalGoalMutation extends GraphQLQuery<
-    UpdateProgressJournalGoal$Mutation, UpdateProgressJournalGoalArguments> {
-  UpdateProgressJournalGoalMutation({required this.variables});
-
-  @override
-  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_GOAL_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'updateProgressJournalGoal';
-
-  @override
-  final UpdateProgressJournalGoalArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UpdateProgressJournalGoal$Mutation parse(Map<String, dynamic> json) =>
-      UpdateProgressJournalGoal$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalGoalByIdArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalGoalByIdArguments({required this.id});
-
-  @override
-  factory DeleteProgressJournalGoalByIdArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalGoalByIdArgumentsFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalGoalByIdArgumentsToJson(this);
-}
-
-final DELETE_PROGRESS_JOURNAL_GOAL_BY_ID_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'deleteProgressJournalGoalById'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'id')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'deleteProgressJournalGoalById'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: VariableNode(name: NameNode(value: 'id')))
-            ],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DeleteProgressJournalGoalByIdMutation extends GraphQLQuery<
-    DeleteProgressJournalGoalById$Mutation,
-    DeleteProgressJournalGoalByIdArguments> {
-  DeleteProgressJournalGoalByIdMutation({required this.variables});
-
-  @override
-  final DocumentNode document =
-      DELETE_PROGRESS_JOURNAL_GOAL_BY_ID_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'deleteProgressJournalGoalById';
-
-  @override
-  final DeleteProgressJournalGoalByIdArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  DeleteProgressJournalGoalById$Mutation parse(Map<String, dynamic> json) =>
-      DeleteProgressJournalGoalById$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalByIdArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalByIdArguments({required this.id});
-
-  @override
-  factory DeleteProgressJournalByIdArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalByIdArgumentsFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalByIdArgumentsToJson(this);
-}
-
-final DELETE_PROGRESS_JOURNAL_BY_ID_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'deleteProgressJournalById'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'id')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'deleteProgressJournalById'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: VariableNode(name: NameNode(value: 'id')))
-            ],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DeleteProgressJournalByIdMutation extends GraphQLQuery<
-    DeleteProgressJournalById$Mutation, DeleteProgressJournalByIdArguments> {
-  DeleteProgressJournalByIdMutation({required this.variables});
-
-  @override
-  final DocumentNode document = DELETE_PROGRESS_JOURNAL_BY_ID_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'deleteProgressJournalById';
-
-  @override
-  final DeleteProgressJournalByIdArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  DeleteProgressJournalById$Mutation parse(Map<String, dynamic> json) =>
-      DeleteProgressJournalById$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalArguments extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalArguments({required this.data});
-
-  @override
-  factory CreateProgressJournalArguments.fromJson(Map<String, dynamic> json) =>
-      _$CreateProgressJournalArgumentsFromJson(json);
-
-  late CreateProgressJournalInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() => _$CreateProgressJournalArgumentsToJson(this);
-}
-
-final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'createProgressJournal'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'CreateProgressJournalInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'createProgressJournal'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournal'), directives: []),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalEntries'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalEntry'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalGoals'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalGoal'),
-                        directives: []),
-                    FieldNode(
-                        name: NameNode(value: 'ProgressJournalGoalTags'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: SelectionSetNode(selections: [
-                          FragmentSpreadNode(
-                              name: NameNode(value: 'ProgressJournalGoalTag'),
-                              directives: [])
-                        ]))
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalEntry'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'voiceNoteUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'moodScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'energyScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'stressScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'deadline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedDate'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class CreateProgressJournalMutation extends GraphQLQuery<
-    CreateProgressJournal$Mutation, CreateProgressJournalArguments> {
-  CreateProgressJournalMutation({required this.variables});
-
-  @override
-  final DocumentNode document = CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'createProgressJournal';
-
-  @override
-  final CreateProgressJournalArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CreateProgressJournal$Mutation parse(Map<String, dynamic> json) =>
-      CreateProgressJournal$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalArguments extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalArguments({required this.data});
-
-  @override
-  factory UpdateProgressJournalArguments.fromJson(Map<String, dynamic> json) =>
-      _$UpdateProgressJournalArgumentsFromJson(json);
-
-  late UpdateProgressJournalInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() => _$UpdateProgressJournalArgumentsToJson(this);
-}
-
-final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'updateProgressJournal'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'UpdateProgressJournalInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'updateProgressJournal'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournal'), directives: []),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalEntries'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalEntry'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'ProgressJournalGoals'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'ProgressJournalGoal'),
-                        directives: []),
-                    FieldNode(
-                        name: NameNode(value: 'ProgressJournalGoalTags'),
-                        alias: null,
-                        arguments: [],
-                        directives: [],
-                        selectionSet: SelectionSetNode(selections: [
-                          FragmentSpreadNode(
-                              name: NameNode(value: 'ProgressJournalGoalTag'),
-                              directives: [])
-                        ]))
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalEntry'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'voiceNoteUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'moodScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'energyScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'stressScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoalTag'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoalTag'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'hexColor'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalGoal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalGoal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'deadline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedDate'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournal'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournal'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UpdateProgressJournalMutation extends GraphQLQuery<
-    UpdateProgressJournal$Mutation, UpdateProgressJournalArguments> {
-  UpdateProgressJournalMutation({required this.variables});
-
-  @override
-  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'updateProgressJournal';
-
-  @override
-  final UpdateProgressJournalArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UpdateProgressJournal$Mutation parse(Map<String, dynamic> json) =>
-      UpdateProgressJournal$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateProgressJournalEntryArguments extends JsonSerializable
-    with EquatableMixin {
-  CreateProgressJournalEntryArguments({required this.data});
-
-  @override
-  factory CreateProgressJournalEntryArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateProgressJournalEntryArgumentsFromJson(json);
-
-  late CreateProgressJournalEntryInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateProgressJournalEntryArgumentsToJson(this);
-}
-
-final CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'createProgressJournalEntry'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'CreateProgressJournalEntryInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'createProgressJournalEntry'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalEntry'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'voiceNoteUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'moodScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'energyScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'stressScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class CreateProgressJournalEntryMutation extends GraphQLQuery<
-    CreateProgressJournalEntry$Mutation, CreateProgressJournalEntryArguments> {
-  CreateProgressJournalEntryMutation({required this.variables});
-
-  @override
-  final DocumentNode document = CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'createProgressJournalEntry';
-
-  @override
-  final CreateProgressJournalEntryArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CreateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
-      CreateProgressJournalEntry$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteProgressJournalEntryByIdArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteProgressJournalEntryByIdArguments({required this.id});
-
-  @override
-  factory DeleteProgressJournalEntryByIdArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$DeleteProgressJournalEntryByIdArgumentsFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteProgressJournalEntryByIdArgumentsToJson(this);
-}
-
-final DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'deleteProgressJournalEntryById'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'id')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'deleteProgressJournalEntryById'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: VariableNode(name: NameNode(value: 'id')))
-            ],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DeleteProgressJournalEntryByIdMutation extends GraphQLQuery<
-    DeleteProgressJournalEntryById$Mutation,
-    DeleteProgressJournalEntryByIdArguments> {
-  DeleteProgressJournalEntryByIdMutation({required this.variables});
-
-  @override
-  final DocumentNode document =
-      DELETE_PROGRESS_JOURNAL_ENTRY_BY_ID_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'deleteProgressJournalEntryById';
-
-  @override
-  final DeleteProgressJournalEntryByIdArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  DeleteProgressJournalEntryById$Mutation parse(Map<String, dynamic> json) =>
-      DeleteProgressJournalEntryById$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UpdateProgressJournalEntryArguments extends JsonSerializable
-    with EquatableMixin {
-  UpdateProgressJournalEntryArguments({required this.data});
-
-  @override
-  factory UpdateProgressJournalEntryArguments.fromJson(
-          Map<String, dynamic> json) =>
-      _$UpdateProgressJournalEntryArgumentsFromJson(json);
-
-  late UpdateProgressJournalEntryInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$UpdateProgressJournalEntryArgumentsToJson(this);
-}
-
-final UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'updateProgressJournalEntry'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'UpdateProgressJournalEntryInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'updateProgressJournalEntry'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ProgressJournalEntry'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ProgressJournalEntry'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ProgressJournalEntry'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'voiceNoteUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'moodScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'energyScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'stressScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UpdateProgressJournalEntryMutation extends GraphQLQuery<
-    UpdateProgressJournalEntry$Mutation, UpdateProgressJournalEntryArguments> {
-  UpdateProgressJournalEntryMutation({required this.variables});
-
-  @override
-  final DocumentNode document = UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'updateProgressJournalEntry';
-
-  @override
-  final UpdateProgressJournalEntryArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UpdateProgressJournalEntry$Mutation parse(Map<String, dynamic> json) =>
-      UpdateProgressJournalEntry$Mutation.fromJson(json);
 }

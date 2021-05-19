@@ -73,7 +73,7 @@ class _MoveFiltersScreenState extends State<MoveFiltersScreen> {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
             automaticallyImplyLeading: false,
-            leading: null,
+            customLeading: null,
             middle: NavBarTitle('Move Filters'),
             trailing: NavBarSaveButton(
               _saveAndClose,

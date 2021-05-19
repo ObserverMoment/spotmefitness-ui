@@ -1,14 +1,17 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dart';
+import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_entry_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_goal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -16,6 +19,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class ProgressJournalDetailsPage extends StatefulWidget {
@@ -133,7 +137,10 @@ class _ProgressJournalDetailsPageState
                         ProgressJournalEntriesList(
                             parentJournalId: journal.id,
                             entries: journal.progressJournalEntries),
-                        ProgressJournalGoalsList(journal.progressJournalGoals),
+                        ProgressJournalGoalsList(
+                          goals: journal.progressJournalGoals,
+                          parentJournalId: journal.id,
+                        ),
                       ],
                     ),
                   ))
@@ -148,6 +155,22 @@ class ProgressJournalEntriesList extends StatelessWidget {
   final List<ProgressJournalEntry> entries;
   ProgressJournalEntriesList(
       {required this.entries, required this.parentJournalId});
+
+  Future<void> _deleteJournalEntry(BuildContext context, String id) async {
+    final variables = DeleteProgressJournalEntryByIdArguments(id: id);
+
+    final result = await context.graphQLStore.delete(
+        mutation: DeleteProgressJournalEntryByIdMutation(variables: variables),
+        objectId: id,
+        typename: kProgressJournalEntryTypename,
+        removeAllRefsToId: true);
+
+    if (result.hasErrors || result.data?.deleteProgressJournalEntryById != id) {
+      context.showToast(
+          message: 'Sorry, there was a problem deleting this entry.',
+          toastType: ToastType.destructive);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +212,17 @@ class ProgressJournalEntriesList extends StatelessWidget {
                             )),
                         child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: ProgressJournalEntryCard(sortedEntries[i])));
+                            child: AnimatedSlidable(
+                                key: Key(
+                                    'progress-journal-entry-${sortedEntries[i].id}'),
+                                index: i,
+                                itemType: 'Journal Entry',
+                                itemName: sortedEntries[i].createdAt.dateString,
+                                removeItem: (index) => _deleteJournalEntry(
+                                    context, sortedEntries[i].id),
+                                secondaryActions: [],
+                                child: ProgressJournalEntryCard(
+                                    sortedEntries[i]))));
                   }
                 },
               ),
@@ -199,8 +232,10 @@ class ProgressJournalEntriesList extends StatelessWidget {
 }
 
 class ProgressJournalGoalsList extends StatelessWidget {
+  final String parentJournalId;
   final List<ProgressJournalGoal> goals;
-  ProgressJournalGoalsList(this.goals);
+  ProgressJournalGoalsList(
+      {required this.goals, required this.parentJournalId});
 
   @override
   Widget build(BuildContext context) {
@@ -209,32 +244,67 @@ class ProgressJournalGoalsList extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: StackAndFloatingButton(
-        onPressed: () => print('add goal'),
-        pageHasBottomNavBar: false,
-        buttonIconData: CupertinoIcons.add,
-        child: goals.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyText(
-                  'No goals yet',
-                  textAlign: TextAlign.center,
-                  subtext: true,
-                ),
-              )
-            : ListView.builder(
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                itemCount: sortedGoals.length + 1,
-                itemBuilder: (c, i) {
-                  if (i == sortedGoals.length) {
-                    return SizedBox(height: kAssumedFloatingButtonHeight);
-                  } else {
-                    return ProgressJournalGoalCard(sortedGoals[i]);
-                  }
-                },
-              ),
+      child: Column(
+        children: [
+          ProgressJournalGoalsSummaryCard(
+            goals: goals,
+          ),
+          SizedBox(height: 10),
+          Expanded(
+            child: StackAndFloatingButton(
+              onPressed: () => context.push(
+                  child: ProgressJournalGoalCreator(
+                      parentJournalId: parentJournalId)),
+              pageHasBottomNavBar: false,
+              buttonIconData: CupertinoIcons.add,
+              child: goals.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText(
+                        'No goals yet',
+                        textAlign: TextAlign.center,
+                        subtext: true,
+                      ),
+                    )
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
+                      itemCount: sortedGoals.length + 1,
+                      itemBuilder: (c, i) {
+                        if (i == sortedGoals.length) {
+                          return SizedBox(height: kAssumedFloatingButtonHeight);
+                        } else {
+                          return GestureDetector(
+                            onTap: () => context.push(
+                                child: ProgressJournalGoalCreator(
+                              parentJournalId: parentJournalId,
+                              progressJournalGoal: sortedGoals[i],
+                            )),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              child: AnimatedSlidable(
+                                key: Key(
+                                    'ProgressJournalGoalsList-${sortedGoals[i].id}'),
+                                index: i,
+                                itemType: 'Journal Goal',
+                                removeItem: (_) {
+                                  print(sortedGoals[i]);
+                                },
+                                secondaryActions: [],
+                                child: ProgressJournalGoalCard(
+                                    markGoalComplete: (goal) => print(goal),
+                                    progressJournalGoal: sortedGoals[i]),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }

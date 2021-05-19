@@ -9,7 +9,7 @@ class DiscoverPage extends StatelessWidget {
       key: Key('DiscoverPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
         key: Key('DiscoverPage-BasicNavBar'),
-        leading: NavBarLargeTitle('Discover'),
+        customLeading: NavBarLargeTitle('Discover'),
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),

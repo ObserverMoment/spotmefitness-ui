@@ -38,7 +38,7 @@ class _DateSelectorState extends State<DateSelector> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-        leading: CupertinoButton(
+        customLeading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: _handleCancel,
           child: MyText(

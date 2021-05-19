@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_cl
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_goal_tags_manager.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -16,8 +17,11 @@ import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class ProgressJournalGoalCreator extends StatefulWidget {
+  final String parentJournalId;
   final ProgressJournalGoal? progressJournalGoal;
-  ProgressJournalGoalCreator({this.progressJournalGoal});
+  ProgressJournalGoalCreator(
+      {this.progressJournalGoal, required this.parentJournalId});
+
   @override
   _ProgressJournalGoalCreatorState createState() =>
       _ProgressJournalGoalCreatorState();
@@ -28,47 +32,143 @@ class _ProgressJournalGoalCreatorState
   late ProgressJournalGoal _activeProgressJournalGoal;
   late bool _isEditing;
   bool _isLoading = false;
+  bool _formIsDirty = false;
 
   @override
   void initState() {
     super.initState();
     _isEditing = widget.progressJournalGoal != null;
     _activeProgressJournalGoal = _isEditing
-        ? widget.progressJournalGoal!
+        ? ProgressJournalGoal.fromJson(widget.progressJournalGoal!.toJson())
         : DefaultObjectfactory.defaultProgressJournalGoal();
   }
 
-  void _updateName(String name) =>
-      setState(() => _activeProgressJournalGoal.name = name);
+  void _updateName(String name) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournalGoal.name = name;
+      });
 
-  void _updateDescription(String description) =>
-      setState(() => _activeProgressJournalGoal.description = description);
+  void _updateDescription(String description) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournalGoal.description = description;
+      });
 
-  void _updateDeadline(DateTime deadline) =>
-      setState(() => _activeProgressJournalGoal.deadline = deadline);
+  void _updateDeadline(DateTime deadline) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournalGoal.deadline = deadline;
+      });
 
-  void _toggleSelectTag(ProgressJournalGoalTag tag) =>
-      setState(() => _activeProgressJournalGoal.progressJournalGoalTags =
-          _activeProgressJournalGoal.progressJournalGoalTags
-              .toggleItem<ProgressJournalGoalTag>(tag));
+  void _toggleSelectTag(ProgressJournalGoalTag tag) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournalGoal.progressJournalGoalTags =
+            _activeProgressJournalGoal.progressJournalGoalTags
+                .toggleItem<ProgressJournalGoalTag>(tag);
+      });
 
-  void _handelSave() {
-    setState(() => _isLoading = true);
+  Future<void> _handleSave(BuildContext context) async {
+    if (_isEditing) {
+      if (_formIsDirty) {
+        setState(() => _isLoading = true);
 
-    print('save to api and update store');
+        final variables = UpdateProgressJournalGoalArguments(
+            data: UpdateProgressJournalGoalInput.fromJson(
+                _activeProgressJournalGoal.toJson()));
+
+        final result = await context.graphQLStore.mutate(
+            mutation: UpdateProgressJournalGoalMutation(variables: variables),
+            broadcastQueryIds: [
+              ProgressJournalByIdQuery(
+                      variables: ProgressJournalByIdArguments(
+                          id: widget.parentJournalId))
+                  .operationName,
+              UserProgressJournalsQuery().operationName
+            ]);
+
+        setState(() => _isLoading = false);
+
+        if (result.hasErrors || result.data == null) {
+          context.showToast(
+              message: 'Sorry, there was a problem updating this goal',
+              toastType: ToastType.destructive);
+        } else {
+          context.pop();
+        }
+      } else {
+        context.pop();
+      }
+    } else {
+      /// Creating
+      setState(() => _isLoading = true);
+
+      final variables = CreateProgressJournalGoalArguments(
+          data: CreateProgressJournalGoalInput(
+              name: _activeProgressJournalGoal.name,
+              description: _activeProgressJournalGoal.description,
+              deadline: _activeProgressJournalGoal.deadline,
+              progressJournalGoalTags: _activeProgressJournalGoal
+                  .progressJournalGoalTags
+                  .map((tag) => ConnectRelationInput(id: tag.id))
+                  .toList(),
+              progressJournal:
+                  ConnectRelationInput(id: widget.parentJournalId)));
+
+      final result = await context.graphQLStore.mutate(
+          mutation: CreateProgressJournalGoalMutation(variables: variables));
+
+      setState(() => _isLoading = false);
+
+      if (result.hasErrors || result.data == null) {
+        context.showToast(
+            message: 'Sorry, there was a problem creating this goal',
+            toastType: ToastType.destructive);
+      } else {
+        _writeCreatedGoalToStore(result.data!.createProgressJournalGoal);
+        context.pop();
+      }
+
+      setState(() => _isLoading = false);
+    }
+  }
+
+  /// The goal that we have created is not a top level object in the global store. We need to update the goal within the journal and then re-write the updated journal to the store.
+  /// We can then broadcast new data to query observers so that UI updates.
+  void _writeCreatedGoalToStore(ProgressJournalGoal goal) {
+    final parentJournalData = context.graphQLStore.readDenomalized(
+      '$kProgressJournalTypename:${widget.parentJournalId}',
+    );
+
+    final parentJournal = ProgressJournal.fromJson(parentJournalData);
+    parentJournal.progressJournalGoals.add(goal);
+
+    context.graphQLStore.writeDataToStore(
+      data: parentJournal.toJson(),
+      broadcastQueryIds: [
+        ProgressJournalByIdQuery(
+                variables:
+                    ProgressJournalByIdArguments(id: widget.parentJournalId))
+            .operationName,
+        UserProgressJournalsQuery().operationName
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-          leading: NavBarCancelButton(context.pop),
+          customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(_isEditing ? 'Update Goal' : 'Add Goal'),
           trailing: AnimatedSwitcher(
             duration: kStandardAnimationDuration,
             child: _isLoading
-                ? LoadingDots(size: 12)
-                : NavBarSaveButton(_handelSave),
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingDots(size: 12),
+                    ],
+                  )
+                : NavBarSaveButton(() => _handleSave(context)),
           )),
       child: SingleChildScrollView(
         child: Padding(
@@ -86,6 +186,7 @@ class _ProgressJournalGoalCreatorState
                   title: 'Description',
                   text: _activeProgressJournalGoal.description ?? '',
                   onSave: _updateDescription,
+                  maxDisplayLines: 10,
                   inputValidation: (t) => true),
               DatePickerDisplay(
                 dateTime: _activeProgressJournalGoal.deadline,
@@ -125,6 +226,7 @@ class _ProgressJournalGoalCreatorState
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 8,
+                        alignment: WrapAlignment.center,
                         children: tags
                             .map((tag) => SelectableTag(
                                   text: tag.tag,

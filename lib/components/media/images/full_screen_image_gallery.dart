@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:uploadcare_client/uploadcare_client.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
@@ -51,7 +50,7 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
     final height = size.height;
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
-          leading: NavBarCloseButton(context.pop),
+          customLeading: NavBarCloseButton(context.pop),
           middle: NavBarTitle(widget.pageTitle),
         ),
         child: Column(

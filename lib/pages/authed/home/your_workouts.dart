@@ -72,7 +72,7 @@ class FilterableWorkoutsList extends StatelessWidget {
   FilterableWorkoutsList(this.workouts);
 
   void _openWorkoutDetails(BuildContext context, String id) {
-    context.pushRoute(WorkoutDetailsRoute(id: id));
+    context.navigateTo(WorkoutDetailsRoute(id: id));
   }
 
   @override

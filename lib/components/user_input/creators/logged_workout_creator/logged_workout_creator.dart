@@ -77,7 +77,7 @@ class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
 
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
-              leading: NavBarCancelButton(context.pop),
+              customLeading: NavBarCancelButton(context.pop),
               middle: NavBarTitle('Log Workout'),
               trailing: includedSections.isNotEmpty
                   ? NavBarSaveButton(
