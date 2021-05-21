@@ -18,6 +18,7 @@ class AnimatedSlidable extends StatefulWidget {
   /// Remove is added by default - just provide a removeItem callback
   final List<Widget> secondaryActions;
   final Function(int index) removeItem;
+  final String deleteCaption;
   final bool enabled;
   final String itemType;
   final String? itemName;
@@ -28,6 +29,7 @@ class AnimatedSlidable extends StatefulWidget {
     required this.removeItem,
     required this.secondaryActions,
     required this.index,
+    this.deleteCaption = 'Delete',
     this.enabled = true,
     required this.itemType,
     this.itemName,
@@ -131,7 +133,7 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
             secondaryActions: <Widget>[
               ...widget.secondaryActions,
               IconSlideAction(
-                caption: 'Remove',
+                caption: widget.deleteCaption,
                 color: Styles.errorRed,
                 iconWidget: Icon(
                   CupertinoIcons.delete,

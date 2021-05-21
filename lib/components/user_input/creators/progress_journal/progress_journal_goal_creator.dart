@@ -58,6 +58,11 @@ class _ProgressJournalGoalCreatorState
         _activeProgressJournalGoal.deadline = deadline;
       });
 
+  void _updateCompletedDate(DateTime completedDate) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournalGoal.completedDate = completedDate;
+      });
+
   void _toggleSelectTag(ProgressJournalGoalTag tag) => setState(() {
         _formIsDirty = true;
         _activeProgressJournalGoal.progressJournalGoalTags =
@@ -193,6 +198,17 @@ class _ProgressJournalGoalCreatorState
                 updateDateTime: _updateDeadline,
                 title: 'Deadline',
               ),
+              // Allow adjusting of the completed date - but only once it has been marked completed.
+              // You can not currently unmark as complete from this page.
+              if (_activeProgressJournalGoal.completedDate != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: DatePickerDisplay(
+                    dateTime: _activeProgressJournalGoal.completedDate,
+                    updateDateTime: _updateCompletedDate,
+                    title: 'Completed On',
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

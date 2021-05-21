@@ -231,11 +231,10 @@ class CurrentTagsList extends StatelessWidget {
               subtext: true,
             ),
           )
-        : ImplicitlyAnimatedList(
+        : ImplicitlyAnimatedList<ProgressJournalGoalTag>(
             shrinkWrap: true,
             items: tags,
             itemBuilder: (context, animation, tag, index) {
-              final tag = tags[index];
               return Column(
                 children: [
                   Padding(

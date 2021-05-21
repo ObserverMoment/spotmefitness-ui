@@ -163,6 +163,12 @@ class ProgressJournalEntriesList extends StatelessWidget {
         mutation: DeleteProgressJournalEntryByIdMutation(variables: variables),
         objectId: id,
         typename: kProgressJournalEntryTypename,
+        broadcastQueryIds: [
+          ProgressJournalByIdQuery(
+                  variables: ProgressJournalByIdArguments(id: parentJournalId))
+              .operationName,
+          UserProgressJournalsQuery().operationName,
+        ],
         removeAllRefsToId: true);
 
     if (result.hasErrors || result.data?.deleteProgressJournalEntryById != id) {
@@ -237,6 +243,28 @@ class ProgressJournalGoalsList extends StatelessWidget {
   ProgressJournalGoalsList(
       {required this.goals, required this.parentJournalId});
 
+  Future<void> _deleteJournalGoal(BuildContext context, String id) async {
+    final variables = DeleteProgressJournalGoalByIdArguments(id: id);
+
+    final result = await context.graphQLStore.delete(
+        mutation: DeleteProgressJournalGoalByIdMutation(variables: variables),
+        objectId: id,
+        typename: kProgressJournalGoalTypename,
+        broadcastQueryIds: [
+          ProgressJournalByIdQuery(
+                  variables: ProgressJournalByIdArguments(id: parentJournalId))
+              .operationName,
+          UserProgressJournalsQuery().operationName,
+        ],
+        removeAllRefsToId: true);
+
+    if (result.hasErrors || result.data?.deleteProgressJournalGoalById != id) {
+      context.showToast(
+          message: 'Sorry, there was a problem deleting this goal.',
+          toastType: ToastType.destructive);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final sortedGoals =
@@ -286,12 +314,12 @@ class ProgressJournalGoalsList extends StatelessWidget {
                                   const EdgeInsets.symmetric(vertical: 4.0),
                               child: AnimatedSlidable(
                                 key: Key(
-                                    'ProgressJournalGoalsList-${sortedGoals[i].id}'),
+                                    'progress-journal-goal-${sortedGoals[i].id}'),
                                 index: i,
                                 itemType: 'Journal Goal',
-                                removeItem: (_) {
-                                  print(sortedGoals[i]);
-                                },
+                                itemName: sortedGoals[i].name,
+                                removeItem: (index) => _deleteJournalGoal(
+                                    context, sortedGoals[i].id),
                                 secondaryActions: [],
                                 child: ProgressJournalGoalCard(
                                     markGoalComplete: (goal) => print(goal),

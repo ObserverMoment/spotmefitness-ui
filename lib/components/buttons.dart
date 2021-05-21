@@ -105,6 +105,8 @@ class PrimaryButton extends StatelessWidget {
     return MyButton(
       text: text,
       onPressed: onPressed,
+      prefix: prefix,
+      suffix: suffix,
       disabled: disabled,
       loading: loading,
       backgroundColor: context.theme.primary,
