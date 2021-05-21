@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Graphical UI that highlights the areas of the body that are being targeted.
 /// List of body area move scores will be folded to a list of bodyareas and then displayed.
@@ -30,13 +31,12 @@ class TargetedBodyAreasPageView extends StatelessWidget {
     final percentagedBodyAreaMoveScores =
         DataUtils.percentageBodyAreaMoveScores(bodyAreaMoveScores);
 
-    return QueryResponseBuilder(
-        options: QueryOptions(
-            document: BodyAreasQuery().document,
-            fetchPolicy: FetchPolicy.cacheFirst),
-        builder: (result, {fetchMore, refetch}) {
-          final List<BodyArea> allBodyAreas =
-              BodyAreas$Query.fromJson(result.data ?? {}).bodyAreas;
+    return QueryObserver<BodyAreas$Query, json.JsonSerializable>(
+        key: Key('TargetedBodyAreasPageView-${BodyAreasQuery().operationName}'),
+        query: BodyAreasQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (data) {
+          final List<BodyArea> allBodyAreas = data.bodyAreas;
 
           return LayoutBuilder(builder: (context, constraints) {
             return Container(

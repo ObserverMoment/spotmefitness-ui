@@ -78,7 +78,7 @@ class _StartTrialState extends State<StartTrial> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
-          leading: CupertinoButton(
+          customLeading: CupertinoButton(
               padding: const EdgeInsets.all(0),
               onPressed: context.pop,
               child: MyText('Cancel')),

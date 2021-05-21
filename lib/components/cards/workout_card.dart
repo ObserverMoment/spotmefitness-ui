@@ -9,26 +9,28 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
-  final WorkoutSummary workoutSummary;
-  WorkoutCard(this.workoutSummary);
+  final Workout workout;
+  final Color? backgroundColor;
+  final bool withBoxShadow;
+  final EdgeInsets padding;
+  WorkoutCard(this.workout,
+      {this.backgroundColor,
+      this.withBoxShadow = true,
+      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
 
   final double cardHeight = 120;
-
-  Widget buildTag() {
-    return Tag(tag: 'text');
-  }
 
   @override
   Widget build(BuildContext context) {
     final List<String> _allTags = [
-      ...workoutSummary.workoutGoals.map((g) => g.name),
-      ...workoutSummary.workoutTags.map((t) => t.tag)
+      ...workout.workoutGoals.map((g) => g.name),
+      ...workout.workoutTags.map((t) => t.tag)
     ];
 
     final Set<String> _allMoves = {};
     final Set<String> _allEquipments = {};
 
-    for (final section in workoutSummary.workoutSections) {
+    for (final section in workout.workoutSections) {
       for (final workoutSet in section.workoutSets) {
         for (final workoutMove in workoutSet.workoutMoves) {
           if (workoutMove.move.id != kRestMoveId) {
@@ -46,7 +48,10 @@ class WorkoutCard extends StatelessWidget {
     }
 
     return Card(
-      backgroundImageUri: workoutSummary.coverImageUri,
+      backgroundImageUri: workout.coverImageUri,
+      backgroundColor: backgroundColor,
+      withBoxShadow: withBoxShadow,
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -56,20 +61,20 @@ class WorkoutCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MyText(
-                  workoutSummary.name,
+                  workout.name,
                   weight: FontWeight.bold,
                 ),
-                DifficultyLevelDot(workoutSummary.difficultyLevel)
+                DifficultyLevelDot(workout.difficultyLevel)
               ],
             ),
           ),
-          if (workoutSummary.workoutSections.isNotEmpty)
+          if (workout.workoutSections.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Wrap(
                 spacing: 4,
                 runSpacing: 4,
-                children: workoutSummary.workoutSections
+                children: workout.workoutSections
                     .sortedBy<num>((section) => section.sortPosition)
                     .map((section) => WorkoutSectionTypeTag(
                         Utils.textNotNull(section.name)
@@ -94,7 +99,7 @@ class WorkoutCard extends StatelessWidget {
                     .toList(),
               ),
             ),
-          if (Utils.textNotNull(workoutSummary.description))
+          if (Utils.textNotNull(workout.description))
             Container(
               padding: const EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(
@@ -104,7 +109,7 @@ class WorkoutCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 3.0, horizontal: 6),
                 child: MyText(
-                  workoutSummary.description!,
+                  workout.description!,
                   maxLines: 2,
                   size: FONTSIZE.SMALL,
                   weight: FontWeight.bold,

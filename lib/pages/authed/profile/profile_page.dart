@@ -1,15 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
 import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploader.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/settings_and_info.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -24,50 +25,60 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      key: Key('ProfilePage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
-        middle: NavBarTitle(
-          'PROFILE',
-        ),
-        trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Icon(CupertinoIcons.gear_solid),
-            onPressed: () => Navigator.push(context,
-                CupertinoPageRoute(builder: (context) => SettingsAndInfo()))),
-      ),
+          key: Key('ProfilePage-BasicNavBar'),
+          customLeading: NavBarLargeTitle('Profile'),
+          trailing: CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: Icon(
+                CupertinoIcons.gear_solid,
+                size: 28,
+              ),
+              onPressed: () => context.navigateTo(SettingsAndInfoRoute()))),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 12),
         child: Column(
           children: [
-            QueryResponseBuilder(
-                options: QueryOptions(
-                  document: AuthedUserQuery().document,
+            QueryObserver<AuthedUser$Query, json.JsonSerializable>(
+                key: Key('ProfilePage - ${AuthedUserQuery().operationName}'),
+                query: AuthedUserQuery(),
+                fetchPolicy: QueryFetchPolicy.storeAndNetwork,
+                loadingIndicator: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ShimmerCircle(diameter: 100),
+                    ShimmerCircle(diameter: 100)
+                  ],
                 ),
-                builder: (result, {fetchMore, refetch}) {
-                  final _user =
-                      AuthedUser$Query.fromJson(result.data ?? {}).authedUser;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        children: [
-                          UserAvatarUploader(
-                            avatarUri: _user.avatarUri,
-                            displaySize: Size(100, 100),
-                          ),
-                          MyText('Photo')
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          UserIntroVideoUploader(
-                            introVideoUri: _user.introVideoUri,
-                            introVideoThumbUri: _user.introVideoThumbUri,
-                            displaySize: Size(100, 100),
-                          ),
-                          MyText('Video')
-                        ],
-                      ),
-                    ],
+                builder: (data) {
+                  final user = data.authedUser;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          children: [
+                            UserAvatarUploader(
+                              avatarUri: user.avatarUri,
+                              displaySize: Size(100, 100),
+                            ),
+                            MyText('Photo')
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            UserIntroVideoUploader(
+                              introVideoUri: user.introVideoUri,
+                              introVideoThumbUri: user.introVideoThumbUri,
+                              displaySize: Size(100, 100),
+                            ),
+                            MyText('Video')
+                          ],
+                        ),
+                      ],
+                    ),
                   );
                 }),
             SizedBox(height: 12),

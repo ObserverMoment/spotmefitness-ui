@@ -21,12 +21,14 @@ import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 class ImageUploader extends StatefulWidget {
   final String? imageUri;
   final Size displaySize;
+  final void Function()? onUploadStart;
   final void Function(String uploadedUri) onUploadSuccess;
-  final void Function() removeImage;
+  final void Function(String uri) removeImage;
   ImageUploader(
       {this.imageUri,
       this.displaySize = const Size(120, 120),
       required this.onUploadSuccess,
+      this.onUploadStart,
       required this.removeImage});
 
   @override
@@ -58,6 +60,10 @@ class _ImageUploaderState extends State<ImageUploader> {
   }
 
   Future<void> _uploadFile(File file) async {
+    if (widget.onUploadStart != null) {
+      widget.onUploadStart!();
+    }
+
     await GetIt.I<UploadcareService>().uploadFile(
         file: SharedFile(file),
         onComplete: (uri) {
@@ -76,6 +82,7 @@ class _ImageUploaderState extends State<ImageUploader> {
     final Color primary = context.theme.primary;
     final Color background = context.theme.background;
     final bool hasImage = Utils.textNotNull(widget.imageUri);
+
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,
@@ -115,7 +122,8 @@ class _ImageUploaderState extends State<ImageUploader> {
                   onPressed: () {
                     context.pop();
                     context.showConfirmDeleteDialog(
-                        itemType: 'Image', onConfirm: widget.removeImage);
+                        itemType: 'Image',
+                        onConfirm: () => widget.removeImage(widget.imageUri!));
                   },
                 ),
             ],
@@ -128,31 +136,28 @@ class _ImageUploaderState extends State<ImageUploader> {
               },
             )),
       ),
-      child: Hero(
-        tag: kFullScreenImageViewerHeroTag,
-        child: Container(
-          width: widget.displaySize.width,
-          height: widget.displaySize.height,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: primary.withOpacity(0.7),
-            boxShadow: [Styles.avatarBoxShadow],
-          ),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: AnimatedSwitcher(
-            duration: Duration(milliseconds: 400),
-            child: _uploading
-                ? LoadingCircle(
-                    color: background.withOpacity(0.4),
-                  )
-                : hasImage
-                    ? SizedUploadcareImage(widget.imageUri!)
-                    : Icon(
-                        CupertinoIcons.photo,
-                        size: widget.displaySize.width / 2.5,
-                        color: background.withOpacity(0.4),
-                      ),
-          ),
+      child: Container(
+        width: widget.displaySize.width,
+        height: widget.displaySize.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: primary.withOpacity(0.2),
+          boxShadow: [Styles.avatarBoxShadow],
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 400),
+          child: _uploading
+              ? LoadingCircle(
+                  color: background.withOpacity(0.4),
+                )
+              : hasImage
+                  ? SizedUploadcareImage(widget.imageUri!)
+                  : Icon(
+                      CupertinoIcons.photo,
+                      size: widget.displaySize.width / 2.5,
+                      color: background.withOpacity(0.4),
+                    ),
         ),
       ),
     );

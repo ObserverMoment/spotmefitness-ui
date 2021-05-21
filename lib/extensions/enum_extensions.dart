@@ -5,6 +5,11 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
+extension BodyweightUnitExtension on BodyweightUnit {
+  String get apiValue => describeEnum(this).toUpperCase();
+  String get display => describeEnum(this);
+}
+
 extension ContentAccessScopeExtension on ContentAccessScope {
   String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
@@ -66,6 +71,8 @@ extension LoadUnitExtension on LoadUnit {
         return 'lb';
       case LoadUnit.bodyweightpercent:
         return '% body';
+      case LoadUnit.percentmax:
+        return '% max';
       default:
         throw new Exception('This is not a valid LoadUnit enum: $this');
     }

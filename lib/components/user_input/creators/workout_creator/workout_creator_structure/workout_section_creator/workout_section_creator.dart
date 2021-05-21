@@ -19,6 +19,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
@@ -139,16 +140,14 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
       await Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) =>
-              ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-            value: _bloc,
-            child: WorkoutMoveCreator(
-              pageTitle: 'Add Set',
-              sectionIndex: widget.sectionIndex,
-              setIndex: _sortedWorkoutSets.length - 1,
-              workoutMoveIndex: 0,
-              ignoreReps: workoutMoveIgnoreReps,
-            ),
+          builder: (context) => WorkoutMoveCreator(
+            pageTitle: 'Add Set',
+            saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+                widget.sectionIndex,
+                _sortedWorkoutSets.length - 1,
+                workoutMove),
+            workoutMoveIndex: 0,
+            ignoreReps: workoutMoveIgnoreReps,
           ),
         ),
       );
@@ -196,7 +195,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            typeName: workoutSectionType.name,
+            workoutSectionType: workoutSectionType,
             createSet: () =>
                 _createEmptyWorkoutSet(openWorkoutMoveSelector: true));
       case kHIITCircuitName:
@@ -220,7 +219,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             sectionIndex: widget.sectionIndex,
             totalRounds: _workoutSection.rounds,
             timecap: _workoutSection.timecap,
-            typeName: workoutSectionType.name,
+            workoutSectionType: workoutSectionType,
             createSet: (defaults) => _createEmptyWorkoutSet(
                 openWorkoutMoveSelector: true, defaults: defaults));
       case kTabataName:
@@ -317,6 +316,15 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        if ([kHIITCircuitName, kTabataName, kEMOMName]
+                            .contains(_workoutSection.workoutSectionType.name))
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+                            child: ContentBox(
+                              child: MyText(
+                                  'Duration: ${DataUtils.calculateTimedSectionDuration(_workoutSection).compactDisplay()}'),
+                            ),
+                          ),
                         if (![kLastStandingName, kAMRAPName]
                             .contains(_workoutSection.workoutSectionType.name))
                           RoundPicker(

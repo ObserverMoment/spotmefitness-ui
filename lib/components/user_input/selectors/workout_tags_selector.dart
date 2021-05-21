@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Also lets you create a new tag and then select it.
 class WorkoutTagsSelector extends StatefulWidget {
@@ -55,25 +56,19 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   }
 
   Future<void> _createNewTag(String tag) async {
-    final _vars =
+    final variables =
         CreateWorkoutTagArguments(data: CreateWorkoutTagInput(tag: tag));
-    await GraphQL.mutateWithQueryUpdate(
-      mutationType: MutationType.create,
-      client: context.graphQLClient,
-      mutationDocument: CreateWorkoutTagMutation(variables: _vars).document,
-      mutationOperationName:
-          CreateWorkoutTagMutation(variables: _vars).operationName,
-      mutationVariables: _vars.toJson(),
-      queryDocument: UserWorkoutTagsQuery().document,
-      queryOperationName: UserWorkoutTagsQuery().operationName,
-    );
+
+    await context.graphQLStore.create(
+        mutation: CreateWorkoutTagMutation(variables: variables),
+        addRefToQueries: [kUserWorkoutTagsQuery]);
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
-          leading: CupertinoButton(
+          customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(
                 'Done',
@@ -98,14 +93,12 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
             ],
           ),
         ),
-        child: QueryResponseBuilder(
-            options: QueryOptions(
-                document: UserWorkoutTagsQuery().document,
-                fetchPolicy: FetchPolicy.cacheAndNetwork),
-            builder: (result, {fetchMore, refetch}) {
-              final _workoutTags =
-                  UserWorkoutTags$Query.fromJson(result.data ?? {})
-                      .userWorkoutTags;
+        child: QueryObserver<UserWorkoutTags$Query, json.JsonSerializable>(
+            key: Key(
+                'WorkoutTagsSelector - ${UserWorkoutTagsQuery().operationName}'),
+            query: UserWorkoutTagsQuery(),
+            fetchPolicy: QueryFetchPolicy.storeFirst,
+            builder: (data) {
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -124,11 +117,11 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: _workoutTags.reversed
+                          children: data.userWorkoutTags.reversed
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(
-                                      child: SelectableTag(
+                                      child: SelectableWorkoutTag(
                                         tag: tag,
                                         isSelected: _activeSelectedWorkoutTags
                                             .contains(tag),
@@ -146,10 +139,10 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   }
 }
 
-class SelectableTag extends StatelessWidget {
+class SelectableWorkoutTag extends StatelessWidget {
   final WorkoutTag tag;
   final bool isSelected;
-  SelectableTag({required this.tag, this.isSelected = false});
+  SelectableWorkoutTag({required this.tag, this.isSelected = false});
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(

@@ -8,11 +8,11 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_body.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_equipment.dart';
-
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_meta.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/move_type_selector.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -84,20 +84,14 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
       final variables = UpdateMoveArguments(
           data: UpdateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await GraphQL.mutateWithQueryUpdate(
-        mutationType: MutationType.update,
-        client: context.graphQLClient,
-        mutationDocument: UpdateMoveMutation(variables: variables).document,
-        mutationOperationName:
-            UpdateMoveMutation(variables: variables).operationName,
-        mutationVariables: variables.toJson(),
-        queryDocument: UserCustomMovesQuery().document,
-        queryOperationName: UserCustomMovesQuery().operationName,
-      );
+      final result = await context.graphQLStore.mutate(
+          mutation: UpdateMoveMutation(variables: variables),
+          broadcastQueryIds: [kUserCustomMovesQuery]);
 
-      if (result.data == null || result.hasException) {
+      if (result.hasErrors) {
         context.showToast(
-            message: 'Sorry, it went wrong, changes not saved!', isError: true);
+            message: 'Sorry, it went wrong, changes not saved!',
+            toastType: ToastType.destructive);
       } else {
         context.pop(result: true);
       }
@@ -106,20 +100,14 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
       final variables = CreateMoveArguments(
           data: CreateMoveInput.fromJson(_activeMove!.toJson()));
 
-      final result = await GraphQL.mutateWithQueryUpdate(
-        mutationType: MutationType.create,
-        client: context.graphQLClient,
-        mutationDocument: CreateMoveMutation(variables: variables).document,
-        mutationOperationName:
-            CreateMoveMutation(variables: variables).operationName,
-        mutationVariables: variables.toJson(),
-        queryDocument: UserCustomMovesQuery().document,
-        queryOperationName: UserCustomMovesQuery().operationName,
-      );
+      final result = await context.graphQLStore.create(
+          mutation: CreateMoveMutation(variables: variables),
+          addRefToQueries: [kUserCustomMovesQuery]);
 
-      if (result.data == null || result.hasException) {
+      if (result.hasErrors) {
         context.showToast(
-            message: 'Sorry, it went wrong, changes not saved!', isError: true);
+            message: 'Sorry, it went wrong, changes not saved!',
+            toastType: ToastType.destructive);
       } else {
         context.pop(result: true);
       }
@@ -138,7 +126,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-          leading: NavBarCancelButton(context.pop),
+          customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
           trailing: _formIsDirty
               ? FadeIn(

@@ -7,12 +7,12 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/graphql_client.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
@@ -87,31 +87,29 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   }
 
   Future<void> _saveUrisToDB(String videoUri, String videoThumbUri) async {
-    final String _fragment = '''
-            fragment videoFields on User {
-              introVideoUri
-              introVideoThumbUri
-            }
-          ''';
-
     try {
-      final _vars = UpdateUserArguments.fromJson({
-        'data': {'introVideoUri': videoUri, 'introVideoThumbUri': videoThumbUri}
-      });
+      final input = UpdateUserInput()
+        ..introVideoUri = videoUri
+        ..introVideoThumbUri = videoThumbUri;
+      final variables = UpdateUserArguments(data: input);
+      final Map<String, dynamic> varsMap = {
+        'introVideoUri': videoUri,
+        'introVideoThumbUri': videoThumbUri
+      };
 
-      await GraphQL.updateObjectWithOptimisticFragment(
-        client: context.graphQLClient,
-        document: UpdateUserMutation(variables: _vars).document,
-        operationName: UpdateUserMutation(variables: _vars).operationName,
-        variables: _vars.toJson(),
-        fragment: _fragment,
-        objectId: GetIt.I<AuthBloc>().authedUser!.id,
-        objectType: 'User',
-        optimisticData: _vars.data.toJson(),
-        onCompleted: (_) => widget.onUploadSuccess != null
-            ? widget.onUploadSuccess!(videoUri, videoThumbUri)
-            : null,
-      );
+      await context.graphQLStore.mutate(
+          mutation: UpdateUserMutation(variables: variables),
+          customVariablesMap: {
+            'data': varsMap
+          },
+          broadcastQueryIds: [
+            kAuthedUserQuery
+          ],
+          optimisticData: {
+            '__typename': 'User',
+            'id': GetIt.I<AuthBloc>().authedUser!.id,
+            ...varsMap
+          });
     } catch (e) {
       print(e.toString());
       await context.showErrorAlert(e.toString());

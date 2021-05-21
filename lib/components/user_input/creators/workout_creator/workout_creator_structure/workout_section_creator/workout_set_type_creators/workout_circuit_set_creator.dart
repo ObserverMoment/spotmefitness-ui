@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_definition.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
@@ -127,16 +129,13 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-              pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-              sectionIndex: widget.sectionIndex,
-              setIndex: widget.setIndex,
-              workoutMoveIndex: _sortedWorkoutMoves.length,
-              // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
-              ignoreReps: _sortedWorkoutMoves.isEmpty),
-        ),
+        builder: (context) => WorkoutMoveCreator(
+            pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+            saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+                widget.sectionIndex, widget.setIndex, workoutMove),
+            workoutMoveIndex: _sortedWorkoutMoves.length,
+            // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
+            ignoreReps: _sortedWorkoutMoves.isEmpty),
       ),
     );
   }
@@ -146,17 +145,14 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-              workoutMove: workoutMove,
-              pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-              sectionIndex: widget.sectionIndex,
-              setIndex: widget.setIndex,
-              workoutMoveIndex: workoutMove.sortPosition,
-              // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
-              ignoreReps: _sortedWorkoutMoves.length == 1),
-        ),
+        builder: (context) => WorkoutMoveCreator(
+            workoutMove: workoutMove,
+            pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+            saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
+                widget.sectionIndex, widget.setIndex, workoutMove),
+            workoutMoveIndex: workoutMove.sortPosition,
+            // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
+            ignoreReps: _sortedWorkoutMoves.length == 1),
       ),
     );
   }
@@ -195,12 +191,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
     final isRest = _sortedWorkoutMoves.length == 1 &&
         _sortedWorkoutMoves[0].move.id == kRestMoveId;
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -222,17 +213,19 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
                     SizedBox(
                       width: 10,
                     ),
-                    MiniButton(
+                    BorderButton(
+                        mini: true,
                         text: _buildStationTimeText(),
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
-                                duration: _workoutSet.duration!,
-                                updateDuration: (seconds) => context
+                                duration:
+                                    Duration(seconds: _workoutSet.duration!),
+                                updateDuration: (duration) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(
                                         widget.sectionIndex,
                                         widget.setIndex,
-                                        {'duration': seconds})))),
+                                        {'duration': duration.inSeconds})))),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -244,33 +237,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
                               fontSize: FONTSIZE.SMALL,
                             ),
                           ),
-                        if (_sortedWorkoutMoves.length > 3)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Tag(
-                              tag: 'GIANTSET',
-                              color: Styles.colorThree,
-                              textColor: Styles.white,
-                            ),
-                          )
-                        else if (_sortedWorkoutMoves.length == 3)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Tag(
-                              tag: 'TRISET',
-                              color: Styles.colorThree,
-                              textColor: Styles.white,
-                            ),
-                          )
-                        else if (_sortedWorkoutMoves.length == 2)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Tag(
-                              tag: 'SUPERSET',
-                              color: Styles.colorThree,
-                              textColor: Styles.white,
-                            ),
-                          )
+                        WorkoutSetDefinition(_workoutSet)
                       ],
                     ),
                   ],
@@ -304,7 +271,8 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
             Column(
               children: [
                 if (!_showFullSetInfo)
-                  CommaSeparatedMovesList(_sortedWorkoutMoves)
+                  CommaSeparatedList(
+                      _sortedWorkoutMoves.map((wm) => wm.move.name).toList())
                 else
                   Column(
                     children: [
@@ -313,7 +281,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
                         curve: Curves.easeInOut,
                         height: _sortedWorkoutMoves.length *
                             kWorkoutMoveListItemHeight,
-                        child: ReorderableListView.builder(
+                        child: material.ReorderableListView.builder(
                             proxyDecorator: (child, index, animation) =>
                                 DraggedItem(child: child),
                             shrinkWrap: true,

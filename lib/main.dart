@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -12,27 +12,19 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initHiveForFlutter();
+  await Hive.initFlutter();
   await Hive.openBox(kSettingsHiveBoxName);
+  await Hive.openBox(GraphQLStore.boxName);
 
-  final cache = Hive.box(HiveStore.defaultBoxName);
-
-  for (String key in cache.keys) {
-    // print(key);
-    if (key == 'Query') {
-      print(cache.get(key));
-    }
-    if (key.contains('Workout:')) {
-      print(key);
-      print(cache.get(key));
-    }
-  }
+  /// TODO: Remove this before pushing anything to staging.
+  Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();
 

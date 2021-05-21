@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/comma_separated_moves_list.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
@@ -121,14 +122,11 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: _sortedWorkoutMoves.length,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+          saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: _sortedWorkoutMoves.length,
         ),
       ),
     );
@@ -139,15 +137,12 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutMoveCreator(
-            workoutMove: workoutMove,
-            pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-            sectionIndex: widget.sectionIndex,
-            setIndex: widget.setIndex,
-            workoutMoveIndex: workoutMove.sortPosition,
-          ),
+        builder: (context) => WorkoutMoveCreator(
+          workoutMove: workoutMove,
+          pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+          saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
+              widget.sectionIndex, widget.setIndex, workoutMove),
+          workoutMoveIndex: workoutMove.sortPosition,
         ),
       ),
     );
@@ -184,12 +179,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         children: [
           Padding(
@@ -200,32 +190,33 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    MiniButton(
+                    BorderButton(
+                        mini: true,
                         text:
                             'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
                         onPressed: () => context.showBottomSheet<int>(
-                                child: NumberInputModal<int>(
+                                child: NumberInputModalInt(
                               value: _workoutSet.rounds,
-                              // Need to cast to dynamic because of this.
-                              // https://github.com/dart-lang/sdk/issues/32042
-                              saveValue: <int>(dynamic r) => context
+                              saveValue: (r) => context
                                   .read<WorkoutCreatorBloc>()
                                   .editWorkoutSet(widget.sectionIndex,
                                       widget.setIndex, {'rounds': r}),
                               title: 'How many repeats?',
                             ))),
                     MyText(' within '),
-                    MiniButton(
+                    BorderButton(
+                        mini: true,
                         text: _buildPeriodTimeText(),
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
-                                duration: _workoutSet.duration!,
-                                updateDuration: (seconds) => context
+                                duration:
+                                    Duration(seconds: _workoutSet.duration!),
+                                updateDuration: (duration) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(
                                         widget.sectionIndex,
                                         widget.setIndex,
-                                        {'duration': seconds})))),
+                                        {'duration': duration.inSeconds})))),
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -254,7 +245,8 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
             ),
           ),
           if (!_showFullSetInfo)
-            CommaSeparatedMovesList(_sortedWorkoutMoves)
+            CommaSeparatedList(
+                _sortedWorkoutMoves.map((wm) => wm.move.name).toList())
           else
             Column(
               children: [
@@ -263,7 +255,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                   curve: Curves.easeInOut,
                   height:
                       _sortedWorkoutMoves.length * kWorkoutMoveListItemHeight,
-                  child: ReorderableListView.builder(
+                  child: material.ReorderableListView.builder(
                       proxyDecorator: (child, index, animation) =>
                           DraggedItem(child: child),
                       shrinkWrap: true,

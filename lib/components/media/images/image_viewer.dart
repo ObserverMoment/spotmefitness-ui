@@ -69,9 +69,8 @@ class FullScreenImageViewer extends StatelessWidget {
           ),
         ),
         child: PhotoView(
+          backgroundDecoration: BoxDecoration(color: context.theme.background),
           imageProvider: UploadcareImageProvider(uri),
-          heroAttributes:
-              const PhotoViewHeroAttributes(tag: kFullScreenImageViewerHeroTag),
         ));
   }
 }

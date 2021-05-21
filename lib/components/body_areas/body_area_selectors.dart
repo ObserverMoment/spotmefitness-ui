@@ -10,12 +10,15 @@ class BodyAreaSelectorAndMoveScoreIndicator extends StatelessWidget {
   final List<BodyArea> allBodyAreas;
   final List<BodyAreaMoveScore> bodyAreaMoveScores;
   final bool indicatePercentWithColor;
+  final double height;
+
   BodyAreaSelectorAndMoveScoreIndicator(
       {required this.handleTapBodyArea,
       required this.bodyAreaMoveScores,
       required this.frontBack,
       required this.allBodyAreas,
-      required this.indicatePercentWithColor});
+      required this.indicatePercentWithColor,
+      required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +26,16 @@ class BodyAreaSelectorAndMoveScoreIndicator extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         TargetedBodyAreasScoreIndicator(
-          bodyAreaMoveScores: bodyAreaMoveScores,
-          frontBack: frontBack,
-          allBodyAreas: allBodyAreas,
-          indicatePercentWithColor: indicatePercentWithColor,
-        ),
+            bodyAreaMoveScores: bodyAreaMoveScores,
+            frontBack: frontBack,
+            allBodyAreas: allBodyAreas,
+            indicatePercentWithColor: indicatePercentWithColor,
+            height: height),
         BodyAreaSelectorOverlay(
-          frontBack: frontBack,
-          allBodyAreas: allBodyAreas,
-          onTapBodyArea: handleTapBodyArea,
-        )
+            frontBack: frontBack,
+            allBodyAreas: allBodyAreas,
+            onTapBodyArea: handleTapBodyArea,
+            height: height)
       ],
     );
   }
@@ -44,12 +47,14 @@ class BodyAreaSelectorIndicator extends StatelessWidget {
   final BodyAreaFrontBack frontBack;
   final List<BodyArea> allBodyAreas;
   final List<BodyArea> selectedBodyAreas;
-  BodyAreaSelectorIndicator({
-    required this.handleTapBodyArea,
-    required this.selectedBodyAreas,
-    required this.frontBack,
-    required this.allBodyAreas,
-  });
+  final double height;
+
+  BodyAreaSelectorIndicator(
+      {required this.handleTapBodyArea,
+      required this.selectedBodyAreas,
+      required this.frontBack,
+      required this.allBodyAreas,
+      required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +62,15 @@ class BodyAreaSelectorIndicator extends StatelessWidget {
       alignment: Alignment.topCenter,
       children: [
         TargetedBodyAreasSelectedIndicator(
-          frontBack: frontBack,
-          allBodyAreas: allBodyAreas,
-          selectedBodyAreas: selectedBodyAreas,
-        ),
+            frontBack: frontBack,
+            allBodyAreas: allBodyAreas,
+            selectedBodyAreas: selectedBodyAreas,
+            height: height),
         BodyAreaSelectorOverlay(
-          frontBack: frontBack,
-          allBodyAreas: allBodyAreas,
-          onTapBodyArea: handleTapBodyArea,
-        )
+            frontBack: frontBack,
+            allBodyAreas: allBodyAreas,
+            onTapBodyArea: handleTapBodyArea,
+            height: height)
       ],
     );
   }

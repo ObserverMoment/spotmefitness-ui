@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -11,12 +10,14 @@ import 'package:spotmefitness_ui/components/user_input/creators/custom_move_crea
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/screens/move_filters_screen.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
 
 /// The user is required to select a move before moving on to the workoutMove creator.
 /// Unlike some other selectors this runs callback immediately on press.
@@ -32,7 +33,6 @@ class MoveSelector extends StatefulWidget {
 class _MoveSelectorState extends State<MoveSelector> {
   /// 0 is standard moves, 1 is custom moves.
   int _activeTabIndex = 0;
-  String _textFilter = '';
 
   Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();
@@ -61,23 +61,19 @@ class _MoveSelectorState extends State<MoveSelector> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: QueryResponseBuilder(
-          options: QueryOptions(
-              document: StandardMovesQuery().document,
-              fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (standardMovesResult, {refetch, fetchMore}) {
-            return QueryResponseBuilder(
-                options: QueryOptions(
-                    document: UserCustomMovesQuery().document,
-                    fetchPolicy: FetchPolicy.cacheAndNetwork),
-                builder: (customMovesResult, {refetch, fetchMore}) {
-                  final standardMoves = StandardMoves$Query.fromJson(
-                          standardMovesResult.data ?? {})
-                      .standardMoves;
+      child: QueryObserver<StandardMoves$Query, json.JsonSerializable>(
+          key: Key('MoveSelector - ${StandardMovesQuery().operationName}'),
+          query: StandardMovesQuery(),
+          fetchPolicy: QueryFetchPolicy.storeFirst,
+          builder: (standardMovesData) {
+            return QueryObserver<UserCustomMoves$Query, json.JsonSerializable>(
+                key: Key(
+                    'MoveSelector - ${UserCustomMovesQuery().operationName}'),
+                query: UserCustomMovesQuery(),
+                builder: (customMovesData) {
+                  final standardMoves = standardMovesData.standardMoves;
 
-                  final customMoves = UserCustomMoves$Query.fromJson(
-                          customMovesResult.data ?? {})
-                      .userCustomMoves;
+                  final customMoves = customMovesData.userCustomMoves;
 
                   final displayMoves =
                       _activeTabIndex == 0 ? standardMoves : customMoves;
@@ -107,6 +103,13 @@ class _MoveSelectorState extends State<MoveSelector> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
+                                  FilterButton(
+                                    hasActiveFilters:
+                                        moveFiltersBloc.hasActiveFilters,
+                                    onPressed: () => context.push(
+                                        child: MoveFiltersScreen()),
+                                  ),
+                                  SizedBox(width: 4),
                                   OpenTextSearchButton(
                                     onPressed: () => context.push(
                                         fullscreenDialog: true,
@@ -118,13 +121,6 @@ class _MoveSelectorState extends State<MoveSelector> {
                                           selectMove: widget.selectMove,
                                         )),
                                   ),
-                                  SizedBox(width: 4),
-                                  FilterButton(
-                                    hasActiveFilters:
-                                        moveFiltersBloc.hasActiveFilters,
-                                    onPressed: () => context.push(
-                                        child: MoveFiltersScreen()),
-                                  )
                                 ],
                               ),
                               // If showing custom moves.
@@ -359,14 +355,11 @@ class MoveSelectorItem extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Flexible(
-                  child: MyText(
-                    move.name,
-                  ),
+                MyText(
+                  move.name,
                 ),
                 SizedBox(width: 8),
-                Flexible(
-                    child: MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY))
+                MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY)
               ],
             ),
           ),

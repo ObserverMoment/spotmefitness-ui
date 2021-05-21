@@ -19,12 +19,16 @@ import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 class AudioUploader extends StatefulWidget {
   final String? audioUri;
   final Size displaySize;
+  final void Function()? onUploadStart;
   final void Function(String uploadedUri) onUploadSuccess;
   final void Function() removeAudio;
+  final IconData iconData;
   AudioUploader(
       {this.audioUri,
       this.displaySize = const Size(120, 120),
       required this.onUploadSuccess,
+      this.onUploadStart,
+      this.iconData = CupertinoIcons.waveform,
       required this.removeAudio});
 
   @override
@@ -58,6 +62,9 @@ class _AudioUploaderState extends State<AudioUploader> {
   }
 
   Future<void> _uploadFile(File file) async {
+    if (widget.onUploadStart != null) {
+      widget.onUploadStart!();
+    }
     await GetIt.I<UploadcareService>().uploadFile(
         file: SharedFile(file),
         onComplete: (uri) {
@@ -147,7 +154,7 @@ class _AudioUploaderState extends State<AudioUploader> {
             height: widget.displaySize.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: hasAudio ? Styles.colorOne : primary.withOpacity(0.7),
+              color: hasAudio ? Styles.colorOne : primary.withOpacity(0.2),
               boxShadow: [Styles.avatarBoxShadow],
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -158,7 +165,7 @@ class _AudioUploaderState extends State<AudioUploader> {
                       color: background.withOpacity(0.4),
                     )
                   : Icon(
-                      CupertinoIcons.waveform,
+                      widget.iconData,
                       color:
                           hasAudio ? Styles.white : background.withOpacity(0.4),
                       size: widget.displaySize.width / 1.5,

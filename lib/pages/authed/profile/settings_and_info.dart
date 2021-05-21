@@ -10,19 +10,19 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class SettingsAndInfo extends StatefulWidget {
+class SettingsAndInfoPage extends StatefulWidget {
   @override
-  _SettingsAndInfoState createState() => _SettingsAndInfoState();
+  _SettingsAndInfoPageState createState() => _SettingsAndInfoPageState();
 }
 
-class _SettingsAndInfoState extends State<SettingsAndInfo> {
-  bool _clearingCache = false;
+class _SettingsAndInfoPageState extends State<SettingsAndInfoPage> {
+  bool _loading = false;
   Widget _spacer() => SizedBox(height: 10);
 
   Future<void> _cleareCache(BuildContext context) async {
-    setState(() => _clearingCache = true);
-    await context.graphQLClient.resetStore();
-    setState(() => _clearingCache = false);
+    setState(() => _loading = true);
+    await context.graphQLStore.clear();
+    setState(() => _loading = false);
     context.showToast(message: 'Cache cleared.');
   }
 
@@ -32,8 +32,10 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
         CupertinoTheme.of(context).primaryColor.withOpacity(0.70);
 
     return CupertinoPageScaffold(
+      key: Key('SettingsAndInfoPage - CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
-        middle: NavBarTitle('SETTINGS'),
+        key: Key('SettingsAndInfoPage - BasicNavBar'),
+        middle: NavBarTitle('Settings'),
       ),
       child: SingleChildScrollView(
           child: Padding(
@@ -56,7 +58,7 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
                       children: <ThemeName, Widget>{
                         ThemeName.dark: Icon(
                           CupertinoIcons.moon_fill,
-                          color: CupertinoColors.black,
+                          color: CupertinoColors.white,
                         ),
                         ThemeName.light: Icon(
                           CupertinoIcons.sun_max_fill,
@@ -106,7 +108,7 @@ class _SettingsAndInfoState extends State<SettingsAndInfo> {
               linkText: 'Clear cache',
               onPress: () => _cleareCache(context),
               icon: Icon(Icons.cached_rounded),
-              loading: _clearingCache,
+              loading: _loading,
             ),
             _spacer(),
             MyText(

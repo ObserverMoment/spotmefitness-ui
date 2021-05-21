@@ -1,3 +1,4 @@
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -21,5 +22,126 @@ class DataUtils {
       bams.score = ((bams.score ~/ totalPoints) * 100);
       return bams;
     }).toList();
+  }
+
+  /// Used when creating or doing a workout.
+  static Duration calculateTimedSectionDuration(WorkoutSection workoutSection) {
+    switch (workoutSection.workoutSectionType.name) {
+      case kHIITCircuitName:
+      case kEMOMName:
+        return Duration(
+            seconds: workoutSection.rounds *
+                workoutSection.workoutSets.sumBy((s) => s.duration!));
+      case kTabataName:
+        return Duration(
+            seconds: workoutSection.rounds *
+                workoutSection.workoutSets.sumBy((workoutSet) =>
+                    workoutSet.rounds *
+                    workoutSet.workoutMoves
+                        .sumBy((wm) => workoutMoveTimeRepsInSeconds(wm))));
+      default:
+        throw Exception(
+            'DataUtils.calculateTimedSectionDuration: ${workoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
+    }
+  }
+
+  /// Used when creating a log.
+  static Duration calculateTimedLoggedSectionDuration(
+      LoggedWorkoutSection loggedWorkoutSection) {
+    switch (loggedWorkoutSection.workoutSectionType.name) {
+      case kHIITCircuitName:
+      case kEMOMName:
+        return Duration(
+            milliseconds: loggedWorkoutSection.roundsCompleted *
+                loggedWorkoutSection.loggedWorkoutSets
+                    .sumBy((s) => s.duration! * 1000));
+      case kTabataName:
+        return Duration(
+            milliseconds: loggedWorkoutSection.roundsCompleted *
+                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
+                    s.roundsCompleted *
+                    s.loggedWorkoutMoves
+                        .sumBy((lwm) => lwm.reps.toInt() * 1000)));
+      default:
+        throw Exception(
+            'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
+    }
+  }
+
+  static int workoutMoveTimeRepsInSeconds(WorkoutMove workoutMove) {
+    switch (workoutMove.timeUnit) {
+      case TimeUnit.hours:
+        return workoutMove.reps.round() * 3600;
+      case TimeUnit.minutes:
+        return workoutMove.reps.round() * 60;
+      case TimeUnit.seconds:
+        return workoutMove.reps.round();
+      default:
+        throw Exception(
+            'DataUtils.workoutMoveTimeRepsInSeconds: ${workoutMove.timeUnit} is not a time unit that we can process.');
+    }
+  }
+
+  /// Time and distance moves: a workoutMove counts as one 'rep'.
+  static int totalRepsPerSectionRound<T>(T section) {
+    assert(section is WorkoutSection || section is LoggedWorkoutSection,
+        'DataUtils.totalRepsPerSectionRound: section must (currently) be WorkoutSection or LoggedWorkoutSection.');
+    if (section is WorkoutSection) {
+      return section.workoutSets.fold(0, (sectionAcum, nextSet) {
+        return sectionAcum +
+            nextSet.rounds *
+                nextSet.workoutMoves.fold(0, (setAcum, nextMove) {
+                  if ([
+                    WorkoutMoveRepType.time,
+                    WorkoutMoveRepType.distance,
+                    WorkoutMoveRepType.artemisUnknown
+                  ].contains(nextMove.repType)) {
+                    return setAcum + 1;
+                  } else {
+                    return setAcum + nextMove.reps.round();
+                  }
+                });
+      });
+    } else {
+      return (section as LoggedWorkoutSection).loggedWorkoutSets.fold(0,
+          (sectionAcum, nextSet) {
+        return sectionAcum +
+            nextSet.roundsCompleted *
+                nextSet.loggedWorkoutMoves.fold(0, (setAcum, nextMove) {
+                  if ([
+                    WorkoutMoveRepType.time,
+                    WorkoutMoveRepType.distance,
+                    WorkoutMoveRepType.artemisUnknown
+                  ].contains(nextMove.repType)) {
+                    return setAcum + 1;
+                  } else {
+                    return setAcum + nextMove.reps.round();
+                  }
+                });
+      });
+    }
+  }
+
+  static List<BodyArea> bodyAreasInWorkoutSection(WorkoutSection section) {
+    List<BodyArea> bodyAreas = [];
+    for (final s in section.workoutSets) {
+      for (final m in s.workoutMoves) {
+        bodyAreas.addAll(
+            m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
+      }
+    }
+    return bodyAreas;
+  }
+
+  static List<BodyArea> bodyAreasInLoggedWorkoutSection(
+      LoggedWorkoutSection section) {
+    List<BodyArea> bodyAreas = [];
+    for (final s in section.loggedWorkoutSets) {
+      for (final m in s.loggedWorkoutMoves) {
+        bodyAreas.addAll(
+            m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
+      }
+    }
+    return bodyAreas;
   }
 }

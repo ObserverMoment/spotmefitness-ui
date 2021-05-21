@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_definition.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -40,32 +40,6 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
     }
   }
 
-  Widget _buildSetDefinition() {
-    final int length = workoutSet.workoutMoves.length;
-    return length > 3
-        ? MyText(
-            'GIANTSET',
-            color: Styles.colorTwo,
-            size: FONTSIZE.TINY,
-            weight: FontWeight.bold,
-          )
-        : length == 3
-            ? MyText(
-                'TRISET',
-                color: Styles.colorTwo,
-                size: FONTSIZE.TINY,
-                weight: FontWeight.bold,
-              )
-            : length == 2
-                ? MyText(
-                    'SUPERSET',
-                    color: Styles.colorTwo,
-                    size: FONTSIZE.TINY,
-                    weight: FontWeight.bold,
-                  )
-                : Container();
-  }
-
   @override
   Widget build(BuildContext context) {
     final showRounds = (workoutSet.rounds > 1 ||
@@ -80,7 +54,7 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
           : MainAxisAlignment.spaceBetween,
       children: [
         if (showRounds) MyText(_buildMainText()),
-        if (showSetDef) _buildSetDefinition()
+        if (showSetDef) WorkoutSetDefinition(workoutSet)
       ],
     );
   }

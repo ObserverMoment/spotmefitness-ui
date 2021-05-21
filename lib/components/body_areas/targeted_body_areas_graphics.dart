@@ -30,7 +30,7 @@ class TargetedBodyAreasScoreIndicator extends StatelessWidget {
       required this.bodyAreaMoveScores,
       required this.frontBack,
       required this.allBodyAreas,
-      this.height = 350,
+      required this.height,
       this.indicatePercentWithColor = false});
 
   Color calculateColorBasedOnScore(BuildContext context, BodyArea bodyArea) {

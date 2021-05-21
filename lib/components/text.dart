@@ -60,7 +60,11 @@ class H1 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
   final Color? color;
-  H1(this.text, {this.textAlign = TextAlign.start, this.color});
+  final TextOverflow overflow;
+  H1(this.text,
+      {this.textAlign = TextAlign.start,
+      this.color,
+      this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
     return MyText(text,
@@ -68,7 +72,8 @@ class H1 extends StatelessWidget {
         textAlign: textAlign,
         size: FONTSIZE.HUGE,
         lineHeight: 1.6,
-        weight: FontWeight.bold);
+        weight: FontWeight.bold,
+        overflow: TextOverflow.ellipsis);
   }
 }
 
@@ -76,7 +81,11 @@ class H2 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
   final Color? color;
-  H2(this.text, {this.textAlign = TextAlign.start, this.color});
+  final TextOverflow overflow;
+  H2(this.text,
+      {this.textAlign = TextAlign.start,
+      this.color,
+      this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
     return MyText(text,
@@ -84,7 +93,8 @@ class H2 extends StatelessWidget {
         textAlign: textAlign,
         size: FONTSIZE.LARGE,
         lineHeight: 1.6,
-        weight: FontWeight.bold);
+        weight: FontWeight.bold,
+        overflow: TextOverflow.ellipsis);
   }
 }
 
@@ -92,15 +102,41 @@ class H3 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
   final Color? color;
-  H3(this.text, {this.textAlign = TextAlign.start, this.color});
+  final TextOverflow overflow;
+  H3(this.text,
+      {this.textAlign = TextAlign.start,
+      this.color,
+      this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
-    return MyText(text,
-        color: color,
-        textAlign: textAlign,
-        size: FONTSIZE.BIG,
-        lineHeight: 1.6,
-        weight: FontWeight.bold);
+    return MyText(
+      text,
+      color: color,
+      textAlign: textAlign,
+      size: FONTSIZE.BIG,
+      lineHeight: 1.6,
+      weight: FontWeight.bold,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+/// Use top left of a top nav bar in an IOs-ish style.
+class NavBarLargeTitle extends StatelessWidget {
+  final String title;
+  NavBarLargeTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        H1(
+          title,
+          textAlign: TextAlign.start,
+        ),
+      ],
+    );
   }
 }
 

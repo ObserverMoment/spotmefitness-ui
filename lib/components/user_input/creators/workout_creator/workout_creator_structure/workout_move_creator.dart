@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -10,7 +9,6 @@ import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selec
 import 'package:spotmefitness_ui/components/user_input/selectors/move_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -26,16 +24,14 @@ class FixedTimeReps {
 /// Handles state internally the user is ready to save it and add it to the section.
 class WorkoutMoveCreator extends StatefulWidget {
   final String? pageTitle;
-  final int sectionIndex;
-  final int setIndex;
   final int workoutMoveIndex;
   final WorkoutMove? workoutMove;
   final bool ignoreReps;
   final FixedTimeReps? fixedTimeReps;
+  final void Function(WorkoutMove workoutMove) saveWorkoutMove;
   WorkoutMoveCreator(
-      {required this.sectionIndex,
-      required this.setIndex,
-      required this.workoutMoveIndex,
+      {required this.workoutMoveIndex,
+      required this.saveWorkoutMove,
       this.pageTitle,
       this.ignoreReps = false,
       this.fixedTimeReps,
@@ -46,7 +42,7 @@ class WorkoutMoveCreator extends StatefulWidget {
 }
 
 class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
-  late WorkoutCreatorBloc _bloc;
+  // late WorkoutCreatorBloc _bloc;
   late PageController _pageController;
   WorkoutMove? _activeWorkoutMove;
 
@@ -56,7 +52,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     _activeWorkoutMove = widget.workoutMove != null
         ? WorkoutMove.fromJson(widget.workoutMove!.toJson())
         : null;
-    _bloc = context.read<WorkoutCreatorBloc>();
+    // _bloc = context.read<WorkoutCreatorBloc>();
     _pageController =
         PageController(initialPage: widget.workoutMove == null ? 0 : 1);
     _pageController.addListener(() {
@@ -90,6 +86,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
           : _activeWorkoutMove?.timeUnit ?? TimeUnit.seconds
       ..loadAmount = 0
       ..move = move;
+
     _pageController.toPage(1);
     setState(() {});
   }
@@ -136,14 +133,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
       _activeWorkoutMove!.loadAmount =
           _workoutMoveNeedsLoad() ? _activeWorkoutMove!.loadAmount : 0;
 
-      // Check if this is a create or an edit op.
-      if (widget.workoutMove != null) {
-        _bloc.editWorkoutMove(
-            widget.sectionIndex, widget.setIndex, _activeWorkoutMove!);
-      } else {
-        _bloc.createWorkoutMove(
-            widget.sectionIndex, widget.setIndex, _activeWorkoutMove!);
-      }
+      widget.saveWorkoutMove(_activeWorkoutMove!);
     }
     context.pop();
   }
@@ -202,7 +192,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-        leading: NavBarCancelButton(context.pop),
+        customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),
       ),
@@ -229,7 +219,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                MiniButton(
+                                BorderButton(
+                                    mini: true,
                                     prefix: Icon(
                                       CupertinoIcons.arrow_left_right_square,
                                       color: context.theme.background,
@@ -244,11 +235,14 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    H2(_activeWorkoutMove!.move.name),
+                                    Flexible(
+                                        child:
+                                            H3(_activeWorkoutMove!.move.name)),
                                     SizedBox(
                                       width: 16,
                                     ),
-                                    MiniButton(
+                                    BorderButton(
+                                        mini: true,
                                         prefix: Icon(
                                           CupertinoIcons.arrow_left_right,
                                           size: 20,
@@ -270,6 +264,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                       if (!widget.ignoreReps &&
                                           widget.fixedTimeReps == null)
                                         RepPickerDisplay(
+                                          expandPopup: true,
                                           reps: _activeWorkoutMove!.reps,
                                           validRepTypes: _activeWorkoutMove!
                                               .move.validRepTypes,
@@ -298,15 +293,15 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                       if (_showLoadPicker())
                                         FadeIn(
                                           child: LoadPickerDisplay(
+                                            expandPopup: true,
                                             loadAmount:
                                                 _activeWorkoutMove!.loadAmount,
                                             loadUnit:
                                                 _activeWorkoutMove!.loadUnit,
-                                            updateLoadAmount: (loadAmount) =>
-                                                _updateWorkoutMove(
-                                                    {'loadAmount': loadAmount}),
-                                            updateLoadUnit: (loadUnit) =>
-                                                _updateWorkoutMove({
+                                            updateLoad:
+                                                (loadAmount, loadUnit) =>
+                                                    _updateWorkoutMove({
+                                              'loadAmount': loadAmount,
                                               'loadUnit': loadUnit.apiValue
                                             }),
                                           ),

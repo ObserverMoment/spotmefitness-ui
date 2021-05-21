@@ -89,7 +89,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           imageUri: _workout.coverImageUri,
                           onUploadSuccess: (uri) =>
                               _updateWorkoutData({'coverImageUri': uri}),
-                          removeImage: () =>
+                          removeImage: (_) =>
                               _updateWorkoutData({'coverImageUri': null}),
                         ),
                         MyText(
@@ -104,11 +104,14 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           displaySize: _thumbSize,
                           videoUri: _workout.introVideoUri,
                           videoThumbUri: _workout.introVideoThumbUri,
-                          onUploadSuccess: (video, thumb) =>
-                              _updateWorkoutData({
-                            'introVideoUri': video,
-                            'introVideoThumbUri': thumb
-                          }),
+                          onUploadStart: () => _bloc.setUploadingMedia(true),
+                          onUploadSuccess: (video, thumb) {
+                            _updateWorkoutData({
+                              'introVideoUri': video,
+                              'introVideoThumbUri': thumb
+                            });
+                            _bloc.setUploadingMedia(false);
+                          },
                           removeVideo: () => _updateWorkoutData({
                             'introVideoUri': null,
                             'introVideoThumbUri': null
@@ -125,9 +128,13 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                         AudioUploader(
                           displaySize: _thumbSize,
                           audioUri: _workout.introAudioUri,
-                          onUploadSuccess: (uri) => _updateWorkoutData({
-                            'introAudioUri': uri,
-                          }),
+                          onUploadStart: () => _bloc.setUploadingMedia(true),
+                          onUploadSuccess: (uri) {
+                            _updateWorkoutData({
+                              'introAudioUri': uri,
+                            });
+                            _bloc.setUploadingMedia(false);
+                          },
                           removeAudio: () => _updateWorkoutData({
                             'introAudioUri': null,
                           }),
@@ -172,12 +179,15 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 displaySize: _thumbSize,
                                 videoUri: section.introVideoUri,
                                 videoThumbUri: section.introVideoThumbUri,
-                                onUploadSuccess: (video, thumb) =>
-                                    _updateWorkoutSection(
-                                        section.sortPosition, {
-                                  'introVideoUri': video,
-                                  'introVideoThumbUri': thumb
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (video, thumb) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'introVideoUri': video,
+                                    'introVideoThumbUri': thumb
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeVideo: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'introVideoUri': null,
@@ -196,12 +206,15 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 displaySize: _thumbSize,
                                 videoUri: section.classVideoUri,
                                 videoThumbUri: section.classVideoThumbUri,
-                                onUploadSuccess: (video, thumb) =>
-                                    _updateWorkoutSection(
-                                        section.sortPosition, {
-                                  'classVideoUri': video,
-                                  'classVideoThumbUri': thumb
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (video, thumb) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'classVideoUri': video,
+                                    'classVideoThumbUri': thumb
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeVideo: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'classVideoUri': null,
@@ -220,12 +233,15 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                 displaySize: _thumbSize,
                                 videoUri: section.outroVideoUri,
                                 videoThumbUri: section.outroVideoThumbUri,
-                                onUploadSuccess: (video, thumb) =>
-                                    _updateWorkoutSection(
-                                        section.sortPosition, {
-                                  'outroVideoUri': video,
-                                  'outroVideoThumbUri': thumb
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (video, thumb) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'outroVideoUri': video,
+                                    'outroVideoThumbUri': thumb
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeVideo: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'outroVideoUri': null,
@@ -249,10 +265,14 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                               AudioUploader(
                                 displaySize: _thumbSize,
                                 audioUri: section.introAudioUri,
-                                onUploadSuccess: (uri) => _updateWorkoutSection(
-                                    section.sortPosition, {
-                                  'introAudioUri': uri,
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (uri) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'introAudioUri': uri,
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeAudio: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'introAudioUri': null,
@@ -269,10 +289,14 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                               AudioUploader(
                                 displaySize: _thumbSize,
                                 audioUri: section.classAudioUri,
-                                onUploadSuccess: (uri) => _updateWorkoutSection(
-                                    section.sortPosition, {
-                                  'classAudioUri': uri,
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (uri) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'classAudioUri': uri,
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeAudio: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'classAudioUri': null,
@@ -289,10 +313,14 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                               AudioUploader(
                                 displaySize: _thumbSize,
                                 audioUri: section.outroAudioUri,
-                                onUploadSuccess: (uri) => _updateWorkoutSection(
-                                    section.sortPosition, {
-                                  'outroAudioUri': uri,
-                                }),
+                                onUploadStart: () =>
+                                    _bloc.setUploadingMedia(true),
+                                onUploadSuccess: (uri) {
+                                  _updateWorkoutSection(section.sortPosition, {
+                                    'outroAudioUri': uri,
+                                  });
+                                  _bloc.setUploadingMedia(false);
+                                },
                                 removeAudio: () => _updateWorkoutSection(
                                     section.sortPosition, {
                                   'outroAudioUri': null,

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display_header.dart';
@@ -23,12 +24,7 @@ class WorkoutSetDisplay extends StatelessWidget {
     final bool isRestSet = workoutSet.workoutMoves.length == 1 &&
         workoutSet.workoutMoves[0].move.id == kRestMoveId;
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: context.theme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -17,12 +17,10 @@ class RoundPicker extends StatelessWidget {
     return CupertinoButton(
       padding: const EdgeInsets.all(8),
       onPressed: () => context.showBottomSheet<int>(
-          child: NumberInputModal<int>(
+          child: NumberInputModalInt(
         value: rounds,
-        // Need to cast to dynamic because of this.
-        // https://github.com/dart-lang/sdk/issues/32042
-        saveValue: <int>(dynamic v) => saveValue(v),
-        title: 'How many rounds?',
+        saveValue: (v) => saveValue(v),
+        title: modalTitle,
       )),
       child: NumberRoundsIcon(
         rounds,

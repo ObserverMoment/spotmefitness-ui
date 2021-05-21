@@ -1,19 +1,22 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Box with rounded corners. No elevation. Card background color.
 class ContentBox extends StatelessWidget {
   final Widget child;
-  ContentBox({required this.child});
+  final Color? backgroundColor;
+  ContentBox({required this.child, this.backgroundColor});
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       decoration: BoxDecoration(
-          color: context.theme.cardBackground,
+          color: backgroundColor ?? context.theme.cardBackground,
           borderRadius: BorderRadius.circular(8)),
       child: child,
     );
@@ -114,14 +117,10 @@ class StackAndFloatingButton extends StatelessWidget {
       fit: StackFit.expand,
       clipBehavior: Clip.none,
       children: [
-        Padding(
-          /// Padding allow content to scroll up and clear floating button.
-          padding: const EdgeInsets.only(bottom: 54.0),
-          child: child,
-        ),
+        child,
         Positioned(
-            bottom: pageHasBottomNavBar ? 72 : 8,
-            right: 0,
+            bottom: pageHasBottomNavBar ? 82 : 18,
+            right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))
       ],
@@ -139,6 +138,7 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
   final String saveText;
   final Function() handleClose;
   final bool inputValid;
+  final bool loading;
   CreateEditPageNavBar(
       {required this.title,
       required this.formIsDirty,
@@ -146,63 +146,99 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
       this.handleUndo,
       required this.handleSave,
       required this.handleClose,
-      required this.inputValid})
+      required this.inputValid,
+      this.loading = false})
       : super(
           border: null,
           leading:
               Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (formIsDirty && handleUndo != null)
-                FadeIn(
-                  child: TextButton(
-                      destructive: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      text: 'Undo all',
-                      underline: false,
-                      onPressed: handleUndo),
-                ),
-              if (formIsDirty && inputValid)
-                FadeIn(
-                  child: TextButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      confirm: true,
-                      underline: false,
-                      text: saveText,
-                      onPressed: handleSave),
-                ),
-              if (!formIsDirty)
-                TextButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    underline: false,
-                    text: 'Close',
-                    onPressed: handleClose),
-            ],
-          ),
+          trailing: AnimatedSwitcher(
+              duration: Duration(milliseconds: 250),
+              child: loading
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: LoadingDots(
+                            size: 12,
+                            color: Styles.infoBlue,
+                          ),
+                        )
+                      ],
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (formIsDirty && handleUndo != null)
+                          FadeIn(
+                            child: TextButton(
+                                destructive: true,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                text: 'Undo all',
+                                underline: false,
+                                onPressed: handleUndo),
+                          ),
+                        if (formIsDirty && inputValid)
+                          FadeIn(
+                            child: TextButton(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                confirm: true,
+                                underline: false,
+                                text: saveText,
+                                onPressed: handleSave),
+                          ),
+                        if (!formIsDirty)
+                          TextButton(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              underline: false,
+                              text: 'Close',
+                              onPressed: handleClose),
+                      ],
+                    )),
         );
 }
 
 /// Removes the bottom border from all nav bars.
 class BasicNavBar extends CupertinoNavigationBar {
+  final Key? key;
   final bool automaticallyImplyLeading;
-  final Widget? leading;
+  final Widget? customLeading;
   final Widget? middle;
   final Widget? trailing;
   final Color? backgroundColor;
   BasicNavBar(
-      {this.automaticallyImplyLeading = true,
-      this.leading,
+      {this.key,
+      this.automaticallyImplyLeading = true,
+      this.customLeading,
       this.middle,
       this.trailing,
       this.backgroundColor})
       : super(
-            border: null,
-            backgroundColor: backgroundColor,
-            leading: leading,
-            middle: middle,
-            trailing: trailing,
-            automaticallyImplyLeading: automaticallyImplyLeading);
+            key: key,
+            leading: customLeading ?? const _BackButton(),
+            border: null);
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      alignment: Alignment.centerLeft,
+      onPressed: () {
+        Navigator.maybePop(context);
+      },
+      child: Icon(
+        CupertinoIcons.arrow_left,
+        size: 22,
+      ),
+    );
+  }
 }
 
 class ModalCupertinoPageScaffold extends StatelessWidget {
@@ -226,7 +262,7 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
       navigationBar: BasicNavBar(
-        leading: cancel != null ? NavBarCancelButton(cancel!) : null,
+        customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),
         trailing: save != null && validToSave

@@ -7,7 +7,16 @@ class Card extends StatelessWidget {
   final Widget child;
   final double? height;
   final String? backgroundImageUri;
-  Card({this.height, this.backgroundImageUri, required this.child});
+  final Color? backgroundColor;
+  final bool withBoxShadow;
+  final EdgeInsets padding;
+  Card(
+      {this.height,
+      this.backgroundImageUri,
+      required this.child,
+      this.backgroundColor,
+      this.withBoxShadow = true,
+      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = const Dimensions(500, 500);
@@ -21,11 +30,11 @@ class Card extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      padding: padding,
       height: height,
       decoration: BoxDecoration(
-          color: context.theme.cardBackground,
-          boxShadow: [Styles.cardBoxShadow],
+          color: backgroundColor ?? context.theme.cardBackground,
+          boxShadow: withBoxShadow ? [Styles.cardBoxShadow] : null,
           borderRadius: BorderRadius.circular(4),
           image: backgroundImageUri != null
               ? DecorationImage(

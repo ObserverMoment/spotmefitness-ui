@@ -3,7 +3,7 @@
 # If it is needed multiple time then we can extract to a fragment.
 query workoutById($id: ID!) {
   workoutById(id: $id) {
-    ...WorkoutFields
+    ...Workout
     User {
       ...UserSummary
     }

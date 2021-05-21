@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -103,6 +105,8 @@ class PrimaryButton extends StatelessWidget {
     return MyButton(
       text: text,
       onPressed: onPressed,
+      prefix: prefix,
+      suffix: suffix,
       disabled: disabled,
       loading: loading,
       backgroundColor: context.theme.primary,
@@ -140,6 +144,77 @@ class SecondaryButton extends StatelessWidget {
       contentColor: context.theme.primary,
       withMinWidth: withMinWidth,
       border: true,
+    );
+  }
+}
+
+class BorderButton extends StatelessWidget {
+  final Widget? prefix;
+  final String? text;
+  final void Function() onPressed;
+  final bool withBorder;
+  final bool mini;
+  final bool loading;
+  final bool disabled;
+  BorderButton(
+      {this.prefix,
+      this.text,
+      required this.onPressed,
+      this.withBorder = true,
+      this.loading = false,
+      this.disabled = false,
+      this.mini = false})
+      : assert(prefix != null || text != null);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: const EdgeInsets.all(4),
+      pressedOpacity: 0.8,
+      onPressed: disabled ? null : onPressed,
+      child: AnimatedOpacity(
+        opacity: disabled ? 0 : 1,
+        duration: Duration(milliseconds: 250),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border:
+                  withBorder ? Border.all(color: context.theme.primary) : null),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AnimatedOpacity(
+                opacity: loading ? 0 : 1,
+                duration: kStandardAnimationDuration,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (prefix != null) prefix!,
+                    if (text != null && prefix != null)
+                      SizedBox(width: mini ? 4 : 6),
+                    if (text != null)
+                      MyText(
+                        text!,
+                        weight: FontWeight.bold,
+                        size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
+                      )
+                  ],
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: loading ? 1 : 0,
+                duration: kStandardAnimationDuration,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [LoadingDots(size: 14)],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -344,15 +419,10 @@ class PageLink extends StatelessWidget {
   }
 }
 
-/// Small simplified button with little padding. Use for eg filter button.
-class MiniButton extends StatelessWidget {
-  final Widget? prefix;
-  final String? text;
+class DoItButton extends StatelessWidget {
+  final String text;
   final void Function() onPressed;
-  final bool withBorder;
-  MiniButton(
-      {this.prefix, this.text, required this.onPressed, this.withBorder = true})
-      : assert(prefix != null || text != null);
+  DoItButton({this.text = 'Do it!', required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -363,19 +433,25 @@ class MiniButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border:
-                withBorder ? Border.all(color: context.theme.primary) : null),
+          color: Styles.infoBlue,
+          borderRadius: BorderRadius.circular(4),
+        ),
         child: Row(
           children: [
-            if (prefix != null) prefix!,
-            if (text != null && prefix != null) SizedBox(width: 4),
-            if (text != null)
-              MyText(
-                text!,
-                weight: FontWeight.bold,
-                size: FONTSIZE.SMALL,
-              )
+            MyText(
+              text,
+              weight: FontWeight.bold,
+              size: FONTSIZE.SMALL,
+              color: Styles.white,
+            ),
+            SizedBox(
+              width: 3,
+            ),
+            Icon(
+              CupertinoIcons.chevron_right_2,
+              size: 12,
+              color: Styles.white,
+            ),
           ],
         ),
       ),
@@ -392,7 +468,8 @@ class FilterButton extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        MiniButton(
+        BorderButton(
+          mini: true,
           onPressed: onPressed,
           prefix: Icon(
             CupertinoIcons.slider_horizontal_3,
@@ -420,7 +497,8 @@ class OpenTextSearchButton extends StatelessWidget {
   OpenTextSearchButton({required this.onPressed, this.text});
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
+      mini: true,
       onPressed: onPressed,
       text: text,
       prefix: Icon(
@@ -436,7 +514,8 @@ class SortByButton extends StatelessWidget {
   SortByButton({required this.onPressed});
   @override
   Widget build(BuildContext context) {
-    return MiniButton(
+    return BorderButton(
+      mini: true,
       onPressed: () => {},
       prefix: Icon(
         Icons.sort_outlined,
@@ -500,6 +579,21 @@ class NavBarCancelButton extends StatelessWidget {
         child: MyText(
           'Cancel',
           color: Styles.errorRed,
+        ));
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
+class NavBarCloseButton extends StatelessWidget {
+  final void Function() onPressed;
+  NavBarCloseButton(this.onPressed);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: MyText(
+          'Close',
         ));
   }
 }
@@ -585,6 +679,21 @@ class InfoPopupButton extends StatelessWidget {
   }
 }
 
+/// Shows a notes icon and opens the note up full screen onpress.
+class NoteIconViewerButton extends StatelessWidget {
+  final String note;
+  final String modalTitle;
+  NoteIconViewerButton(this.note, {this.modalTitle = 'Note'});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: NotesIcon(),
+        onPressed: () => context.showBottomSheet(
+            expand: true, child: TextViewer(note, modalTitle)));
+  }
+}
+
 /// Circled + should be used in the nav bar only - elsewhere use the uncircled version.
 class CreateIconButton extends StatelessWidget {
   final void Function() onPressed;
@@ -599,5 +708,22 @@ class CreateIconButton extends StatelessWidget {
         size: 25,
       ),
     );
+  }
+}
+
+class CircularCheckbox extends StatelessWidget {
+  final void Function(bool v) onPressed;
+  final bool isSelected;
+  CircularCheckbox({required this.onPressed, required this.isSelected});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 250),
+            child: isSelected
+                ? Icon(CupertinoIcons.checkmark_alt_circle_fill)
+                : Icon(CupertinoIcons.circle)),
+        onPressed: () => onPressed(isSelected ? false : true));
   }
 }

@@ -1,0 +1,42 @@
+fragment LoggedWorkout on LoggedWorkout {
+  __typename
+  id
+  completedOn
+  note
+  name
+}
+
+fragment LoggedWorkoutSection on LoggedWorkoutSection {
+  __typename
+  id
+  name
+  note
+  timecap
+  roundsCompleted
+  repScore
+  timeTakenMs
+  roundTimesMs
+  sortPosition
+}
+
+fragment LoggedWorkoutSet on LoggedWorkoutSet {
+  __typename
+  id
+  note
+  roundsCompleted
+  duration
+  sortPosition
+}
+
+fragment LoggedWorkoutMove on LoggedWorkoutMove {
+  __typename
+  id
+  note
+  sortPosition
+  reps
+  repType
+  distanceUnit
+  loadAmount
+  loadUnit
+  timeUnit
+}

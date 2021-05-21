@@ -1,0 +1,26 @@
+mutation createLoggedWorkoutMove($data: CreateLoggedWorkoutMoveInput!) {
+  createLoggedWorkoutMove(data: $data) {
+    ...LoggedWorkoutMove
+    Equipment {
+      ...Equipment
+    }
+    Move {
+      ...Move
+      MoveType {
+        ...MoveType
+      }
+      BodyAreaMoveScores {
+        score
+        BodyArea {
+          ...BodyArea
+        }
+      }
+      RequiredEquipments {
+        ...Equipment
+      }
+      SelectableEquipments {
+        ...Equipment
+      }
+    }
+  }
+}

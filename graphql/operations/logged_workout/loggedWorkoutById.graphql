@@ -1,0 +1,44 @@
+query loggedWorkoutById($id: ID!) {
+  loggedWorkoutById(id: $id) {
+    ...LoggedWorkout
+    GymProfile {
+      ...GymProfile
+      Equipments {
+        ...Equipment
+      }
+    }
+    LoggedWorkoutSections {
+      ...LoggedWorkoutSection
+      WorkoutSectionType {
+        ...WorkoutSectionType
+      }
+      LoggedWorkoutSets {
+        ...LoggedWorkoutSet
+        LoggedWorkoutMoves {
+          ...LoggedWorkoutMove
+          Equipment {
+            ...Equipment
+          }
+          Move {
+            ...Move
+            MoveType {
+              ...MoveType
+            }
+            BodyAreaMoveScores {
+              score
+              BodyArea {
+                ...BodyArea
+              }
+            }
+            RequiredEquipments {
+              ...Equipment
+            }
+            SelectableEquipments {
+              ...Equipment
+            }
+          }
+        }
+      }
+    }
+  }
+}

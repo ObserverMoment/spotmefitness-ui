@@ -8,7 +8,6 @@ import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
@@ -162,7 +161,8 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-          leading: NavBarCancelButton(() => _handleCancelAndClose(context)),
+          customLeading:
+              NavBarCancelButton(() => _handleCancelAndClose(context)),
           middle: NavBarTitle('Record Mic'),
           trailing: InfoPopupButton(
               infoWidget: MyText('Explains how the audio recorder works'))),

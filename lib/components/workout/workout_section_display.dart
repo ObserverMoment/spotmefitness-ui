@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_view.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
@@ -11,9 +13,12 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutDetailsSection extends StatelessWidget {
@@ -56,15 +61,27 @@ class WorkoutDetailsSection extends StatelessWidget {
     final Set<Equipment> allEquipments = _uniqueEquipments();
     final sortedSets =
         workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          WorkoutSectionTypeTag(
-            workoutSection.workoutSectionType.name,
-            timecap: workoutSection.timecap,
-            fontSize: FONTSIZE.MAIN,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              WorkoutSectionTypeTag(
+                workoutSection.workoutSectionType.name,
+                timecap: workoutSection.timecap,
+                fontSize: FONTSIZE.MAIN,
+              ),
+              if ([kHIITCircuitName, kTabataName, kEMOMName]
+                  .contains(workoutSection.workoutSectionType.name))
+                ContentBox(
+                  child: MyText(
+                      'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}'),
+                ),
+            ],
           ),
           SizedBox(height: 4),
           if (Utils.anyNotNull([
@@ -131,14 +148,23 @@ class WorkoutDetailsSection extends StatelessWidget {
                       NumberRoundsIcon(workoutSection.rounds),
                     ],
                   ),
-                MiniButton(
-                  prefix: SvgPicture.asset(
-                    'assets/body_areas/full_front.svg',
-                    width: 50,
-                    alignment: Alignment.topCenter,
-                    height: 26,
-                    fit: BoxFit.cover,
-                    color: context.theme.primary,
+                BorderButton(
+                  mini: true,
+                  prefix: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/body_areas/body_button.svg',
+                        width: 46,
+                        alignment: Alignment.topCenter,
+                        color: context.theme.primary.withOpacity(0.3),
+                      ),
+                      Icon(
+                        CupertinoIcons.smallcircle_circle_fill,
+                        color: Styles.infoBlue,
+                        size: 24,
+                      ),
+                    ],
                   ),
                   withBorder: false,
                   onPressed: () => context.push(
@@ -175,7 +201,7 @@ class WorkoutDetailsSection extends StatelessWidget {
                 shrinkWrap: true,
                 children: sortedSets
                     .map((workoutSet) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: WorkoutSetDisplay(
                               workoutSet: workoutSet,
                               workoutSectionType:

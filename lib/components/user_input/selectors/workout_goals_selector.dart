@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/query_observer.dart';
 
 class WorkoutGoalsSelector extends StatefulWidget {
   final List<WorkoutGoal> selectedWorkoutGoals;
@@ -41,7 +42,7 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-        leading: CupertinoButton(
+        customLeading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(
               'Done',
@@ -50,18 +51,16 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
             onPressed: () => Navigator.pop(context)),
         middle: NavBarTitle('Workout Goals'),
       ),
-      child: QueryResponseBuilder(
-          options: QueryOptions(
-              document: WorkoutGoalsQuery().document,
-              fetchPolicy: FetchPolicy.cacheFirst),
-          builder: (result, {refetch, fetchMore}) {
-            final _workoutGoals =
-                WorkoutGoals$Query.fromJson(result.data ?? {}).workoutGoals;
-
+      child: QueryObserver<WorkoutGoals$Query, json.JsonSerializable>(
+          key: Key(
+              'WorkoutGoalsSelector - ${WorkoutGoalsQuery().operationName}'),
+          query: WorkoutGoalsQuery(),
+          fetchPolicy: QueryFetchPolicy.storeFirst,
+          builder: (data) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView(
-                children: _workoutGoals
+                children: data.workoutGoals
                     .map((goal) => GestureDetector(
                           onTap: () => _handleUpdateSelected(goal),
                           child: Container(

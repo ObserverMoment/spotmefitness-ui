@@ -1,9 +1,58 @@
+import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+
 const kBodyweightEquipmentId = 'b95da267-c036-4caa-9294-d1fab9b3d2e8';
 const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 
-const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+/// Layout
+const kAssumedDefaultTopNotchHeight = 54.0;
+const kAssumedFloatingButtonHeight = 72.0;
+const kBottomNavBarHeight = 68.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
+
+const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+
+const kStandardAnimationDuration = const Duration(milliseconds: 250);
+
+/// QueryNames
+/// TODO: Move to using new syntax like QueryName().operationName
+const kGymProfilesQuery = 'gymProfiles';
+const kAuthedUserQuery = 'authedUser';
+const kUserWorkoutsQuery = 'userWorkouts';
+const kUserCustomMovesQuery = 'userCustomMoves';
+const kUserWorkoutTagsQuery = 'userWorkoutTags';
+const kWorkoutByIdQuery = 'workoutById';
+const kProgressJournalByIdQuery = 'progressJournalById';
+
+/// Object Type names for the store.
+/// For use in [__typename:id] normalization and store ops.
+const kGymProfileTypename = 'GymProfile';
+const kUserTypename = 'User';
+const kWorkoutTypename = 'Workout';
+const kScheduledWorkoutTypename = 'ScheduledWorkout';
+const kWorkoutSectionTypename = 'WorkoutSection';
+const kWorkoutSetTypename = 'WorkoutSet';
+const kWorkoutMoveTypename = 'WorkoutMove';
+
+const kLoggedWorkoutTypename = 'LoggedWorkout';
+const kLoggedWorkoutSectionTypename = 'LoggedWorkoutSection';
+const kLoggedWorkoutSetTypename = 'LoggedWorkoutSet';
+const kLoggedWorkoutMoveTypename = 'LoggedWorkoutMove';
+
+const kProgressJournalTypename = 'ProgressJournal';
+const kProgressJournalEntryTypename = 'ProgressJournalEntry';
+const kProgressJournalGoalTypename = 'ProgressJournalGoal';
+const kProgressJournalGoalTagTypename = 'ProgressJournalGoalTag';
+
+const kExcludeFromNormalization = [
+  kWorkoutSectionTypename,
+  kWorkoutSetTypename,
+  kWorkoutMoveTypename,
+  kLoggedWorkoutSectionTypename,
+  kLoggedWorkoutSetTypename,
+  kLoggedWorkoutMoveTypename
+];
 
 /// WorkoutSectionTypeNames
 const kFreeSessionName = 'Free Session';
@@ -26,6 +75,10 @@ const String kSettingsHiveBoxName = 'settings_box';
 const String kSettingsHiveBoxThemeKey = 'theme_name';
 const String kSettingsLightThemeKey = 'light';
 const String kSettingsDarkThemeKey = 'dark';
+
+/// Journal Entry Scoring ///
+const Color kGoodScoreColor = Styles.infoBlue;
+final Color kBadScoreColor = Styles.errorRed;
 
 /// Move Filters ///
 const String kSettingsHiveBoxMoveFiltersKey = 'move_filters';

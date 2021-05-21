@@ -3,12 +3,14 @@ import 'dart:ui';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeBloc get theme {
@@ -19,7 +21,7 @@ extension BuildContextExtension on BuildContext {
     return read<ThemeBloc>();
   }
 
-  GraphQLClient get graphQLClient => GraphQLProvider.of(this).value;
+  GraphQLStore get graphQLStore => read<GraphQLStore>();
 
   Future<T?> openBlurModalPopup<T>(Widget child,
       {double? width,
@@ -63,10 +65,38 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-            title: title != null ? H3(title) : null,
+            title:
+                title != null ? H3(title, textAlign: TextAlign.center) : null,
             content: content,
             actions: actions));
     return res;
+  }
+
+  Future<void> showLoadingAlert(String message, {Widget? icon}) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null)
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: icon,
+                  ),
+                H3(message, textAlign: TextAlign.center),
+              ],
+            ),
+            content: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: LoadingCircle(
+                  size: 18,
+                ),
+              ),
+            ),
+            actions: []));
   }
 
   /// Standardise dialog with two options - Confirm or Cancel.
@@ -82,7 +112,9 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: title != null ? H3(title) : null,
+                title: title != null
+                    ? H3(title, textAlign: TextAlign.center)
+                    : null,
                 content: content,
                 actions: [
                   CupertinoDialogAction(
@@ -114,6 +146,7 @@ extension BuildContextExtension on BuildContext {
   Future<T> showConfirmDeleteDialog<T>({
     required String itemType,
     String? itemName,
+    String? message,
     required void Function() onConfirm,
   }) async {
     final BuildContext context = this;
@@ -132,7 +165,9 @@ extension BuildContextExtension on BuildContext {
                         child: MyText('"$itemName"'),
                       ),
                     MyText(
-                      'Are you sure?',
+                      message ?? 'Are you sure?',
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -162,11 +197,13 @@ extension BuildContextExtension on BuildContext {
   Future<T?> showBottomSheet<T>(
       {required Widget child,
       bool expand = false,
+      bool useRootNavigator = false,
       bool showDragHandle = true}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
+        useRootNavigator: useRootNavigator,
         backgroundColor: context.readTheme.modalBackground,
         barrierColor: Styles.black.withOpacity(0.9),
         builder: (context) => showDragHandle
@@ -177,11 +214,44 @@ extension BuildContextExtension on BuildContext {
                     padding: const EdgeInsets.all(8.0),
                     child: DragBarHandle(),
                   ),
-                  Builder(builder: (context) => child),
+                  Flexible(child: Builder(builder: (context) => child)),
                 ],
               )
             : child);
     return result;
+  }
+
+  Future<void> showSuccessAlert(
+    String title,
+    String? message,
+  ) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: Column(
+                  children: [
+                    Icon(
+                      CupertinoIcons.checkmark_alt,
+                      color: Styles.infoBlue,
+                    ),
+                    SizedBox(height: 6),
+                    H3(title),
+                  ],
+                ),
+                content: message != null
+                    ? MyText(
+                        message,
+                        maxLines: 8,
+                        textAlign: TextAlign.center,
+                      )
+                    : null,
+                actions: [
+                  CupertinoDialogAction(
+                    child: MyText('Ok'),
+                    onPressed: () => context.pop(),
+                  ),
+                ]));
   }
 
   Future<void> showErrorAlert(
@@ -196,6 +266,7 @@ extension BuildContextExtension on BuildContext {
                   message,
                   color: Styles.errorRed,
                   maxLines: 8,
+                  textAlign: TextAlign.center,
                 ),
                 actions: [
                   CupertinoDialogAction(
@@ -206,19 +277,27 @@ extension BuildContextExtension on BuildContext {
   }
 
   void showToast(
-          {required String message, Widget? icon, bool isError = false}) =>
+          {required String message,
+          Widget? icon,
+          ToastType toastType = ToastType.standard,
+          bool rootNavigator = false}) =>
       Flushbar(
-        backgroundColor:
-            isError ? Styles.errorRed : CupertinoColors.darkBackgroundGray,
+        backgroundColor: toastType == ToastType.destructive
+            ? Styles.errorRed
+            : toastType == ToastType.success
+                ? Styles.infoBlue
+                : CupertinoColors.darkBackgroundGray,
         icon: icon,
-        maxWidth: 500,
+        maxWidth: 400,
         animationDuration: Duration(milliseconds: 300),
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+        borderRadius: BorderRadius.circular(20),
+        margin: const EdgeInsets.only(bottom: 8, left: 18, right: 18),
         messageText: MyText(
           message,
           color: Styles.white,
           weight: FontWeight.bold,
+          size: FONTSIZE.SMALL,
+          textAlign: TextAlign.center,
         ),
         duration: Duration(seconds: 3),
       )..show(this);

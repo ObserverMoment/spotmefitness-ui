@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -14,7 +13,9 @@ class WorkoutSectionInstructions extends StatelessWidget {
   final int? timecap;
   WorkoutSectionInstructions(
       {required this.typeName, required this.rounds, this.timecap})
-      : assert(typeName != kAMRAPName || timecap != null,
+      : assert(
+            (typeName == kAMRAPName && timecap != null) ||
+                typeName != kAMRAPName,
             'AMRAP requires a timecap, so it cannot be null.');
 
   String _getRoundsText() => '$rounds time${rounds == 1 ? "" : "s"}';
