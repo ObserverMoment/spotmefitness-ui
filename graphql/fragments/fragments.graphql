@@ -59,3 +59,29 @@ fragment UserSummary on UserSummary {
   avatarUri
   displayName
 }
+
+fragment UserBenchmark on UserBenchmark {
+  __typename
+  id
+  createdAt
+  name
+  description
+  reps
+  repType
+  load
+  loadUnit
+  distanceUnit
+  scoreType
+}
+
+fragment UserBenchmarkEntry on UserBenchmarkEntry {
+  __typename
+  id
+  createdAt
+  completedOn
+  score
+  note
+  videoUri
+  videoThumbUri
+  imageUri
+}

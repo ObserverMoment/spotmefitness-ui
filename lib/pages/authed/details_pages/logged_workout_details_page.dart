@@ -17,6 +17,7 @@ import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.d
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
@@ -60,8 +61,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
             mutation: DeleteLoggedWorkoutByIdMutation(
               variables: DeleteLoggedWorkoutByIdArguments(id: id),
             ),
-            removeRefFromQueries: [UserLoggedWorkoutsQuery().operationName],
-            broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName],
+            removeRefFromQueries: [GQLOps.userLoggedWorkoutsQuery],
           );
 
           if (result.hasErrors) {

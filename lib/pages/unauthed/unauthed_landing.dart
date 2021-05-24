@@ -138,7 +138,7 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
                                   fullscreenDialog: true,
                                   builder: (_) => StartTrial())),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 32),
                       ],
                     ))
               ],

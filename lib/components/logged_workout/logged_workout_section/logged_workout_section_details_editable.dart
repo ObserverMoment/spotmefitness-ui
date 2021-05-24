@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/logged_workout/logged_workout_sectio
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_section.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details.page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';

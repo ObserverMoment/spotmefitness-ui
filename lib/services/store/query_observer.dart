@@ -54,7 +54,7 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
         parameterizeQuery: widget.parameterizeQuery);
 
     _store.fetchInitialQuery(
-        id: widget.query.operationName!,
+        id: _observableQuery.id,
         fetchPolicy: widget.fetchPolicy,
         garbageCollectAfterFetch: widget.garbageCollectAfterFetch);
   }
@@ -75,7 +75,7 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
 
   @override
   void dispose() {
-    _store.unregisterObserver(widget.query.operationName!);
+    _store.unregisterObserver(_observableQuery.id);
     super.dispose();
   }
 

@@ -3,24 +3,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/benchmark_card.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
-import 'package:collection/collection.dart';
 
-class RecentJournalEntries extends StatelessWidget {
-  final kJournalEntryCardHeight = 200.0;
+class RecentBenchmarkEntries extends StatelessWidget {
+  final kBenchmarkEntryCardHeight = 100.0;
 
   @override
   Widget build(BuildContext context) {
-    return QueryObserver<UserProgressJournals$Query, json.JsonSerializable>(
-        key: Key(
-            'RecentJournalEntries - ${UserProgressJournalsQuery().operationName}'),
-        query: UserProgressJournalsQuery(),
+    final query =
+        UserBenchmarksQuery(variables: UserBenchmarksArguments(first: 20));
+    return QueryObserver<UserBenchmarks$Query, json.JsonSerializable>(
+        key: Key('RecentBenchmarkEntries - ${query.operationName}'),
+        query: query,
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -28,22 +28,15 @@ class RecentJournalEntries extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
                 child: ShimmerCard(
-                  height: kJournalEntryCardHeight - 30,
+                  height: kBenchmarkEntryCardHeight - 30,
                 ),
               ),
             ),
           ],
         ),
         builder: (data) {
-          final entries = data.userProgressJournals
-              .fold<List<ProgressJournalEntry>>(
-                  [],
-                  (entries, next) =>
-                      [...entries, ...next.progressJournalEntries])
-              .sortedBy<DateTime>((entry) => entry.createdAt)
-              .reversed
-              .toList();
-          return entries.isNotEmpty
+          final benchmarks = data.userBenchmarks;
+          return benchmarks.isNotEmpty
               ? Column(
                   children: [
                     Padding(
@@ -52,12 +45,12 @@ class RecentJournalEntries extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            'Journals',
+                            'Benchmarks',
                             weight: FontWeight.bold,
                           ),
                           TextButton(
                             onPressed: () =>
-                                context.pushRoute(YourProgressJournalsRoute()),
+                                context.pushRoute(YourBenchmarksRoute()),
                             underline: false,
                             text: 'View all',
                           )
@@ -66,16 +59,16 @@ class RecentJournalEntries extends StatelessWidget {
                     ),
                     CarouselSlider.builder(
                       options: CarouselOptions(
-                        height: kJournalEntryCardHeight,
+                        height: kBenchmarkEntryCardHeight,
                         viewportFraction: 0.9,
                         enableInfiniteScroll: false,
                       ),
-                      itemCount: entries.length,
+                      itemCount: benchmarks.length + 1,
                       itemBuilder: (c, i, _) {
-                        if (i == entries.length) {
+                        if (i == benchmarks.length) {
                           return TextButton(
                             onPressed: () =>
-                                context.pushRoute(YourProgressJournalsRoute()),
+                                context.pushRoute(YourBenchmarksRoute()),
                             underline: false,
                             text: 'View all',
                             suffix: Icon(CupertinoIcons.arrow_right_square),
@@ -86,13 +79,13 @@ class RecentJournalEntries extends StatelessWidget {
                             padding: const EdgeInsets.all(6.0),
                             child: GestureDetector(
                                 onTap: () => context.navigateTo(
-                                    ProgressJournalDetailsRoute(
-                                        id: data.userProgressJournals
+                                    BenchmarkDetailsRoute(
+                                        id: data.userBenchmarks
                                             .firstWhere((j) => j
-                                                .progressJournalEntries
-                                                .contains(entries[i]))
+                                                .userBenchmarkEntries
+                                                .contains(benchmarks[i]))
                                             .id)),
-                                child: ProgressJournalEntryCard(entries[i])),
+                                child: BenchmarkCard(benchmarks[i])),
                           );
                         }
                       },
@@ -107,13 +100,13 @@ class RecentJournalEntries extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           MyText(
-                            'No recent journal entries',
+                            'No recent benchmark entries',
                             subtext: true,
                           ),
                           CreateTextIconButton(
-                              text: 'Add Journal',
-                              onPressed: () => context
-                                  .pushRoute(YourProgressJournalsRoute()))
+                              text: 'Add Benchmark',
+                              onPressed: () =>
+                                  context.pushRoute(YourBenchmarksRoute()))
                         ],
                       )),
                 );

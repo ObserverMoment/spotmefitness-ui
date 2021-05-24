@@ -13,12 +13,16 @@ import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
 class RecentLoggedWorkouts extends StatelessWidget {
+  final kLoggedWorkoutCardHeight = 240.0;
+
   @override
   Widget build(BuildContext context) {
+    final query = UserLoggedWorkoutsQuery(
+        variables: UserLoggedWorkoutsArguments(first: 20));
+
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
-        key: Key(
-            'RecentLoggedWorkouts - ${UserLoggedWorkoutsQuery().operationName}'),
-        query: UserLoggedWorkoutsQuery(),
+        key: Key('RecentLoggedWorkouts - ${query.operationName}'),
+        query: query,
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -26,7 +30,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
                 child: ShimmerCard(
-                  height: 200,
+                  height: kLoggedWorkoutCardHeight,
                 ),
               ),
             ),
@@ -37,6 +41,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
               .sortedBy<DateTime>((l) => l.completedOn)
               .reversed
               .toList();
+
           return logs.isNotEmpty
               ? Column(
                   children: [
@@ -46,7 +51,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MyText(
-                            'Latest Logs',
+                            'Logs',
                             weight: FontWeight.bold,
                           ),
                           CreateTextIconButton(
@@ -61,24 +66,34 @@ class RecentLoggedWorkouts extends StatelessWidget {
                         ],
                       ),
                     ),
-                    LayoutBuilder(
-                        builder: (context, constraints) =>
-                            CarouselSlider.builder(
-                              options: CarouselOptions(
-                                height: 240,
-                                viewportFraction: 0.90,
-                                enableInfiniteScroll: false,
-                              ),
-                              itemCount: logs.length,
-                              itemBuilder: (c, i, _) => Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: GestureDetector(
-                                    onTap: () => context.navigateTo(
-                                        LoggedWorkoutDetailsRoute(
-                                            id: logs[i].id)),
-                                    child: LoggedWorkoutCard(logs[i])),
-                              ),
-                            )),
+                    CarouselSlider.builder(
+                      options: CarouselOptions(
+                        height: kLoggedWorkoutCardHeight,
+                        viewportFraction: 0.90,
+                        enableInfiniteScroll: false,
+                      ),
+                      itemCount: logs.length + 1,
+                      itemBuilder: (c, i, _) {
+                        if (i == logs.length) {
+                          return TextButton(
+                            onPressed: () =>
+                                context.pushRoute(YourLoggedWorkoutsRoute()),
+                            underline: false,
+                            text: 'View all',
+                            suffix: Icon(CupertinoIcons.arrow_right_square),
+                            fontSize: FONTSIZE.BIG,
+                          );
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: GestureDetector(
+                                onTap: () => context.navigateTo(
+                                    LoggedWorkoutDetailsRoute(id: logs[i].id)),
+                                child: LoggedWorkoutCard(logs[i])),
+                          );
+                        }
+                      },
+                    )
                   ],
                 )
               : Padding(

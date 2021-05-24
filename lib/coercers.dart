@@ -19,11 +19,11 @@ Map fromGraphQLJsonToDartMap(dynamic data) {
 
 dynamic fromDartMapToGraphQLJson(Map data) => data;
 
-Map? fromGraphQLJsonToDartMapNullable(dynamic? data) {
+Map? fromGraphQLJsonToDartMapNullable(dynamic data) {
   return data != null
       ? Map<String, dynamic>.from(data as Map<dynamic, dynamic>)
       : null;
 }
 
-dynamic? fromDartMapToGraphQLJsonNullable(Map? data) =>
+dynamic fromDartMapToGraphQLJsonNullable(Map? data) =>
     data != null ? data : null;

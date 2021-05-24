@@ -19,16 +19,18 @@ import 'package:spotmefitness_ui/services/utils.dart';
 class YourLoggedWorkoutsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final query =
+        UserLoggedWorkoutsQuery(variables: UserLoggedWorkoutsArguments());
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
-        key: Key(
-            'YourLoggedWorkoutsPage - ${UserLoggedWorkoutsQuery().operationName}'),
-        query: UserLoggedWorkoutsQuery(),
+        key: Key('YourLoggedWorkoutsPage - ${query.operationName}'),
+        query: query,
         loadingIndicator: ShimmerCardList(itemCount: 10),
         builder: (data) {
           final logs = data.userLoggedWorkouts
               .sortedBy<DateTime>((l) => l.completedOn)
               .reversed
               .toList();
+
           return CupertinoPageScaffold(
             key: Key('YourLoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(

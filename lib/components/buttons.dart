@@ -65,7 +65,7 @@ class MyButton extends StatelessWidget {
                           color: contentColor,
                         )
                       : MyText(
-                          text,
+                          text.toUpperCase(),
                           weight: FontWeight.bold,
                           color: contentColor,
                         ),
@@ -195,7 +195,7 @@ class BorderButton extends StatelessWidget {
                       SizedBox(width: mini ? 4 : 6),
                     if (text != null)
                       MyText(
-                        text!,
+                        text!.toUpperCase(),
                         weight: FontWeight.bold,
                         size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
                       )
@@ -313,6 +313,8 @@ class RoundIconButton extends StatelessWidget {
 class TextButton extends StatelessWidget {
   final String text;
   final bool destructive;
+  final Widget? prefix;
+  final Widget? suffix;
   final bool confirm;
   final void Function() onPressed;
   final bool loading;
@@ -323,6 +325,8 @@ class TextButton extends StatelessWidget {
   TextButton(
       {required this.text,
       required this.onPressed,
+      this.prefix,
+      this.suffix,
       this.destructive = false,
       this.confirm = false,
       this.loading = false,
@@ -340,15 +344,31 @@ class TextButton extends StatelessWidget {
         duration: Duration(milliseconds: 300),
         child: loading
             ? LoadingDots()
-            : MyText(text,
-                size: fontSize,
-                weight: FontWeight.bold,
-                decoration: underline! ? TextDecoration.underline : null,
-                color: confirm
-                    ? Styles.infoBlue
-                    : destructive
-                        ? Styles.errorRed
-                        : null),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (prefix != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6.0),
+                      child: prefix,
+                    ),
+                  MyText(text,
+                      size: fontSize,
+                      weight: FontWeight.bold,
+                      decoration: underline! ? TextDecoration.underline : null,
+                      color: confirm
+                          ? Styles.infoBlue
+                          : destructive
+                              ? Styles.errorRed
+                              : null),
+                  if (suffix != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6.0),
+                      child: suffix,
+                    ),
+                ],
+              ),
       ),
     );
   }
@@ -422,7 +442,7 @@ class PageLink extends StatelessWidget {
 class DoItButton extends StatelessWidget {
   final String text;
   final void Function() onPressed;
-  DoItButton({this.text = 'Do it!', required this.onPressed});
+  DoItButton({this.text = 'Do it', required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -433,13 +453,13 @@ class DoItButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: Styles.infoBlue,
+          color: Styles.colorOne,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
           children: [
             MyText(
-              text,
+              text.toUpperCase(),
               weight: FontWeight.bold,
               size: FONTSIZE.SMALL,
               color: Styles.white,
@@ -547,7 +567,7 @@ class CreateTextIconButton extends StatelessWidget {
             ),
             SizedBox(width: 2),
             MyText(
-              text,
+              text.toUpperCase(),
               weight: FontWeight.bold,
             )
           ];

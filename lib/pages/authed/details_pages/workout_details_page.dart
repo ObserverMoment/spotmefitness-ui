@@ -353,9 +353,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         _buildAvatar(workout),
                         Row(
                           children: [
-                            DoItButton(
-                                text: 'Do it!',
-                                onPressed: () => print('do workout')),
+                            DoItButton(onPressed: () => print('do workout')),
                             CupertinoButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () => print('save to collection'),

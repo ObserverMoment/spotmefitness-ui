@@ -1,0 +1,29 @@
+query userBenchmarks($first: Int) {
+  userBenchmarks(first: $first) {
+    ...UserBenchmark
+    Equipment {
+      ...Equipment
+    }
+    Move {
+      ...Move
+      MoveType {
+        ...MoveType
+      }
+      BodyAreaMoveScores {
+        score
+        BodyArea {
+          ...BodyArea
+        }
+      }
+      RequiredEquipments {
+        ...Equipment
+      }
+      SelectableEquipments {
+        ...Equipment
+      }
+    }
+    UserBenchmarkEntries {
+      ...UserBenchmarkEntry
+    }
+  }
+}

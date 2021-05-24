@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 /// Can either create a new logged workout or edit (in real time) and already existing one.
@@ -96,7 +97,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
     final success = context.graphQLStore.writeDataToStore(
         data: loggedWorkout.toJson(),
-        broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName]);
+        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery]);
     return success;
   }
 
@@ -172,7 +173,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore.create(
         mutation: CreateLoggedWorkoutMutation(variables: variables),
-        addRefToQueries: [UserLoggedWorkoutsQuery().operationName]);
+        addRefToQueries: [GQLOps.userLoggedWorkoutsQuery]);
 
     return result;
   }
@@ -199,7 +200,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         customVariablesMap: {
           'data': {'id': loggedWorkout.id, 'gymProfile': profile?.toJson()}
         },
-        broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName],
+        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.
@@ -228,7 +229,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
             'completedOn': completedOn.millisecondsSinceEpoch
           }
         },
-        broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName],
+        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.
@@ -254,7 +255,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         customVariablesMap: {
           'data': {'id': loggedWorkout.id, 'note': note}
         },
-        broadcastQueryIds: [UserLoggedWorkoutsQuery().operationName],
+        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.

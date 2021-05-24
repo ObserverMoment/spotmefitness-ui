@@ -65,10 +65,32 @@ class GraphQLStore {
       throw Exception(
           '[query.operationName] cannot be null when registering an observable query.');
     } else {
-      final String id = query.operationName!;
+      final String id = query.variables == null
+          ? query.operationName!
+          : parameterizeQuery
+
+              /// If we want to split instances of the query when the variables change then we set [parameterizeQuery] to true.
+              /// [workoutById({"id":736373-837737-39383})]
+              /// Each time we query a new workoutById (i.e. the [id] variable changes) a new key under the [Query] root will be created. Each workout will be stored and accessible separately.
+              ? getParameterizedQueryId(
+                  query.operationName!, query.getVariablesMap())
+
+              /// For non parametized queries, all instances of the same query should be saved under a single key - regardless of variable changes. Mainly for list type queries which we want to just overwrite with new data when it comes in.
+              /// We need to set all vars to in the varsMap to null like this
+              /// [userLoggedWorkouts({"first":null})]
+              : getParameterizedQueryId(
+                  query.operationName!,
+                  query.getVariablesMap().keys.fold<Map<String, dynamic>>({},
+                      (nulledVars, next) {
+                    nulledVars[next] = null;
+                    return nulledVars;
+                  }));
+
       if (!observableQueries.containsKey(id)) {
         /// No one is listening to this id - create a new stream.
+        /// TODO: Do we need to set a max number of observable queries? Or close some streams if we have too many. What if the user opens up 50 workout details pages in a row - they will have 50 streams open...
         observableQueries[id] = ObservableQuery<TData, TVars>(
+            id: id,
             subject: BehaviorSubject<GraphQLResponse>(),
             query: query,
             parameterize: parameterizeQuery);
@@ -76,6 +98,9 @@ class GraphQLStore {
         // A stream with this id already has one or more listeners.
         // Increment the observer count.
         observableQueries[id]!.observers++;
+        // Overwrite the old query with the most recent one.
+        // This allows for queries which have variables, but which are not being parameterized by them, to get new data and broadcast to a single query.
+        observableQueries[id]!.query = query;
       }
 
       return observableQueries[id]! as ObservableQuery<TData, TVars>;
@@ -140,18 +165,14 @@ class GraphQLStore {
   bool _queryStore(String id) {
     if (!observableQueries.containsKey(id)) {
       print(
-          '_queryStore: QueryNotFoundOrNotInitialized: There is no ObservableQuery with this id: userScheduledWorkouts');
+          '_queryStore: QueryNotFoundOrNotInitialized: There is no ObservableQuery with id: $id');
       return false;
     } else {
       try {
         final observableQuery = getQuerybyId(id);
         final GraphQLQuery query = observableQuery.query;
         // Does a key exist in the store?
-        if (!_hasQueryDataInStore(
-            id,
-            observableQuery.parameterize
-                ? observableQuery.query.variables?.toJson() ?? const {}
-                : null)) {
+        if (!_hasQueryDataInStore(observableQuery.id)) {
           return false;
         }
 
@@ -160,6 +181,7 @@ class GraphQLStore {
             variables: observableQuery.parameterize
                 ? query.variables?.toJson() ?? const {}
                 : const {},
+            typePolicies: _typePolicies,
             document: query.document,
             read: (dataId) => readNormalized(dataId));
 
@@ -181,7 +203,7 @@ class GraphQLStore {
   Future<bool> _queryNetwork(String id) async {
     if (!observableQueries.containsKey(id)) {
       print(
-          '_queryNetwork: QueryNotFoundOrNotInitialized: There is no ObservableQuery with this id: userScheduledWorkouts');
+          '_queryNetwork: QueryNotFoundOrNotInitialized: There is no ObservableQuery with id: $id');
       return false;
     } else {
       final observableQuery = getQuerybyId(id);
@@ -197,7 +219,7 @@ class GraphQLStore {
       } else {
         try {
           normalizeOperation(
-              data: response.data!,
+              data: response.data ?? {},
               document: query.document,
               variables: observableQuery.parameterize
                   ? query.variables?.toJson() ?? const {}
@@ -244,29 +266,6 @@ class GraphQLStore {
   }
 
   Future<MutationResult<TData>>
-      query<TData, TVars extends json.JsonSerializable>(
-          {required GraphQLQuery<TData, TVars> query,
-          List<String> broadcastQueryIds = const []}) async {
-    final response = await execute(query);
-
-    final result = MutationResult<TData>(
-        data: query.parse(response.data ?? {}), errors: response.errors);
-
-    if (!result.hasErrors) {
-      normalizeOperation(
-        data: {query.operationName!: result.data},
-        document: query.document,
-        operationName: query.operationName,
-        write: (dataId, value) => mergeWriteNormalized(dataId, value),
-        read: (dataId) => readNormalized(dataId),
-      );
-      _broadcast(broadcastQueryIds);
-    }
-
-    return result;
-  }
-
-  Future<MutationResult<TData>>
       create<TData, TVars extends json.JsonSerializable>(
           {required GraphQLQuery<TData, TVars> mutation,
           List<String> addRefToQueries = const [],
@@ -280,7 +279,6 @@ class GraphQLStore {
       } else {
         normalizeToStore(
             data: optimisticData,
-            isQuery: false,
             write: mergeWriteNormalized,
             read: readNormalized);
 
@@ -311,10 +309,7 @@ class GraphQLStore {
       final data = response.data?[alias ?? mutation.operationName] ?? {};
 
       normalizeToStore(
-          data: data,
-          isQuery: false,
-          write: mergeWriteNormalized,
-          read: readNormalized);
+          data: data, write: mergeWriteNormalized, read: readNormalized);
 
       _addRefToQueries(data: data, queryIds: addRefToQueries);
     }
@@ -352,7 +347,6 @@ class GraphQLStore {
       /// Immediately write to store, add refs to queries and _broadcast.
       normalizeToStore(
           data: optimisticData,
-          isQuery: false,
           write: mergeWriteNormalized,
           read: readNormalized);
 
@@ -400,10 +394,7 @@ class GraphQLStore {
       final data = response.data?[alias ?? mutation.operationName] ?? {};
 
       normalizeToStore(
-          data: data,
-          isQuery: false,
-          write: mergeWriteNormalized,
-          read: readNormalized);
+          data: data, write: mergeWriteNormalized, read: readNormalized);
 
       if (addRefToQueries.isNotEmpty) {
         _addRefToQueries(data: data, queryIds: addRefToQueries);
@@ -480,10 +471,7 @@ class GraphQLStore {
       List<String> addRefToQueries = const []}) {
     try {
       normalizeToStore(
-          data: data,
-          isQuery: false,
-          write: mergeWriteNormalized,
-          read: readNormalized);
+          data: data, write: mergeWriteNormalized, read: readNormalized);
 
       if (addRefToQueries.isNotEmpty) {
         _addRefToQueries(data: data, queryIds: addRefToQueries);
@@ -594,12 +582,7 @@ class GraphQLStore {
   }
 
   /// Within the root query key - does data for this query exist.
-  bool _hasQueryDataInStore(String queryName, Map<String, dynamic>? variables) {
-    /// Creates the queryKey in the same way an the normalize package does via its [FieldKey] class.
-    /// As this is what is being used by [normalizeOperation] and [denormalizeOperation] to read and write queries from the store.
-    final String queryKey = variables != null
-        ? getParameterizedQueryId(queryName, variables)
-        : queryName;
+  bool _hasQueryDataInStore(String queryKey) {
     return _box.get(_queryRootKey, defaultValue: {})[queryKey] != null;
   }
 
@@ -640,8 +623,20 @@ class GraphQLStore {
     await _box.clear();
   }
 
+  /// An observable query can either have:
+  /// 1. No variables - the id is the [operationName]
+  /// 2. Has variables, but we do not want to store new data each time the variables change - this id has the variables string included but it is set to null. [workoutById({"id":null})]
+  /// 3. Has variables, and we want a new query key for each new variables combination, so each query / variables combination is saved into the store. [workoutById({"id": Workout:9262436-7399290})]
+  String _getObservableQueryId(ObservableQuery observableQuery) {
+    final query = observableQuery.query;
+    return query.variables != null
+        ? getParameterizedQueryId(query.operationName!,
+            observableQuery.parameterize ? query.getVariablesMap() : {})
+        : observableQuery.query.operationName!;
+  }
+
   /// For example [workoutById({"id": id})]
-  /// Same was as the [normalize] package does this.
+  /// Same as the [normalize] package does this.
   String getParameterizedQueryId(
       String queryName, Map<String, dynamic> variables) {
     return '$queryName(${jsonEncode(variables)})';
@@ -660,14 +655,15 @@ class GraphQLStore {
 /// A single stream for a single executable [GraphQLQuery].
 class ObservableQuery<TData, TVars extends json.JsonSerializable> {
   final BehaviorSubject<GraphQLResponse> subject;
-  final GraphQLQuery<TData, TVars> query;
+  late GraphQLQuery<TData, TVars> query;
 
-  /// If true then data is saved under a key which includes the parameters of the query (if they exist).
+  /// If true then data is saved under a key ([id]) which includes the parameters of the query (if they exist).
   /// Example:
   /// [workoutById({"id":null})] when false
   /// [workoutById({"id": Workout:9262436-7399290})] when true
   /// Defaults to false.
   final bool parameterize;
+  final String id;
 
   /// The last result passed into the stream. Useful for initialising stream data in the instance where a [QueryObserver] is listening to an already running stream.
   final GraphQLResponse? latest;
@@ -676,7 +672,8 @@ class ObservableQuery<TData, TVars extends json.JsonSerializable> {
   int observers = 1;
 
   ObservableQuery(
-      {required this.subject,
+      {required this.id,
+      required this.subject,
       required this.query,
       this.latest,
       this.parameterize = false});

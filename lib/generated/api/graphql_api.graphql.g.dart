@@ -3104,6 +3104,312 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+UserBenchmarkEntry _$UserBenchmarkEntryFromJson(Map<String, dynamic> json) {
+  return UserBenchmarkEntry()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..completedOn =
+        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
+    ..score = (json['score'] as num).toDouble()
+    ..note = json['note'] as String?
+    ..videoUri = json['videoUri'] as String?
+    ..videoThumbUri = json['videoThumbUri'] as String?
+    ..imageUri = json['imageUri'] as String?;
+}
+
+Map<String, dynamic> _$UserBenchmarkEntryToJson(UserBenchmarkEntry instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'score': instance.score,
+      'note': instance.note,
+      'videoUri': instance.videoUri,
+      'videoThumbUri': instance.videoThumbUri,
+      'imageUri': instance.imageUri,
+    };
+
+CreateUserBenchmarkEntry$Mutation _$CreateUserBenchmarkEntry$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmarkEntry$Mutation()
+    ..createUserBenchmarkEntry = UserBenchmarkEntry.fromJson(
+        json['createUserBenchmarkEntry'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateUserBenchmarkEntry$MutationToJson(
+        CreateUserBenchmarkEntry$Mutation instance) =>
+    <String, dynamic>{
+      'createUserBenchmarkEntry': instance.createUserBenchmarkEntry.toJson(),
+    };
+
+CreateUserBenchmarkEntryInput _$CreateUserBenchmarkEntryInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmarkEntryInput(
+    completedOn: fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int),
+    score: (json['score'] as num).toDouble(),
+    note: json['note'] as String?,
+    videoUri: json['videoUri'] as String?,
+    videoThumbUri: json['videoThumbUri'] as String?,
+    imageUri: json['imageUri'] as String?,
+    userBenchmark: ConnectRelationInput.fromJson(
+        json['UserBenchmark'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateUserBenchmarkEntryInputToJson(
+        CreateUserBenchmarkEntryInput instance) =>
+    <String, dynamic>{
+      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
+      'score': instance.score,
+      'note': instance.note,
+      'videoUri': instance.videoUri,
+      'videoThumbUri': instance.videoThumbUri,
+      'imageUri': instance.imageUri,
+      'UserBenchmark': instance.userBenchmark.toJson(),
+    };
+
+UpdateUserBenchmarkEntry$Mutation _$UpdateUserBenchmarkEntry$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmarkEntry$Mutation()
+    ..updateUserBenchmarkEntry = UserBenchmarkEntry.fromJson(
+        json['updateUserBenchmarkEntry'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateUserBenchmarkEntry$MutationToJson(
+        UpdateUserBenchmarkEntry$Mutation instance) =>
+    <String, dynamic>{
+      'updateUserBenchmarkEntry': instance.updateUserBenchmarkEntry.toJson(),
+    };
+
+UpdateUserBenchmarkEntryInput _$UpdateUserBenchmarkEntryInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmarkEntryInput(
+    id: json['id'] as String,
+    completedOn:
+        fromGraphQLDateTimeToDartDateTimeNullable(json['completedOn'] as int?),
+    score: (json['score'] as num?)?.toDouble(),
+    note: json['note'] as String?,
+    videoUri: json['videoUri'] as String?,
+    videoThumbUri: json['videoThumbUri'] as String?,
+    imageUri: json['imageUri'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateUserBenchmarkEntryInputToJson(
+        UpdateUserBenchmarkEntryInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'completedOn':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.completedOn),
+      'score': instance.score,
+      'note': instance.note,
+      'videoUri': instance.videoUri,
+      'videoThumbUri': instance.videoThumbUri,
+      'imageUri': instance.imageUri,
+    };
+
+DeleteUserBenchmarkEntryById$Mutation
+    _$DeleteUserBenchmarkEntryById$MutationFromJson(Map<String, dynamic> json) {
+  return DeleteUserBenchmarkEntryById$Mutation()
+    ..deleteUserBenchmarkEntryById =
+        json['deleteUserBenchmarkEntryById'] as String;
+}
+
+Map<String, dynamic> _$DeleteUserBenchmarkEntryById$MutationToJson(
+        DeleteUserBenchmarkEntryById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteUserBenchmarkEntryById': instance.deleteUserBenchmarkEntryById,
+    };
+
+UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) {
+  return UserBenchmark()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..reps = (json['reps'] as num).toDouble()
+    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown)
+    ..load = (json['load'] as num?)?.toDouble()
+    ..loadUnit = _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown)
+    ..distanceUnit = _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown)
+    ..scoreType = _$enumDecode(_$BenchmarkScoreTypeEnumMap, json['scoreType'],
+        unknownValue: BenchmarkScoreType.artemisUnknown)
+    ..equipment = json['Equipment'] == null
+        ? null
+        : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
+    ..move = Move.fromJson(json['Move'] as Map<String, dynamic>)
+    ..userBenchmarkEntries = (json['UserBenchmarkEntries'] as List<dynamic>)
+        .map((e) => UserBenchmarkEntry.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'name': instance.name,
+      'description': instance.description,
+      'reps': instance.reps,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'load': instance.load,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'Equipment': instance.equipment?.toJson(),
+      'Move': instance.move.toJson(),
+      'UserBenchmarkEntries':
+          instance.userBenchmarkEntries.map((e) => e.toJson()).toList(),
+    };
+
+const _$BenchmarkScoreTypeEnumMap = {
+  BenchmarkScoreType.load: 'LOAD',
+  BenchmarkScoreType.reps: 'REPS',
+  BenchmarkScoreType.time: 'TIME',
+  BenchmarkScoreType.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+UpdateUserBenchmark$Mutation _$UpdateUserBenchmark$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmark$Mutation()
+    ..updateUserBenchmark = UserBenchmark.fromJson(
+        json['updateUserBenchmark'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateUserBenchmark$MutationToJson(
+        UpdateUserBenchmark$Mutation instance) =>
+    <String, dynamic>{
+      'updateUserBenchmark': instance.updateUserBenchmark.toJson(),
+    };
+
+UpdateUserBenchmarkInput _$UpdateUserBenchmarkInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmarkInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+    reps: (json['reps'] as num?)?.toDouble(),
+    repType: _$enumDecodeNullable(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    load: (json['load'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    scoreType: _$enumDecodeNullable(
+        _$BenchmarkScoreTypeEnumMap, json['scoreType'],
+        unknownValue: BenchmarkScoreType.artemisUnknown),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+    move: json['Move'] == null
+        ? null
+        : ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateUserBenchmarkInputToJson(
+        UpdateUserBenchmarkInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'reps': instance.reps,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'load': instance.load,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'Equipment': instance.equipment?.toJson(),
+      'Move': instance.move?.toJson(),
+    };
+
+CreateUserBenchmark$Mutation _$CreateUserBenchmark$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmark$Mutation()
+    ..createUserBenchmark = UserBenchmark.fromJson(
+        json['createUserBenchmark'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateUserBenchmark$MutationToJson(
+        CreateUserBenchmark$Mutation instance) =>
+    <String, dynamic>{
+      'createUserBenchmark': instance.createUserBenchmark.toJson(),
+    };
+
+CreateUserBenchmarkInput _$CreateUserBenchmarkInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmarkInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+    reps: (json['reps'] as num).toDouble(),
+    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    load: (json['load'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    scoreType: _$enumDecode(_$BenchmarkScoreTypeEnumMap, json['scoreType'],
+        unknownValue: BenchmarkScoreType.artemisUnknown),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateUserBenchmarkInputToJson(
+        CreateUserBenchmarkInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'reps': instance.reps,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'load': instance.load,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'Equipment': instance.equipment?.toJson(),
+      'Move': instance.move.toJson(),
+    };
+
+DeleteUserBenchmarkById$Mutation _$DeleteUserBenchmarkById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteUserBenchmarkById$Mutation()
+    ..deleteUserBenchmarkById = json['deleteUserBenchmarkById'] as String;
+}
+
+Map<String, dynamic> _$DeleteUserBenchmarkById$MutationToJson(
+        DeleteUserBenchmarkById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteUserBenchmarkById': instance.deleteUserBenchmarkById,
+    };
+
+UserBenchmarks$Query _$UserBenchmarks$QueryFromJson(Map<String, dynamic> json) {
+  return UserBenchmarks$Query()
+    ..userBenchmarks = (json['userBenchmarks'] as List<dynamic>)
+        .map((e) => UserBenchmark.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserBenchmarks$QueryToJson(
+        UserBenchmarks$Query instance) =>
+    <String, dynamic>{
+      'userBenchmarks': instance.userBenchmarks.map((e) => e.toJson()).toList(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -3375,6 +3681,19 @@ Map<String, dynamic> _$DeleteLoggedWorkoutByIdArgumentsToJson(
         DeleteLoggedWorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+UserLoggedWorkoutsArguments _$UserLoggedWorkoutsArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserLoggedWorkoutsArguments(
+    first: json['first'] as int?,
+  );
+}
+
+Map<String, dynamic> _$UserLoggedWorkoutsArgumentsToJson(
+        UserLoggedWorkoutsArguments instance) =>
+    <String, dynamic>{
+      'first': instance.first,
     };
 
 UpdateLoggedWorkoutArguments _$UpdateLoggedWorkoutArgumentsFromJson(
@@ -3855,4 +4174,99 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+CreateUserBenchmarkEntryArguments _$CreateUserBenchmarkEntryArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmarkEntryArguments(
+    data: CreateUserBenchmarkEntryInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateUserBenchmarkEntryArgumentsToJson(
+        CreateUserBenchmarkEntryArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateUserBenchmarkEntryArguments _$UpdateUserBenchmarkEntryArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmarkEntryArguments(
+    data: UpdateUserBenchmarkEntryInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateUserBenchmarkEntryArgumentsToJson(
+        UpdateUserBenchmarkEntryArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteUserBenchmarkEntryByIdArguments
+    _$DeleteUserBenchmarkEntryByIdArgumentsFromJson(Map<String, dynamic> json) {
+  return DeleteUserBenchmarkEntryByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteUserBenchmarkEntryByIdArgumentsToJson(
+        DeleteUserBenchmarkEntryByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateUserBenchmarkArguments _$UpdateUserBenchmarkArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateUserBenchmarkArguments(
+    data:
+        UpdateUserBenchmarkInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateUserBenchmarkArgumentsToJson(
+        UpdateUserBenchmarkArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateUserBenchmarkArguments _$CreateUserBenchmarkArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateUserBenchmarkArguments(
+    data:
+        CreateUserBenchmarkInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateUserBenchmarkArgumentsToJson(
+        CreateUserBenchmarkArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteUserBenchmarkByIdArguments _$DeleteUserBenchmarkByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteUserBenchmarkByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteUserBenchmarkByIdArgumentsToJson(
+        DeleteUserBenchmarkByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UserBenchmarksArguments _$UserBenchmarksArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserBenchmarksArguments(
+    first: json['first'] as int?,
+  );
+}
+
+Map<String, dynamic> _$UserBenchmarksArgumentsToJson(
+        UserBenchmarksArguments instance) =>
+    <String, dynamic>{
+      'first': instance.first,
     };

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
-import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details.page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/progress_journal_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
@@ -16,6 +17,7 @@ import 'package:spotmefitness_ui/pages/authed/home/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
+import 'package:spotmefitness_ui/pages/authed/journal/your_benchmarks.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/your_logged_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/your_progress_journals.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
@@ -56,6 +58,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
           page: EmptyRouterPage,
           children: [
             AutoRoute(path: '', page: JournalPage),
+            AutoRoute(path: 'your-benchmarks', page: YourBenchmarksPage),
             AutoRoute(
                 path: 'your-logged-workouts', page: YourLoggedWorkoutsPage),
             AutoRoute(
@@ -71,6 +74,7 @@ import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
     AutoRoute(path: 'workout/:id', page: WorkoutDetailsPage),
     AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),
     AutoRoute(path: 'progress-journal/:id', page: ProgressJournalDetailsPage),
+    AutoRoute(path: 'benchmark/:id', page: BenchmarkDetailsPage),
     AutoRoute(path: 'settings', page: SettingsAndInfoPage),
     RedirectRoute(path: '*', redirectTo: '/')
   ],

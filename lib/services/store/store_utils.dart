@@ -7,8 +7,9 @@ const kStoreReferenceKey = '\$ref';
 
 /// Accepts hierarchical data and write it to a normalized key value store [Hive] box.
 /// All objects must have two fields, [__typename] and [id] to generate a unique id.
+/// Objects without these fields, or that are in [kExcludeFromNormalization], will not be normalized and will be accessible from their parents.
 void normalizeToStore(
-    {required bool isQuery,
+    {String? queryKey,
     required Map<String, dynamic> data,
     required void Function(String key, Object? data) write,
     required Map<String, dynamic> Function(String key) read,
@@ -16,16 +17,12 @@ void normalizeToStore(
   Map<String, dynamic> normalizedResult = {};
 
   try {
-    /// Create the normalized map.
-    if (isQuery) {
-      /// Top data.keys will be the query names. Usually just one.
+    if (queryKey != null) {
       /// { userWorkouts: [obj, obj, obj] }.
-      normalizedResult['Query'] =
-          data.keys.fold<Map<String, dynamic>>({}, (obj, key) {
-        obj[key] =
-            normalizeObject(normalized: normalizedResult, data: data[key]);
-        return obj;
-      });
+      normalizedResult['Query'] = {
+        queryKey:
+            normalizeObject(normalized: normalizedResult, data: data[queryKey])
+      };
     } else {
       normalizeObject(normalized: normalizedResult, data: data);
     }
@@ -49,18 +46,18 @@ Object? normalizeObject(
     required Map<String, dynamic> normalized,
     String referenceKey = kStoreReferenceKey}) {
   if (data is Map<String, dynamic>) {
-    final normalizedData =
-        data.entries.fold<Map<String, dynamic>>({}, (obj, entry) {
-      obj[entry.key] =
-          normalizeObject(normalized: normalized, data: entry.value);
-      return obj;
-    });
-
     final dataId = resolveDataId(data);
     if (dataId == null) {
       /// Do not normalize and return un-normalized raw data.
       return data;
     } else {
+      final normalizedData =
+          data.entries.fold<Map<String, dynamic>>({}, (obj, entry) {
+        obj[entry.key] =
+            normalizeObject(normalized: normalized, data: entry.value);
+        return obj;
+      });
+
       normalized[dataId] = normalizedData;
       return {referenceKey: resolveDataId(data)};
     }

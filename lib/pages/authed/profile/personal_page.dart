@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_ro
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/country_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/date_selector.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/country.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
