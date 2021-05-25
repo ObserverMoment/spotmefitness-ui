@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/recent_benchmark_entries.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/recent_journal_entries.dart';
@@ -12,9 +11,11 @@ class JournalPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       key: Key('JournalPage-CupertinoPageScaffold'),
-      navigationBar: BasicNavBar(
+      navigationBar: CupertinoNavigationBar(
         key: Key('JournalPage-BasicNavBar'),
-        customLeading: NavBarLargeTitle('Journal'),
+        automaticallyImplyLeading: false,
+        border: null,
+        middle: NavBarTitle('Journal'),
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),

@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -68,9 +69,7 @@ class _ProgressJournalGoalTagsManagerState
         ],
         broadcastQueryIds: [
           UserProgressJournalsQuery().operationName,
-          // Using the raw string as there is no easy way to get the journal id required for the usual ProgressJournalByIdQuery(variables: ProgressJournalByIdArguments(id: id)) syntax.
-          // May need a re-think on this pattern.
-          kProgressJournalByIdQuery
+          GQLOpNames.progressJournalByIdQuery,
         ]);
 
     setState(() => _isLoading = false);

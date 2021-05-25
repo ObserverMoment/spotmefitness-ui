@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -77,6 +78,46 @@ class _FilterableLoggedWorkoutsListState
         _filterTo = null;
       });
 
+  List<Widget> _floatingButtons(int numLogs) => [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              DateRangePickerDisplay(
+                from: _filterFrom,
+                to: _filterTo,
+                updateRange: (from, to) => setState(() {
+                  _filterFrom = from;
+                  _filterTo = to;
+                }),
+              ),
+              if (_filterFrom != null || _filterTo != null)
+                FadeIn(
+                    child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: _clearDateRange,
+                  child: Icon(
+                    CupertinoIcons.clear_thick,
+                    color: Styles.errorRed,
+                    size: 20,
+                  ),
+                ))
+            ],
+          ),
+        ),
+        CupertinoButton(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            onPressed: () => context.push(
+                fullscreenDialog: true,
+                child: YourLoggedWorkoutsTextSearch(
+                    allLoggedWorkouts: widget.logs,
+                    selectLoggedWorkout: (l) =>
+                        _openLoggedWorkoutDetails(context, l.id))),
+            child: Icon(
+              CupertinoIcons.search,
+            ))
+      ];
+
   @override
   Widget build(BuildContext context) {
     /// One day added / subtracted so as to get the range inclusively.
@@ -94,74 +135,71 @@ class _FilterableLoggedWorkoutsListState
                 l.completedOn.isBefore(_filterTo!.add(Duration(days: 1))))
             .toList();
 
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: Column(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(bottom: 1.0, top: 3, left: 8, right: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    DateRangePickerDisplay(
-                      from: _filterFrom,
-                      to: _filterTo,
-                      updateRange: (from, to) => setState(() {
-                        _filterFrom = from;
-                        _filterTo = to;
-                      }),
-                    ),
-                    if (_filterFrom != null || _filterTo != null)
-                      FadeIn(
-                          child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: _clearDateRange,
-                        child: Icon(
-                          CupertinoIcons.clear_thick,
-                          color: Styles.errorRed,
+    final buttons = _floatingButtons(filteredLogs.length);
+
+    return Stack(
+      fit: StackFit.expand,
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        filteredLogs.isEmpty
+            ? Center(child: MyText('No logs to display...'))
+            : Column(
+                children: [
+                  if (_filterFrom != null || _filterTo != null)
+                    FadeIn(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            MyText(
+                              '${filteredLogs.length} logs',
+                              size: FONTSIZE.SMALL,
+                            ),
+                          ],
                         ),
-                      ))
-                  ],
-                ),
-                Row(
-                  children: [
-                    MyText(
-                      '${filteredLogs.length} logs',
-                      color: Styles.infoBlue,
+                      ),
                     ),
-                    SizedBox(
-                      width: 6,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: filteredLogs.length + 1,
+                          itemBuilder: (c, i) {
+                            if (i == filteredLogs.length) {
+                              return SizedBox(height: 60);
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: GestureDetector(
+                                    onTap: () => _openLoggedWorkoutDetails(
+                                        context, filteredLogs[i].id),
+                                    child: LoggedWorkoutCard(filteredLogs[i])),
+                              );
+                            }
+                          }),
                     ),
-                    OpenTextSearchButton(
-                      onPressed: () => context.push(
-                          fullscreenDialog: true,
-                          child: YourLoggedWorkoutsTextSearch(
-                              allLoggedWorkouts: widget.logs,
-                              selectLoggedWorkout: (l) =>
-                                  _openLoggedWorkoutDetails(context, l.id))),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: filteredLogs.length,
-                itemBuilder: (c, i) => Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: GestureDetector(
-                          onTap: () => _openLoggedWorkoutDetails(
-                              context, filteredLogs[i].id),
-                          child: LoggedWorkoutCard(filteredLogs[i])),
-                    )),
-          )
-        ],
-      ),
+                  ),
+                ],
+              ),
+        Positioned(
+            bottom: kBottomNavBarHeight + 10,
+            child: RaisedButtonContainer(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
+              child: SizedBox(
+                height: 40,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (c, i) => buttons[i],
+                    separatorBuilder: (c, i) => ButtonSeparator(),
+                    itemCount: buttons.length),
+              ),
+            ))
+      ],
     );
   }
 }

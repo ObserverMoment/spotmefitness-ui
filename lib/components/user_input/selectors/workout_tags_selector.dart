@@ -4,7 +4,6 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -61,7 +60,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
 
     await context.graphQLStore.create(
         mutation: CreateWorkoutTagMutation(variables: variables),
-        addRefToQueries: [kUserWorkoutTagsQuery]);
+        addRefToQueries: [UserWorkoutTagsQuery().operationName]);
   }
 
   @override

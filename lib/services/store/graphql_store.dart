@@ -52,9 +52,17 @@ class GraphQLStore {
   Map<String, ObservableQuery> observableQueries =
       Map<String, ObservableQuery>();
 
-  ObservableQuery<TData, TVars>
-      getQuerybyId<TData, TVars extends json.JsonSerializable>(String id) =>
-          observableQueries[id] as ObservableQuery<TData, TVars>;
+  List<ObservableQuery<TData, TVars>>
+      _getQueriesbyId<TData, TVars extends json.JsonSerializable>(String id) =>
+          observableQueries.values.fold(
+              [],
+              (observableQueries, next) =>
+                  next.id == id || next.query.operationName == id
+                      ? [
+                          ...observableQueries,
+                          next as ObservableQuery<TData, TVars>
+                        ]
+                      : observableQueries);
 
   /// [T] is query type. [U] is variables / args type.
   ObservableQuery<TData, TVars>
@@ -69,26 +77,18 @@ class GraphQLStore {
           ? query.operationName!
           : parameterizeQuery
 
-              /// If we want to split instances of the query when the variables change then we set [parameterizeQuery] to true.
+              /// If we want to split instances of the query data when the variables change then we set [parameterizeQuery] to true.
               /// [workoutById({"id":736373-837737-39383})]
               /// Each time we query a new workoutById (i.e. the [id] variable changes) a new key under the [Query] root will be created. Each workout will be stored and accessible separately.
-              ? getParameterizedQueryId(
-                  query.operationName!, query.getVariablesMap())
+              ? getParameterizedQueryId(query)
 
               /// For non parametized queries, all instances of the same query should be saved under a single key - regardless of variable changes. Mainly for list type queries which we want to just overwrite with new data when it comes in.
               /// We need to set all vars to in the varsMap to null like this
               /// [userLoggedWorkouts({"first":null})]
-              : getParameterizedQueryId(
-                  query.operationName!,
-                  query.getVariablesMap().keys.fold<Map<String, dynamic>>({},
-                      (nulledVars, next) {
-                    nulledVars[next] = null;
-                    return nulledVars;
-                  }));
+              : getNulledVarsQueryId(query);
 
       if (!observableQueries.containsKey(id)) {
-        /// No one is listening to this id - create a new stream.
-        /// TODO: Do we need to set a max number of observable queries? Or close some streams if we have too many. What if the user opens up 50 workout details pages in a row - they will have 50 streams open...
+        /// No stream with this id exists - create a new stream.
         observableQueries[id] = ObservableQuery<TData, TVars>(
             id: id,
             subject: BehaviorSubject<GraphQLResponse>(),
@@ -163,16 +163,17 @@ class GraphQLStore {
   /// Fetches data requested by a graphql query selection set from the normalized store.
   /// Broadcasts data if query is successful.
   bool _queryStore(String id) {
-    if (!observableQueries.containsKey(id)) {
+    final observableQuery = observableQueries[id];
+    if (observableQuery == null) {
       print(
           '_queryStore: QueryNotFoundOrNotInitialized: There is no ObservableQuery with id: $id');
       return false;
     } else {
       try {
-        final observableQuery = getQuerybyId(id);
         final GraphQLQuery query = observableQuery.query;
         // Does a key exist in the store?
         if (!_hasQueryDataInStore(observableQuery.id)) {
+          print('_queryStore: No key in data store for ${observableQuery.id}');
           return false;
         }
 
@@ -186,6 +187,7 @@ class GraphQLStore {
             read: (dataId) => readNormalized(dataId));
 
         if (data == null) {
+          print('_queryStore: Data returned null for ${observableQuery.id}');
           return false;
         }
 
@@ -201,12 +203,12 @@ class GraphQLStore {
 
   /// Get data from the network, normalize it, add it to the store, _broadcast to the observable query.
   Future<bool> _queryNetwork(String id) async {
-    if (!observableQueries.containsKey(id)) {
+    final observableQuery = observableQueries[id];
+    if (observableQuery == null) {
       print(
           '_queryNetwork: QueryNotFoundOrNotInitialized: There is no ObservableQuery with id: $id');
       return false;
     } else {
-      final observableQuery = getQuerybyId(id);
       final GraphQLQuery query = observableQuery.query;
 
       final response = await execute(query);
@@ -215,6 +217,7 @@ class GraphQLStore {
         // Broadcast the error. Do not update the store.
         observableQuery.subject
             .add(GraphQLResponse(data: response.data, errors: response.errors));
+        print('_queryNetwork: There was an error - ${response.errors}');
         return false;
       } else {
         try {
@@ -241,7 +244,10 @@ class GraphQLStore {
 
   void _broadcast(List<String> ids) {
     ids.forEach((id) {
-      _queryStore(id);
+      final observableQueries = _getQueriesbyId(id);
+      observableQueries.forEach((q) {
+        _queryStore(q.id);
+      });
     });
   }
 
@@ -621,25 +627,6 @@ class GraphQLStore {
 
   Future<void> clear() async {
     await _box.clear();
-  }
-
-  /// An observable query can either have:
-  /// 1. No variables - the id is the [operationName]
-  /// 2. Has variables, but we do not want to store new data each time the variables change - this id has the variables string included but it is set to null. [workoutById({"id":null})]
-  /// 3. Has variables, and we want a new query key for each new variables combination, so each query / variables combination is saved into the store. [workoutById({"id": Workout:9262436-7399290})]
-  String _getObservableQueryId(ObservableQuery observableQuery) {
-    final query = observableQuery.query;
-    return query.variables != null
-        ? getParameterizedQueryId(query.operationName!,
-            observableQuery.parameterize ? query.getVariablesMap() : {})
-        : observableQuery.query.operationName!;
-  }
-
-  /// For example [workoutById({"id": id})]
-  /// Same as the [normalize] package does this.
-  String getParameterizedQueryId(
-      String queryName, Map<String, dynamic> variables) {
-    return '$queryName(${jsonEncode(variables)})';
   }
 
   void dispose() {

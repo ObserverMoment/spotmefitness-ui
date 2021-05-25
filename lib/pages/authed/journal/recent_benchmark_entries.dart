@@ -10,9 +10,10 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:collection/collection.dart';
 
 class RecentBenchmarkEntries extends StatelessWidget {
-  final kBenchmarkEntryCardHeight = 100.0;
+  final kBenchmarkEntryCardHeight = 170.0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class RecentBenchmarkEntries extends StatelessWidget {
     return QueryObserver<UserBenchmarks$Query, json.JsonSerializable>(
         key: Key('RecentBenchmarkEntries - ${query.operationName}'),
         query: query,
+        fullScreenError: false,
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -35,7 +37,8 @@ class RecentBenchmarkEntries extends StatelessWidget {
           ],
         ),
         builder: (data) {
-          final benchmarks = data.userBenchmarks;
+          final benchmarks =
+              data.userBenchmarks.sortedBy<DateTime>((b) => b.lastEntryAt);
           return benchmarks.isNotEmpty
               ? Column(
                   children: [
@@ -44,15 +47,15 @@ class RecentBenchmarkEntries extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MyText(
+                          H2(
                             'Benchmarks',
-                            weight: FontWeight.bold,
                           ),
                           TextButton(
                             onPressed: () =>
                                 context.pushRoute(YourBenchmarksRoute()),
                             underline: false,
-                            text: 'View all',
+                            text: 'All',
+                            suffix: Icon(CupertinoIcons.arrow_right_square),
                           )
                         ],
                       ),
@@ -80,11 +83,7 @@ class RecentBenchmarkEntries extends StatelessWidget {
                             child: GestureDetector(
                                 onTap: () => context.navigateTo(
                                     BenchmarkDetailsRoute(
-                                        id: data.userBenchmarks
-                                            .firstWhere((j) => j
-                                                .userBenchmarkEntries
-                                                .contains(benchmarks[i]))
-                                            .id)),
+                                        id: benchmarks[i].id)),
                                 child: BenchmarkCard(benchmarks[i])),
                           );
                         }

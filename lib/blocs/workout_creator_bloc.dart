@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -7,6 +6,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// All updates to workout or descendants follow this pattern.
 /// 1: Update local data
@@ -113,9 +113,14 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       data: workout.toJson(),
 
       /// [addRefToQueries] does a broadcast automatically when done.
-      addRefToQueries: isCreate ? [kUserWorkoutsQuery] : [],
-      broadcastQueryIds:
-          isCreate ? [] : [kWorkoutByIdQuery, kUserWorkoutsQuery],
+      addRefToQueries: isCreate ? [UserWorkoutsQuery().operationName] : [],
+      broadcastQueryIds: isCreate
+          ? []
+          : [
+              getParameterizedQueryId(WorkoutByIdQuery(
+                  variables: WorkoutByIdArguments(id: initialWorkout.id))),
+              UserWorkoutsQuery().operationName
+            ],
     );
     return success;
   }

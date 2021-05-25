@@ -61,7 +61,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
             mutation: DeleteLoggedWorkoutByIdMutation(
               variables: DeleteLoggedWorkoutByIdArguments(id: id),
             ),
-            removeRefFromQueries: [GQLOps.userLoggedWorkoutsQuery],
+            removeRefFromQueries: [GQLOpNames.userLoggedWorkoutsQuery],
           );
 
           if (result.hasErrors) {
@@ -118,7 +118,9 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                       (b) => b.loggedWorkout.completedOn);
 
               return CupertinoPageScaffold(
+                key: Key('LoggedWorkoutDetailsPage - CupertinoPageScaffold'),
                 navigationBar: BasicNavBar(
+                  key: Key('LoggedWorkoutDetailsPage - BasicNavBar'),
                   middle: NavBarTitle(log.name),
                   trailing: CupertinoButton(
                     padding: EdgeInsets.zero,

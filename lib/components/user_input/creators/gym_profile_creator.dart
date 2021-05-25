@@ -130,7 +130,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 
       await context.graphQLStore.mutate(
           mutation: UpdateGymProfileMutation(variables: variables),
-          broadcastQueryIds: [kGymProfilesQuery]);
+          broadcastQueryIds: [GymProfilesQuery().operationName]);
     } else {
       // Create
       final input = CreateGymProfileInput.fromJson(_activeGymProfile.toJson())
@@ -142,7 +142,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 
       await context.graphQLStore.create(
           mutation: CreateGymProfileMutation(variables: variables),
-          addRefToQueries: [kGymProfilesQuery]);
+          addRefToQueries: [GymProfilesQuery().operationName]);
     }
     setState(() => _loading = false);
     context.pop();
@@ -164,7 +164,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
         typename: kGymProfileTypename,
         objectId: _activeGymProfile.id,
         mutation: DeleteGymProfileByIdMutation(variables: variables),
-        removeRefFromQueries: [kGymProfilesQuery]);
+        removeRefFromQueries: [GymProfilesQuery().operationName]);
 
     setState(() => _loading = false);
     context.pop();

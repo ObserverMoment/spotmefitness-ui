@@ -14,16 +14,17 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class LoggedWorkoutCreator extends StatefulWidget {
+class LoggedWorkoutCreatorPage extends StatefulWidget {
   final Workout workout;
   final ScheduledWorkout? scheduledWorkout;
-  LoggedWorkoutCreator({required this.workout, this.scheduledWorkout});
+  LoggedWorkoutCreatorPage({required this.workout, this.scheduledWorkout});
 
   @override
-  _LoggedWorkoutCreatorState createState() => _LoggedWorkoutCreatorState();
+  _LoggedWorkoutCreatorPageState createState() =>
+      _LoggedWorkoutCreatorPageState();
 }
 
-class _LoggedWorkoutCreatorState extends State<LoggedWorkoutCreator> {
+class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
   int _activeTabIndex = 0;
   final PageController _pageController = PageController();
 

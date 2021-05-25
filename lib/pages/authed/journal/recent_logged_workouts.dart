@@ -23,6 +23,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
         key: Key('RecentLoggedWorkouts - ${query.operationName}'),
         query: query,
+        fullScreenError: false,
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -50,18 +51,17 @@ class RecentLoggedWorkouts extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MyText(
+                          H2(
                             'Logs',
-                            weight: FontWeight.bold,
                           ),
                           CreateTextIconButton(
-                              text: 'Add Log',
-                              onPressed: () => print('add log')),
+                              text: 'Add', onPressed: () => print('add log')),
                           TextButton(
                             onPressed: () =>
                                 context.pushRoute(YourLoggedWorkoutsRoute()),
                             underline: false,
-                            text: 'View all',
+                            text: 'All',
+                            suffix: Icon(CupertinoIcons.arrow_right_square),
                           )
                         ],
                       ),

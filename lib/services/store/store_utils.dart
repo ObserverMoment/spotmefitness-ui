@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:gql/ast.dart';
 import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -262,4 +264,23 @@ String? extractRootFieldAliasFromOperation(GraphQLQuery operation) {
   return (operationDefinitionNode.selectionSet.selections[0] as FieldNode)
       .alias
       ?.value;
+}
+
+/// For example [workoutById({"id": id})]
+/// Same as the [normalize] package does this.
+String getParameterizedQueryId(GraphQLQuery query) {
+  return '${query.operationName}(${jsonEncode(query.getVariablesMap())})';
+}
+
+/// For example [workoutById({"id": null})]
+/// Same as the [normalize] package does this.
+String getNulledVarsQueryId(GraphQLQuery query) {
+  return '${query.operationName}(${jsonEncode(nullifyVars(query.getVariablesMap()))})';
+}
+
+Map<String, dynamic> nullifyVars(Map<String, dynamic> vars) {
+  return vars.keys.fold<Map<String, dynamic>>({}, (nulledVars, next) {
+    nulledVars[next] = null;
+    return nulledVars;
+  });
 }

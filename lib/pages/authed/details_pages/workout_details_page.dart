@@ -15,17 +15,16 @@ import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.d
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
@@ -79,7 +78,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                   DuplicateWorkoutById$Mutation, DuplicateWorkoutByIdArguments>(
               mutation: DuplicateWorkoutByIdMutation(
                   variables: DuplicateWorkoutByIdArguments(id: id)),
-              addRefToQueries: [kUserWorkoutsQuery]);
+              addRefToQueries: [UserWorkoutsQuery().operationName]);
 
           if (result.hasErrors) {
             context.pop(); // The showLoadingAlert
@@ -128,10 +127,11 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         data: UpdateWorkoutInput(id: id, archived: true)),
                   ),
                   removeRefFromQueries: [
-                kUserWorkoutsQuery
+                UserWorkoutsQuery().operationName
               ],
                   broadcastQueryIds: [
-                kWorkoutByIdQuery
+                getParameterizedQueryId(WorkoutByIdQuery(
+                    variables: WorkoutByIdArguments(id: widget.id)))
               ],
                   customVariablesMap: {
                 'data': {'id': id, 'archived': true}
@@ -170,10 +170,11 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         data: UpdateWorkoutInput(id: id, archived: false)),
                   ),
                   addRefToQueries: [
-                kUserWorkoutsQuery
+                UserWorkoutsQuery().operationName
               ],
                   broadcastQueryIds: [
-                kWorkoutByIdQuery
+                getParameterizedQueryId(WorkoutByIdQuery(
+                    variables: WorkoutByIdArguments(id: widget.id)))
               ],
                   customVariablesMap: {
                 'data': {'id': id, 'archived': false}
@@ -255,7 +256,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           final bool isOwner = workout.user.id == authedUserId;
 
           return CupertinoPageScaffold(
+            key: Key('WorkoutDetailsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              key: Key('WorkoutDetailsPage - BasicNavBar'),
               middle: NavBarTitle(workout.name),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
@@ -301,8 +304,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                       BottomSheetMenuItem(
                           text: 'Log',
                           icon: Icon(CupertinoIcons.graph_square),
-                          onPressed: () => context.push(
-                              child: LoggedWorkoutCreator(workout: workout))),
+                          onPressed: () => context.navigateTo(
+                              LoggedWorkoutCreatorRoute(workout: workout))),
                       BottomSheetMenuItem(
                           text: 'Share',
                           icon: Icon(CupertinoIcons.share),
@@ -311,10 +314,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         BottomSheetMenuItem(
                             text: 'Edit',
                             icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () => context.push(
-                                    child: WorkoutCreator(
-                                  workout: workout,
-                                ))),
+                            onPressed: () =>
+                                context.navigateTo(WorkoutCreatorRoute())),
                       if (isOwner ||
                           workout.contentAccessScope ==
                               ContentAccessScope.public)

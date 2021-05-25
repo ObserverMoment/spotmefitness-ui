@@ -119,7 +119,7 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar ? 82 : 18,
+            bottom: pageHasBottomNavBar ? 72 : 12,
             right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))
@@ -212,13 +212,14 @@ class BasicNavBar extends CupertinoNavigationBar {
   final Color? backgroundColor;
   BasicNavBar(
       {this.key,
-      this.automaticallyImplyLeading = true,
+      this.automaticallyImplyLeading = false,
       this.customLeading,
       this.middle,
       this.trailing,
       this.backgroundColor})
       : super(
             key: key,
+            automaticallyImplyLeading: automaticallyImplyLeading,
             leading: customLeading ?? const _BackButton(),
             border: null);
 }

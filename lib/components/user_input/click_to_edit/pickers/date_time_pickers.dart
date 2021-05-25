@@ -170,26 +170,20 @@ class DateRangePickerDisplay extends StatelessWidget {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: () => _openDateRangePicker(context),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: context.theme.primary)),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(CupertinoIcons.calendar),
-            SizedBox(width: 6),
-            if (from == null && to == null)
-              _text('All time')
-            else if (from == null && to != null)
-              _text('Before ${to!.compactDateString}')
-            else if ((from != null && to == null))
-              _text('After ${from!.compactDateString}')
-            else
-              _text('${from!.compactDateString} - ${to!.compactDateString}'),
-          ],
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(CupertinoIcons.calendar),
+          SizedBox(width: 6),
+          if (from == null && to == null)
+            _text('All time')
+          else if (from == null && to != null)
+            _text('Before ${to!.compactDateString}')
+          else if ((from != null && to == null))
+            _text('After ${from!.compactDateString}')
+          else
+            _text('${from!.minimalDateString} - ${to!.minimalDateString}'),
+        ],
       ),
     );
   }

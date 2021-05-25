@@ -9,15 +9,17 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class ProgressJournalCreator extends StatefulWidget {
+class ProgressJournalCreatorPage extends StatefulWidget {
   final ProgressJournal? progressJournal;
-  ProgressJournalCreator({this.progressJournal});
+  ProgressJournalCreatorPage({this.progressJournal});
 
   @override
-  _ProgressJournalCreatorState createState() => _ProgressJournalCreatorState();
+  _ProgressJournalCreatorPageState createState() =>
+      _ProgressJournalCreatorPageState();
 }
 
-class _ProgressJournalCreatorState extends State<ProgressJournalCreator> {
+class _ProgressJournalCreatorPageState
+    extends State<ProgressJournalCreatorPage> {
   late ProgressJournal _activeProgressJournal;
   late bool _isEditing;
   bool _formIsDirty = false;

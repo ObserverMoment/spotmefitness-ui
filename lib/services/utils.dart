@@ -62,6 +62,9 @@ abstract class Utils {
   /// returns true if any items in the list exist (are not null).
   static bool anyNotNull(List list) => list.any((e) => e != null);
 
+  /// Checks that reps is not null and not zero.
+  static bool hasReps(double? reps) => (reps != null && reps != 0);
+
   /// Checks that load is not null and not zero.
   static bool hasLoad(double? load) => (load != null && load != 0);
 

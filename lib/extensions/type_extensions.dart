@@ -29,6 +29,7 @@ extension DateTimeFormatting on DateTime {
   /// Date only - July 10, 1996
   String get dateString => DateFormat.yMMMMd().format(this);
   String get compactDateString => DateFormat('MMM d, yy').format(this);
+  String get minimalDateString => DateFormat('MMM d').format(this);
 }
 
 extension DoubleExtension on double {
@@ -134,7 +135,7 @@ extension IntExtension on int {
     } else if (this >= 60) {
       // Minutes
       amount = (this / 60).stringMyDouble();
-      unit = amount == '1' ? 'minute' : 'minutes';
+      unit = amount == '1' ? 'min' : 'mins';
     } else {
       // Seconds
       amount = this.toString();

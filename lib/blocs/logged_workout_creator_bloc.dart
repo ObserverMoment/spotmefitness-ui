@@ -97,7 +97,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
     final success = context.graphQLStore.writeDataToStore(
         data: loggedWorkout.toJson(),
-        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery]);
+        broadcastQueryIds: [GQLOpNames.userLoggedWorkoutsQuery]);
     return success;
   }
 
@@ -173,7 +173,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
     final result = await context.graphQLStore.create(
         mutation: CreateLoggedWorkoutMutation(variables: variables),
-        addRefToQueries: [GQLOps.userLoggedWorkoutsQuery]);
+        addRefToQueries: [GQLOpNames.userLoggedWorkoutsQuery]);
 
     return result;
   }
@@ -200,7 +200,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         customVariablesMap: {
           'data': {'id': loggedWorkout.id, 'gymProfile': profile?.toJson()}
         },
-        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
+        broadcastQueryIds: [GQLOpNames.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.
@@ -229,7 +229,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
             'completedOn': completedOn.millisecondsSinceEpoch
           }
         },
-        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
+        broadcastQueryIds: [GQLOpNames.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.
@@ -255,7 +255,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         customVariablesMap: {
           'data': {'id': loggedWorkout.id, 'note': note}
         },
-        broadcastQueryIds: [GQLOps.userLoggedWorkoutsQuery],
+        broadcastQueryIds: [GQLOpNames.userLoggedWorkoutsQuery],
       );
 
       /// Check the result.

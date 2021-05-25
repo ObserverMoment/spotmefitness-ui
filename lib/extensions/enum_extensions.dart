@@ -5,6 +5,26 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
+extension BenchmarkScoreTypeExtension on BenchmarkScoreType {
+  String get apiValue => describeEnum(this).toUpperCase();
+
+  String get display {
+    switch (this) {
+      case BenchmarkScoreType.load:
+        return 'Max load';
+      case BenchmarkScoreType.reps:
+        return 'Max Reps';
+      case BenchmarkScoreType.fasttime:
+        return 'Fastest Time';
+      case BenchmarkScoreType.longtime:
+        return 'Longest Time';
+      default:
+        throw new Exception(
+            'This is not a valid BenchmarkScoreType enum: $this');
+    }
+  }
+}
+
 extension BodyweightUnitExtension on BodyweightUnit {
   String get apiValue => describeEnum(this).toUpperCase();
   String get display => describeEnum(this);

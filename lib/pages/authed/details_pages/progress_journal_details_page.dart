@@ -1,4 +1,4 @@
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
@@ -9,13 +9,13 @@ import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_entry_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_goal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -37,7 +37,7 @@ class _ProgressJournalDetailsPageState
   final PageController _pageController = PageController();
 
   void _openEditJournalMeta(ProgressJournal journal) {
-    context.push(child: ProgressJournalCreator(progressJournal: journal));
+    context.navigateTo(ProgressJournalCreatorRoute(progressJournal: journal));
   }
 
   void _handleDeleteJournal() {

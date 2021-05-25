@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -479,34 +481,160 @@ class DoItButton extends StatelessWidget {
   }
 }
 
+/// Similar style to the main bottom nav bar.
+class RaisedButtonContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsets padding;
+  final BorderRadius? borderRadius;
+  RaisedButtonContainer(
+      {required this.child,
+      this.borderRadius,
+      this.padding = const EdgeInsets.symmetric(vertical: 3, horizontal: 16)});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(18),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+                borderRadius: borderRadius ?? BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                      color: CupertinoColors.black.withOpacity(0.6),
+                      blurRadius: 3, // soften the shadow
+                      spreadRadius: 1.5, //extend the shadow
+                      offset: Offset(
+                        0.4, // Move to right horizontally
+                        0.4, // Move to bottom Vertically
+                      ))
+                ],
+                color: context.theme.background.withOpacity(0.75),
+                border:
+                    Border.all(color: context.theme.primary.withOpacity(0.15))),
+            child: child),
+      ),
+    );
+  }
+}
+
+/// Vertical line used for separating buttons in a multi button widget. E.g floating button.
+class ButtonSeparator extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Container(
+        height: 30,
+        width: 1,
+        color: context.theme.primary.withOpacity(0.2),
+      ),
+    );
+  }
+}
+
+class SortFilterSearchFloatingButton extends StatelessWidget {
+  final bool showFilter;
+  final void Function()? onFilterPress;
+  final bool showSort;
+  final void Function()? onSortPress;
+  final bool showSearch;
+  final void Function()? onSearchPress;
+  SortFilterSearchFloatingButton(
+      {this.showFilter = true,
+      this.onFilterPress,
+      this.showSort = true,
+      this.onSortPress,
+      this.showSearch = true,
+      this.onSearchPress})
+      : assert((showFilter && onFilterPress != null) || !showFilter),
+        assert((showSort && onSortPress != null) || !showSort),
+        assert((showSearch && onSearchPress != null) || !showSearch),
+        assert(showFilter || showSort || showSearch);
+
+  final kButtonPadding = const EdgeInsets.symmetric(horizontal: 16);
+
+  List<Widget> _buttonsList() {
+    List<Widget> buttons = [];
+    if (showFilter) {
+      buttons.add(CupertinoButton(
+          padding: kButtonPadding,
+          onPressed: onFilterPress,
+          child: Icon(
+            CupertinoIcons.slider_horizontal_3,
+          )));
+    }
+    if (showSort) {
+      buttons.add(CupertinoButton(
+          padding: kButtonPadding,
+          onPressed: onSortPress,
+          child: Icon(
+            CupertinoIcons.arrow_up_arrow_down,
+          )));
+    }
+    if (showSearch) {
+      buttons.add(CupertinoButton(
+          padding: kButtonPadding,
+          onPressed: onSearchPress,
+          child: Icon(
+            CupertinoIcons.search,
+          )));
+    }
+    return buttons;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final buttons = _buttonsList();
+    return RaisedButtonContainer(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: SizedBox(
+          height: 40,
+          child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (c, i) => buttons[i],
+              separatorBuilder: (c, i) => ButtonSeparator(),
+              itemCount: buttons.length),
+        ));
+  }
+}
+
 class FilterButton extends StatelessWidget {
   final void Function() onPressed;
   final bool hasActiveFilters;
   FilterButton({required this.onPressed, this.hasActiveFilters = false});
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        BorderButton(
-          mini: true,
-          onPressed: onPressed,
-          prefix: Icon(
-            CupertinoIcons.slider_horizontal_3,
-            size: kMiniButtonIconSize,
-          ),
-        ),
-        if (hasActiveFilters)
-          Positioned(
-            top: -4,
-            right: -3,
-            child: Icon(
-              CupertinoIcons.checkmark_alt_circle_fill,
-              color: Styles.infoBlue,
-              size: 20,
+    return RaisedButtonContainer(
+      padding: EdgeInsets.zero,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          BorderButton(
+            mini: true,
+            withBorder: false,
+            onPressed: onPressed,
+            prefix: Icon(
+              CupertinoIcons.slider_horizontal_3,
+              size: kMiniButtonIconSize,
             ),
-          )
-      ],
+          ),
+          if (hasActiveFilters)
+            Positioned(
+              top: -4,
+              right: -3,
+              child: Icon(
+                CupertinoIcons.checkmark_alt_circle_fill,
+                color: Styles.infoBlue,
+                size: 20,
+              ),
+            )
+        ],
+      ),
     );
   }
 }
@@ -517,29 +645,15 @@ class OpenTextSearchButton extends StatelessWidget {
   OpenTextSearchButton({required this.onPressed, this.text});
   @override
   Widget build(BuildContext context) {
-    return BorderButton(
-      mini: true,
-      onPressed: onPressed,
-      text: text,
-      prefix: Icon(
-        CupertinoIcons.search,
-        size: kMiniButtonIconSize,
-      ),
-    );
-  }
-}
-
-class SortByButton extends StatelessWidget {
-  final void Function() onPressed;
-  SortByButton({required this.onPressed});
-  @override
-  Widget build(BuildContext context) {
-    return BorderButton(
-      mini: true,
-      onPressed: () => {},
-      prefix: Icon(
-        Icons.sort_outlined,
-        size: 26,
+    return RaisedButtonContainer(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 6),
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        child: Icon(
+          CupertinoIcons.search,
+          size: kMiniButtonIconSize,
+        ),
+        onPressed: onPressed,
       ),
     );
   }

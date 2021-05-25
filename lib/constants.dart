@@ -15,16 +15,6 @@ const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);
 
-/// QueryNames
-/// TODO: Move to using new syntax like QueryName().operationName
-const kGymProfilesQuery = 'gymProfiles';
-const kAuthedUserQuery = 'authedUser';
-const kUserWorkoutsQuery = 'userWorkouts';
-const kUserCustomMovesQuery = 'userCustomMoves';
-const kUserWorkoutTagsQuery = 'userWorkoutTags';
-const kWorkoutByIdQuery = 'workoutById';
-const kProgressJournalByIdQuery = 'progressJournalById';
-
 /// Object Type names for the store.
 /// For use in [__typename:id] normalization and store ops.
 const kGymProfileTypename = 'GymProfile';

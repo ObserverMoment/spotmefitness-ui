@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
@@ -46,8 +47,9 @@ class ProgressJournalGoalCard extends StatelessWidget {
           final result = await context.graphQLStore.mutate(
               mutation: UpdateProgressJournalGoalMutation(variables: variables),
               broadcastQueryIds: [
-                // using the raw un parameterized string here as no easy was to get the parent progress journal id.
-                kProgressJournalByIdQuery,
+                /// Broadcasting the operation name with no variables (nullified or parameterized)
+                /// This will trigger all observerable queries with [progressJournalByIdQuery] keys to rebuild.
+                GQLOpNames.progressJournalByIdQuery,
                 UserProgressJournalsQuery().operationName
               ]);
           _checkResult(context, result);
@@ -192,8 +194,7 @@ class __MarkGoalCompletedBottomSheetState
     final result = await context.graphQLStore.mutate(
         mutation: UpdateProgressJournalGoalMutation(variables: variables),
         broadcastQueryIds: [
-          // using the raw un parameterized string here as no easy was to get the parent progress journal id.
-          kProgressJournalByIdQuery,
+          GQLOpNames.progressJournalByIdQuery,
           UserProgressJournalsQuery().operationName
         ]);
 

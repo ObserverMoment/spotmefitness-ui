@@ -19,6 +19,9 @@ class QueryObserver<TData, TVars extends json.JsonSerializable>
   final Widget Function(TData data) builder;
   final Widget? loadingIndicator;
 
+  /// If true the error message will display on a full page scaffold with a back button so that the user can bail out of the page if they need to. Defaults to [true]
+  final bool fullScreenError;
+
   /// Do you want to clean up unreferenced objects from the store once this query has been fetched.
   /// Useful if the query is a list which can change every time new variables are provided.
   final bool garbageCollectAfterFetch;
@@ -30,6 +33,7 @@ class QueryObserver<TData, TVars extends json.JsonSerializable>
   const QueryObserver(
       {required this.key,
       required this.query,
+      this.fullScreenError = true,
       this.fetchPolicy = QueryFetchPolicy.storeAndNetwork,
       required this.builder,
       this.loadingIndicator,
@@ -88,7 +92,9 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
           if (snapshot.hasData) {
             if (snapshot.data!.hasErrors) {
               print(snapshot.data!.errors);
-              return RetrievalErrorScreen();
+              return widget.fullScreenError
+                  ? RetrievalErrorScreen()
+                  : ErrorMessage();
             } else {
               /// [ObservableQueryResult.data] will be [TData].
               return widget.builder(snapshot.data!.data!);
@@ -106,23 +112,33 @@ class RetrievalErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        middle: NavBarTitle('Oops...'),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: MyText(
-              message ?? 'Sorry there was a problem retrieving your info',
-              color: Styles.errorRed,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-            ),
+        navigationBar: BasicNavBar(
+          middle: NavBarTitle('Oops...'),
+        ),
+        child: ErrorMessage(
+          message: message,
+        ));
+  }
+}
+
+class ErrorMessage extends StatelessWidget {
+  final String? message;
+  ErrorMessage({this.message});
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: MyText(
+            message ?? 'Sorry there was a problem retrieving your info',
+            color: Styles.errorRed,
+            textAlign: TextAlign.center,
+            maxLines: 2,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

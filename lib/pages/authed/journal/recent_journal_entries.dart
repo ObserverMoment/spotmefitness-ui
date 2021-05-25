@@ -21,6 +21,7 @@ class RecentJournalEntries extends StatelessWidget {
         key: Key(
             'RecentJournalEntries - ${UserProgressJournalsQuery().operationName}'),
         query: UserProgressJournalsQuery(),
+        fullScreenError: false,
         loadingIndicator: Row(
           children: [
             Expanded(
@@ -51,15 +52,13 @@ class RecentJournalEntries extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          MyText(
-                            'Journals',
-                            weight: FontWeight.bold,
-                          ),
+                          H2('Journals'),
                           TextButton(
                             onPressed: () =>
                                 context.pushRoute(YourProgressJournalsRoute()),
                             underline: false,
-                            text: 'View all',
+                            text: 'All',
+                            suffix: Icon(CupertinoIcons.arrow_right_square),
                           )
                         ],
                       ),

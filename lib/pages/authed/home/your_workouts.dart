@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -43,10 +43,7 @@ class YourWorkoutsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CreateIconButton(
-                    onPressed: () => context.push(
-                        rootNavigator: true,
-                        fullscreenDialog: true,
-                        child: WorkoutCreator()),
+                    onPressed: () => context.navigateTo(WorkoutCreatorRoute()),
                   ),
                   InfoPopupButton(
                     infoWidget: Padding(
@@ -66,7 +63,6 @@ class YourWorkoutsPage extends StatelessWidget {
   }
 }
 
-/// TODO: When implementing filters - convert to stateful.
 class FilterableWorkoutsList extends StatelessWidget {
   final List<Workout> workouts;
   FilterableWorkoutsList(this.workouts);
@@ -77,45 +73,48 @@ class FilterableWorkoutsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 1.0, top: 3, left: 2),
-            child: Row(
-              children: [
-                FilterButton(
-                  onPressed: () => print('TODO - implement workout filters'),
+    return Stack(
+      fit: StackFit.expand,
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        workouts.isEmpty
+            ? Center(child: MyText('No workouts to display...'))
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: workouts.length + 1,
+                  itemBuilder: (c, i) {
+                    if (i == workouts.length) {
+                      return SizedBox(height: 58);
+                    } else {
+                      return GestureDetector(
+                        onTap: () =>
+                            _openWorkoutDetails(context, workouts[i].id),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 4.0),
+                          child: WorkoutCard(workouts[i]),
+                        ),
+                      );
+                    }
+                  },
                 ),
-                SizedBox(width: 6),
-                OpenTextSearchButton(
-                  onPressed: () => context.push(
-                      fullscreenDialog: true,
-                      child: YourWorkoutsTextSearch(
-                          allWorkouts: workouts,
-                          selectWorkout: (w) =>
-                              _openWorkoutDetails(context, w.id))),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: workouts.length,
-                itemBuilder: (context, index) => GestureDetector(
-                      onTap: () =>
-                          _openWorkoutDetails(context, workouts[index].id),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 4.0),
-                        child: WorkoutCard(workouts[index]),
-                      ),
-                    )),
-          ),
-        ],
-      ),
+              ),
+        Positioned(
+            bottom: kBottomNavBarHeight + 10,
+            child: SortFilterSearchFloatingButton(
+              onFilterPress: () => print('TODO - implement workout filters'),
+              onSortPress: () => print('TODO - implement workout sort'),
+              onSearchPress: () => context.push(
+                  fullscreenDialog: true,
+                  child: YourWorkoutsTextSearch(
+                      allWorkouts: workouts,
+                      selectWorkout: (w) =>
+                          _openWorkoutDetails(context, w.id))),
+            ))
+      ],
     );
   }
 }

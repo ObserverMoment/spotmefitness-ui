@@ -14,16 +14,16 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class WorkoutCreator extends StatefulWidget {
+class WorkoutCreatorPage extends StatefulWidget {
   /// For use when editing or duplicating a workout.
   final Workout? workout;
-  WorkoutCreator({this.workout});
+  WorkoutCreatorPage({this.workout});
 
   @override
-  _WorkoutCreatorState createState() => _WorkoutCreatorState();
+  _WorkoutCreatorPageState createState() => _WorkoutCreatorPageState();
 }
 
-class _WorkoutCreatorState extends State<WorkoutCreator> {
+class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
   int _activeTabIndex = 0;
   Workout? _workout;
   final PageController _pageController = PageController();

@@ -3114,8 +3114,7 @@ UserBenchmarkEntry _$UserBenchmarkEntryFromJson(Map<String, dynamic> json) {
     ..score = (json['score'] as num).toDouble()
     ..note = json['note'] as String?
     ..videoUri = json['videoUri'] as String?
-    ..videoThumbUri = json['videoThumbUri'] as String?
-    ..imageUri = json['imageUri'] as String?;
+    ..videoThumbUri = json['videoThumbUri'] as String?;
 }
 
 Map<String, dynamic> _$UserBenchmarkEntryToJson(UserBenchmarkEntry instance) =>
@@ -3128,7 +3127,6 @@ Map<String, dynamic> _$UserBenchmarkEntryToJson(UserBenchmarkEntry instance) =>
       'note': instance.note,
       'videoUri': instance.videoUri,
       'videoThumbUri': instance.videoThumbUri,
-      'imageUri': instance.imageUri,
     };
 
 CreateUserBenchmarkEntry$Mutation _$CreateUserBenchmarkEntry$MutationFromJson(
@@ -3152,7 +3150,6 @@ CreateUserBenchmarkEntryInput _$CreateUserBenchmarkEntryInputFromJson(
     note: json['note'] as String?,
     videoUri: json['videoUri'] as String?,
     videoThumbUri: json['videoThumbUri'] as String?,
-    imageUri: json['imageUri'] as String?,
     userBenchmark: ConnectRelationInput.fromJson(
         json['UserBenchmark'] as Map<String, dynamic>),
   );
@@ -3166,7 +3163,6 @@ Map<String, dynamic> _$CreateUserBenchmarkEntryInputToJson(
       'note': instance.note,
       'videoUri': instance.videoUri,
       'videoThumbUri': instance.videoThumbUri,
-      'imageUri': instance.imageUri,
       'UserBenchmark': instance.userBenchmark.toJson(),
     };
 
@@ -3193,7 +3189,6 @@ UpdateUserBenchmarkEntryInput _$UpdateUserBenchmarkEntryInputFromJson(
     note: json['note'] as String?,
     videoUri: json['videoUri'] as String?,
     videoThumbUri: json['videoThumbUri'] as String?,
-    imageUri: json['imageUri'] as String?,
   );
 }
 
@@ -3207,7 +3202,6 @@ Map<String, dynamic> _$UpdateUserBenchmarkEntryInputToJson(
       'note': instance.note,
       'videoUri': instance.videoUri,
       'videoThumbUri': instance.videoThumbUri,
-      'imageUri': instance.imageUri,
     };
 
 DeleteUserBenchmarkEntryById$Mutation
@@ -3228,16 +3222,17 @@ UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..lastEntryAt =
+        fromGraphQLDateTimeToDartDateTime(json['lastEntryAt'] as int)
     ..name = json['name'] as String
     ..description = json['description'] as String?
-    ..reps = (json['reps'] as num).toDouble()
+    ..reps = (json['reps'] as num?)?.toDouble()
     ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
         unknownValue: WorkoutMoveRepType.artemisUnknown)
     ..load = (json['load'] as num?)?.toDouble()
-    ..loadUnit = _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+    ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown)
-    ..distanceUnit = _$enumDecodeNullable(
-        _$DistanceUnitEnumMap, json['distanceUnit'],
+    ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown)
     ..scoreType = _$enumDecode(_$BenchmarkScoreTypeEnumMap, json['scoreType'],
         unknownValue: BenchmarkScoreType.artemisUnknown)
@@ -3255,6 +3250,7 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
       '__typename': instance.$$typename,
       'id': instance.id,
       'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'lastEntryAt': fromDartDateTimeToGraphQLDateTime(instance.lastEntryAt),
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
@@ -3272,7 +3268,8 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
 const _$BenchmarkScoreTypeEnumMap = {
   BenchmarkScoreType.load: 'LOAD',
   BenchmarkScoreType.reps: 'REPS',
-  BenchmarkScoreType.time: 'TIME',
+  BenchmarkScoreType.fasttime: 'FASTTIME',
+  BenchmarkScoreType.longtime: 'LONGTIME',
   BenchmarkScoreType.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
@@ -3408,6 +3405,19 @@ Map<String, dynamic> _$UserBenchmarks$QueryToJson(
         UserBenchmarks$Query instance) =>
     <String, dynamic>{
       'userBenchmarks': instance.userBenchmarks.map((e) => e.toJson()).toList(),
+    };
+
+UserBenchmarkById$Query _$UserBenchmarkById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserBenchmarkById$Query()
+    ..userBenchmarkById = UserBenchmark.fromJson(
+        json['userBenchmarkById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UserBenchmarkById$QueryToJson(
+        UserBenchmarkById$Query instance) =>
+    <String, dynamic>{
+      'userBenchmarkById': instance.userBenchmarkById.toJson(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
@@ -4269,4 +4279,17 @@ Map<String, dynamic> _$UserBenchmarksArgumentsToJson(
         UserBenchmarksArguments instance) =>
     <String, dynamic>{
       'first': instance.first,
+    };
+
+UserBenchmarkByIdArguments _$UserBenchmarkByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserBenchmarkByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserBenchmarkByIdArgumentsToJson(
+        UserBenchmarkByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
     };

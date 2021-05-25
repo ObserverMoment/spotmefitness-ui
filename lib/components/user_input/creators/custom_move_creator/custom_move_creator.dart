@@ -10,7 +10,6 @@ import 'package:spotmefitness_ui/components/user_input/creators/custom_move_crea
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_equipment.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator_meta.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/move_type_selector.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -86,7 +85,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
 
       final result = await context.graphQLStore.mutate(
           mutation: UpdateMoveMutation(variables: variables),
-          broadcastQueryIds: [kUserCustomMovesQuery]);
+          broadcastQueryIds: [UserCustomMovesQuery().operationName]);
 
       if (result.hasErrors) {
         context.showToast(
@@ -102,7 +101,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
 
       final result = await context.graphQLStore.create(
           mutation: CreateMoveMutation(variables: variables),
-          addRefToQueries: [kUserCustomMovesQuery]);
+          addRefToQueries: [UserCustomMovesQuery().operationName]);
 
       if (result.hasErrors) {
         context.showToast(
