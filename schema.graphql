@@ -3,43 +3,455 @@ schema {
   mutation: Mutation
 }
 
+"""Enums"""
+enum BenchmarkRepType {
+  REPS
+  CALORIES
+  DISTANCE
+}
+
+enum BenchmarkType {
+  UNBROKENREPS
+  UNBROKENTIME
+  MAXLOAD
+  FASTESTTIME
+}
+
+type BodyArea {
+  id: ID!
+  name: String!
+  altNames: String
+  frontBack: BodyAreaFrontBack!
+  upperLower: BodyAreaUpperLower!
+}
+
+enum BodyAreaFrontBack {
+  BACK
+  FRONT
+  BOTH
+}
+
+type BodyAreaMoveScore {
+  Move: Move!
+  BodyArea: BodyArea!
+  score: Int!
+}
+
+input BodyAreaMoveScoreInput {
+  BodyArea: ConnectRelationInput!
+  score: Float!
+}
+
+enum BodyAreaUpperLower {
+  CORE
+  LOWER
+  UPPER
+}
+
+enum BodyweightUnit {
+  KG
+  LB
+}
+
+input ConnectRelationInput {
+  id: ID!
+}
+
+enum ContentAccessScope {
+  PRIVATE
+  PUBLIC
+  GROUP
+}
+
+input CreateEquipmentInput {
+  name: String!
+  altNames: String
+  loadAdjustable: Boolean!
+}
+
+input CreateGymProfileInput {
+  name: String!
+  description: String
+  Equipments: [ConnectRelationInput!]
+}
+
+input CreateLoggedWorkoutInput {
+  completedOn: DateTime!
+  name: String!
+  note: String
+  LoggedWorkoutSections: [CreateLoggedWorkoutSectionInLoggedWorkoutInput!]!
+  Workout: ConnectRelationInput
+  ScheduledWorkout: ConnectRelationInput
+  GymProfile: ConnectRelationInput
+  WorkoutProgramWorkout: ConnectRelationInput
+  WorkoutProgramEnrolment: ConnectRelationInput
+}
+
+input CreateLoggedWorkoutMoveInLoggedSetInput {
+  sortPosition: Int!
+  note: String
+  repType: WorkoutMoveRepType!
+  reps: Float!
+  distanceUnit: DistanceUnit
+  loadAmount: Float
+  loadUnit: LoadUnit
+  timeUnit: TimeUnit
+  Move: ConnectRelationInput!
+  Equipment: ConnectRelationInput
+}
+
+input CreateLoggedWorkoutMoveInput {
+  sortPosition: Int!
+  note: String
+  repType: WorkoutMoveRepType!
+  reps: Float!
+  distanceUnit: DistanceUnit
+  loadAmount: Float
+  loadUnit: LoadUnit
+  timeUnit: TimeUnit
+  Move: ConnectRelationInput!
+  Equipment: ConnectRelationInput
+  LoggedWorkoutSet: ConnectRelationInput!
+}
+
+input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
+  name: String
+  note: String
+  sortPosition: Int!
+  roundsCompleted: Int!
+  timeTakenMs: Int
+  roundTimesMs: JSON
+  repScore: Int
+  timecap: Int
+  WorkoutSectionType: ConnectRelationInput!
+  LoggedWorkoutSets: [CreateLoggedWorkoutSetInLoggedSectionInput!]!
+}
+
+input CreateLoggedWorkoutSectionInput {
+  name: String
+  note: String
+  sortPosition: Int!
+  roundsCompleted: Int!
+  timeTakenMs: Int
+  roundTimesMs: JSON
+  repScore: Int
+  timecap: Int
+  WorkoutSectionType: ConnectRelationInput!
+  LoggedWorkout: ConnectRelationInput!
+}
+
+input CreateLoggedWorkoutSetInLoggedSectionInput {
+  sortPosition: Int!
+  note: String
+  roundsCompleted: Int!
+  duration: Int
+  LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
+}
+
+input CreateLoggedWorkoutSetInput {
+  sortPosition: Int!
+  note: String
+  roundsCompleted: Int!
+  duration: Int
+  LoggedWorkoutSection: ConnectRelationInput!
+}
+
+input CreateMoveInput {
+  name: String!
+  searchTerms: String
+  description: String
+  demoVideoUri: String
+  demoVideoThumbUri: String
+  scope: MoveScope
+  MoveType: ConnectRelationInput!
+  validRepTypes: [WorkoutMoveRepType!]!
+  RequiredEquipments: [ConnectRelationInput!]
+  SelectableEquipments: [ConnectRelationInput!]
+  BodyAreaMoveScores: [BodyAreaMoveScoreInput!]
+}
+
+input CreateProgressJournalEntryInput {
+  note: String
+  voiceNoteUri: String
+  bodyweight: Float
+  bodyweightUnit: BodyweightUnit
+  moodScore: Float
+  energyScore: Float
+  stressScore: Float
+  motivationScore: Float
+  progressPhotoUris: [String!]!
+  ProgressJournal: ConnectRelationInput!
+}
+
+input CreateProgressJournalGoalInput {
+  name: String!
+  description: String
+  deadline: DateTime
+  ProgressJournal: ConnectRelationInput!
+  ProgressJournalGoalTags: [ConnectRelationInput!]
+}
+
+input CreateProgressJournalGoalTagInput {
+  tag: String!
+  hexColor: String!
+}
+
+input CreateProgressJournalInput {
+  name: String!
+  description: String
+}
+
+input CreateScheduledWorkoutInput {
+  scheduledAt: DateTime!
+  note: String
+  Workout: ConnectRelationInput!
+  GymProfile: ConnectRelationInput
+}
+
+input CreateUserBenchmarkEntryInput {
+  completedOn: DateTime!
+  score: Float!
+  note: String
+  videoUri: String
+  videoThumbUri: String
+  UserBenchmark: ConnectRelationInput!
+}
+
+input CreateUserBenchmarkInput {
+  name: String!
+  description: String
+  reps: Float!
+  repType: BenchmarkRepType!
+  load: Float
+  loadUnit: LoadUnit
+  distanceUnit: DistanceUnit
+  benchmarkType: BenchmarkType!
+  Equipment: ConnectRelationInput
+  Move: ConnectRelationInput!
+}
+
+input CreateWorkoutInput {
+  name: String!
+  difficultyLevel: DifficultyLevel!
+  contentAccessScope: ContentAccessScope!
+}
+
+input CreateWorkoutMoveInput {
+  sortPosition: Int!
+  reps: Float!
+  repType: WorkoutMoveRepType!
+  distanceUnit: DistanceUnit
+  loadAmount: Float!
+  loadUnit: LoadUnit
+  timeUnit: TimeUnit
+  Move: ConnectRelationInput!
+  Equipment: ConnectRelationInput
+  WorkoutSet: ConnectRelationInput!
+}
+
+input CreateWorkoutProgramInput {
+  name: String!
+  description: String
+  coverImageUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  contentAccessScope: ContentAccessScope!
+  WorkoutGoals: [ID!]
+  WorkoutProgramWorkouts: [CreateWorkoutProgramWorkoutInput!]
+}
+
+input CreateWorkoutProgramReviewInput {
+  score: Float!
+  comment: String
+  WorkoutProgram: ID!
+}
+
+input CreateWorkoutProgramWorkoutInput {
+  dayNumber: Float!
+  note: String
+  Workout: ID!
+  WorkoutProgram: ID!
+}
+
+input CreateWorkoutSectionInput {
+  name: String
+  note: String
+  rounds: Int
+  timecap: Int
+  sortPosition: Int!
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  classVideoUri: String
+  classVideoThumbUri: String
+  classAudioUri: String
+  outroVideoUri: String
+  outroVideoThumbUri: String
+  outroAudioUri: String
+  WorkoutSectionType: ConnectRelationInput!
+  Workout: ConnectRelationInput!
+}
+
+input CreateWorkoutSetGeneratorInput {
+  type: WorkoutSetGeneratorType!
+  workoutMoveIndex: Int!
+  target: WorkoutSetGeneratorTarget!
+  roundFrequency: Int!
+  adjustAmount: Float!
+  WorkoutSet: ConnectRelationInput!
+}
+
+input CreateWorkoutSetInput {
+  sortPosition: Int!
+  rounds: Int
+  duration: Int
+  WorkoutSection: ConnectRelationInput!
+}
+
+input CreateWorkoutSetIntervalBuyInInput {
+  interval: Int!
+  WorkoutMove: CreateWorkoutMoveInput!
+  WorkoutSet: ConnectRelationInput!
+}
+
+input CreateWorkoutTagInput {
+  tag: String!
+}
+
 scalar DateTime
+
+enum DifficultyLevel {
+  LIGHT
+  CHALLENGING
+  INTERMEDIATE
+  ADVANCED
+  ELITE
+}
+
+enum DistanceUnit {
+  METRES
+  KILOMETRES
+  YARDS
+  MILES
+}
+
+type Equipment {
+  id: ID!
+  name: String!
+  altNames: String
+  loadAdjustable: Boolean!
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONBINARY
+  NONE
+}
+
+type GymProfile {
+  id: ID!
+  name: String!
+  description: String
+  Equipments: [Equipment!]!
+}
 
 scalar JSON
 
-type Query {
-  validateToken: Boolean!
-  bodyAreas: [BodyArea!]!
-  equipments: [Equipment!]!
-  moveTypes: [MoveType!]!
-  workoutGoals: [WorkoutGoal!]!
-  workoutSectionTypes: [WorkoutSectionType!]!
-  userLoggedWorkouts(first: Int): [LoggedWorkout!]!
-  loggedWorkoutById(id: ID!): LoggedWorkout!
-  standardMoves: [Move!]!
-  userCustomMoves: [Move!]!
-  userProgressJournals: [ProgressJournal!]!
-  progressJournalById(id: ID!): ProgressJournal!
-  progressJournalGoalTags: [ProgressJournalGoalTag!]!
-  userScheduledWorkouts: [ScheduledWorkout!]!
-  textSearchWorkouts(text: String!): [TextSearchWorkoutResult!]
-  textSearchWorkoutPrograms(text: String!): [TextSearchWorkoutProgramResult!]
-  textSearchCreatorPublicProfiles(text: String!): [UserPublicProfile!]
-  authedUser: User!
-  checkUniqueDisplayName(displayName: String!): Boolean!
-  gymProfiles: [GymProfile!]!
-  userWorkoutTags: [WorkoutTag!]!
-  userBenchmarks(first: Int): [UserBenchmark!]!
-  userBenchmarkById(id: ID!): UserBenchmark!
-  userPublicProfiles: [UserPublicProfile!]
-  userPublicProfileByUserId(userId: ID!): UserPublicProfile!
-  publicWorkouts: [Workout!]!
-  userWorkouts: [Workout!]!
-  workoutById(id: ID!): Workout!
-  publicWorkoutPrograms: [WorkoutProgram!]!
-  workoutProgramById(id: ID!): WorkoutProgram!
-  userWorkoutPrograms: [WorkoutProgram!]!
-  userWorkoutProgramEnrolments(workoutProgramId: ID!): [WorkoutProgramEnrolment!]
+enum LoadUnit {
+  KG
+  LB
+  BODYWEIGHTPERCENT
+  PERCENTMAX
+}
+
+type LoggedWorkout {
+  id: ID!
+  completedOn: DateTime!
+  name: String!
+  note: String
+  LoggedWorkoutSections: [LoggedWorkoutSection!]!
+  Workout: Workout!
+  ScheduledWorkout: ScheduledWorkout
+  GymProfile: GymProfile
+  WorkoutProgramWorkout: WorkoutProgramWorkout
+  WorkoutProgramEnrolment: WorkoutProgramWorkout
+}
+
+type LoggedWorkoutMove {
+  id: ID!
+  sortPosition: Int!
+  note: String
+  repType: WorkoutMoveRepType!
+  reps: Float!
+  distanceUnit: DistanceUnit!
+  loadAmount: Float
+  loadUnit: LoadUnit!
+  timeUnit: TimeUnit!
+  Move: Move!
+  Equipment: Equipment
+}
+
+type LoggedWorkoutSection {
+  id: ID!
+  name: String
+  sortPosition: Int!
+  timecap: Int
+  roundsCompleted: Int!
+  timeTakenMs: Int
+  roundTimesMs: JSON!
+  repScore: Int
+  note: String
+  WorkoutSectionType: WorkoutSectionType!
+  LoggedWorkoutSets: [LoggedWorkoutSet!]!
+  LoggedWorkout: LoggedWorkout!
+}
+
+type LoggedWorkoutSet {
+  id: ID!
+  note: String
+  sortPosition: Int!
+  roundsCompleted: Int!
+  duration: Int
+  LoggedWorkoutMoves: [LoggedWorkoutMove!]!
+}
+
+type Move {
+  id: ID!
+  name: String!
+  searchTerms: String
+  description: String
+  demoVideoUri: String
+  demoVideoThumbUri: String
+  scope: MoveScope!
+  MoveType: MoveType!
+  validRepTypes: [WorkoutMoveRepType!]!
+  RequiredEquipments: [Equipment!]!
+  SelectableEquipments: [Equipment!]!
+  BodyAreaMoveScores: [BodyAreaMoveScore!]!
+}
+
+"""
+Standard moves are built in / official.
+Custom moves are created by users.
+"""
+enum MoveScope {
+  STANDARD
+  CUSTOM
+}
+
+type MoveSummary {
+  id: ID!
+  name: String!
+  RequiredEquipments: [Equipment!]!
+}
+
+type MoveType {
+  id: ID!
+  name: String!
+  description: String
+  imageUri: String
 }
 
 type Mutation {
@@ -127,144 +539,123 @@ type Mutation {
   deleteWorkoutProgramReviewById(id: ID!): ID!
 }
 
+type ProgressJournal {
+  id: ID!
+  createdAt: DateTime!
+  name: String!
+  description: String
+  ProgressJournalEntries: [ProgressJournalEntry!]!
+  ProgressJournalGoals: [ProgressJournalGoal!]!
+}
+
+type ProgressJournalEntry {
+  id: ID!
+  createdAt: DateTime!
+  note: String
+  voiceNoteUri: String
+  bodyweight: Float
+  bodyweightUnit: BodyweightUnit!
+  moodScore: Float
+  energyScore: Float
+  stressScore: Float
+  motivationScore: Float
+  progressPhotoUris: [String!]!
+  ProgressJournal: ProgressJournal!
+}
+
+type ProgressJournalGoal {
+  id: ID!
+  createdAt: DateTime!
+  name: String!
+  description: String
+  deadline: DateTime
+  completedDate: DateTime
+  ProgressJournalGoalTags: [ProgressJournalGoalTag!]!
+}
+
+type ProgressJournalGoalTag {
+  id: ID!
+  createdAt: DateTime!
+  tag: String!
+  hexColor: String!
+}
+
+type Query {
+  validateToken: Boolean!
+  bodyAreas: [BodyArea!]!
+  equipments: [Equipment!]!
+  moveTypes: [MoveType!]!
+  workoutGoals: [WorkoutGoal!]!
+  workoutSectionTypes: [WorkoutSectionType!]!
+  userLoggedWorkouts(first: Int): [LoggedWorkout!]!
+  loggedWorkoutById(id: ID!): LoggedWorkout!
+  standardMoves: [Move!]!
+  userCustomMoves: [Move!]!
+  userProgressJournals: [ProgressJournal!]!
+  progressJournalById(id: ID!): ProgressJournal!
+  progressJournalGoalTags: [ProgressJournalGoalTag!]!
+  userScheduledWorkouts: [ScheduledWorkout!]!
+  textSearchWorkouts(text: String!): [TextSearchWorkoutResult!]
+  textSearchWorkoutPrograms(text: String!): [TextSearchWorkoutProgramResult!]
+  textSearchCreatorPublicProfiles(text: String!): [UserPublicProfile!]
+  authedUser: User!
+  checkUniqueDisplayName(displayName: String!): Boolean!
+  gymProfiles: [GymProfile!]!
+  userWorkoutTags: [WorkoutTag!]!
+  userBenchmarks(first: Int): [UserBenchmark!]!
+  userBenchmarkById(id: ID!): UserBenchmark!
+  userPublicProfiles: [UserPublicProfile!]
+  userPublicProfileByUserId(userId: ID!): UserPublicProfile!
+  publicWorkouts: [Workout!]!
+  userWorkouts: [Workout!]!
+  workoutById(id: ID!): Workout!
+  publicWorkoutPrograms: [WorkoutProgram!]!
+  workoutProgramById(id: ID!): WorkoutProgram!
+  userWorkoutPrograms: [WorkoutProgram!]!
+  userWorkoutProgramEnrolments(workoutProgramId: ID!): [WorkoutProgramEnrolment!]
+}
+
+type ScheduledWorkout {
+  id: ID!
+  createdAt: DateTime!
+  scheduledAt: DateTime!
+  note: String
+  Workout: Workout
+  LoggedWorkout: LoggedWorkout
+  GymProfile: GymProfile
+}
+
 type SortPositionUpdated {
   id: ID!
   sortPosition: Int!
 }
 
-input UpdateSortPositionInput {
+type TextSearchWorkoutProgramResult {
   id: ID!
-  sortPosition: Int!
-}
-
-input ConnectRelationInput {
-  id: ID!
-}
-
-type BodyArea {
-  id: ID!
+  scope: ContentAccessScope!
   name: String!
-  altNames: String
-  frontBack: BodyAreaFrontBack!
-  upperLower: BodyAreaUpperLower!
+  description: String
+  imageUri: String
+  User: User
+  WorkoutGoals: [WorkoutGoal!]!
+  WorkoutProgramWorkouts: [WorkoutProgramWorkout!]
 }
 
-type BodyAreaMoveScore {
-  Move: Move!
-  BodyArea: BodyArea!
-  score: Int!
-}
-
-"""Enums"""
-enum BenchmarkScoreType {
-  LOAD
-  REPS
-  FASTTIME
-  LONGTIME
-}
-
-enum BodyAreaFrontBack {
-  BACK
-  FRONT
-  BOTH
-}
-
-enum BodyAreaUpperLower {
-  CORE
-  LOWER
-  UPPER
-}
-
-enum BodyweightUnit {
-  KG
-  LB
-}
-
-enum ContentAccessScope {
-  PRIVATE
-  PUBLIC
-  GROUP
-}
-
-enum DifficultyLevel {
-  LIGHT
-  CHALLENGING
-  INTERMEDIATE
-  ADVANCED
-  ELITE
-}
-
-enum DistanceUnit {
-  METRES
-  KILOMETRES
-  YARDS
-  MILES
-}
-
-enum Gender {
-  MALE
-  FEMALE
-  NONBINARY
-  NONE
-}
-
-enum LoadUnit {
-  KG
-  LB
-  BODYWEIGHTPERCENT
-  PERCENTMAX
-}
-
-"""
-Standard moves are built in / official.
-Custom moves are created by users.
-"""
-enum MoveScope {
-  STANDARD
-  CUSTOM
+type TextSearchWorkoutResult {
+  id: ID!
+  scope: ContentAccessScope!
+  name: String
+  description: String
+  imageUri: String
+  difficultyLevel: Int!
+  timecap: Int
+  User: User
 }
 
 enum TimeUnit {
   HOURS
   MINUTES
   SECONDS
-}
-
-enum WorkoutMoveRepType {
-  REPS
-  CALORIES
-  DISTANCE
-  TIME
-}
-
-enum WorkoutSetGeneratorTarget {
-  REPS
-  LOAD
-}
-
-enum WorkoutSetGeneratorType {
-  LADDERUP
-  LADDERDOWN
-  PYRAMIDUP
-  PYRAMIDDOWN
-}
-
-enum UserProfileScope {
-  PRIVATE
-  PUBLIC
-}
-
-type Equipment {
-  id: ID!
-  name: String!
-  altNames: String
-  loadAdjustable: Boolean!
-}
-
-input CreateEquipmentInput {
-  name: String!
-  altNames: String
-  loadAdjustable: Boolean!
 }
 
 input UpdateEquipmentInput {
@@ -274,156 +665,11 @@ input UpdateEquipmentInput {
   loadAdjustable: Boolean
 }
 
-type GymProfile {
-  id: ID!
-  name: String!
-  description: String
-  Equipments: [Equipment!]!
-}
-
-input CreateGymProfileInput {
-  name: String!
-  description: String
-  Equipments: [ConnectRelationInput!]
-}
-
 input UpdateGymProfileInput {
   id: ID!
   name: String
   description: String
   Equipments: [ConnectRelationInput!]
-}
-
-type LoggedWorkout {
-  id: ID!
-  completedOn: DateTime!
-  name: String!
-  note: String
-  LoggedWorkoutSections: [LoggedWorkoutSection!]!
-  Workout: Workout!
-  ScheduledWorkout: ScheduledWorkout
-  GymProfile: GymProfile
-  WorkoutProgramWorkout: WorkoutProgramWorkout
-  WorkoutProgramEnrolment: WorkoutProgramWorkout
-}
-
-type LoggedWorkoutSection {
-  id: ID!
-  name: String
-  sortPosition: Int!
-  timecap: Int
-  roundsCompleted: Int!
-  timeTakenMs: Int
-  roundTimesMs: JSON!
-  repScore: Int
-  note: String
-  WorkoutSectionType: WorkoutSectionType!
-  LoggedWorkoutSets: [LoggedWorkoutSet!]!
-  LoggedWorkout: LoggedWorkout!
-}
-
-type LoggedWorkoutSet {
-  id: ID!
-  note: String
-  sortPosition: Int!
-  roundsCompleted: Int!
-  duration: Int
-  LoggedWorkoutMoves: [LoggedWorkoutMove!]!
-}
-
-type LoggedWorkoutMove {
-  id: ID!
-  sortPosition: Int!
-  note: String
-  repType: WorkoutMoveRepType!
-  reps: Float!
-  distanceUnit: DistanceUnit!
-  loadAmount: Float
-  loadUnit: LoadUnit!
-  timeUnit: TimeUnit!
-  Move: Move!
-  Equipment: Equipment
-}
-
-input CreateLoggedWorkoutInput {
-  completedOn: DateTime!
-  name: String!
-  note: String
-  LoggedWorkoutSections: [CreateLoggedWorkoutSectionInLoggedWorkoutInput!]!
-  Workout: ConnectRelationInput
-  ScheduledWorkout: ConnectRelationInput
-  GymProfile: ConnectRelationInput
-  WorkoutProgramWorkout: ConnectRelationInput
-  WorkoutProgramEnrolment: ConnectRelationInput
-}
-
-input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
-  name: String
-  note: String
-  sortPosition: Int!
-  roundsCompleted: Int!
-  timeTakenMs: Int
-  roundTimesMs: JSON
-  repScore: Int
-  timecap: Int
-  WorkoutSectionType: ConnectRelationInput!
-  LoggedWorkoutSets: [CreateLoggedWorkoutSetInLoggedSectionInput!]!
-}
-
-input CreateLoggedWorkoutSetInLoggedSectionInput {
-  sortPosition: Int!
-  note: String
-  roundsCompleted: Int!
-  duration: Int
-  LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
-}
-
-input CreateLoggedWorkoutMoveInLoggedSetInput {
-  sortPosition: Int!
-  note: String
-  repType: WorkoutMoveRepType!
-  reps: Float!
-  distanceUnit: DistanceUnit
-  loadAmount: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  Move: ConnectRelationInput!
-  Equipment: ConnectRelationInput
-}
-
-input CreateLoggedWorkoutSectionInput {
-  name: String
-  note: String
-  sortPosition: Int!
-  roundsCompleted: Int!
-  timeTakenMs: Int
-  roundTimesMs: JSON
-  repScore: Int
-  timecap: Int
-  WorkoutSectionType: ConnectRelationInput!
-  LoggedWorkout: ConnectRelationInput!
-}
-
-input CreateLoggedWorkoutSetInput {
-  sortPosition: Int!
-  note: String
-  roundsCompleted: Int!
-  duration: Int
-  LoggedWorkoutSection: ConnectRelationInput!
-}
-
-input CreateLoggedWorkoutMoveInput {
-  sortPosition: Int!
-  note: String
-  repType: WorkoutMoveRepType!
-  reps: Float!
-  distanceUnit: DistanceUnit
-  loadAmount: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  Move: ConnectRelationInput!
-  Equipment: ConnectRelationInput
-  LoggedWorkoutSet: ConnectRelationInput!
 }
 
 input UpdateLoggedWorkoutInput {
@@ -432,6 +678,18 @@ input UpdateLoggedWorkoutInput {
   name: String
   note: String
   GymProfile: ConnectRelationInput
+}
+
+input UpdateLoggedWorkoutMoveInput {
+  id: ID!
+  note: String
+  reps: Float
+  distanceUnit: DistanceUnit
+  loadAmount: Float
+  loadUnit: LoadUnit
+  timeUnit: TimeUnit
+  Move: ConnectRelationInput
+  Equipment: ConnectRelationInput
 }
 
 input UpdateLoggedWorkoutSectionInput {
@@ -452,54 +710,6 @@ input UpdateLoggedWorkoutSetInput {
   roundsCompleted: Int
 }
 
-input UpdateLoggedWorkoutMoveInput {
-  id: ID!
-  note: String
-  reps: Float
-  distanceUnit: DistanceUnit
-  loadAmount: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  Move: ConnectRelationInput
-  Equipment: ConnectRelationInput
-}
-
-type Move {
-  id: ID!
-  name: String!
-  searchTerms: String
-  description: String
-  demoVideoUri: String
-  demoVideoThumbUri: String
-  scope: MoveScope!
-  MoveType: MoveType!
-  validRepTypes: [WorkoutMoveRepType!]!
-  RequiredEquipments: [Equipment!]!
-  SelectableEquipments: [Equipment!]!
-  BodyAreaMoveScores: [BodyAreaMoveScore!]!
-}
-
-type MoveType {
-  id: ID!
-  name: String!
-  description: String
-  imageUri: String
-}
-
-input CreateMoveInput {
-  name: String!
-  searchTerms: String
-  description: String
-  demoVideoUri: String
-  demoVideoThumbUri: String
-  scope: MoveScope
-  MoveType: ConnectRelationInput!
-  validRepTypes: [WorkoutMoveRepType!]!
-  RequiredEquipments: [ConnectRelationInput!]
-  SelectableEquipments: [ConnectRelationInput!]
-  BodyAreaMoveScores: [BodyAreaMoveScoreInput!]
-}
-
 input UpdateMoveInput {
   id: ID!
   name: String
@@ -515,59 +725,6 @@ input UpdateMoveInput {
   BodyAreaMoveScores: [BodyAreaMoveScoreInput!]
 }
 
-input BodyAreaMoveScoreInput {
-  BodyArea: ConnectRelationInput!
-  score: Float!
-}
-
-type ProgressJournal {
-  id: ID!
-  createdAt: DateTime!
-  name: String!
-  description: String
-  ProgressJournalEntries: [ProgressJournalEntry!]!
-  ProgressJournalGoals: [ProgressJournalGoal!]!
-}
-
-input CreateProgressJournalInput {
-  name: String!
-  description: String
-}
-
-input UpdateProgressJournalInput {
-  id: ID!
-  name: String
-  description: String
-}
-
-type ProgressJournalEntry {
-  id: ID!
-  createdAt: DateTime!
-  note: String
-  voiceNoteUri: String
-  bodyweight: Float
-  bodyweightUnit: BodyweightUnit!
-  moodScore: Float
-  energyScore: Float
-  stressScore: Float
-  motivationScore: Float
-  progressPhotoUris: [String!]!
-  ProgressJournal: ProgressJournal!
-}
-
-input CreateProgressJournalEntryInput {
-  note: String
-  voiceNoteUri: String
-  bodyweight: Float
-  bodyweightUnit: BodyweightUnit
-  moodScore: Float
-  energyScore: Float
-  stressScore: Float
-  motivationScore: Float
-  progressPhotoUris: [String!]!
-  ProgressJournal: ConnectRelationInput!
-}
-
 input UpdateProgressJournalEntryInput {
   id: ID!
   note: String
@@ -581,24 +738,6 @@ input UpdateProgressJournalEntryInput {
   progressPhotoUris: [String!]!
 }
 
-type ProgressJournalGoal {
-  id: ID!
-  createdAt: DateTime!
-  name: String!
-  description: String
-  deadline: DateTime
-  completedDate: DateTime
-  ProgressJournalGoalTags: [ProgressJournalGoalTag!]!
-}
-
-input CreateProgressJournalGoalInput {
-  name: String!
-  description: String
-  deadline: DateTime
-  ProgressJournal: ConnectRelationInput!
-  ProgressJournalGoalTags: [ConnectRelationInput!]
-}
-
 input UpdateProgressJournalGoalInput {
   id: ID!
   name: String
@@ -608,39 +747,16 @@ input UpdateProgressJournalGoalInput {
   ProgressJournalGoalTags: [ConnectRelationInput!]
 }
 
-type ProgressJournalGoalTag {
-  id: ID!
-  createdAt: DateTime!
-  tag: String!
-  hexColor: String!
-}
-
-input CreateProgressJournalGoalTagInput {
-  tag: String!
-  hexColor: String!
-}
-
 input UpdateProgressJournalGoalTagInput {
   id: ID!
   tag: String
   hexColor: String
 }
 
-type ScheduledWorkout {
+input UpdateProgressJournalInput {
   id: ID!
-  createdAt: DateTime!
-  scheduledAt: DateTime!
-  note: String
-  Workout: Workout
-  LoggedWorkout: LoggedWorkout
-  GymProfile: GymProfile
-}
-
-input CreateScheduledWorkoutInput {
-  scheduledAt: DateTime!
-  note: String
-  Workout: ConnectRelationInput!
-  GymProfile: ConnectRelationInput
+  name: String
+  description: String
 }
 
 input UpdateScheduledWorkoutInput {
@@ -652,26 +768,150 @@ input UpdateScheduledWorkoutInput {
   GymProfile: ConnectRelationInput
 }
 
-type TextSearchWorkoutResult {
+input UpdateSortPositionInput {
   id: ID!
-  scope: ContentAccessScope!
-  name: String
-  description: String
-  imageUri: String
-  difficultyLevel: Int!
-  timecap: Int
-  User: User
+  sortPosition: Int!
 }
 
-type TextSearchWorkoutProgramResult {
-  id: ID!
-  scope: ContentAccessScope!
-  name: String!
+input UpdateUserBenchmarkEntryInput {
+  id: String!
+  completedOn: DateTime
+  score: Float
+  note: String
+  videoUri: String
+  videoThumbUri: String
+}
+
+input UpdateUserBenchmarkInput {
+  id: String!
+  name: String
   description: String
-  imageUri: String
-  User: User
-  WorkoutGoals: [WorkoutGoal!]!
-  WorkoutProgramWorkouts: [WorkoutProgramWorkout!]
+  reps: Float
+  repType: BenchmarkRepType
+  load: Float
+  loadUnit: LoadUnit
+  distanceUnit: DistanceUnit
+  benchmarkType: BenchmarkType!
+  Equipment: ConnectRelationInput
+  Move: ConnectRelationInput
+}
+
+input UpdateUserInput {
+  userProfileScope: UserProfileScope
+  avatarUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  bio: String
+  tagline: String
+  birthdate: DateTime
+  townCity: String
+  countryCode: String
+  displayName: String
+  instagramUrl: String
+  tiktokUrl: String
+  youtubeUrl: String
+  snapUrl: String
+  linkedinUrl: String
+  firstname: String
+  gender: Gender
+  hasOnboarded: Boolean
+  lastname: String
+}
+
+input UpdateWorkoutInput {
+  id: ID!
+  archived: Boolean
+  name: String
+  description: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  coverImageUri: String
+  difficultyLevel: DifficultyLevel
+  contentAccessScope: ContentAccessScope
+  WorkoutGoals: [ConnectRelationInput!]
+  WorkoutTags: [ConnectRelationInput!]
+}
+
+input UpdateWorkoutMoveInput {
+  id: ID!
+  reps: Float
+  repType: WorkoutMoveRepType
+  distanceUnit: DistanceUnit
+  loadAmount: Float
+  loadUnit: LoadUnit
+  timeUnit: TimeUnit
+  Move: ConnectRelationInput
+  Equipment: ConnectRelationInput
+}
+
+input UpdateWorkoutProgramInput {
+  id: ID!
+  name: String
+  description: String
+  coverImageUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  contentAccessScope: ContentAccessScope
+  WorkoutGoals: [ID!]
+}
+
+input UpdateWorkoutProgramReviewInput {
+  id: ID!
+  score: Float
+  comment: String
+}
+
+input UpdateWorkoutProgramWorkoutInput {
+  id: ID!
+  dayNumber: Float!
+  note: String
+  Workout: ID!
+}
+
+input UpdateWorkoutSectionInput {
+  id: ID!
+  name: String
+  note: String
+  rounds: Int
+  timecap: Int
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  classVideoUri: String
+  classVideoThumbUri: String
+  classAudioUri: String
+  outroVideoUri: String
+  outroVideoThumbUri: String
+  outroAudioUri: String
+  WorkoutSectionType: ConnectRelationInput
+}
+
+input UpdateWorkoutSetGeneratorInput {
+  id: ID!
+  type: WorkoutSetGeneratorType
+  workoutMoveIndex: Int
+  target: WorkoutSetGeneratorTarget
+  roundFrequency: Int
+  adjustAmount: Float
+}
+
+input UpdateWorkoutSetInput {
+  id: ID!
+  rounds: Int
+  duration: Int
+}
+
+input UpdateWorkoutSetIntervalBuyInInput {
+  id: ID!
+  interval: Int
+  WorkoutMove: UpdateWorkoutMoveInput
+}
+
+input UpdateWorkoutTagInput {
+  id: ID!
+  tag: String!
 }
 
 type User {
@@ -699,32 +939,43 @@ type User {
   ProgressJournalGoalTags: [ProgressJournalGoalTag!]
 }
 
-type UserSummary {
-  id: ID!
-  displayName: String!
-  avatarUri: String
+type UserBenchmark {
+  id: String!
+  createdAt: DateTime!
+  lastEntryAt: DateTime!
+  name: String!
+  description: String
+  reps: Float
+  repType: BenchmarkRepType!
+  load: Float
+  loadUnit: LoadUnit!
+  distanceUnit: DistanceUnit!
+  benchmarkType: BenchmarkType!
+  Equipment: Equipment
+  Move: Move!
+  UserBenchmarkEntries: [UserBenchmarkEntry!]!
 }
 
-input UpdateUserInput {
-  userProfileScope: UserProfileScope
-  avatarUri: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  bio: String
-  tagline: String
-  birthdate: DateTime
-  townCity: String
-  countryCode: String
-  displayName: String
-  instagramUrl: String
-  tiktokUrl: String
-  youtubeUrl: String
-  snapUrl: String
-  linkedinUrl: String
-  firstname: String
-  gender: Gender
-  hasOnboarded: Boolean
-  lastname: String
+type UserBenchmarkEntry {
+  id: String!
+  createdAt: DateTime!
+  completedOn: DateTime!
+  score: Float!
+  note: String
+  videoUri: String
+  videoThumbUri: String
+}
+
+type UserPrivateProfile {
+  LoggedWorkouts: [LoggedWorkout!]
+  Workouts: [Workout!]
+  WorkoutPrograms: [WorkoutProgram!]
+  WorkoutProgramEnrolments: [WorkoutProgramEnrolment!]
+}
+
+enum UserProfileScope {
+  PRIVATE
+  PUBLIC
 }
 
 type UserPublicProfile {
@@ -747,139 +998,10 @@ type UserPublicProfile {
   WorkoutPrograms: [WorkoutProgram!]
 }
 
-type UserPrivateProfile {
-  LoggedWorkouts: [LoggedWorkout!]
-  Workouts: [Workout!]
-  WorkoutPrograms: [WorkoutProgram!]
-  WorkoutProgramEnrolments: [WorkoutProgramEnrolment!]
-}
-
-type WorkoutMove {
+type UserSummary {
   id: ID!
-  sortPosition: Int!
-  reps: Float!
-  repType: WorkoutMoveRepType!
-  distanceUnit: DistanceUnit!
-  loadAmount: Float!
-  loadUnit: LoadUnit!
-  timeUnit: TimeUnit!
-  Move: Move!
-  Equipment: Equipment
-}
-
-input CreateWorkoutMoveInput {
-  sortPosition: Int!
-  reps: Float!
-  repType: WorkoutMoveRepType!
-  distanceUnit: DistanceUnit
-  loadAmount: Float!
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  Move: ConnectRelationInput!
-  Equipment: ConnectRelationInput
-  WorkoutSet: ConnectRelationInput!
-}
-
-input UpdateWorkoutMoveInput {
-  id: ID!
-  reps: Float
-  repType: WorkoutMoveRepType
-  distanceUnit: DistanceUnit
-  loadAmount: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  Move: ConnectRelationInput
-  Equipment: ConnectRelationInput
-}
-
-type WorkoutProgram {
-  id: ID!
-  createdAt: DateTime!
-  name: String!
-  description: String
-  coverImageUri: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  contentAccessScope: ContentAccessScope!
-  User: User
-  Enrolments: [WorkoutProgramEnrolment!]
-  WorkoutGoals: [WorkoutGoal!]!
-  WorkoutProgramWorkouts: [WorkoutProgramWorkout!]!
-  WorkoutProgramReviews: [WorkoutProgramReview!]
-}
-
-type WorkoutProgramWorkout {
-  id: ID!
-  dayNumber: Float!
-  note: String
-  Workout: Workout!
-}
-
-type WorkoutProgramEnrolment {
-  id: ID!
-  startDate: DateTime!
-  User: User!
-  WorkoutProgram: WorkoutProgram!
-  LoggedWorkouts: [LoggedWorkout!]
-}
-
-type WorkoutProgramReview {
-  id: ID!
-  createdAt: DateTime!
-  score: Float!
-  comment: String
-  User: User!
-}
-
-input CreateWorkoutProgramInput {
-  name: String!
-  description: String
-  coverImageUri: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  contentAccessScope: ContentAccessScope!
-  WorkoutGoals: [ID!]
-  WorkoutProgramWorkouts: [CreateWorkoutProgramWorkoutInput!]
-}
-
-input UpdateWorkoutProgramInput {
-  id: ID!
-  name: String
-  description: String
-  coverImageUri: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  contentAccessScope: ContentAccessScope
-  WorkoutGoals: [ID!]
-}
-
-input CreateWorkoutProgramWorkoutInput {
-  dayNumber: Float!
-  note: String
-  Workout: ID!
-  WorkoutProgram: ID!
-}
-
-input UpdateWorkoutProgramWorkoutInput {
-  id: ID!
-  dayNumber: Float!
-  note: String
-  Workout: ID!
-}
-
-input CreateWorkoutProgramReviewInput {
-  score: Float!
-  comment: String
-  WorkoutProgram: ID!
-}
-
-input UpdateWorkoutProgramReviewInput {
-  id: ID!
-  score: Float
-  comment: String
+  displayName: String!
+  avatarUri: String
 }
 
 type Workout {
@@ -900,46 +1022,76 @@ type Workout {
   WorkoutSections: [WorkoutSection!]!
 }
 
-input CreateWorkoutInput {
-  name: String!
-  difficultyLevel: DifficultyLevel!
-  contentAccessScope: ContentAccessScope!
-}
-
-input UpdateWorkoutInput {
-  id: ID!
-  archived: Boolean
-  name: String
-  description: String
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  coverImageUri: String
-  difficultyLevel: DifficultyLevel
-  contentAccessScope: ContentAccessScope
-  WorkoutGoals: [ConnectRelationInput!]
-  WorkoutTags: [ConnectRelationInput!]
-}
-
 type WorkoutGoal {
   id: ID!
   name: String!
   description: String!
 }
 
-type WorkoutTag {
+type WorkoutMove {
   id: ID!
+  sortPosition: Int!
+  reps: Float!
+  repType: WorkoutMoveRepType!
+  distanceUnit: DistanceUnit!
+  loadAmount: Float!
+  loadUnit: LoadUnit!
+  timeUnit: TimeUnit!
+  Move: Move!
+  Equipment: Equipment
+}
+
+enum WorkoutMoveRepType {
+  REPS
+  CALORIES
+  DISTANCE
+  TIME
+}
+
+type WorkoutMoveSummary {
+  id: ID!
+  Equipment: Equipment
+  Move: MoveSummary!
+}
+
+type WorkoutProgram {
+  id: ID!
+  createdAt: DateTime!
+  name: String!
+  description: String
+  coverImageUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
+  contentAccessScope: ContentAccessScope!
+  User: User
+  Enrolments: [WorkoutProgramEnrolment!]
+  WorkoutGoals: [WorkoutGoal!]!
+  WorkoutProgramWorkouts: [WorkoutProgramWorkout!]!
+  WorkoutProgramReviews: [WorkoutProgramReview!]
+}
+
+type WorkoutProgramEnrolment {
+  id: ID!
+  startDate: DateTime!
   User: User!
-  tag: String!
+  WorkoutProgram: WorkoutProgram!
+  LoggedWorkouts: [LoggedWorkout!]
 }
 
-input CreateWorkoutTagInput {
-  tag: String!
-}
-
-input UpdateWorkoutTagInput {
+type WorkoutProgramReview {
   id: ID!
-  tag: String!
+  createdAt: DateTime!
+  score: Float!
+  comment: String
+  User: User!
+}
+
+type WorkoutProgramWorkout {
+  id: ID!
+  dayNumber: Float!
+  note: String
+  Workout: Workout!
 }
 
 type WorkoutSection {
@@ -962,41 +1114,13 @@ type WorkoutSection {
   WorkoutSets: [WorkoutSet!]!
 }
 
-input CreateWorkoutSectionInput {
-  name: String
-  note: String
-  rounds: Int
-  timecap: Int
-  sortPosition: Int!
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  classVideoUri: String
-  classVideoThumbUri: String
-  classAudioUri: String
-  outroVideoUri: String
-  outroVideoThumbUri: String
-  outroAudioUri: String
-  WorkoutSectionType: ConnectRelationInput!
-  Workout: ConnectRelationInput!
-}
-
-input UpdateWorkoutSectionInput {
+type WorkoutSectionSummary {
   id: ID!
   name: String
-  note: String
-  rounds: Int
   timecap: Int
-  introVideoUri: String
-  introVideoThumbUri: String
-  introAudioUri: String
-  classVideoUri: String
-  classVideoThumbUri: String
-  classAudioUri: String
-  outroVideoUri: String
-  outroVideoThumbUri: String
-  outroAudioUri: String
-  WorkoutSectionType: ConnectRelationInput
+  sortPosition: Int!
+  WorkoutSectionType: WorkoutSectionType!
+  WorkoutSets: [WorkoutSetSummary!]!
 }
 
 type WorkoutSectionType {
@@ -1017,37 +1141,6 @@ type WorkoutSet {
   WorkoutMoves: [WorkoutMove!]!
 }
 
-input CreateWorkoutSetInput {
-  sortPosition: Int!
-  rounds: Int
-  duration: Int
-  WorkoutSection: ConnectRelationInput!
-}
-
-input UpdateWorkoutSetInput {
-  id: ID!
-  rounds: Int
-  duration: Int
-}
-
-type WorkoutSetIntervalBuyIn {
-  id: ID!
-  interval: Int!
-  WorkoutMove: WorkoutMove!
-}
-
-input CreateWorkoutSetIntervalBuyInInput {
-  interval: Int!
-  WorkoutMove: CreateWorkoutMoveInput!
-  WorkoutSet: ConnectRelationInput!
-}
-
-input UpdateWorkoutSetIntervalBuyInInput {
-  id: ID!
-  interval: Int
-  WorkoutMove: UpdateWorkoutMoveInput
-}
-
 type WorkoutSetGenerator {
   id: ID!
   type: WorkoutSetGeneratorType!
@@ -1058,22 +1151,27 @@ type WorkoutSetGenerator {
   WorkoutSet: WorkoutSet!
 }
 
-input CreateWorkoutSetGeneratorInput {
-  type: WorkoutSetGeneratorType!
-  workoutMoveIndex: Int!
-  target: WorkoutSetGeneratorTarget!
-  roundFrequency: Int!
-  adjustAmount: Float!
-  WorkoutSet: ConnectRelationInput!
+enum WorkoutSetGeneratorTarget {
+  REPS
+  LOAD
 }
 
-input UpdateWorkoutSetGeneratorInput {
+enum WorkoutSetGeneratorType {
+  LADDERUP
+  LADDERDOWN
+  PYRAMIDUP
+  PYRAMIDDOWN
+}
+
+type WorkoutSetIntervalBuyIn {
   id: ID!
-  type: WorkoutSetGeneratorType
-  workoutMoveIndex: Int
-  target: WorkoutSetGeneratorTarget
-  roundFrequency: Int
-  adjustAmount: Float
+  interval: Int!
+  WorkoutMove: WorkoutMove!
+}
+
+type WorkoutSetSummary {
+  id: ID!
+  WorkoutMoves: [WorkoutMoveSummary!]!
 }
 
 type WorkoutSummary {
@@ -1093,100 +1191,8 @@ type WorkoutSummary {
   WorkoutSections: [WorkoutSectionSummary!]!
 }
 
-type WorkoutSectionSummary {
+type WorkoutTag {
   id: ID!
-  name: String
-  timecap: Int
-  sortPosition: Int!
-  WorkoutSectionType: WorkoutSectionType!
-  WorkoutSets: [WorkoutSetSummary!]!
-}
-
-type WorkoutSetSummary {
-  id: ID!
-  WorkoutMoves: [WorkoutMoveSummary!]!
-}
-
-type WorkoutMoveSummary {
-  id: ID!
-  Equipment: Equipment
-  Move: MoveSummary!
-}
-
-type MoveSummary {
-  id: ID!
-  name: String!
-  RequiredEquipments: [Equipment!]!
-}
-
-type UserBenchmark {
-  id: String!
-  createdAt: DateTime!
-  lastEntryAt: DateTime!
-  name: String!
-  description: String
-  reps: Float
-  repType: WorkoutMoveRepType!
-  load: Float
-  loadUnit: LoadUnit!
-  distanceUnit: DistanceUnit!
-  scoreType: BenchmarkScoreType!
-  Equipment: Equipment
-  Move: Move!
-  UserBenchmarkEntries: [UserBenchmarkEntry!]!
-}
-
-input CreateUserBenchmarkInput {
-  name: String!
-  description: String
-  reps: Float!
-  repType: WorkoutMoveRepType!
-  load: Float
-  loadUnit: LoadUnit
-  distanceUnit: DistanceUnit
-  scoreType: BenchmarkScoreType!
-  Equipment: ConnectRelationInput
-  Move: ConnectRelationInput!
-}
-
-input UpdateUserBenchmarkInput {
-  id: String!
-  name: String
-  description: String
-  reps: Float
-  repType: WorkoutMoveRepType
-  load: Float
-  loadUnit: LoadUnit
-  distanceUnit: DistanceUnit
-  scoreType: BenchmarkScoreType
-  Equipment: ConnectRelationInput
-  Move: ConnectRelationInput
-}
-
-type UserBenchmarkEntry {
-  id: String!
-  createdAt: DateTime!
-  completedOn: DateTime!
-  score: Float!
-  note: String
-  videoUri: String
-  videoThumbUri: String
-}
-
-input CreateUserBenchmarkEntryInput {
-  completedOn: DateTime!
-  score: Float!
-  note: String
-  videoUri: String
-  videoThumbUri: String
-  UserBenchmark: ConnectRelationInput!
-}
-
-input UpdateUserBenchmarkEntryInput {
-  id: String!
-  completedOn: DateTime
-  score: Float
-  note: String
-  videoUri: String
-  videoThumbUri: String
+  User: User!
+  tag: String!
 }

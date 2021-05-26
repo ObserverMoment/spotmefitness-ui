@@ -17,13 +17,13 @@ class BenchmarkCard extends StatelessWidget {
   List<UserBenchmarkEntry> _sortEntries() {
     final entries =
         userBenchmark.userBenchmarkEntries.sortedBy<num>((e) => e.score);
-    return userBenchmark.scoreType == BenchmarkScoreType.fasttime
+    return userBenchmark.benchmarkType == BenchmarkType.fastesttime
         ? entries
         : entries.reversed.toList();
   }
 
   String _buildScoreText(UserBenchmarkEntry entry) {
-    if (userBenchmark.scoreType == BenchmarkScoreType.load) {
+    if (userBenchmark.benchmarkType == BenchmarkType.maxload) {
       return '${entry.score.stringMyDouble()}${userBenchmark.loadUnit.display}';
     } else {
       return entry.score.round().secondsToTimeDisplay();
@@ -75,7 +75,7 @@ class BenchmarkCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     H3(userBenchmark.name),
-                    MyText(userBenchmark.scoreType.display),
+                    MyText(userBenchmark.benchmarkType.display),
                     if (Utils.textNotNull(userBenchmark.description))
                       MyText(
                         userBenchmark.description!,

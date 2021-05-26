@@ -78,7 +78,7 @@ class BenchmarkEntrieslist extends StatelessWidget {
   List<UserBenchmarkEntry> _sortEntries() {
     final entries =
         userBenchmark.userBenchmarkEntries.sortedBy<num>((e) => e.score);
-    return userBenchmark.scoreType == BenchmarkScoreType.fasttime
+    return userBenchmark.benchmarkType == BenchmarkType.fastesttime
         ? entries
         : entries.reversed.toList();
   }

@@ -1271,6 +1271,46 @@ Map<String, dynamic> _$CreateLoggedWorkoutInputToJson(
       'WorkoutProgramEnrolment': instance.workoutProgramEnrolment?.toJson(),
     };
 
+CreateLoggedWorkoutMoveInLoggedSetInput
+    _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(
+        Map<String, dynamic> json) {
+  return CreateLoggedWorkoutMoveInLoggedSetInput(
+    sortPosition: json['sortPosition'] as int,
+    note: json['note'] as String?,
+    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    reps: (json['reps'] as num).toDouble(),
+    distanceUnit: _$enumDecodeNullable(
+        _$DistanceUnitEnumMap, json['distanceUnit'],
+        unknownValue: DistanceUnit.artemisUnknown),
+    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
+    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
+        unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
+    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
+    equipment: json['Equipment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['Equipment'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(
+        CreateLoggedWorkoutMoveInLoggedSetInput instance) =>
+    <String, dynamic>{
+      'sortPosition': instance.sortPosition,
+      'note': instance.note,
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'reps': instance.reps,
+      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
+      'loadAmount': instance.loadAmount,
+      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
+      'Move': instance.move.toJson(),
+      'Equipment': instance.equipment?.toJson(),
+    };
+
 CreateLoggedWorkoutSectionInLoggedWorkoutInput
     _$CreateLoggedWorkoutSectionInLoggedWorkoutInputFromJson(
         Map<String, dynamic> json) {
@@ -1332,46 +1372,6 @@ Map<String, dynamic> _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(
       'duration': instance.duration,
       'LoggedWorkoutMoves':
           instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
-    };
-
-CreateLoggedWorkoutMoveInLoggedSetInput
-    _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(
-        Map<String, dynamic> json) {
-  return CreateLoggedWorkoutMoveInLoggedSetInput(
-    sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
-    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown),
-    reps: (json['reps'] as num).toDouble(),
-    distanceUnit: _$enumDecodeNullable(
-        _$DistanceUnitEnumMap, json['distanceUnit'],
-        unknownValue: DistanceUnit.artemisUnknown),
-    loadAmount: (json['loadAmount'] as num?)?.toDouble(),
-    loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
-        unknownValue: LoadUnit.artemisUnknown),
-    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
-        unknownValue: TimeUnit.artemisUnknown),
-    move: ConnectRelationInput.fromJson(json['Move'] as Map<String, dynamic>),
-    equipment: json['Equipment'] == null
-        ? null
-        : ConnectRelationInput.fromJson(
-            json['Equipment'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(
-        CreateLoggedWorkoutMoveInLoggedSetInput instance) =>
-    <String, dynamic>{
-      'sortPosition': instance.sortPosition,
-      'note': instance.note,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
-      'reps': instance.reps,
-      'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'loadAmount': instance.loadAmount,
-      'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
-      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
-      'Move': instance.move.toJson(),
-      'Equipment': instance.equipment?.toJson(),
     };
 
 DeleteLoggedWorkoutSetById$Mutation
@@ -1625,6 +1625,22 @@ Map<String, dynamic> _$CreateMove$MutationToJson(
       'createMove': instance.createMove.toJson(),
     };
 
+BodyAreaMoveScoreInput _$BodyAreaMoveScoreInputFromJson(
+    Map<String, dynamic> json) {
+  return BodyAreaMoveScoreInput(
+    bodyArea:
+        ConnectRelationInput.fromJson(json['BodyArea'] as Map<String, dynamic>),
+    score: (json['score'] as num).toDouble(),
+  );
+}
+
+Map<String, dynamic> _$BodyAreaMoveScoreInputToJson(
+        BodyAreaMoveScoreInput instance) =>
+    <String, dynamic>{
+      'BodyArea': instance.bodyArea.toJson(),
+      'score': instance.score,
+    };
+
 CreateMoveInput _$CreateMoveInputFromJson(Map<String, dynamic> json) {
   return CreateMoveInput(
     name: json['name'] as String,
@@ -1670,22 +1686,6 @@ Map<String, dynamic> _$CreateMoveInputToJson(CreateMoveInput instance) =>
           instance.selectableEquipments?.map((e) => e.toJson()).toList(),
       'BodyAreaMoveScores':
           instance.bodyAreaMoveScores?.map((e) => e.toJson()).toList(),
-    };
-
-BodyAreaMoveScoreInput _$BodyAreaMoveScoreInputFromJson(
-    Map<String, dynamic> json) {
-  return BodyAreaMoveScoreInput(
-    bodyArea:
-        ConnectRelationInput.fromJson(json['BodyArea'] as Map<String, dynamic>),
-    score: (json['score'] as num).toDouble(),
-  );
-}
-
-Map<String, dynamic> _$BodyAreaMoveScoreInputToJson(
-        BodyAreaMoveScoreInput instance) =>
-    <String, dynamic>{
-      'BodyArea': instance.bodyArea.toJson(),
-      'score': instance.score,
     };
 
 UpdateMove$Mutation _$UpdateMove$MutationFromJson(Map<String, dynamic> json) {
@@ -3227,15 +3227,16 @@ UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..reps = (json['reps'] as num?)?.toDouble()
-    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown)
+    ..repType = _$enumDecode(_$BenchmarkRepTypeEnumMap, json['repType'],
+        unknownValue: BenchmarkRepType.artemisUnknown)
     ..load = (json['load'] as num?)?.toDouble()
     ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown)
     ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown)
-    ..scoreType = _$enumDecode(_$BenchmarkScoreTypeEnumMap, json['scoreType'],
-        unknownValue: BenchmarkScoreType.artemisUnknown)
+    ..benchmarkType = _$enumDecode(
+        _$BenchmarkTypeEnumMap, json['benchmarkType'],
+        unknownValue: BenchmarkType.artemisUnknown)
     ..equipment = json['Equipment'] == null
         ? null
         : Equipment.fromJson(json['Equipment'] as Map<String, dynamic>)
@@ -3254,23 +3255,30 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),
       'Move': instance.move.toJson(),
       'UserBenchmarkEntries':
           instance.userBenchmarkEntries.map((e) => e.toJson()).toList(),
     };
 
-const _$BenchmarkScoreTypeEnumMap = {
-  BenchmarkScoreType.load: 'LOAD',
-  BenchmarkScoreType.reps: 'REPS',
-  BenchmarkScoreType.fasttime: 'FASTTIME',
-  BenchmarkScoreType.longtime: 'LONGTIME',
-  BenchmarkScoreType.artemisUnknown: 'ARTEMIS_UNKNOWN',
+const _$BenchmarkRepTypeEnumMap = {
+  BenchmarkRepType.reps: 'REPS',
+  BenchmarkRepType.calories: 'CALORIES',
+  BenchmarkRepType.distance: 'DISTANCE',
+  BenchmarkRepType.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+const _$BenchmarkTypeEnumMap = {
+  BenchmarkType.unbrokenreps: 'UNBROKENREPS',
+  BenchmarkType.unbrokentime: 'UNBROKENTIME',
+  BenchmarkType.maxload: 'MAXLOAD',
+  BenchmarkType.fastesttime: 'FASTESTTIME',
+  BenchmarkType.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
 UpdateUserBenchmark$Mutation _$UpdateUserBenchmark$MutationFromJson(
@@ -3293,17 +3301,16 @@ UpdateUserBenchmarkInput _$UpdateUserBenchmarkInputFromJson(
     name: json['name'] as String?,
     description: json['description'] as String?,
     reps: (json['reps'] as num?)?.toDouble(),
-    repType: _$enumDecodeNullable(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    repType: _$enumDecodeNullable(_$BenchmarkRepTypeEnumMap, json['repType'],
+        unknownValue: BenchmarkRepType.artemisUnknown),
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
     distanceUnit: _$enumDecodeNullable(
         _$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown),
-    scoreType: _$enumDecodeNullable(
-        _$BenchmarkScoreTypeEnumMap, json['scoreType'],
-        unknownValue: BenchmarkScoreType.artemisUnknown),
+    benchmarkType: _$enumDecode(_$BenchmarkTypeEnumMap, json['benchmarkType'],
+        unknownValue: BenchmarkType.artemisUnknown),
     equipment: json['Equipment'] == null
         ? null
         : ConnectRelationInput.fromJson(
@@ -3321,11 +3328,11 @@ Map<String, dynamic> _$UpdateUserBenchmarkInputToJson(
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),
       'Move': instance.move?.toJson(),
     };
@@ -3349,16 +3356,16 @@ CreateUserBenchmarkInput _$CreateUserBenchmarkInputFromJson(
     name: json['name'] as String,
     description: json['description'] as String?,
     reps: (json['reps'] as num).toDouble(),
-    repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
-        unknownValue: WorkoutMoveRepType.artemisUnknown),
+    repType: _$enumDecode(_$BenchmarkRepTypeEnumMap, json['repType'],
+        unknownValue: BenchmarkRepType.artemisUnknown),
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
     distanceUnit: _$enumDecodeNullable(
         _$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown),
-    scoreType: _$enumDecode(_$BenchmarkScoreTypeEnumMap, json['scoreType'],
-        unknownValue: BenchmarkScoreType.artemisUnknown),
+    benchmarkType: _$enumDecode(_$BenchmarkTypeEnumMap, json['benchmarkType'],
+        unknownValue: BenchmarkType.artemisUnknown),
     equipment: json['Equipment'] == null
         ? null
         : ConnectRelationInput.fromJson(
@@ -3373,11 +3380,11 @@ Map<String, dynamic> _$CreateUserBenchmarkInputToJson(
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
+      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
-      'scoreType': _$BenchmarkScoreTypeEnumMap[instance.scoreType],
+      'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),
       'Move': instance.move.toJson(),
     };

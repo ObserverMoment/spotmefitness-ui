@@ -72,7 +72,7 @@ fragment UserBenchmark on UserBenchmark {
   load
   loadUnit
   distanceUnit
-  scoreType
+  benchmarkType
 }
 
 fragment UserBenchmarkEntry on UserBenchmarkEntry {

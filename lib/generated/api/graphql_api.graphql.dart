@@ -304,15 +304,15 @@ mixin UserBenchmarkMixin {
   late String name;
   String? description;
   double? reps;
-  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
-  late WorkoutMoveRepType repType;
+  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
+  late BenchmarkRepType repType;
   double? load;
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   late LoadUnit loadUnit;
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   late DistanceUnit distanceUnit;
-  @JsonKey(unknownEnumValue: BenchmarkScoreType.artemisUnknown)
-  late BenchmarkScoreType scoreType;
+  @JsonKey(unknownEnumValue: BenchmarkType.artemisUnknown)
+  late BenchmarkType benchmarkType;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1590,6 +1590,68 @@ class CreateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutMoveInLoggedSetInput(
+      {required this.sortPosition,
+      this.note,
+      required this.repType,
+      required this.reps,
+      this.distanceUnit,
+      this.loadAmount,
+      this.loadUnit,
+      this.timeUnit,
+      required this.move,
+      this.equipment});
+
+  factory CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
+
+  late int sortPosition;
+
+  String? note;
+
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  late WorkoutMoveRepType repType;
+
+  late double reps;
+
+  @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
+  DistanceUnit? distanceUnit;
+
+  double? loadAmount;
+
+  @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
+  LoadUnit? loadUnit;
+
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  TimeUnit? timeUnit;
+
+  @JsonKey(name: 'Move')
+  late ConnectRelationInput move;
+
+  @JsonKey(name: 'Equipment')
+  ConnectRelationInput? equipment;
+
+  @override
+  List<Object?> get props => [
+        sortPosition,
+        note,
+        repType,
+        reps,
+        distanceUnit,
+        loadAmount,
+        loadUnit,
+        timeUnit,
+        move,
+        equipment
+      ];
+  Map<String, dynamic> toJson() =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
     with EquatableMixin {
   CreateLoggedWorkoutSectionInLoggedWorkoutInput(
@@ -1680,68 +1742,6 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
       [sortPosition, note, roundsCompleted, duration, loggedWorkoutMoves];
   Map<String, dynamic> toJson() =>
       _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
-    with EquatableMixin {
-  CreateLoggedWorkoutMoveInLoggedSetInput(
-      {required this.sortPosition,
-      this.note,
-      required this.repType,
-      required this.reps,
-      this.distanceUnit,
-      this.loadAmount,
-      this.loadUnit,
-      this.timeUnit,
-      required this.move,
-      this.equipment});
-
-  factory CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
-
-  late int sortPosition;
-
-  String? note;
-
-  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
-  late WorkoutMoveRepType repType;
-
-  late double reps;
-
-  @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
-  DistanceUnit? distanceUnit;
-
-  double? loadAmount;
-
-  @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
-  LoadUnit? loadUnit;
-
-  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
-  TimeUnit? timeUnit;
-
-  @JsonKey(name: 'Move')
-  late ConnectRelationInput move;
-
-  @JsonKey(name: 'Equipment')
-  ConnectRelationInput? equipment;
-
-  @override
-  List<Object?> get props => [
-        sortPosition,
-        note,
-        repType,
-        reps,
-        distanceUnit,
-        loadAmount,
-        loadUnit,
-        timeUnit,
-        move,
-        equipment
-      ];
-  Map<String, dynamic> toJson() =>
-      _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -2030,6 +2030,23 @@ class CreateMove$Mutation extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class BodyAreaMoveScoreInput extends JsonSerializable with EquatableMixin {
+  BodyAreaMoveScoreInput({required this.bodyArea, required this.score});
+
+  factory BodyAreaMoveScoreInput.fromJson(Map<String, dynamic> json) =>
+      _$BodyAreaMoveScoreInputFromJson(json);
+
+  @JsonKey(name: 'BodyArea')
+  late ConnectRelationInput bodyArea;
+
+  late double score;
+
+  @override
+  List<Object?> get props => [bodyArea, score];
+  Map<String, dynamic> toJson() => _$BodyAreaMoveScoreInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CreateMoveInput extends JsonSerializable with EquatableMixin {
   CreateMoveInput(
       {required this.name,
@@ -2090,23 +2107,6 @@ class CreateMoveInput extends JsonSerializable with EquatableMixin {
         bodyAreaMoveScores
       ];
   Map<String, dynamic> toJson() => _$CreateMoveInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class BodyAreaMoveScoreInput extends JsonSerializable with EquatableMixin {
-  BodyAreaMoveScoreInput({required this.bodyArea, required this.score});
-
-  factory BodyAreaMoveScoreInput.fromJson(Map<String, dynamic> json) =>
-      _$BodyAreaMoveScoreInputFromJson(json);
-
-  @JsonKey(name: 'BodyArea')
-  late ConnectRelationInput bodyArea;
-
-  late double score;
-
-  @override
-  List<Object?> get props => [bodyArea, score];
-  Map<String, dynamic> toJson() => _$BodyAreaMoveScoreInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -3868,7 +3868,7 @@ class UserBenchmark extends JsonSerializable
         load,
         loadUnit,
         distanceUnit,
-        scoreType,
+        benchmarkType,
         equipment,
         move,
         userBenchmarkEntries
@@ -3902,7 +3902,7 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
       this.load,
       this.loadUnit,
       this.distanceUnit,
-      this.scoreType,
+      required this.benchmarkType,
       this.equipment,
       this.move});
 
@@ -3917,8 +3917,8 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
 
   double? reps;
 
-  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
-  WorkoutMoveRepType? repType;
+  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
+  BenchmarkRepType? repType;
 
   double? load;
 
@@ -3928,8 +3928,8 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   DistanceUnit? distanceUnit;
 
-  @JsonKey(unknownEnumValue: BenchmarkScoreType.artemisUnknown)
-  BenchmarkScoreType? scoreType;
+  @JsonKey(unknownEnumValue: BenchmarkType.artemisUnknown)
+  late BenchmarkType benchmarkType;
 
   @JsonKey(name: 'Equipment')
   ConnectRelationInput? equipment;
@@ -3947,7 +3947,7 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
         load,
         loadUnit,
         distanceUnit,
-        scoreType,
+        benchmarkType,
         equipment,
         move
       ];
@@ -3979,7 +3979,7 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
       this.load,
       this.loadUnit,
       this.distanceUnit,
-      required this.scoreType,
+      required this.benchmarkType,
       this.equipment,
       required this.move});
 
@@ -3992,8 +3992,8 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
 
   late double reps;
 
-  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
-  late WorkoutMoveRepType repType;
+  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
+  late BenchmarkRepType repType;
 
   double? load;
 
@@ -4003,8 +4003,8 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   DistanceUnit? distanceUnit;
 
-  @JsonKey(unknownEnumValue: BenchmarkScoreType.artemisUnknown)
-  late BenchmarkScoreType scoreType;
+  @JsonKey(unknownEnumValue: BenchmarkType.artemisUnknown)
+  late BenchmarkType benchmarkType;
 
   @JsonKey(name: 'Equipment')
   ConnectRelationInput? equipment;
@@ -4021,7 +4021,7 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
         load,
         loadUnit,
         distanceUnit,
-        scoreType,
+        benchmarkType,
         equipment,
         move
       ];
@@ -4199,15 +4199,25 @@ enum DifficultyLevel {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum BenchmarkScoreType {
-  @JsonValue('LOAD')
-  load,
+enum BenchmarkRepType {
   @JsonValue('REPS')
   reps,
-  @JsonValue('FASTTIME')
-  fasttime,
-  @JsonValue('LONGTIME')
-  longtime,
+  @JsonValue('CALORIES')
+  calories,
+  @JsonValue('DISTANCE')
+  distance,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum BenchmarkType {
+  @JsonValue('UNBROKENREPS')
+  unbrokenreps,
+  @JsonValue('UNBROKENTIME')
+  unbrokentime,
+  @JsonValue('MAXLOAD')
+  maxload,
+  @JsonValue('FASTESTTIME')
+  fastesttime,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -21997,7 +22007,7 @@ final UPDATE_USER_BENCHMARK_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'scoreType'),
+            name: NameNode(value: 'benchmarkType'),
             alias: null,
             arguments: [],
             directives: [],
@@ -22450,7 +22460,7 @@ final CREATE_USER_BENCHMARK_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'scoreType'),
+            name: NameNode(value: 'benchmarkType'),
             alias: null,
             arguments: [],
             directives: [],
@@ -22966,7 +22976,7 @@ final USER_BENCHMARKS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'scoreType'),
+            name: NameNode(value: 'benchmarkType'),
             alias: null,
             arguments: [],
             directives: [],
@@ -23416,7 +23426,7 @@ final USER_BENCHMARK_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'scoreType'),
+            name: NameNode(value: 'benchmarkType'),
             alias: null,
             arguments: [],
             directives: [],
