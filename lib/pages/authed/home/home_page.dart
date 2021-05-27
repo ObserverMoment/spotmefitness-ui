@@ -68,8 +68,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF232526),
-                        const Color(0xFF414345),
+                        const Color(0xFFE4E5E6),
+                        const Color(0xFF00416A),
                       ]),
                 ),
               ),
@@ -84,8 +84,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF4CA1AF),
-                        const Color(0xFF2C3E50),
+                        const Color(0xFFcc2b5e),
+                        const Color(0xFF414345),
                       ]),
                 ),
               ),
@@ -100,8 +100,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF004e92),
-                        const Color(0xFF000428),
+                        const Color(0xFF2c3e50),
+                        const Color(0xFF0F2027),
                       ]),
                 ),
               ),
@@ -116,24 +116,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFFF09819),
-                        const Color(0xFFEDDE5D),
-                      ]),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => context.navigateTo(YourMovesRoute()),
-                child: HomeScreenCard(
-                  content: H2(
-                    'Moves',
-                    color: Styles.white,
-                  ),
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFF232526),
-                        const Color(0xFF414345),
+                        const Color(0xFF6dd5ed),
+                        const Color(0xFF314755),
                       ]),
                 ),
               ),
@@ -146,9 +130,25 @@ class HomePage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF4CA1AF),
-                      const Color(0xFF2C3E50),
+                      const Color(0xFFffe259),
+                      const Color(0xFFffa751),
                     ]),
+              ),
+              GestureDetector(
+                onTap: () => context.navigateTo(YourMovesRoute()),
+                child: HomeScreenCard(
+                  content: H2(
+                    'Moves',
+                    color: Styles.white,
+                  ),
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFFB79891),
+                        const Color(0xFF94716B),
+                      ]),
+                ),
               ),
               HomeScreenCard(
                 content: H2(
@@ -159,8 +159,8 @@ class HomePage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF004e92),
-                      const Color(0xFF000428),
+                      const Color(0xFFD31027),
+                      const Color(0xFF493240),
                     ]),
               ),
             ],

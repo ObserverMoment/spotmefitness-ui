@@ -37,6 +37,7 @@ const kProgressJournalGoalTypename = 'ProgressJournalGoal';
 const kProgressJournalGoalTagTypename = 'ProgressJournalGoalTag';
 
 const kUserBenchmarkTypename = 'UserBenchmark';
+const kUserBenchmarkEntryTypename = 'UserBenchmarkEntry';
 
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,

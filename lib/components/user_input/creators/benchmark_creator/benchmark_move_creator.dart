@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -21,6 +22,8 @@ class BenchmarkMoveCreator extends StatelessWidget {
   final void Function(double load) updateLoad;
   final LoadUnit? loadUnit;
   final void Function(LoadUnit loadUnit) updateLoadUnit;
+  final TimeUnit? timeUnit;
+  final void Function(TimeUnit timeUnit) updateTimeUnit;
   final DistanceUnit? distanceUnit;
   final void Function(DistanceUnit distanceUnit) updateDistanceUnit;
   final Equipment? equipment;
@@ -37,6 +40,8 @@ class BenchmarkMoveCreator extends StatelessWidget {
     required this.updateLoad,
     this.loadUnit,
     required this.updateLoadUnit,
+    this.timeUnit,
+    required this.updateTimeUnit,
     this.distanceUnit,
     required this.updateDistanceUnit,
     this.equipment,
@@ -112,62 +117,64 @@ class BenchmarkMoveCreator extends StatelessWidget {
             ],
           ),
         if (move != null && move!.selectableEquipments.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: MyText('Select from...'),
-                ),
-                EquipmentMultiSelector(
-                    showIcon: true,
-                    fontSize: FONTSIZE.SMALL,
-                    equipments: _equipmentsWithBodyWeightFirst(
-                        move!.selectableEquipments),
-                    handleSelection: updateEquipment,
-                    selectedEquipments: [if (equipment != null) equipment!]),
-              ],
+          FadeIn(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: MyText('Select from...'),
+                  ),
+                  EquipmentMultiSelector(
+                      showIcon: true,
+                      fontSize: FONTSIZE.SMALL,
+                      equipments: _equipmentsWithBodyWeightFirst(
+                          move!.selectableEquipments),
+                      handleSelection: updateEquipment,
+                      selectedEquipments: [if (equipment != null) equipment!]),
+                ],
+              ),
             ),
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
-          child: Wrap(
-            spacing: 30,
-            runSpacing: 10,
-            alignment: WrapAlignment.spaceEvenly,
-            runAlignment: WrapAlignment.spaceEvenly,
-            children: [
-              if ([BenchmarkType.maxload, BenchmarkType.fastesttime]
-                  .contains(benchmarkType))
-                RepPickerDisplay(
-                    distanceUnit: distanceUnit ?? DistanceUnit.metres,
-                    reps: reps ?? 0,
-                    repType: repType ?? WorkoutMoveRepType.reps,
-                    timeUnit: TimeUnit.seconds,
-                    updateDistanceUnit: updateDistanceUnit,
-                    updateReps: updateReps,
-                    updateRepType: updateRepType,
-                    updateTimeUnit: (_) {},
-                    validRepTypes: [
-                      WorkoutMoveRepType.reps,
-                      WorkoutMoveRepType.calories,
-                      WorkoutMoveRepType.distance
-                    ]),
-              if (benchmarkType != BenchmarkType.maxload &&
-                  equipment != null &&
-                  equipment!.loadAdjustable)
-                LoadPickerDisplay(
-                  loadAmount: load ?? 0,
-                  loadUnit: loadUnit ?? LoadUnit.kg,
-                  updateLoad: (load, loadUnit) {
-                    updateLoad(load);
-                    updateLoadUnit(loadUnit);
-                  },
-                )
-            ],
+        if (move != null)
+          FadeIn(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Wrap(
+                spacing: 30,
+                runSpacing: 10,
+                alignment: WrapAlignment.spaceEvenly,
+                runAlignment: WrapAlignment.spaceEvenly,
+                children: [
+                  if ([BenchmarkType.maxload, BenchmarkType.fastesttime]
+                      .contains(benchmarkType))
+                    RepPickerDisplay(
+                        distanceUnit: distanceUnit ?? DistanceUnit.metres,
+                        reps: reps ?? 0,
+                        repType: repType ?? WorkoutMoveRepType.reps,
+                        updateDistanceUnit: updateDistanceUnit,
+                        updateReps: updateReps,
+                        updateRepType: updateRepType,
+                        timeUnit: timeUnit ?? TimeUnit.seconds,
+                        updateTimeUnit: updateTimeUnit,
+                        validRepTypes: move!.validRepTypes),
+                  if (benchmarkType != BenchmarkType.maxload &&
+                      equipment != null &&
+                      equipment!.loadAdjustable)
+                    LoadPickerDisplay(
+                      loadAmount: load ?? 0,
+                      loadUnit: loadUnit ?? LoadUnit.kg,
+                      updateLoad: (load, loadUnit) {
+                        updateLoad(load);
+                        updateLoadUnit(loadUnit);
+                      },
+                    )
+                ],
+              ),
+            ),
           ),
-        ),
       ],
     );
   }

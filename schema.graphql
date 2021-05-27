@@ -218,6 +218,7 @@ input CreateUserBenchmarkInput {
   repType: WorkoutMoveRepType
   load: Float
   loadUnit: LoadUnit
+  timeUnit: TimeUnit
   distanceUnit: DistanceUnit
   benchmarkType: BenchmarkType!
   Equipment: ConnectRelationInput
@@ -784,6 +785,7 @@ input UpdateUserBenchmarkInput {
   repType: WorkoutMoveRepType
   load: Float
   loadUnit: LoadUnit
+  timeUnit: TimeUnit
   distanceUnit: DistanceUnit
   benchmarkType: BenchmarkType!
   Equipment: ConnectRelationInput
@@ -943,6 +945,7 @@ type UserBenchmark {
   repType: WorkoutMoveRepType!
   load: Float
   loadUnit: LoadUnit!
+  timeUnit: TimeUnit!
   distanceUnit: DistanceUnit!
   benchmarkType: BenchmarkType!
   Equipment: Equipment

@@ -26,8 +26,12 @@ class VideoThumbnailPlayer extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        await VideoSetupManager.openFullScreenVideoPlayer(
-            context: context, videoUri: videoUri!, autoPlay: true);
+        if (videoUri == null) {
+          return;
+        } else {
+          await VideoSetupManager.openFullScreenVideoPlayer(
+              context: context, videoUri: videoUri!, autoPlay: true);
+        }
       },
       child: Stack(
         children: [
@@ -36,7 +40,7 @@ class VideoThumbnailPlayer extends StatelessWidget {
             height: displaySize.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: _primary.withOpacity(0.7),
+              color: _primary.withOpacity(0.4),
               boxShadow: [Styles.avatarBoxShadow],
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,

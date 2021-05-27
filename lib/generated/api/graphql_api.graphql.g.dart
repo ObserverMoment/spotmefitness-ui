@@ -3232,6 +3232,8 @@ UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) {
     ..load = (json['load'] as num?)?.toDouble()
     ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown)
+    ..timeUnit = _$enumDecode(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown)
     ..distanceUnit = _$enumDecode(_$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown)
     ..benchmarkType = _$enumDecode(
@@ -3258,6 +3260,7 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
       'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),
@@ -3299,6 +3302,8 @@ UpdateUserBenchmarkInput _$UpdateUserBenchmarkInputFromJson(
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
     distanceUnit: _$enumDecodeNullable(
         _$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown),
@@ -3324,6 +3329,7 @@ Map<String, dynamic> _$UpdateUserBenchmarkInputToJson(
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
       'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),
@@ -3354,6 +3360,8 @@ CreateUserBenchmarkInput _$CreateUserBenchmarkInputFromJson(
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
+    timeUnit: _$enumDecodeNullable(_$TimeUnitEnumMap, json['timeUnit'],
+        unknownValue: TimeUnit.artemisUnknown),
     distanceUnit: _$enumDecodeNullable(
         _$DistanceUnitEnumMap, json['distanceUnit'],
         unknownValue: DistanceUnit.artemisUnknown),
@@ -3376,6 +3384,7 @@ Map<String, dynamic> _$CreateUserBenchmarkInputToJson(
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
+      'timeUnit': _$TimeUnitEnumMap[instance.timeUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
       'benchmarkType': _$BenchmarkTypeEnumMap[instance.benchmarkType],
       'Equipment': instance.equipment?.toJson(),

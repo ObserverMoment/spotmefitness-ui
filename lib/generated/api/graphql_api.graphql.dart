@@ -309,6 +309,8 @@ mixin UserBenchmarkMixin {
   double? load;
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   late LoadUnit loadUnit;
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  late TimeUnit timeUnit;
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   late DistanceUnit distanceUnit;
   @JsonKey(unknownEnumValue: BenchmarkType.artemisUnknown)
@@ -3867,6 +3869,7 @@ class UserBenchmark extends JsonSerializable
         repType,
         load,
         loadUnit,
+        timeUnit,
         distanceUnit,
         benchmarkType,
         equipment,
@@ -3901,6 +3904,7 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
       this.repType,
       this.load,
       this.loadUnit,
+      this.timeUnit,
       this.distanceUnit,
       required this.benchmarkType,
       this.equipment,
@@ -3925,6 +3929,9 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   LoadUnit? loadUnit;
 
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  TimeUnit? timeUnit;
+
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   DistanceUnit? distanceUnit;
 
@@ -3946,6 +3953,7 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
         repType,
         load,
         loadUnit,
+        timeUnit,
         distanceUnit,
         benchmarkType,
         equipment,
@@ -3978,6 +3986,7 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
       this.repType,
       this.load,
       this.loadUnit,
+      this.timeUnit,
       this.distanceUnit,
       required this.benchmarkType,
       this.equipment,
@@ -4000,6 +4009,9 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   LoadUnit? loadUnit;
 
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  TimeUnit? timeUnit;
+
   @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
   DistanceUnit? distanceUnit;
 
@@ -4020,6 +4032,7 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
         repType,
         load,
         loadUnit,
+        timeUnit,
         distanceUnit,
         benchmarkType,
         equipment,
@@ -21991,6 +22004,12 @@ final UPDATE_USER_BENCHMARK_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'timeUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'distanceUnit'),
             alias: null,
             arguments: [],
@@ -22439,6 +22458,12 @@ final CREATE_USER_BENCHMARK_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'loadUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'timeUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -22960,6 +22985,12 @@ final USER_BENCHMARKS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'timeUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'distanceUnit'),
             alias: null,
             arguments: [],
@@ -23405,6 +23436,12 @@ final USER_BENCHMARK_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'loadUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'timeUnit'),
             alias: null,
             arguments: [],
             directives: [],

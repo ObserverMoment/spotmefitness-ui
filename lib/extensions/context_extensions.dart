@@ -302,5 +302,6 @@ extension BuildContextExtension on BuildContext {
         duration: Duration(seconds: 3),
       )..show(this);
 
-  dynamic pop({dynamic result}) => Navigator.of(this).pop(result);
+  dynamic pop({dynamic result, bool rootNavigator = false}) =>
+      Navigator.of(this, rootNavigator: rootNavigator).pop(result);
 }

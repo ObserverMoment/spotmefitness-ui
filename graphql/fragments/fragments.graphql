@@ -71,6 +71,7 @@ fragment UserBenchmark on UserBenchmark {
   repType
   load
   loadUnit
+  timeUnit
   distanceUnit
   benchmarkType
 }

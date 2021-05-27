@@ -326,7 +326,6 @@ class GraphQLStore {
   /// Network mutation with optional optimism.
   /// Wrap execute function - add cache writing and _broadcasting.
   /// Update the store with returned (after normalizing) data, then _broadcast (_broadcast is really a store read follwed by a _broadcast) to specified ids.
-
   Future<MutationResult<TData>> mutate<TData,
           TVars extends json.JsonSerializable>(
       {required GraphQLQuery<TData, TVars> mutation,
@@ -419,14 +418,16 @@ class GraphQLStore {
   /// Delete ops should always return the ID of the deleted item.
   /// [objectId] as standard - [type:id]
   /// Runs [_deleteRootObject()] so (currently) should only be used to delete objects that are being normalized. If the object is not a top level $ref in a query but rather a ref nested inside of another object within queries - you can set [removeAllRefsToId] to true. This may be expensive as it searches the entire store for refs to this ID and removes them so use sparingly.
-  Future<MutationResult<TData>>
-      delete<TData, TVars extends json.JsonSerializable>(
-          {required GraphQLQuery<TData, TVars> mutation,
-          required String objectId,
-          required String typename,
-          bool removeAllRefsToId = false,
-          List<String> removeRefFromQueries = const [],
-          List<String> broadcastQueryIds = const []}) async {
+  Future<MutationResult<TData>> delete<TData,
+          TVars extends json.JsonSerializable>(
+      {required GraphQLQuery<TData, TVars> mutation,
+      required String objectId,
+      required String typename,
+      // useful if you have deleted an object that has parent(s) which may still be referencing it.
+      bool removeAllRefsToId = false,
+      List<String> removeRefFromQueries = const [],
+      List<String> clearQueryDataAtKeys = const [],
+      List<String> broadcastQueryIds = const []}) async {
     final response = await execute(mutation);
 
     final result = MutationResult<TData>(
@@ -445,6 +446,13 @@ class GraphQLStore {
         _removeRefFromQueries(
             data: {'id': objectId, '__typename': typename},
             queryIds: removeRefFromQueries);
+      }
+
+      if (clearQueryDataAtKeys.isNotEmpty) {
+        /// Remove a whole query key from the store.
+        /// Useful when deleting single objects that have query root data in the store.
+        /// i.e. [workoutById(id: 123)].
+        _clearQueryDataAtKeys(clearQueryDataAtKeys);
       }
 
       _broadcast(broadcastQueryIds);
@@ -592,9 +600,11 @@ class GraphQLStore {
     return _box.get(_queryRootKey, defaultValue: {})[queryKey] != null;
   }
 
-  void _clearQueryDataAtKey(String key) {
-    final Map<String, dynamic> queriesData = _box.get(_queryRootKey);
-    queriesData.remove(key);
+  void _clearQueryDataAtKeys(List<String> queryKeys) {
+    final queriesData = Map<String, dynamic>.from(_box.get(_queryRootKey));
+    for (final key in queryKeys) {
+      queriesData.remove(key);
+    }
     _box.put(_queryRootKey, queriesData);
   }
 

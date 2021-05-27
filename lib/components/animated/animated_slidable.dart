@@ -16,7 +16,7 @@ class AnimatedSlidable extends StatefulWidget {
   final Widget child;
 
   /// Remove is added by default - just provide a removeItem callback
-  final List<Widget> secondaryActions;
+  final List<IconSlideAction> secondaryActions;
   final Function(int index) removeItem;
   final String deleteCaption;
   final bool enabled;
@@ -130,7 +130,7 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
             closeOnScroll: true,
             enabled: widget.enabled,
             actionExtentRatio: 0.20,
-            secondaryActions: <Widget>[
+            secondaryActions: <IconSlideAction>[
               ...widget.secondaryActions,
               IconSlideAction(
                 caption: widget.deleteCaption,

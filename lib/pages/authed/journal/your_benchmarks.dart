@@ -48,19 +48,15 @@ class YourBenchmarksPage extends StatelessWidget {
               padding: const EdgeInsets.all(6.0),
               child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: benchmarks.length + 1,
+                  itemCount: benchmarks.length,
                   itemBuilder: (c, i) {
-                    if (i == benchmarks.length) {
-                      return SizedBox(height: 60);
-                    } else {
-                      return Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: GestureDetector(
-                            onTap: () => context.navigateTo(
-                                BenchmarkDetailsRoute(id: benchmarks[i].id)),
-                            child: BenchmarkCard(benchmarks[i])),
-                      );
-                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: GestureDetector(
+                          onTap: () => context.navigateTo(
+                              BenchmarkDetailsRoute(id: benchmarks[i].id)),
+                          child: BenchmarkCard(benchmarks[i])),
+                    );
                   }),
             ),
           );

@@ -37,8 +37,10 @@ class RecentBenchmarkEntries extends StatelessWidget {
           ],
         ),
         builder: (data) {
-          final benchmarks =
-              data.userBenchmarks.sortedBy<DateTime>((b) => b.lastEntryAt);
+          final benchmarks = data.userBenchmarks
+              .sortedBy<DateTime>((b) => b.lastEntryAt)
+              .reversed
+              .toList();
           return benchmarks.isNotEmpty
               ? Column(
                   children: [

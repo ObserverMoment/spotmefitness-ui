@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
@@ -117,8 +118,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       broadcastQueryIds: isCreate
           ? []
           : [
-              getParameterizedQueryId(WorkoutByIdQuery(
-                  variables: WorkoutByIdArguments(id: initialWorkout.id))),
+              GQLVarParamKeys.workoutByIdQuery(initialWorkout.id),
               UserWorkoutsQuery().operationName
             ],
     );

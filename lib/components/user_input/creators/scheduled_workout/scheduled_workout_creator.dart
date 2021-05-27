@@ -16,6 +16,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
 class ScheduledWorkoutCreator extends StatefulWidget {
   final ScheduledWorkout? scheduledWorkout;
@@ -62,7 +63,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
 
       final result = await context.graphQLStore.create(
           mutation: CreateScheduledWorkoutMutation(variables: createVariables),
-          addRefToQueries: [UserScheduledWorkoutsQuery().operationName]);
+          addRefToQueries: [GQLOpNames.userScheduledWorkoutsQuery]);
 
       if (result.hasErrors || result.data == null) {
         context.showErrorAlert(
@@ -82,7 +83,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
 
       final result = await context.graphQLStore.mutate(
           mutation: UpdateScheduledWorkoutMutation(variables: updateVariables),
-          broadcastQueryIds: [UserScheduledWorkoutsQuery().operationName]);
+          broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
 
       if (result.hasErrors || result.data == null) {
         context.showErrorAlert(
@@ -114,7 +115,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
           mutation: DeleteScheduledWorkoutByIdMutation(variables: variables),
           objectId: widget.scheduledWorkout!.id,
           typename: kScheduledWorkoutTypename,
-          removeRefFromQueries: [UserScheduledWorkoutsQuery().operationName]);
+          removeRefFromQueries: [GQLOpNames.userScheduledWorkoutsQuery]);
 
       if (result.hasErrors) {
         context.showErrorAlert(

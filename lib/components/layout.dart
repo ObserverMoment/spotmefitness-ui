@@ -252,11 +252,13 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
   final void Function()? save;
   final bool validToSave;
   final bool resizeToAvoidBottomInset;
+  final bool loading;
   ModalCupertinoPageScaffold(
       {required this.child,
       required this.title,
       required this.cancel,
       required this.save,
+      this.loading = false,
       this.resizeToAvoidBottomInset = false,
       this.validToSave = false});
   @override
@@ -269,15 +271,24 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
         customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),
-        trailing: save != null && validToSave
-            ? FadeIn(child: NavBarSaveButton(save!))
-            : null,
+        trailing: loading
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  LoadingDots(
+                    size: 12,
+                    color: Styles.infoBlue,
+                  ),
+                ],
+              )
+            : save != null && validToSave
+                ? FadeIn(child: NavBarSaveButton(save!))
+                : null,
       ),
       child: Padding(
-        // Top padding to avoid nav bar
-        // When background color hasOpacity content will sit behind it by default
         padding:
-            const EdgeInsets.only(top: 60.0, left: 12, right: 12, bottom: 16),
+            const EdgeInsets.only(top: 20.0, left: 12, right: 12, bottom: 16),
         child: child,
       ),
     );

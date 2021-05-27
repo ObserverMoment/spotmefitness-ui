@@ -123,4 +123,20 @@ extension TimeUnitExtension on TimeUnit {
 extension WorkoutMoveRepTypeExtension on WorkoutMoveRepType {
   String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
+
+  String get displaySingular {
+    switch (this) {
+      case WorkoutMoveRepType.reps:
+        return 'rep';
+      case WorkoutMoveRepType.calories:
+        return 'cal';
+      case WorkoutMoveRepType.time:
+        return 'time';
+      case WorkoutMoveRepType.distance:
+        return 'distance';
+      default:
+        throw new Exception(
+            'This is not a valid WorkoutMoveRepType enum: $this');
+    }
+  }
 }

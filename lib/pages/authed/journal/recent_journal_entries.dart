@@ -36,6 +36,8 @@ class RecentJournalEntries extends StatelessWidget {
           ],
         ),
         builder: (data) {
+          /// TODO: At the moment this gets everything from the API then extracts the entries, sorts them and takes the first 10.
+          /// It may be better to have a custom resolver for getting these most recent 10 entries + their parent journal id to allow for the user to click through to the ProgressJournalDetailsPage.
           final entries = data.userProgressJournals
               .fold<List<ProgressJournalEntry>>(
                   [],
@@ -43,6 +45,7 @@ class RecentJournalEntries extends StatelessWidget {
                       [...entries, ...next.progressJournalEntries])
               .sortedBy<DateTime>((entry) => entry.createdAt)
               .reversed
+              .take(10)
               .toList();
           return entries.isNotEmpty
               ? Column(
@@ -69,7 +72,7 @@ class RecentJournalEntries extends StatelessWidget {
                         viewportFraction: 0.9,
                         enableInfiniteScroll: false,
                       ),
-                      itemCount: entries.length,
+                      itemCount: entries.length + 1,
                       itemBuilder: (c, i, _) {
                         if (i == entries.length) {
                           return TextButton(

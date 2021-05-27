@@ -20,6 +20,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -62,15 +63,18 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
             mutation: DeleteLoggedWorkoutByIdMutation(
               variables: DeleteLoggedWorkoutByIdArguments(id: id),
             ),
-            removeRefFromQueries: [GQLOpNames.userLoggedWorkoutsQuery],
+            clearQueryDataAtKeys: [
+              getParameterizedQueryId(LoggedWorkoutByIdQuery(
+                  variables: LoggedWorkoutByIdArguments(id: id)))
+            ],
+            removeRefFromQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
           );
+          context.pop(); // The showLoadingAlert
 
           if (result.hasErrors) {
-            context.pop(); // The showLoadingAlert
             context.showErrorAlert(
                 'Something went wrong, the log was not deleted correctly');
           } else {
-            context.pop(); // The showLoadingAlert
             context.pop(); // The screen.
           }
         });

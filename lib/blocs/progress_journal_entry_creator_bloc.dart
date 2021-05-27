@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 
 /// Follows a similar pattern to the [WorkoutCreatorBloc]. Mutations are sent to the DB incrementally and the local UI state is updated immediately (optimistically). However the global graphql store is only updated at the end of the session.
@@ -77,10 +78,8 @@ class ProgressJournalEntryCreatorBloc extends ChangeNotifier {
       final success = context.graphQLStore.writeDataToStore(
         data: parentJournal.toJson(),
         broadcastQueryIds: [
-          ProgressJournalByIdQuery(
-                  variables: ProgressJournalByIdArguments(id: parentJournalId))
-              .operationName,
-          UserProgressJournalsQuery().operationName
+          GQLVarParamKeys.progressJournalByIdQuery(parentJournalId),
+          GQLOpNames.userProgressJournalsQuery,
         ],
       );
       return success;

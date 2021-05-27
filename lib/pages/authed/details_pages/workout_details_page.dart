@@ -22,6 +22,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
@@ -130,8 +131,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 UserWorkoutsQuery().operationName
               ],
                   broadcastQueryIds: [
-                getParameterizedQueryId(WorkoutByIdQuery(
-                    variables: WorkoutByIdArguments(id: widget.id)))
+                GQLVarParamKeys.workoutByIdQuery(widget.id),
               ],
                   customVariablesMap: {
                 'data': {'id': id, 'archived': true}
@@ -173,8 +173,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 UserWorkoutsQuery().operationName
               ],
                   broadcastQueryIds: [
-                getParameterizedQueryId(WorkoutByIdQuery(
-                    variables: WorkoutByIdArguments(id: widget.id)))
+                GQLVarParamKeys.workoutByIdQuery(widget.id),
               ],
                   customVariablesMap: {
                 'data': {'id': id, 'archived': false}

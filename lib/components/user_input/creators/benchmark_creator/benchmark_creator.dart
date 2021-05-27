@@ -10,7 +10,9 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class BenchmarkCreatorPage extends StatefulWidget {
@@ -36,6 +38,7 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
   DistanceUnit? _distanceUnit;
   double? _load;
   LoadUnit? _loadUnit;
+  TimeUnit? _timeUnit;
 
   @override
   void initState() {
@@ -51,6 +54,23 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
       _distanceUnit = widget.userBenchmark!.distanceUnit;
       _load = widget.userBenchmark!.load;
       _loadUnit = widget.userBenchmark!.loadUnit;
+      _timeUnit = widget.userBenchmark!.timeUnit;
+    }
+
+    if (widget.userBenchmark != null &&
+        widget.userBenchmark!.userBenchmarkEntries.isNotEmpty) {
+      // Warn the user that making changes to the benchmark can easily mess up the benchmark entries.
+      WidgetsBinding.instance!.addPostFrameCallback((_) async {
+        final numEntries = widget.userBenchmark!.userBenchmarkEntries.length;
+        context.showConfirmDialog(
+            title: 'Editing a Benchmark',
+            content: MyText(
+              'This benchmark has $numEntries ${numEntries == 1 ? "entry" : "entries"}. Changing the benchmark details may mess these up...continue?',
+              maxLines: 4,
+            ),
+            onConfirm: () {},
+            onCancel: context.pop);
+      });
     }
   }
 
@@ -63,15 +83,64 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
     _setStateWrapper(() {
       _move = move;
       _equipment = null;
+      _repType = move.validRepTypes.contains(WorkoutMoveRepType.reps)
+          ? WorkoutMoveRepType.reps
+          : move.validRepTypes[0];
     });
   }
 
   Future<void> _saveAndClose() async {
-    /// TODO: Need to reset / remove any values that are not needed for the combination of settings that the user has chosen.
+    /// Reset / remove any values that are not needed for the combination of settings that the user has chosen.
     /// E.g if they have chosen max load then we do not want to send a value for [load]
+    if (_benchmarkType == BenchmarkType.maxload) {
+      _load = null;
+    }
+
+    /// These benchmark types do 'as many as possible' so specifying reps does not make sense.
+    if ([BenchmarkType.unbrokenreps, BenchmarkType.unbrokentime]
+        .contains(_repType)) {
+      _reps = null;
+    }
+
     setState(() => _loading = true);
     if (widget.userBenchmark != null) {
-      print('update');
+      final variables = UpdateUserBenchmarkArguments(
+          data: UpdateUserBenchmarkInput(
+              id: widget.userBenchmark!.id,
+              benchmarkType: _benchmarkType!,
+              move: _move != null && _move != widget.userBenchmark!.move
+                  ? ConnectRelationInput(id: _move!.id)
+                  : null,
+              name: _name!,
+              description: _description,
+              load: _load,
+              loadUnit: _loadUnit,
+              distanceUnit: _distanceUnit,
+              equipment: _equipment != null &&
+                      _equipment != widget.userBenchmark!.equipment
+                  ? ConnectRelationInput(id: _equipment!.id)
+                  : null,
+              reps: _reps,
+              repType: _repType));
+
+      final result = await context.graphQLStore.mutate(
+          mutation: UpdateUserBenchmarkMutation(variables: variables),
+          broadcastQueryIds: [
+            GQLNullVarsKeys.userBenchmarksQuery,
+            getParameterizedQueryId(UserBenchmarkByIdQuery(
+                variables:
+                    UserBenchmarkByIdArguments(id: widget.userBenchmark!.id)))
+          ]);
+
+      setState(() => _loading = false);
+
+      if (result.hasErrors || result.data == null) {
+        context.showToast(
+            message: "Sorry, that didn't work",
+            toastType: ToastType.destructive);
+      } else {
+        context.pop();
+      }
     } else {
       final variables = CreateUserBenchmarkArguments(
           data: CreateUserBenchmarkInput(
@@ -90,19 +159,33 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
 
       final result = await context.graphQLStore.create(
           mutation: CreateUserBenchmarkMutation(variables: variables),
-          addRefToQueries: [GQLOpNames.userBenchmarksQuery]);
-      print(result);
+          addRefToQueries: [GQLNullVarsKeys.userBenchmarksQuery]);
+
+      setState(() => _loading = false);
+
+      if (result.hasErrors || result.data == null) {
+        context.showToast(
+            message: "Sorry, that didn't work",
+            toastType: ToastType.destructive);
+      } else {
+        context.pop();
+      }
     }
-    setState(() => _loading = false);
   }
 
   void _handleCancel() {
-    context.pop();
+    if (_formIsDirty) {
+      context.showConfirmDialog(
+          title: 'Close without saving?', onConfirm: context.pop);
+    } else {
+      context.pop();
+    }
   }
 
   bool get _validToSubmit =>
-      _name != null && _move != null && _move!.selectableEquipments.isEmpty ||
-      _equipment != null;
+      _name != null &&
+      _move != null &&
+      (_move!.selectableEquipments.isEmpty || _equipment != null);
 
   @override
   Widget build(BuildContext context) {
@@ -196,6 +279,9 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
                   loadUnit: _loadUnit,
                   updateLoadUnit: (loadUnit) =>
                       _setStateWrapper(() => _loadUnit = loadUnit),
+                  timeUnit: _timeUnit,
+                  updateTimeUnit: (timeUnit) =>
+                      _setStateWrapper(() => _timeUnit = timeUnit),
                 )),
             ],
           ),

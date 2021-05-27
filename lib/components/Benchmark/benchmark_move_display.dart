@@ -25,9 +25,12 @@ class BenchmarkMoveDisplay extends StatelessWidget {
           width: 6,
         ),
         MyText(
-          userBenchmark.repType == WorkoutMoveRepType.distance
+          [WorkoutMoveRepType.distance, WorkoutMoveRepType.time]
+                  .contains(userBenchmark.repType)
               ? userBenchmark.distanceUnit.shortDisplay
-              : describeEnum(userBenchmark.repType),
+              : userBenchmark.reps != 1
+                  ? describeEnum(userBenchmark.repType)
+                  : userBenchmark.repType.displaySingular,
         ),
       ],
     );
