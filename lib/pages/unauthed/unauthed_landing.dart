@@ -5,16 +5,15 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/pages/unauthed/sign_in.dart';
 import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
 
-import 'sign_in.dart';
-
-class UnAuthedLanding extends StatefulWidget {
+class UnauthedLandingPage extends StatefulWidget {
   @override
-  _UnAuthedLandingState createState() => _UnAuthedLandingState();
+  _UnauthedLandingPageState createState() => _UnauthedLandingPageState();
 }
 
-class _UnAuthedLandingState extends State<UnAuthedLanding> {
+class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
   late PageController _pageController;
 
   @override
@@ -28,39 +27,29 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
 
   List<Widget> _featurePages = [
     SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/gym.jpg',
-        fit: BoxFit.cover,
-      ),
+        child: Image.asset(
+      'assets/stock_images/gym.jpg',
+      fit: BoxFit.cover,
     )),
     SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/stretch.jpg',
-        fit: BoxFit.fitHeight,
-      ),
+        child: Image.asset(
+      'assets/stock_images/stretch.jpg',
+      fit: BoxFit.fitHeight,
     )),
     SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/bars_man.jpg',
-        fit: BoxFit.cover,
-      ),
+        child: Image.asset(
+      'assets/stock_images/bars_man.jpg',
+      fit: BoxFit.cover,
     )),
     SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/yoga_girl.jpg',
-        fit: BoxFit.cover,
-      ),
+        child: Image.asset(
+      'assets/stock_images/yoga_girl.jpg',
+      fit: BoxFit.cover,
     )),
     SizedBox.expand(
-        child: RoundedBox(
-      child: Image.asset(
-        'assets/stock_images/skip.jpg',
-        fit: BoxFit.cover,
-      ),
+        child: Image.asset(
+      'assets/stock_images/skip.jpg',
+      fit: BoxFit.cover,
     )),
   ];
 
@@ -89,61 +78,56 @@ class _UnAuthedLandingState extends State<UnAuthedLanding> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.cupertinoDarkData,
-        home: Builder(
-          builder: (context) => CupertinoPageScaffold(
-              child: SafeArea(
-            top: false,
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                PageView(
-                  controller: _pageController,
-                  children: _featurePages,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: _logoHeader(),
-                ),
-                Positioned(
-                    bottom: 0,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: BasicProgressDots(
-                            numDots: _featurePages.length,
-                            currentIndex: _pageController.hasClients &&
-                                    _pageController.page != null
-                                ? _pageController.page!.toInt()
-                                : 0,
-                            color: Styles.white,
-                          ),
-                        ),
-                        PrimaryButton(
-                            text: 'Sign In',
-                            onPressed: () => Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    fullscreenDialog: true,
-                                    builder: (_) => SignIn()))),
-                        SizedBox(height: 10),
-                        SecondaryButton(
-                          text: 'Free Trial',
-                          onPressed: () => Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  fullscreenDialog: true,
-                                  builder: (_) => StartTrial())),
-                        ),
-                        SizedBox(height: 32),
-                      ],
-                    ))
-              ],
-            ),
-          )),
-        ));
+    return CupertinoPageScaffold(
+        child: SafeArea(
+      top: false,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          PageView(
+            controller: _pageController,
+            children: _featurePages,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 40.0),
+            child: _logoHeader(),
+          ),
+          Positioned(
+              bottom: 0,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: BasicProgressDots(
+                      numDots: _featurePages.length,
+                      currentIndex: _pageController.hasClients &&
+                              _pageController.page != null
+                          ? _pageController.page!.toInt()
+                          : 0,
+                      color: Styles.white,
+                    ),
+                  ),
+                  PrimaryButton(
+                      text: 'Sign In',
+                      onPressed: () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              fullscreenDialog: true,
+                              builder: (_) => SignIn()))),
+                  SizedBox(height: 10),
+                  SecondaryButton(
+                    text: 'Free Trial',
+                    onPressed: () => Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            fullscreenDialog: true,
+                            builder: (_) => StartTrial())),
+                  ),
+                  SizedBox(height: 32),
+                ],
+              ))
+        ],
+      ),
+    ));
   }
 }

@@ -60,184 +60,180 @@ class _MoveSelectorState extends State<MoveSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: QueryObserver<StandardMoves$Query, json.JsonSerializable>(
-          key: Key('MoveSelector - ${StandardMovesQuery().operationName}'),
-          query: StandardMovesQuery(),
-          fetchPolicy: QueryFetchPolicy.storeFirst,
-          builder: (standardMovesData) {
-            return QueryObserver<UserCustomMoves$Query, json.JsonSerializable>(
-                key: Key(
-                    'MoveSelector - ${UserCustomMovesQuery().operationName}'),
-                query: UserCustomMovesQuery(),
-                builder: (customMovesData) {
-                  final standardMoves = standardMovesData.standardMoves;
+    return QueryObserver<StandardMoves$Query, json.JsonSerializable>(
+        key: Key('MoveSelector - ${StandardMovesQuery().operationName}'),
+        query: StandardMovesQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        builder: (standardMovesData) {
+          return QueryObserver<UserCustomMoves$Query, json.JsonSerializable>(
+              key:
+                  Key('MoveSelector - ${UserCustomMovesQuery().operationName}'),
+              query: UserCustomMovesQuery(),
+              builder: (customMovesData) {
+                final standardMoves = standardMovesData.standardMoves;
 
-                  final customMoves = customMovesData.userCustomMoves;
+                final customMoves = customMovesData.userCustomMoves;
 
-                  final displayMoves =
-                      _activeTabIndex == 0 ? standardMoves : customMoves;
+                final displayMoves =
+                    _activeTabIndex == 0 ? standardMoves : customMoves;
 
-                  final moveFiltersBloc = context.watch<MoveFiltersBloc>();
-                  final filteredMoves = moveFiltersBloc.filter(displayMoves);
+                final moveFiltersBloc = context.watch<MoveFiltersBloc>();
+                final filteredMoves = moveFiltersBloc.filter(displayMoves);
 
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 4.0,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Row(
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 6),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SlidingSelect<int>(
+                              value: _activeTabIndex,
+                              children: {
+                                0: MyText('Standard'),
+                                1: MyText('Custom')
+                              },
+                              updateValue: (i) =>
+                                  setState(() => _activeTabIndex = i)),
+                          SizedBox(width: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              SlidingSelect<int>(
-                                  value: _activeTabIndex,
-                                  children: {
-                                    0: MyText('Standard'),
-                                    1: MyText('Custom')
-                                  },
-                                  updateValue: (i) =>
-                                      setState(() => _activeTabIndex = i)),
-                              SizedBox(width: 8),
+                              FilterButton(
+                                hasActiveFilters:
+                                    moveFiltersBloc.hasActiveFilters,
+                                onPressed: () =>
+                                    context.push(child: MoveFiltersScreen()),
+                              ),
+                              SizedBox(width: 4),
+                              OpenTextSearchButton(
+                                onPressed: () => context.push(
+                                    fullscreenDialog: true,
+                                    child: MoveSelectorTextSearch(
+                                      allMoves: [
+                                        ...standardMoves,
+                                        ...customMoves
+                                      ],
+                                      selectMove: widget.selectMove,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // If showing custom moves.
+                    GrowInOut(
+                      show: _activeTabIndex == 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CreateTextIconButton(
+                              onPressed: () => _openCustomMoveCreator(null)),
+                        ],
+                      ),
+                    ),
+                    GrowInOut(
+                        show: moveFiltersBloc.hasActiveFilters,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0, vertical: 2),
+                          child: Column(
+                            children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  FilterButton(
-                                    hasActiveFilters:
-                                        moveFiltersBloc.hasActiveFilters,
-                                    onPressed: () => context.push(
-                                        child: MoveFiltersScreen()),
+                                  MyText(
+                                    'Filters',
+                                    weight: FontWeight.bold,
                                   ),
-                                  SizedBox(width: 4),
-                                  OpenTextSearchButton(
-                                    onPressed: () => context.push(
-                                        fullscreenDialog: true,
-                                        child: MoveSelectorTextSearch(
-                                          allMoves: [
-                                            ...standardMoves,
-                                            ...customMoves
-                                          ],
-                                          selectMove: widget.selectMove,
-                                        )),
+                                  SizedBox(width: 10),
+                                  TextButton(
+                                    text: 'Clear all',
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8),
+                                    destructive: true,
+                                    underline: false,
+                                    onPressed: () => context
+                                        .read<MoveFiltersBloc>()
+                                        .clearAllFilters(),
                                   ),
                                 ],
                               ),
-                              // If showing custom moves.
-                              if (_activeTabIndex == 1)
-                                FadeIn(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: CreateTextIconButton(
-                                        onPressed: () =>
-                                            _openCustomMoveCreator(null)),
-                                  ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  children: [
+                                    ...moveFiltersBloc.moveTypeFilters
+                                        .map((e) => Tag(
+                                              tag: e.name,
+                                            ))
+                                        .toList(),
+                                    if (moveFiltersBloc.bodyweightOnlyFilter)
+                                      Tag(
+                                        tag: 'Bodyweight Only',
+                                        color: Styles.colorOne,
+                                        textColor: Styles.white,
+                                      )
+                                    else
+                                      ...moveFiltersBloc.equipmentFilters
+                                          .map((e) => Tag(
+                                              tag: e.name,
+                                              color: Styles.colorOne,
+                                              textColor: Styles.white))
+                                          .toList(),
+                                    ...moveFiltersBloc.bodyAreaFilters
+                                        .map((e) => Tag(
+                                            tag: e.name,
+                                            color: Styles.colorThree,
+                                            textColor: Styles.white))
+                                        .toList(),
+                                  ],
                                 ),
+                              ),
                             ],
+                          ),
+                        )),
+                    if (filteredMoves.isEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: MyText(
+                              _activeTabIndex == 0
+                                  ? 'No moves found. Create a custom move?'
+                                  : 'No moves found',
+                              maxLines: 3,
+                              subtext: true,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Expanded(
+                        child: FadeIn(
+                          child: ListView(
+                            shrinkWrap: true,
+                            children: filteredMoves
+                                .sortedBy<String>((move) => move.name)
+                                .map((move) => GestureDetector(
+                                    onTap: () => widget.selectMove(move),
+                                    child: MoveSelectorItem(
+                                        move: move,
+                                        optionalButton: _buildButton(move))))
+                                .toList(),
                           ),
                         ),
                       ),
-                      GrowInOut(
-                          show: moveFiltersBloc.hasActiveFilters,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6.0, vertical: 2),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    MyText(
-                                      'Filters',
-                                      weight: FontWeight.bold,
-                                    ),
-                                    SizedBox(width: 10),
-                                    TextButton(
-                                      text: 'Clear all',
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      destructive: true,
-                                      underline: false,
-                                      onPressed: () => context
-                                          .read<MoveFiltersBloc>()
-                                          .clearAllFilters(),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Wrap(
-                                    alignment: WrapAlignment.center,
-                                    spacing: 6,
-                                    runSpacing: 6,
-                                    children: [
-                                      ...moveFiltersBloc.moveTypeFilters
-                                          .map((e) => Tag(
-                                                tag: e.name,
-                                              ))
-                                          .toList(),
-                                      if (moveFiltersBloc.bodyweightOnlyFilter)
-                                        Tag(
-                                          tag: 'Bodyweight Only',
-                                          color: Styles.colorOne,
-                                          textColor: Styles.white,
-                                        )
-                                      else
-                                        ...moveFiltersBloc.equipmentFilters
-                                            .map((e) => Tag(
-                                                tag: e.name,
-                                                color: Styles.colorOne,
-                                                textColor: Styles.white))
-                                            .toList(),
-                                      ...moveFiltersBloc.bodyAreaFilters
-                                          .map((e) => Tag(
-                                              tag: e.name,
-                                              color: Styles.colorThree,
-                                              textColor: Styles.white))
-                                          .toList(),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )),
-                      if (filteredMoves.isEmpty)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: MyText(
-                                _activeTabIndex == 0
-                                    ? 'No moves found. Create a custom move?'
-                                    : 'No moves found',
-                                maxLines: 3,
-                                subtext: true,
-                              ),
-                            ),
-                          ],
-                        )
-                      else
-                        Expanded(
-                          child: FadeIn(
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: filteredMoves
-                                  .sortedBy<String>((move) => move.name)
-                                  .map((move) => GestureDetector(
-                                      onTap: () => widget.selectMove(move),
-                                      child: MoveSelectorItem(
-                                          move: move,
-                                          optionalButton: _buildButton(move))))
-                                  .toList(),
-                            ),
-                          ),
-                        ),
-                    ],
-                  );
-                });
-          }),
-    );
+                  ],
+                );
+              });
+        });
   }
 }
 
@@ -291,6 +287,7 @@ class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
     final filteredMoves = _filterBySearchString();
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'MoveSelectorTextSearch',
         middle: NavBarTitle('Search Moves'),
       ),
       child: Column(
@@ -355,8 +352,10 @@ class MoveSelectorItem extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                MyText(
-                  move.name,
+                Expanded(
+                  child: MyText(
+                    move.name,
+                  ),
                 ),
                 SizedBox(width: 8),
                 MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY)

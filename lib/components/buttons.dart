@@ -126,6 +126,7 @@ class SecondaryButton extends StatelessWidget {
   final void Function() onPressed;
   final bool loading;
   final bool withMinWidth;
+  final bool withBorder;
 
   SecondaryButton(
       {this.prefix,
@@ -133,6 +134,7 @@ class SecondaryButton extends StatelessWidget {
       this.suffix,
       required this.onPressed,
       this.withMinWidth = true,
+      this.withBorder = false,
       this.loading = false});
 
   @override
@@ -145,7 +147,7 @@ class SecondaryButton extends StatelessWidget {
       backgroundColor: CupertinoColors.darkBackgroundGray,
       contentColor: context.theme.primary,
       withMinWidth: withMinWidth,
-      border: true,
+      border: withBorder,
     );
   }
 }
@@ -482,6 +484,7 @@ class DoItButton extends StatelessWidget {
 }
 
 /// Similar style to the main bottom nav bar.
+/// Used for floating button lists - usually at the bottom of the screen. E.g sort, filter, search.
 class RaisedButtonContainer extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
@@ -493,6 +496,7 @@ class RaisedButtonContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = context.theme.themeName == ThemeName.dark;
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.circular(18),
       child: BackdropFilter(
@@ -503,7 +507,8 @@ class RaisedButtonContainer extends StatelessWidget {
                 borderRadius: borderRadius ?? BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                      color: CupertinoColors.black.withOpacity(0.6),
+                      color:
+                          CupertinoColors.black.withOpacity(isDark ? 0.6 : 0.3),
                       blurRadius: 3, // soften the shadow
                       spreadRadius: 1.5, //extend the shadow
                       offset: Offset(
@@ -511,7 +516,40 @@ class RaisedButtonContainer extends StatelessWidget {
                         0.4, // Move to bottom Vertically
                       ))
                 ],
-                color: context.theme.background.withOpacity(0.75),
+                color:
+                    context.theme.background.withOpacity(isDark ? 0.75 : 0.9),
+                border: Border.all(
+                    color: context.theme.primary
+                        .withOpacity(isDark ? 0.15 : 0.1))),
+            child: child),
+      ),
+    );
+  }
+}
+
+/// Similar to [RaisedButtonContainer] but with no elevation - blurs background contents.
+class UnRaisedButtonContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsets padding;
+  final BorderRadius? borderRadius;
+  UnRaisedButtonContainer(
+      {required this.child,
+      this.borderRadius,
+      this.padding = const EdgeInsets.symmetric(vertical: 3, horizontal: 16)});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDark = context.theme.themeName == ThemeName.dark;
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        child: Container(
+            padding: padding,
+            decoration: BoxDecoration(
+                borderRadius: borderRadius ?? BorderRadius.circular(16),
+                color:
+                    context.theme.background.withOpacity(isDark ? 0.75 : 0.9),
                 border:
                     Border.all(color: context.theme.primary.withOpacity(0.15))),
             child: child),
@@ -609,7 +647,7 @@ class FilterButton extends StatelessWidget {
   FilterButton({required this.onPressed, this.hasActiveFilters = false});
   @override
   Widget build(BuildContext context) {
-    return RaisedButtonContainer(
+    return UnRaisedButtonContainer(
       padding: EdgeInsets.zero,
       child: Stack(
         clipBehavior: Clip.none,
@@ -645,7 +683,7 @@ class OpenTextSearchButton extends StatelessWidget {
   OpenTextSearchButton({required this.onPressed, this.text});
   @override
   Widget build(BuildContext context) {
-    return RaisedButtonContainer(
+    return UnRaisedButtonContainer(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 6),
       child: CupertinoButton(
         padding: EdgeInsets.zero,
@@ -797,7 +835,8 @@ class InfoPopupButton extends StatelessWidget {
           child: CupertinoPageScaffold(
             navigationBar: withoutNavBar
                 ? null
-                : BasicNavBar(middle: NavBarTitle(pageTitle)),
+                : BasicNavBar(
+                    heroTag: 'InfoPopupButton', middle: NavBarTitle(pageTitle)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),

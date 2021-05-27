@@ -3,62 +3,21 @@ import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/store/graphql_store.dart';
-
-class App extends StatelessWidget {
-  final AuthedUser authedUser;
-  App(this.authedUser);
-
-  static final _appRouter = AppRouter();
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(create: (_) => GraphQLStore()),
-        ChangeNotifierProvider(create: (_) => ThemeBloc()),
-        ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
-      ],
-      child: Builder(
-          builder: (context) => CupertinoApp.router(
-                debugShowCheckedModeBanner: false,
-                theme: context.theme.cupertinoThemeData,
-                routerDelegate: _appRouter.delegate(),
-                routeInformationParser: _appRouter.defaultRouteParser(),
-                localizationsDelegates: [
-                  DefaultMaterialLocalizations.delegate,
-                  DefaultCupertinoLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: [
-                  const Locale('en', 'US'),
-                  const Locale('en', 'GB'),
-                ],
-              )),
-    );
-  }
-}
 
 /// Scaffold for the main top level tabs view.
-class GlobalPage extends StatefulWidget {
+class MainTabsPage extends StatefulWidget {
   @override
-  _GlobalPageState createState() => _GlobalPageState();
+  _MainTabsPageState createState() => _MainTabsPageState();
 }
 
-class _GlobalPageState extends State<GlobalPage> {
+class _MainTabsPageState extends State<MainTabsPage> {
   @override
   void initState() {
     super.initState();
@@ -97,13 +56,12 @@ class _GlobalPageState extends State<GlobalPage> {
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter(
-        duration: Duration(milliseconds: 0),
         routes: [
           HomeStack(),
           DiscoverRoute(),
           SocialRoute(),
           JournalStack(),
-          ProfileRoute()
+          ProfileRoute(),
         ],
         builder: (context, child, animation) {
           final _mediaQuery = MediaQuery.of(context);

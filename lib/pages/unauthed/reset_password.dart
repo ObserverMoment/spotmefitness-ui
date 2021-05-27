@@ -43,7 +43,10 @@ class _ResetPasswordState extends State<ResetPassword> {
       });
     } catch (e) {
       print(e.toString());
-      setState(() => _requestingReset = false);
+      setState(() {
+        _requestingReset = false;
+        _resetRequested = true;
+      });
     }
   }
 
@@ -51,6 +54,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'ResetPassword',
           middle: H2('Reset Password'),
         ),
         child: AnimatedSwitcher(

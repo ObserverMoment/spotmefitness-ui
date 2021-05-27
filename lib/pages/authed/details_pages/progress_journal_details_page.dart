@@ -106,6 +106,7 @@ class _ProgressJournalDetailsPageState
           final journal = data.progressJournalById;
           return CupertinoPageScaffold(
               navigationBar: BasicNavBar(
+                heroTag: 'ProgressJournalDetailsPage',
                 middle: NavBarTitle(journal.name),
                 trailing: NavBarEllipsisMenu(items: [
                   ContextMenuItem(

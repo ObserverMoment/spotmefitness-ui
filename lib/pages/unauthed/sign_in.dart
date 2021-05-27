@@ -62,6 +62,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'SignIn',
         middle: MyText(
           'Sign In',
           weight: FontWeight.bold,

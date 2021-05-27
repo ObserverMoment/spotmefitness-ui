@@ -76,6 +76,7 @@ class ShimmerDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'ShimmerDetailsPage',
           middle: NavBarTitle(title),
         ),
         child: Padding(

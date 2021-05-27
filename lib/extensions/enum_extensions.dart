@@ -1,6 +1,8 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -13,9 +15,9 @@ extension BenchmarkTypeExtension on BenchmarkType {
       case BenchmarkType.maxload:
         return 'Max load';
       case BenchmarkType.unbrokenreps:
-        return 'Unbroken Reps';
+        return 'Reps Unbroken';
       case BenchmarkType.unbrokentime:
-        return 'Unbroken Time';
+        return 'Time Unbroken';
       case BenchmarkType.fastesttime:
         return 'Fastest Time';
       default:

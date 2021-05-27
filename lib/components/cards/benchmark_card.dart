@@ -32,7 +32,7 @@ class BenchmarkCard extends StatelessWidget {
 
   Widget _buildScore(int index, UserBenchmarkEntry entry) => Padding(
         padding: const EdgeInsets.only(bottom: 3.0),
-        child: RaisedButtonContainer(
+        child: UnRaisedButtonContainer(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
           borderRadius: BorderRadius.circular(6),
           child: Row(
@@ -90,7 +90,10 @@ class BenchmarkCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   userBenchmark.userBenchmarkEntries.isEmpty
-                      ? MyText('No scores')
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: MyText('No scores'),
+                        )
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,

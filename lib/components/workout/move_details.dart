@@ -114,6 +114,7 @@ class MoveDetails extends StatelessWidget {
         builder: (data) {
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
+              heroTag: 'MoveDetails',
               middle: NavBarTitle(move.name),
             ),
             child: SingleChildScrollView(

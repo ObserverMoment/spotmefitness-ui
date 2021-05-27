@@ -49,6 +49,16 @@ class RepPickerDisplay extends StatelessWidget {
           describeEnum(timeUnit),
           size: FONTSIZE.LARGE,
         );
+      case WorkoutMoveRepType.reps:
+        return MyText(
+          reps == 1 ? 'rep' : 'reps',
+          size: FONTSIZE.LARGE,
+        );
+      case WorkoutMoveRepType.calories:
+        return MyText(
+          reps == 1 ? 'cal' : 'cals',
+          size: FONTSIZE.LARGE,
+        );
       default:
         return MyText(
           describeEnum(repType),
@@ -132,6 +142,8 @@ class _RepPickerModalState extends State<RepPickerModal> {
     _activeDistanceUnit = widget.distanceUnit;
     _activeTimeUnit = widget.timeUnit;
     _repsController = TextEditingController(text: widget.reps.stringMyDouble());
+    _repsController.selection = TextSelection(
+        baseOffset: 0, extentOffset: _repsController.value.text.length);
     _repsController.addListener(() {
       if (Utils.textNotNull(_repsController.text)) {
         setState(() => _activeReps = double.parse(_repsController.text));

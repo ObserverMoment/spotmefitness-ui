@@ -159,6 +159,7 @@ class _FullScreenEquipmentSelectorState
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'FullScreenEquipmentSelector',
         automaticallyImplyLeading: false,
         middle: NavBarTitle('Select Equipment'),
         trailing: NavBarSaveButton(

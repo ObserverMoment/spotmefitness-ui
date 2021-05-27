@@ -74,6 +74,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
+              heroTag: 'YourSchedulePage',
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -240,6 +241,7 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
     final filteredScheduledWorkouts = _filterBySearchString();
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'YourScheduleTextSearch',
         middle: NavBarTitle('Search Your Schedule'),
       ),
       child: Column(

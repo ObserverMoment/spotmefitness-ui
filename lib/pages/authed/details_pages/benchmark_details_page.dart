@@ -32,6 +32,7 @@ class BenchmarkDetailsPage extends StatelessWidget {
           return CupertinoPageScaffold(
               key: Key('BenchmarkDetailsPage - CupertinoPageScaffold'),
               navigationBar: BasicNavBar(
+                heroTag: 'BenchmarkDetailsPage',
                 key: Key('BenchmarkDetailsPage - BasicNavBar'),
                 middle: NavBarTitle(benchmark.name),
                 trailing: NavBarEllipsisMenu(items: [

@@ -114,6 +114,7 @@ class _ProgressJournalCreatorPageState
     return CupertinoPageScaffold(
       // Non standard nav bar (not [CreateEdit] version as the journal is not created on init of this widget, but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
       navigationBar: BasicNavBar(
+        heroTag: 'ProgressJournalCreatorPage',
         customLeading:
             NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal'),
         trailing: Row(

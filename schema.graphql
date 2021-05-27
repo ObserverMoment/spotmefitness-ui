@@ -4,17 +4,11 @@ schema {
 }
 
 """Enums"""
-enum BenchmarkRepType {
-  REPS
-  CALORIES
-  DISTANCE
-}
-
 enum BenchmarkType {
-  UNBROKENREPS
-  UNBROKENTIME
   MAXLOAD
   FASTESTTIME
+  UNBROKENREPS
+  UNBROKENTIME
 }
 
 type BodyArea {
@@ -220,8 +214,8 @@ input CreateUserBenchmarkEntryInput {
 input CreateUserBenchmarkInput {
   name: String!
   description: String
-  reps: Float!
-  repType: BenchmarkRepType!
+  reps: Float
+  repType: WorkoutMoveRepType
   load: Float
   loadUnit: LoadUnit
   distanceUnit: DistanceUnit
@@ -787,7 +781,7 @@ input UpdateUserBenchmarkInput {
   name: String
   description: String
   reps: Float
-  repType: BenchmarkRepType
+  repType: WorkoutMoveRepType
   load: Float
   loadUnit: LoadUnit
   distanceUnit: DistanceUnit
@@ -946,7 +940,7 @@ type UserBenchmark {
   name: String!
   description: String
   reps: Float
-  repType: BenchmarkRepType!
+  repType: WorkoutMoveRepType!
   load: Float
   loadUnit: LoadUnit!
   distanceUnit: DistanceUnit!

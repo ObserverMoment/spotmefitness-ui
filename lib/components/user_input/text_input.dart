@@ -57,9 +57,6 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                 controller: widget.controller,
                 initialValue: widget.initialValue,
                 onChanged: widget.onChanged,
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(color: context.theme.primary))),
                 padding:
                     EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
                 prefix: widget.prefix,

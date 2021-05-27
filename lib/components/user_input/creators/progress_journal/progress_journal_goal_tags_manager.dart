@@ -125,6 +125,7 @@ class _ProgressJournalGoalTagsManagerState
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'ProgressJournalGoalTagsManager',
         automaticallyImplyLeading: !_isLoading,
         middle: NavBarTitle('Goal Tags'),
         trailing: _isLoading

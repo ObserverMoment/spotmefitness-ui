@@ -73,6 +73,7 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
     return FutureBuilderHandler<Workout>(
         loadingWidget: CupertinoPageScaffold(
           navigationBar: BasicNavBar(
+            heroTag: 'WorkoutCreatorPage',
             automaticallyImplyLeading: false,
             middle: NavBarTitle('Getting ready...'),
           ),

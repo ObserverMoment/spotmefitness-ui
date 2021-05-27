@@ -25,6 +25,7 @@ class MoveTypeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'MoveTypeSelector',
         customLeading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(

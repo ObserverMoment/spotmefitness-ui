@@ -113,6 +113,7 @@ class RetrievalErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'QueryObserver - error page',
           middle: NavBarTitle('Oops...'),
         ),
         child: ErrorMessage(

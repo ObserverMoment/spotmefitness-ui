@@ -3227,8 +3227,8 @@ UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..reps = (json['reps'] as num?)?.toDouble()
-    ..repType = _$enumDecode(_$BenchmarkRepTypeEnumMap, json['repType'],
-        unknownValue: BenchmarkRepType.artemisUnknown)
+    ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown)
     ..load = (json['load'] as num?)?.toDouble()
     ..loadUnit = _$enumDecode(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown)
@@ -3255,7 +3255,7 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
@@ -3266,18 +3266,11 @@ Map<String, dynamic> _$UserBenchmarkToJson(UserBenchmark instance) =>
           instance.userBenchmarkEntries.map((e) => e.toJson()).toList(),
     };
 
-const _$BenchmarkRepTypeEnumMap = {
-  BenchmarkRepType.reps: 'REPS',
-  BenchmarkRepType.calories: 'CALORIES',
-  BenchmarkRepType.distance: 'DISTANCE',
-  BenchmarkRepType.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
-
 const _$BenchmarkTypeEnumMap = {
-  BenchmarkType.unbrokenreps: 'UNBROKENREPS',
-  BenchmarkType.unbrokentime: 'UNBROKENTIME',
   BenchmarkType.maxload: 'MAXLOAD',
   BenchmarkType.fastesttime: 'FASTESTTIME',
+  BenchmarkType.unbrokenreps: 'UNBROKENREPS',
+  BenchmarkType.unbrokentime: 'UNBROKENTIME',
   BenchmarkType.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 
@@ -3301,8 +3294,8 @@ UpdateUserBenchmarkInput _$UpdateUserBenchmarkInputFromJson(
     name: json['name'] as String?,
     description: json['description'] as String?,
     reps: (json['reps'] as num?)?.toDouble(),
-    repType: _$enumDecodeNullable(_$BenchmarkRepTypeEnumMap, json['repType'],
-        unknownValue: BenchmarkRepType.artemisUnknown),
+    repType: _$enumDecodeNullable(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
@@ -3328,7 +3321,7 @@ Map<String, dynamic> _$UpdateUserBenchmarkInputToJson(
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
@@ -3355,9 +3348,9 @@ CreateUserBenchmarkInput _$CreateUserBenchmarkInputFromJson(
   return CreateUserBenchmarkInput(
     name: json['name'] as String,
     description: json['description'] as String?,
-    reps: (json['reps'] as num).toDouble(),
-    repType: _$enumDecode(_$BenchmarkRepTypeEnumMap, json['repType'],
-        unknownValue: BenchmarkRepType.artemisUnknown),
+    reps: (json['reps'] as num?)?.toDouble(),
+    repType: _$enumDecodeNullable(_$WorkoutMoveRepTypeEnumMap, json['repType'],
+        unknownValue: WorkoutMoveRepType.artemisUnknown),
     load: (json['load'] as num?)?.toDouble(),
     loadUnit: _$enumDecodeNullable(_$LoadUnitEnumMap, json['loadUnit'],
         unknownValue: LoadUnit.artemisUnknown),
@@ -3380,7 +3373,7 @@ Map<String, dynamic> _$CreateUserBenchmarkInputToJson(
       'name': instance.name,
       'description': instance.description,
       'reps': instance.reps,
-      'repType': _$BenchmarkRepTypeEnumMap[instance.repType],
+      'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'load': instance.load,
       'loadUnit': _$LoadUnitEnumMap[instance.loadUnit],
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],

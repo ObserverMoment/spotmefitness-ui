@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,9 +12,11 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -49,16 +54,24 @@ class AuthRouter extends StatefulWidget {
 
 class _AuthRouterState extends State<AuthRouter> {
   final AuthBloc _authBloc = AuthBloc();
+  final AppRouter _appRouter = AppRouter();
+  late Brightness _userDeviceBrightness;
 
   @override
   void initState() {
     super.initState();
     GetIt.I.registerSingleton<AuthBloc>(_authBloc);
+    _userDeviceBrightness =
+        SchedulerBinding.instance?.window.platformBrightness ?? Brightness.dark;
   }
 
   @override
   void dispose() {
-    _authBloc.dispose();
+    GetIt.I.unregister<AuthBloc>(
+      instance: _authBloc,
+      disposingFunction: (bloc) => bloc.dispose(),
+    );
+    _appRouter.dispose();
     super.dispose();
   }
 
@@ -68,17 +81,46 @@ class _AuthRouterState extends State<AuthRouter> {
         valueListenable: GetIt.I<AuthBloc>().authState,
         builder: (context, authState, _) {
           final _authedUser = GetIt.I<AuthBloc>().authedUser;
-          return _Unfocus(
-            child: FadeIn(
-              child: authState == AuthState.AUTHED && _authedUser != null
-                  ? App(_authedUser)
-                  : ChangeNotifierProvider(
-                      create: (_) => ThemeBloc(isLanding: true),
-                      builder: (context, child) => CupertinoApp(
-                          theme: context.theme.cupertinoThemeData,
-                          home: UnAuthedLanding()),
-                    ),
-            ),
+
+          return MultiProvider(
+            providers: [
+              Provider(create: (_) => GraphQLStore()),
+              ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
+              ChangeNotifierProvider(
+                  create: (_) =>
+                      ThemeBloc(deviceBrightness: _userDeviceBrightness)),
+            ],
+            child: Builder(
+                builder: (context) => _Unfocus(
+                        child: CupertinoApp.router(
+                      routeInformationParser: _appRouter.defaultRouteParser(
+                          includePrefixMatches: true),
+                      routerDelegate: AutoRouterDelegate.declarative(
+                        _appRouter,
+                        routes: (_) => [
+                          // if the user is logged in, they may proceed to the main App
+                          if (authState == AuthState.AUTHED &&
+                              _authedUser != null)
+                            AuthedRouter()
+                          // if they are not logged in, bring them to the Login page
+                          else
+                            UnauthedLandingRoute(),
+                        ],
+                      ),
+                      debugShowCheckedModeBanner: false,
+                      theme: context.theme.cupertinoThemeData,
+                      localizationsDelegates: [
+                        DefaultMaterialLocalizations.delegate,
+                        DefaultCupertinoLocalizations.delegate,
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                      ],
+                      supportedLocales: [
+                        const Locale('en', 'US'),
+                        const Locale('en', 'GB'),
+                      ],
+                    ))),
           );
         });
   }

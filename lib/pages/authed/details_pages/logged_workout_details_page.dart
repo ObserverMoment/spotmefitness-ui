@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
@@ -120,6 +121,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
               return CupertinoPageScaffold(
                 key: Key('LoggedWorkoutDetailsPage - CupertinoPageScaffold'),
                 navigationBar: BasicNavBar(
+                  heroTag: 'LoggedWorkoutDetailsPage',
                   key: Key('LoggedWorkoutDetailsPage - BasicNavBar'),
                   middle: NavBarTitle(log.name),
                   trailing: CupertinoButton(
@@ -219,14 +221,18 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                                       : MyText(gymProfile.name),
                                 ),
                               ),
-                              CupertinoButton(
-                                  padding: EdgeInsets.zero,
-                                  child: Icon(
-                                    CupertinoIcons.clear_thick,
-                                    color: Styles.errorRed,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => bloc.updateGymProfile(null))
+                              if (gymProfile != null)
+                                FadeIn(
+                                  child: CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      child: Icon(
+                                        CupertinoIcons.clear_thick,
+                                        color: Styles.errorRed,
+                                        size: 20,
+                                      ),
+                                      onPressed: () =>
+                                          bloc.updateGymProfile(null)),
+                                )
                             ],
                           ),
                           EditableTextAreaRow(

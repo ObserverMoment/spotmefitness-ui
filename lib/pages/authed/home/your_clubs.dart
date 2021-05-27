@@ -6,7 +6,9 @@ class YourClubsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(),
+      navigationBar: BasicNavBar(
+        heroTag: 'YourClubsPage',
+      ),
       child: MyText('YourClubsPage'),
     );
   }

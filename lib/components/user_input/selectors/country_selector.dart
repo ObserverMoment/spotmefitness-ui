@@ -67,6 +67,7 @@ class _CountrySelectorState extends State<CountrySelector> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'CountrySelector',
         automaticallyImplyLeading: false,
         middle: NavBarTitle('Select Country'),
         trailing: CupertinoButton(

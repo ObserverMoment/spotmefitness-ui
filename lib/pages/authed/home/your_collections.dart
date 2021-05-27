@@ -6,7 +6,9 @@ class YourCollectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(),
+      navigationBar: BasicNavBar(
+        heroTag: 'YourCollectionsPage',
+      ),
       child: MyText('YourCollectionsPage'),
     );
   }

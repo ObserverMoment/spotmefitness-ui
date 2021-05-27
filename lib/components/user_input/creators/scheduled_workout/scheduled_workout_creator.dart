@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -136,6 +137,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
     return CupertinoPageScaffold(
       backgroundColor: context.theme.modalBackground,
       navigationBar: BasicNavBar(
+        heroTag: 'ScheduledWorkoutCreator',
         backgroundColor: context.theme.modalBackground,
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Schedule Workout'),
@@ -207,15 +209,18 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
                                 : MyText(
                                     _activeScheduledWorkout.gymProfile!.name)),
                       ),
-                      CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          child: Icon(
-                            CupertinoIcons.clear_thick,
-                            color: Styles.errorRed,
-                            size: 20,
-                          ),
-                          onPressed: () => setState(
-                              () => _activeScheduledWorkout.gymProfile = null))
+                      if (_activeScheduledWorkout.gymProfile != null)
+                        FadeIn(
+                          child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Icon(
+                                CupertinoIcons.clear_thick,
+                                color: Styles.errorRed,
+                                size: 20,
+                              ),
+                              onPressed: () => setState(() =>
+                                  _activeScheduledWorkout.gymProfile = null)),
+                        )
                     ],
                   ),
                   SizedBox(height: 12),

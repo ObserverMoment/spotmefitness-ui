@@ -219,6 +219,7 @@ class _FullScreenTextEditingState extends State<FullScreenTextEditing> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'FullScreenTextEditing',
           customLeading: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -57,6 +57,7 @@ class FullScreenImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'FullScreenImageViewer',
           middle: title != null ? NavBarTitle(title!) : null,
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,

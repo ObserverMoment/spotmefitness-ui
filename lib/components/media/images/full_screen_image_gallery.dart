@@ -50,6 +50,7 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
     final height = size.height;
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'FullScreenImageGallery',
           customLeading: NavBarCloseButton(context.pop),
           middle: NavBarTitle(widget.pageTitle),
         ),

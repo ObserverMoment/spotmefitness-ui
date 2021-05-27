@@ -7,39 +7,42 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import 'components/user_input/creators/logged_workout_creator/logged_workout_creator.dart'
+import 'components/user_input/creators/benchmark_creator/benchmark_creator.dart'
     as _i11;
+import 'components/user_input/creators/logged_workout_creator/logged_workout_creator.dart'
+    as _i12;
 import 'components/user_input/creators/progress_journal/progress_journal_creator.dart'
     as _i10;
 import 'components/user_input/creators/workout_creator/workout_creator.dart'
     as _i9;
-import 'generated/api/graphql_api.graphql.dart' as _i32;
-import 'pages/authed/app.dart' as _i3;
-import 'pages/authed/details_pages/benchmark_details_page.dart' as _i7;
-import 'pages/authed/details_pages/logged_workout_details_page.dart' as _i5;
-import 'pages/authed/details_pages/progress_journal_details_page.dart' as _i6;
-import 'pages/authed/details_pages/workout_details_page.dart' as _i4;
-import 'pages/authed/discover/discover_page.dart' as _i12;
-import 'pages/authed/discover/plans.dart' as _i25;
-import 'pages/authed/discover/workouts.dart' as _i24;
-import 'pages/authed/discover/you.dart' as _i23;
-import 'pages/authed/home/home_page.dart' as _i15;
-import 'pages/authed/home/your_clubs.dart' as _i20;
-import 'pages/authed/home/your_collections.dart' as _i16;
-import 'pages/authed/home/your_events.dart' as _i19;
-import 'pages/authed/home/your_moves.dart' as _i21;
-import 'pages/authed/home/your_plans.dart' as _i18;
-import 'pages/authed/home/your_schedule.dart' as _i22;
-import 'pages/authed/home/your_workouts.dart' as _i17;
-import 'pages/authed/journal/journal_page.dart' as _i26;
-import 'pages/authed/journal/your_benchmarks.dart' as _i27;
-import 'pages/authed/journal/your_logged_workouts.dart' as _i28;
-import 'pages/authed/journal/your_progress_journals.dart' as _i29;
-import 'pages/authed/profile/gym_profiles.dart' as _i31;
-import 'pages/authed/profile/personal_page.dart' as _i30;
-import 'pages/authed/profile/profile_page.dart' as _i14;
-import 'pages/authed/profile/settings_and_info.dart' as _i8;
-import 'pages/authed/social/social_page.dart' as _i13;
+import 'generated/api/graphql_api.graphql.dart' as _i34;
+import 'pages/authed/app.dart' as _i4;
+import 'pages/authed/details_pages/benchmark_details_page.dart' as _i8;
+import 'pages/authed/details_pages/logged_workout_details_page.dart' as _i6;
+import 'pages/authed/details_pages/progress_journal_details_page.dart' as _i7;
+import 'pages/authed/details_pages/workout_details_page.dart' as _i5;
+import 'pages/authed/discover/discover_page.dart' as _i14;
+import 'pages/authed/discover/plans.dart' as _i27;
+import 'pages/authed/discover/workouts.dart' as _i26;
+import 'pages/authed/discover/you.dart' as _i25;
+import 'pages/authed/home/home_page.dart' as _i17;
+import 'pages/authed/home/your_clubs.dart' as _i22;
+import 'pages/authed/home/your_collections.dart' as _i18;
+import 'pages/authed/home/your_events.dart' as _i21;
+import 'pages/authed/home/your_moves.dart' as _i23;
+import 'pages/authed/home/your_plans.dart' as _i20;
+import 'pages/authed/home/your_schedule.dart' as _i24;
+import 'pages/authed/home/your_workouts.dart' as _i19;
+import 'pages/authed/journal/journal_page.dart' as _i28;
+import 'pages/authed/journal/your_benchmarks.dart' as _i29;
+import 'pages/authed/journal/your_logged_workouts.dart' as _i30;
+import 'pages/authed/journal/your_progress_journals.dart' as _i31;
+import 'pages/authed/profile/gym_profiles.dart' as _i33;
+import 'pages/authed/profile/personal_page.dart' as _i32;
+import 'pages/authed/profile/profile_page.dart' as _i16;
+import 'pages/authed/profile/settings.dart' as _i13;
+import 'pages/authed/social/social_page.dart' as _i15;
+import 'pages/unauthed/unauthed_landing.dart' as _i3;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -47,10 +50,20 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   final Map<String, _i1.PageFactory> pagesMap = {
-    GlobalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+    UnauthedLandingRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i3.GlobalPage();
+          return _i3.UnauthedLandingPage();
+        }),
+    AuthedRouter.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i1.EmptyRouterPage();
+        }),
+    MainTabsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i4.MainTabsPage();
         }),
     WorkoutDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -59,7 +72,7 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<WorkoutDetailsRouteArgs>(
               orElse: () =>
                   WorkoutDetailsRouteArgs(id: pathParams.getString('id')));
-          return _i4.WorkoutDetailsPage(id: args.id);
+          return _i5.WorkoutDetailsPage(id: args.id);
         }),
     LoggedWorkoutDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -68,7 +81,7 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<LoggedWorkoutDetailsRouteArgs>(
               orElse: () => LoggedWorkoutDetailsRouteArgs(
                   id: pathParams.getString('id')));
-          return _i5.LoggedWorkoutDetailsPage(id: args.id);
+          return _i6.LoggedWorkoutDetailsPage(id: args.id);
         }),
     ProgressJournalDetailsRoute.name: (routeData) =>
         _i1.CupertinoPageX<dynamic>(
@@ -78,7 +91,7 @@ class AppRouter extends _i1.RootStackRouter {
               final args = data.argsAs<ProgressJournalDetailsRouteArgs>(
                   orElse: () => ProgressJournalDetailsRouteArgs(
                       id: pathParams.getString('id')));
-              return _i6.ProgressJournalDetailsPage(id: args.id);
+              return _i7.ProgressJournalDetailsPage(id: args.id);
             }),
     BenchmarkDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -87,12 +100,7 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<BenchmarkDetailsRouteArgs>(
               orElse: () =>
                   BenchmarkDetailsRouteArgs(id: pathParams.getString('id')));
-          return _i7.BenchmarkDetailsPage(id: args.id);
-        }),
-    SettingsAndInfoRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i8.SettingsAndInfoPage();
+          return _i8.BenchmarkDetailsPage(id: args.id);
         }),
     WorkoutCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -110,12 +118,24 @@ class AppRouter extends _i1.RootStackRouter {
               return _i10.ProgressJournalCreatorPage(
                   progressJournal: args.progressJournal);
             }),
+    BenchmarkCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (data) {
+          final args = data.argsAs<BenchmarkCreatorRouteArgs>(
+              orElse: () => const BenchmarkCreatorRouteArgs());
+          return _i11.BenchmarkCreatorPage(userBenchmark: args.userBenchmark);
+        }),
     LoggedWorkoutCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<LoggedWorkoutCreatorRouteArgs>();
-          return _i11.LoggedWorkoutCreatorPage(
+          return _i12.LoggedWorkoutCreatorPage(
               workout: args.workout, scheduledWorkout: args.scheduledWorkout);
+        }),
+    SettingsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return _i13.SettingsPage();
         }),
     HomeStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -125,12 +145,12 @@ class AppRouter extends _i1.RootStackRouter {
     DiscoverRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i12.DiscoverPage();
+          return _i14.DiscoverPage();
         }),
     SocialRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i13.SocialPage();
+          return _i15.SocialPage();
         }),
     JournalStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -140,157 +160,176 @@ class AppRouter extends _i1.RootStackRouter {
     ProfileRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i14.ProfilePage();
+          return _i16.ProfilePage();
         }),
     HomeRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i15.HomePage();
+          return _i17.HomePage();
         }),
     YourCollectionsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i16.YourCollectionsPage();
+          return _i18.YourCollectionsPage();
         }),
     YourWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i17.YourWorkoutsPage();
+          return _i19.YourWorkoutsPage();
         }),
     YourPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i18.YourPlansPage();
+          return _i20.YourPlansPage();
         }),
     YourEventsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i19.YourEventsPage();
+          return _i21.YourEventsPage();
         }),
     YourClubsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i20.YourClubsPage();
+          return _i22.YourClubsPage();
         }),
     YourMovesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i21.YourMovesPage();
+          return _i23.YourMovesPage();
         }),
     YourScheduleRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i22.YourSchedulePage();
+          return _i24.YourSchedulePage();
         }),
     DiscoverYouRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i23.DiscoverYouPage();
+          return _i25.DiscoverYouPage();
         }),
     DiscoverWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i24.DiscoverWorkoutsPage();
+          return _i26.DiscoverWorkoutsPage();
         }),
     DiscoverPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i25.DiscoverPlansPage();
+          return _i27.DiscoverPlansPage();
         }),
     JournalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i26.JournalPage();
+          return _i28.JournalPage();
         }),
     YourBenchmarksRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i27.YourBenchmarksPage();
+          return _i29.YourBenchmarksPage();
         }),
     YourLoggedWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i28.YourLoggedWorkoutsPage();
+          return _i30.YourLoggedWorkoutsPage();
         }),
     YourProgressJournalsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i29.YourProgressJournalsPage();
+          return _i31.YourProgressJournalsPage();
         }),
     ProfilePersonalRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i30.ProfilePersonalPage();
+          return _i32.ProfilePersonalPage();
         }),
     ProfileGymProfilesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i31.ProfileGymProfilesPage();
+          return _i33.ProfileGymProfilesPage();
         })
   };
 
   @override
   List<_i1.RouteConfig> get routes => [
-        _i1.RouteConfig(GlobalRoute.name, path: '/', children: [
-          _i1.RouteConfig(HomeStack.name, path: 'home', children: [
-            _i1.RouteConfig(HomeRoute.name, path: ''),
-            _i1.RouteConfig(YourCollectionsRoute.name,
-                path: 'your-collections'),
-            _i1.RouteConfig(YourWorkoutsRoute.name, path: 'your-workouts'),
-            _i1.RouteConfig(YourPlansRoute.name, path: 'your-plans'),
-            _i1.RouteConfig(YourEventsRoute.name, path: 'your-events'),
-            _i1.RouteConfig(YourClubsRoute.name, path: 'your-clubs'),
-            _i1.RouteConfig(YourMovesRoute.name, path: 'your-moves'),
-            _i1.RouteConfig(YourScheduleRoute.name, path: 'your-schedule'),
-            _i1.RouteConfig('*#redirect',
-                path: '*', redirectTo: 'home', fullMatch: true)
+        _i1.RouteConfig(UnauthedLandingRoute.name, path: '/auth'),
+        _i1.RouteConfig(AuthedRouter.name, path: '/', children: [
+          _i1.RouteConfig(MainTabsRoute.name, path: '', children: [
+            _i1.RouteConfig(HomeStack.name, path: '', children: [
+              _i1.RouteConfig(HomeRoute.name, path: ''),
+              _i1.RouteConfig(YourCollectionsRoute.name,
+                  path: 'your-collections'),
+              _i1.RouteConfig(YourWorkoutsRoute.name, path: 'your-workouts'),
+              _i1.RouteConfig(YourPlansRoute.name, path: 'your-plans'),
+              _i1.RouteConfig(YourEventsRoute.name, path: 'your-events'),
+              _i1.RouteConfig(YourClubsRoute.name, path: 'your-clubs'),
+              _i1.RouteConfig(YourMovesRoute.name, path: 'your-moves'),
+              _i1.RouteConfig(YourScheduleRoute.name, path: 'your-schedule'),
+              _i1.RouteConfig('*#redirect',
+                  path: '*', redirectTo: '', fullMatch: true)
+            ]),
+            _i1.RouteConfig(DiscoverRoute.name, path: 'discover', children: [
+              _i1.RouteConfig(DiscoverYouRoute.name, path: 'you'),
+              _i1.RouteConfig(DiscoverWorkoutsRoute.name, path: 'workouts'),
+              _i1.RouteConfig(DiscoverPlansRoute.name, path: 'plans'),
+              _i1.RouteConfig('*#redirect',
+                  path: '*', redirectTo: 'you', fullMatch: true)
+            ]),
+            _i1.RouteConfig(SocialRoute.name, path: 'social'),
+            _i1.RouteConfig(JournalStack.name, path: 'journal', children: [
+              _i1.RouteConfig(JournalRoute.name, path: ''),
+              _i1.RouteConfig(YourBenchmarksRoute.name,
+                  path: 'your-benchmarks'),
+              _i1.RouteConfig(YourLoggedWorkoutsRoute.name,
+                  path: 'your-logged-workouts'),
+              _i1.RouteConfig(YourProgressJournalsRoute.name,
+                  path: 'your-progress-journals'),
+              _i1.RouteConfig('*#redirect',
+                  path: '*', redirectTo: '', fullMatch: true)
+            ]),
+            _i1.RouteConfig(ProfileRoute.name, path: 'profile', children: [
+              _i1.RouteConfig(ProfilePersonalRoute.name, path: 'personal'),
+              _i1.RouteConfig(ProfileGymProfilesRoute.name,
+                  path: 'gym-profiles'),
+              _i1.RouteConfig('*#redirect',
+                  path: '*', redirectTo: 'personal', fullMatch: true)
+            ])
           ]),
-          _i1.RouteConfig(DiscoverRoute.name, path: 'discover', children: [
-            _i1.RouteConfig(DiscoverYouRoute.name, path: 'you'),
-            _i1.RouteConfig(DiscoverWorkoutsRoute.name, path: 'workouts'),
-            _i1.RouteConfig(DiscoverPlansRoute.name, path: 'plans'),
-            _i1.RouteConfig('*#redirect',
-                path: '*', redirectTo: 'you', fullMatch: true)
-          ]),
-          _i1.RouteConfig(SocialRoute.name, path: 'social'),
-          _i1.RouteConfig(JournalStack.name, path: 'journal', children: [
-            _i1.RouteConfig(JournalRoute.name, path: ''),
-            _i1.RouteConfig(YourBenchmarksRoute.name, path: 'your-benchmarks'),
-            _i1.RouteConfig(YourLoggedWorkoutsRoute.name,
-                path: 'your-logged-workouts'),
-            _i1.RouteConfig(YourProgressJournalsRoute.name,
-                path: 'your-progress-journals'),
-            _i1.RouteConfig('*#redirect',
-                path: '*', redirectTo: 'journal', fullMatch: true)
-          ]),
-          _i1.RouteConfig(ProfileRoute.name, path: 'profile', children: [
-            _i1.RouteConfig(ProfilePersonalRoute.name, path: 'personal'),
-            _i1.RouteConfig(ProfileGymProfilesRoute.name, path: 'gym-profiles'),
-            _i1.RouteConfig('*#redirect',
-                path: '*', redirectTo: 'personal', fullMatch: true)
-          ])
-        ]),
-        _i1.RouteConfig(WorkoutDetailsRoute.name, path: 'workout/:id'),
-        _i1.RouteConfig(LoggedWorkoutDetailsRoute.name,
-            path: 'logged-workout/:id'),
-        _i1.RouteConfig(ProgressJournalDetailsRoute.name,
-            path: 'progress-journal/:id'),
-        _i1.RouteConfig(BenchmarkDetailsRoute.name, path: 'benchmark/:id'),
-        _i1.RouteConfig(SettingsAndInfoRoute.name, path: 'settings'),
-        _i1.RouteConfig(WorkoutCreatorRoute.name, path: 'create-workout'),
-        _i1.RouteConfig(ProgressJournalCreatorRoute.name,
-            path: 'create-journal'),
-        _i1.RouteConfig(LoggedWorkoutCreatorRoute.name, path: 'log-workout'),
-        _i1.RouteConfig('*#redirect',
-            path: '*', redirectTo: '/', fullMatch: true)
+          _i1.RouteConfig(WorkoutDetailsRoute.name, path: 'workout/:id'),
+          _i1.RouteConfig(LoggedWorkoutDetailsRoute.name,
+              path: 'logged-workout/:id'),
+          _i1.RouteConfig(ProgressJournalDetailsRoute.name,
+              path: 'progress-journal/:id'),
+          _i1.RouteConfig(BenchmarkDetailsRoute.name, path: 'benchmark/:id'),
+          _i1.RouteConfig(WorkoutCreatorRoute.name, path: 'create-workout'),
+          _i1.RouteConfig(ProgressJournalCreatorRoute.name,
+              path: 'create-journal'),
+          _i1.RouteConfig(BenchmarkCreatorRoute.name, path: 'create-benchmark'),
+          _i1.RouteConfig(LoggedWorkoutCreatorRoute.name, path: 'log-workout'),
+          _i1.RouteConfig(SettingsRoute.name, path: 'settings'),
+          _i1.RouteConfig('*#redirect',
+              path: '*', redirectTo: '/', fullMatch: true)
+        ])
       ];
 }
 
-class GlobalRoute extends _i1.PageRouteInfo {
-  const GlobalRoute({List<_i1.PageRouteInfo>? children})
+class UnauthedLandingRoute extends _i1.PageRouteInfo {
+  const UnauthedLandingRoute() : super(name, path: '/auth');
+
+  static const String name = 'UnauthedLandingRoute';
+}
+
+class AuthedRouter extends _i1.PageRouteInfo {
+  const AuthedRouter({List<_i1.PageRouteInfo>? children})
       : super(name, path: '/', initialChildren: children);
 
-  static const String name = 'GlobalRoute';
+  static const String name = 'AuthedRouter';
+}
+
+class MainTabsRoute extends _i1.PageRouteInfo {
+  const MainTabsRoute({List<_i1.PageRouteInfo>? children})
+      : super(name, path: '', initialChildren: children);
+
+  static const String name = 'MainTabsRoute';
 }
 
 class WorkoutDetailsRoute extends _i1.PageRouteInfo<WorkoutDetailsRouteArgs> {
@@ -360,14 +399,8 @@ class BenchmarkDetailsRouteArgs {
   final String id;
 }
 
-class SettingsAndInfoRoute extends _i1.PageRouteInfo {
-  const SettingsAndInfoRoute() : super(name, path: 'settings');
-
-  static const String name = 'SettingsAndInfoRoute';
-}
-
 class WorkoutCreatorRoute extends _i1.PageRouteInfo<WorkoutCreatorRouteArgs> {
-  WorkoutCreatorRoute({_i32.Workout? workout})
+  WorkoutCreatorRoute({_i34.Workout? workout})
       : super(name,
             path: 'create-workout',
             args: WorkoutCreatorRouteArgs(workout: workout));
@@ -378,12 +411,12 @@ class WorkoutCreatorRoute extends _i1.PageRouteInfo<WorkoutCreatorRouteArgs> {
 class WorkoutCreatorRouteArgs {
   const WorkoutCreatorRouteArgs({this.workout});
 
-  final _i32.Workout? workout;
+  final _i34.Workout? workout;
 }
 
 class ProgressJournalCreatorRoute
     extends _i1.PageRouteInfo<ProgressJournalCreatorRouteArgs> {
-  ProgressJournalCreatorRoute({_i32.ProgressJournal? progressJournal})
+  ProgressJournalCreatorRoute({_i34.ProgressJournal? progressJournal})
       : super(name,
             path: 'create-journal',
             args: ProgressJournalCreatorRouteArgs(
@@ -395,13 +428,29 @@ class ProgressJournalCreatorRoute
 class ProgressJournalCreatorRouteArgs {
   const ProgressJournalCreatorRouteArgs({this.progressJournal});
 
-  final _i32.ProgressJournal? progressJournal;
+  final _i34.ProgressJournal? progressJournal;
+}
+
+class BenchmarkCreatorRoute
+    extends _i1.PageRouteInfo<BenchmarkCreatorRouteArgs> {
+  BenchmarkCreatorRoute({_i34.UserBenchmark? userBenchmark})
+      : super(name,
+            path: 'create-benchmark',
+            args: BenchmarkCreatorRouteArgs(userBenchmark: userBenchmark));
+
+  static const String name = 'BenchmarkCreatorRoute';
+}
+
+class BenchmarkCreatorRouteArgs {
+  const BenchmarkCreatorRouteArgs({this.userBenchmark});
+
+  final _i34.UserBenchmark? userBenchmark;
 }
 
 class LoggedWorkoutCreatorRoute
     extends _i1.PageRouteInfo<LoggedWorkoutCreatorRouteArgs> {
   LoggedWorkoutCreatorRoute(
-      {required _i32.Workout workout, _i32.ScheduledWorkout? scheduledWorkout})
+      {required _i34.Workout workout, _i34.ScheduledWorkout? scheduledWorkout})
       : super(name,
             path: 'log-workout',
             args: LoggedWorkoutCreatorRouteArgs(
@@ -414,14 +463,20 @@ class LoggedWorkoutCreatorRouteArgs {
   const LoggedWorkoutCreatorRouteArgs(
       {required this.workout, this.scheduledWorkout});
 
-  final _i32.Workout workout;
+  final _i34.Workout workout;
 
-  final _i32.ScheduledWorkout? scheduledWorkout;
+  final _i34.ScheduledWorkout? scheduledWorkout;
+}
+
+class SettingsRoute extends _i1.PageRouteInfo {
+  const SettingsRoute() : super(name, path: 'settings');
+
+  static const String name = 'SettingsRoute';
 }
 
 class HomeStack extends _i1.PageRouteInfo {
   const HomeStack({List<_i1.PageRouteInfo>? children})
-      : super(name, path: 'home', initialChildren: children);
+      : super(name, path: '', initialChildren: children);
 
   static const String name = 'HomeStack';
 }

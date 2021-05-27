@@ -304,8 +304,8 @@ mixin UserBenchmarkMixin {
   late String name;
   String? description;
   double? reps;
-  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
-  late BenchmarkRepType repType;
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  late WorkoutMoveRepType repType;
   double? load;
   @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
   late LoadUnit loadUnit;
@@ -3917,8 +3917,8 @@ class UpdateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
 
   double? reps;
 
-  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
-  BenchmarkRepType? repType;
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  WorkoutMoveRepType? repType;
 
   double? load;
 
@@ -3974,8 +3974,8 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
   CreateUserBenchmarkInput(
       {required this.name,
       this.description,
-      required this.reps,
-      required this.repType,
+      this.reps,
+      this.repType,
       this.load,
       this.loadUnit,
       this.distanceUnit,
@@ -3990,10 +3990,10 @@ class CreateUserBenchmarkInput extends JsonSerializable with EquatableMixin {
 
   String? description;
 
-  late double reps;
+  double? reps;
 
-  @JsonKey(unknownEnumValue: BenchmarkRepType.artemisUnknown)
-  late BenchmarkRepType repType;
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  WorkoutMoveRepType? repType;
 
   double? load;
 
@@ -4199,25 +4199,15 @@ enum DifficultyLevel {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum BenchmarkRepType {
-  @JsonValue('REPS')
-  reps,
-  @JsonValue('CALORIES')
-  calories,
-  @JsonValue('DISTANCE')
-  distance,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
 enum BenchmarkType {
-  @JsonValue('UNBROKENREPS')
-  unbrokenreps,
-  @JsonValue('UNBROKENTIME')
-  unbrokentime,
   @JsonValue('MAXLOAD')
   maxload,
   @JsonValue('FASTESTTIME')
   fastesttime,
+  @JsonValue('UNBROKENREPS')
+  unbrokenreps,
+  @JsonValue('UNBROKENTIME')
+  unbrokentime,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }

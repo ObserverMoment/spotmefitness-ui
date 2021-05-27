@@ -8,16 +8,20 @@ import 'package:spotmefitness_ui/constants.dart';
 enum ThemeName { dark, light }
 
 class ThemeBloc extends ChangeNotifier {
-  ThemeBloc({bool? isLanding = false}) {
-    if (isLanding != null && isLanding) {
-      /// Always a dark theme for sign in and landing.
-      _setToDark();
-    } else {
-      // Initialise them from Hive box.
-      final themeNameFromSettings = Hive.box(kSettingsHiveBoxName)
-          .get(kSettingsHiveBoxThemeKey, defaultValue: kSettingsDarkThemeKey);
+  ThemeBloc({Brightness deviceBrightness = Brightness.dark}) {
+    // Check for saved setting in local Hive box.
+    final themeNameFromSettings = Hive.box(kSettingsHiveBoxName)
+        .get(kSettingsHiveBoxThemeKey, defaultValue: null);
 
+    if (themeNameFromSettings != null) {
       if (themeNameFromSettings == kSettingsDarkThemeKey) {
+        _setToDark();
+      } else {
+        _setToLight();
+      }
+    } else {
+      // Initialise from device or default to dark.
+      if (deviceBrightness == Brightness.dark) {
         _setToDark();
       } else {
         _setToLight();

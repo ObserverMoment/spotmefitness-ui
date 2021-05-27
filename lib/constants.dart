@@ -22,6 +22,7 @@ const kUserTypename = 'User';
 const kWorkoutTypename = 'Workout';
 const kScheduledWorkoutTypename = 'ScheduledWorkout';
 const kWorkoutSectionTypename = 'WorkoutSection';
+const kWorkoutSectionTypeTypename = 'WorkoutSectionType';
 const kWorkoutSetTypename = 'WorkoutSet';
 const kWorkoutMoveTypename = 'WorkoutMove';
 
@@ -34,6 +35,8 @@ const kProgressJournalTypename = 'ProgressJournal';
 const kProgressJournalEntryTypename = 'ProgressJournalEntry';
 const kProgressJournalGoalTypename = 'ProgressJournalGoal';
 const kProgressJournalGoalTagTypename = 'ProgressJournalGoalTag';
+
+const kUserBenchmarkTypename = 'UserBenchmark';
 
 const kExcludeFromNormalization = [
   kWorkoutSectionTypename,

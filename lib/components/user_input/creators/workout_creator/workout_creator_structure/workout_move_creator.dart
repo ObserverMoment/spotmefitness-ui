@@ -192,6 +192,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'WorkoutMoveCreator',
         customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),
@@ -203,13 +204,9 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                 controller: _pageController,
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  Column(
-                    children: [
-                      MoveSelector(
-                        move: _activeWorkoutMove?.move,
-                        selectMove: _selectMove,
-                      ),
-                    ],
+                  MoveSelector(
+                    move: _activeWorkoutMove?.move,
+                    selectMove: _selectMove,
                   ),
                   SingleChildScrollView(
                     child: Padding(

@@ -125,6 +125,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+          heroTag: 'CustomMoveCreator',
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
           trailing: _formIsDirty

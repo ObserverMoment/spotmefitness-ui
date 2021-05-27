@@ -8,6 +8,9 @@ class GQLOpNames {
       UserLoggedWorkoutsQuery(variables: UserLoggedWorkoutsArguments())
           .operationName;
 
+  static String get userBenchmarksQuery =>
+      UserBenchmarksQuery(variables: UserBenchmarksArguments()).operationName;
+
   static String get progressJournalByIdQuery =>
       ProgressJournalByIdQuery(variables: ProgressJournalByIdArguments(id: ''))
           .operationName;

@@ -28,14 +28,16 @@ class YourBenchmarksPage extends StatelessWidget {
           return CupertinoPageScaffold(
             key: Key('YourBenchmarksPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              heroTag: 'YourBenchmarksPage',
               key: Key('YourBenchmarksPage - BasicNavBar'),
-              middle: NavBarTitle('Benchmarks and PBs'),
+              middle: NavBarTitle('Benchmarks & PBs'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CreateIconButton(
-                    onPressed: () => print('open benchmark creator'),
+                    onPressed: () =>
+                        context.navigateTo(BenchmarkCreatorRoute()),
                   ),
                   InfoPopupButton(
                       infoWidget: MyText('Info about the benchmarks'))

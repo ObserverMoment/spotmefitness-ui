@@ -20,6 +20,7 @@ class FutureBuilderHandler<T> extends StatelessWidget {
           print(snapshot.error);
           return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
+              heroTag: 'FutureBuilderHandler-error screen',
               middle: NavBarTitle('Oops...'),
             ),
             child: Row(

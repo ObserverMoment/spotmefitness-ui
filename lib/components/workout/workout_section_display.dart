@@ -170,6 +170,7 @@ class WorkoutDetailsSection extends StatelessWidget {
                   onPressed: () => context.push(
                       child: CupertinoPageScaffold(
                           navigationBar: BasicNavBar(
+                              heroTag: 'WorkoutDetailsSection',
                               middle: NavBarTitle('Targeted Body Areas')),
                           child: TargetedBodyAreasPageView(
                               bodyAreaMoveScoresFromSection())),

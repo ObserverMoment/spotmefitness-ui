@@ -7,7 +7,7 @@ class DefaultObjectfactory {
   /// [Free Session].
   static WorkoutSectionType defaultWorkoutSectionType() {
     return WorkoutSectionType()
-      ..$$typename
+      ..$$typename = kWorkoutSectionTypeTypename
       ..id = 0.toString()
       ..name = 'Section'
       ..description = '';
@@ -43,7 +43,7 @@ class DefaultObjectfactory {
 
   static ProgressJournal defaultProgressJournal() {
     return ProgressJournal()
-      ..$$typename
+      ..$$typename = kProgressJournalTypename
       ..id = 'temp-$kProgressJournalTypename:${Uuid().v1()}'
       ..name = 'Journal ${DateTime.now().compactDateString}'
       ..createdAt = DateTime.now()
@@ -52,7 +52,7 @@ class DefaultObjectfactory {
 
   static ProgressJournalGoal defaultProgressJournalGoal() {
     return ProgressJournalGoal()
-      ..$$typename
+      ..$$typename = kProgressJournalGoalTypename
       ..id = 'temp-$kProgressJournalGoalTypename:${Uuid().v1()}'
       ..createdAt = DateTime.now()
       ..name = 'Goal ${DateTime.now().compactDateString}'

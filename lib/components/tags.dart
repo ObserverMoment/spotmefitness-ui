@@ -76,6 +76,8 @@ class SelectableTag extends StatelessWidget {
         child: MyText(
           text,
           size: fontSize,
+          color: isSelected ? Styles.white : null,
+          weight: FontWeight.bold,
         ),
       ),
     );
@@ -97,7 +99,6 @@ class MoveTypeTag extends StatelessWidget {
       child: MyText(
         moveType.name,
         size: fontSize,
-        color: Styles.white,
       ),
     );
   }

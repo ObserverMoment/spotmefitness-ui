@@ -258,6 +258,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           return CupertinoPageScaffold(
             key: Key('WorkoutDetailsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              heroTag: 'WorkoutDetailsPage',
               key: Key('WorkoutDetailsPage - BasicNavBar'),
               middle: NavBarTitle(workout.name),
               trailing: CupertinoButton(
@@ -314,8 +315,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                         BottomSheetMenuItem(
                             text: 'Edit',
                             icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () =>
-                                context.navigateTo(WorkoutCreatorRoute())),
+                            onPressed: () => context.navigateTo(
+                                WorkoutCreatorRoute(workout: workout))),
                       if (isOwner ||
                           workout.contentAccessScope ==
                               ContentAccessScope.public)

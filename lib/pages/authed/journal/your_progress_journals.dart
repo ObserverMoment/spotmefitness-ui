@@ -28,6 +28,7 @@ class YourProgressJournalsPage extends StatelessWidget {
           return CupertinoPageScaffold(
             key: Key('YourProgressJournalsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              heroTag: 'YourProgressJournalsPage',
               key: Key('YourProgressJournalsPage - BasicNavBar'),
               middle: NavBarTitle('Journals'),
               trailing: Row(

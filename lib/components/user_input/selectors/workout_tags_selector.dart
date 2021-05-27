@@ -67,6 +67,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: BasicNavBar(
+          heroTag: 'WorkoutTagsSelector',
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(

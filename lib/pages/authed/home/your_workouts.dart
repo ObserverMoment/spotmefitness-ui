@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -26,6 +27,7 @@ class YourWorkoutsPage extends StatelessWidget {
       fetchPolicy: QueryFetchPolicy.storeAndNetwork,
       loadingIndicator: CupertinoPageScaffold(
           navigationBar: BasicNavBar(
+            heroTag: 'Loading-YourWorkoutsPage',
             middle: NavBarTitle('Your Workouts'),
           ),
           child: ShimmerCardList(itemCount: 20)),
@@ -37,6 +39,7 @@ class YourWorkoutsPage extends StatelessWidget {
 
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
+              heroTag: 'YourWorkoutsPage',
               middle: NavBarTitle('Your Workouts'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -174,6 +177,7 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
     final filteredWorkouts = _filterBySearchString();
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'YourWorkoutsTextSearch',
         middle: NavBarTitle('Search Your Workouts'),
       ),
       child: Column(

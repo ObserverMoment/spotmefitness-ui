@@ -8,6 +8,7 @@ class SocialPage extends StatelessWidget {
     return CupertinoPageScaffold(
       key: Key('SocialPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
+        heroTag: 'SocialPage',
         key: Key('SocialPage-BasicNavBar'),
         customLeading: NavBarLargeTitle('Social'),
       ),

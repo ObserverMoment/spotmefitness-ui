@@ -10,12 +10,12 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class SettingsAndInfoPage extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   @override
-  _SettingsAndInfoPageState createState() => _SettingsAndInfoPageState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsAndInfoPageState extends State<SettingsAndInfoPage> {
+class _SettingsPageState extends State<SettingsPage> {
   bool _loading = false;
   Widget _spacer() => SizedBox(height: 10);
 
@@ -32,9 +32,10 @@ class _SettingsAndInfoPageState extends State<SettingsAndInfoPage> {
         CupertinoTheme.of(context).primaryColor.withOpacity(0.70);
 
     return CupertinoPageScaffold(
-      key: Key('SettingsAndInfoPage - CupertinoPageScaffold'),
+      key: Key('SettingsPage - CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
-        key: Key('SettingsAndInfoPage - BasicNavBar'),
+        heroTag: 'SettingsPage',
+        key: Key('SettingsPage - BasicNavBar'),
         middle: NavBarTitle('Settings'),
       ),
       child: SingleChildScrollView(

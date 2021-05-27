@@ -35,6 +35,7 @@ class YourLoggedWorkoutsPage extends StatelessWidget {
           return CupertinoPageScaffold(
             key: Key('YourLoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: BasicNavBar(
+              heroTag: 'YourLoggedWorkoutsPage',
               key: Key('YourLoggedWorkoutsPage - BasicNavBar'),
               middle: NavBarTitle('Workout Logs'),
               trailing: Row(
@@ -254,6 +255,7 @@ class _YourLoggedWorkoutsTextSearchState
     final filteredLogs = _filterBySearchString();
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'YourLoggedWorkoutsTextSearch',
         middle: NavBarTitle('Search Your Logs'),
       ),
       child: Column(

@@ -88,6 +88,7 @@ class _ProgressJournalEntryCreatorState
     return FutureBuilderHandler<ProgressJournalEntry>(
         loadingWidget: CupertinoPageScaffold(
           navigationBar: BasicNavBar(
+            heroTag: 'ProgressJournalEntryCreator',
             automaticallyImplyLeading: false,
             middle: NavBarTitle('Getting ready...'),
           ),

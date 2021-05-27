@@ -8,6 +8,7 @@ class DiscoverPage extends StatelessWidget {
     return CupertinoPageScaffold(
       key: Key('DiscoverPage-CupertinoPageScaffold'),
       navigationBar: BasicNavBar(
+        heroTag: 'DiscoverPage',
         key: Key('DiscoverPage-BasicNavBar'),
         customLeading: NavBarLargeTitle('Discover'),
       ),

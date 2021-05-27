@@ -268,6 +268,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
 
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
+        heroTag: 'WorkoutSectionCreator',
         middle: _buildTitle(_workoutSection),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(

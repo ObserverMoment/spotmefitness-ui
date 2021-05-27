@@ -205,6 +205,7 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
 /// Removes the bottom border from all nav bars.
 class BasicNavBar extends CupertinoNavigationBar {
   final Key? key;
+  final Object heroTag;
   final bool automaticallyImplyLeading;
   final Widget? customLeading;
   final Widget? middle;
@@ -212,6 +213,7 @@ class BasicNavBar extends CupertinoNavigationBar {
   final Color? backgroundColor;
   BasicNavBar(
       {this.key,
+      required this.heroTag,
       this.automaticallyImplyLeading = false,
       this.customLeading,
       this.middle,
@@ -263,6 +265,7 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
       navigationBar: BasicNavBar(
+        heroTag: 'ModalCupertinoPageScaffold - $title',
         customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),
