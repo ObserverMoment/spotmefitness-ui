@@ -141,6 +141,7 @@ class _RepPickerModalState extends State<RepPickerModal> {
     _activeRepType = widget.repType;
     _activeDistanceUnit = widget.distanceUnit;
     _activeTimeUnit = widget.timeUnit;
+
     _repsController = TextEditingController(text: widget.reps.stringMyDouble());
     _repsController.selection = TextSelection(
         baseOffset: 0, extentOffset: _repsController.value.text.length);

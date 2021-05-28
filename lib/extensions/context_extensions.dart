@@ -60,9 +60,11 @@ extension BuildContextExtension on BuildContext {
   Future<T> showDialog<T>(
       {String? title,
       Widget? content,
+      bool useRootNavigator = false,
       required List<CupertinoDialogAction> actions}) async {
     final BuildContext context = this;
     final T res = await showCupertinoDialog(
+        useRootNavigator: useRootNavigator,
         context: context,
         builder: (context) => CupertinoAlertDialog(
             title:
@@ -72,10 +74,14 @@ extension BuildContextExtension on BuildContext {
     return res;
   }
 
-  Future<void> showLoadingAlert(String message, {Widget? icon}) async {
+  Future<void> showLoadingAlert(String message,
+      {Widget? icon,
+      BuildContext? customContext,
+      bool useRootNavigator = false}) async {
     final BuildContext context = this;
     await showCupertinoDialog(
-        context: context,
+        useRootNavigator: useRootNavigator,
+        context: customContext ?? context,
         builder: (context) => CupertinoAlertDialog(
             title: Column(
               mainAxisSize: MainAxisSize.min,
@@ -110,6 +116,7 @@ extension BuildContextExtension on BuildContext {
   }) async {
     final BuildContext context = this;
     final T res = await showCupertinoDialog(
+        useRootNavigator: true,
         context: context,
         builder: (context) => CupertinoAlertDialog(
                 title: title != null
@@ -123,7 +130,7 @@ extension BuildContextExtension on BuildContext {
                       color: context.readTheme.primary,
                     ),
                     onPressed: () {
-                      context.pop();
+                      context.pop(rootNavigator: true);
                       onConfirm();
                     },
                   ),
@@ -133,7 +140,7 @@ extension BuildContextExtension on BuildContext {
                       color: context.readTheme.primary,
                     ),
                     onPressed: () {
-                      context.pop();
+                      context.pop(rootNavigator: true);
                       if (onCancel != null) onCancel();
                     },
                   ),
@@ -178,7 +185,7 @@ extension BuildContextExtension on BuildContext {
                       'Confirm',
                     ),
                     onPressed: () {
-                      context.pop();
+                      context.pop(rootNavigator: true);
                       onConfirm();
                     },
                   ),
@@ -187,7 +194,7 @@ extension BuildContextExtension on BuildContext {
                       'Cancel',
                       color: context.readTheme.primary,
                     ),
-                    onPressed: context.pop,
+                    onPressed: () => context.pop(rootNavigator: true),
                   ),
                 ]));
     return res;
@@ -249,7 +256,7 @@ extension BuildContextExtension on BuildContext {
                 actions: [
                   CupertinoDialogAction(
                     child: MyText('Ok'),
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.pop(rootNavigator: true),
                   ),
                 ]));
   }
@@ -271,7 +278,7 @@ extension BuildContextExtension on BuildContext {
                 actions: [
                   CupertinoDialogAction(
                     child: MyText('Ok'),
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.pop(rootNavigator: true),
                   ),
                 ]));
   }

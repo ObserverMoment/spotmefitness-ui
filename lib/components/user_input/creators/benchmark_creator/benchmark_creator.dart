@@ -65,7 +65,7 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
         context.showConfirmDialog(
             title: 'Editing a Benchmark',
             content: MyText(
-              'This benchmark has $numEntries ${numEntries == 1 ? "entry" : "entries"}. Changing the benchmark details may mess these up...continue?',
+              'This benchmark has $numEntries ${numEntries == 1 ? "entry" : "entries"}. Changing certain benchmark details will mess these up...continue?',
               maxLines: 4,
             ),
             onConfirm: () {},
@@ -116,8 +116,7 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
               load: _load,
               loadUnit: _loadUnit,
               distanceUnit: _distanceUnit,
-              equipment: _equipment != null &&
-                      _equipment != widget.userBenchmark!.equipment
+              equipment: _equipment != null
                   ? ConnectRelationInput(id: _equipment!.id)
                   : null,
               reps: _reps,

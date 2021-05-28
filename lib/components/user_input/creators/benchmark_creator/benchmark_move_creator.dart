@@ -5,12 +5,14 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/load_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/rep_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/move_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class BenchmarkMoveCreator extends StatelessWidget {
   final BenchmarkType benchmarkType;
@@ -141,7 +143,7 @@ class BenchmarkMoveCreator extends StatelessWidget {
         if (move != null)
           FadeIn(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Wrap(
                 spacing: 30,
                 runSpacing: 10,
@@ -170,6 +172,29 @@ class BenchmarkMoveCreator extends StatelessWidget {
                         updateLoad(load);
                         updateLoadUnit(loadUnit);
                       },
+                    ),
+                  if (benchmarkType == BenchmarkType.maxload &&
+                      equipment != null &&
+                      equipment!.loadAdjustable)
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Column(
+                        children: [
+                          MyText('Submit Load as'),
+                          SizedBox(height: 6),
+                          SlidingSelect<LoadUnit>(
+                              value: loadUnit,
+                              children: {
+                                for (final v in LoadUnit.values.where((v) => ![
+                                      LoadUnit.artemisUnknown,
+                                      LoadUnit
+                                          .percentmax // Makes no sense for a max load benchmark.
+                                    ].contains(v)))
+                                  v: MyText(v.display)
+                              },
+                              updateValue: updateLoadUnit),
+                        ],
+                      ),
                     )
                 ],
               ),

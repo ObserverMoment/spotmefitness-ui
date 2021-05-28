@@ -56,8 +56,8 @@ class _VideoUploaderState extends State<VideoUploader> {
             CupertinoDialogAction(
               child: MyText('Yes'),
               onPressed: () {
-                _uploadFile(file);
                 context.pop();
+                _uploadFile(file);
               },
             ),
             CupertinoDialogAction(

@@ -116,8 +116,13 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                             H2(benchmark.benchmarkType.display),
                             if (Utils.textNotNull(benchmark.description))
                               Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: MyText(benchmark.description!),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4.0, horizontal: 16),
+                                child: MyText(
+                                  benchmark.description!,
+                                  maxLines: 8,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                           ],
                         ),
@@ -206,26 +211,17 @@ class BenchmarkEntrieslist extends StatefulWidget {
   _BenchmarkEntrieslistState createState() => _BenchmarkEntrieslistState();
 }
 
-enum ScoreSortBy { newest, oldest, best, worst }
+enum ScoreSortBy { best, newest, oldest, worst }
 
 class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
-  ScoreSortBy _sortBy = ScoreSortBy.newest;
-
-  void _confirmDeleteEntry(UserBenchmarkEntry entry) {
-    context.showConfirmDeleteDialog(
-        itemType: 'Benchmark Entry',
-        itemName: entry.completedOn.dateString,
-        message: 'This cannot be undone. Are you sure?',
-        onConfirm: () => _deleteBenchmarkEntry(entry));
-  }
+  ScoreSortBy _sortBy = ScoreSortBy.best;
 
   Future<void> _deleteBenchmarkEntry(UserBenchmarkEntry entry) async {
-    final String id = entry.id;
-    final variables = DeleteUserBenchmarkEntryByIdArguments(id: id);
+    final variables = DeleteUserBenchmarkEntryByIdArguments(id: entry.id);
 
     final result = await context.graphQLStore.delete(
         mutation: DeleteUserBenchmarkEntryByIdMutation(variables: variables),
-        objectId: id,
+        objectId: entry.id,
         typename: kUserBenchmarkEntryTypename,
         broadcastQueryIds: [
           GQLVarParamKeys.userBenchmarkByIdQuery(widget.userBenchmark.id),
@@ -233,7 +229,8 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
         ],
         removeAllRefsToId: true);
 
-    if (result.hasErrors || result.data?.deleteUserBenchmarkEntryById != id) {
+    if (result.hasErrors ||
+        result.data?.deleteUserBenchmarkEntryById != entry.id) {
       context.showToast(
           message: 'Sorry, there was a problem deleting this entry.',
           toastType: ToastType.destructive);
@@ -300,48 +297,44 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
                             v: MyText(describeEnum(v).capitalize)
                         }),
                   ),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                    itemCount: sortedEntries.length + 1,
-                    itemBuilder: (c, i) {
-                      if (i == sortedEntries.length) {
-                        return SizedBox(height: kAssumedFloatingButtonHeight);
-                      } else {
-                        return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: AnimatedSlidable(
-                                key: Key(
-                                    'benchmark-entry-${sortedEntries[i].id}'),
-                                index: i,
-                                itemType: 'Benchmark Entry',
-                                itemName:
-                                    sortedEntries[i].completedOn.dateString,
-                                removeItem: (_) =>
-                                    _confirmDeleteEntry(sortedEntries[i]),
-                                secondaryActions: [
-                                  IconSlideAction(
-                                    caption: 'Edit',
-                                    color: Styles.infoBlue,
-                                    iconWidget: Icon(
-                                      CupertinoIcons.pencil,
-                                      size: 20,
-                                    ),
-                                    onTap: () => context.showBottomSheet(
-                                        expand: true,
-                                        child: BenchmarkEntryCreator(
-                                          userBenchmark: widget.userBenchmark,
-                                          userBenchmarkEntry: sortedEntries[i],
-                                        )),
-                                  ),
-                                ],
-                                child: BenchmarkEntryCard(
-                                    benchmark: widget.userBenchmark,
-                                    entry: sortedEntries[i])));
-                      }
-                    },
+                  Expanded(
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
+                      itemCount: sortedEntries.length + 1,
+                      itemBuilder: (c, i) {
+                        if (i == sortedEntries.length) {
+                          return SizedBox(height: kAssumedFloatingButtonHeight);
+                        } else {
+                          return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              child: GestureDetector(
+                                onTap: () => context.showBottomSheet(
+                                    expand: true,
+                                    child: BenchmarkEntryCreator(
+                                      userBenchmark: widget.userBenchmark,
+                                      userBenchmarkEntry: sortedEntries[i],
+                                    )),
+                                child: AnimatedSlidable(
+                                    key: Key(
+                                        'benchmark-entry-${sortedEntries[i].id}'),
+                                    index: i,
+                                    itemType: 'Benchmark Entry',
+                                    itemName:
+                                        sortedEntries[i].completedOn.dateString,
+                                    removeItem: (_) =>
+                                        _deleteBenchmarkEntry(sortedEntries[i]),
+                                    secondaryActions: [],
+                                    child: BenchmarkEntryCard(
+                                        benchmark: widget.userBenchmark,
+                                        entry: sortedEntries[i])),
+                              ));
+                        }
+                      },
+                    ),
                   ),
                 ],
               ),

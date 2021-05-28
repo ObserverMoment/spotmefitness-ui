@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class BenchmarkEntryCreator extends StatefulWidget {
   final UserBenchmark userBenchmark;
@@ -31,7 +32,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
   DateTime _completedOn = DateTime.now();
 
   /// If the score is a time then it is always in seconds.
-  double? _score;
+  double _score = 0.0;
   String? _note;
 
   bool _formIsDirty = false;
@@ -45,8 +46,18 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
       _completedOn = e!.completedOn;
       _score = e.score;
       _note = e.note;
-      _scoreController.text = e.score.toString();
     }
+
+    _scoreController.text = _score.stringMyDouble();
+    _scoreController.selection = TextSelection(
+        baseOffset: 0, extentOffset: _scoreController.value.text.length);
+    _scoreController.addListener(() {
+      if (Utils.textNotNull(_scoreController.text)) {
+        _setStateWrapper(() => _score = double.parse(_scoreController.text));
+      } else {
+        _setStateWrapper(() => _score = 0.0);
+      }
+    });
   }
 
   void _setStateWrapper(void Function() cb) {
@@ -69,7 +80,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
         data: CreateUserBenchmarkEntryInput(
             note: _note,
             completedOn: _completedOn,
-            score: _score!,
+            score: _score,
             userBenchmark: ConnectRelationInput(id: widget.userBenchmark.id)));
 
     /// Run the update on the network - no client side writes until data can be merged with the parent benchmark.
@@ -103,8 +114,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
 
       if (!success) {
         context.showToast(
-            message: "Sorry, that didn't work.",
-            toastType: ToastType.destructive);
+            message: kDefaultErrorMessage, toastType: ToastType.destructive);
       } else {
         context.pop();
       }
@@ -118,7 +128,8 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
       id: widget.userBenchmarkEntry!.id,
       note: _note,
       completedOn: _completedOn,
-      score: _score!,
+      score: _score,
+      // No media editing is done on this page.
       // Can't leave the media fields null as sending null will result in the video being deleted.
       videoUri: widget.userBenchmarkEntry!.videoUri,
       videoThumbUri: widget.userBenchmarkEntry!.videoThumbUri,
@@ -135,7 +146,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
 
     if (result.hasErrors || result.data == null) {
       context.showToast(
-          message: "Sorry, that didn't work", toastType: ToastType.destructive);
+          message: kDefaultErrorMessage, toastType: ToastType.destructive);
     } else {
       context.pop();
     }
@@ -150,18 +161,19 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
     }
   }
 
-  bool get _validToSubmit => _score != null && _formIsDirty;
+  bool get _validToSubmit =>
+      Utils.textNotNull(_scoreController.text) && _formIsDirty;
 
   String _buildScoreHeaderText() {
     switch (widget.userBenchmark.benchmarkType) {
       case BenchmarkType.maxload:
-        return 'Max load:';
+        return 'Max Load';
       case BenchmarkType.fastesttime:
-        return 'Fastest Time:';
+        return 'Fastest Time';
       case BenchmarkType.unbrokenreps:
-        return 'Unbroken Reps:';
+        return 'Unbroken Reps';
       case BenchmarkType.unbrokentime:
-        return 'Unbroken Time:';
+        return 'Unbroken Time';
       default:
         throw Exception(
             'BenchmarkEntryCreator._buildScoreHeaderText: No method defined for ${widget.userBenchmark.benchmarkType}.');
@@ -193,14 +205,14 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
           SizedBox(height: 6),
           MyText(
             _buildScoreUnit(),
-            size: FONTSIZE.MAIN,
+            size: FONTSIZE.BIG,
             weight: FontWeight.bold,
           ),
         ],
       );
 
   Widget _buildDurationInput() {
-    final duration = Duration(seconds: _score!.round());
+    final duration = Duration(seconds: _score.round());
     return GestureDetector(
       onTap: () => context.showBottomSheet(
           child: DurationPicker(
@@ -214,7 +226,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
         child: UnRaisedButtonContainer(
             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
             child: MyText(
-              _score != null ? duration.compactDisplay() : ' - ',
+              duration.compactDisplay(),
               size: FONTSIZE.DISPLAY,
             )),
       ),
