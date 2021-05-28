@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/schedule/weekly_calendar.dart';
+import 'package:spotmefitness_ui/components/schedule/coming_up_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -29,10 +29,16 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.only(
             left: 8.0, right: 8, bottom: kBottomNavBarHeight + 12),
         children: [
-          WeeklyCalendar(),
+          ComingUpList(),
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: H2('News and articles - coming soon'),
+            padding: const EdgeInsets.all(24.0),
+            child: Row(
+              children: [
+                Icon(CupertinoIcons.news),
+                SizedBox(width: 8),
+                H2('News and articles - coming soon!'),
+              ],
+            ),
           ),
           GridView.count(
             padding: EdgeInsets.zero,

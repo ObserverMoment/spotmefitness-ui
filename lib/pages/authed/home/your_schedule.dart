@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
@@ -9,6 +10,7 @@ import 'package:spotmefitness_ui/components/cards/scheduled_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -103,7 +105,9 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                         )),
                     child: Icon(CupertinoIcons.search),
                   ),
-                  CreateIconButton(onPressed: () => print('add event flow')),
+                  CreateIconButton(
+                      onPressed: () => context.navigateTo(
+                          WorkoutFinderRoute(selectWorkout: (w) => print(w)))),
                 ],
               ),
             ),

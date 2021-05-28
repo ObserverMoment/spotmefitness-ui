@@ -196,7 +196,7 @@ class BorderButton extends StatelessWidget {
                   children: [
                     if (prefix != null) prefix!,
                     if (text != null && prefix != null)
-                      SizedBox(width: mini ? 4 : 6),
+                      SizedBox(width: mini ? 6 : 8),
                     if (text != null)
                       MyText(
                         text!.toUpperCase(),

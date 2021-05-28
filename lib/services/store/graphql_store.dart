@@ -170,12 +170,13 @@ class GraphQLStore {
       return false;
     } else {
       try {
-        final GraphQLQuery query = observableQuery.query;
         // Does a key exist in the store?
         if (!_hasQueryDataInStore(observableQuery.id)) {
           print('_queryStore: No key in data store for ${observableQuery.id}');
           return false;
         }
+
+        final GraphQLQuery query = observableQuery.query;
 
         // Denormalize the data
         final data = denormalizeOperation(
@@ -184,6 +185,7 @@ class GraphQLStore {
                 : const {},
             typePolicies: _typePolicies,
             document: query.document,
+            returnPartialData: true,
             read: (dataId) => readNormalized(dataId));
 
         if (data == null) {
@@ -225,9 +227,10 @@ class GraphQLStore {
               data: response.data ?? {},
               document: query.document,
               variables: observableQuery.parameterize
-                  ? query.variables?.toJson() ?? const {}
+                  ? query.getVariablesMap()
                   : const {},
               typePolicies: _typePolicies,
+              acceptPartialData: true,
               read: readNormalized,
               write: mergeWriteNormalized);
 
@@ -334,7 +337,7 @@ class GraphQLStore {
       bool writeToStore = true,
       List<String> broadcastQueryIds = const [],
 
-      /// If you want to add / remove ref to / from queries the you have to provide [id] and [__typename] in the optimistic data and it must also be being returned by the api in the result object.
+      /// If you want to add / remove ref to / from queries the you have to provide [id] and [__typename] in the optimistic data and these fields must also be returned by the api in the result object.
       List<String> addRefToQueries = const [],
       List<String> removeRefFromQueries = const [],
 

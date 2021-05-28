@@ -205,14 +205,15 @@ extension BuildContextExtension on BuildContext {
       {required Widget child,
       bool expand = false,
       bool useRootNavigator = false,
-      bool showDragHandle = true}) async {
+      bool showDragHandle = true,
+      Color? barrierColor}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
         useRootNavigator: useRootNavigator,
         backgroundColor: context.readTheme.modalBackground,
-        barrierColor: Styles.black.withOpacity(0.9),
+        barrierColor: barrierColor ?? Styles.black.withOpacity(0.9),
         builder: (context) => showDragHandle
             ? Column(
                 mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
@@ -283,11 +284,11 @@ extension BuildContextExtension on BuildContext {
                 ]));
   }
 
-  void showToast(
-          {required String message,
-          Widget? icon,
-          ToastType toastType = ToastType.standard,
-          bool rootNavigator = false}) =>
+  void showToast({
+    required String message,
+    Widget? icon,
+    ToastType toastType = ToastType.standard,
+  }) =>
       Flushbar(
         backgroundColor: toastType == ToastType.destructive
             ? Styles.errorRed
@@ -307,6 +308,8 @@ extension BuildContextExtension on BuildContext {
           textAlign: TextAlign.center,
         ),
         duration: Duration(seconds: 3),
+        blockBackgroundInteraction: false,
+        isDismissible: true,
       )..show(this);
 
   dynamic pop({dynamic result, bool rootNavigator = false}) =>

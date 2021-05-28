@@ -31,6 +31,27 @@ extension DateTimeFormatting on DateTime {
   String get timeString => DateFormat.jm().format(this);
   String get compactDateString => DateFormat('MMM d, yy').format(this);
   String get minimalDateString => DateFormat('MMM d').format(this);
+
+  bool get isYesterday {
+    final yesterday = DateTime.now().subtract(Duration(days: 1));
+    return yesterday.day == this.day &&
+        yesterday.month == this.month &&
+        yesterday.year == this.year;
+  }
+
+  bool get isToday {
+    final now = DateTime.now();
+    return now.day == this.day &&
+        now.month == this.month &&
+        now.year == this.year;
+  }
+
+  bool get isTomorrow {
+    final tomorrow = DateTime.now().add(Duration(days: 1));
+    return tomorrow.day == this.day &&
+        tomorrow.month == this.month &&
+        tomorrow.year == this.year;
+  }
 }
 
 extension DoubleExtension on double {
