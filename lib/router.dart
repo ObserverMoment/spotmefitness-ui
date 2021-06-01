@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/benchmark_creator/benchmark_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
@@ -39,14 +40,14 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
     AutoRoute(
         path: '/',
         name: 'authedRouter',
-        page: EmptyRouterPage,
+        page: HeroEmptyRouterPage,
         children: [
           // The main tabs screen has five tabs where each is a stack. Generally these are pages that are user specific and are not likely to be shared across users or groups. Each stack maintains its own state.
           AutoRoute(path: '', page: MainTabsPage, children: [
             AutoRoute(
                 path: '',
                 name: 'homeStack',
-                page: EmptyRouterPage,
+                page: HeroEmptyRouterPage,
                 children: [
                   AutoRoute(path: '', page: HomePage),
                   AutoRoute(
@@ -69,7 +70,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
             AutoRoute(
                 path: 'journal',
                 name: 'journalStack',
-                page: EmptyRouterPage,
+                page: HeroEmptyRouterPage,
                 children: [
                   AutoRoute(path: '', page: JournalPage),
                   AutoRoute(path: 'your-benchmarks', page: YourBenchmarksPage),
@@ -106,3 +107,14 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
   ],
 )
 class $AppRouter {}
+
+/// https://github.com/Milad-Akarie/auto_route_library/issues/418
+class HeroEmptyRouterPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return HeroControllerScope(
+      controller: HeroController(),
+      child: AutoRouter(),
+    );
+  }
+}

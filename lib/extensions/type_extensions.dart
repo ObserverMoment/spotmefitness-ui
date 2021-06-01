@@ -31,6 +31,7 @@ extension DateTimeFormatting on DateTime {
   String get timeString => DateFormat.jm().format(this);
   String get compactDateString => DateFormat('MMM d, yy').format(this);
   String get minimalDateString => DateFormat('MMM d').format(this);
+  String get dateAndTime => '${minimalDateString}, ${timeString}';
 
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(Duration(days: 1));

@@ -244,7 +244,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
         query: query,
         fetchPolicy: QueryFetchPolicy.storeAndNetwork,
         parameterizeQuery: true,
-        loadingIndicator: ShimmerDetailsPage(title: 'Workout Details'),
+        loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
         builder: (data) {
           final Workout workout = data.workoutById;
 
@@ -255,10 +255,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           final bool isOwner = workout.user.id == authedUserId;
 
           return CupertinoPageScaffold(
-            key: Key('WorkoutDetailsPage - CupertinoPageScaffold'),
-            navigationBar: BasicNavBar(
-              heroTag: 'WorkoutDetailsPage',
-              key: Key('WorkoutDetailsPage - BasicNavBar'),
+            navigationBar: BorderlessNavBar(
               middle: NavBarTitle(workout.name),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,

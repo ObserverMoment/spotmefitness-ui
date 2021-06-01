@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/pages/unauthed/sign_in.dart';
 import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
@@ -107,13 +106,16 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
                       color: Styles.white,
                     ),
                   ),
-                  PrimaryButton(
-                      text: 'Sign In',
-                      onPressed: () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              fullscreenDialog: true,
-                              builder: (_) => SignIn()))),
+                  MyButton(
+                    text: 'Sign In',
+                    onPressed: () => Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            fullscreenDialog: true, builder: (_) => SignIn())),
+                    backgroundColor: Styles.white,
+                    contentColor: Styles.black,
+                    withMinWidth: true,
+                  ),
                   SizedBox(height: 10),
                   SecondaryButton(
                     text: 'Free Trial',

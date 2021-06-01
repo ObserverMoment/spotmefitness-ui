@@ -226,6 +226,27 @@ class BasicNavBar extends CupertinoNavigationBar {
             border: null);
 }
 
+class BorderlessNavBar extends CupertinoNavigationBar {
+  final Key? key;
+  final bool automaticallyImplyLeading;
+  final Widget? customLeading;
+  final Widget? middle;
+  final Widget? trailing;
+  final Color? backgroundColor;
+  BorderlessNavBar(
+      {this.key,
+      this.automaticallyImplyLeading = false,
+      this.customLeading,
+      this.middle,
+      this.trailing,
+      this.backgroundColor})
+      : super(
+            key: key,
+            automaticallyImplyLeading: automaticallyImplyLeading,
+            leading: customLeading ?? const _BackButton(),
+            border: null);
+}
+
 class _BackButton extends StatelessWidget {
   const _BackButton({Key? key}) : super(key: key);
   @override

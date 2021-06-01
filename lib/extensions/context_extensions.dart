@@ -213,7 +213,7 @@ extension BuildContextExtension on BuildContext {
         context: context,
         useRootNavigator: useRootNavigator,
         backgroundColor: context.readTheme.modalBackground,
-        barrierColor: barrierColor ?? Styles.black.withOpacity(0.9),
+        barrierColor: barrierColor ?? Styles.black.withOpacity(0.6),
         builder: (context) => showDragHandle
             ? Column(
                 mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,

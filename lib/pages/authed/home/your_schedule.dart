@@ -9,7 +9,9 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/scheduled_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -52,6 +54,19 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
         decoration: BoxDecoration(color: color, shape: BoxShape.circle));
   }
 
+  Future<void> _openScheduleWorkout(Workout workout) async {
+    final result = await context.showBottomSheet(
+        showDragHandle: false,
+        useRootNavigator: true,
+        child: ScheduledWorkoutCreator(
+          workout: workout,
+          scheduleOn: _selectedDay,
+        ));
+    if (result is ToastRequest) {
+      context.showToast(message: result.message, toastType: result.type);
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -75,8 +90,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
             .toList();
 
         return CupertinoPageScaffold(
-            navigationBar: BasicNavBar(
-              heroTag: 'YourSchedulePage',
+            navigationBar: BorderlessNavBar(
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -99,15 +113,17 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                   CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: () => context.push(
-                        fullscreenDialog: true,
                         child: YourScheduleTextSearch(
-                          allScheduledWorkouts: allScheduled,
-                        )),
+                      allScheduledWorkouts: allScheduled,
+                    )),
                     child: Icon(CupertinoIcons.search),
                   ),
-                  CreateIconButton(
-                      onPressed: () => context.navigateTo(
-                          WorkoutFinderRoute(selectWorkout: (w) => print(w)))),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () => context.navigateTo(WorkoutFinderRoute(
+                        selectWorkout: (w) => _openScheduleWorkout(w))),
+                    child: Icon(CupertinoIcons.calendar_badge_plus),
+                  ),
                 ],
               ),
             ),
@@ -186,7 +202,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                         children: selectedDayScheduled
                             .map((s) => Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 4),
+                                      horizontal: 12, vertical: 4),
                                   child: ScheduledWorkoutCard(s),
                                 ))
                             .toList(),
@@ -244,14 +260,13 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
   Widget build(BuildContext context) {
     final filteredScheduledWorkouts = _filterBySearchString();
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'YourScheduleTextSearch',
+      navigationBar: BorderlessNavBar(
         middle: NavBarTitle('Search Your Schedule'),
       ),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
               children: [
                 Expanded(

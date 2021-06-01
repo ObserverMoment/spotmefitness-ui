@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -14,7 +13,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/services/text_search_filters.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 class YourWorkoutsPage extends StatelessWidget {
@@ -38,8 +37,7 @@ class YourWorkoutsPage extends StatelessWidget {
             .toList();
 
         return CupertinoPageScaffold(
-            navigationBar: BasicNavBar(
-              heroTag: 'YourWorkoutsPage',
+            navigationBar: BorderlessNavBar(
               middle: NavBarTitle('Your Workouts'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -112,6 +110,7 @@ class FilterableWorkoutsList extends StatelessWidget {
               onSortPress: () => print('TODO - implement workout sort'),
               onSearchPress: () => context.push(
                   fullscreenDialog: true,
+                  rootNavigator: true,
                   child: YourWorkoutsTextSearch(
                       allWorkouts: workouts,
                       selectWorkout: (w) =>
@@ -144,23 +143,6 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
     _focusNode.requestFocus();
   }
 
-  bool _filter(Workout workout) {
-    return [
-      workout.name,
-      ...workout.workoutGoals.map((g) => g.name).toList(),
-      ...workout.workoutTags.map((t) => t.tag).toList()
-    ]
-        .where((t) => Utils.textNotNull(t))
-        .map((t) => t.toLowerCase())
-        .any((t) => t.contains(_searchString));
-  }
-
-  List<Workout> _filterBySearchString() {
-    return Utils.textNotNull(_searchString)
-        ? widget.allWorkouts.where((m) => _filter(m)).toList()
-        : [];
-  }
-
   void _handleSelectWorkout(Workout workout) {
     widget.selectWorkout(workout);
     context.pop();
@@ -174,52 +156,54 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredWorkouts = _filterBySearchString();
+    final filteredWorkouts = TextSearchFilters.workoutsBySearchString(
+        widget.allWorkouts, _searchString);
+
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'YourWorkoutsTextSearch',
-        middle: NavBarTitle('Search Your Workouts'),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: CupertinoSearchTextField(
-                      focusNode: _focusNode,
-                      onChanged: (value) =>
-                          setState(() => _searchString = value.toLowerCase()),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3.0),
+                      child: CupertinoSearchTextField(
+                        focusNode: _focusNode,
+                        onChanged: (value) =>
+                            setState(() => _searchString = value.toLowerCase()),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(width: 10),
+                  NavBarCloseButton(context.pop),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: FadeIn(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: filteredWorkouts
-                      .sortedBy<String>((workout) => workout.name)
-                      .map((workout) => GestureDetector(
-                          onTap: () => _handleSelectWorkout(workout),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4.0),
-                            child: WorkoutCard(workout),
-                          )))
-                      .toList(),
+            Expanded(
+              child: FadeIn(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: filteredWorkouts
+                        .sortedBy<String>((workout) => workout.name)
+                        .map((workout) => GestureDetector(
+                            onTap: () => _handleSelectWorkout(workout),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 4.0),
+                              child: WorkoutCard(workout),
+                            )))
+                        .toList(),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

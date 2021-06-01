@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
-import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -17,6 +17,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class ScheduledWorkoutCard extends StatelessWidget {
   final ScheduledWorkout scheduledWorkout;
@@ -52,6 +53,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
   Future<void> _reschedule(BuildContext context) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
+        useRootNavigator: true,
         child: ScheduledWorkoutCreator(
           scheduledWorkout: scheduledWorkout,
         ));
@@ -92,112 +94,134 @@ class ScheduledWorkoutCard extends StatelessWidget {
     }
   }
 
+  Widget _buildCardHeader(BuildContext context, bool showNoteIcon) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            MyText(
+              '${scheduledWorkout.scheduledAt.minimalDateString}, ${scheduledWorkout.scheduledAt.timeString}',
+              weight: FontWeight.bold,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: _buildMarker(),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (scheduledWorkout.gymProfile != null)
+              MyText(
+                '(${scheduledWorkout.gymProfile!.name})',
+                lineHeight: 1.8,
+                color: Styles.colorTwo,
+              ),
+            if (showNoteIcon && Utils.textNotNull(scheduledWorkout.note))
+              CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: NotesIcon(),
+                  onPressed: () => context.showBottomSheet(
+                      expand: true,
+                      child: TextViewer(scheduledWorkout.note!, 'Note'))),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: scheduledWorkout.workout == null
-          ? Column(
-              children: [
-                MyText(
-                  'No workout specified!',
-                  maxLines: 4,
-                ),
-                MyText(
-                  '(The workout may have been deleted)',
-                  maxLines: 4,
-                ),
+    return ContextMenu(
+      key: Key('ScheduledWorkoutCard ${scheduledWorkout.id}'),
+      child: Card(
+        child: scheduledWorkout.workout == null
+            ? Column(
+                children: [
+                  MyText(
+                    'No workout specified!',
+                    maxLines: 4,
+                  ),
+                  MyText(
+                    '(The workout may have been deleted)',
+                    maxLines: 4,
+                  ),
 
-                /// TODO: add select a workout flow
-                TextButton(
-                    text: 'Select a workout?',
-                    onPressed: () => print('select a workout flow'))
-              ],
+                  /// TODO: add select a workout flow
+                  TextButton(
+                      text: 'Select a workout?',
+                      onPressed: () => print('select a workout flow'))
+                ],
+              )
+            : Column(
+                children: [
+                  _buildCardHeader(context, true),
+                  SizedBox(height: 4),
+                  HorizontalLine(),
+                  WorkoutCard(
+                    scheduledWorkout.workout!,
+                    withBoxShadow: false,
+                    hideBackgroundImage: true,
+                    padding:
+                        const EdgeInsets.only(bottom: 8, left: 4, right: 4),
+                  )
+                ],
+              ),
+      ),
+      menuChild: Card(
+        child: Column(
+          children: [
+            _buildCardHeader(context, false),
+            SizedBox(height: 4),
+            HorizontalLine(),
+            WorkoutCard(
+              scheduledWorkout.workout!,
+              withBoxShadow: false,
+              showEquipment: false,
+              showMoves: false,
+              hideBackgroundImage: true,
+              padding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
             )
-          : Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            MyText(
-                              DateFormat('MMM d, H:m')
-                                  .format(scheduledWorkout.scheduledAt),
-                              weight: FontWeight.bold,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 6),
-                              child: _buildMarker(),
-                            ),
-                          ],
-                        ),
-                        if (scheduledWorkout.gymProfile != null)
-                          MyText(
-                            '(${scheduledWorkout.gymProfile!.name})',
-                            lineHeight: 1.8,
-                            color: Styles.colorTwo,
-                          ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        if (Utils.textNotNull(scheduledWorkout.note))
-                          CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              child: NotesIcon(),
-                              onPressed: () => context.showBottomSheet(
-                                  expand: true,
-                                  child: TextViewer(
-                                      scheduledWorkout.note!, 'Note'))),
-                        NavBarEllipsisMenu(ellipsisCircled: false, items: [
-                          ContextMenuItem(
-                            text: 'Do it',
-                            onTap: () => print('do it'),
-                            iconData: CupertinoIcons.arrow_right_square,
-                          ),
-                          ContextMenuItem(
-                            text: 'Log it',
-                            onTap: () => print('log it'),
-                            iconData: CupertinoIcons.doc_on_clipboard,
-                          ),
-                          ContextMenuItem(
-                              text: 'View it',
-                              iconData: CupertinoIcons.eye,
-                              onTap: () => context.router.push(
-                                  WorkoutDetailsRoute(
-                                      id: scheduledWorkout.workout!.id))),
-                          if (scheduledWorkout.loggedWorkoutSummary != null)
-                            ContextMenuItem(
-                              text: 'View log',
-                              onTap: () => print('view log'),
-                              iconData: CupertinoIcons.doc_richtext,
-                            ),
-                          ContextMenuItem(
-                            text: 'Reschedule',
-                            onTap: () => _reschedule(context),
-                            iconData: CupertinoIcons.calendar_badge_plus,
-                          ),
-                          ContextMenuItem(
-                            text: 'Unschedule',
-                            onTap: () => _confirmUnschedule(context),
-                            iconData: CupertinoIcons.calendar_badge_minus,
-                            destructive: true,
-                          )
-                        ])
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                WorkoutCard(
-                  scheduledWorkout.workout!,
-                  withBoxShadow: false,
-                )
-              ],
-            ),
+          ],
+        ),
+      ),
+      actions: [
+        ContextMenuAction(
+          text: 'Do it',
+          onTap: () => print('do it'),
+          iconData: CupertinoIcons.arrow_right_square,
+        ),
+        ContextMenuAction(
+          text: 'Log it',
+          onTap: () => print('log it'),
+          iconData: CupertinoIcons.doc_on_clipboard,
+        ),
+        ContextMenuAction(
+            text: 'View it',
+            iconData: CupertinoIcons.eye,
+            onTap: () => context.router
+                .push(WorkoutDetailsRoute(id: scheduledWorkout.workout!.id))),
+        if (scheduledWorkout.loggedWorkoutSummary != null)
+          ContextMenuAction(
+            text: 'View log',
+            onTap: () => print('view log'),
+            iconData: CupertinoIcons.doc_richtext,
+          ),
+        ContextMenuAction(
+          text: 'Reschedule',
+          onTap: () => _reschedule(context),
+          iconData: CupertinoIcons.calendar_badge_plus,
+        ),
+        ContextMenuAction(
+          text: 'Unschedule',
+          onTap: () => _confirmUnschedule(context),
+          iconData: CupertinoIcons.calendar_badge_minus,
+          destructive: true,
+        )
+      ],
     );
   }
 }

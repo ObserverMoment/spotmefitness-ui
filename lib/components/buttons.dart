@@ -145,7 +145,7 @@ class SecondaryButton extends StatelessWidget {
       text: text,
       onPressed: onPressed,
       backgroundColor: CupertinoColors.darkBackgroundGray,
-      contentColor: context.theme.primary,
+      contentColor: Styles.white,
       withMinWidth: withMinWidth,
       border: withBorder,
     );
@@ -766,6 +766,7 @@ class NavBarCloseButton extends StatelessWidget {
         onPressed: onPressed,
         child: MyText(
           'Close',
+          weight: FontWeight.bold,
         ));
   }
 }
@@ -831,22 +832,20 @@ class InfoPopupButton extends StatelessWidget {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: () => context.push(
-          fullscreenDialog: true,
           child: CupertinoPageScaffold(
-            navigationBar: withoutNavBar
-                ? null
-                : BasicNavBar(
-                    heroTag: 'InfoPopupButton', middle: NavBarTitle(pageTitle)),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [infoWidget],
-                ),
-              ),
+        navigationBar: withoutNavBar
+            ? null
+            : BorderlessNavBar(middle: NavBarTitle(pageTitle)),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [infoWidget],
             ),
-          )),
+          ),
+        ),
+      )),
       child: Icon(CupertinoIcons.info, size: Styles.buttonIconSize),
     );
   }

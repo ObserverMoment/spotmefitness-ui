@@ -590,9 +590,12 @@ type Query {
   progressJournalById(id: ID!): ProgressJournal!
   progressJournalGoalTags: [ProgressJournalGoalTag!]!
   userScheduledWorkouts: [ScheduledWorkout!]!
-  textSearchWorkouts(text: String!): [TextSearchWorkoutResult!]
-  textSearchWorkoutPrograms(text: String!): [TextSearchWorkoutProgramResult!]
-  textSearchCreatorPublicProfiles(text: String!): [UserPublicProfile!]
+  textSearchWorkouts(text: String!): [Workout!]
+  textSearchWorkoutNames(text: String!): [TextSearchResult!]
+  textSearchWorkoutPrograms(text: String!): [WorkoutProgram!]
+  textSearchWorkoutProgramNames(text: String!): [TextSearchResult!]
+  textSearchUserPublicProfiles(text: String!): [UserPublicProfile!]
+  textSearchUserPublicNames(text: String!): [TextSearchResult!]
   authedUser: User!
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
@@ -625,26 +628,9 @@ type SortPositionUpdated {
   sortPosition: Int!
 }
 
-type TextSearchWorkoutProgramResult {
+type TextSearchResult {
   id: ID!
-  scope: ContentAccessScope!
   name: String!
-  description: String
-  imageUri: String
-  User: User
-  WorkoutGoals: [WorkoutGoal!]!
-  WorkoutProgramWorkouts: [WorkoutProgramWorkout!]
-}
-
-type TextSearchWorkoutResult {
-  id: ID!
-  scope: ContentAccessScope!
-  name: String
-  description: String
-  imageUri: String
-  difficultyLevel: Int!
-  timecap: Int
-  User: User
 }
 
 enum TimeUnit {

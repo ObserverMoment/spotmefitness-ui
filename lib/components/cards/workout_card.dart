@@ -13,9 +13,15 @@ class WorkoutCard extends StatelessWidget {
   final Color? backgroundColor;
   final bool withBoxShadow;
   final EdgeInsets padding;
+  final bool showMoves;
+  final bool showEquipment;
+  final bool hideBackgroundImage;
   WorkoutCard(this.workout,
       {this.backgroundColor,
       this.withBoxShadow = true,
+      this.showMoves = true,
+      this.showEquipment = true,
+      this.hideBackgroundImage = false,
       this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
 
   final double cardHeight = 120;
@@ -48,7 +54,7 @@ class WorkoutCard extends StatelessWidget {
     }
 
     return Card(
-      backgroundImageUri: workout.coverImageUri,
+      backgroundImageUri: hideBackgroundImage ? null : workout.coverImageUri,
       backgroundColor: backgroundColor,
       withBoxShadow: withBoxShadow,
       padding: padding,
@@ -116,7 +122,7 @@ class WorkoutCard extends StatelessWidget {
                 ),
               ),
             ),
-          if (_allMoves.isNotEmpty)
+          if (showMoves && _allMoves.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Wrap(
@@ -133,7 +139,7 @@ class WorkoutCard extends StatelessWidget {
                     .toList(),
               ),
             ),
-          if (_allEquipments.isNotEmpty)
+          if (showEquipment && _allEquipments.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 6.0),
               child: Wrap(
