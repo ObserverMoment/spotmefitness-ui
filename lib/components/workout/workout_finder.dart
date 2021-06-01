@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:spotmefitness_ui/blocs/text_search_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -16,6 +16,8 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/screens/workout_filters_screen.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/text_search_field.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -38,10 +40,24 @@ class WorkoutFinderPage extends StatefulWidget {
 }
 
 class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
-  final kIconSize = 28.0;
+  final kPanelBorderRadius = 30.0;
   final kCollapsedpanelheight = 66.0;
   final PanelController _panelController = PanelController();
   bool _panelIsOpen = false;
+
+  /// 0 is your workouts, 1 is public workouts.
+  int _activePageIndex = 0;
+  PageController _pageController = PageController();
+
+  late WorkoutFiltersBloc _bloc;
+  late WorkoutFilters _filters;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<WorkoutFiltersBloc>();
+    _filters = _bloc.filters;
+  }
 
   void _togglePanel() {
     if (_panelIsOpen) {
@@ -58,6 +74,17 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
   void _selectWorkout(Workout workout) {
     context.router.popUntilRoot();
     widget.selectWorkout(workout);
+  }
+
+  void _updatePageIndex(int index) {
+    setState(() => _activePageIndex = index);
+    _pageController.jumpToPage(_activePageIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,11 +111,14 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
             child: SlidingUpPanel(
               color: context.theme.cardBackground,
               controller: _panelController,
-              border: Border.all(color: context.theme.primary.withOpacity(0.1)),
+              border:
+                  Border.all(color: context.theme.primary.withOpacity(0.05)),
               minHeight: kCollapsedpanelheight,
               maxHeight: size.height,
-              borderRadius: BorderRadius.circular(20),
-              margin: const EdgeInsets.all(6),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(kPanelBorderRadius),
+                  topRight: Radius.circular(kPanelBorderRadius)),
+              margin: const EdgeInsets.symmetric(horizontal: 8),
               panel: Column(
                 children: [
                   GestureDetector(
@@ -124,47 +154,7 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
                           ]),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        FilterTabIcon(
-                            icon: Icon(
-                              CupertinoIcons.info_circle_fill,
-                              size: kIconSize,
-                            ),
-                            label: 'Meta',
-                            onTap: () => print(0)),
-                        FilterTabIcon(
-                            icon: SvgPicture.asset(
-                              'assets/workout_filters_icons/filter_equipment_icon.svg',
-                              height: kIconSize,
-                              width: kIconSize,
-                              color: context.theme.primary,
-                            ),
-                            label: 'Equipment',
-                            onTap: () => print(1)),
-                        FilterTabIcon(
-                            icon: SvgPicture.asset(
-                                'assets/workout_filters_icons/filter_body_icon.svg',
-                                height: kIconSize,
-                                width: kIconSize,
-                                color: context.theme.primary),
-                            label: 'Body',
-                            onTap: () => print(2)),
-                        FilterTabIcon(
-                            icon: SvgPicture.asset(
-                                'assets/workout_filters_icons/filter_moves_icon.svg',
-                                height: kIconSize,
-                                width: kIconSize,
-                                color: context.theme.primary),
-                            label: 'Moves',
-                            onTap: () => print(3)),
-                      ],
-                    ),
-                  ),
+                  Expanded(child: WorkoutFiltersScreen())
                 ],
               ),
               body: CupertinoPageScaffold(
@@ -175,7 +165,9 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
                     onPressed: () => context.push(
                         fullscreenDialog: true,
                         child: WorkoutFinderTextSearch(
+                            initialPageIndex: _activePageIndex,
                             userWorkouts: userWorkouts,
+                            updateActivePageIndex: _updatePageIndex,
                             selectWorkout: _selectWorkout)),
                     child: Icon(
                       CupertinoIcons.search,
@@ -183,9 +175,39 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
                     ),
                   ),
                 ),
-                child: WorkoutFinderFilteredWorkouts(
-                  selectWorkout: _selectWorkout,
-                  workouts: userWorkouts,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 14),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: SlidingSelect<int>(
+                            value: _activePageIndex,
+                            updateValue: _updatePageIndex,
+                            children: {
+                              0: MyText('Your Workouts'),
+                              1: MyText('All Workouts'),
+                            }),
+                      ),
+                    ),
+                    Expanded(
+                      child: PageView(
+                        controller: _pageController,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          WorkoutFinderFilteredWorkouts(
+                            selectWorkout: _selectWorkout,
+                            workouts: userWorkouts,
+                          ),
+                          WorkoutFinderFilteredWorkouts(
+                            selectWorkout: _selectWorkout,
+                            workouts: userWorkouts,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -197,9 +219,15 @@ class _WorkoutFinderPageState extends State<WorkoutFinderPage> {
 class WorkoutFinderTextSearch extends StatefulWidget {
   final List<Workout> userWorkouts;
   final void Function(Workout workout) selectWorkout;
+  final int initialPageIndex;
+  final void Function(int index) updateActivePageIndex;
 
   WorkoutFinderTextSearch(
-      {required this.userWorkouts, required this.selectWorkout});
+      {required this.userWorkouts,
+      required this.selectWorkout,
+      this.initialPageIndex = 0,
+      required this.updateActivePageIndex})
+      : assert(initialPageIndex == 0 || initialPageIndex == 1);
 
   @override
   _WorkoutFinderTextSearchState createState() =>
@@ -209,8 +237,10 @@ class WorkoutFinderTextSearch extends StatefulWidget {
 class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
   String _searchString = '';
   late FocusNode _focusNode;
-  int _activePageIndex = 0;
-  PageController _pageController = PageController();
+
+  /// 0 is 'Your Workouts', 1 is 'Public Workouts'
+  late int _activePageIndex;
+  late PageController _pageController;
   List<Workout> _filteredUserWorkouts = [];
 
   /// Handles retrieving full workout objects from the API when the user presses submit (search) on the keyboard.
@@ -222,6 +252,8 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: widget.initialPageIndex);
+    _activePageIndex = widget.initialPageIndex;
     _workoutsTextSearchBloc =
         TextSearchBloc<Workout>(context, TextSearchType.workout);
     _workoutNamesTextSearchBloc =
@@ -232,6 +264,7 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
   }
 
   void _updatePageIndex(int index) {
+    widget.updateActivePageIndex(index);
     setState(() => _activePageIndex = index);
     _pageController.jumpToPage(_activePageIndex);
     _handleSearchStringUpdate(_searchString);
@@ -263,8 +296,6 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
   /// 1. Private. Submitting search on keyboard has no effect. Updates happen immediately / incrementally.
   /// 2. Public. When user clicks submit on keyboard a full search will happen on the API, returning full workout objects displayed as cards.
   void _handleSearchSubmit(String text) {
-    print(text);
-
     /// Only run if user is searching public workouts. Otherwise do nothing.
     if (_activePageIndex == 1) {
       // Clear the text lists data so that when workout list data is returned is can be displayed.
@@ -511,27 +542,6 @@ class WorkoutFinderFilteredWorkouts extends StatelessWidget {
                 onTap: () => context
                     .navigateTo(WorkoutDetailsRoute(id: workouts[i].id))),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class FilterTabIcon extends StatelessWidget {
-  final Widget icon;
-  final String label;
-  final void Function() onTap;
-  FilterTabIcon({required this.icon, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [icon, MyText(label, size: FONTSIZE.TINY)],
         ),
       ),
     );

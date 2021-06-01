@@ -457,7 +457,7 @@ class DoItButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: Styles.colorOne,
+          color: context.theme.primary,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -466,7 +466,7 @@ class DoItButton extends StatelessWidget {
               text.toUpperCase(),
               weight: FontWeight.bold,
               size: FONTSIZE.SMALL,
-              color: Styles.white,
+              color: context.theme.background,
             ),
             SizedBox(
               width: 3,
@@ -474,7 +474,7 @@ class DoItButton extends StatelessWidget {
             Icon(
               CupertinoIcons.chevron_right_2,
               size: 12,
-              color: Styles.white,
+              color: context.theme.background,
             ),
           ],
         ),

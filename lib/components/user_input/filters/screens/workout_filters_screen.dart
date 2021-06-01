@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutFiltersScreen extends StatefulWidget {
   @override
@@ -13,20 +16,21 @@ class WorkoutFiltersScreen extends StatefulWidget {
 }
 
 class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
+  final kIconSize = 24.0;
   int _activeTabIndex = 0;
-  late WorkoutFilters _activeMoveFilters;
+  late WorkoutFiltersBloc _bloc;
+  late WorkoutFilters _filters;
   final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    _activeMoveFilters = context.read<WorkoutFiltersBloc>().filters;
+    _bloc = context.read<WorkoutFiltersBloc>();
+    _filters = _bloc.filters;
   }
 
-  void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
+  void _updateTabIndex(int index) {
+    _pageController.jumpToPage(index);
     Utils.hideKeyboard(context);
     setState(() => _activeTabIndex = index);
   }
@@ -39,8 +43,65 @@ class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: MyText('WorkoutFiltersScreen'),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FilterTabIcon(
+                  icon: Icon(
+                    CupertinoIcons.info_circle_fill,
+                    size: kIconSize,
+                  ),
+                  label: 'Meta',
+                  isSelected: _activeTabIndex == 0,
+                  onTap: () => _updateTabIndex(0)),
+              FilterTabIcon(
+                  icon: SvgPicture.asset(
+                    'assets/workout_filters_icons/filter_equipment_icon.svg',
+                    height: kIconSize,
+                    width: kIconSize,
+                    color: context.theme.primary,
+                  ),
+                  label: 'Equipment',
+                  isSelected: _activeTabIndex == 1,
+                  onTap: () => _updateTabIndex(1)),
+              FilterTabIcon(
+                  icon: SvgPicture.asset(
+                      'assets/workout_filters_icons/filter_body_icon.svg',
+                      height: kIconSize,
+                      width: kIconSize,
+                      color: context.theme.primary),
+                  label: 'Body',
+                  isSelected: _activeTabIndex == 2,
+                  onTap: () => _updateTabIndex(2)),
+              FilterTabIcon(
+                  icon: SvgPicture.asset(
+                      'assets/workout_filters_icons/filter_moves_icon.svg',
+                      height: kIconSize,
+                      width: kIconSize,
+                      color: context.theme.primary),
+                  label: 'Moves',
+                  isSelected: _activeTabIndex == 3,
+                  onTap: () => _updateTabIndex(3)),
+            ],
+          ),
+        ),
+        Expanded(
+            child: PageView(
+          controller: _pageController,
+          onPageChanged: _updateTabIndex,
+          children: [
+            WorkoutFiltersInfo(),
+            WorkoutFiltersEquipment(),
+            WorkoutFiltersBody(),
+            WorkoutFiltersMoves(),
+          ],
+        ))
+      ],
     );
   }
 }
@@ -48,20 +109,11 @@ class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
 class WorkoutFiltersInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Icon(
-          CupertinoIcons.info_circle_fill,
-          size: 30,
-        ),
-      ),
-      backgroundColor: Colors.transparent,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          MyText('WorkoutFiltersInfo'),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MyText('WorkoutFiltersInfo'),
+      ],
     );
   }
 }
@@ -69,15 +121,11 @@ class WorkoutFiltersInfo extends StatelessWidget {
 class WorkoutFiltersEquipment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: UnRaisedButtonContainer(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MyText('WorkoutFiltersEquipment'),
-          ],
-        ),
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MyText('WorkoutFiltersEquipment'),
+      ],
     );
   }
 }
@@ -85,15 +133,11 @@ class WorkoutFiltersEquipment extends StatelessWidget {
 class WorkoutFiltersBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: UnRaisedButtonContainer(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MyText('WorkoutFiltersBody'),
-          ],
-        ),
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MyText('WorkoutFiltersBody'),
+      ],
     );
   }
 }
@@ -101,14 +145,49 @@ class WorkoutFiltersBody extends StatelessWidget {
 class WorkoutFiltersMoves extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Styles.black.withOpacity(0.3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            MyText('WorkoutFiltersMoves'),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MyText('WorkoutFiltersMoves'),
+      ],
+    );
+  }
+}
+
+class FilterTabIcon extends StatelessWidget {
+  final Widget icon;
+  final String label;
+  final void Function() onTap;
+  final bool isSelected;
+  FilterTabIcon(
+      {required this.icon,
+      required this.label,
+      required this.onTap,
+      required this.isSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: kStandardAnimationDuration,
+      opacity: isSelected ? 1 : 0.55,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onTap,
+        child: AnimatedContainer(
+          duration: kStandardAnimationDuration,
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color:
+                          isSelected ? Styles.colorOne : Colors.transparent))),
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Column(
+            children: [
+              icon,
+              SizedBox(height: 2),
+              MyText(label, size: FONTSIZE.TINY)
+            ],
+          ),
         ),
       ),
     );

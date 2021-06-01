@@ -32,7 +32,7 @@ class ContextMenu extends StatelessWidget {
               PageRouteBuilder(
                 opaque: false,
                 fullscreenDialog: true,
-                barrierColor: Styles.black.withOpacity(0.4),
+                barrierColor: Styles.black.withOpacity(0.5),
                 barrierDismissible: true,
                 transitionDuration: kAnimationDuration,
                 transitionsBuilder: (BuildContext context,
@@ -45,7 +45,7 @@ class ContextMenu extends StatelessWidget {
                   );
                 },
                 pageBuilder: (_, __, ___) => BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -65,10 +65,13 @@ class ContextMenu extends StatelessWidget {
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           alignment: Alignment.centerLeft,
                           decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                      context.theme.primary.withOpacity(0.1)),
                               borderRadius: BorderRadius.circular(
                                   kContextMenuBorderRadius),
                               color: context.theme.cardBackground
-                                  .withOpacity(0.7)),
+                                  .withOpacity(0.9)),
                           child: ListView.separated(
                               padding: EdgeInsets.zero,
                               physics: NeverScrollableScrollPhysics(),

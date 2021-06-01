@@ -83,13 +83,18 @@ dev_dependencies:
   hive_generator: ^1.1.0
     
 flutter_icons:
-  android: "spotme_launcher_icon"
-  ios: "spotme_launcher_icon"
-  image_path: "assets/logos/spotme_launcher_icon.png"
+  # Android
+  android: true
+  image_path_android: "assets/logos/spotme_launcher_icon_android.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "assets/logos/spotme_launcher_icon_android.png"
+  # ios
+  ios: true
+  image_path_ios: "assets/logos/spotme_launcher_icon_ios.png"
   remove_alpha_ios: true
 
 flutter_native_splash:
-  color: "#000000"
+  color: "#191919"
   image: "assets/logos/spotme_splash_image.png"
   info_plist_files:
     - 'ios/Runner/Info-Debug.plist'

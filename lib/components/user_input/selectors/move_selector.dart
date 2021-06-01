@@ -286,48 +286,53 @@ class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
   Widget build(BuildContext context) {
     final filteredMoves = _filterBySearchString();
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'MoveSelectorTextSearch',
-        middle: NavBarTitle('Search Moves'),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: CupertinoSearchTextField(
-                      focusNode: _focusNode,
-                      onChanged: (value) =>
-                          setState(() => _searchString = value.toLowerCase()),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3.0),
+                      child: CupertinoSearchTextField(
+                        focusNode: _focusNode,
+                        onChanged: (value) =>
+                            setState(() => _searchString = value.toLowerCase()),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: FadeIn(
-              child: ListView(
-                shrinkWrap: true,
-                children: filteredMoves
-                    .sortedBy<String>((move) => move.name)
-                    .map((move) => GestureDetector(
-                        onTap: () => _handleSelectMove(move),
-                        child: MoveSelectorItem(
-                          move: move,
-                          optionalButton: move.scope == MoveScope.custom
-                              ? Tag(tag: 'Custom')
-                              : null,
-                        )))
-                    .toList(),
+                  SizedBox(width: 8),
+                  NavBarCloseButton(context.pop),
+                ],
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: FadeIn(
+                child: ListView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  shrinkWrap: true,
+                  children: filteredMoves
+                      .sortedBy<String>((move) => move.name)
+                      .map((move) => GestureDetector(
+                          onTap: () => _handleSelectMove(move),
+                          child: MoveSelectorItem(
+                            move: move,
+                            optionalButton: move.scope == MoveScope.custom
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 6.0),
+                                    child: Tag(tag: 'Custom'),
+                                  )
+                                : null,
+                          )))
+                      .toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

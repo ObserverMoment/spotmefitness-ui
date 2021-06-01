@@ -4,7 +4,7 @@
    <application
         android:label="spotmefitness_ui"
         android:requestLegacyExternalStorage="true"
-        android:icon="@mipmap/spotme_launcher_icon">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

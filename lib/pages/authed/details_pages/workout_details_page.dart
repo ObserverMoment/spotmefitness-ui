@@ -25,7 +25,6 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
-import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
