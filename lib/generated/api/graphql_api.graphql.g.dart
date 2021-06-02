@@ -2672,6 +2672,7 @@ Workout _$WorkoutFromJson(Map<String, dynamic> json) {
     ..archived = json['archived'] as bool
     ..name = json['name'] as String
     ..description = json['description'] as String?
+    ..lengthMinutes = json['lengthMinutes'] as int?
     ..difficultyLevel = _$enumDecode(
         _$DifficultyLevelEnumMap, json['difficultyLevel'],
         unknownValue: DifficultyLevel.artemisUnknown)
@@ -2702,6 +2703,7 @@ Map<String, dynamic> _$WorkoutToJson(Workout instance) => <String, dynamic>{
       'archived': instance.archived,
       'name': instance.name,
       'description': instance.description,
+      'lengthMinutes': instance.lengthMinutes,
       'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
       'coverImageUri': instance.coverImageUri,
       'contentAccessScope':
@@ -3251,6 +3253,7 @@ UpdateWorkout _$UpdateWorkoutFromJson(Map<String, dynamic> json) {
     ..archived = json['archived'] as bool
     ..name = json['name'] as String
     ..description = json['description'] as String?
+    ..lengthMinutes = json['lengthMinutes'] as int?
     ..difficultyLevel = _$enumDecode(
         _$DifficultyLevelEnumMap, json['difficultyLevel'],
         unknownValue: DifficultyLevel.artemisUnknown)
@@ -3278,6 +3281,7 @@ Map<String, dynamic> _$UpdateWorkoutToJson(UpdateWorkout instance) =>
       'archived': instance.archived,
       'name': instance.name,
       'description': instance.description,
+      'lengthMinutes': instance.lengthMinutes,
       'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
       'coverImageUri': instance.coverImageUri,
       'contentAccessScope':
@@ -3308,6 +3312,7 @@ UpdateWorkoutInput _$UpdateWorkoutInputFromJson(Map<String, dynamic> json) {
     archived: json['archived'] as bool?,
     name: json['name'] as String?,
     description: json['description'] as String?,
+    lengthMinutes: json['lengthMinutes'] as int?,
     introVideoUri: json['introVideoUri'] as String?,
     introVideoThumbUri: json['introVideoThumbUri'] as String?,
     introAudioUri: json['introAudioUri'] as String?,
@@ -3333,6 +3338,7 @@ Map<String, dynamic> _$UpdateWorkoutInputToJson(UpdateWorkoutInput instance) =>
       'archived': instance.archived,
       'name': instance.name,
       'description': instance.description,
+      'lengthMinutes': instance.lengthMinutes,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
       'introAudioUri': instance.introAudioUri,
@@ -3390,6 +3396,7 @@ CreateWorkout _$CreateWorkoutFromJson(Map<String, dynamic> json) {
     ..archived = json['archived'] as bool
     ..name = json['name'] as String
     ..description = json['description'] as String?
+    ..lengthMinutes = json['lengthMinutes'] as int?
     ..difficultyLevel = _$enumDecode(
         _$DifficultyLevelEnumMap, json['difficultyLevel'],
         unknownValue: DifficultyLevel.artemisUnknown)
@@ -3418,6 +3425,7 @@ Map<String, dynamic> _$CreateWorkoutToJson(CreateWorkout instance) =>
       'archived': instance.archived,
       'name': instance.name,
       'description': instance.description,
+      'lengthMinutes': instance.lengthMinutes,
       'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
       'coverImageUri': instance.coverImageUri,
       'contentAccessScope':

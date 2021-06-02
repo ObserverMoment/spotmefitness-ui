@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
-import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// All updates to workout or descendants follow this pattern.
 /// 1: Update local data

@@ -7,12 +7,10 @@ import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploade
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/settings.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class ProfilePage extends StatefulWidget {
   @override

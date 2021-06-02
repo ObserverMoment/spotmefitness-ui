@@ -5,6 +5,7 @@ fragment Workout on Workout {
   archived
   name
   description
+  lengthMinutes
   difficultyLevel
   coverImageUri
   contentAccessScope

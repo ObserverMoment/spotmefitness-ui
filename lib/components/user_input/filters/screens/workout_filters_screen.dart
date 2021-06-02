@@ -5,7 +5,9 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -17,17 +19,12 @@ class WorkoutFiltersScreen extends StatefulWidget {
 
 class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
   final kIconSize = 24.0;
-  int _activeTabIndex = 0;
-  late WorkoutFiltersBloc _bloc;
-  late WorkoutFilters _filters;
-  final PageController _pageController = PageController();
+  final kTabPagePadding =
+      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8);
 
-  @override
-  void initState() {
-    super.initState();
-    _bloc = context.read<WorkoutFiltersBloc>();
-    _filters = _bloc.filters;
-  }
+  int _activeTabIndex = 0;
+
+  final PageController _pageController = PageController();
 
   void _updateTabIndex(int index) {
     _pageController.jumpToPage(index);
@@ -95,10 +92,22 @@ class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
           controller: _pageController,
           onPageChanged: _updateTabIndex,
           children: [
-            WorkoutFiltersInfo(),
-            WorkoutFiltersEquipment(),
-            WorkoutFiltersBody(),
-            WorkoutFiltersMoves(),
+            Padding(
+              padding: kTabPagePadding,
+              child: WorkoutFiltersInfo(),
+            ),
+            Padding(
+              padding: kTabPagePadding,
+              child: WorkoutFiltersEquipment(),
+            ),
+            Padding(
+              padding: kTabPagePadding,
+              child: WorkoutFiltersBody(),
+            ),
+            Padding(
+              padding: kTabPagePadding,
+              child: WorkoutFiltersMoves(),
+            ),
           ],
         ))
       ],
@@ -109,10 +118,22 @@ class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
 class WorkoutFiltersInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final workoutSectionTypes =
+        context.select<WorkoutFiltersBloc, List<WorkoutSectionType>>(
+            (b) => b.filters.workoutSectionTypes);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        MyText('WorkoutFiltersInfo'),
+        WorkoutSectionTypeMultiSelector(
+          selectedTypes: workoutSectionTypes,
+          updateSelectedTypes: (types) => context
+              .read<WorkoutFiltersBloc>()
+              .updateWorkoutSectionTypes(types),
+        ),
+        MyText('Class Videos'),
+        MyText('Difficulty Level'),
+        MyText('Workout Goals'),
+        MyText('Workout Length'),
       ],
     );
   }

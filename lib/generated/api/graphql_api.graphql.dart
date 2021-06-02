@@ -307,6 +307,7 @@ mixin WorkoutMixin {
   late bool archived;
   late String name;
   String? description;
+  int? lengthMinutes;
   @JsonKey(unknownEnumValue: DifficultyLevel.artemisUnknown)
   late DifficultyLevel difficultyLevel;
   String? coverImageUri;
@@ -3224,6 +3225,7 @@ class Workout extends JsonSerializable with EquatableMixin, WorkoutMixin {
         archived,
         name,
         description,
+        lengthMinutes,
         difficultyLevel,
         coverImageUri,
         contentAccessScope,
@@ -3911,6 +3913,7 @@ class UpdateWorkout extends JsonSerializable with EquatableMixin, WorkoutMixin {
         archived,
         name,
         description,
+        lengthMinutes,
         difficultyLevel,
         coverImageUri,
         contentAccessScope,
@@ -3944,6 +3947,7 @@ class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
       this.archived,
       this.name,
       this.description,
+      this.lengthMinutes,
       this.introVideoUri,
       this.introVideoThumbUri,
       this.introAudioUri,
@@ -3963,6 +3967,8 @@ class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
   String? name;
 
   String? description;
+
+  int? lengthMinutes;
 
   String? introVideoUri;
 
@@ -3990,6 +3996,7 @@ class UpdateWorkoutInput extends JsonSerializable with EquatableMixin {
         archived,
         name,
         description,
+        lengthMinutes,
         introVideoUri,
         introVideoThumbUri,
         introAudioUri,
@@ -4070,6 +4077,7 @@ class CreateWorkout extends JsonSerializable with EquatableMixin, WorkoutMixin {
         archived,
         name,
         description,
+        lengthMinutes,
         difficultyLevel,
         coverImageUri,
         contentAccessScope,
@@ -16740,6 +16748,12 @@ final TEXT_SEARCH_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'difficultyLevel'),
             alias: null,
             arguments: [],
@@ -19458,6 +19472,12 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'difficultyLevel'),
             alias: null,
             arguments: [],
@@ -20401,6 +20421,12 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'difficultyLevel'),
             alias: null,
             arguments: [],
@@ -21314,6 +21340,12 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'difficultyLevel'),
             alias: null,
             arguments: [],
@@ -21665,6 +21697,12 @@ final UPDATE_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
             alias: null,
             arguments: [],
             directives: [],
@@ -22433,6 +22471,12 @@ final USER_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
             alias: null,
             arguments: [],
             directives: [],
@@ -23230,6 +23274,12 @@ final DUPLICATE_WORKOUT_BY_ID_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'difficultyLevel'),
             alias: null,
             arguments: [],
@@ -23551,6 +23601,12 @@ final CREATE_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
             alias: null,
             arguments: [],
             directives: [],
@@ -24345,6 +24401,12 @@ final WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'lengthMinutes'),
             alias: null,
             arguments: [],
             directives: [],

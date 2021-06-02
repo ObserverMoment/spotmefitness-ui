@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/components/user_input/creators/benchmark_creato
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
-import 'package:spotmefitness_ui/components/workout/workout_finder.dart';
+import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';

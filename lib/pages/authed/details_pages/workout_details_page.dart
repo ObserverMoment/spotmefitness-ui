@@ -142,8 +142,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 'Something went wrong, the workout was not archived correctly');
           } else {
             context.pop(); // The showLoadingAlert
-            context.showToast(
-                message: 'Workout archived.', toastType: ToastType.destructive);
+            context.showToast(message: 'Workout archived.');
           }
         });
   }

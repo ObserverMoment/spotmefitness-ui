@@ -76,6 +76,7 @@ final Color kBadScoreColor = Styles.errorRed;
 
 /// Move Filters ///
 const String kSettingsHiveBoxMoveFiltersKey = 'move_filters';
+const String kSettingsHiveBoxWorkoutFiltersKey = 'workout_filters';
 
 /// Messages ///
 const String kDefaultErrorMessage = "Sorry, that didn't work";

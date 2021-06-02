@@ -805,6 +805,7 @@ input UpdateWorkoutInput {
   archived: Boolean
   name: String
   description: String
+  lengthMinutes: Int
   introVideoUri: String
   introVideoThumbUri: String
   introAudioUri: String
@@ -994,6 +995,7 @@ type Workout {
   archived: Boolean!
   name: String!
   description: String
+  lengthMinutes: Int
   introVideoUri: String
   introVideoThumbUri: String
   introAudioUri: String

@@ -15,7 +15,7 @@ import 'components/user_input/creators/progress_journal/progress_journal_creator
     as _i11;
 import 'components/user_input/creators/workout_creator/workout_creator.dart'
     as _i10;
-import 'components/workout/workout_finder.dart' as _i14;
+import 'components/workout/workout_finder/workout_finder.dart' as _i14;
 import 'generated/api/graphql_api.graphql.dart' as _i36;
 import 'pages/authed/app.dart' as _i5;
 import 'pages/authed/details_pages/benchmark_details_page.dart' as _i9;

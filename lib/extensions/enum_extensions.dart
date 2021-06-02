@@ -58,6 +58,15 @@ extension DifficultyLevelExtension on DifficultyLevel {
   }
 }
 
+extension EnumParser on String {
+  DifficultyLevel toDifficultyLevel() {
+    return DifficultyLevel.values.firstWhere(
+        (v) =>
+            v.toString().toLowerCase() == 'DifficultyLevel.$this'.toLowerCase(),
+        orElse: () => DifficultyLevel.artemisUnknown);
+  }
+}
+
 extension DistanceUnitExtension on DistanceUnit {
   String get shortDisplay {
     switch (this) {
