@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/cupertino_switch_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -88,10 +89,9 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
                 MyText('View set times'),
                 Row(
                   children: [
-                    CupertinoSwitch(
+                    MyCupertinoSwitch(
                       value: _showSetlapTimes,
                       onChanged: (b) => setState(() => _showSetlapTimes = b),
-                      activeColor: Styles.infoBlue,
                     ),
                     InfoPopupButton(
                       pageTitle: 'Lap Times',

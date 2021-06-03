@@ -20,8 +20,8 @@ class TargetedBodyAreasScoreList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.center,
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 5,
+      runSpacing: 5,
       children: bodyAreaMoveScores
           .sortedBy<num>((bam) => bam.score)
           .reversed
@@ -60,8 +60,8 @@ class TargetedBodyAreasList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.center,
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 5,
+      runSpacing: 5,
       children: selectedBodyAreas
           .map((ba) => Container(
                 padding: const EdgeInsets.all(6),
@@ -71,13 +71,34 @@ class TargetedBodyAreasList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    MyText(
-                      ba.name,
-                    ),
+                    MyText(ba.name),
                   ],
                 ),
               ))
           .toList(),
     );
+  }
+}
+
+/// Wrap / comma separated text list.
+class BodyAreaNamesList extends StatelessWidget {
+  final List<BodyArea> bodyAreas;
+  BodyAreaNamesList(this.bodyAreas);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 3,
+        runSpacing: 3,
+        children: bodyAreas
+            .asMap()
+            .map((index, bodyArea) => MapEntry(
+                index,
+                MyText(index == bodyAreas.length - 1
+                    ? '${bodyArea.name}.'
+                    : '${bodyArea.name},')))
+            .values
+            .toList());
   }
 }

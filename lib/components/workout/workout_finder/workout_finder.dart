@@ -7,6 +7,7 @@ import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorder
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -105,7 +106,6 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
 
   void _handlePanelClose() {
     if (_bloc.filtersHaveChanged(_lastUsedFilters)) {
-      print('filtersHaveChanged');
       _updateLastUsedFilters();
       if (_activePageIndex == 0) {
         _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
@@ -181,27 +181,50 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                         children: [
                           numActiveFilters == 0
                               ? MyText('No active filters', subtext: true)
-                              : MyText('$numActiveFilters active filters'),
+                              : MyText(
+                                  '$numActiveFilters active ${numActiveFilters == 1 ? "filter" : "filters"}',
+                                  subtext: true),
                           if (numActiveFilters > 0)
                             FadeIn(
                               child: TextButton(
-                                  text: 'Clear all',
+                                  text: 'Clear filters',
                                   onPressed: _clearAllFilters),
                             )
                         ],
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          MyText('Filters', weight: FontWeight.bold),
-                          SizedBox(width: 8),
-                          Transform.rotate(
-                            angle: -pi / 2,
-                            child: Icon(
-                              CupertinoIcons.slider_horizontal_3,
-                            ),
-                          )
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              MyText('Filters', weight: FontWeight.bold),
+                              SizedBox(width: 8),
+                              Transform.rotate(
+                                angle: -pi / 2,
+                                child: Icon(
+                                  CupertinoIcons.slider_horizontal_3,
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                            ],
+                          ),
+                          if (numActiveFilters > 0)
+                            Positioned(
+                                top: -14,
+                                right: 0,
+                                child: FadeIn(
+                                    child: CircularBox(
+                                        padding: const EdgeInsets.all(6),
+                                        color: Styles.infoBlue,
+                                        child: MyText(
+                                          numActiveFilters.toString(),
+                                          color: Styles.white,
+                                          lineHeight: 1.2,
+                                          size: FONTSIZE.SMALL,
+                                          weight: FontWeight.bold,
+                                        ))))
                         ],
                       ),
                     ]),
@@ -302,23 +325,26 @@ class WorkoutFinderFilteredWorkouts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImplicitlyAnimatedList<Workout>(
-        // Bottom padding to push list up above floating filters panel.
-        padding: const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 138),
-        items: workouts,
-        itemBuilder: (context, animation, Workout workout, i) =>
-            SizeFadeTransition(
-              sizeFraction: 0.7,
-              curve: Curves.easeInOut,
-              animation: animation,
-              child: _buildCard(context, workout),
-            ),
-        removeItemBuilder: (context, animation, Workout oldWorkout) {
-          return FadeTransition(
-            opacity: animation,
-            child: _buildCard(context, oldWorkout),
-          );
-        },
-        areItemsTheSame: (a, b) => a == b);
+    return workouts.isEmpty
+        ? FadeIn(child: Center(child: MyText('No results...')))
+        : ImplicitlyAnimatedList<Workout>(
+            // Bottom padding to push list up above floating filters panel.
+            padding:
+                const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 138),
+            items: workouts,
+            itemBuilder: (context, animation, Workout workout, i) =>
+                SizeFadeTransition(
+                  sizeFraction: 0.7,
+                  curve: Curves.easeInOut,
+                  animation: animation,
+                  child: _buildCard(context, workout),
+                ),
+            removeItemBuilder: (context, animation, Workout oldWorkout) {
+              return FadeTransition(
+                opacity: animation,
+                child: _buildCard(context, oldWorkout),
+              );
+            },
+            areItemsTheSame: (a, b) => a == b);
   }
 }

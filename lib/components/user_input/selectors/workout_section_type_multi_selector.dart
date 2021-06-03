@@ -32,13 +32,14 @@ class WorkoutSectionTypeMultiSelector extends StatelessWidget {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12),
+                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    H3(
+                    MyText(
                       'Workout Types',
                       textAlign: TextAlign.start,
+                      size: FONTSIZE.BIG,
                     ),
                     MyText(
                       selectedTypes.isEmpty
@@ -59,7 +60,7 @@ class WorkoutSectionTypeMultiSelector extends StatelessWidget {
                           onTap: () => _handleTap(type),
                           child: SelectableTag(
                             onPressed: () => _handleTap(type),
-                            selectedColor: Styles.colorTwo,
+                            selectedColor: Styles.colorOne,
                             isSelected: selectedTypes.contains(type),
                             text: type.name,
                           ),

@@ -4,22 +4,75 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+
+class DifficultyLevelSelectorRow extends StatelessWidget {
+  final DifficultyLevel? difficultyLevel;
+  final void Function(DifficultyLevel? level) updateDifficultyLevel;
+  const DifficultyLevelSelectorRow(
+      {Key? key, this.difficultyLevel, required this.updateDifficultyLevel})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: TappableRow(
+              title: 'Difficulty',
+              display: Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: difficultyLevel != null
+                    ? Tag(
+                        textColor: Styles.white,
+                        tag: difficultyLevel!.display,
+                        color: difficultyLevel!.displayColor,
+                        withBorder: true,
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: MyText('Select difficulty...', subtext: true),
+                      ),
+              ),
+              onTap: () => context.push(
+                      child: DifficultyLevelSelector(
+                    difficultyLevel: difficultyLevel,
+                    updateDifficultyLevel: updateDifficultyLevel,
+                  ))),
+        ),
+        if (difficultyLevel != null)
+          FadeIn(
+            child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  CupertinoIcons.clear_thick,
+                  color: Styles.errorRed,
+                  size: 20,
+                ),
+                onPressed: () => updateDifficultyLevel(null)),
+          )
+      ],
+    );
+  }
+}
 
 class DifficultyLevelSelector extends StatefulWidget {
-  final DifficultyLevel difficultyLevel;
+  final DifficultyLevel? difficultyLevel;
   final void Function(DifficultyLevel updated) updateDifficultyLevel;
   DifficultyLevelSelector(
-      {required this.difficultyLevel, required this.updateDifficultyLevel});
+      {this.difficultyLevel, required this.updateDifficultyLevel});
   @override
   _DifficultyLevelSelectorState createState() =>
       _DifficultyLevelSelectorState();
 }
 
 class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
-  late DifficultyLevel _activeDifficultyLevel;
+  DifficultyLevel? _activeDifficultyLevel;
 
   @override
   void initState() {
@@ -31,7 +84,7 @@ class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
     setState(() {
       _activeDifficultyLevel = tapped;
     });
-    widget.updateDifficultyLevel(_activeDifficultyLevel);
+    widget.updateDifficultyLevel(_activeDifficultyLevel!);
   }
 
   @override
@@ -68,6 +121,11 @@ class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
                           Row(
                             children: [
                               MyText(level.display),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: DifficultyLevelDot(level),
+                              ),
                               if (_activeDifficultyLevel == level)
                                 FadeIn(
                                     child: Padding(

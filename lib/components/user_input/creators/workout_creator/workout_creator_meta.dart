@@ -46,34 +46,10 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 maxDisplayLines: 2,
               ),
               SizedBox(height: 6),
-              TappableRow(
-                  title: 'Goals',
-                  display: workoutData.workoutGoals.isEmpty
-                      ? MyText(
-                          'Add some goals...',
-                          subtext: true,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Wrap(
-                                alignment: WrapAlignment.end,
-                                spacing: 4,
-                                runSpacing: 4,
-                                children: workoutData.workoutGoals
-                                    .map((g) => Tag(tag: g.name))
-                                    .toList(),
-                              )),
-                        ),
-                  onTap: () => context.push(
-                          child: WorkoutGoalsSelector(
-                        selectedWorkoutGoals: workoutData.workoutGoals,
-                        updateSelectedWorkoutGoals: (goals) =>
-                            _updateWorkoutMeta({
-                          'WorkoutGoals': goals.map((g) => g.toJson()).toList()
-                        }),
-                      ))),
+              WorkoutGoalsSelectorRow(
+                  selectedWorkoutGoals: workoutData.workoutGoals,
+                  updateSelectedWorkoutGoals: (goals) => _updateWorkoutMeta(
+                      {'WorkoutGoals': goals.map((g) => g.toJson()).toList()})),
               SizedBox(height: 16),
               TappableRow(
                   title: 'Tags',
@@ -108,23 +84,11 @@ class WorkoutCreatorMeta extends StatelessWidget {
                         }),
                       ))),
               SizedBox(height: 20),
-              TappableRow(
-                  title: 'Difficulty',
-                  display: Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
-                    child: Tag(
-                      textColor: Styles.white,
-                      tag: workoutData.difficultyLevel.display,
-                      color: workoutData.difficultyLevel.displayColor,
-                      withBorder: true,
-                    ),
-                  ),
-                  onTap: () => context.push(
-                          child: DifficultyLevelSelector(
-                        difficultyLevel: workoutData.difficultyLevel,
-                        updateDifficultyLevel: (level) => _updateWorkoutMeta(
-                            {'difficultyLevel': level.apiValue}),
-                      ))),
+              DifficultyLevelSelectorRow(
+                difficultyLevel: workoutData.difficultyLevel,
+                updateDifficultyLevel: (level) =>
+                    _updateWorkoutMeta({'difficultyLevel': level?.apiValue}),
+              ),
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),

@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/cupertino_switch_row.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -194,23 +195,10 @@ class MoveFiltersEquipment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyText(
-                'Bodyweight moves only',
-                weight: FontWeight.bold,
-              ),
-              CupertinoSwitch(
-                value: bodyweightOnly,
-                onChanged: toggleBodyweight,
-                activeColor: Styles.infoBlue,
-              )
-            ],
-          ),
-        ),
+        CupertinoSwitchRow(
+            title: 'Bodyweight moves only',
+            updateValue: toggleBodyweight,
+            value: bodyweightOnly),
         if (!bodyweightOnly)
           Expanded(
             child: FadeIn(

@@ -32,15 +32,15 @@ class WorkoutFiltersBloc extends ChangeNotifier {
   }
 
   void clearAllFilters() {
-    updateFilters(WorkoutFilters());
+    _updateAndSaveFilters(WorkoutFilters());
   }
 
-  void updateWorkoutSectionTypes(List<WorkoutSectionType> types) {
-    _workoutFilters.workoutSectionTypes = types;
-    updateFilters(_workoutFilters);
+  void updateFilters(Map<String, dynamic> data) {
+    _updateAndSaveFilters(
+        WorkoutFilters.fromJson({..._workoutFilters.toJson(), ...data}));
   }
 
-  Future<void> updateFilters(WorkoutFilters workoutFilters) async {
+  Future<void> _updateAndSaveFilters(WorkoutFilters workoutFilters) async {
     await Hive.box(kSettingsHiveBoxName)
         .put(kSettingsHiveBoxWorkoutFiltersKey, workoutFilters.toJson());
     _workoutFilters = workoutFilters;
@@ -97,7 +97,7 @@ class WorkoutFilters {
 
   WorkoutFilters();
 
-  /// Think this is worth doing to avoid recalling the API whenever possible...
+  /// Think this is worth doing to avoid re-calling the API whenever possible...
   bool areSameFilters(WorkoutFilters o) {
     final e = UnorderedIterableEquality();
     return e.equals(workoutSectionTypes, o.workoutSectionTypes) &&
@@ -132,8 +132,7 @@ class WorkoutFilters {
     if (workoutGoals.isNotEmpty) active++;
     if (difficultyLevel != null) active++;
     if (hasClassVideo != null) active++;
-    if (minLength != null) active++;
-    if (maxLength != null) active++;
+    if (minLength != null || maxLength != null) active++;
     if (bodyweightOnly) active++;
     if (availableEquipments.isNotEmpty) active++;
     if (requiredMoves.isNotEmpty) active++;
@@ -227,11 +226,11 @@ class WorkoutFilters {
 
     Iterable<Workout> byTargetedBodyAreas = targetedBodyAreas.isEmpty
         ? byExcludedMoves
-        : byExcludedMoves.where((w) => w.workoutSections.any(
-            (WorkoutSection ws) => ws.workoutSets.any((WorkoutSet ws) => ws
-                .workoutMoves
-                .any((WorkoutMove wm) => wm.move.bodyAreaMoveScores.any(
-                    (bams) => targetedBodyAreas.contains(bams.bodyArea))))));
+        : byExcludedMoves.where((w) => targetedBodyAreas.every((ba) =>
+            w.workoutSections.any((WorkoutSection ws) => ws.workoutSets.any(
+                (WorkoutSet ws) => ws.workoutMoves.any((WorkoutMove wm) => wm
+                    .move.bodyAreaMoveScores
+                    .any((bams) => bams.bodyArea == ba))))));
 
     return byTargetedBodyAreas.toList();
   }

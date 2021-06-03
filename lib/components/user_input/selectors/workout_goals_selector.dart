@@ -4,12 +4,54 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
+
+class WorkoutGoalsSelectorRow extends StatelessWidget {
+  final List<WorkoutGoal> selectedWorkoutGoals;
+  final void Function(List<WorkoutGoal>) updateSelectedWorkoutGoals;
+  const WorkoutGoalsSelectorRow(
+      {Key? key,
+      required this.selectedWorkoutGoals,
+      required this.updateSelectedWorkoutGoals})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TappableRow(
+        title: 'Goals',
+        display: selectedWorkoutGoals.isEmpty
+            ? MyText(
+                'Add some goals...',
+                subtext: true,
+              )
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: Wrap(
+                      alignment: WrapAlignment.end,
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: selectedWorkoutGoals
+                          .map((g) => Tag(tag: g.name))
+                          .toList(),
+                    )),
+              ),
+        onTap: () => context.push(
+                child: WorkoutGoalsSelector(
+              selectedWorkoutGoals: selectedWorkoutGoals,
+              updateSelectedWorkoutGoals: updateSelectedWorkoutGoals,
+            )));
+  }
+}
 
 class WorkoutGoalsSelector extends StatefulWidget {
   final List<WorkoutGoal> selectedWorkoutGoals;
