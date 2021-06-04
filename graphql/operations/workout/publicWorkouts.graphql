@@ -1,21 +1,25 @@
-query userLoggedWorkouts($take: Int) {
-  userLoggedWorkouts(take: $take) {
-    ...LoggedWorkout
-    GymProfile {
-      ...GymProfile
-      Equipments {
-        ...Equipment
-      }
+# Summary data only - for lists and search results.
+query publicWorkouts($take: Int, $cursor: ID, $filters: WorkoutFiltersInput) {
+  publicWorkouts(take: $take, cursor: $cursor, filters: $filters) {
+    ...Workout
+    User {
+      ...UserSummary
     }
-    LoggedWorkoutSections {
-      ...LoggedWorkoutSection
+    WorkoutGoals {
+      ...WorkoutGoal
+    }
+    WorkoutTags {
+      ...WorkoutTag
+    }
+    WorkoutSections {
+      ...WorkoutSection
       WorkoutSectionType {
         ...WorkoutSectionType
       }
-      LoggedWorkoutSets {
-        ...LoggedWorkoutSet
-        LoggedWorkoutMoves {
-          ...LoggedWorkoutMove
+      WorkoutSets {
+        ...WorkoutSet
+        WorkoutMoves {
+          ...WorkoutMove
           Equipment {
             ...Equipment
           }

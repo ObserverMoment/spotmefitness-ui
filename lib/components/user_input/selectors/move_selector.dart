@@ -23,7 +23,11 @@ import 'package:json_annotation/json_annotation.dart' as json;
 class MoveSelector extends StatefulWidget {
   final Move? move;
   final void Function(Move move) selectMove;
-  MoveSelector({required this.selectMove, this.move});
+  final bool showCreateCustomMoveButton;
+  MoveSelector(
+      {required this.selectMove,
+      this.move,
+      this.showCreateCustomMoveButton = true});
 
   @override
   _MoveSelectorState createState() => _MoveSelectorState();
@@ -32,6 +36,20 @@ class MoveSelector extends StatefulWidget {
 class _MoveSelectorState extends State<MoveSelector> {
   /// 0 is standard moves, 1 is custom moves.
   int _activeTabIndex = 0;
+  String _searchString = '';
+
+  bool _filter(Move move) {
+    return [move.name, move.searchTerms, move.moveType.name]
+        .where((t) => Utils.textNotNull(t))
+        .map((t) => t!.toLowerCase())
+        .any((t) => t.contains(_searchString));
+  }
+
+  List<Move> _filterBySearchString(List<Move> moves) {
+    return Utils.textNotNull(_searchString)
+        ? moves.where((m) => _filter(m)).toList()
+        : moves;
+  }
 
   Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();
@@ -77,7 +95,8 @@ class _MoveSelectorState extends State<MoveSelector> {
                     _activeTabIndex == 0 ? standardMoves : customMoves;
 
                 final moveFiltersBloc = context.watch<MoveFiltersBloc>();
-                final filteredMoves = moveFiltersBloc.filter(displayMoves);
+                final filteredMoves =
+                    _filterBySearchString(moveFiltersBloc.filter(displayMoves));
 
                 return Column(
                   children: [
@@ -87,14 +106,16 @@ class _MoveSelectorState extends State<MoveSelector> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SlidingSelect<int>(
-                              value: _activeTabIndex,
-                              children: {
-                                0: MyText('Standard'),
-                                1: MyText('Custom')
-                              },
-                              updateValue: (i) =>
-                                  setState(() => _activeTabIndex = i)),
+                          Expanded(
+                            child: SlidingSelect<int>(
+                                value: _activeTabIndex,
+                                children: {
+                                  0: MyText('Standard'),
+                                  1: MyText('Custom')
+                                },
+                                updateValue: (i) =>
+                                    setState(() => _activeTabIndex = i)),
+                          ),
                           SizedBox(width: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -105,34 +126,31 @@ class _MoveSelectorState extends State<MoveSelector> {
                                 onPressed: () =>
                                     context.push(child: MoveFiltersScreen()),
                               ),
-                              SizedBox(width: 4),
-                              OpenTextSearchButton(
-                                onPressed: () => context.push(
-                                    fullscreenDialog: true,
-                                    child: MoveSelectorTextSearch(
-                                      allMoves: [
-                                        ...standardMoves,
-                                        ...customMoves
-                                      ],
-                                      selectMove: widget.selectMove,
-                                    )),
-                              ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                    // If showing custom moves.
-                    GrowInOut(
-                      show: _activeTabIndex == 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CreateTextIconButton(
-                              onPressed: () => _openCustomMoveCreator(null)),
-                        ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 3),
+                      child: CupertinoSearchTextField(
+                        onChanged: (value) =>
+                            setState(() => _searchString = value.toLowerCase()),
                       ),
                     ),
+                    if (widget.showCreateCustomMoveButton)
+                      // If showing custom moves.
+                      GrowInOut(
+                        show: _activeTabIndex == 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CreateTextIconButton(
+                                onPressed: () => _openCustomMoveCreator(null)),
+                          ],
+                        ),
+                      ),
                     GrowInOut(
                         show: moveFiltersBloc.hasActiveFilters,
                         child: Padding(
@@ -236,6 +254,7 @@ class _MoveSelectorState extends State<MoveSelector> {
   }
 }
 
+/// TODO: This is no longer being used...
 class MoveSelectorTextSearch extends StatefulWidget {
   final List<Move> allMoves;
   final void Function(Move move) selectMove;

@@ -18,7 +18,7 @@ class RecentLoggedWorkouts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query = UserLoggedWorkoutsQuery(
-        variables: UserLoggedWorkoutsArguments(first: 20));
+        variables: UserLoggedWorkoutsArguments(take: 20));
 
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
         key: Key('RecentLoggedWorkouts - ${query.operationName}'),

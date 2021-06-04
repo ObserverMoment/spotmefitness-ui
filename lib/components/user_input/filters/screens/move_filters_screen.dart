@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';

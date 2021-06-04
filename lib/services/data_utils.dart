@@ -144,4 +144,23 @@ class DataUtils {
     }
     return bodyAreas;
   }
+
+  /// Recursively cast a nested map of any [Map<K,V>]
+  /// Initially to convert from [_InternalLinkedHashMap<dynamic, dynamic>] to [Map<String, dynamic>]
+  /// When retrieving nested data from Hive.
+  static Map<String, dynamic> convertToJsonMap(Map original) {
+    return original.entries.fold<Map<String, dynamic>>({}, (map, next) {
+      if (next.value is Map) {
+        map[next.key.toString()] = convertToJsonMap(next.value);
+      } else if (next.value is List) {
+        map[next.key.toString()] = (next.value as List)
+            .map((o) => o is Map ? convertToJsonMap(o) : o)
+            .toList();
+      } else {
+        map[next.key.toString()] = next.value;
+      }
+
+      return map;
+    });
+  }
 }

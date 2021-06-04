@@ -3482,6 +3482,65 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+PublicWorkouts$Query _$PublicWorkouts$QueryFromJson(Map<String, dynamic> json) {
+  return PublicWorkouts$Query()
+    ..publicWorkouts = (json['publicWorkouts'] as List<dynamic>)
+        .map((e) => Workout.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$PublicWorkouts$QueryToJson(
+        PublicWorkouts$Query instance) =>
+    <String, dynamic>{
+      'publicWorkouts': instance.publicWorkouts.map((e) => e.toJson()).toList(),
+    };
+
+WorkoutFiltersInput _$WorkoutFiltersInputFromJson(Map<String, dynamic> json) {
+  return WorkoutFiltersInput(
+    difficultyLevel: _$enumDecodeNullable(
+        _$DifficultyLevelEnumMap, json['difficultyLevel'],
+        unknownValue: DifficultyLevel.artemisUnknown),
+    hasClassVideo: json['hasClassVideo'] as bool?,
+    maxLength: json['maxLength'] as int?,
+    minLength: json['minLength'] as int?,
+    workoutSectionTypes: (json['workoutSectionTypes'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    workoutGoals: (json['workoutGoals'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    bodyweightOnly: json['bodyweightOnly'] as bool?,
+    availableEquipments: (json['availableEquipments'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    requiredMoves: (json['requiredMoves'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    excludedMoves: (json['excludedMoves'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+    targetedBodyAreas: (json['targetedBodyAreas'] as List<dynamic>)
+        .map((e) => e as String)
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$WorkoutFiltersInputToJson(
+        WorkoutFiltersInput instance) =>
+    <String, dynamic>{
+      'difficultyLevel': _$DifficultyLevelEnumMap[instance.difficultyLevel],
+      'hasClassVideo': instance.hasClassVideo,
+      'maxLength': instance.maxLength,
+      'minLength': instance.minLength,
+      'workoutSectionTypes': instance.workoutSectionTypes,
+      'workoutGoals': instance.workoutGoals,
+      'bodyweightOnly': instance.bodyweightOnly,
+      'availableEquipments': instance.availableEquipments,
+      'requiredMoves': instance.requiredMoves,
+      'excludedMoves': instance.excludedMoves,
+      'targetedBodyAreas': instance.targetedBodyAreas,
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -3758,14 +3817,14 @@ Map<String, dynamic> _$DeleteLoggedWorkoutByIdArgumentsToJson(
 UserLoggedWorkoutsArguments _$UserLoggedWorkoutsArgumentsFromJson(
     Map<String, dynamic> json) {
   return UserLoggedWorkoutsArguments(
-    first: json['first'] as int?,
+    take: json['take'] as int?,
   );
 }
 
 Map<String, dynamic> _$UserLoggedWorkoutsArgumentsToJson(
         UserLoggedWorkoutsArguments instance) =>
     <String, dynamic>{
-      'first': instance.first,
+      'take': instance.take,
     };
 
 UpdateLoggedWorkoutArguments _$UpdateLoggedWorkoutArgumentsFromJson(
@@ -4380,4 +4439,23 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+PublicWorkoutsArguments _$PublicWorkoutsArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return PublicWorkoutsArguments(
+    take: json['take'] as int?,
+    cursor: json['cursor'] as String?,
+    filters: json['filters'] == null
+        ? null
+        : WorkoutFiltersInput.fromJson(json['filters'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$PublicWorkoutsArgumentsToJson(
+        PublicWorkoutsArguments instance) =>
+    <String, dynamic>{
+      'take': instance.take,
+      'cursor': instance.cursor,
+      'filters': instance.filters?.toJson(),
     };

@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:collection/collection.dart';
 
@@ -17,10 +18,13 @@ class WorkoutFiltersBloc extends ChangeNotifier {
     final workoutFiltersFromDevice =
         Hive.box(kSettingsHiveBoxName).get(kSettingsHiveBoxWorkoutFiltersKey);
 
-    _workoutFilters = workoutFiltersFromDevice != null
-        ? WorkoutFilters.fromJson(
-            Map<String, dynamic>.from(workoutFiltersFromDevice))
-        : WorkoutFilters();
+    /// Convert from [_InternalLinkedHashMap<dynamic, dynamic>] to [Map<String, dynamic>]
+    final json = workoutFiltersFromDevice == null
+        ? null
+        : DataUtils.convertToJsonMap(workoutFiltersFromDevice);
+
+    _workoutFilters =
+        json != null ? WorkoutFilters.fromJson(json) : WorkoutFilters();
   }
 
   WorkoutFilters get filters => _workoutFilters;
@@ -31,18 +35,18 @@ class WorkoutFiltersBloc extends ChangeNotifier {
     return !_workoutFilters.areSameFilters(prev);
   }
 
-  void clearAllFilters() {
-    _updateAndSaveFilters(WorkoutFilters());
+  Future<void> clearAllFilters() async {
+    await _updateAndSaveFilters(WorkoutFilters());
   }
 
   void updateFilters(Map<String, dynamic> data) {
     _updateAndSaveFilters(
-        WorkoutFilters.fromJson({..._workoutFilters.toJson(), ...data}));
+        WorkoutFilters.fromJson({..._workoutFilters.json, ...data}));
   }
 
   Future<void> _updateAndSaveFilters(WorkoutFilters workoutFilters) async {
     await Hive.box(kSettingsHiveBoxName)
-        .put(kSettingsHiveBoxWorkoutFiltersKey, workoutFilters.toJson());
+        .put(kSettingsHiveBoxWorkoutFiltersKey, workoutFilters.json);
     _workoutFilters = workoutFilters;
     notifyListeners();
   }
@@ -192,7 +196,7 @@ class WorkoutFilters {
         ? byMinLength
         : byMinLength.where((w) =>
             w.lengthMinutes != null &&
-            (w.lengthMinutes!.minutes <= minLength!));
+            (w.lengthMinutes!.minutes <= maxLength!));
 
     Iterable<Workout> byBodyweightOnly = !bodyweightOnly
         ? byMaxLength
@@ -212,17 +216,17 @@ class WorkoutFilters {
 
     Iterable<Workout> byRequiredMoves = requiredMoves.isEmpty
         ? byAvailableEquipments
-        : byAvailableEquipments.where((w) => w.workoutSections.any(
-            (WorkoutSection ws) => ws.workoutSets.any((WorkoutSet ws) => ws
-                .workoutMoves
-                .any((WorkoutMove wm) => requiredMoves.contains(wm.move)))));
+        : byAvailableEquipments.where((w) => requiredMoves.every((move) => w
+            .workoutSections
+            .any((WorkoutSection ws) => ws.workoutSets.any((WorkoutSet ws) =>
+                ws.workoutMoves.any((WorkoutMove wm) => wm.move == move)))));
 
     Iterable<Workout> byExcludedMoves = excludedMoves.isEmpty
         ? byRequiredMoves
-        : byRequiredMoves.where((w) => w.workoutSections.every(
-            (WorkoutSection ws) => ws.workoutSets.every((WorkoutSet ws) => ws
-                .workoutMoves
-                .every((WorkoutMove wm) => !excludedMoves.contains(wm.move)))));
+        : byRequiredMoves.where((w) => !excludedMoves.any((move) => w
+            .workoutSections
+            .any((WorkoutSection ws) => ws.workoutSets.any((WorkoutSet ws) =>
+                ws.workoutMoves.any((WorkoutMove wm) => wm.move == move)))));
 
     Iterable<Workout> byTargetedBodyAreas = targetedBodyAreas.isEmpty
         ? byExcludedMoves
@@ -281,20 +285,33 @@ class WorkoutFilters {
                 .toList()
             : <BodyArea>[];
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
+  Map<String, dynamic> get json => <String, dynamic>{
         'workoutSectionTypes':
-            this.workoutSectionTypes.map((o) => o.toJson()).toList(),
-        'workoutGoals': this.workoutGoals.map((o) => o.toJson()).toList(),
-        'difficultyLevel': this.difficultyLevel?.apiValue,
-        'hasClassVideo': this.hasClassVideo,
-        'minLength': this.minLength?.inMinutes,
-        'maxLength': this.maxLength?.inMinutes,
-        'bodyweightOnly': this.bodyweightOnly,
+            workoutSectionTypes.map((o) => o.toJson()).toList(),
+        'workoutGoals': workoutGoals.map((o) => o.toJson()).toList(),
+        'difficultyLevel': difficultyLevel?.apiValue,
+        'hasClassVideo': hasClassVideo,
+        'minLength': minLength?.inMinutes,
+        'maxLength': maxLength?.inMinutes,
+        'bodyweightOnly': bodyweightOnly,
         'availableEquipments':
-            this.availableEquipments.map((o) => o.toJson()).toList(),
-        'requiredMoves': this.requiredMoves.map((o) => o.toJson()).toList(),
-        'excludedMoves': this.excludedMoves.map((o) => o.toJson()).toList(),
-        'targetedBodyAreas':
-            this.targetedBodyAreas.map((o) => o.toJson()).toList(),
+            availableEquipments.map((o) => o.toJson()).toList(),
+        'requiredMoves': requiredMoves.map((o) => o.toJson()).toList(),
+        'excludedMoves': excludedMoves.map((o) => o.toJson()).toList(),
+        'targetedBodyAreas': targetedBodyAreas.map((o) => o.toJson()).toList(),
+      };
+
+  Map<String, dynamic> get apiJson => <String, dynamic>{
+        'workoutSectionTypes': workoutSectionTypes.map((o) => o.id).toList(),
+        'workoutGoals': workoutGoals.map((o) => o.id).toList(),
+        'difficultyLevel': difficultyLevel?.apiValue,
+        'hasClassVideo': hasClassVideo,
+        'minLength': minLength?.inMinutes,
+        'maxLength': maxLength?.inMinutes,
+        'bodyweightOnly': bodyweightOnly,
+        'availableEquipments': availableEquipments.map((o) => o.id).toList(),
+        'requiredMoves': requiredMoves.map((o) => o.id).toList(),
+        'excludedMoves': excludedMoves.map((o) => o.id).toList(),
+        'targetedBodyAreas': targetedBodyAreas.map((o) => o.id).toList(),
       };
 }

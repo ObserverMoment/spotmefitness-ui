@@ -582,7 +582,7 @@ type Query {
   moveTypes: [MoveType!]!
   workoutGoals: [WorkoutGoal!]!
   workoutSectionTypes: [WorkoutSectionType!]!
-  userLoggedWorkouts(first: Int): [LoggedWorkout!]!
+  userLoggedWorkouts(take: Int): [LoggedWorkout!]!
   loggedWorkoutById(id: ID!): LoggedWorkout!
   standardMoves: [Move!]!
   userCustomMoves: [Move!]!
@@ -604,7 +604,7 @@ type Query {
   userBenchmarkById(id: ID!): UserBenchmark!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
-  publicWorkouts: [Workout!]!
+  publicWorkouts(take: Int, cursor: ID, filters: WorkoutFiltersInput): [Workout!]!
   userWorkouts: [Workout!]!
   workoutById(id: ID!): Workout!
   publicWorkoutPrograms: [WorkoutProgram!]!
@@ -1005,6 +1005,20 @@ type Workout {
   WorkoutGoals: [WorkoutGoal!]!
   WorkoutTags: [WorkoutTag!]!
   WorkoutSections: [WorkoutSection!]!
+}
+
+input WorkoutFiltersInput {
+  difficultyLevel: DifficultyLevel
+  hasClassVideo: Boolean
+  maxLength: Int
+  minLength: Int
+  workoutSectionTypes: [ID!]!
+  workoutGoals: [ID!]!
+  bodyweightOnly: Boolean
+  availableEquipments: [ID!]!
+  requiredMoves: [ID!]!
+  excludedMoves: [ID!]!
+  targetedBodyAreas: [ID!]!
 }
 
 type WorkoutGoal {
