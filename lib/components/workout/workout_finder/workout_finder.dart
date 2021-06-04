@@ -44,10 +44,7 @@ class WorkoutFinderPage extends StatelessWidget {
             ),
             child: ShimmerCardList(itemCount: 20)),
         builder: (data) {
-          final userWorkouts = data.userWorkouts
-              .sortedBy<DateTime>((w) => w.createdAt!)
-              .reversed
-              .toList();
+          final userWorkouts = data.userWorkouts;
 
           return WorkoutFinderPageUI(
             selectWorkout: selectWorkout,
@@ -85,6 +82,10 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
 
   /// The first time the user switches to the public workouts tab we will need to make a call to get some workouts. If they have already opened this tab this this is not necessary.
   bool _publicWorkoutsInitialRetrieved = false;
+
+  /// Saved copy of the filters from the most recent api call to request public workouts.
+  /// When user switches to the public tab - check the current filters against these to see if a new call is required.
+  WorkoutFilters? _filtersAtLastRetrieval;
   bool _loadingPublicWorkouts = false;
   String? _publicWorkoutsRetrievalError;
   List<Workout> _retrievedPublicWorkouts = [];
@@ -114,12 +115,15 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   void _handlePanelClose() {
     if (_bloc.filtersHaveChanged(_lastUsedFilters)) {
       _updateLastUsedFilters();
-      if (_activePageIndex == 0) {
-        _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
-        setState(() {});
-      } else {
+
+      /// Only update the newtwork result [public workouts] if the tab is open.
+      if (_activePageIndex == 1) {
         _retrievePublicWorkouts();
       }
+
+      /// Always update the client side [your workouts list] with the new filters immediately.
+      _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
+      setState(() {});
     }
   }
 
@@ -149,6 +153,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
       setState(() {
         _publicWorkoutsInitialRetrieved = true;
         _retrievedPublicWorkouts = workouts;
+        _filtersAtLastRetrieval = WorkoutFilters.fromJson(_bloc.filters.json);
       });
     }
   }
@@ -170,13 +175,13 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   }
 
   void _updatePageIndex(int index) {
-    if (index == 1 && (!_publicWorkoutsInitialRetrieved)) {
+    /// Should need no action when switching to tab 0 (your workouts) as [_handlePanelClose] auto updates the client side data whenever new filters are detected.
+    if (index == 1 &&
+        (!_publicWorkoutsInitialRetrieved ||
+            _filtersAtLastRetrieval == null ||
+            _bloc.filtersHaveChanged(_filtersAtLastRetrieval!))) {
       _retrievePublicWorkouts();
       _publicWorkoutsInitialRetrieved = true;
-    } else {
-      setState(() {
-        _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
-      });
     }
     setState(() => _activePageIndex = index);
     _pageController.jumpToPage(_activePageIndex);
