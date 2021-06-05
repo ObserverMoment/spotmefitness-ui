@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
@@ -13,6 +15,7 @@ import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_s
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreatorMeta extends StatelessWidget {
@@ -20,7 +23,13 @@ class WorkoutCreatorMeta extends StatelessWidget {
   Widget build(BuildContext context) {
     final _updateWorkoutMeta =
         context.read<WorkoutCreatorBloc>().updateWorkoutMeta;
-    final workoutData = context.watch<WorkoutCreatorBloc>().workout;
+
+    final workoutData =
+        context.select<WorkoutCreatorBloc, Workout>((b) => b.workout);
+
+    final durationLengthMinutes = workoutData.lengthMinutes != null
+        ? Duration(minutes: workoutData.lengthMinutes!)
+        : null;
 
     return Container(
       child: SingleChildScrollView(
@@ -45,6 +54,41 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 inputValidation: (t) => true,
                 maxDisplayLines: 2,
               ),
+              if (workoutData.workoutSections.isNotEmpty)
+                Column(
+                  children: [
+                    TappableRow(
+                      onTap: () => context.showBottomSheet(
+                          child: DurationPicker(
+                        duration: durationLengthMinutes,
+                        mode: CupertinoTimerPickerMode.hm,
+                        minuteInterval: 5,
+                        updateDuration: (d) =>
+                            _updateWorkoutMeta({'lengthMinutes': d.inMinutes}),
+                        title: 'Workout Duration',
+                      )),
+                      title: 'Duration',
+                      display: workoutData.lengthMinutes != null
+                          ? Duration(minutes: workoutData.lengthMinutes!)
+                              .display()
+                          : MyText(
+                              'Enter duration...',
+                              subtext: true,
+                            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 12.0, right: 12.0, top: 4, bottom: 8),
+                      child: MyText(
+                        'An estimate of how long this workout could take, from start to finish.',
+                        size: FONTSIZE.SMALL,
+                        maxLines: 3,
+                        textAlign: TextAlign.center,
+                        subtext: true,
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(height: 6),
               WorkoutGoalsSelectorRow(
                   selectedWorkoutGoals: workoutData.workoutGoals,

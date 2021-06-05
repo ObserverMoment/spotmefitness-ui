@@ -207,8 +207,10 @@ class AppRouter extends _i1.RootStackRouter {
         }),
     YourScheduleRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
-        builder: (_) {
-          return _i26.YourSchedulePage();
+        builder: (data) {
+          final args = data.argsAs<YourScheduleRouteArgs>(
+              orElse: () => const YourScheduleRouteArgs());
+          return _i26.YourSchedulePage(openAtDate: args.openAtDate);
         }),
     DiscoverYouRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -574,10 +576,19 @@ class YourMovesRoute extends _i1.PageRouteInfo {
   static const String name = 'YourMovesRoute';
 }
 
-class YourScheduleRoute extends _i1.PageRouteInfo {
-  const YourScheduleRoute() : super(name, path: 'your-schedule');
+class YourScheduleRoute extends _i1.PageRouteInfo<YourScheduleRouteArgs> {
+  YourScheduleRoute({DateTime? openAtDate})
+      : super(name,
+            path: 'your-schedule',
+            args: YourScheduleRouteArgs(openAtDate: openAtDate));
 
   static const String name = 'YourScheduleRoute';
+}
+
+class YourScheduleRouteArgs {
+  const YourScheduleRouteArgs({this.openAtDate});
+
+  final DateTime? openAtDate;
 }
 
 class DiscoverYouRoute extends _i1.PageRouteInfo {

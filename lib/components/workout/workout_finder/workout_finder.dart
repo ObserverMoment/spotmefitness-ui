@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:graphql/client.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:collection/collection.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 /// Widget that uses filters to find and select a workout.
@@ -73,22 +74,29 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
 
   /// 0 is your workouts, 1 is public workouts.
   int _activePageIndex = 0;
-  PageController _pageController = PageController();
+
+  /// Doesn't appear to require disposing.
+  PageController _tabPageController = PageController();
 
   late WorkoutFiltersBloc _bloc;
   late WorkoutFilters _lastUsedFilters;
 
   List<Workout> _filteredUserWorkouts = [];
 
-  /// The first time the user switches to the public workouts tab we will need to make a call to get some workouts. If they have already opened this tab this this is not necessary.
-  bool _publicWorkoutsInitialRetrieved = false;
+  /// For inifinite scroll / pagination of public workouts from the network.
+  static const kfilterResultsPageSize = 15;
 
-  /// Saved copy of the filters from the most recent api call to request public workouts.
-  /// When user switches to the public tab - check the current filters against these to see if a new call is required.
-  WorkoutFilters? _filtersAtLastRetrieval;
-  bool _loadingPublicWorkouts = false;
-  String? _publicWorkoutsRetrievalError;
-  List<Workout> _retrievedPublicWorkouts = [];
+  /// Cursor for public workouts pagination. The id of the last retrieved workout.
+  String? _cursor;
+
+  /// Adjust the scroll position when refreshing this list.
+  final ScrollController _pagingScrollController = ScrollController();
+  final PagingController<int, Workout> _pagingController =
+      PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
+
+  void _updateLastUsedFilters() {
+    _lastUsedFilters = WorkoutFilters.fromJson(_bloc.filters.json);
+  }
 
   @override
   void initState() {
@@ -96,10 +104,71 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     _bloc = context.read<WorkoutFiltersBloc>();
     _updateLastUsedFilters();
     _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
+
+    /// [nextPageKey] will be zero when the filters are refreshed. This means no cursor should be passed.
+    /// Any other number for the pageKey causes this function to look up the [_cursor] from state.
+    /// To standardize, we pass pageKey as [1] whenever a page is appended to the list.
+    _pagingController.addPageRequestListener((nextPageKey) {
+      _fetchPublicWorkouts(nextPageKey);
+    });
   }
 
-  void _updateLastUsedFilters() {
-    _lastUsedFilters = WorkoutFilters.fromJson(_bloc.filters.json);
+  Future<List<Workout>> _executePublicWorkoutsQuery({String? cursor}) async {
+    final variables = PublicWorkoutsArguments(
+        take: kfilterResultsPageSize,
+        cursor: cursor,
+        filters: WorkoutFiltersInput.fromJson(_bloc.filters.apiJson));
+    final query = PublicWorkoutsQuery(variables: variables);
+    final response = await context.graphQLStore.execute(query);
+
+    if ((response.errors != null && response.errors!.isNotEmpty) ||
+        response.data == null) {
+      throw Exception(
+          'Sorry, something went wrong!: ${response.errors != null ? response.errors!.join(',') : ''}');
+    }
+
+    return query.parse(response.data ?? {}).publicWorkouts;
+  }
+
+  Future<void> _fetchPublicWorkouts(int nextPageKey) async {
+    try {
+      /// [nextPageKey] aka cursor defaults to 0 when [_pagingController] is initialised.
+      final workouts = await _executePublicWorkoutsQuery(
+          cursor: nextPageKey == 0 ? null : _cursor);
+
+      final isLastPage = workouts.length < kfilterResultsPageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(workouts);
+      } else {
+        _cursor = workouts.last.id;
+
+        /// Pass nextPageKey as 1. Acts like a boolean to will tell future fetch calls to get the _[cursor] from local state.
+        _pagingController.appendPage(workouts, 1);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+
+    /// If [nextPageKey == 0] then this is a fresh set of filters / results triggered by [paginationController.refresh()]. Padding on the bottom of the [PagedListView] which pushes it up over the collapsed sliding panel at the bottom of the page was causing new results to emerge scrolled down by the same value as vertical padding. May be a bug in the package but this has resolved it.
+    if (nextPageKey == 0) {
+      _pagingScrollController.animateTo(0,
+          duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+    }
+    setState(() {});
+  }
+
+  Future<void> _clearAllFilters() async {
+    await _bloc.clearAllFilters();
+    _pagingController.refresh();
+    setState(() {
+      _updateLastUsedFilters();
+      _filteredUserWorkouts = [...widget.userWorkouts];
+    });
+  }
+
+  void _updatePageIndex(int index) {
+    setState(() => _activePageIndex = index);
+    _tabPageController.jumpToPage(_activePageIndex);
   }
 
   void _togglePanel() {
@@ -115,56 +184,10 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   void _handlePanelClose() {
     if (_bloc.filtersHaveChanged(_lastUsedFilters)) {
       _updateLastUsedFilters();
-
-      /// Only update the newtwork result [public workouts] if the tab is open.
-      if (_activePageIndex == 1) {
-        _retrievePublicWorkouts();
-      }
-
-      /// Always update the client side [your workouts list] with the new filters immediately.
+      _pagingController.refresh();
       _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
       setState(() {});
     }
-  }
-
-  /// Refetch results - replacing current list.
-  Future<void> _retrievePublicWorkouts() async {
-    setState(() {
-      _publicWorkoutsRetrievalError = null;
-      _loadingPublicWorkouts = true;
-    });
-
-    final variables = PublicWorkoutsArguments(
-        take: 10, filters: WorkoutFiltersInput.fromJson(_bloc.filters.apiJson));
-    final query = PublicWorkoutsQuery(variables: variables);
-    final result = await context.graphQLStore.execute(query);
-
-    setState(() => _loadingPublicWorkouts = false);
-
-    if ((result.errors != null && result.errors!.isNotEmpty) ||
-        result.data == null) {
-      result.errors!.forEach((e) {
-        print(e);
-      });
-      setState(
-          () => _publicWorkoutsRetrievalError = 'Sorry, something went wrong!');
-    } else {
-      final workouts = query.parse(result.data ?? {}).publicWorkouts;
-      setState(() {
-        _publicWorkoutsInitialRetrieved = true;
-        _retrievedPublicWorkouts = workouts;
-        _filtersAtLastRetrieval = WorkoutFilters.fromJson(_bloc.filters.json);
-      });
-    }
-  }
-
-  Future<void> _clearAllFilters() async {
-    await _bloc.clearAllFilters();
-    setState(() {
-      _updateLastUsedFilters();
-      _filteredUserWorkouts = [...widget.userWorkouts];
-    });
-    _retrievePublicWorkouts();
   }
 
   /// Pops itself (and any stack items such as the text seach widget)
@@ -174,22 +197,11 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     widget.selectWorkout(workout);
   }
 
-  void _updatePageIndex(int index) {
-    /// Should need no action when switching to tab 0 (your workouts) as [_handlePanelClose] auto updates the client side data whenever new filters are detected.
-    if (index == 1 &&
-        (!_publicWorkoutsInitialRetrieved ||
-            _filtersAtLastRetrieval == null ||
-            _bloc.filtersHaveChanged(_filtersAtLastRetrieval!))) {
-      _retrievePublicWorkouts();
-      _publicWorkoutsInitialRetrieved = true;
-    }
-    setState(() => _activePageIndex = index);
-    _pageController.jumpToPage(_activePageIndex);
-  }
-
   @override
   void dispose() {
-    _pageController.dispose();
+    _tabPageController.dispose();
+    _pagingController.dispose();
+    _pagingScrollController.dispose();
     super.dispose();
   }
 
@@ -209,7 +221,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
         onPanelClosed: _handlePanelClose,
         border: Border.all(color: context.theme.primary.withOpacity(0.05)),
         minHeight: kCollapsedpanelheight,
-        maxHeight: size.height,
+        maxHeight: size.height - 70,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(kPanelBorderRadius),
             topRight: Radius.circular(kPanelBorderRadius)),
@@ -223,47 +235,41 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: kCollapsedpanelheight,
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: numActiveFilters > 0
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.end,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          numActiveFilters == 0
-                              ? MyText('No active filters', subtext: true)
-                              : MyText(
-                                  '$numActiveFilters active ${numActiveFilters == 1 ? "filter" : "filters"}',
-                                  subtext: true),
-                          if (numActiveFilters > 0)
-                            FadeIn(
-                              child: TextButton(
-                                  text: 'Clear filters',
-                                  onPressed: _clearAllFilters),
-                            )
-                        ],
-                      ),
+                      if (numActiveFilters > 0)
+                        FadeIn(
+                          child: TextButton(
+                              text: 'Clear filters',
+                              onPressed: _clearAllFilters),
+                        ),
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              MyText('Filters', weight: FontWeight.bold),
-                              SizedBox(width: 8),
-                              Transform.rotate(
-                                angle: -pi / 2,
-                                child: Icon(
-                                  CupertinoIcons.slider_horizontal_3,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                MyText('Filters', weight: FontWeight.bold),
+                                SizedBox(width: 8),
+                                Transform.rotate(
+                                  angle: -pi / 2,
+                                  child: Icon(
+                                    CupertinoIcons.slider_horizontal_3,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 8),
-                            ],
+                                SizedBox(width: 8),
+                              ],
+                            ),
                           ),
                           if (numActiveFilters > 0)
                             Positioned(
                                 top: -14,
-                                right: 0,
+                                right: 8,
                                 child: FadeIn(
                                     child: CircularBox(
                                         padding: const EdgeInsets.all(6),
@@ -319,28 +325,36 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
               ),
               Expanded(
                 child: PageView(
-                  controller: _pageController,
+                  controller: _tabPageController,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     WorkoutFinderFilteredWorkouts(
                       selectWorkout: _selectWorkout,
                       workouts: _filteredUserWorkouts,
                     ),
-                    _publicWorkoutsRetrievalError != null
-                        ? FadeIn(
-                            child: Center(
-                                child: MyText(
-                            _publicWorkoutsRetrievalError!,
-                            color: Styles.errorRed,
-                          )))
-                        : _loadingPublicWorkouts
-                            ? Center(child: LoadingCircle())
-                            : FadeIn(
-                                child: WorkoutFinderFilteredWorkouts(
-                                  selectWorkout: _selectWorkout,
-                                  workouts: _retrievedPublicWorkouts,
-                                ),
-                              )
+                    PagedListView<int, Workout>(
+                      // Bottom padding to push list up above floating filters panel.
+                      padding: const EdgeInsets.only(
+                          left: 8, right: 8, top: 4, bottom: 138),
+                      pagingController: _pagingController,
+                      scrollController: _pagingScrollController,
+                      builderDelegate: PagedChildBuilderDelegate<Workout>(
+                        itemBuilder: (context, workout, index) => SizeFadeIn(
+                          duration: 100,
+                          delay: index,
+                          delayBasis: 20,
+                          child: WorkoutFinderWorkoutCard(
+                            workout: workout,
+                            selectWorkout: widget.selectWorkout,
+                          ),
+                        ),
+                        firstPageProgressIndicatorBuilder: (c) =>
+                            LoadingCircle(),
+                        newPageProgressIndicatorBuilder: (c) => LoadingCircle(),
+                        noItemsFoundIndicatorBuilder: (c) =>
+                            Center(child: MyText('No results...')),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -361,7 +375,45 @@ class WorkoutFinderFilteredWorkouts extends StatelessWidget {
       required this.selectWorkout,
       this.loading = false});
 
-  Widget _buildCard(BuildContext context, Workout workout) {
+  @override
+  Widget build(BuildContext context) {
+    return loading
+        ? Center(child: LoadingCircle())
+        : workouts.isEmpty
+            ? FadeIn(child: Center(child: MyText('No results...')))
+            : ImplicitlyAnimatedList<Workout>(
+                // Bottom padding to push list up above floating filters panel.
+                padding: const EdgeInsets.only(
+                    left: 8, right: 8, top: 4, bottom: 138),
+                items: workouts,
+                itemBuilder: (context, animation, Workout workout, i) =>
+                    SizeFadeTransition(
+                      sizeFraction: 0.7,
+                      curve: Curves.easeInOut,
+                      animation: animation,
+                      child: WorkoutFinderWorkoutCard(
+                          workout: workout, selectWorkout: selectWorkout),
+                    ),
+                removeItemBuilder: (context, animation, Workout oldWorkout) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: WorkoutFinderWorkoutCard(
+                        workout: oldWorkout, selectWorkout: selectWorkout),
+                  );
+                },
+                areItemsTheSame: (a, b) => a == b);
+  }
+}
+
+class WorkoutFinderWorkoutCard extends StatelessWidget {
+  final Workout workout;
+  final void Function(Workout workout) selectWorkout;
+  const WorkoutFinderWorkoutCard(
+      {Key? key, required this.workout, required this.selectWorkout})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
       child: ContextMenu(
@@ -385,32 +437,5 @@ class WorkoutFinderFilteredWorkouts extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return loading
-        ? Center(child: LoadingCircle())
-        : workouts.isEmpty
-            ? FadeIn(child: Center(child: MyText('No results...')))
-            : ImplicitlyAnimatedList<Workout>(
-                // Bottom padding to push list up above floating filters panel.
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 4, bottom: 138),
-                items: workouts,
-                itemBuilder: (context, animation, Workout workout, i) =>
-                    SizeFadeTransition(
-                      sizeFraction: 0.7,
-                      curve: Curves.easeInOut,
-                      animation: animation,
-                      child: _buildCard(context, workout),
-                    ),
-                removeItemBuilder: (context, animation, Workout oldWorkout) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: _buildCard(context, oldWorkout),
-                  );
-                },
-                areItemsTheSame: (a, b) => a == b);
   }
 }

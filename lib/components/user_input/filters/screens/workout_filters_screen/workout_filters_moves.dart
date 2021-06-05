@@ -126,6 +126,7 @@ class WorkoutFilterMovesList extends StatelessWidget {
                     onPressed: () => context.showBottomSheet(
                       child: SafeArea(
                         child: MoveSelector(
+                            includeCustomMoves: false,
                             showCreateCustomMoveButton: false,
                             selectMove: (Move move) =>
                                 _handleAdd(context, move)),

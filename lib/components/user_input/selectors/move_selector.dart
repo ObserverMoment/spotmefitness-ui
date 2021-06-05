@@ -23,10 +23,14 @@ import 'package:json_annotation/json_annotation.dart' as json;
 class MoveSelector extends StatefulWidget {
   final Move? move;
   final void Function(Move move) selectMove;
+
+  /// Removes the option to switch to custom moves tab. Also removes filtering option.
+  final bool includeCustomMoves;
   final bool showCreateCustomMoveButton;
   MoveSelector(
       {required this.selectMove,
       this.move,
+      this.includeCustomMoves = true,
       this.showCreateCustomMoveButton = true});
 
   @override
@@ -100,40 +104,43 @@ class _MoveSelectorState extends State<MoveSelector> {
 
                 return Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: SlidingSelect<int>(
-                                value: _activeTabIndex,
-                                children: {
-                                  0: MyText('Standard'),
-                                  1: MyText('Custom')
-                                },
-                                updateValue: (i) =>
-                                    setState(() => _activeTabIndex = i)),
-                          ),
-                          SizedBox(width: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              FilterButton(
-                                hasActiveFilters:
-                                    moveFiltersBloc.hasActiveFilters,
-                                onPressed: () =>
-                                    context.push(child: MoveFiltersScreen()),
+                    if (widget.includeCustomMoves)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: SlidingSelect<int>(
+                                    value: _activeTabIndex,
+                                    children: {
+                                      0: MyText('Standard'),
+                                      1: MyText('Custom')
+                                    },
+                                    updateValue: (i) =>
+                                        setState(() => _activeTabIndex = i)),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                FilterButton(
+                                  hasActiveFilters:
+                                      moveFiltersBloc.hasActiveFilters,
+                                  onPressed: () =>
+                                      context.push(child: MoveFiltersScreen()),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 3),
+                          horizontal: 10.0, vertical: 4),
                       child: CupertinoSearchTextField(
                         onChanged: (value) =>
                             setState(() => _searchString = value.toLowerCase()),

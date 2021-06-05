@@ -54,7 +54,7 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
 
   Widget _logoHeader() {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: const EdgeInsets.only(top: 32.0),
       child: Column(
         children: <Widget>[
           SvgPicture.asset(

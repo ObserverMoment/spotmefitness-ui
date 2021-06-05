@@ -24,10 +24,11 @@ class ProgressJournalEntryCard extends StatelessWidget {
 
   void _openImageGallery(BuildContext context) {
     context.push(
+        rootNavigator: true,
         child: FullScreenImageGallery(
-      progressJournalEntry.progressPhotoUris,
-      pageTitle: 'Progress Photos',
-    ));
+          progressJournalEntry.progressPhotoUris,
+          pageTitle: 'Progress Photos',
+        ));
   }
 
   double _calcOverallAverage() {

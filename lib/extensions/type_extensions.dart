@@ -80,22 +80,25 @@ extension DoubleExtension on double {
 }
 
 extension DurationExtension on Duration {
-  Widget display({Axis direction = Axis.horizontal}) {
+  Widget display({Axis direction = Axis.horizontal, bool bold = false}) {
     final int minutes = this.inMinutes;
     final int seconds = this.inSeconds.remainder(60);
+    final FontWeight weight = bold ? FontWeight.bold : FontWeight.normal;
     List<Widget> children = [
       if (minutes != 0)
         Row(
           children: [
             MyText(
               minutes.toString(),
+              weight: weight,
               lineHeight: 1.3,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 3.0),
               child: MyText(
                 'min',
-                size: FONTSIZE.TINY,
+                weight: weight,
+                size: FONTSIZE.SMALL,
               ),
             ),
           ],
@@ -105,11 +108,12 @@ extension DurationExtension on Duration {
           children: [
             MyText(
               seconds.toString(),
+              weight: weight,
               lineHeight: 1.3,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 3.0),
-              child: MyText('secs', size: FONTSIZE.TINY),
+              child: MyText('secs', weight: weight, size: FONTSIZE.SMALL),
             )
           ],
         ),

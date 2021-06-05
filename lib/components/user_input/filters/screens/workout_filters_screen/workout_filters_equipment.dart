@@ -46,7 +46,7 @@ class WorkoutFiltersEquipment extends StatelessWidget {
                       final allEquipments = data.equipments;
 
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 68.0),
+                        padding: const EdgeInsets.only(bottom: 8.0),
                         child: EquipmentMultiSelector(
                             selectedEquipments: availableEquipments,
                             scrollDirection: Axis.vertical,

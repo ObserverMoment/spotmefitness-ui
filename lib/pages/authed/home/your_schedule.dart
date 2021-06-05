@@ -20,15 +20,24 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 
 class YourSchedulePage extends StatefulWidget {
+  final DateTime? openAtDate;
+  YourSchedulePage({this.openAtDate});
   @override
   _YourSchedulePageState createState() => _YourSchedulePageState();
 }
 
 class _YourSchedulePageState extends State<YourSchedulePage> {
   final ScrollController _scrollController = ScrollController();
-  DateTime _selectedDay = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
+  late DateTime _selectedDay;
+  late DateTime _focusedDay;
   CalendarFormat _calendarFormat = CalendarFormat.week;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = widget.openAtDate ?? DateTime.now();
+    _focusedDay = _selectedDay;
+  }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay,
       List<ScheduledWorkout> allScheduled) {

@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
@@ -66,9 +67,28 @@ class WorkoutCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MyText(
-                  workout.name,
-                  weight: FontWeight.bold,
+                Row(
+                  children: [
+                    MyText(
+                      workout.name,
+                      weight: FontWeight.bold,
+                    ),
+                    if (workout.lengthMinutes != null)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: context.theme.primary.withOpacity(0.1)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1.0, horizontal: 6),
+                            child: Duration(minutes: workout.lengthMinutes!)
+                                .display(bold: true),
+                          ),
+                        ),
+                      )
+                  ],
                 ),
                 DifficultyLevelDot(workout.difficultyLevel)
               ],

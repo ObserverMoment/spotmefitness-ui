@@ -55,107 +55,110 @@ class _MainTabsPageState extends State<MainTabsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AutoTabsRouter(
-        routes: [
-          HomeStack(),
-          DiscoverRoute(),
-          SocialRoute(),
-          JournalStack(),
-          ProfileRoute(),
-        ],
-        builder: (context, child, animation) {
-          final _mediaQuery = MediaQuery.of(context);
-          final _size = _mediaQuery.size;
-          final _tabsRouter = context.tabsRouter;
-          final _activeIndex = _tabsRouter.activeIndex;
-          final _activeColor = context.theme.activeIcon;
-          final _inActiveColor = context.theme.primary;
+    return CupertinoPageScaffold(
+      child: AutoTabsRouter(
+          routes: [
+            HomeStack(),
+            DiscoverRoute(),
+            SocialRoute(),
+            JournalStack(),
+            ProfileRoute(),
+          ],
+          builder: (context, child, animation) {
+            final _mediaQuery = MediaQuery.of(context);
+            final _size = _mediaQuery.size;
+            final _tabsRouter = context.tabsRouter;
+            final _activeIndex = _tabsRouter.activeIndex;
+            final _activeColor = context.theme.activeIcon;
+            final _inActiveColor = context.theme.primary;
 
-          return Stack(
-            fit: StackFit.expand,
-            clipBehavior: Clip.none,
-            children: [
-              // Similar to how CupertinoTabScaffold handles non opaque bottom nav bar.
-              FadeTransition(
-                  child: MediaQuery(
-                      data: _mediaQuery.copyWith(
-                          padding: _mediaQuery.padding
-                              .copyWith(bottom: kBottomNavBarHeight + 4)),
-                      child: child),
-                  opacity: animation),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 10.0, left: 14, right: 14, bottom: 4),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: context.theme.background.withOpacity(0.7),
-                              border: Border.all(
-                                  color:
-                                      context.theme.primary.withOpacity(0.15))),
-                          height: kBottomNavBarHeight,
-                          width: _size.width - 28,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _buildTabItem(
-                                  tabsRouter: _tabsRouter,
-                                  activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
-                                  tabIndex: 0,
-                                  label: 'Home',
-                                  iconData:
-                                      CupertinoIcons.square_grid_2x2_fill),
-                              _buildTabItem(
-                                  tabsRouter: _tabsRouter,
-                                  activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
-                                  tabIndex: 1,
-                                  label: 'Discover',
-                                  iconData: CupertinoIcons.compass_fill),
-                              _buildTabItem(
-                                  tabsRouter: _tabsRouter,
-                                  activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
-                                  tabIndex: 2,
-                                  label: 'Social',
-                                  iconData:
-                                      CupertinoIcons.person_2_square_stack),
-                              _buildTabItem(
-                                  tabsRouter: _tabsRouter,
-                                  activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
-                                  tabIndex: 3,
-                                  label: 'Journal',
-                                  iconData: CupertinoIcons.doc_plaintext),
-                              _buildTabItem(
-                                  tabsRouter: _tabsRouter,
-                                  activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
-                                  tabIndex: 4,
-                                  label: 'Profile',
-                                  iconData: CupertinoIcons.profile_circled),
-                            ],
-                          )),
+            return Stack(
+              fit: StackFit.expand,
+              clipBehavior: Clip.none,
+              children: [
+                // Similar to how CupertinoTabScaffold handles non opaque bottom nav bar.
+                FadeTransition(
+                    child: MediaQuery(
+                        data: _mediaQuery.copyWith(
+                            padding: _mediaQuery.padding
+                                .copyWith(bottom: kBottomNavBarHeight + 4)),
+                        child: child),
+                    opacity: animation),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, left: 14, right: 14, bottom: 4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                        child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                                color:
+                                    context.theme.background.withOpacity(0.7),
+                                border: Border.all(
+                                    color: context.theme.primary
+                                        .withOpacity(0.15))),
+                            height: kBottomNavBarHeight,
+                            width: _size.width - 28,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 0,
+                                    label: 'Home',
+                                    iconData:
+                                        CupertinoIcons.square_grid_2x2_fill),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 1,
+                                    label: 'Discover',
+                                    iconData: CupertinoIcons.compass_fill),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 2,
+                                    label: 'Social',
+                                    iconData:
+                                        CupertinoIcons.person_2_square_stack),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 3,
+                                    label: 'Journal',
+                                    iconData: CupertinoIcons.doc_plaintext),
+                                _buildTabItem(
+                                    tabsRouter: _tabsRouter,
+                                    activeIndex: _activeIndex,
+                                    activeColor: _activeColor,
+                                    inActiveColor: _inActiveColor,
+                                    tabIndex: 4,
+                                    label: 'Profile',
+                                    iconData: CupertinoIcons.profile_circled),
+                              ],
+                            )),
+                      ),
                     ),
                   ),
-                ),
-              )
-            ],
-          );
-        });
+                )
+              ],
+            );
+          }),
+    );
   }
 }
 

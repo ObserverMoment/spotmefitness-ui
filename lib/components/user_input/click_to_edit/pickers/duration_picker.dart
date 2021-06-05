@@ -34,8 +34,16 @@ class DurationPicker extends StatefulWidget {
   final Duration? duration;
   final void Function(Duration duration) updateDuration;
   final String? title;
+  final CupertinoTimerPickerMode mode;
+  final int minuteInterval;
+  final int secondInterval;
   DurationPicker(
-      {required this.duration, required this.updateDuration, this.title});
+      {required this.duration,
+      required this.updateDuration,
+      this.title,
+      this.minuteInterval = 1,
+      this.secondInterval = 1,
+      this.mode = CupertinoTimerPickerMode.hms});
 
   @override
   _DurationPickerState createState() => _DurationPickerState();
@@ -77,7 +85,9 @@ class _DurationPickerState extends State<DurationPicker> {
             padding: const EdgeInsets.all(16.0),
             child: CupertinoTimerPicker(
                 initialTimerDuration: _activeDuration ?? Duration.zero,
-                mode: CupertinoTimerPickerMode.hms,
+                mode: widget.mode,
+                minuteInterval: widget.minuteInterval,
+                secondInterval: widget.secondInterval,
                 onTimerDurationChanged: (duration) =>
                     setState(() => _activeDuration = duration)),
           ),

@@ -50,6 +50,7 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.0.0
   implicitly_animated_reorderable_list: ^0.4.0
+  infinite_scroll_pagination: ^3.0.1+1
   intl: ^0.17.0
   image_picker: ^0.7.5+2
   image_cropper: ^1.4.0

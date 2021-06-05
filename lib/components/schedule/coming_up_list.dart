@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/display_utils.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -59,7 +61,8 @@ class ComingUpList extends StatelessWidget {
                               mini: true,
                               prefix: Icon(CupertinoIcons.calendar_badge_plus),
                               text: 'Plan Something',
-                              onPressed: () => print('schedule something')),
+                              onPressed: () =>
+                                  print('schedule something flow')),
                         )
                       : ListView.builder(
                           padding: EdgeInsets.zero,
@@ -67,11 +70,15 @@ class ComingUpList extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: comingUp.length,
                           itemBuilder: (c, i) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: ScheduledWorkoutReminderCard(
-                                scheduledWorkout: comingUp[i],
-                                cardWidth: cardWidth,
+                            return GestureDetector(
+                              onTap: () => context.navigateTo(YourScheduleRoute(
+                                  openAtDate: comingUp[i].scheduledAt)),
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: ScheduledWorkoutReminderCard(
+                                  scheduledWorkout: comingUp[i],
+                                  cardWidth: cardWidth,
+                                ),
                               ),
                             );
                           }),

@@ -328,7 +328,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   ////// WorkoutSet CRUD //////
   /// Either empty default or from a pre made set passed as arg.
   /// [shouldNotifyListeners]: Used if you want to create a set, then a move, and then update the UI. Initially implemented for creating a workoutRestSet (i.e) a set with only a rest in it and ensuring a smooth UI update.
-  /// Function is returning a workoutSet so that the caller can then immediately create a workoutMove to go in it if needed. Works in combination with [shouldNotifyListeners]. When done - Creating the workout move will call notifyListeners() and all UI will be updated.
+  /// Function is returning a workoutSet so that the caller can then immediately create a workoutMove to go in it if needed. Works in combination with [shouldNotifyListeners]. When done creating the workout move will call notifyListeners() and all UI will be updated.
   Future<WorkoutSet?> createWorkoutSet(int sectionIndex,
       {bool shouldNotifyListeners = true,
       Map<String, dynamic> defaults = const {}}) async {

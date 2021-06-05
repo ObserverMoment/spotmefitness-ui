@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
-enum _AniProps { opacity, translateY }
+enum _FadeInUpProps { opacity, translateY }
 
 // https://github.com/felixblaschke/simple_animations/blob/master/example/lib/examples/fade_in_ui.dart
 class FadeInUp extends StatelessWidget {
@@ -19,19 +19,19 @@ class FadeInUp extends StatelessWidget {
       this.yTranslate = 10});
   @override
   Widget build(BuildContext context) {
-    final tween = MultiTween<_AniProps>()
-      ..add(_AniProps.opacity, 0.0.tweenTo(1.0))
-      ..add(_AniProps.translateY, yTranslate.tweenTo(0.0));
+    final tween = MultiTween<_FadeInUpProps>()
+      ..add(_FadeInUpProps.opacity, 0.0.tweenTo(1.0))
+      ..add(_FadeInUpProps.translateY, yTranslate.tweenTo(0.0));
 
-    return PlayAnimation<MultiTweenValues<_AniProps>>(
+    return PlayAnimation<MultiTweenValues<_FadeInUpProps>>(
       delay: (delayBasis * delay).round().milliseconds,
       duration: duration.milliseconds,
       tween: tween,
       child: child,
       builder: (context, child, value) => Opacity(
-        opacity: value.get(_AniProps.opacity),
+        opacity: value.get(_FadeInUpProps.opacity),
         child: Transform.translate(
-          offset: Offset(0, value.get(_AniProps.translateY)),
+          offset: Offset(0, value.get(_FadeInUpProps.translateY)),
           child: child,
         ),
       ),
@@ -49,7 +49,7 @@ class FadeIn extends StatelessWidget {
       {this.key,
       this.delay = 0,
       required this.child,
-      this.duration = 500,
+      this.duration = 400,
       this.delayBasis = 300});
   @override
   Widget build(BuildContext context) {
@@ -65,6 +65,49 @@ class FadeIn extends StatelessWidget {
         child: child,
       ),
     );
+  }
+}
+
+enum _SizeFadeInProps { opacity, scale }
+
+class SizeFadeIn extends StatelessWidget {
+  final int delay; // Enables staggering of animations - for example down a list
+  final Widget child;
+  final int duration;
+  final double delayBasis;
+  final Key? key;
+
+  final AlignmentGeometry alignment;
+  final double initialScale;
+  SizeFadeIn(
+      {this.key,
+      this.delay = 0,
+      required this.child,
+      this.duration = 300,
+      this.alignment = Alignment.center,
+      this.initialScale = 0.9,
+      this.delayBasis = 300})
+      : assert(initialScale <= 1.0 && initialScale >= 0.0);
+
+  @override
+  Widget build(BuildContext context) {
+    final tween = MultiTween<_SizeFadeInProps>()
+      ..add(_SizeFadeInProps.opacity, 0.0.tweenTo(1.0))
+      ..add(_SizeFadeInProps.scale, initialScale.tweenTo(1.0));
+
+    return PlayAnimation<MultiTweenValues<_SizeFadeInProps>>(
+        delay: (delayBasis * delay).round().milliseconds,
+        duration: duration.milliseconds,
+        tween: tween,
+        child: child,
+        builder: (context, child, value) => Transform.scale(
+              scale: value.get(_SizeFadeInProps.scale),
+              alignment: alignment,
+              child: Opacity(
+                opacity: value.get(_SizeFadeInProps.opacity),
+                child: child,
+              ),
+            ));
   }
 }
 
