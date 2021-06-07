@@ -1,3 +1,31 @@
+# Not being used...potential future optimization.
+fragment WorkoutSummary on WorkoutSummary {
+  id
+  __typename
+  createdAt
+  creatorId
+  creatorName
+  creatorAvatarUri
+  name
+  description
+  contentAccessScope
+  lengthMinutes
+  difficultyLevel
+  WorkoutGoals
+  WorkoutTags
+  WorkoutSections {
+    name
+    timecap
+    sortPosition
+    classVideoUri
+    classVideoThumbUri
+    classAudioUri
+    WorkoutSectionType
+  }
+  Moves
+  Equipments
+}
+
 fragment Workout on Workout {
   __typename
   id

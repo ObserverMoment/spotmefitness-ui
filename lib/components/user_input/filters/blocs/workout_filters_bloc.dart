@@ -55,11 +55,6 @@ class WorkoutFiltersBloc extends ChangeNotifier {
   List<Workout> filterYourWorkouts(List<Workout> allWorkouts) {
     return _workoutFilters.filter(allWorkouts);
   }
-
-  Future<List<Workout>> filterPublicWorkouts(int take, int offset) async {
-    /// Call the api for [take] number of results, starting from result [offset]
-    return [];
-  }
 }
 
 class WorkoutFilters {

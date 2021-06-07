@@ -32,7 +32,7 @@ class YourWorkoutsPage extends StatelessWidget {
           child: ShimmerCardList(itemCount: 20)),
       builder: (data) {
         final workouts = data.userWorkouts
-            .sortedBy<DateTime>((w) => w.createdAt!)
+            .sortedBy<DateTime>((w) => w.createdAt)
             .reversed
             .toList();
 
@@ -113,8 +113,8 @@ class FilterableWorkoutsList extends StatelessWidget {
                   rootNavigator: true,
                   child: YourWorkoutsTextSearch(
                       allWorkouts: workouts,
-                      selectWorkout: (w) =>
-                          _openWorkoutDetails(context, w.id))),
+                      selectWorkout: (workoutId) =>
+                          _openWorkoutDetails(context, workoutId))),
             ))
       ],
     );
@@ -123,7 +123,7 @@ class FilterableWorkoutsList extends StatelessWidget {
 
 class YourWorkoutsTextSearch extends StatefulWidget {
   final List<Workout> allWorkouts;
-  final void Function(Workout workout) selectWorkout;
+  final void Function(String workoutId) selectWorkout;
 
   YourWorkoutsTextSearch(
       {required this.allWorkouts, required this.selectWorkout});
@@ -143,8 +143,8 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
     _focusNode.requestFocus();
   }
 
-  void _handleSelectWorkout(Workout workout) {
-    widget.selectWorkout(workout);
+  void _handleSelectWorkout(String workoutId) {
+    widget.selectWorkout(workoutId);
     context.pop();
   }
 
@@ -156,8 +156,9 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredWorkouts = TextSearchFilters.workoutsBySearchString(
-        widget.allWorkouts, _searchString);
+    final workouts = TextSearchFilters.workoutsBySearchString(
+            widget.allWorkouts, _searchString)
+        .sortedBy<String>((workout) => workout.name);
 
     return CupertinoPageScaffold(
       child: SafeArea(
@@ -186,18 +187,16 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
               child: FadeIn(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ListView(
+                  child: ListView.builder(
                     shrinkWrap: true,
-                    children: filteredWorkouts
-                        .sortedBy<String>((workout) => workout.name)
-                        .map((workout) => GestureDetector(
-                            onTap: () => _handleSelectWorkout(workout),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 4.0),
-                              child: WorkoutCard(workout),
-                            )))
-                        .toList(),
+                    itemCount: workouts.length,
+                    itemBuilder: (c, i) => GestureDetector(
+                        onTap: () => _handleSelectWorkout(workouts[i].id),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 4.0),
+                          child: WorkoutCard(workouts[i]),
+                        )),
                   ),
                 ),
               ),

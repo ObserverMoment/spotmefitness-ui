@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_pa
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/progress_journal_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/plans.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/workouts.dart';
@@ -92,6 +93,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           // They can be pushed to from anywhere and are also pages that would want to be linkable. E.g. when sharing a workout details page with a group or another user.
           // Usually the flow from these pages always ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
           AutoRoute(path: 'workout/:id', page: WorkoutDetailsPage),
+          AutoRoute(path: 'workout-plan/:id', page: WorkoutPlanDetailsPage),
           AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),
           AutoRoute(
               path: 'progress-journal/:id', page: ProgressJournalDetailsPage),

@@ -185,10 +185,12 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                                     shape: BoxShape.circle),
                                 selectedDecoration: BoxDecoration(
                                     color: context.theme.primary,
-                                    shape: BoxShape.circle),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10)),
                                 todayDecoration: BoxDecoration(
                                     border: Border.all(color: Styles.colorOne),
-                                    shape: BoxShape.circle),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(10)),
                                 weekendTextStyle: primaryTextStyle,
                                 selectedTextStyle: primaryTextStyle.copyWith(
                                     color: context.theme.background,

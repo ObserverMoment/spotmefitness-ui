@@ -165,7 +165,7 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                           'No results.',
                           subtext: true,
                         ))
-                      : WorkoutFinderFilteredWorkouts(
+                      : YourFilteredWorkoutsList(
                           selectWorkout: widget.selectWorkout,
                           workouts: _filteredUserWorkouts)
                   : Center(
@@ -226,7 +226,7 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                                           .data!.isNotEmpty) {
                                         // Or show workouts list if not empty.
                                         return FadeIn(
-                                          child: WorkoutFinderFilteredWorkouts(
+                                          child: YourFilteredWorkoutsList(
                                             workouts: workoutsSnapshot.data!,
                                             selectWorkout: widget.selectWorkout,
                                           ),

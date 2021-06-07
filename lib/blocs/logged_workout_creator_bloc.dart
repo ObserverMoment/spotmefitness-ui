@@ -114,8 +114,6 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       gymProfile: log.gymProfile != null
           ? ConnectRelationInput(id: log.gymProfile!.id)
           : null,
-      workoutProgramEnrolment: null,
-      workoutProgramWorkout: null,
       completedOn: log.completedOn,
       loggedWorkoutSections: sectionsToIncludeInLog
           .sortedBy<num>((s) => s.sortPosition)

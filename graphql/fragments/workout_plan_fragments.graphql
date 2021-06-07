@@ -1,0 +1,42 @@
+fragment WorkoutPlan on WorkoutPlan {
+  id
+  __typename
+  createdAt
+  archived
+  name
+  description
+  coverImageUri
+  introVideoUri
+  introVideoThumbUri
+  introAudioUri
+  contentAccessScope
+}
+
+fragment WorkoutPlanDay on WorkoutPlanDay {
+  id
+  __typename
+  note
+  dayNumber
+}
+
+fragment WorkoutPlanDayWorkout on WorkoutPlanDayWorkout {
+  id
+  __typename
+  note
+  sortPosition
+}
+
+fragment WorkoutPlanEnrolment on WorkoutPlanEnrolment {
+  id
+  __typename
+  startDate
+  completedPlanDayWorkoutIds
+}
+
+fragment WorkoutPlanReview on WorkoutPlanReview {
+  id
+  __typename
+  createdAt
+  score
+  comment
+}

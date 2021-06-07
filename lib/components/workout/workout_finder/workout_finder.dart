@@ -21,6 +21,7 @@ import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_fil
 import 'package:spotmefitness_ui/components/user_input/filters/screens/workout_filters_screen/workout_filters_screen.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder_text_search.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -82,6 +83,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   late WorkoutFilters _lastUsedFilters;
 
   List<Workout> _filteredUserWorkouts = [];
+  ScrollController _userWorkoutsListScrollController = ScrollController();
 
   /// For inifinite scroll / pagination of public workouts from the network.
   static const kfilterResultsPageSize = 15;
@@ -151,8 +153,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
 
     /// If [nextPageKey == 0] then this is a fresh set of filters / results triggered by [paginationController.refresh()]. Padding on the bottom of the [PagedListView] which pushes it up over the collapsed sliding panel at the bottom of the page was causing new results to emerge scrolled down by the same value as vertical padding. May be a bug in the package but this has resolved it.
     if (nextPageKey == 0) {
-      _pagingScrollController.animateTo(0,
-          duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+      _resetScrollPosition(_pagingScrollController);
     }
     setState(() {});
   }
@@ -160,6 +161,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   Future<void> _clearAllFilters() async {
     await _bloc.clearAllFilters();
     _pagingController.refresh();
+
+    /// Reset the user workouts list scroll position.
+    _resetScrollPosition(_userWorkoutsListScrollController);
     setState(() {
       _updateLastUsedFilters();
       _filteredUserWorkouts = [...widget.userWorkouts];
@@ -186,8 +190,14 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
       _updateLastUsedFilters();
       _pagingController.refresh();
       _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
+      _resetScrollPosition(_userWorkoutsListScrollController);
       setState(() {});
     }
+  }
+
+  void _resetScrollPosition(ScrollController controller) {
+    controller.animateTo(0,
+        duration: Duration(milliseconds: 100), curve: Curves.easeIn);
   }
 
   /// Pops itself (and any stack items such as the text seach widget)
@@ -234,23 +244,26 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 height: kCollapsedpanelheight,
-                child: Row(
-                    mainAxisAlignment: numActiveFilters > 0
-                        ? MainAxisAlignment.spaceBetween
-                        : MainAxisAlignment.end,
-                    children: [
-                      if (numActiveFilters > 0)
-                        FadeIn(
-                          child: TextButton(
-                              text: 'Clear filters',
-                              onPressed: _clearAllFilters),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AnimatedSwitcher(
+                          duration: kStandardAnimationDuration,
+                          child: numActiveFilters > 0
+                              ? TextButton(
+                                  text: 'Clear filters',
+                                  onPressed: _clearAllFilters)
+                              : MyText(
+                                  'No active filters',
+                                  subtext: true,
+                                ),
                         ),
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Row(
+                        Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -265,25 +278,25 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                                 SizedBox(width: 8),
                               ],
                             ),
-                          ),
-                          if (numActiveFilters > 0)
-                            Positioned(
-                                top: -14,
-                                right: 8,
-                                child: FadeIn(
-                                    child: CircularBox(
-                                        padding: const EdgeInsets.all(6),
-                                        color: Styles.infoBlue,
-                                        child: MyText(
-                                          numActiveFilters.toString(),
-                                          color: Styles.white,
-                                          lineHeight: 1.2,
-                                          size: FONTSIZE.SMALL,
-                                          weight: FontWeight.bold,
-                                        ))))
-                        ],
-                      ),
-                    ]),
+                            if (numActiveFilters > 0)
+                              Positioned(
+                                  top: -14,
+                                  right: 8,
+                                  child: FadeIn(
+                                      child: CircularBox(
+                                          padding: const EdgeInsets.all(6),
+                                          color: Styles.infoBlue,
+                                          child: MyText(
+                                            numActiveFilters.toString(),
+                                            color: Styles.white,
+                                            lineHeight: 1.2,
+                                            size: FONTSIZE.SMALL,
+                                            weight: FontWeight.bold,
+                                          ))))
+                          ],
+                        ),
+                      ]),
+                ),
               ),
             ),
             Expanded(child: WorkoutFiltersScreen())
@@ -328,7 +341,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                   controller: _tabPageController,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    WorkoutFinderFilteredWorkouts(
+                    YourFilteredWorkoutsList(
+                      listPositionScrollController:
+                          _userWorkoutsListScrollController,
                       selectWorkout: _selectWorkout,
                       workouts: _filteredUserWorkouts,
                     ),
@@ -366,13 +381,15 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   }
 }
 
-class WorkoutFinderFilteredWorkouts extends StatelessWidget {
+class YourFilteredWorkoutsList extends StatelessWidget {
   final List<Workout> workouts;
   final void Function(Workout workout) selectWorkout;
   final bool loading;
-  WorkoutFinderFilteredWorkouts(
+  final ScrollController? listPositionScrollController;
+  YourFilteredWorkoutsList(
       {required this.workouts,
       required this.selectWorkout,
+      this.listPositionScrollController,
       this.loading = false});
 
   @override
@@ -382,6 +399,7 @@ class WorkoutFinderFilteredWorkouts extends StatelessWidget {
         : workouts.isEmpty
             ? FadeIn(child: Center(child: MyText('No results...')))
             : ImplicitlyAnimatedList<Workout>(
+                controller: listPositionScrollController,
                 // Bottom padding to push list up above floating filters panel.
                 padding: const EdgeInsets.only(
                     left: 8, right: 8, top: 4, bottom: 138),
