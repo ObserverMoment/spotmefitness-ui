@@ -2,6 +2,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:supercharged/supercharged.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 extension StringExtension on String {
   String get capitalize => this[0].toUpperCase() + this.substring(1);
@@ -87,6 +90,7 @@ extension DurationExtension on Duration {
     List<Widget> children = [
       if (minutes != 0)
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             MyText(
               minutes.toString(),
@@ -105,6 +109,7 @@ extension DurationExtension on Duration {
         ),
       if (seconds != 0)
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             MyText(
               seconds.toString(),
@@ -120,10 +125,12 @@ extension DurationExtension on Duration {
     ];
     if (direction == Axis.horizontal) {
       return Row(
+        mainAxisSize: MainAxisSize.min,
         children: children,
       );
     } else {
       return Column(
+        mainAxisSize: MainAxisSize.min,
         children: children,
       );
     }
@@ -187,4 +194,61 @@ extension ListExtension on List {
 extension PageControllerExtension on PageController {
   void toPage(int page) => this.animateToPage(page,
       duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+}
+
+extension WorkoutPlanExtension on WorkoutPlan {
+  DifficultyLevel get calcDifficulty {
+    final workouts = this.workoutsInPlan;
+    final average = workouts.averageBy((w) => w.difficultyLevel.numericValue);
+    return DifficultyLevelExtension.levelFromNumber(average!);
+  }
+
+  String get sessionsPerWeek =>
+      (this.workoutPlanDays.length / this.lengthWeeks).stringMyDouble();
+
+  String get lengthString =>
+      '${this.lengthWeeks} ${this.lengthWeeks == 1 ? "week" : "weeks"}';
+
+  List<String> get uniqueEquipmentNames {
+    final Set<String> allEquipments = {};
+    final workouts = this.workoutsInPlan;
+
+    for (final workout in workouts) {
+      for (final section in workout.workoutSections) {
+        for (final workoutSet in section.workoutSets) {
+          for (final workoutMove in workoutSet.workoutMoves) {
+            if (workoutMove.equipment != null) {
+              allEquipments.add(workoutMove.equipment!.name);
+            }
+            if (workoutMove.move.requiredEquipments.isNotEmpty) {
+              allEquipments.addAll(
+                  workoutMove.move.requiredEquipments.map((e) => e.name));
+            }
+          }
+        }
+      }
+    }
+    return allEquipments.toList();
+  }
+
+  List<Workout> get workoutsInPlan {
+    return this.workoutPlanDays.fold<List<Workout>>(
+        [],
+        (acum, next) =>
+            [...acum, ...next.workoutPlanDayWorkouts.map((d) => d.workout)]);
+  }
+
+  List<WorkoutGoal> get workoutGoalsInPlan {
+    return this
+        .workoutPlanDays
+        .fold<List<List<WorkoutGoal>>>(
+            [],
+            (acum, next) => [
+                  ...acum,
+                  ...next.workoutPlanDayWorkouts
+                      .map((d) => d.workout.workoutGoals)
+                ])
+        .expand((x) => x)
+        .toList();
+  }
 }

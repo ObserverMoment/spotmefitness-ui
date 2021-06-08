@@ -5,6 +5,7 @@ fragment WorkoutPlan on WorkoutPlan {
   archived
   name
   description
+  lengthWeeks
   coverImageUri
   introVideoUri
   introVideoThumbUri

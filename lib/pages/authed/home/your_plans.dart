@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
@@ -27,7 +28,7 @@ class YourPlansPage extends StatelessWidget {
           navigationBar: BorderlessNavBar(
             middle: NavBarTitle('Getting ready...'),
           ),
-          child: ShimmerCardList(itemCount: 20)),
+          child: ShimmerCardList(itemCount: 20, cardHeight: 260)),
       builder: (data) {
         final workoutPlans = data.userWorkoutPlans
             .sortedBy<DateTime>((w) => w.createdAt)
@@ -79,27 +80,45 @@ class FilterableWorkoutPlansList extends StatelessWidget {
       children: [
         workoutPlans.isEmpty
             ? Center(child: MyText('No plans to display...'))
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: workoutPlans.length + 1,
-                  itemBuilder: (c, i) {
-                    if (i == workoutPlans.length) {
-                      return SizedBox(height: 58);
-                    } else {
-                      return GestureDetector(
-                        onTap: () => _openWorkoutPlanDetails(
-                            context, workoutPlans[i].id),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 4.0),
-                          child: WorkoutPlanCard(workoutPlans[i]),
-                        ),
-                      );
-                    }
-                  },
-                ),
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 10),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: SlidingSelect<int>(
+                          value: 0,
+                          updateValue: (v) => print(v),
+                          children: {
+                            0: MyText('Created'),
+                            1: MyText('Enrolled'),
+                          }),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: workoutPlans.length + 1,
+                      itemBuilder: (c, i) {
+                        if (i == workoutPlans.length) {
+                          return SizedBox(height: 58);
+                        } else {
+                          return GestureDetector(
+                            onTap: () => _openWorkoutPlanDetails(
+                                context, workoutPlans[i].id),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 4.0),
+                              child: WorkoutPlanCard(workoutPlans[i]),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
         Positioned(
             bottom: kBottomNavBarHeight + 10,

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -34,20 +35,20 @@ class WorkoutCard extends StatelessWidget {
       ...workout.workoutTags.map((t) => t.tag)
     ];
 
-    final Set<String> _allMoves = {};
-    final Set<String> _allEquipments = {};
+    final Set<String> allMoves = {};
+    final Set<String> allEquipments = {};
 
     for (final section in workout.workoutSections) {
       for (final workoutSet in section.workoutSets) {
         for (final workoutMove in workoutSet.workoutMoves) {
           if (workoutMove.move.id != kRestMoveId) {
-            _allMoves.add(workoutMove.move.name);
+            allMoves.add(workoutMove.move.name);
           }
           if (workoutMove.equipment != null) {
-            _allEquipments.add(workoutMove.equipment!.name);
+            allEquipments.add(workoutMove.equipment!.name);
           }
           if (workoutMove.move.requiredEquipments.isNotEmpty) {
-            _allEquipments
+            allEquipments
                 .addAll(workoutMove.move.requiredEquipments.map((e) => e.name));
           }
         }
@@ -63,44 +64,79 @@ class WorkoutCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 2.0, top: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MyText(
+                  'Created by ${workout.user.displayName}',
+                  textAlign: TextAlign.left,
+                  size: FONTSIZE.TINY,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0, top: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    MyText(
-                      workout.name,
-                      weight: FontWeight.bold,
-                    ),
-                    if (workout.lengthMinutes != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: context.theme.primary.withOpacity(0.1)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 1.0, horizontal: 6),
-                            child: Duration(minutes: workout.lengthMinutes!)
-                                .display(bold: true),
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (workout.user.avatarUri != null)
+                        UserAvatar(
+                          avatarUri: workout.user.avatarUri!,
+                          radius: 34,
+                          border: true,
+                          borderWidth: 1,
+                        ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: MyText(
+                            workout.name,
+                            weight: FontWeight.bold,
+                            maxLines: 2,
                           ),
                         ),
-                      )
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-                DifficultyLevelDot(workout.difficultyLevel)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: DifficultyLevelTag(workout.difficultyLevel),
+                )
               ],
             ),
           ),
           if (workout.workoutSections.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Wrap(
-                spacing: 4,
-                runSpacing: 4,
-                children: workout.workoutSections
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: Wrap(spacing: 4, runSpacing: 4, children: [
+                if (workout.lengthMinutes != null)
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: context.theme.primary.withOpacity(0.1)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2.0, horizontal: 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          MyText(
+                            'Total: ',
+                            weight: FontWeight.bold,
+                          ),
+                          Duration(minutes: workout.lengthMinutes!)
+                              .display(bold: true),
+                        ],
+                      ),
+                    ),
+                  ),
+                ...workout.workoutSections
                     .sortedBy<num>((section) => section.sortPosition)
                     .map((section) => WorkoutSectionTypeTag(
                         Utils.textNotNull(section.name)
@@ -108,7 +144,7 @@ class WorkoutCard extends StatelessWidget {
                             : section.workoutSectionType.name,
                         timecap: section.timecap))
                     .toList(),
-              ),
+              ]),
             ),
           if (_allTags.isNotEmpty)
             Padding(
@@ -142,13 +178,13 @@ class WorkoutCard extends StatelessWidget {
                 ),
               ),
             ),
-          if (showMoves && _allMoves.isNotEmpty)
+          if (showMoves && allMoves.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: Wrap(
                 spacing: 4,
                 runSpacing: 4,
-                children: _allMoves
+                children: allMoves
                     .map(
                       (move) => Tag(
                         color: context.theme.background,
@@ -159,13 +195,13 @@ class WorkoutCard extends StatelessWidget {
                     .toList(),
               ),
             ),
-          if (showEquipment && _allEquipments.isNotEmpty)
+          if (showEquipment && allEquipments.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: Wrap(
                 spacing: 6,
                 runSpacing: 6,
-                children: _allEquipments
+                children: allEquipments
                     .map(
                       (e) => Container(
                           padding: const EdgeInsets.all(6),

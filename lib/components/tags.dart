@@ -147,7 +147,6 @@ class DifficultyLevelTag extends StatelessWidget {
           MyText(
             difficultyLevel.display,
             size: FONTSIZE.TINY,
-            weight: FontWeight.bold,
             color: Styles.white,
             lineHeight: 1.1,
           ),

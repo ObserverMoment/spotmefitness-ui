@@ -47,6 +47,7 @@ class RecentJournalEntries extends StatelessWidget {
               .reversed
               .take(10)
               .toList();
+
           return entries.isNotEmpty
               ? Column(
                   children: [

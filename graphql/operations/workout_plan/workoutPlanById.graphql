@@ -1,5 +1,5 @@
-query userWorkoutPlans {
-  userWorkoutPlans {
+query workoutPlanById($id: ID!) {
+  workoutPlanById(id: $id) {
     ...WorkoutPlan
     User {
       ...UserSummary

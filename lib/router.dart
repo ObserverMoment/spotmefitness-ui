@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/user_input/creators/benchmark_creato
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_creator/workout_plan_creator.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_page.dart';
@@ -99,6 +100,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
               path: 'progress-journal/:id', page: ProgressJournalDetailsPage),
           AutoRoute(path: 'benchmark/:id', page: BenchmarkDetailsPage),
           AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
+          AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
           AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
           AutoRoute(path: 'create-benchmark', page: BenchmarkCreatorPage),
           AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),

@@ -27,7 +27,7 @@ class ComingUpList extends StatelessWidget {
         loadingIndicator: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ShimmerCard(
-            height: kListHeight,
+            height: kListHeight + 14,
           ),
         ),
         builder: (data) {

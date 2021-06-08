@@ -56,6 +56,41 @@ extension DifficultyLevelExtension on DifficultyLevel {
         throw new Exception('This is not a valid DifficultyLevel enum: $this');
     }
   }
+
+  int get numericValue {
+    switch (this) {
+      case DifficultyLevel.light:
+        return 1;
+      case DifficultyLevel.challenging:
+        return 2;
+      case DifficultyLevel.intermediate:
+        return 3;
+      case DifficultyLevel.advanced:
+        return 4;
+      case DifficultyLevel.elite:
+        return 5;
+      default:
+        throw new Exception('This is not a valid DifficultyLevel enum: $this');
+    }
+  }
+
+  static DifficultyLevel levelFromNumber(num value) {
+    switch (value.round()) {
+      case 1:
+        return DifficultyLevel.light;
+      case 2:
+        return DifficultyLevel.challenging;
+      case 3:
+        return DifficultyLevel.intermediate;
+      case 4:
+        return DifficultyLevel.advanced;
+      case 5:
+        return DifficultyLevel.elite;
+      default:
+        throw new Exception(
+            'This is not a valid DifficultyLevel numeric value: $value');
+    }
+  }
 }
 
 extension EnumParser on String {

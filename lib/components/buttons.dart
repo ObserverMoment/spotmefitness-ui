@@ -46,13 +46,13 @@ class MyButton extends StatelessWidget {
         padding: EdgeInsets.all(0),
         onPressed: disabled ? null : onPressed,
         child: Container(
-          height: 50,
+          height: 48,
           constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
-          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           decoration: BoxDecoration(
               border: border ? Border.all(color: contentColor) : null,
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(12)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -182,7 +182,7 @@ class BorderButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(6),
               border:
                   withBorder ? Border.all(color: context.theme.primary) : null),
           child: Stack(
@@ -455,10 +455,10 @@ class DoItButton extends StatelessWidget {
       pressedOpacity: 0.8,
       onPressed: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
         decoration: BoxDecoration(
           color: context.theme.primary,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           children: [

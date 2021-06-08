@@ -256,6 +256,7 @@ input CreateWorkoutPlanDayWorkoutInput {
 
 input CreateWorkoutPlanInput {
   name: String!
+  lengthWeeks: Int!
   contentAccessScope: ContentAccessScope!
 }
 
@@ -845,11 +846,13 @@ input UpdateWorkoutPlanInput {
   archived: Boolean
   name: String
   description: String
+  lengthWeeks: Int
   coverImageUri: String
   introVideoUri: String
   introVideoThumbUri: String
   introAudioUri: String
   contentAccessScope: ContentAccessScope
+  WorkoutTags: [ConnectRelationInput!]
 }
 
 input UpdateWorkoutPlanReviewInput {
@@ -1030,6 +1033,7 @@ type WorkoutGoal {
   id: ID!
   name: String!
   description: String!
+  hexColor: String!
 }
 
 type WorkoutMove {
@@ -1058,6 +1062,7 @@ type WorkoutPlan {
   archived: Boolean!
   name: String!
   description: String
+  lengthWeeks: Int!
   coverImageUri: String
   introVideoUri: String
   introVideoThumbUri: String
@@ -1067,6 +1072,7 @@ type WorkoutPlan {
   Enrolments: [WorkoutPlanEnrolment!]!
   WorkoutPlanDays: [WorkoutPlanDay!]!
   WorkoutPlanReviews: [WorkoutPlanReview!]!
+  WorkoutTags: [WorkoutTag!]!
 }
 
 type WorkoutPlanDay {
@@ -1087,7 +1093,7 @@ type WorkoutPlanEnrolment {
   id: ID!
   startDate: DateTime!
   completedPlanDayWorkoutIds: [String!]!
-  User: User!
+  User: UserSummary!
   WorkoutPlan: WorkoutPlan!
 }
 
@@ -1096,7 +1102,7 @@ type WorkoutPlanReview {
   createdAt: DateTime!
   score: Float!
   comment: String
-  User: User!
+  User: UserSummary!
 }
 
 type WorkoutSection {

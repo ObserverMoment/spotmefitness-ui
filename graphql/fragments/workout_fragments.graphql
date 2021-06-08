@@ -47,6 +47,7 @@ fragment WorkoutGoal on WorkoutGoal {
   id
   name
   description
+  hexColor
 }
 
 fragment WorkoutSection on WorkoutSection {

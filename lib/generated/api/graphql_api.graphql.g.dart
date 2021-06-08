@@ -1508,7 +1508,8 @@ WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..name = json['name'] as String
-    ..description = json['description'] as String;
+    ..description = json['description'] as String
+    ..hexColor = json['hexColor'] as String;
 }
 
 Map<String, dynamic> _$WorkoutGoalToJson(WorkoutGoal instance) =>
@@ -1517,6 +1518,7 @@ Map<String, dynamic> _$WorkoutGoalToJson(WorkoutGoal instance) =>
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
+      'hexColor': instance.hexColor,
     };
 
 WorkoutTag _$WorkoutTagFromJson(Map<String, dynamic> json) {
@@ -1720,7 +1722,8 @@ WorkoutPlanEnrolment _$WorkoutPlanEnrolmentFromJson(Map<String, dynamic> json) {
     ..completedPlanDayWorkoutIds =
         (json['completedPlanDayWorkoutIds'] as List<dynamic>)
             .map((e) => e as String)
-            .toList();
+            .toList()
+    ..user = UserSummary.fromJson(json['User'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$WorkoutPlanEnrolmentToJson(
@@ -1730,6 +1733,7 @@ Map<String, dynamic> _$WorkoutPlanEnrolmentToJson(
       '__typename': instance.$$typename,
       'startDate': fromDartDateTimeToGraphQLDateTime(instance.startDate),
       'completedPlanDayWorkoutIds': instance.completedPlanDayWorkoutIds,
+      'User': instance.user.toJson(),
     };
 
 WorkoutPlanReview _$WorkoutPlanReviewFromJson(Map<String, dynamic> json) {
@@ -1738,7 +1742,8 @@ WorkoutPlanReview _$WorkoutPlanReviewFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
     ..score = (json['score'] as num).toDouble()
-    ..comment = json['comment'] as String?;
+    ..comment = json['comment'] as String?
+    ..user = UserSummary.fromJson(json['User'] as Map<String, dynamic>);
 }
 
 Map<String, dynamic> _$WorkoutPlanReviewToJson(WorkoutPlanReview instance) =>
@@ -1748,6 +1753,7 @@ Map<String, dynamic> _$WorkoutPlanReviewToJson(WorkoutPlanReview instance) =>
       'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
       'score': instance.score,
       'comment': instance.comment,
+      'User': instance.user.toJson(),
     };
 
 WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
@@ -1758,6 +1764,7 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
     ..archived = json['archived'] as bool
     ..name = json['name'] as String
     ..description = json['description'] as String?
+    ..lengthWeeks = json['lengthWeeks'] as int
     ..coverImageUri = json['coverImageUri'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
@@ -1774,6 +1781,9 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
         .toList()
     ..workoutPlanReviews = (json['WorkoutPlanReviews'] as List<dynamic>)
         .map((e) => WorkoutPlanReview.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..workoutTags = (json['WorkoutTags'] as List<dynamic>)
+        .map((e) => WorkoutTag.fromJson(e as Map<String, dynamic>))
         .toList();
 }
 
@@ -1785,6 +1795,7 @@ Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) =>
       'archived': instance.archived,
       'name': instance.name,
       'description': instance.description,
+      'lengthWeeks': instance.lengthWeeks,
       'coverImageUri': instance.coverImageUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -1797,6 +1808,7 @@ Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) =>
       'Enrolments': instance.enrolments.map((e) => e.toJson()).toList(),
       'WorkoutPlanReviews':
           instance.workoutPlanReviews.map((e) => e.toJson()).toList(),
+      'WorkoutTags': instance.workoutTags.map((e) => e.toJson()).toList(),
     };
 
 UserWorkoutPlans$Query _$UserWorkoutPlans$QueryFromJson(
@@ -3668,6 +3680,19 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+WorkoutPlanById$Query _$WorkoutPlanById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return WorkoutPlanById$Query()
+    ..workoutPlanById =
+        WorkoutPlan.fromJson(json['workoutPlanById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$WorkoutPlanById$QueryToJson(
+        WorkoutPlanById$Query instance) =>
+    <String, dynamic>{
+      'workoutPlanById': instance.workoutPlanById.toJson(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -4583,6 +4608,19 @@ WorkoutByIdArguments _$WorkoutByIdArgumentsFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+WorkoutPlanByIdArguments _$WorkoutPlanByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return WorkoutPlanByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$WorkoutPlanByIdArgumentsToJson(
+        WorkoutPlanByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };
