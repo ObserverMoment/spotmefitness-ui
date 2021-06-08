@@ -1492,7 +1492,13 @@ UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String;
+    ..displayName = json['displayName'] as String
+    ..userProfileScope = _$enumDecode(
+        _$UserProfileScopeEnumMap, json['userProfileScope'],
+        unknownValue: UserProfileScope.artemisUnknown)
+    ..tagline = json['tagline'] as String?
+    ..countryCode = json['countryCode'] as String?
+    ..townCity = json['townCity'] as String?;
 }
 
 Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
@@ -1501,7 +1507,17 @@ Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
       'id': instance.id,
       'avatarUri': instance.avatarUri,
       'displayName': instance.displayName,
+      'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
+      'tagline': instance.tagline,
+      'countryCode': instance.countryCode,
+      'townCity': instance.townCity,
     };
+
+const _$UserProfileScopeEnumMap = {
+  UserProfileScope.private: 'PRIVATE',
+  UserProfileScope.public: 'PUBLIC',
+  UserProfileScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
 
 WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
   return WorkoutGoal()
@@ -1936,12 +1952,6 @@ Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
       'hasOnboarded': instance.hasOnboarded,
       'lastname': instance.lastname,
     };
-
-const _$UserProfileScopeEnumMap = {
-  UserProfileScope.private: 'PRIVATE',
-  UserProfileScope.public: 'PUBLIC',
-  UserProfileScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
 
 CreateMove$Mutation _$CreateMove$MutationFromJson(Map<String, dynamic> json) {
   return CreateMove$Mutation()

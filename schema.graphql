@@ -994,6 +994,10 @@ type UserSummary {
   id: ID!
   displayName: String!
   avatarUri: String
+  userProfileScope: UserProfileScope!
+  tagline: String
+  countryCode: String
+  townCity: String
 }
 
 type Workout {

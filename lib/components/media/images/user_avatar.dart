@@ -24,7 +24,12 @@ class UserAvatar extends StatelessWidget {
       width: border ? radius - 10 : radius,
       height: border ? radius - 10 : radius,
       child: avatarUri == null
-          ? Icon(CupertinoIcons.person_alt)
+          ? Center(
+              child: Icon(
+                CupertinoIcons.person_alt,
+                size: radius / 1.5,
+              ),
+            )
           : SizedUploadcareImage(
               avatarUri!,
               displaySize: Size.square(radius * 2),

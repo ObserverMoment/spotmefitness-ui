@@ -58,6 +58,10 @@ fragment UserSummary on UserSummary {
   id
   avatarUri
   displayName
+  userProfileScope
+  tagline
+  countryCode
+  townCity
 }
 
 fragment UserBenchmark on UserBenchmark {

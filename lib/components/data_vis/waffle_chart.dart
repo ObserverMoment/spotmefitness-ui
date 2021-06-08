@@ -1,40 +1,36 @@
 import 'package:flutter/cupertino.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+
+List<Widget> _buildWaffleChartList(
+    {int totalBlocks = 100, required List<WaffleChartInput> inputs}) {
+  final sortedInputs = inputs.sortedBy<num>((i) => i.fraction);
+  List<Widget> children = [];
+
+  /// The value already accounted for by the preceding inputs.
+  double curRangeLow = 0.0;
+
+  for (var i = 0; i < totalBlocks; i++) {
+    if ((i / totalBlocks) >= sortedInputs[0].fraction + curRangeLow) {
+      curRangeLow += sortedInputs[0].fraction;
+      sortedInputs.removeAt(0);
+    }
+    children.add(Container(
+      decoration: BoxDecoration(
+        color: sortedInputs[0].color,
+      ),
+    ));
+  }
+
+  /// Reversed as we want the largest block at the top.
+  return children.reversed.toList();
+}
 
 class WaffleChart extends StatelessWidget {
   final List<WaffleChartInput> inputs;
   final double width;
   WaffleChart({Key? key, required this.inputs, required this.width})
-      : assert(inputs.sumByDouble((i) => i.fraction) == 1.0),
-        super(key: key);
-
-  final kTotalBlocks = 100;
-
-  List<Widget> _buildList() {
-    final sortedInputs = inputs.sortedBy<num>((i) => i.fraction);
-    List<Widget> children = [];
-
-    /// The value already accounted for by the preceding inputs.
-    double curRangeLow = 0.0;
-
-    for (var i = 0; i < kTotalBlocks; i++) {
-      if ((i / kTotalBlocks) >= sortedInputs[0].fraction + curRangeLow) {
-        curRangeLow += sortedInputs[0].fraction;
-        sortedInputs.removeAt(0);
-      }
-      children.add(Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: sortedInputs[0].color,
-        ),
-      ));
-    }
-
-    /// Reversed as we want the largest block at the top.
-    return children.reversed.toList();
-  }
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +45,7 @@ class WaffleChart extends StatelessWidget {
               crossAxisSpacing: 1,
               crossAxisCount: 10,
               shrinkWrap: true,
-              children: _buildList()),
+              children: _buildWaffleChartList(inputs: inputs)),
         ),
         SizedBox(width: 8),
         Column(
@@ -72,6 +68,64 @@ class WaffleChart extends StatelessWidget {
                         SizedBox(width: 6),
                         MyText(
                           i.name,
+                          size: FONTSIZE.SMALL,
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        )
+      ],
+    );
+  }
+}
+
+class WaffleChartRow extends StatelessWidget {
+  final List<WaffleChartInput> inputs;
+  final double height;
+  WaffleChartRow({Key? key, required this.inputs, required this.height})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: SizedBox(
+            height: height,
+            child: GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                crossAxisCount: 4,
+                shrinkWrap: true,
+                children: _buildWaffleChartList(inputs: inputs)),
+          ),
+        ),
+        SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: inputs
+              .sortedBy<num>((i) => i.fraction)
+              .reversed
+              .map((i) => Container(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: i.color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(width: 3),
+                        MyText(
+                          i.name,
+                          weight: FontWeight.bold,
                           size: FONTSIZE.SMALL,
                         ),
                       ],

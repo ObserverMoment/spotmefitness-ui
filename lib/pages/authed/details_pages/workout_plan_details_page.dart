@@ -15,6 +15,9 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -243,10 +246,14 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                             workoutPlan.calcDifficulty),
                                         Tag(
                                           tag: workoutPlan.lengthString,
+                                          color: Styles.white,
+                                          textColor: Styles.black,
                                         ),
                                         Tag(
                                           tag:
                                               '${workoutPlan.sessionsPerWeek} days / week',
+                                          color: Styles.white,
+                                          textColor: Styles.black,
                                         ),
                                         ...workoutPlan.workoutTags
                                             .map((t) => Tag(
@@ -324,9 +331,16 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                 controller: _pageController,
                                 children: [
                                   MyText('Schedule List'),
-                                  MyText('Goals'),
-                                  MyText('Reviews'),
-                                  MyText('Participants'),
+                                  WorkoutPlanGoals(
+                                    workoutPlan: workoutPlan,
+                                  ),
+                                  WorkoutPlanReviews(
+                                      reviews: workoutPlan.workoutPlanReviews),
+                                  WorkoutPlanParticipants(
+                                    userSummaries: workoutPlan.enrolments
+                                        .map((e) => e.user)
+                                        .toList(),
+                                  )
                                 ]),
                           ),
                         ],

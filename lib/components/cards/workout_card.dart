@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -117,23 +118,25 @@ class WorkoutCard extends StatelessWidget {
               child: Wrap(spacing: 4, runSpacing: 4, children: [
                 if (workout.lengthMinutes != null)
                   Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        color: context.theme.primary.withOpacity(0.1)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2.0, horizontal: 10),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          MyText(
-                            'Total: ',
-                            weight: FontWeight.bold,
-                          ),
-                          Duration(minutes: workout.lengthMinutes!)
-                              .display(bold: true),
-                        ],
-                      ),
+                        color: Styles.colorTwo.withOpacity(0.8)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MyText(
+                          'Total: ',
+                          weight: FontWeight.bold,
+                          color: Styles.white,
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: Duration(minutes: workout.lengthMinutes!)
+                              .display(bold: true, color: Styles.white),
+                        ),
+                      ],
                     ),
                   ),
                 ...workout.workoutSections
