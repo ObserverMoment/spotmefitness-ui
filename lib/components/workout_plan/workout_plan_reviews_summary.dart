@@ -19,8 +19,7 @@ class WorkoutPlanReviewsSummary extends StatelessWidget {
     final average = reviews.averageBy((r) => r.score) ?? 0.0;
     return reviews.isEmpty
         ? MyText(
-            'No reviews yet...',
-            size: FONTSIZE.SMALL,
+            'No reviews yet',
             subtext: true,
           )
         : Column(

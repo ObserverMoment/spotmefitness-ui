@@ -21,7 +21,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     return enrolments.isEmpty
         ? MyText(
-            'No participants yet...',
+            'No participants yet',
             size: FONTSIZE.SMALL,
             subtext: true,
           )

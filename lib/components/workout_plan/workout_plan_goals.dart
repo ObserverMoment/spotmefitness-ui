@@ -102,7 +102,7 @@ class WorkoutPlanWeekGoals extends StatelessWidget {
           ),
           SizedBox(height: 8),
           allGoals.isEmpty
-              ? Center(child: MyText('No goals specified...'))
+              ? Center(child: MyText('No goals specified'))
               : Padding(
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
@@ -110,7 +110,7 @@ class WorkoutPlanWeekGoals extends StatelessWidget {
                 ),
           if (allTags.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 6),
+              padding: const EdgeInsets.only(top: 4.0, bottom: 6),
               child: Wrap(
                 spacing: 4,
                 runSpacing: 4,

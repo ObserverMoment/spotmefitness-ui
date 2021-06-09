@@ -1,3 +1,4 @@
+# Just the workout - not descendants.
 mutation updateWorkout($data: UpdateWorkoutInput!) {
   updateWorkout: updateWorkout(data: $data) {
     ...Workout

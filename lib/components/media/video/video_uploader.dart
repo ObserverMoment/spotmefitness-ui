@@ -105,6 +105,7 @@ class _VideoUploaderState extends State<VideoUploader> {
     final Color _primary = context.theme.primary;
     final Color _background = context.theme.background;
     final bool hasVideo = Utils.textNotNull(widget.videoUri);
+
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,
@@ -165,7 +166,7 @@ class _VideoUploaderState extends State<VideoUploader> {
         height: widget.displaySize.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: _primary.withOpacity(0.4),
+          color: _primary.withOpacity(0.2),
           boxShadow: [Styles.avatarBoxShadow],
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,

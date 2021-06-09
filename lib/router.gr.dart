@@ -159,7 +159,7 @@ class AppRouter extends _i1.RootStackRouter {
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<WorkoutFinderRouteArgs>();
-          return _i16.WorkoutFinderPage(args.selectWorkout);
+          return _i16.WorkoutFinderPage(selectWorkout: args.selectWorkout);
         }),
     SettingsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,

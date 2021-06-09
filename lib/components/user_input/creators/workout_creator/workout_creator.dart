@@ -25,23 +25,17 @@ class WorkoutCreatorPage extends StatefulWidget {
 
 class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
   int _activeTabIndex = 0;
-  Workout? _workout;
   final PageController _pageController = PageController();
   late bool _isCreate;
+
+  /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
+  late Future<Workout> _initWorkoutFn;
 
   @override
   void initState() {
     super.initState();
     _isCreate = widget.workout == null;
-  }
-
-  Future<Workout> _initWorkout() async {
-    if (_workout != null) {
-      return _workout!;
-    } else {
-      _workout = await WorkoutCreatorBloc.initialize(context, widget.workout);
-      return _workout!;
-    }
+    _initWorkoutFn = WorkoutCreatorBloc.initialize(context, widget.workout);
   }
 
   void _changeTab(int index) {
@@ -81,7 +75,7 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
             child: LoadingCircle(),
           ),
         ),
-        future: _initWorkout(),
+        future: _initWorkoutFn,
         builder: (initialWorkout) => ChangeNotifierProvider(
               create: (context) => WorkoutCreatorBloc(
                   initialWorkout: initialWorkout,

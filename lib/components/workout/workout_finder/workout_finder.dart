@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:graphql/client.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ import 'package:json_annotation/json_annotation.dart' as json;
 /// Wrapper around the UI which handles the [ObservableQuery] [UserWorkouts]
 class WorkoutFinderPage extends StatelessWidget {
   final void Function(Workout workout) selectWorkout;
-  WorkoutFinderPage(this.selectWorkout);
+  const WorkoutFinderPage({required this.selectWorkout});
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +58,10 @@ class WorkoutFinderPage extends StatelessWidget {
 class WorkoutFinderPageUI extends StatefulWidget {
   final List<Workout> userWorkouts;
   final void Function(Workout workout) selectWorkout;
-  WorkoutFinderPageUI(
-      {required this.userWorkouts, required this.selectWorkout});
+  const WorkoutFinderPageUI({
+    required this.userWorkouts,
+    required this.selectWorkout,
+  });
 
   @override
   _WorkoutFinderPageUIState createState() => _WorkoutFinderPageUIState();
@@ -70,13 +71,13 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   final kPanelBorderRadius = 30.0;
   final kCollapsedpanelheight = 66.0;
 
+  /// Doesn't appear to require disposing.
   final PanelController _panelController = PanelController();
   bool _panelIsOpen = false;
 
   /// 0 is your workouts, 1 is public workouts.
   int _activePageIndex = 0;
 
-  /// Doesn't appear to require disposing.
   PageController _tabPageController = PageController();
 
   late WorkoutFiltersBloc _bloc;
@@ -203,7 +204,10 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   /// Pops itself (and any stack items such as the text seach widget)
   /// Then passes the selected workout to the parent.
   void _selectWorkout(Workout workout) {
-    context.router.popUntilRoot();
+    // If open - pop the text search route.
+    context.router.popUntilRouteWithName(WorkoutFinderRoute.name);
+    // Then pop itself.
+    context.pop();
     widget.selectWorkout(workout);
   }
 

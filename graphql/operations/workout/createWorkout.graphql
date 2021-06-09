@@ -4,11 +4,5 @@ mutation createWorkout($data: CreateWorkoutInput!) {
     User {
       ...UserSummary
     }
-    WorkoutGoals {
-      ...WorkoutGoal
-    }
-    WorkoutTags {
-      ...WorkoutTag
-    }
   }
 }

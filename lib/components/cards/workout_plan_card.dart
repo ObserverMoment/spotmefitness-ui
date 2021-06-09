@@ -97,64 +97,67 @@ class WorkoutPlanCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: DifficultyLevelTag(workoutPlan.calcDifficulty),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(right: 8.0, top: 6, bottom: 6),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: Styles.colorOne.withOpacity(0.85)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 8),
-                            child: MyText(
-                              workoutPlan.lengthString,
-                              weight: FontWeight.bold,
-                              color: Styles.white,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3.0),
-                          child: MyText(
-                            '${workoutPlan.sessionsPerWeek} days / week',
-                            weight: FontWeight.bold,
-                          ),
-                        ),
-                        if (Utils.textNotNull(workoutPlan.description))
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3.0),
-                            child: MyText(
-                              workoutPlan.description!,
-                              maxLines: 4,
-                              textAlign: TextAlign.center,
-                              lineHeight: 1.2,
-                              size: FONTSIZE.SMALL,
-                            ),
-                          ),
-                      ],
-                    ),
+                if (workoutPlan.workoutPlanDays.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: DifficultyLevelTag(workoutPlan.calcDifficulty),
                   ),
-                ),
-                WaffleChart(width: 90, inputs: calcInputs()),
               ],
             ),
           ),
+          workoutPlan.workoutPlanDays.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: 8.0, top: 6, bottom: 6),
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Styles.colorOne.withOpacity(0.85)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 8),
+                                  child: MyText(
+                                    workoutPlan.lengthString,
+                                    weight: FontWeight.bold,
+                                    color: Styles.white,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3.0),
+                                child: MyText(
+                                  '${workoutPlan.sessionsPerWeek} days / week',
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              if (Utils.textNotNull(workoutPlan.description))
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 3.0),
+                                  child: MyText(
+                                    workoutPlan.description!,
+                                    maxLines: 4,
+                                    textAlign: TextAlign.center,
+                                    lineHeight: 1.2,
+                                    size: FONTSIZE.SMALL,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      WaffleChart(width: 90, inputs: calcInputs()),
+                    ],
+                  ),
+                )
+              : Center(child: MyText('Nothing planned yet')),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
             child: Row(

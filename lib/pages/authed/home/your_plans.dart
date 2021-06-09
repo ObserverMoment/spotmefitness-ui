@@ -15,8 +15,83 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/services/text_search_filters.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-class YourPlansPage extends StatelessWidget {
+class YourPlansPage extends StatefulWidget {
+  @override
+  _YourPlansPageState createState() => _YourPlansPageState();
+}
+
+class _YourPlansPageState extends State<YourPlansPage> {
+  /// 0 = CreatedPlans, 1 = Participating in plans
+  int _activeTabIndex = 0;
+  PageController _pageController = PageController();
+
+  void _updatePageIndex(int index) {
+    setState(() => _activeTabIndex = index);
+    _pageController.toPage(_activeTabIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        navigationBar: BorderlessNavBar(
+          middle: NavBarTitle('Your Plans'),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CreateIconButton(
+                  onPressed: () =>
+                      context.navigateTo(WorkoutPlanCreatorRoute())),
+              InfoPopupButton(
+                infoWidget: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyText(
+                    'Info about this list, the filters, what the icons mean, the different tag types etc',
+                    maxLines: 10,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              child: SizedBox(
+                width: double.infinity,
+                child: SlidingSelect<int>(
+                    value: _activeTabIndex,
+                    updateValue: _updatePageIndex,
+                    children: {
+                      0: MyText('Created'),
+                      1: MyText('Joined'),
+                    }),
+              ),
+            ),
+            Expanded(
+                child: PageView(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              children: [YourCreatedWorkoutPlans(), YourEnrolledWorkoutPlans()],
+            ))
+          ],
+        ));
+  }
+}
+
+class YourCreatedWorkoutPlans extends StatelessWidget {
+  const YourCreatedWorkoutPlans({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserWorkoutPlans$Query, json.JsonSerializable>(
@@ -24,41 +99,26 @@ class YourPlansPage extends StatelessWidget {
           'YourWorkoutPlansPage - ${UserWorkoutPlansQuery().operationName}'),
       query: UserWorkoutPlansQuery(),
       garbageCollectAfterFetch: true,
-      loadingIndicator: CupertinoPageScaffold(
-          navigationBar: BorderlessNavBar(
-            middle: NavBarTitle('Getting ready...'),
-          ),
-          child: ShimmerCardList(itemCount: 20, cardHeight: 260)),
+      loadingIndicator: ShimmerCardList(itemCount: 20, cardHeight: 260),
       builder: (data) {
         final workoutPlans = data.userWorkoutPlans
             .sortedBy<DateTime>((w) => w.createdAt)
             .reversed
             .toList();
 
-        return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
-              middle: NavBarTitle('Your WorkoutPlans'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CreateIconButton(
-                      onPressed: () =>
-                          context.navigateTo(WorkoutPlanCreatorRoute())),
-                  InfoPopupButton(
-                    infoWidget: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        'Info about this list, the filters, what the icons mean, the different tag types etc',
-                        maxLines: 10,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            child: FilterableWorkoutPlansList(workoutPlans));
+        return FilterableWorkoutPlansList(workoutPlans);
       },
+    );
+  }
+}
+
+class YourEnrolledWorkoutPlans extends StatelessWidget {
+  const YourEnrolledWorkoutPlans({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: MyText('Your enrolled plans...'),
     );
   }
 }
@@ -80,45 +140,27 @@ class FilterableWorkoutPlansList extends StatelessWidget {
       children: [
         workoutPlans.isEmpty
             ? Center(child: MyText('No plans to display...'))
-            : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 10),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: SlidingSelect<int>(
-                          value: 0,
-                          updateValue: (v) => print(v),
-                          children: {
-                            0: MyText('Created'),
-                            1: MyText('Enrolled'),
-                          }),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: workoutPlans.length + 1,
-                      itemBuilder: (c, i) {
-                        if (i == workoutPlans.length) {
-                          return SizedBox(height: 58);
-                        } else {
-                          return GestureDetector(
-                            onTap: () => _openWorkoutPlanDetails(
-                                context, workoutPlans[i].id),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 4.0),
-                              child: WorkoutPlanCard(workoutPlans[i]),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ],
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: workoutPlans.length + 1,
+                  itemBuilder: (c, i) {
+                    if (i == workoutPlans.length) {
+                      return SizedBox(height: 58);
+                    } else {
+                      return GestureDetector(
+                        onTap: () => _openWorkoutPlanDetails(
+                            context, workoutPlans[i].id),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 4.0),
+                          child: WorkoutPlanCard(workoutPlans[i]),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
         Positioned(
             bottom: kBottomNavBarHeight + 10,

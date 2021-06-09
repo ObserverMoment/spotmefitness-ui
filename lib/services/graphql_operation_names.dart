@@ -45,4 +45,7 @@ class GQLVarParamKeys {
 
   static String workoutByIdQuery(String id) => getParameterizedQueryId(
       WorkoutByIdQuery(variables: WorkoutByIdArguments(id: id)));
+
+  static String workoutPlanByIdQuery(String id) => getParameterizedQueryId(
+      WorkoutPlanByIdQuery(variables: WorkoutPlanByIdArguments(id: id)));
 }

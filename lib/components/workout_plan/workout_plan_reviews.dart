@@ -20,11 +20,11 @@ class WorkoutPlanReviews extends StatelessWidget {
   Widget build(BuildContext context) {
     final average = reviews.averageBy((r) => r.score) ?? 0.0;
     final dateSortedReviews = reviews.sortedBy<DateTime>((r) => r.createdAt);
-    return reviews.isEmpty
+
+    return dateSortedReviews.isEmpty
         ? Center(
             child: MyText(
-              'No reviews yet...',
-              size: FONTSIZE.SMALL,
+              'No reviews yet',
               subtext: true,
             ),
           )
@@ -49,17 +49,17 @@ class WorkoutPlanReviews extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: MyText('From ${reviews.length} reviews'),
+                child: MyText('From ${dateSortedReviews.length} reviews'),
               ),
               Expanded(
                 child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: reviews.length,
+                    itemCount: dateSortedReviews.length,
                     itemBuilder: (c, i) => Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: WorkoutPlanReviewCard(
-                            review: reviews[i],
+                            review: dateSortedReviews[i],
                           ),
                         )),
               )

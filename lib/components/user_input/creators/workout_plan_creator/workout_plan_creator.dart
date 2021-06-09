@@ -6,6 +6,9 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_creator/workout_plan_creator_media.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_creator/workout_plan_creator_meta.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_creator/workout_plan_creator_structure/workout_plan_creator_structure.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -21,24 +24,18 @@ class WorkoutPlanCreatorPage extends StatefulWidget {
 
 class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
   int _activeTabIndex = 0;
-  WorkoutPlan? _workoutPlan;
   final PageController _pageController = PageController();
   late bool _isCreate;
+
+  /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
+  late Future<WorkoutPlan> _initWorkoutPlanFn;
 
   @override
   void initState() {
     super.initState();
     _isCreate = widget.workoutPlan == null;
-  }
-
-  Future<WorkoutPlan> _initWorkoutPlan() async {
-    if (_workoutPlan != null) {
-      return _workoutPlan!;
-    } else {
-      _workoutPlan =
-          await WorkoutPlanCreatorBloc.initialize(context, widget.workoutPlan);
-      return _workoutPlan!;
-    }
+    _initWorkoutPlanFn =
+        WorkoutPlanCreatorBloc.initialize(context, widget.workoutPlan);
   }
 
   void _changeTab(int index) {
@@ -77,9 +74,12 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
             child: LoadingCircle(),
           ),
         ),
-        future: _initWorkoutPlan(),
-        builder: (initialWorkout) => ChangeNotifierProvider(
-              create: (context) => WorkoutPlanCreatorBloc(),
+        future: _initWorkoutPlanFn,
+        builder: (initialWorkoutPlan) => ChangeNotifierProvider(
+              create: (context) => WorkoutPlanCreatorBloc(
+                  context: context,
+                  initialWorkoutPlan: initialWorkoutPlan,
+                  isCreate: _isCreate),
               builder: (context, child) {
                 final bool formIsDirty =
                     context.select<WorkoutPlanCreatorBloc, bool>(
@@ -141,9 +141,9 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
                         controller: _pageController,
                         onPageChanged: _changeTab,
                         children: [
-                          MyText('Meta'),
-                          MyText('Structure'),
-                          MyText('Media'),
+                          WorkoutPlanCreatorMeta(),
+                          WorkoutPlanCreatorStructure(),
+                          WorkoutPlanCreatorMedia(),
                         ],
                       )),
                     ],

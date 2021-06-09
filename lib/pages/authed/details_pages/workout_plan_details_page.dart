@@ -243,8 +243,10 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                       spacing: 5,
                                       runSpacing: 5,
                                       children: [
-                                        DifficultyLevelTag(
-                                            workoutPlan.calcDifficulty),
+                                        if (workoutPlan
+                                            .workoutPlanDays.isNotEmpty)
+                                          DifficultyLevelTag(
+                                              workoutPlan.calcDifficulty),
                                         Tag(
                                           tag: workoutPlan.lengthString,
                                           color: Styles.white,
