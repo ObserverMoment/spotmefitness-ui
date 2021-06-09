@@ -21,7 +21,8 @@ class SocialPage extends StatelessWidget {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MyText('Social Page'),
+                    MyText(
+                        'Chat to friends and workout buddies, join clubs and find great coaches!'),
                   ]),
             ),
           ],

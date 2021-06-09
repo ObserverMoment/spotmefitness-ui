@@ -80,64 +80,6 @@ class WaffleChart extends StatelessWidget {
   }
 }
 
-class WaffleChartRow extends StatelessWidget {
-  final List<WaffleChartInput> inputs;
-  final double height;
-  WaffleChartRow({Key? key, required this.inputs, required this.height})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(18),
-          child: SizedBox(
-            height: height,
-            child: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                children: _buildWaffleChartList(inputs: inputs)),
-          ),
-        ),
-        SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: inputs
-              .sortedBy<num>((i) => i.fraction)
-              .reversed
-              .map((i) => Container(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: i.color,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        SizedBox(width: 3),
-                        MyText(
-                          i.name,
-                          weight: FontWeight.bold,
-                          size: FONTSIZE.SMALL,
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
-        )
-      ],
-    );
-  }
-}
-
 class WaffleChartInput {
   final double fraction;
   final Color color;

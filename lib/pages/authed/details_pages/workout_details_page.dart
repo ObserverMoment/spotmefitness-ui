@@ -452,7 +452,6 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                       },
                       body: Column(
                         children: [
-                          HorizontalLine(),
                           if (workout.workoutSections.isEmpty)
                             Padding(
                               padding: const EdgeInsets.all(24.0),

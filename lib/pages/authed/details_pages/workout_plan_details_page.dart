@@ -18,6 +18,7 @@ import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.d
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -313,7 +314,6 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                       },
                       body: Column(
                         children: [
-                          HorizontalLine(),
                           Padding(
                               padding:
                                   const EdgeInsets.only(top: 12, bottom: 8),
@@ -330,7 +330,9 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                             child: PageView(
                                 controller: _pageController,
                                 children: [
-                                  MyText('Schedule List'),
+                                  WorkoutPlanWorkoutSchedule(
+                                    workoutPlan: workoutPlan,
+                                  ),
                                   WorkoutPlanGoals(
                                     workoutPlan: workoutPlan,
                                   ),

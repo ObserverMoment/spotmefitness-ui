@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/data_vis/percentage_bar_chart.dart';
 import 'package:spotmefitness_ui/components/data_vis/waffle_chart.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -19,25 +19,23 @@ class WorkoutPlanGoals extends StatelessWidget {
     final daysByWeek = workoutPlan.workoutPlanDays
         .groupBy<int, WorkoutPlanDay>((day) => (day.dayNumber / 7).floor());
 
-    return Container(
-      child: ListView.builder(
-        itemCount: workoutPlan.lengthWeeks,
-        itemBuilder: (c, i) => Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: WorkoutPlanWeek(
-            workoutPlanDays: daysByWeek[i] ?? [],
-            weekNumber: i + 1,
-          ),
+    return ListView.builder(
+      itemCount: workoutPlan.lengthWeeks,
+      itemBuilder: (c, i) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8),
+        child: WorkoutPlanWeekGoals(
+          workoutPlanDays: daysByWeek[i] ?? [],
+          weekNumber: i + 1,
         ),
       ),
     );
   }
 }
 
-class WorkoutPlanWeek extends StatelessWidget {
+class WorkoutPlanWeekGoals extends StatelessWidget {
   final int weekNumber;
   final List<WorkoutPlanDay> workoutPlanDays;
-  const WorkoutPlanWeek(
+  const WorkoutPlanWeekGoals(
       {Key? key, required this.workoutPlanDays, required this.weekNumber})
       : super(key: key);
 
@@ -94,11 +92,22 @@ class WorkoutPlanWeek extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          H3('Week $weekNumber'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                H3('Week $weekNumber'),
+              ],
+            ),
+          ),
           SizedBox(height: 8),
           allGoals.isEmpty
               ? Center(child: MyText('No goals specified...'))
-              : WaffleChartRow(inputs: calcInputs(allGoals), height: 60),
+              : Padding(
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                  child: PercentageBarChartSingle(inputs: calcInputs(allGoals)),
+                ),
           if (allTags.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 6),

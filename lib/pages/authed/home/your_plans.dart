@@ -43,8 +43,8 @@ class YourPlansPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CreateIconButton(
-                    onPressed: () => print('open plan creator'),
-                  ),
+                      onPressed: () =>
+                          context.navigateTo(WorkoutPlanCreatorRoute())),
                   InfoPopupButton(
                     infoWidget: Padding(
                       padding: const EdgeInsets.all(8.0),

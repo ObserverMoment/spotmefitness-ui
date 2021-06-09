@@ -111,6 +111,7 @@ flutter:
     - assets/body_areas/back/selection/
     - assets/equipment_icons/
     - assets/flags/png/
+    - assets/indicators/
     - assets/logos/
     - assets/stock_images/
     - assets/workout_filters_icons/

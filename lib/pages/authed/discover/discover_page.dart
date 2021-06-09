@@ -21,7 +21,8 @@ class DiscoverPage extends StatelessWidget {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MyText('Discover Page'),
+                    MyText(
+                        'Discover great new workouts, plans, challenges and events!'),
                   ]),
             ),
           ],
