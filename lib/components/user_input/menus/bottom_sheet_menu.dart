@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class BottomSheetMenuItem {
   String text;
@@ -60,6 +62,53 @@ class BottomSheetMenu extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class BottomSheetMenuHeader extends StatelessWidget {
+  final String? imageUri;
+  final String name;
+  final String subtitle;
+  const BottomSheetMenuHeader(
+      {Key? key, this.imageUri, required this.name, required this.subtitle})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (Utils.textNotNull(imageUri))
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedUploadcareImage(
+                imageUri!,
+                displaySize: Size(70, 70),
+              ),
+            ),
+          ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              MyText(
+                name,
+                weight: FontWeight.bold,
+                size: FONTSIZE.BIG,
+              ),
+              MyText(
+                subtitle,
+                subtext: true,
+                weight: FontWeight.bold,
+                size: FONTSIZE.BIG,
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

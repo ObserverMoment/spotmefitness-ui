@@ -18,14 +18,20 @@ class WorkoutCard extends StatelessWidget {
   final EdgeInsets padding;
   final bool showMoves;
   final bool showEquipment;
+  final bool showTags;
+  final bool showDescription;
   final bool hideBackgroundImage;
+  final bool showCreatedBy;
   WorkoutCard(this.workout,
       {this.backgroundColor,
       this.withBoxShadow = true,
       this.showMoves = true,
       this.showEquipment = true,
       this.hideBackgroundImage = false,
-      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
+      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      this.showCreatedBy = true,
+      this.showTags = true,
+      this.showDescription = true});
 
   final double cardHeight = 120;
 
@@ -64,19 +70,20 @@ class WorkoutCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                MyText(
-                  'Created by ${workout.user.displayName}',
-                  textAlign: TextAlign.left,
-                  size: FONTSIZE.TINY,
-                ),
-              ],
+          if (showCreatedBy)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MyText(
+                    'Created by ${workout.user.displayName}',
+                    textAlign: TextAlign.left,
+                    size: FONTSIZE.TINY,
+                  ),
+                ],
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0, top: 4),
             child: Row(
@@ -149,7 +156,7 @@ class WorkoutCard extends StatelessWidget {
                     .toList(),
               ]),
             ),
-          if (_allTags.isNotEmpty)
+          if (showTags && _allTags.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: Wrap(
@@ -164,7 +171,7 @@ class WorkoutCard extends StatelessWidget {
                     .toList(),
               ),
             ),
-          if (Utils.textNotNull(workout.description))
+          if (showDescription && Utils.textNotNull(workout.description))
             Container(
               padding: const EdgeInsets.symmetric(vertical: 2),
               decoration: BoxDecoration(

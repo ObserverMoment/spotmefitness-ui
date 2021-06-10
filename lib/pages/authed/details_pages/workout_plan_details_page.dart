@@ -124,40 +124,10 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                 child: Icon(CupertinoIcons.ellipsis_circle),
                 onPressed: () => context.showBottomSheet(
                     child: BottomSheetMenu(
-                        header: Row(
-                          children: [
-                            if (Utils.textNotNull(workoutPlan.coverImageUri))
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: SizedUploadcareImage(
-                                    workoutPlan.coverImageUri!,
-                                    displaySize: Size(70, 70),
-                                  ),
-                                ),
-                              ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  MyText(
-                                    workoutPlan.name,
-                                    weight: FontWeight.bold,
-                                    size: FONTSIZE.BIG,
-                                  ),
-                                  MyText(
-                                    'Workout Plan',
-                                    subtext: true,
-                                    weight: FontWeight.bold,
-                                    size: FONTSIZE.BIG,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                        header: BottomSheetMenuHeader(
+                          name: workoutPlan.name,
+                          subtitle: 'Workout Plan',
+                          imageUri: workoutPlan.coverImageUri,
                         ),
                         items: [
                       BottomSheetMenuItem(

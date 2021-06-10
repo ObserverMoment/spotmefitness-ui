@@ -187,10 +187,27 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     /// Api
   }
 
+  void addWorkoutToDay(int dayNumber, Workout workout) {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+    final dayToUpdate =
+        workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+    final sortPosition = dayToUpdate.workoutPlanDayWorkouts.length;
+    dayToUpdate.workoutPlanDayWorkouts.add(WorkoutPlanDayWorkout()
+      ..id = 'temp-workoutPlanDayWorkout-${workout.id}'
+      ..sortPosition = sortPosition
+      ..workout = workout);
+    notifyListeners();
+
+    /// Api
+  }
+
   void deleteWorkoutPlanDay(int dayNumber) {
     /// Client / Optimistic
     _backupAndMarkDirty();
-    workoutPlan.workoutPlanDays.removeWhere((d) => d.dayNumber == dayNumber);
+    workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+        .where((d) => d.dayNumber != dayNumber)
+        .toList();
     notifyListeners();
 
     /// Api

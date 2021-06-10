@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
@@ -8,15 +7,18 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutPlanDayCard extends StatelessWidget {
   /// Can be either the abolute day = i.e. day 15 of the workout, or the relative day, i.e. day 2 or of the week.
   /// Zero indexed.
   final int displayDayNumber;
   final WorkoutPlanDay workoutPlanDay;
+  final bool minimize;
   const WorkoutPlanDayCard(
-      {Key? key, required this.workoutPlanDay, required this.displayDayNumber})
+      {Key? key,
+      required this.workoutPlanDay,
+      required this.displayDayNumber,
+      this.minimize = false})
       : super(key: key);
 
   @override
@@ -32,12 +34,13 @@ class WorkoutPlanDayCard extends StatelessWidget {
           H3(' Day ${displayDayNumber + 1}'),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
               child: MyText(
                 workoutPlanDay.note!,
                 subtext: true,
               ),
             ),
+          SizedBox(height: 3),
           ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -62,6 +65,11 @@ class WorkoutPlanDayCard extends StatelessWidget {
                           withBoxShadow: false,
                           hideBackgroundImage: true,
                           padding: const EdgeInsets.all(0),
+                          showCreatedBy: false,
+                          showEquipment: !minimize,
+                          showMoves: !minimize,
+                          showTags: !minimize,
+                          showDescription: !minimize,
                         ),
                       ],
                     ),
@@ -85,8 +93,6 @@ class WorkoutPlanRestDayCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           H3(' Day ${dayNumber + 1}'),
-          SvgPicture.asset('assets/indicators/rest_day_icon.svg',
-              width: 30, color: context.theme.primary),
           H3('Rest'),
         ],
       ),

@@ -260,40 +260,10 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 child: Icon(CupertinoIcons.ellipsis_circle),
                 onPressed: () => context.showBottomSheet(
                     child: BottomSheetMenu(
-                        header: Row(
-                          children: [
-                            if (Utils.textNotNull(workout.coverImageUri))
-                              Padding(
-                                padding: const EdgeInsets.only(right: 12.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: SizedUploadcareImage(
-                                    workout.coverImageUri!,
-                                    displaySize: Size(70, 70),
-                                  ),
-                                ),
-                              ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  MyText(
-                                    workout.name,
-                                    weight: FontWeight.bold,
-                                    size: FONTSIZE.BIG,
-                                  ),
-                                  MyText(
-                                    'Workout',
-                                    subtext: true,
-                                    weight: FontWeight.bold,
-                                    size: FONTSIZE.BIG,
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                        header: BottomSheetMenuHeader(
+                          name: workout.name,
+                          subtitle: 'Workout',
+                          imageUri: workout.coverImageUri,
                         ),
                         items: [
                       BottomSheetMenuItem(

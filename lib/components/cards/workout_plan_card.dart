@@ -11,7 +11,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:supercharged/supercharged.dart';
 
 class WorkoutPlanCard extends StatelessWidget {
   final WorkoutPlan workoutPlan;

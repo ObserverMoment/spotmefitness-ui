@@ -133,30 +133,9 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                     child: Icon(CupertinoIcons.ellipsis_circle),
                     onPressed: () => context.showBottomSheet(
                         child: BottomSheetMenu(
-                            header: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      MyText(
-                                        name,
-                                        weight: FontWeight.bold,
-                                        size: FONTSIZE.BIG,
-                                      ),
-                                      MyText(
-                                        'Logged Workout',
-                                        subtext: true,
-                                        weight: FontWeight.bold,
-                                        size: FONTSIZE.BIG,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                            header: BottomSheetMenuHeader(
+                              name: name,
+                              subtitle: 'Logged Workout',
                             ),
                             items: [
                           BottomSheetMenuItem(
