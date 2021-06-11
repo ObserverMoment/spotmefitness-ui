@@ -57,6 +57,11 @@ enum ContentAccessScope {
   GROUP
 }
 
+input CopyWorkoutPlanDayToAnotherDayInput {
+  id: ID!
+  copyToDay: Int!
+}
+
 input CreateEquipmentInput {
   name: String!
   altNames: String
@@ -242,9 +247,10 @@ input CreateWorkoutMoveInput {
   WorkoutSet: ConnectRelationInput!
 }
 
-input CreateWorkoutPlanDayInput {
+input CreateWorkoutPlanDayWithWorkoutInput {
   dayNumber: Int!
   WorkoutPlan: ConnectRelationInput!
+  Workout: ConnectRelationInput!
 }
 
 input CreateWorkoutPlanDayWorkoutInput {
@@ -438,6 +444,11 @@ type MoveType {
   imageUri: String
 }
 
+input MoveWorkoutPlanDayToAnotherDayInput {
+  id: ID!
+  moveToDay: Int!
+}
+
 type Mutation {
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
@@ -512,8 +523,10 @@ type Mutation {
   reorderWorkoutMoves(data: [UpdateSortPositionInput!]!): [SortPositionUpdated!]!
   createWorkoutPlan(data: CreateWorkoutPlanInput!): WorkoutPlan!
   updateWorkoutPlan(data: UpdateWorkoutPlanInput!): WorkoutPlan!
+  moveWorkoutPlanDayToAnotherDay(data: MoveWorkoutPlanDayToAnotherDayInput!): WorkoutPlanDay!
+  copyWorkoutPlanDayToAnotherDay(data: CopyWorkoutPlanDayToAnotherDayInput!): WorkoutPlanDay!
   softDeleteWorkoutPlanById(id: ID!): ID!
-  createWorkoutPlanDay(data: CreateWorkoutPlanDayInput!): WorkoutPlanDay!
+  createWorkoutPlanDayWithWorkout(data: CreateWorkoutPlanDayWithWorkoutInput!): WorkoutPlanDay!
   updateWorkoutPlanDay(data: UpdateWorkoutPlanDayInput!): WorkoutPlanDay!
   deleteWorkoutPlanDayById(id: ID!): ID!
   createWorkoutPlanDayWorkout(data: CreateWorkoutPlanDayWorkoutInput!): WorkoutPlanDayWorkout!

@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/note_editor.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/editable_note_icon_display.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/round_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
@@ -350,7 +350,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                             saveTimecap: (duration) => _updateWorkoutSection(
                                 {'timecap': duration?.inSeconds}),
                           ),
-                        NoteEditor(
+                        EditableNoteIconDisplay(
                           title: 'Section Note',
                           note: _workoutSection.note,
                           saveNote: (note) =>

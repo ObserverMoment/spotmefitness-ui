@@ -18,22 +18,26 @@ class AnimatedSlidable extends StatefulWidget {
   /// Remove is added by default - just provide a removeItem callback
   final List<IconSlideAction> secondaryActions;
   final Function(int index) removeItem;
-  final String deleteCaption;
   final bool enabled;
   final String itemType;
   final String? itemName;
   final String? confirmMessage;
+
+  /// Before the type. Eg Delete Workout vs Remove Workout vs Archive Workout.
+  /// [verb] [itemType] will display.
+  /// [verb] will also display on the [IconSlideAction].
+  final String? verb;
   AnimatedSlidable({
     required this.key,
     required this.child,
     required this.removeItem,
     required this.secondaryActions,
     required this.index,
-    this.deleteCaption = 'Delete',
     this.enabled = true,
     required this.itemType,
     this.itemName,
     this.confirmMessage,
+    this.verb = 'Delete',
   });
   @override
   _AnimatedSlidableState createState() => _AnimatedSlidableState();
@@ -108,6 +112,7 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
     context.showConfirmDeleteDialog(
         itemType: widget.itemType,
         itemName: widget.itemName,
+        verb: widget.verb,
         message: widget.confirmMessage,
         onConfirm: _beginExitAnimation);
   }
@@ -133,7 +138,7 @@ class _AnimatedSlidableState extends State<AnimatedSlidable>
             secondaryActions: <IconSlideAction>[
               ...widget.secondaryActions,
               IconSlideAction(
-                caption: widget.deleteCaption,
+                caption: widget.verb,
                 color: Styles.errorRed,
                 iconWidget: Icon(
                   CupertinoIcons.delete,

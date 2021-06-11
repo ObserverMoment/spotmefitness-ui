@@ -1,5 +1,5 @@
-mutation createWorkoutPlanDay($data: CreateWorkoutPlanDayInput!) {
-  createWorkoutPlanDay: createWorkoutPlanDay(data: $data) {
+mutation updateWorkoutPlanDay($data: UpdateWorkoutPlanDayInput!) {
+  updateWorkoutPlanDay(data: $data) {
     ...WorkoutPlanDay
     WorkoutPlanDayWorkouts {
       ...WorkoutPlanDayWorkout

@@ -6,12 +6,13 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_cl
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class NoteEditor extends StatelessWidget {
+/// Displays a note icon which when clicked will open up [FullScreenTextEditing].
+class EditableNoteIconDisplay extends StatelessWidget {
   final String? title;
   final String? note;
   final void Function(String note) saveNote;
   final void Function(String note)? inputValidation;
-  NoteEditor(
+  EditableNoteIconDisplay(
       {this.title,
       required this.saveNote,
       required this.note,

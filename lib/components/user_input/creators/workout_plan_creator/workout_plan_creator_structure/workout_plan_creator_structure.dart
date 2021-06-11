@@ -5,11 +5,13 @@ import 'package:spotmefitness_ui/blocs/workout_plan_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_day_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -34,18 +36,18 @@ class WorkoutPlanCreatorStructure extends StatelessWidget {
           itemCount: numWeeks,
           itemBuilder: (c, i) => WorkoutPlanCreatorStructureWeek(
                 weekNumber: i,
-                workoutPlanDays: workoutPlanDaysByWeekNumber[i] ?? [],
+                workoutPlanDaysInWeek: workoutPlanDaysByWeekNumber[i] ?? [],
               )),
     );
   }
 }
 
 class WorkoutPlanCreatorStructureWeek extends StatefulWidget {
-  final List<WorkoutPlanDay> workoutPlanDays;
+  final List<WorkoutPlanDay> workoutPlanDaysInWeek;
   final int weekNumber;
   const WorkoutPlanCreatorStructureWeek({
     Key? key,
-    required this.workoutPlanDays,
+    required this.workoutPlanDaysInWeek,
     required this.weekNumber,
   }) : super(key: key);
 
@@ -58,61 +60,89 @@ class _WorkoutPlanCreatorStructureWeekState
     extends State<WorkoutPlanCreatorStructureWeek> {
   bool _minimizePlanDayCards = true;
 
-  void _createWorkoutPlanDay(int dayNumber) {
+  int dayNumberFromDayIndex(int dayIndex) => widget.weekNumber * 7 + dayIndex;
+
+  WorkoutPlanCreatorBloc get bloc => context.read<WorkoutPlanCreatorBloc>();
+
+  void _createWorkoutPlanDay(int dayIndex) {
     context.navigateTo(WorkoutFinderRoute(
-        selectWorkout: (w) => context
-            .read<WorkoutPlanCreatorBloc>()
-            .createWorkoutPlanDay(widget.weekNumber * 7 + dayNumber, w)));
+        selectWorkout: (w) => bloc.createWorkoutPlanDayWithWorkout(
+            dayNumberFromDayIndex(dayIndex), w)));
   }
 
-  void _addWorkoutToPlanDay(int dayNumber) {
-    context.navigateTo(WorkoutFinderRoute(
-        selectWorkout: (w) => context
-            .read<WorkoutPlanCreatorBloc>()
-            .addWorkoutToDay(widget.weekNumber * 7 + dayNumber, w)));
+  void _addNoteToWorkoutPlanDay(int dayIndex, String note) {
+    bloc.addNoteToWorkoutPlanDay(dayNumberFromDayIndex(dayIndex), note);
   }
 
-  void _deleteWorkoutPlanDay(int dayNumber) {
+  void _addWorkoutToPlanDay(int dayIndex) {
+    context.navigateTo(WorkoutFinderRoute(
+        selectWorkout: (w) => bloc.createWorkoutPlanDayWorkout(
+            dayNumberFromDayIndex(dayIndex), w)));
+  }
+
+  /// Removes a [WorkoutPlanDayWorkout] from a [WorkoutPlanDay].
+  void _removePlanDayWorkoutFromDay(
+      int dayIndex, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+    bloc.removePlanDayWorkoutFromDay(
+        dayNumberFromDayIndex(dayIndex), workoutPlanDayWorkout);
+  }
+
+  /// Reordering [WorkoutPlanDayWorkouts] within a [WorkoutPlanDay].
+  void _reorderPlanDayWorkoutsWithinDay(
+      int dayIndex, int planDayWorkoutFromIndex, int planDayWorkoutToIndex) {
+    bloc.reorderWorkoutPlanWorkoutsInDay(dayNumberFromDayIndex(dayIndex),
+        planDayWorkoutFromIndex, planDayWorkoutToIndex);
+  }
+
+  void _addNoteToWorkoutPlanWorkout(
+      int dayIndex, String note, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+    bloc.addNoteToWorkoutPlanDayWorkout(
+        dayNumberFromDayIndex(dayIndex), note, workoutPlanDayWorkout);
+  }
+
+  void _deleteWorkoutPlanDay(int dayIndex) {
     context.showConfirmDialog(
-        title: 'Make day ${dayNumber + 1} a rest day?',
+        title: 'Make day ${dayIndex + 1} a rest day?',
         content: MyText(
           'Any workouts on this day will be removed.',
           textAlign: TextAlign.center,
           maxLines: 3,
         ),
-        onConfirm: () => context
-            .read<WorkoutPlanCreatorBloc>()
-            .deleteWorkoutPlanDay(widget.weekNumber * 7 + dayNumber));
+        onConfirm: () =>
+            bloc.deleteWorkoutPlanDay(dayNumberFromDayIndex(dayIndex)));
   }
 
-  void _movePlanDayToAnotherDay(int currentDayNumber) {
+  void _movePlanDayToAnotherDay(int dayIndex) {
+    final currentDayNumber = dayNumberFromDayIndex(dayIndex);
     context.push(
         child: WorkoutPlanDaySelector(
+            prevSelectedDay: currentDayNumber,
             message:
-                'Note: This will overwrite anything that is on the day you are moving to.',
-            workoutPlan: context.read<WorkoutPlanCreatorBloc>().workoutPlan,
-            title: 'Move To Day',
-            selectDayNumber: (moveToDayNumber) => print(moveToDayNumber)));
+                'Move all from week ${widget.weekNumber + 1} day ${dayIndex + 1}. This will overwrite anything that is on the day you are moving to.',
+            workoutPlan: bloc.workoutPlan,
+            title: 'Move from Day ${currentDayNumber + 1}',
+            selectDayNumber: (moveToDayNumber) =>
+                bloc.moveWorkoutPlanDay(currentDayNumber, moveToDayNumber)));
   }
 
-  void _copyPlanDayToAnotherDay(int currentDayNumber) {
+  void _copyPlanDayToAnotherDay(int dayIndex) {
+    final currentDayNumber = dayNumberFromDayIndex(dayIndex);
     context.push(
         child: WorkoutPlanDaySelector(
+            prevSelectedDay: currentDayNumber,
             message:
-                'Note: This will overwrite anything that is on the day you are copying to.',
-            workoutPlan: context.read<WorkoutPlanCreatorBloc>().workoutPlan,
-            title: 'Copy To Day',
-            selectDayNumber: (moveToDayNumber) => print(moveToDayNumber)));
+                'Copy all from week ${widget.weekNumber + 1} day ${dayIndex + 1}. This will overwrite anything that is on the day you are copying to.',
+            workoutPlan: bloc.workoutPlan,
+            title: 'Copy from Day ${currentDayNumber + 1}',
+            selectDayNumber: (moveToDayNumber) =>
+                bloc.copyWorkoutPlanDay(currentDayNumber, moveToDayNumber)));
   }
-
-  bool _hasMultipleWorkouts(WorkoutPlanDay workoutPlanDay) =>
-      workoutPlanDay.workoutPlanDayWorkouts.length > 1;
 
   @override
   Widget build(BuildContext context) {
-    /// Must % 7 so that workouts in weeks higher than week 1 will get assigned to the correct day of that week.
-    final byDayNumber =
-        widget.workoutPlanDays.fold<Map<int, WorkoutPlanDay>>({}, (acum, next) {
+    /// Must % 7 so that workouts in weeks higher than week 1 will get assigned to the correct day of their own week.
+    final byDayNumber = widget.workoutPlanDaysInWeek
+        .fold<Map<int, WorkoutPlanDay>>({}, (acum, next) {
       acum[next.dayNumber % 7] = next;
       return acum;
     });
@@ -167,38 +197,54 @@ class _WorkoutPlanCreatorStructureWeekState
                                   onPressed: () =>
                                       _addWorkoutToPlanDay(dayIndex)),
                               BottomSheetMenuItem(
-                                  text: 'Move to day',
+                                text: Utils.textNotNull(
+                                        byDayNumber[dayIndex]!.note)
+                                    ? 'Edit day note'
+                                    : 'Add day note',
+                                icon: Icon(CupertinoIcons.doc_plaintext),
+                                onPressed: () => context.push(
+                                    child: FullScreenTextEditing(
+                                        title: 'Note',
+                                        initialValue:
+                                            byDayNumber[dayIndex]!.note,
+                                        maxChars: 200,
+                                        onSave: (note) =>
+                                            _addNoteToWorkoutPlanDay(
+                                                dayIndex, note),
+                                        inputValidation: (t) => true)),
+                              ),
+                              BottomSheetMenuItem(
+                                  text: 'Move to another day',
                                   icon: Icon(CupertinoIcons.calendar_today),
                                   onPressed: () =>
                                       _movePlanDayToAnotherDay(dayIndex)),
                               BottomSheetMenuItem(
-                                  text: 'Copy to day',
+                                  text: 'Copy to another day',
                                   icon: Icon(CupertinoIcons.doc_on_doc),
                                   onPressed: () =>
                                       _copyPlanDayToAnotherDay(dayIndex)),
                               BottomSheetMenuItem(
-                                  text: 'Convert to rest',
+                                  text: 'Convert to rest day',
                                   icon:
                                       Icon(CupertinoIcons.calendar_badge_minus),
                                   onPressed: () =>
                                       _deleteWorkoutPlanDay(dayIndex)),
-                              if (_hasMultipleWorkouts(byDayNumber[dayIndex]!))
-                                BottomSheetMenuItem(
-                                    text: 'Reorder workouts',
-                                    icon: Icon(
-                                        CupertinoIcons.arrow_up_arrow_down),
-                                    onPressed: () => print('Reorder workouts')),
-                              if (_hasMultipleWorkouts(byDayNumber[dayIndex]!))
-                                BottomSheetMenuItem(
-                                    text: 'Remove a workout',
-                                    icon: Icon(
-                                        CupertinoIcons.clear_thick_circled),
-                                    onPressed: () => print('Remove a workout')),
                             ])),
-                        child: WorkoutPlanDayCard(
+                        child: EditableWorkoutPlanDayCard(
                           workoutPlanDay: byDayNumber[dayIndex]!,
                           displayDayNumber: dayIndex,
                           minimize: _minimizePlanDayCards,
+                          addNoteToWorkoutPlanDayWorkout:
+                              (note, workoutPlanDayWorkout) =>
+                                  _addNoteToWorkoutPlanWorkout(
+                                      dayIndex, note, workoutPlanDayWorkout),
+                          removeWorkoutPlanDayWorkout: (workoutPlanDayWorkout) {
+                            _removePlanDayWorkoutFromDay(
+                                dayIndex, workoutPlanDayWorkout);
+                          },
+                          reorderWorkoutPlanDayWorkouts: (from, to) =>
+                              _reorderPlanDayWorkoutsWithinDay(
+                                  dayIndex, from, to),
                         ),
                       )
                     : GestureDetector(

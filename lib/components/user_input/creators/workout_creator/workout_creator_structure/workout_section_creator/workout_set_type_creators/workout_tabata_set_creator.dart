@@ -303,7 +303,8 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                       AnimatedContainer(
                         duration: Duration(milliseconds: 200),
                         curve: Curves.easeInOut,
-                        height: _sortedWorkoutMoves.length * 62,
+                        height: _sortedWorkoutMoves.length *
+                            kWorkoutMoveListItemHeight,
                         child: material.ReorderableListView.builder(
                             proxyDecorator: (child, index, animation) =>
                                 DraggedItem(child: child),

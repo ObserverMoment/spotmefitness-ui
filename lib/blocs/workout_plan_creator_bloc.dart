@@ -5,6 +5,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:collection/collection.dart';
+import 'package:uuid/uuid.dart';
 
 /// All updates to workout plan or descendants follow this pattern.
 /// 1: Update local data
@@ -131,8 +133,10 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     context.showToast(
         message: 'There was a problem, changes not saved',
         toastType: ToastType.destructive);
+    notifyListeners();
   }
 
+  /// Checks that there were no errors and also
   bool _checkApiResult(MutationResult result) {
     if (result.hasErrors || result.data == null) {
       _revertChanges(result.errors!);
@@ -142,6 +146,17 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     }
   }
 
+  /// TODO: Hacky? Re-think.
+  /// Makes a copy so that the UI (provider [select<>()] check) spots the update updates.
+  /// Data flow needs more thought.
+  List<WorkoutPlanDay> _copyWorkoutPlanDays(int dayNumber) => workoutPlan
+      .workoutPlanDays
+      .map((d) =>
+          d.dayNumber == dayNumber ? WorkoutPlanDay.fromJson(d.toJson()) : d)
+      .toList();
+
+  ///// WorkoutPlan CRUD /////
+  ////////////////////////////
   void updateWorkoutPlanMeta(Map<String, dynamic> data) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
@@ -170,38 +185,192 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void createWorkoutPlanDay(int dayNumber, Workout workout) {
+  ///// WorkoutPlanDay CRUD /////
+  ///////////////////////////////
+  Future<void> createWorkoutPlanDayWithWorkout(
+      int dayNumber, Workout workout) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
-    workoutPlan.workoutPlanDays.add(WorkoutPlanDay()
-      ..id = 'temp-workoutPlanDay-$dayNumber'
+    final tempWorkoutPlanDay = WorkoutPlanDay()
+      ..id = Uuid().v1()
       ..dayNumber = dayNumber
       ..workoutPlanDayWorkouts = [
         WorkoutPlanDayWorkout()
-          ..id = 'temp-workoutPlanDayWorkout-${workout.id}'
+          ..id = Uuid().v1()
           ..sortPosition = 0
           ..workout = workout
-      ]);
+      ];
+
+    workoutPlan.workoutPlanDays.add(tempWorkoutPlanDay);
     notifyListeners();
 
-    /// Api
+    /// Api.
+    final variables = CreateWorkoutPlanDayWithWorkoutArguments(
+        data: CreateWorkoutPlanDayWithWorkoutInput(
+            dayNumber: dayNumber,
+            workout: ConnectRelationInput(id: workout.id),
+            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
+
+    final result = await context.graphQLStore.mutate<
+            CreateWorkoutPlanDayWithWorkout$Mutation,
+            CreateWorkoutPlanDayWithWorkoutArguments>(
+        mutation: CreateWorkoutPlanDayWithWorkoutMutation(variables: variables),
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .map((d) => d.id == tempWorkoutPlanDay.id
+              ? result.data!.createWorkoutPlanDayWithWorkout
+              : d)
+          .toList();
+
+      notifyListeners();
+    }
   }
 
-  void addWorkoutToDay(int dayNumber, Workout workout) {
+  Future<void> addNoteToWorkoutPlanDay(int dayNumber, String note) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
+
+    workoutPlan.workoutPlanDays = _copyWorkoutPlanDays(dayNumber);
+
     final dayToUpdate =
         workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
-    final sortPosition = dayToUpdate.workoutPlanDayWorkouts.length;
-    dayToUpdate.workoutPlanDayWorkouts.add(WorkoutPlanDayWorkout()
-      ..id = 'temp-workoutPlanDayWorkout-${workout.id}'
-      ..sortPosition = sortPosition
-      ..workout = workout);
+    dayToUpdate.note = note;
     notifyListeners();
 
     /// Api
+    final variables = UpdateWorkoutPlanDayArguments(
+        data: UpdateWorkoutPlanDayInput(id: dayToUpdate.id));
+
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkoutPlanDay$Mutation, UpdateWorkoutPlanDayArguments>(
+            mutation: UpdateWorkoutPlanDayMutation(variables: variables),
+            customVariablesMap: {
+              'data': {'id': dayToUpdate.id, 'note': note}
+            },
+            writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .map((d) =>
+              d.id == dayToUpdate.id ? result.data!.updateWorkoutPlanDay : d)
+          .toList();
+
+      notifyListeners();
+    }
   }
 
+  /// Moves it to another day by changing the dayNumber.
+  Future<void> moveWorkoutPlanDay(int fromDayNumber, int toDayNumber) async {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+
+    /// Check if there is content on the day we are moving to.
+    if (workoutPlan.workoutPlanDays
+            .firstWhereOrNull((d) => d.dayNumber == toDayNumber) !=
+        null) {
+      /// If there is then filter it out it.
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .where((d) => d.dayNumber != toDayNumber)
+          .toList();
+    }
+
+    final dayToUpdate = WorkoutPlanDay.fromJson(workoutPlan.workoutPlanDays
+        .firstWhere((d) => d.dayNumber == fromDayNumber)
+        .toJson());
+    dayToUpdate.dayNumber = toDayNumber;
+
+    workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+        .map((d) => d.dayNumber == fromDayNumber ? dayToUpdate : d)
+        .toList();
+
+    notifyListeners();
+
+    /// Api.
+    final variables = MoveWorkoutPlanDayToAnotherDayArguments(
+        data: MoveWorkoutPlanDayToAnotherDayInput(
+            id: dayToUpdate.id, moveToDay: toDayNumber));
+
+    final result = await context.graphQLStore.mutate<
+            MoveWorkoutPlanDayToAnotherDay$Mutation,
+            MoveWorkoutPlanDayToAnotherDayArguments>(
+        mutation: MoveWorkoutPlanDayToAnotherDayMutation(variables: variables),
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .map((d) => d.id == dayToUpdate.id
+              ? result.data!.moveWorkoutPlanDayToAnotherDay
+              : d)
+          .toList();
+
+      notifyListeners();
+    }
+  }
+
+  /// Copy contents that at workoutPlanDay.dayNumber and add to another day.
+  Future<void> copyWorkoutPlanDay(int fromDayNumber, int toDayNumber) async {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+
+    /// Check if there is content on the day we are copying to.
+    if (workoutPlan.workoutPlanDays
+            .firstWhereOrNull((d) => d.dayNumber == toDayNumber) !=
+        null) {
+      /// If there is then filter it out it.
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .where((d) => d.dayNumber != toDayNumber)
+          .toList();
+    }
+
+    final copyDayToMove = WorkoutPlanDay.fromJson(workoutPlan.workoutPlanDays
+        .firstWhere((d) => d.dayNumber == fromDayNumber)
+        .toJson());
+
+    final originalIdToCopy = copyDayToMove.id;
+
+    copyDayToMove.id = Uuid().v1();
+    copyDayToMove.dayNumber = toDayNumber;
+
+    workoutPlan.workoutPlanDays = [
+      ...workoutPlan.workoutPlanDays,
+      copyDayToMove
+    ];
+
+    notifyListeners();
+
+    /// Api.
+    final variables = CopyWorkoutPlanDayToAnotherDayArguments(
+        data: CopyWorkoutPlanDayToAnotherDayInput(
+            id: originalIdToCopy, copyToDay: toDayNumber));
+
+    final result = await context.graphQLStore.mutate<
+            CopyWorkoutPlanDayToAnotherDay$Mutation,
+            CopyWorkoutPlanDayToAnotherDayArguments>(
+        mutation: CopyWorkoutPlanDayToAnotherDayMutation(variables: variables),
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+          .map((d) => d.id == copyDayToMove.id
+              ? result.data!.copyWorkoutPlanDayToAnotherDay
+              : d)
+          .toList();
+
+      notifyListeners();
+    }
+  }
+
+  /// If the dayNumber is not found then no changes will be made.
   void deleteWorkoutPlanDay(int dayNumber) {
     /// Client / Optimistic
     _backupAndMarkDirty();
@@ -211,5 +380,89 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     notifyListeners();
 
     /// Api
+  }
+
+  ///// WorkoutPlanDayWorkout CRUD /////
+  //////////////////////////////////////
+  void createWorkoutPlanDayWorkout(int dayNumber, Workout workout) {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+    final dayToUpdate =
+        workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+    final sortPosition = dayToUpdate.workoutPlanDayWorkouts.length;
+    dayToUpdate.workoutPlanDayWorkouts.add(WorkoutPlanDayWorkout()
+      ..id = Uuid().v1()
+      ..sortPosition = sortPosition
+      ..workout = workout);
+    notifyListeners();
+
+    /// Api
+  }
+
+  void addNoteToWorkoutPlanDayWorkout(
+      int dayNumber, String note, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+
+    workoutPlan.workoutPlanDays = _copyWorkoutPlanDays(dayNumber);
+
+    final dayToUpdate =
+        workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+
+    final workoutPlanDayWorkoutToUpdate = dayToUpdate.workoutPlanDayWorkouts
+        .firstWhere((w) => w == workoutPlanDayWorkout);
+
+    workoutPlanDayWorkoutToUpdate.note = note;
+
+    notifyListeners();
+
+    /// Api
+  }
+
+  void reorderWorkoutPlanWorkoutsInDay(int dayNumber, int from, int to) {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+
+    workoutPlan.workoutPlanDays = _copyWorkoutPlanDays(dayNumber);
+
+    final dayToUpdate =
+        workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+
+    final inTransit = dayToUpdate.workoutPlanDayWorkouts.removeAt(from);
+    dayToUpdate.workoutPlanDayWorkouts.insert(to, inTransit);
+
+    _updateWorkoutPlanDayWorkoutSortPositions(dayToUpdate);
+
+    notifyListeners();
+  }
+
+  void removePlanDayWorkoutFromDay(
+      int dayNumber, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+
+    final dayToUpdate = WorkoutPlanDay.fromJson(workoutPlan.workoutPlanDays
+        .firstWhere((d) => d.dayNumber == dayNumber)
+        .toJson());
+
+    dayToUpdate.workoutPlanDayWorkouts
+        .removeWhere((w) => w == workoutPlanDayWorkout);
+
+    workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
+        .map((d) => d.dayNumber == dayNumber ? dayToUpdate : d)
+        .toList();
+
+    _updateWorkoutPlanDayWorkoutSortPositions(dayToUpdate);
+    notifyListeners();
+
+    /// Api
+  }
+
+  void _updateWorkoutPlanDayWorkoutSortPositions(
+      WorkoutPlanDay workoutPlanDay) {
+    workoutPlanDay.workoutPlanDayWorkouts
+        .forEachIndexed((index, workoutPlanDayWorkout) {
+      workoutPlanDayWorkout.sortPosition = index;
+    });
   }
 }

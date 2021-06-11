@@ -154,6 +154,7 @@ extension BuildContextExtension on BuildContext {
     required String itemType,
     String? itemName,
     String? message,
+    String? verb,
     required void Function() onConfirm,
   }) async {
     final BuildContext context = this;
@@ -161,7 +162,7 @@ extension BuildContextExtension on BuildContext {
         context: context,
         builder: (context) => CupertinoAlertDialog(
                 title: H3(
-                  'Delete $itemType!',
+                  '${verb ?? "Delete"} $itemType',
                   textAlign: TextAlign.center,
                 ),
                 content: Column(

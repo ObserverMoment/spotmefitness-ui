@@ -13,6 +13,9 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class WorkoutPlanDaySelector extends StatelessWidget {
   final String title;
   final String message;
+
+  /// Disable click on this day.
+  final int? prevSelectedDay;
   final WorkoutPlan workoutPlan;
   final void Function(int dayNumber) selectDayNumber;
   const WorkoutPlanDaySelector(
@@ -20,7 +23,8 @@ class WorkoutPlanDaySelector extends StatelessWidget {
       required this.title,
       required this.message,
       required this.workoutPlan,
-      required this.selectDayNumber})
+      required this.selectDayNumber,
+      this.prevSelectedDay})
       : super(key: key);
 
   final kWeekRowPadding = 12.0;
@@ -66,7 +70,7 @@ class WorkoutPlanDaySelector extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16),
             child: MyText(
               message,
               maxLines: 4,
@@ -94,51 +98,58 @@ class WorkoutPlanDaySelector extends StatelessWidget {
                   itemBuilder: (c, weekIndex) {
                     final dayItemWidth =
                         (constraints.maxWidth - (kWeekRowPadding * 2)) / 7;
+
                     return Column(
                       children: [
                         H3('Week ${weekIndex + 1}'),
                         Padding(
                           padding: EdgeInsets.all(kWeekRowPadding),
                           child: Row(
-                            children: List.generate(
-                                7,
-                                (dayIndex) => GestureDetector(
-                                      onTap: () => _handleSelectDayNumber(
-                                          context,
-                                          daysWithWorkoutsPlanned,
-                                          weekIndex,
-                                          dayIndex),
-                                      child: Container(
-                                        margin: EdgeInsets.all(kDayItemMargin),
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            border: Border.all(
-                                                color: context.theme.primary)),
-                                        alignment: Alignment.center,
-                                        width:
-                                            dayItemWidth - (kDayItemMargin * 2),
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          alignment: Alignment.center,
-                                          children: [
-                                            if (daysWithWorkoutsPlanned
-                                                .contains(dayNumberFromIndexes(
-                                                    weekIndex, dayIndex)))
-                                              Dot(
-                                                diameter: 30,
-                                                color: Styles.infoBlue,
-                                              ),
-                                            MyText(
-                                              '${dayIndex + 1}',
-                                              weight: FontWeight.bold,
-                                              lineHeight: 1.2,
-                                            ),
-                                          ],
+                            children: List.generate(7, (dayIndex) {
+                              final sameAsPrevSelected = prevSelectedDay ==
+                                  dayNumberFromIndexes(weekIndex, dayIndex);
+
+                              return GestureDetector(
+                                onTap: () => !sameAsPrevSelected
+                                    ? _handleSelectDayNumber(
+                                        context,
+                                        daysWithWorkoutsPlanned,
+                                        weekIndex,
+                                        dayIndex)
+                                    : null,
+                                child: Opacity(
+                                  opacity: sameAsPrevSelected ? 0.3 : 1,
+                                  child: Container(
+                                    margin: EdgeInsets.all(kDayItemMargin),
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                            color: context.theme.primary)),
+                                    alignment: Alignment.center,
+                                    width: dayItemWidth - (kDayItemMargin * 2),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.center,
+                                      children: [
+                                        if (daysWithWorkoutsPlanned.contains(
+                                            dayNumberFromIndexes(
+                                                weekIndex, dayIndex)))
+                                          Dot(
+                                            diameter: 30,
+                                            color: Styles.infoBlue,
+                                          ),
+                                        MyText(
+                                          '${dayIndex + 1}',
+                                          weight: FontWeight.bold,
+                                          lineHeight: 1.2,
                                         ),
-                                      ),
-                                    )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
                           ),
                         )
                       ],
@@ -147,5 +158,14 @@ class WorkoutPlanDaySelector extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _DayContainer extends StatelessWidget {
+  const _DayContainer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

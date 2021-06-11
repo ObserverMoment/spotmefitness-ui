@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -34,6 +35,16 @@ class WorkoutCard extends StatelessWidget {
       this.showDescription = true});
 
   final double cardHeight = 120;
+
+  /// Either via .timecap if a non timed workout or via calculation if it is.
+  int? _sectionDuration(WorkoutSection workoutSection) {
+    if ([kHIITCircuitName, kTabataName, kEMOMName]
+        .contains(workoutSection.workoutSectionType.name)) {
+      return DataUtils.calculateTimedSectionDuration(workoutSection).inSeconds;
+    } else {
+      workoutSection.timecap;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,14 +139,14 @@ class WorkoutCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                        color: Styles.colorTwo.withOpacity(0.8)),
+                        color: context.theme.background),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         MyText(
                           'Total: ',
                           weight: FontWeight.bold,
-                          color: Styles.white,
                           textAlign: TextAlign.center,
                         ),
                         Padding(
@@ -152,7 +163,7 @@ class WorkoutCard extends StatelessWidget {
                         Utils.textNotNull(section.name)
                             ? section.name!
                             : section.workoutSectionType.name,
-                        timecap: section.timecap))
+                        timecap: _sectionDuration(section)))
                     .toList(),
               ]),
             ),

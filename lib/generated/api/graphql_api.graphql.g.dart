@@ -3855,6 +3855,130 @@ Map<String, dynamic> _$UpdateWorkoutPlanInputToJson(
       'WorkoutTags': instance.workoutTags?.map((e) => e.toJson()).toList(),
     };
 
+CreateWorkoutPlanDayWithWorkout$Mutation
+    _$CreateWorkoutPlanDayWithWorkout$MutationFromJson(
+        Map<String, dynamic> json) {
+  return CreateWorkoutPlanDayWithWorkout$Mutation()
+    ..createWorkoutPlanDayWithWorkout = WorkoutPlanDay.fromJson(
+        json['createWorkoutPlanDayWithWorkout'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanDayWithWorkout$MutationToJson(
+        CreateWorkoutPlanDayWithWorkout$Mutation instance) =>
+    <String, dynamic>{
+      'createWorkoutPlanDayWithWorkout':
+          instance.createWorkoutPlanDayWithWorkout.toJson(),
+    };
+
+CreateWorkoutPlanDayWithWorkoutInput
+    _$CreateWorkoutPlanDayWithWorkoutInputFromJson(Map<String, dynamic> json) {
+  return CreateWorkoutPlanDayWithWorkoutInput(
+    dayNumber: json['dayNumber'] as int,
+    workoutPlan: ConnectRelationInput.fromJson(
+        json['WorkoutPlan'] as Map<String, dynamic>),
+    workout:
+        ConnectRelationInput.fromJson(json['Workout'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanDayWithWorkoutInputToJson(
+        CreateWorkoutPlanDayWithWorkoutInput instance) =>
+    <String, dynamic>{
+      'dayNumber': instance.dayNumber,
+      'WorkoutPlan': instance.workoutPlan.toJson(),
+      'Workout': instance.workout.toJson(),
+    };
+
+UpdateWorkoutPlanDay$Mutation _$UpdateWorkoutPlanDay$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanDay$Mutation()
+    ..updateWorkoutPlanDay = WorkoutPlanDay.fromJson(
+        json['updateWorkoutPlanDay'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanDay$MutationToJson(
+        UpdateWorkoutPlanDay$Mutation instance) =>
+    <String, dynamic>{
+      'updateWorkoutPlanDay': instance.updateWorkoutPlanDay.toJson(),
+    };
+
+UpdateWorkoutPlanDayInput _$UpdateWorkoutPlanDayInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanDayInput(
+    id: json['id'] as String,
+    note: json['note'] as String?,
+    dayNumber: json['dayNumber'] as int?,
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanDayInputToJson(
+        UpdateWorkoutPlanDayInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'note': instance.note,
+      'dayNumber': instance.dayNumber,
+    };
+
+MoveWorkoutPlanDayToAnotherDay$Mutation
+    _$MoveWorkoutPlanDayToAnotherDay$MutationFromJson(
+        Map<String, dynamic> json) {
+  return MoveWorkoutPlanDayToAnotherDay$Mutation()
+    ..moveWorkoutPlanDayToAnotherDay = WorkoutPlanDay.fromJson(
+        json['moveWorkoutPlanDayToAnotherDay'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$MoveWorkoutPlanDayToAnotherDay$MutationToJson(
+        MoveWorkoutPlanDayToAnotherDay$Mutation instance) =>
+    <String, dynamic>{
+      'moveWorkoutPlanDayToAnotherDay':
+          instance.moveWorkoutPlanDayToAnotherDay.toJson(),
+    };
+
+MoveWorkoutPlanDayToAnotherDayInput
+    _$MoveWorkoutPlanDayToAnotherDayInputFromJson(Map<String, dynamic> json) {
+  return MoveWorkoutPlanDayToAnotherDayInput(
+    id: json['id'] as String,
+    moveToDay: json['moveToDay'] as int,
+  );
+}
+
+Map<String, dynamic> _$MoveWorkoutPlanDayToAnotherDayInputToJson(
+        MoveWorkoutPlanDayToAnotherDayInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'moveToDay': instance.moveToDay,
+    };
+
+CopyWorkoutPlanDayToAnotherDay$Mutation
+    _$CopyWorkoutPlanDayToAnotherDay$MutationFromJson(
+        Map<String, dynamic> json) {
+  return CopyWorkoutPlanDayToAnotherDay$Mutation()
+    ..copyWorkoutPlanDayToAnotherDay = WorkoutPlanDay.fromJson(
+        json['copyWorkoutPlanDayToAnotherDay'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CopyWorkoutPlanDayToAnotherDay$MutationToJson(
+        CopyWorkoutPlanDayToAnotherDay$Mutation instance) =>
+    <String, dynamic>{
+      'copyWorkoutPlanDayToAnotherDay':
+          instance.copyWorkoutPlanDayToAnotherDay.toJson(),
+    };
+
+CopyWorkoutPlanDayToAnotherDayInput
+    _$CopyWorkoutPlanDayToAnotherDayInputFromJson(Map<String, dynamic> json) {
+  return CopyWorkoutPlanDayToAnotherDayInput(
+    id: json['id'] as String,
+    copyToDay: json['copyToDay'] as int,
+  );
+}
+
+Map<String, dynamic> _$CopyWorkoutPlanDayToAnotherDayInputToJson(
+        CopyWorkoutPlanDayToAnotherDayInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'copyToDay': instance.copyToDay,
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -4809,6 +4933,65 @@ UpdateWorkoutPlanArguments _$UpdateWorkoutPlanArgumentsFromJson(
 
 Map<String, dynamic> _$UpdateWorkoutPlanArgumentsToJson(
         UpdateWorkoutPlanArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateWorkoutPlanDayWithWorkoutArguments
+    _$CreateWorkoutPlanDayWithWorkoutArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return CreateWorkoutPlanDayWithWorkoutArguments(
+    data: CreateWorkoutPlanDayWithWorkoutInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanDayWithWorkoutArgumentsToJson(
+        CreateWorkoutPlanDayWithWorkoutArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateWorkoutPlanDayArguments _$UpdateWorkoutPlanDayArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanDayArguments(
+    data: UpdateWorkoutPlanDayInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanDayArgumentsToJson(
+        UpdateWorkoutPlanDayArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+MoveWorkoutPlanDayToAnotherDayArguments
+    _$MoveWorkoutPlanDayToAnotherDayArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return MoveWorkoutPlanDayToAnotherDayArguments(
+    data: MoveWorkoutPlanDayToAnotherDayInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$MoveWorkoutPlanDayToAnotherDayArgumentsToJson(
+        MoveWorkoutPlanDayToAnotherDayArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CopyWorkoutPlanDayToAnotherDayArguments
+    _$CopyWorkoutPlanDayToAnotherDayArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return CopyWorkoutPlanDayToAnotherDayArguments(
+    data: CopyWorkoutPlanDayToAnotherDayInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CopyWorkoutPlanDayToAnotherDayArgumentsToJson(
+        CopyWorkoutPlanDayToAnotherDayArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };

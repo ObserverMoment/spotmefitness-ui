@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_enrolments_summary.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews_summary.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -152,7 +151,8 @@ class WorkoutPlanCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      WaffleChart(width: 90, inputs: calcInputs()),
+                      if (workoutPlan.workoutGoalsInPlan.isNotEmpty)
+                        WaffleChart(width: 90, inputs: calcInputs()),
                     ],
                   ),
                 )
