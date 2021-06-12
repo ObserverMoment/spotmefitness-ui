@@ -38,8 +38,23 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
                         value: workoutPlanData.lengthWeeks,
                         // Need to cast to dynamic because of this.
                         // https://github.com/dart-lang/sdk/issues/32042
-                        saveValue: (v) =>
-                            _updateWorkoutPlanMeta({'lengthWeeks': v}),
+                        saveValue: (lengthWeeks) {
+                          if (lengthWeeks < workoutPlanData.lengthWeeks) {
+                            context.showConfirmDialog(
+                                title: 'Reduce Length of Plan?',
+                                content: MyText(
+                                  'If you have planned workouts in later weeks will be deleted. OK?',
+                                  textAlign: TextAlign.center,
+                                  maxLines: 4,
+                                ),
+                                onConfirm: () => context
+                                    .read<WorkoutPlanCreatorBloc>()
+                                    .reduceWorkoutPlanlength(lengthWeeks));
+                          } else {
+                            _updateWorkoutPlanMeta(
+                                {'lengthWeeks': lengthWeeks});
+                          }
+                        },
                         title: 'Weeks',
                       )),
                   display: Row(

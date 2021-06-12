@@ -17,13 +17,12 @@ class DiscoverPage extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText(
-                        'Discover great new workouts, plans, challenges and events!'),
-                  ]),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: MyText(
+                'Discover great new workouts, plans, challenges and events!',
+                maxLines: 6,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

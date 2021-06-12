@@ -21,6 +21,7 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.da
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -61,6 +62,90 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
       _pageController.jumpToPage(index);
     }
     setState(() => _activeTabIndex = index);
+  }
+
+  Future<void> _archiveWorkoutPlan(String id) async {
+    await context.showConfirmDialog(
+        title: 'Archive this workout plan?',
+        content: MyText(
+          'It will be moved to your archive where it can be retrieved if needed.',
+          textAlign: TextAlign.center,
+          maxLines: 3,
+        ),
+        onConfirm: () async {
+          context.showLoadingAlert('Archiving...',
+              icon: Icon(
+                CupertinoIcons.archivebox,
+                color: Styles.errorRed,
+              ));
+
+          final result = await context.graphQLStore
+              .mutate<UpdateWorkoutPlan$Mutation, UpdateWorkoutPlanArguments>(
+                  mutation: UpdateWorkoutPlanMutation(
+                    variables: UpdateWorkoutPlanArguments(
+                        data: UpdateWorkoutPlanInput(id: id, archived: true)),
+                  ),
+                  removeRefFromQueries: [
+                UserWorkoutPlansQuery().operationName
+              ],
+                  broadcastQueryIds: [
+                GQLVarParamKeys.workoutPlanByIdQuery(widget.id),
+              ],
+                  customVariablesMap: {
+                'data': {'id': id, 'archived': true}
+              });
+
+          if (result.hasErrors) {
+            context.pop(); // The showLoadingAlert
+            context.showErrorAlert(
+                'Something went wrong, the workout plan was not archived correctly');
+          } else {
+            context.pop(); // The showLoadingAlert
+            context.showToast(message: 'Workout plan archived.');
+          }
+        });
+  }
+
+  Future<void> _unarchiveWorkoutPlan(String id) async {
+    await context.showConfirmDialog(
+        title: 'Unarchive this workout plan?',
+        content: MyText(
+          'It will be moved back into your plans.',
+          textAlign: TextAlign.center,
+          maxLines: 3,
+        ),
+        onConfirm: () async {
+          context.showLoadingAlert('Unarchiving...',
+              icon: Icon(
+                CupertinoIcons.archivebox,
+                color: Styles.infoBlue,
+              ));
+
+          final result = await context.graphQLStore
+              .mutate<UpdateWorkoutPlan$Mutation, UpdateWorkoutPlanArguments>(
+                  mutation: UpdateWorkoutPlanMutation(
+                    variables: UpdateWorkoutPlanArguments(
+                        data: UpdateWorkoutPlanInput(id: id, archived: false)),
+                  ),
+                  addRefToQueries: [
+                UserWorkoutPlansQuery().operationName
+              ],
+                  broadcastQueryIds: [
+                GQLVarParamKeys.workoutPlanByIdQuery(widget.id),
+              ],
+                  customVariablesMap: {
+                'data': {'id': id, 'archived': false}
+              });
+
+          if (result.hasErrors) {
+            context.pop(); // The showLoadingAlert
+            context.showErrorAlert(
+                'Something went wrong, the workout plan was not unarchived correctly');
+          } else {
+            context.pop(); // The showLoadingAlert
+            context.showToast(message: 'Workout plan unarchived.');
+          }
+        });
   }
 
   Widget _displayName(String text) => Padding(
@@ -156,8 +241,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                             ),
                             isDestructive: !workoutPlan.archived,
                             onPressed: () => workoutPlan.archived
-                                ? print('unarchive it')
-                                : print('archive it')),
+                                ? _unarchiveWorkoutPlan(workoutPlan.id)
+                                : _archiveWorkoutPlan(workoutPlan.id)),
                     ])),
               ),
             ),

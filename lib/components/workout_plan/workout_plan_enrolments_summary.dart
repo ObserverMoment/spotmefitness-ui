@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
-  final List<WorkoutPlanEnrolment> enrolments;
+  final List<WorkoutPlanEnrolmentSummary> enrolments;
   final int showMax;
   final String? subtitle;
   const WorkoutPlanEnrolmentsSummary(

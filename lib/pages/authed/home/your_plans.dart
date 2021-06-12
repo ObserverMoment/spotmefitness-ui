@@ -112,17 +112,6 @@ class YourCreatedWorkoutPlans extends StatelessWidget {
   }
 }
 
-class YourEnrolledWorkoutPlans extends StatelessWidget {
-  const YourEnrolledWorkoutPlans({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: MyText('Your enrolled plans...'),
-    );
-  }
-}
-
 class FilterableWorkoutPlansList extends StatelessWidget {
   final List<WorkoutPlan> workoutPlans;
   FilterableWorkoutPlansList(this.workoutPlans);
@@ -266,6 +255,32 @@ class _YourWorkoutPlansTextSearchState
           ],
         ),
       ),
+    );
+  }
+}
+
+class YourEnrolledWorkoutPlans extends StatelessWidget {
+  const YourEnrolledWorkoutPlans({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return QueryObserver<UserWorkoutPlanEnrolments$Query,
+        json.JsonSerializable>(
+      key: Key(
+          'YourWorkoutPlansPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
+      query: UserWorkoutPlanEnrolmentsQuery(),
+      garbageCollectAfterFetch: true,
+      loadingIndicator: ShimmerCardList(itemCount: 20, cardHeight: 260),
+      builder: (data) {
+        final enrolments = data.userWorkoutPlanEnrolments
+            .sortedBy<DateTime>((w) => w.startDate)
+            .reversed
+            .toList();
+
+        return ListView(
+          children: enrolments.map((e) => MyText(e.id)).toList(),
+        );
+      },
     );
   }
 }

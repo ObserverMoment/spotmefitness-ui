@@ -111,6 +111,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
         title: 'Archive this workout?',
         content: MyText(
           'It will be moved to your archive where it can be retrieved if needed.',
+          textAlign: TextAlign.center,
           maxLines: 3,
         ),
         onConfirm: () async {
@@ -152,6 +153,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
         title: 'Unarchive this workout?',
         content: MyText(
           'It will be moved back into your workouts.',
+          textAlign: TextAlign.center,
           maxLines: 3,
         ),
         onConfirm: () async {

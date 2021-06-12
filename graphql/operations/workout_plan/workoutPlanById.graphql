@@ -56,7 +56,7 @@ query workoutPlanById($id: ID!) {
       }
     }
     Enrolments {
-      ...WorkoutPlanEnrolment
+      id
       User {
         ...UserSummary
       }

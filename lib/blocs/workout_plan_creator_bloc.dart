@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -147,8 +148,8 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
   }
 
   /// TODO: Hacky? Re-think.
-  /// Makes a copy so that the UI (provider [select<>()] check) spots the update updates.
-  /// Data flow needs more thought.
+  /// Makes a copy so that the UI (provider [select<>()] check) spots the updates.
+  /// Data flow probably needs more thought.
   List<WorkoutPlanDay> _copyWorkoutPlanDays(int dayNumber) => workoutPlan
       .workoutPlanDays
       .map((d) =>
@@ -183,6 +184,39 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// When reducing we need to delete all of the WorkoutPlanDays that happen later than the time period that the user is reducing the plan to.
+  Future<void> reduceWorkoutPlanlength(int lengthWeeks) async {
+    /// Client / Optimistic
+    _backupAndMarkDirty();
+    workoutPlan = WorkoutPlan.fromJson(workoutPlan.toJson());
+    workoutPlan.lengthWeeks = lengthWeeks;
+    notifyListeners();
+
+    /// API
+    final idsToDelete = workoutPlan.workoutPlanDays
+        .where((d) => d.dayNumber > (7 * lengthWeeks) - 1)
+        .map((d) => d.id)
+        .toList();
+
+    final variables = DeleteWorkoutPlanDaysByIdArguments(ids: idsToDelete);
+
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutPlanDaysById$Mutation,
+            DeleteWorkoutPlanDaysByIdArguments>(
+        mutation: DeleteWorkoutPlanDaysByIdMutation(variables: variables));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedIds = result.data!.deleteWorkoutPlanDaysById;
+      // If the ids do not match then there was a problem - revert the changes.
+      if (!UnorderedIterableEquality().equals(idsToDelete, deletedIds)) {
+        _revertChanges(result.errors);
+        notifyListeners();
+      }
+    }
   }
 
   ///// WorkoutPlanDay CRUD /////
@@ -370,26 +404,52 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     }
   }
 
-  /// If the dayNumber is not found then no changes will be made.
-  void deleteWorkoutPlanDay(int dayNumber) {
+  Future<void> deleteWorkoutPlanDay(int dayNumber) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
-    workoutPlan.workoutPlanDays = workoutPlan.workoutPlanDays
-        .where((d) => d.dayNumber != dayNumber)
-        .toList();
+    final dayToDelete =
+        workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+
+    workoutPlan.workoutPlanDays =
+        workoutPlan.workoutPlanDays.where((d) => d != dayToDelete).toList();
     notifyListeners();
 
     /// Api
+    /// As this resolver works via batch delete we cast to []
+    /// Then do an unordered list equality check on the api result to check success.
+    final idsToDelete = [dayToDelete.id];
+
+    final variables = DeleteWorkoutPlanDaysByIdArguments(ids: idsToDelete);
+
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutPlanDaysById$Mutation,
+            DeleteWorkoutPlanDaysByIdArguments>(
+        mutation: DeleteWorkoutPlanDaysByIdMutation(variables: variables));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedIds = result.data!.deleteWorkoutPlanDaysById;
+      // If the ids do not match then there was a problem - revert the changes.
+      if (!UnorderedIterableEquality().equals(idsToDelete, deletedIds)) {
+        _revertChanges(result.errors);
+        notifyListeners();
+      }
+    }
   }
 
   ///// WorkoutPlanDayWorkout CRUD /////
   //////////////////////////////////////
-  void createWorkoutPlanDayWorkout(int dayNumber, Workout workout) {
+  /// In an already created WorkoutPlanDay - specified by its day number in the plan.
+  Future<void> createWorkoutPlanDayWorkout(
+      int dayNumber, Workout workout) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
     final dayToUpdate =
         workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
+
     final sortPosition = dayToUpdate.workoutPlanDayWorkouts.length;
+
     dayToUpdate.workoutPlanDayWorkouts.add(WorkoutPlanDayWorkout()
       ..id = Uuid().v1()
       ..sortPosition = sortPosition
@@ -397,10 +457,32 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     notifyListeners();
 
     /// Api
+    final variables = CreateWorkoutPlanDayWorkoutArguments(
+        data: CreateWorkoutPlanDayWorkoutInput(
+            sortPosition: sortPosition,
+            workout: ConnectRelationInput(id: workout.id),
+            workoutPlanDay: ConnectRelationInput(id: dayToUpdate.id)));
+
+    final result = await context.graphQLStore.mutate<
+            CreateWorkoutPlanDayWorkout$Mutation,
+            CreateWorkoutPlanDayWorkoutArguments>(
+        mutation: CreateWorkoutPlanDayWorkoutMutation(variables: variables),
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final updated = result.data!.createWorkoutPlanDayWorkout;
+      dayToUpdate.workoutPlanDayWorkouts = dayToUpdate.workoutPlanDayWorkouts
+          .map((w) => w.sortPosition == updated.sortPosition ? updated : w)
+          .toList();
+
+      notifyListeners();
+    }
   }
 
-  void addNoteToWorkoutPlanDayWorkout(
-      int dayNumber, String note, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+  Future<void> addNoteToWorkoutPlanDayWorkout(int dayNumber, String note,
+      WorkoutPlanDayWorkout workoutPlanDayWorkout) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
 
@@ -409,17 +491,38 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     final dayToUpdate =
         workoutPlan.workoutPlanDays.firstWhere((d) => d.dayNumber == dayNumber);
 
-    final workoutPlanDayWorkoutToUpdate = dayToUpdate.workoutPlanDayWorkouts
-        .firstWhere((w) => w == workoutPlanDayWorkout);
-
-    workoutPlanDayWorkoutToUpdate.note = note;
+    workoutPlanDayWorkout.note = note;
 
     notifyListeners();
 
     /// Api
+    final idToUpdate = workoutPlanDayWorkout.id;
+    final variables = UpdateWorkoutPlanDayWorkoutArguments(
+        data: UpdateWorkoutPlanDayWorkoutInput(id: idToUpdate));
+
+    final result = await context.graphQLStore.mutate<
+            UpdateWorkoutPlanDayWorkout$Mutation,
+            UpdateWorkoutPlanDayWorkoutArguments>(
+        mutation: UpdateWorkoutPlanDayWorkoutMutation(variables: variables),
+        customVariablesMap: {
+          'data': {'id': idToUpdate, 'note': note}
+        },
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final updated = result.data!.updateWorkoutPlanDayWorkout;
+      dayToUpdate.workoutPlanDayWorkouts = dayToUpdate.workoutPlanDayWorkouts
+          .map((w) => w.id == updated.id ? updated : w)
+          .toList();
+
+      notifyListeners();
+    }
   }
 
-  void reorderWorkoutPlanWorkoutsInDay(int dayNumber, int from, int to) {
+  Future<void> reorderWorkoutPlanWorkoutsInDay(
+      int dayNumber, int from, int to) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
 
@@ -434,10 +537,38 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     _updateWorkoutPlanDayWorkoutSortPositions(dayToUpdate);
 
     notifyListeners();
+
+    /// Api
+    final variables = ReorderWorkoutPlanDayWorkoutsArguments(
+        data: dayToUpdate.workoutPlanDayWorkouts
+            .map((sw) => UpdateSortPositionInput(
+                id: sw.id, sortPosition: sw.sortPosition))
+            .toList());
+
+    final result = await context.graphQLStore.mutate<
+            ReorderWorkoutPlanDayWorkouts$Mutation,
+            ReorderWorkoutPlanDayWorkoutsArguments>(
+        mutation: ReorderWorkoutPlanDayWorkoutsMutation(variables: variables),
+        writeToStore: false);
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      /// From the API - overwrite client side data to be certain you have latest correct data.
+      final updatedPositions = result.data!.reorderWorkoutPlanDayWorkouts;
+
+      /// Write new sort positions.
+      dayToUpdate.workoutPlanDayWorkouts.forEach((w) {
+        w.sortPosition =
+            updatedPositions.firstWhere((p) => p.id == w.id).sortPosition;
+      });
+
+      notifyListeners();
+    }
   }
 
-  void removePlanDayWorkoutFromDay(
-      int dayNumber, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
+  Future<void> deleteWorkoutPlanDayWorkout(
+      int dayNumber, WorkoutPlanDayWorkout workoutPlanDayWorkout) async {
     /// Client / Optimistic
     _backupAndMarkDirty();
 
@@ -456,6 +587,26 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
     notifyListeners();
 
     /// Api
+    final variables =
+        DeleteWorkoutPlanDayWorkoutByIdArguments(id: workoutPlanDayWorkout.id);
+
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutPlanDayWorkoutById$Mutation,
+            DeleteWorkoutPlanDayWorkoutByIdArguments>(
+        mutation:
+            DeleteWorkoutPlanDayWorkoutByIdMutation(variables: variables));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedId = result.data!.deleteWorkoutPlanDayWorkoutById;
+
+      // If the ids do not match then there was a problem - revert the changes.
+      if (workoutPlanDayWorkout.id != deletedId) {
+        _revertChanges(result.errors);
+        notifyListeners();
+      }
+    }
   }
 
   void _updateWorkoutPlanDayWorkoutSortPositions(

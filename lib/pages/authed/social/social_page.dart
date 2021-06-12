@@ -17,13 +17,12 @@ class SocialPage extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText(
-                        'Chat to friends and workout buddies, join clubs and find great coaches!'),
-                  ]),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: MyText(
+                'Chat to friends and workout buddies, join clubs and find great coaches!',
+                maxLines: 6,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

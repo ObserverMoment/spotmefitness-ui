@@ -81,9 +81,9 @@ class _WorkoutPlanCreatorStructureWeekState
   }
 
   /// Removes a [WorkoutPlanDayWorkout] from a [WorkoutPlanDay].
-  void _removePlanDayWorkoutFromDay(
+  void _deleteWorkoutPlanDayWorkout(
       int dayIndex, WorkoutPlanDayWorkout workoutPlanDayWorkout) {
-    bloc.removePlanDayWorkoutFromDay(
+    bloc.deleteWorkoutPlanDayWorkout(
         dayNumberFromDayIndex(dayIndex), workoutPlanDayWorkout);
   }
 
@@ -102,7 +102,7 @@ class _WorkoutPlanCreatorStructureWeekState
 
   void _deleteWorkoutPlanDay(int dayIndex) {
     context.showConfirmDialog(
-        title: 'Make day ${dayIndex + 1} a rest day?',
+        title: 'Week ${widget.weekNumber + 1} day ${dayIndex + 1} -> Rest day?',
         content: MyText(
           'Any workouts on this day will be removed.',
           textAlign: TextAlign.center,
@@ -239,7 +239,7 @@ class _WorkoutPlanCreatorStructureWeekState
                                   _addNoteToWorkoutPlanWorkout(
                                       dayIndex, note, workoutPlanDayWorkout),
                           removeWorkoutPlanDayWorkout: (workoutPlanDayWorkout) {
-                            _removePlanDayWorkoutFromDay(
+                            _deleteWorkoutPlanDayWorkout(
                                 dayIndex, workoutPlanDayWorkout);
                           },
                           reorderWorkoutPlanDayWorkouts: (from, to) =>

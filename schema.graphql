@@ -528,7 +528,7 @@ type Mutation {
   softDeleteWorkoutPlanById(id: ID!): ID!
   createWorkoutPlanDayWithWorkout(data: CreateWorkoutPlanDayWithWorkoutInput!): WorkoutPlanDay!
   updateWorkoutPlanDay(data: UpdateWorkoutPlanDayInput!): WorkoutPlanDay!
-  deleteWorkoutPlanDayById(id: ID!): ID!
+  deleteWorkoutPlanDaysById(ids: [ID!]!): [ID!]!
   createWorkoutPlanDayWorkout(data: CreateWorkoutPlanDayWorkoutInput!): WorkoutPlanDayWorkout!
   updateWorkoutPlanDayWorkout(data: UpdateWorkoutPlanDayWorkoutInput!): WorkoutPlanDayWorkout!
   deleteWorkoutPlanDayWorkoutById(id: ID!): ID!
@@ -617,7 +617,7 @@ type Query {
   publicWorkoutPlans: [WorkoutPlan!]!
   workoutPlanById(id: ID!): WorkoutPlan!
   userWorkoutPlans: [WorkoutPlan!]!
-  userWorkoutPlanEnrolments(workoutPlanId: ID!): [WorkoutPlanEnrolment!]
+  userWorkoutPlanEnrolments: [WorkoutPlanEnrolment!]!
 }
 
 type ScheduledWorkout {
@@ -1086,7 +1086,7 @@ type WorkoutPlan {
   introAudioUri: String
   contentAccessScope: ContentAccessScope!
   User: UserSummary!
-  Enrolments: [WorkoutPlanEnrolment!]!
+  Enrolments: [WorkoutPlanEnrolmentSummary!]!
   WorkoutPlanDays: [WorkoutPlanDay!]!
   WorkoutPlanReviews: [WorkoutPlanReview!]!
   WorkoutTags: [WorkoutTag!]!
@@ -1112,6 +1112,11 @@ type WorkoutPlanEnrolment {
   completedPlanDayWorkoutIds: [String!]!
   User: UserSummary!
   WorkoutPlan: WorkoutPlan!
+}
+
+type WorkoutPlanEnrolmentSummary {
+  id: ID!
+  User: UserSummary!
 }
 
 type WorkoutPlanReview {

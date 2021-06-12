@@ -56,7 +56,7 @@ query userWorkoutPlans {
       }
     }
     Enrolments {
-      ...WorkoutPlanEnrolment
+      id
       User {
         ...UserSummary
       }

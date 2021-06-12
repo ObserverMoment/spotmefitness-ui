@@ -15,7 +15,6 @@ import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_details
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/plans.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/workouts.dart';
-import 'package:spotmefitness_ui/pages/authed/discover/you.dart';
 import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_clubs.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
@@ -63,7 +62,6 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
             AutoRoute(path: 'discover', page: DiscoverPage, children: [
-              AutoRoute(path: 'you', page: DiscoverYouPage),
               AutoRoute(path: 'workouts', page: DiscoverWorkoutsPage),
               AutoRoute(path: 'plans', page: DiscoverPlansPage),
               RedirectRoute(path: '*', redirectTo: 'you')
