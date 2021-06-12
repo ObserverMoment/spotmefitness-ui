@@ -38,7 +38,7 @@ ColorScheme _buildColorScheme(BuildContext context) {
   );
 }
 
-Widget _buildDateTimePickerTheme(BuildContext context, Widget child) {
+Widget buildDateTimePickerTheme(BuildContext context, Widget child) {
   final ThemeData base = context.theme.themeName == myTheme.ThemeName.dark
       ? ThemeData.dark()
       : ThemeData.light();
@@ -78,7 +78,7 @@ class DatePickerDisplay extends StatelessWidget {
       lastDate: DateTime(DateTime.now().year + 10),
       helpText: 'Select a date',
       builder: (context, child) {
-        return _buildDateTimePickerTheme(context, child!);
+        return buildDateTimePickerTheme(context, child!);
       },
     );
     if (newDate != null) {
@@ -114,7 +114,7 @@ class TimePickerDisplay extends StatelessWidget {
       initialTime: timeOfDay ?? TimeOfDay.now(),
       initialEntryMode: TimePickerEntryMode.dial,
       builder: (context, child) {
-        return _buildDateTimePickerTheme(context, child!);
+        return buildDateTimePickerTheme(context, child!);
       },
     );
     if (newTime != null) {
@@ -154,7 +154,7 @@ class DateRangePickerDisplay extends StatelessWidget {
       firstDate: DateTime(now.year - 10),
       lastDate: DateTime(now.year + 10),
       builder: (context, child) {
-        return _buildDateTimePickerTheme(context, child!);
+        return buildDateTimePickerTheme(context, child!);
       },
     );
     if (range != null) {

@@ -26,8 +26,10 @@ class PercentageBarChartSingle extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: borderRadius,
-                      gradient: LinearGradient(
-                          colors: sortedInputs.map((i) => i.color).toList())),
+                      gradient: sortedInputs.length > 1
+                          ? LinearGradient(
+                              colors: sortedInputs.map((i) => i.color).toList())
+                          : null),
                 )),
             Opacity(
               opacity: 0.7,

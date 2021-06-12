@@ -226,6 +226,7 @@ class WorkoutPlanRestDayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      withBoxShadow: false,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

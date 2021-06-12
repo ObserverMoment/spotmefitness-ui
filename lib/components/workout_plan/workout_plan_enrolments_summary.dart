@@ -15,7 +15,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
 
   /// Less than one means an overlap.
   final kAvatarWidthFactor = 0.8;
-  final kAvatarRadius = 40.0;
+  final kAvatarRadius = 34.0;
 
   @override
   Widget build(BuildContext context) {

@@ -164,7 +164,8 @@ class WorkoutPlanCard extends StatelessWidget {
               children: [
                 WorkoutPlanEnrolmentsSummary(
                   enrolments: workoutPlan.enrolments,
-                  subtitle: '${workoutPlan.enrolments.length} participants',
+                  subtitle:
+                      '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
                 ),
                 WorkoutPlanReviewsSummary(
                     reviews: workoutPlan.workoutPlanReviews),

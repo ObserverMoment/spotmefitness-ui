@@ -35,7 +35,7 @@ class ParticipantCard extends StatelessWidget {
                     if (userSummary.countryCode != null)
                       Padding(
                         padding: const EdgeInsets.only(left: 6.0),
-                        child: CountryFlag(userSummary.countryCode!, 22),
+                        child: CountryFlag(userSummary.countryCode!, 28),
                       ),
                   ],
                 ),

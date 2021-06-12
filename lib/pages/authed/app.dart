@@ -86,72 +86,63 @@ class _MainTabsPageState extends State<MainTabsPage> {
                     opacity: animation),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 14, right: 14, bottom: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(18),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18),
-                                color:
-                                    context.theme.background.withOpacity(0.7),
-                                border: Border.all(
-                                    color: context.theme.primary
-                                        .withOpacity(0.15))),
-                            height: kBottomNavBarHeight,
-                            width: _size.width - 28,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildTabItem(
-                                    tabsRouter: _tabsRouter,
-                                    activeIndex: _activeIndex,
-                                    activeColor: _activeColor,
-                                    inActiveColor: _inActiveColor,
-                                    tabIndex: 0,
-                                    label: 'Home',
-                                    iconData:
-                                        CupertinoIcons.square_grid_2x2_fill),
-                                _buildTabItem(
-                                    tabsRouter: _tabsRouter,
-                                    activeIndex: _activeIndex,
-                                    activeColor: _activeColor,
-                                    inActiveColor: _inActiveColor,
-                                    tabIndex: 1,
-                                    label: 'Discover',
-                                    iconData: CupertinoIcons.compass_fill),
-                                _buildTabItem(
-                                    tabsRouter: _tabsRouter,
-                                    activeIndex: _activeIndex,
-                                    activeColor: _activeColor,
-                                    inActiveColor: _inActiveColor,
-                                    tabIndex: 2,
-                                    label: 'Social',
-                                    iconData:
-                                        CupertinoIcons.person_2_square_stack),
-                                _buildTabItem(
-                                    tabsRouter: _tabsRouter,
-                                    activeIndex: _activeIndex,
-                                    activeColor: _activeColor,
-                                    inActiveColor: _inActiveColor,
-                                    tabIndex: 3,
-                                    label: 'Journal',
-                                    iconData: CupertinoIcons.doc_plaintext),
-                                _buildTabItem(
-                                    tabsRouter: _tabsRouter,
-                                    activeIndex: _activeIndex,
-                                    activeColor: _activeColor,
-                                    inActiveColor: _inActiveColor,
-                                    tabIndex: 4,
-                                    label: 'Profile',
-                                    iconData: CupertinoIcons.profile_circled),
-                              ],
-                            )),
-                      ),
+                  child: ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: context.theme.background.withOpacity(0.8),
+                          ),
+                          height: kBottomNavBarHeight,
+                          width: _size.width - 12,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildTabItem(
+                                  tabsRouter: _tabsRouter,
+                                  activeIndex: _activeIndex,
+                                  activeColor: _activeColor,
+                                  inActiveColor: _inActiveColor,
+                                  tabIndex: 0,
+                                  label: 'Home',
+                                  iconData:
+                                      CupertinoIcons.square_grid_2x2_fill),
+                              _buildTabItem(
+                                  tabsRouter: _tabsRouter,
+                                  activeIndex: _activeIndex,
+                                  activeColor: _activeColor,
+                                  inActiveColor: _inActiveColor,
+                                  tabIndex: 1,
+                                  label: 'Discover',
+                                  iconData: CupertinoIcons.compass_fill),
+                              _buildTabItem(
+                                  tabsRouter: _tabsRouter,
+                                  activeIndex: _activeIndex,
+                                  activeColor: _activeColor,
+                                  inActiveColor: _inActiveColor,
+                                  tabIndex: 2,
+                                  label: 'Social',
+                                  iconData:
+                                      CupertinoIcons.person_2_square_stack),
+                              _buildTabItem(
+                                  tabsRouter: _tabsRouter,
+                                  activeIndex: _activeIndex,
+                                  activeColor: _activeColor,
+                                  inActiveColor: _inActiveColor,
+                                  tabIndex: 3,
+                                  label: 'Journal',
+                                  iconData: CupertinoIcons.doc_plaintext),
+                              _buildTabItem(
+                                  tabsRouter: _tabsRouter,
+                                  activeIndex: _activeIndex,
+                                  activeColor: _activeColor,
+                                  inActiveColor: _inActiveColor,
+                                  tabIndex: 4,
+                                  label: 'Profile',
+                                  iconData: CupertinoIcons.profile_circled),
+                            ],
+                          )),
                     ),
                   ),
                 )
@@ -179,7 +170,7 @@ class TabIcon extends StatelessWidget {
       required this.isActive,
       required this.onTap});
 
-  final _animationDuration = Duration(milliseconds: 400);
+  final kAnimationDuration = Duration(milliseconds: 400);
 
   @override
   Widget build(BuildContext context) {
@@ -188,32 +179,31 @@ class TabIcon extends StatelessWidget {
       pressedOpacity: 0.9,
       onPressed: onTap,
       child: AnimatedOpacity(
-        duration: _animationDuration,
+        duration: kAnimationDuration,
         opacity: isActive ? 1 : 0.75,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: AnimatedSwitcher(
-              duration: _animationDuration,
-              child: isActive
-                  ? Column(
-                      children: [
-                        activeIcon,
-                        SizedBox(height: 1),
-                        MyText(
-                          label,
-                          size: FONTSIZE.TINY,
-                          color: activeColor,
-                        )
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        icon,
-                        SizedBox(height: 1),
-                        MyText(label, size: FONTSIZE.TINY, color: inActiveColor)
-                      ],
-                    )),
-        ),
+        child: AnimatedSwitcher(
+            duration: kAnimationDuration,
+            child: isActive
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      activeIcon,
+                      SizedBox(height: 1),
+                      MyText(
+                        label,
+                        size: FONTSIZE.TINY,
+                        color: activeColor,
+                      )
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      icon,
+                      SizedBox(height: 1),
+                      MyText(label, size: FONTSIZE.TINY, color: inActiveColor)
+                    ],
+                  )),
       ),
     );
   }

@@ -1,5 +1,5 @@
-query userWorkoutPlanEnrolments {
-  userWorkoutPlanEnrolments {
+mutation updateWorkoutPlanEnrolment($data: UpdateWorkoutPlanEnrolmentInput!) {
+  updateWorkoutPlanEnrolment(data: $data) {
     ...WorkoutPlanEnrolment
     WorkoutPlan {
       ...WorkoutPlan

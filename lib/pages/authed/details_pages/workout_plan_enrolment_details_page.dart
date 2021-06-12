@@ -1,41 +1,42 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
-import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
-import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
+import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_progress_summary.dart';
+import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_workouts_progress.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-class WorkoutPlanDetailsPage extends StatefulWidget {
+class WorkoutPlanEnrolmentDetailsPage extends StatefulWidget {
   final String id;
-  WorkoutPlanDetailsPage({@PathParam('id') required this.id});
+  const WorkoutPlanEnrolmentDetailsPage(
+      {Key? key, @PathParam('id') required this.id})
+      : super(key: key);
 
   @override
-  _WorkoutPlanDetailsPageState createState() => _WorkoutPlanDetailsPageState();
+  _WorkoutPlanEnrolmentDetailsPageState createState() =>
+      _WorkoutPlanEnrolmentDetailsPageState();
 }
 
-class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
+class _WorkoutPlanEnrolmentDetailsPageState
+    extends State<WorkoutPlanEnrolmentDetailsPage> {
   ScrollController _scrollController = ScrollController();
 
   /// 0 = Schedule List. 1 = Goals HeatMap / Calendar. 2 = Participants. 3 = reviews.
@@ -63,118 +64,77 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
     setState(() => _activeTabIndex = index);
   }
 
-  Future<void> _archiveWorkoutPlan(String id) async {
-    await context.showConfirmDialog(
-        title: 'Archive this workout plan?',
-        content: MyText(
-          'It will be moved to your archive where it can be retrieved if needed.',
-          textAlign: TextAlign.center,
-          maxLines: 3,
-        ),
-        onConfirm: () async {
-          context.showLoadingAlert('Archiving...',
-              icon: Icon(
-                CupertinoIcons.archivebox,
-                color: Styles.errorRed,
-              ));
-
-          final result = await context.graphQLStore
-              .mutate<UpdateWorkoutPlan$Mutation, UpdateWorkoutPlanArguments>(
-                  mutation: UpdateWorkoutPlanMutation(
-                    variables: UpdateWorkoutPlanArguments(
-                        data: UpdateWorkoutPlanInput(id: id, archived: true)),
-                  ),
-                  removeRefFromQueries: [
-                UserWorkoutPlansQuery().operationName
-              ],
-                  broadcastQueryIds: [
-                GQLVarParamKeys.workoutPlanByIdQuery(widget.id),
-              ],
-                  customVariablesMap: {
-                'data': {'id': id, 'archived': true}
-              });
-
-          if (result.hasErrors) {
-            context.pop(); // The showLoadingAlert
-            context.showErrorAlert(
-                'Something went wrong, the workout plan was not archived correctly');
-          } else {
-            context.pop(); // The showLoadingAlert
-            context.showToast(message: 'Workout plan archived.');
-          }
-        });
-  }
-
-  Future<void> _unarchiveWorkoutPlan(String id) async {
-    await context.showConfirmDialog(
-        title: 'Unarchive this workout plan?',
-        content: MyText(
-          'It will be moved back into your plans.',
-          textAlign: TextAlign.center,
-          maxLines: 3,
-        ),
-        onConfirm: () async {
-          context.showLoadingAlert('Unarchiving...',
-              icon: Icon(
-                CupertinoIcons.archivebox,
-                color: Styles.infoBlue,
-              ));
-
-          final result = await context.graphQLStore
-              .mutate<UpdateWorkoutPlan$Mutation, UpdateWorkoutPlanArguments>(
-                  mutation: UpdateWorkoutPlanMutation(
-                    variables: UpdateWorkoutPlanArguments(
-                        data: UpdateWorkoutPlanInput(id: id, archived: false)),
-                  ),
-                  addRefToQueries: [
-                UserWorkoutPlansQuery().operationName
-              ],
-                  broadcastQueryIds: [
-                GQLVarParamKeys.workoutPlanByIdQuery(widget.id),
-              ],
-                  customVariablesMap: {
-                'data': {'id': id, 'archived': false}
-              });
-
-          if (result.hasErrors) {
-            context.pop(); // The showLoadingAlert
-            context.showErrorAlert(
-                'Something went wrong, the workout plan was not unarchived correctly');
-          } else {
-            context.pop(); // The showLoadingAlert
-            context.showToast(message: 'Workout plan unarchived.');
-          }
-        });
-  }
-
-  Widget _displayName(String text) => Padding(
-        padding: const EdgeInsets.only(left: 6.0),
-        child: MyText(text, weight: FontWeight.bold, size: FONTSIZE.SMALL),
-      );
-
-  Widget _buildAvatar(WorkoutPlan workoutPlan) {
-    final radius = 40.0;
-
-    return Row(
-      children: [
-        UserAvatar(
-          avatarUri: workoutPlan.user.avatarUri,
-          radius: radius,
-        ),
-        if (workoutPlan.user.displayName != '')
-          _displayName(workoutPlan.user.displayName),
-        if (workoutPlan.archived)
-          FadeIn(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(
-                CupertinoIcons.archivebox,
-                color: Styles.errorRed,
-              ),
-            ),
-          )
-      ],
+  Future<void> _updateStartDate(WorkoutPlanEnrolment enrolment) async {
+    final DateTime? newDate = await showDatePicker(
+      context: context,
+      initialDate: enrolment.startDate,
+      firstDate: DateTime(DateTime.now().year - 10),
+      lastDate: DateTime(DateTime.now().year + 10),
+      helpText: 'Select a date',
+      builder: (context, child) {
+        return buildDateTimePickerTheme(context, child!);
+      },
     );
+    if (newDate != null) {
+      final variables = UpdateWorkoutPlanEnrolmentArguments(
+          data: UpdateWorkoutPlanEnrolmentInput(id: ''));
+
+      final result = await context.graphQLStore.mutate<
+              UpdateWorkoutPlanEnrolment$Mutation,
+              UpdateWorkoutPlanEnrolmentArguments>(
+          mutation: UpdateWorkoutPlanEnrolmentMutation(variables: variables),
+          broadcastQueryIds: [
+            GQLVarParamKeys.userWorkoutPlanEnrolmentById(enrolment.id),
+            UserWorkoutPlanEnrolmentsQuery().operationName,
+          ],
+          customVariablesMap: {
+            'data': {
+              'id': enrolment.id,
+              'startDate': newDate.millisecondsSinceEpoch
+            }
+          });
+
+      if (result.hasErrors) {
+        context
+            .showErrorAlert('Something went wrong, the update did not work.');
+      } else {
+        context.showToast(message: 'Start date updated.');
+      }
+    }
+  }
+
+  void _confirmResetPlan() {
+    context.showConfirmDialog(
+        title: 'Reset Plan Progress?',
+        content: MyText(
+          'All completed workout progress will be cleared. OK?',
+          textAlign: TextAlign.center,
+          maxLines: 4,
+        ),
+        onConfirm: _resetCompletedWorkoutPlanDayWorkoutIds);
+  }
+
+  Future<void> _resetCompletedWorkoutPlanDayWorkoutIds() async {
+    final variables = UpdateWorkoutPlanEnrolmentArguments(
+        data: UpdateWorkoutPlanEnrolmentInput(id: ''));
+
+    final result = await context.graphQLStore.mutate<
+            UpdateWorkoutPlanEnrolment$Mutation,
+            UpdateWorkoutPlanEnrolmentArguments>(
+        mutation: UpdateWorkoutPlanEnrolmentMutation(variables: variables),
+        broadcastQueryIds: [
+          GQLVarParamKeys.userWorkoutPlanEnrolmentById(widget.id),
+          UserWorkoutPlanEnrolmentsQuery().operationName,
+        ],
+        customVariablesMap: {
+          'data': {'id': widget.id, 'completedPlanDayWorkoutIds': []}
+        });
+
+    if (result.hasErrors) {
+      context.showErrorAlert('Something went wrong, the update did not work.');
+    } else {
+      context.showToast(message: 'Plan progress reset');
+    }
   }
 
   @override
@@ -186,88 +146,73 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final query = WorkoutPlanByIdQuery(
-        variables: WorkoutPlanByIdArguments(id: widget.id));
+    final query = UserWorkoutPlanEnrolmentByIdQuery(
+        variables: UserWorkoutPlanEnrolmentByIdArguments(id: widget.id));
 
-    return QueryObserver<WorkoutPlanById$Query, WorkoutPlanByIdArguments>(
-        key: Key('YourWorkoutPlansPage - ${query.operationName}-${widget.id}'),
+    return QueryObserver<UserWorkoutPlanEnrolmentById$Query,
+            UserWorkoutPlanEnrolmentByIdArguments>(
+        key: Key(
+            'WorkoutPlanEnrolmentDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
         builder: (data) {
-          final workoutPlan = data.workoutPlanById;
-
-          final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
-          final bool isOwner = workoutPlan.user.id == authedUserId;
+          final enrolment = data.userWorkoutPlanEnrolmentById;
+          final workoutPlan = enrolment.workoutPlan;
 
           return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
-              middle: NavBarTitle(workoutPlan.name),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.ellipsis_circle),
-                onPressed: () => context.showBottomSheet(
-                    child: BottomSheetMenu(
-                        header: BottomSheetMenuHeader(
-                          name: workoutPlan.name,
-                          subtitle: 'Workout Plan',
-                          imageUri: workoutPlan.coverImageUri,
-                        ),
-                        items: [
-                      BottomSheetMenuItem(
-                          text: 'Share',
-                          icon: Icon(CupertinoIcons.share),
-                          onPressed: () => print('share')),
-                      if (isOwner)
+              navigationBar: BorderlessNavBar(
+                middle: NavBarTitle(enrolment.workoutPlan.name),
+                trailing: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(CupertinoIcons.ellipsis_circle),
+                  onPressed: () => context.showBottomSheet(
+                      child: BottomSheetMenu(
+                          header: BottomSheetMenuHeader(
+                            name: enrolment.workoutPlan.name,
+                            subtitle: 'Plan progress',
+                            imageUri: enrolment.workoutPlan.coverImageUri,
+                          ),
+                          items: [
                         BottomSheetMenuItem(
-                            text: 'Edit',
-                            icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () => context.navigateTo(
-                                WorkoutPlanCreatorRoute(
-                                    workoutPlan: workoutPlan))),
-                      BottomSheetMenuItem(
-                          text: 'Export',
-                          icon: Icon(CupertinoIcons.download_circle),
-                          onPressed: () => print('export')),
-                      if (isOwner)
+                            text: 'Leave review',
+                            icon: Icon(CupertinoIcons.star_fill),
+                            onPressed: () => print('review flow')),
                         BottomSheetMenuItem(
-                            text:
-                                workoutPlan.archived ? 'Unarchive' : 'Archive',
+                            text: 'Share progress',
+                            icon: Icon(CupertinoIcons.share),
+                            onPressed: () => print('share progress')),
+                        BottomSheetMenuItem(
+                            text: 'Reset progress',
+                            icon: Icon(CupertinoIcons.refresh_bold),
+                            onPressed: _confirmResetPlan),
+                        BottomSheetMenuItem(
+                            text: 'Change start date',
+                            icon: Icon(CupertinoIcons.calendar_today),
+                            onPressed: () => _updateStartDate(enrolment)),
+                        BottomSheetMenuItem(
+                            text: 'Share plan',
+                            icon: Icon(CupertinoIcons.share),
+                            onPressed: () => print('share plan')),
+                        BottomSheetMenuItem(
+                            text: 'Leave plan',
+                            isDestructive: true,
                             icon: Icon(
-                              CupertinoIcons.archivebox,
-                              color:
-                                  workoutPlan.archived ? null : Styles.errorRed,
+                              CupertinoIcons.square_arrow_right,
+                              color: Styles.errorRed,
                             ),
-                            isDestructive: !workoutPlan.archived,
-                            onPressed: () => workoutPlan.archived
-                                ? _unarchiveWorkoutPlan(workoutPlan.id)
-                                : _archiveWorkoutPlan(workoutPlan.id)),
-                    ])),
+                            onPressed: () => print('leave')),
+                      ])),
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildAvatar(workoutPlan),
-                        Row(
-                          children: [
-                            DoItButton(onPressed: () => print('join the plan')),
-                            CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () => print('save to collection'),
-                                child: Icon(CupertinoIcons.heart)),
-                          ],
-                        ),
-                      ],
-                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12.0, horizontal: 16),
+                    child: WorkoutPlanEnrolmentProgressSummary(
+                        workoutPlanEnrolment: enrolment),
                   ),
-                  HorizontalLine(),
                   Expanded(
                     child: NestedScrollView(
                       controller: _scrollController,
@@ -375,7 +320,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                   const EdgeInsets.only(top: 12, bottom: 8),
                               child: MyTabBarNav(
                                   titles: [
-                                    'Workouts',
+                                    'Progress',
                                     'Goals',
                                     'Reviews',
                                     'Participants',
@@ -386,8 +331,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                             child: PageView(
                                 controller: _pageController,
                                 children: [
-                                  WorkoutPlanWorkoutSchedule(
-                                    workoutPlan: workoutPlan,
+                                  WorkoutPlanEnrolmentWorkoutsProgress(
+                                    workoutPlanEnrolment: enrolment,
                                   ),
                                   WorkoutPlanGoals(
                                     workoutPlan: workoutPlan,
@@ -406,9 +351,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          );
+              ));
         });
   }
 }
