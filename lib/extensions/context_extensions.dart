@@ -289,6 +289,7 @@ extension BuildContextExtension on BuildContext {
     required String message,
     Widget? icon,
     ToastType toastType = ToastType.standard,
+    TextAlign textAlign = TextAlign.center,
   }) =>
       Flushbar(
         backgroundColor: toastType == ToastType.destructive
@@ -301,13 +302,11 @@ extension BuildContextExtension on BuildContext {
         animationDuration: Duration(milliseconds: 300),
         borderRadius: BorderRadius.circular(20),
         margin: const EdgeInsets.only(bottom: 8, left: 18, right: 18),
-        messageText: MyText(
-          message,
-          color: Styles.white,
-          weight: FontWeight.bold,
-          size: FONTSIZE.SMALL,
-          textAlign: TextAlign.center,
-        ),
+        messageText: MyText(message,
+            color: Styles.white,
+            weight: FontWeight.bold,
+            size: FONTSIZE.SMALL,
+            textAlign: textAlign),
         duration: Duration(seconds: 3),
         blockBackgroundInteraction: false,
         isDismissible: true,

@@ -4183,6 +4183,107 @@ Map<String, dynamic> _$UpdateWorkoutPlanEnrolmentInputToJson(
       'completedPlanDayWorkoutIds': instance.completedPlanDayWorkoutIds,
     };
 
+DeleteWorkoutPlanEnrolmentById$Mutation
+    _$DeleteWorkoutPlanEnrolmentById$MutationFromJson(
+        Map<String, dynamic> json) {
+  return DeleteWorkoutPlanEnrolmentById$Mutation()
+    ..deleteWorkoutPlanEnrolmentById =
+        json['deleteWorkoutPlanEnrolmentById'] as String;
+}
+
+Map<String, dynamic> _$DeleteWorkoutPlanEnrolmentById$MutationToJson(
+        DeleteWorkoutPlanEnrolmentById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteWorkoutPlanEnrolmentById': instance.deleteWorkoutPlanEnrolmentById,
+    };
+
+CreateWorkoutPlanEnrolment$Mutation
+    _$CreateWorkoutPlanEnrolment$MutationFromJson(Map<String, dynamic> json) {
+  return CreateWorkoutPlanEnrolment$Mutation()
+    ..createWorkoutPlanEnrolment = WorkoutPlanEnrolment.fromJson(
+        json['createWorkoutPlanEnrolment'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanEnrolment$MutationToJson(
+        CreateWorkoutPlanEnrolment$Mutation instance) =>
+    <String, dynamic>{
+      'createWorkoutPlanEnrolment':
+          instance.createWorkoutPlanEnrolment.toJson(),
+    };
+
+DeleteWorkoutPlanReviewById$Mutation
+    _$DeleteWorkoutPlanReviewById$MutationFromJson(Map<String, dynamic> json) {
+  return DeleteWorkoutPlanReviewById$Mutation()
+    ..deleteWorkoutPlanReviewById =
+        json['deleteWorkoutPlanReviewById'] as String;
+}
+
+Map<String, dynamic> _$DeleteWorkoutPlanReviewById$MutationToJson(
+        DeleteWorkoutPlanReviewById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteWorkoutPlanReviewById': instance.deleteWorkoutPlanReviewById,
+    };
+
+UpdateWorkoutPlanReview$Mutation _$UpdateWorkoutPlanReview$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanReview$Mutation()
+    ..updateWorkoutPlanReview = WorkoutPlanReview.fromJson(
+        json['updateWorkoutPlanReview'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanReview$MutationToJson(
+        UpdateWorkoutPlanReview$Mutation instance) =>
+    <String, dynamic>{
+      'updateWorkoutPlanReview': instance.updateWorkoutPlanReview.toJson(),
+    };
+
+UpdateWorkoutPlanReviewInput _$UpdateWorkoutPlanReviewInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanReviewInput(
+    id: json['id'] as String,
+    score: (json['score'] as num?)?.toDouble(),
+    comment: json['comment'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanReviewInputToJson(
+        UpdateWorkoutPlanReviewInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'score': instance.score,
+      'comment': instance.comment,
+    };
+
+CreateWorkoutPlanReview$Mutation _$CreateWorkoutPlanReview$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutPlanReview$Mutation()
+    ..createWorkoutPlanReview = WorkoutPlanReview.fromJson(
+        json['createWorkoutPlanReview'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanReview$MutationToJson(
+        CreateWorkoutPlanReview$Mutation instance) =>
+    <String, dynamic>{
+      'createWorkoutPlanReview': instance.createWorkoutPlanReview.toJson(),
+    };
+
+CreateWorkoutPlanReviewInput _$CreateWorkoutPlanReviewInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutPlanReviewInput(
+    score: (json['score'] as num).toDouble(),
+    comment: json['comment'] as String?,
+    workoutPlan: json['WorkoutPlan'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanReviewInputToJson(
+        CreateWorkoutPlanReviewInput instance) =>
+    <String, dynamic>{
+      'score': instance.score,
+      'comment': instance.comment,
+      'WorkoutPlan': instance.workoutPlan,
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -5294,6 +5395,74 @@ UpdateWorkoutPlanEnrolmentArguments
 
 Map<String, dynamic> _$UpdateWorkoutPlanEnrolmentArgumentsToJson(
         UpdateWorkoutPlanEnrolmentArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteWorkoutPlanEnrolmentByIdArguments
+    _$DeleteWorkoutPlanEnrolmentByIdArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return DeleteWorkoutPlanEnrolmentByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteWorkoutPlanEnrolmentByIdArgumentsToJson(
+        DeleteWorkoutPlanEnrolmentByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CreateWorkoutPlanEnrolmentArguments
+    _$CreateWorkoutPlanEnrolmentArgumentsFromJson(Map<String, dynamic> json) {
+  return CreateWorkoutPlanEnrolmentArguments(
+    workoutPlanId: json['workoutPlanId'] as String,
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanEnrolmentArgumentsToJson(
+        CreateWorkoutPlanEnrolmentArguments instance) =>
+    <String, dynamic>{
+      'workoutPlanId': instance.workoutPlanId,
+    };
+
+DeleteWorkoutPlanReviewByIdArguments
+    _$DeleteWorkoutPlanReviewByIdArgumentsFromJson(Map<String, dynamic> json) {
+  return DeleteWorkoutPlanReviewByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteWorkoutPlanReviewByIdArgumentsToJson(
+        DeleteWorkoutPlanReviewByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateWorkoutPlanReviewArguments _$UpdateWorkoutPlanReviewArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutPlanReviewArguments(
+    data: UpdateWorkoutPlanReviewInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutPlanReviewArgumentsToJson(
+        UpdateWorkoutPlanReviewArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateWorkoutPlanReviewArguments _$CreateWorkoutPlanReviewArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateWorkoutPlanReviewArguments(
+    data: CreateWorkoutPlanReviewInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateWorkoutPlanReviewArgumentsToJson(
+        CreateWorkoutPlanReviewArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };

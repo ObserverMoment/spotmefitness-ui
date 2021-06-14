@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participan
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_progress_summary.dart';
 import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_workouts_progress.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -137,6 +140,48 @@ class _WorkoutPlanEnrolmentDetailsPageState
     }
   }
 
+  void _confirmLeavePlan() {
+    context.showConfirmDialog(
+        title: 'Leave Plan?',
+        content: MyText(
+          'Progress will not be saved but logged workouts will not be affected. OK?',
+          textAlign: TextAlign.center,
+          maxLines: 4,
+        ),
+        onConfirm: _deleteWorkoutPlanEnrolmentById);
+  }
+
+  /// I.e unenrol the user from the plan.
+  Future<void> _deleteWorkoutPlanEnrolmentById() async {
+    context.showLoadingAlert('Leaving...',
+        icon: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.rotationY(pi),
+          child: Icon(
+            Icons.directions_walk,
+          ),
+        ));
+
+    final variables = DeleteWorkoutPlanEnrolmentByIdArguments(id: widget.id);
+
+    final result = await context.graphQLStore.delete<
+            DeleteWorkoutPlanEnrolmentById$Mutation,
+            DeleteWorkoutPlanEnrolmentByIdArguments>(
+        objectId: widget.id,
+        typename: kWorkoutPlanEnrolmentTypename,
+        mutation: DeleteWorkoutPlanEnrolmentByIdMutation(variables: variables),
+        removeRefFromQueries: [UserWorkoutPlanEnrolmentsQuery().operationName]);
+
+    if (result.hasErrors) {
+      context.pop(); // The showLoadingAlert
+      context.showErrorAlert(
+          'Something went wrong, there was an issue leaving the plan.');
+    } else {
+      context.pop(); // The showLoadingAlert
+      context.pop(); // This screen.
+    }
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -201,7 +246,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                               CupertinoIcons.square_arrow_right,
                               color: Styles.errorRed,
                             ),
-                            onPressed: () => print('leave')),
+                            onPressed: _confirmLeavePlan),
                       ])),
                 ),
               ),
@@ -338,6 +383,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                     workoutPlan: workoutPlan,
                                   ),
                                   WorkoutPlanReviews(
+                                      enableLeaveReview: true,
                                       reviews: workoutPlan.workoutPlanReviews),
                                   WorkoutPlanParticipants(
                                     userSummaries: workoutPlan.enrolments

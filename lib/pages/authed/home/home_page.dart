@@ -48,22 +48,6 @@ class HomePage extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             children: [
               GestureDetector(
-                onTap: () => context.navigateTo(YourCollectionsRoute()),
-                child: HomeScreenCard(
-                  content: H2(
-                    'Collections',
-                    color: Styles.white,
-                  ),
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        const Color(0xFFF09819),
-                        const Color(0xFFEDDE5D),
-                      ]),
-                ),
-              ),
-              GestureDetector(
                 onTap: () => context.navigateTo(YourWorkoutsRoute()),
                 child: HomeScreenCard(
                   content: H2(
@@ -74,8 +58,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFFE4E5E6),
-                        const Color(0xFF00416A),
+                        const Color(0xFF0065a3),
+                        const Color(0xFF6dd5ed),
                       ]),
                 ),
               ),
@@ -122,8 +106,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF6dd5ed),
-                        const Color(0xFF314755),
+                        const Color(0xFFffe259),
+                        const Color(0xFFffa751),
                       ]),
                 ),
               ),
@@ -136,8 +120,8 @@ class HomePage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFFffe259),
-                      const Color(0xFFffa751),
+                      const Color(0xFFD31027),
+                      const Color(0xFF493240),
                     ]),
               ),
               GestureDetector(
@@ -151,8 +135,8 @@ class HomePage extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFFB79891),
-                        const Color(0xFF94716B),
+                        const Color(0xFF6dd5ed),
+                        const Color(0xFF314755),
                       ]),
                 ),
               ),
@@ -165,8 +149,22 @@ class HomePage extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFFD31027),
-                      const Color(0xFF493240),
+                      const Color(0xFF11998e),
+                      const Color(0xFF38ef7d),
+                    ]),
+              ),
+              HomeScreenCard(
+                content: H2(
+                  'Mind',
+                  color: Styles.white,
+                ),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFFd9a7c7),
+                      const Color(0xFFd9a7c7),
+                      const Color(0xFFE9E4F0),
                     ]),
               ),
             ],

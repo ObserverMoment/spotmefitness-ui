@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -207,7 +207,8 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 16.0),
                     child: Row(
                       children: [
-                        MyText('Day Complete'),
+                        MyText('Day Complete',
+                            size: FONTSIZE.SMALL, weight: FontWeight.bold),
                         SizedBox(width: 6),
                         Icon(
                           CupertinoIcons.checkmark_alt_circle,

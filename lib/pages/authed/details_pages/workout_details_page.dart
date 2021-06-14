@@ -15,7 +15,7 @@ import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.d
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

@@ -172,13 +172,16 @@ class YourWorkoutPlanEnrolments extends StatelessWidget {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 12.0, horizontal: 8),
+                                        vertical: 8.0, horizontal: 8),
                                     child: WorkoutPlanEnrolmentProgressSummary(
                                         workoutPlanEnrolment: enrolments[i]),
                                   ),
-                                  WorkoutPlanCard(
-                                    enrolments[i].workoutPlan,
-                                    withBoxShadow: false,
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: WorkoutPlanCard(
+                                      enrolments[i].workoutPlan,
+                                      withBoxShadow: false,
+                                    ),
                                   ),
                                 ],
                               ),

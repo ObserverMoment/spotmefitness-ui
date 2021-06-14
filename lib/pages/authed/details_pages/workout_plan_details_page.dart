@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
@@ -18,14 +20,19 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
+import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:collection/collection.dart';
 
 class WorkoutPlanDetailsPage extends StatefulWidget {
   final String id;
@@ -61,6 +68,35 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
       _pageController.jumpToPage(index);
     }
     setState(() => _activeTabIndex = index);
+  }
+
+  /// I.e. enrol the user in the plan.
+  Future<void> _createWorkoutPlanEnrolment() async {
+    context.showLoadingAlert('Joining Plan...',
+        icon: Icon(
+          Icons.directions_run,
+        ));
+
+    final variables =
+        CreateWorkoutPlanEnrolmentArguments(workoutPlanId: widget.id);
+
+    final result = await context.graphQLStore.mutate<
+            CreateWorkoutPlanEnrolment$Mutation,
+            CreateWorkoutPlanEnrolmentArguments>(
+        mutation: CreateWorkoutPlanEnrolmentMutation(variables: variables),
+        addRefToQueries: [UserWorkoutPlanEnrolmentsQuery().operationName]);
+
+    if (result.hasErrors) {
+      context.pop(); // The showLoadingAlert
+      context.showErrorAlert(
+          'Something went wrong, there was an issue joining the plan.');
+    } else {
+      context.pop(); // The showLoadingAlert
+      context.showToast(
+          icon: Icon(Icons.thumb_up, color: Styles.white),
+          message: 'Plan joined! Congratulations!',
+          toastType: ToastType.success);
+    }
   }
 
   Future<void> _archiveWorkoutPlan(String id) async {
@@ -257,10 +293,38 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                         _buildAvatar(workoutPlan),
                         Row(
                           children: [
-                            DoItButton(onPressed: () => print('join the plan')),
+                            QueryObserver<UserWorkoutPlanEnrolments$Query,
+                                    json.JsonSerializable>(
+                                key: Key(
+                                    'WorkoutPlanDetailsPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
+                                query: UserWorkoutPlanEnrolmentsQuery(),
+                                loadingIndicator: LoadingDots(size: 16),
+                                // Otherwise every single plan details page that you open will run a network query for all of your plan enrolments.
+                                fetchPolicy: QueryFetchPolicy.storeFirst,
+                                builder: (data) {
+                                  final enrolments =
+                                      data.userWorkoutPlanEnrolments;
+
+                                  /// Is the user already enrolled in this plan?
+                                  final enrolmentInPlan =
+                                      enrolments.firstWhereOrNull((e) =>
+                                          e.workoutPlan.id == workoutPlan.id);
+
+                                  if (enrolmentInPlan != null) {
+                                    return DoItButton(
+                                        text: 'Progress',
+                                        onPressed: () => context.navigateTo(
+                                            WorkoutPlanEnrolmentDetailsRoute(
+                                                id: enrolmentInPlan.id)));
+                                  } else {
+                                    return DoItButton(
+                                        text: 'Join Plan',
+                                        onPressed: _createWorkoutPlanEnrolment);
+                                  }
+                                }),
                             CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                onPressed: () => print('save to collection'),
+                                onPressed: () => print('save to your plans'),
                                 child: Icon(CupertinoIcons.heart)),
                           ],
                         ),

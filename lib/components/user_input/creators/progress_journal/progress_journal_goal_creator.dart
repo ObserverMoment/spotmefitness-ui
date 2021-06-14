@@ -135,7 +135,7 @@ class _ProgressJournalGoalCreatorState
     }
   }
 
-  /// The goal that we have created is not a top level object in the global store. We need to update the goal within the journal and then re-write the updated journal to the store.
+  /// We need to update the goal within the journal and then re-write the updated journal to the store.
   /// We can then broadcast new data to query observers so that UI updates.
   void _writeCreatedGoalToStore(ProgressJournalGoal goal) {
     final parentJournalData = context.graphQLStore.readDenomalized(

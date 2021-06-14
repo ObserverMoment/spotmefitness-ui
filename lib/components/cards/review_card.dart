@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
@@ -23,7 +23,7 @@ class WorkoutPlanReviewCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Row(
-              mainAxisAlignment: material.MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
@@ -43,9 +43,9 @@ class WorkoutPlanReviewCard extends StatelessWidget {
                       rating: review.score,
                       itemBuilder: (context, index) => Icon(
                         CupertinoIcons.star_fill,
-                        color: material.Colors.amber,
+                        color: Styles.starGold,
                       ),
-                      unratedColor: material.Colors.amber.withOpacity(0.2),
+                      unratedColor: Styles.starGold.withOpacity(0.2),
                       itemCount: 5,
                       itemSize: 20,
                     ),
@@ -59,7 +59,7 @@ class WorkoutPlanReviewCard extends StatelessWidget {
                         review.score.stringMyDouble(),
                         color: context.theme.primary,
                         lineHeight: 1,
-                        weight: material.FontWeight.bold,
+                        weight: FontWeight.bold,
                       ),
                     )
                   ],

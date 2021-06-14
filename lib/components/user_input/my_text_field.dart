@@ -110,12 +110,6 @@ class _MyTextFieldState extends State<MyTextField> {
             : widget.textInputType ?? TextInputType.text,
         decoration: BoxDecoration(
           color: CupertinoTheme.of(context).primaryColor.withOpacity(0.1),
-          border: Border(
-              bottom: BorderSide(
-                  width: 0.5,
-                  color: CupertinoTheme.of(context)
-                      .primaryColor
-                      .withOpacity(_focusNode.hasFocus ? 1 : 0.6))),
         ),
       ),
     );

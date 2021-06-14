@@ -94,7 +94,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
                             color: context.theme.background.withOpacity(0.8),
                           ),
                           height: kBottomNavBarHeight,
-                          width: _size.width - 12,
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

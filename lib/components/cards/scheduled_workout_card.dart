@@ -8,7 +8,7 @@ import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout/scheduled_workout_creator.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

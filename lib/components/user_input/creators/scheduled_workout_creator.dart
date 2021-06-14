@@ -160,6 +160,7 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
                   )
                 : NavBarSaveButton(_schedule)),
       ),
+      // Use SafeArea as this screen can be opened as a bottom sheet.
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
