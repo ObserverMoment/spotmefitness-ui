@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -20,7 +21,6 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -50,6 +50,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
   PageController _pageController = PageController();
 
   final _kthumbDisplaySize = Size(80, 80);
+
+  bool _liked = false;
 
   @override
   void initState() {
@@ -324,8 +326,11 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                 }),
                             CupertinoButton(
                                 padding: EdgeInsets.zero,
-                                onPressed: () => print('save to your plans'),
-                                child: Icon(CupertinoIcons.heart)),
+                                onPressed: () =>
+                                    setState(() => _liked = !_liked),
+                                child: AnimatedLikeHeart(
+                                  active: _liked,
+                                )),
                           ],
                         ),
                       ],

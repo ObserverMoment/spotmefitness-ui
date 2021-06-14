@@ -15,7 +15,7 @@ class LoggedWorkoutCard extends StatelessWidget {
   LoggedWorkoutCard(this.loggedWorkout);
 
   final kNumSectionTags = 3;
-  final kNumBodyAreaTags = 10;
+  final kNumBodyAreaTags = 5;
   final kNumMoveTypeTags = 4;
 
   @override

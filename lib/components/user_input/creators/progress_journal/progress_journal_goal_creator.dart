@@ -130,8 +130,6 @@ class _ProgressJournalGoalCreatorState
         _writeCreatedGoalToStore(result.data!.createProgressJournalGoal);
         context.pop();
       }
-
-      setState(() => _isLoading = false);
     }
   }
 

@@ -4272,7 +4272,8 @@ CreateWorkoutPlanReviewInput _$CreateWorkoutPlanReviewInputFromJson(
   return CreateWorkoutPlanReviewInput(
     score: (json['score'] as num).toDouble(),
     comment: json['comment'] as String?,
-    workoutPlan: json['WorkoutPlan'] as String,
+    workoutPlan: ConnectRelationInput.fromJson(
+        json['WorkoutPlan'] as Map<String, dynamic>),
   );
 }
 
@@ -4281,7 +4282,7 @@ Map<String, dynamic> _$CreateWorkoutPlanReviewInputToJson(
     <String, dynamic>{
       'score': instance.score,
       'comment': instance.comment,
-      'WorkoutPlan': instance.workoutPlan,
+      'WorkoutPlan': instance.workoutPlan.toJson(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(

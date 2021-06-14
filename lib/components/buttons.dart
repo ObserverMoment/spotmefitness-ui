@@ -855,14 +855,18 @@ class InfoPopupButton extends StatelessWidget {
 class NoteIconViewerButton extends StatelessWidget {
   final String note;
   final String modalTitle;
-  NoteIconViewerButton(this.note, {this.modalTitle = 'Note'});
+  final bool useRootNavigator;
+  NoteIconViewerButton(this.note,
+      {this.modalTitle = 'Note', this.useRootNavigator = true});
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
         padding: EdgeInsets.zero,
         child: NotesIcon(),
         onPressed: () => context.showBottomSheet(
-            expand: true, child: TextViewer(note, modalTitle)));
+            useRootNavigator: useRootNavigator,
+            expand: true,
+            child: TextViewer(note, modalTitle)));
   }
 }
 

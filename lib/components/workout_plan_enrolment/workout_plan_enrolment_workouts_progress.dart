@@ -149,11 +149,24 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
     }
   }
 
-  Future<void> _updateCompletedWorkoutIds(
-      BuildContext context, String idToToggle) async {
-    final updatedIds =
-        workoutPlanEnrolment.completedPlanDayWorkoutIds.toggleItem(idToToggle);
+  /// Goes through then log workout flow and then, once finished, updates the [completedPlanDayWorkoutIds].
+  Future<void> _handleLogWorkoutProgramWorkout(
+      BuildContext context, WorkoutPlanDayWorkout planDayWorkout) async {
+    final success = await context
+        .pushRoute(LoggedWorkoutCreatorRoute(workout: planDayWorkout.workout));
 
+    if (success != null && success == true) {
+      if (!workoutPlanEnrolment.completedPlanDayWorkoutIds
+          .contains(planDayWorkout.id)) {
+        workoutPlanEnrolment.completedPlanDayWorkoutIds.add(planDayWorkout.id);
+        _updateCompletedWorkoutIds(
+            context, workoutPlanEnrolment.completedPlanDayWorkoutIds);
+      }
+    }
+  }
+
+  Future<void> _updateCompletedWorkoutIds(
+      BuildContext context, List<String> updatedIds) async {
     final variables = UpdateWorkoutPlanEnrolmentArguments(
         data: UpdateWorkoutPlanEnrolmentInput(id: ''));
 
@@ -250,12 +263,14 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                                 text: 'Unmark as done',
                                 icon: Icon(CupertinoIcons.clear_thick),
                                 onPressed: () => _updateCompletedWorkoutIds(
-                                    context, dayWorkout.id))
+                                    context,
+                                    completedIds.toggleItem(dayWorkout.id)))
                             : BottomSheetMenuItem(
                                 text: 'Mark as done',
                                 icon: Icon(CupertinoIcons.checkmark_alt),
                                 onPressed: () => _updateCompletedWorkoutIds(
-                                    context, dayWorkout.id)),
+                                    context,
+                                    completedIds.toggleItem(dayWorkout.id))),
                         BottomSheetMenuItem(
                             text: 'Do it',
                             icon: Icon(CupertinoIcons.arrow_right_square),
@@ -268,9 +283,8 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                         BottomSheetMenuItem(
                             text: 'Log it',
                             icon: Icon(CupertinoIcons.doc_plaintext),
-                            onPressed: () => context.navigateTo(
-                                LoggedWorkoutCreatorRoute(
-                                    workout: dayWorkout.workout))),
+                            onPressed: () => _handleLogWorkoutProgramWorkout(
+                                context, dayWorkout)),
                         BottomSheetMenuItem(
                             text: 'View details',
                             icon: Icon(CupertinoIcons.eye),

@@ -48,9 +48,9 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
 
   @override
   Widget build(BuildContext context) {
-    final sectionsToInclude =
-        context.select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-            (b) => b.sectionsToIncludeInLog);
+    final includedSectionIds =
+        context.select<LoggedWorkoutCreatorBloc, List<String>>(
+            (b) => b.includedSectionIds);
 
     final loggedWorkoutSections =
         context.select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
@@ -125,8 +125,8 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
           child: ListView.separated(
               itemBuilder: (c, i) => IncludeWorkoutSectionSelector(
                     loggedWorkoutSection: loggedWorkoutSections[i],
-                    isSelected:
-                        sectionsToInclude.contains(loggedWorkoutSections[i]),
+                    isSelected: includedSectionIds
+                        .contains(loggedWorkoutSections[i].id),
                     toggleSelection: () =>
                         _bloc.toggleIncludeSection(loggedWorkoutSections[i]),
                   ),

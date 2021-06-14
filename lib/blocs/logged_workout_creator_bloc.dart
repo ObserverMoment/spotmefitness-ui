@@ -21,7 +21,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
   late LoggedWorkout loggedWorkout;
   late Map<String, dynamic> _backupJson;
-  List<LoggedWorkoutSection> sectionsToIncludeInLog = [];
+  List<String> includedSectionIds = [];
 
   /// When creating the initial log - nothing is saved to the API until the end of the flow.
   /// When editing:
@@ -115,7 +115,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
           ? ConnectRelationInput(id: log.gymProfile!.id)
           : null,
       completedOn: log.completedOn,
-      loggedWorkoutSections: sectionsToIncludeInLog
+      loggedWorkoutSections: log.loggedWorkoutSections
+          .where((s) => includedSectionIds.contains(s.id))
           .sortedBy<num>((s) => s.sortPosition)
           .asMap()
           .map((index, section) => MapEntry(
@@ -123,7 +124,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
               CreateLoggedWorkoutSectionInLoggedWorkoutInput(
                   name: section.name,
                   note: section.note,
-                  // Not the original index, the index from within the selected sections at [sectionsToIncludeInLog]
+                  // Not the original index, the index from within the selected sections at [includedSectionIds]
                   sortPosition: index,
                   roundsCompleted: section.roundsCompleted,
                   roundTimesMs: section.roundTimesMs,
@@ -177,8 +178,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   }
 
   void toggleIncludeSection(LoggedWorkoutSection loggedWorkoutSection) {
-    sectionsToIncludeInLog = sectionsToIncludeInLog
-        .toggleItem<LoggedWorkoutSection>(loggedWorkoutSection);
+    includedSectionIds =
+        includedSectionIds.toggleItem<String>(loggedWorkoutSection.id);
     notifyListeners();
   }
 
@@ -274,9 +275,24 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   /// 5. If errors - rollback changes and notify listeners.
   /// NOTE: Do not write to store on any of these updates.
   /// Write to store when the user closes the section editing screen.
-  Future<void> updateSectionRepsScore(int sectionIndex, int score) async {
+  ///
+  /// When updating "score" inputs (section reps, time, rounds) we check if the section is being included in the log via [includedSectionIds]. If the user is entering a score for this section then we can assume that they want to include it and so should update this automatically.
+  Future<void> updateSectionRepsScore(int sectionIndex, int repScore) async {
     _backupSectionAndMarkDirty(sectionIndex);
-    loggedWorkout.loggedWorkoutSections[sectionIndex].repScore = score;
+    final updated = LoggedWorkoutSection.fromJson({
+      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+      'repScore': repScore
+    });
+
+    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+        .toList();
+
+    /// Add to included section if not already there.
+    if (!includedSectionIds.contains(updated.id)) {
+      includedSectionIds.add(updated.id);
+    }
+
     notifyListeners();
 
     if (_isEditing) {
@@ -288,7 +304,21 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   Future<void> updateSectionTimeTakenMs(
       int sectionIndex, int timeTakenMs) async {
     _backupSectionAndMarkDirty(sectionIndex);
-    loggedWorkout.loggedWorkoutSections[sectionIndex].timeTakenMs = timeTakenMs;
+
+    final updated = LoggedWorkoutSection.fromJson({
+      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+      'timeTakenMs': timeTakenMs
+    });
+
+    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+        .toList();
+
+    /// Add to included section if not already there.
+    if (!includedSectionIds.contains(updated.id)) {
+      includedSectionIds.add(updated.id);
+    }
+
     notifyListeners();
 
     if (_isEditing) {
@@ -300,8 +330,21 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   Future<void> updateSectionRoundsCompleted(
       int sectionIndex, int roundsCompleted) async {
     _backupSectionAndMarkDirty(sectionIndex);
-    loggedWorkout.loggedWorkoutSections[sectionIndex].roundsCompleted =
-        roundsCompleted;
+
+    final updated = LoggedWorkoutSection.fromJson({
+      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+      'roundsCompleted': roundsCompleted
+    });
+
+    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+        .toList();
+
+    /// Add to included section if not already there.
+    if (!includedSectionIds.contains(updated.id)) {
+      includedSectionIds.add(updated.id);
+    }
+
     notifyListeners();
 
     if (_isEditing) {
@@ -343,7 +386,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
   /// Only available when user is editing as logged workout, not when creating.
   /// So [if (_isEditing)] check is not required before calling the network.
-  /// When creating use [sectionsToIncludeInLog] to add / remove sections.
+  /// When creating use [includedSectionIds] to add / remove sections.
   /// These deletes get written to the [graphQLStore] immediately that the API result confirms.
   Future<void> deleteLoggedWorkoutSection(int sectionIndex) async {
     makeBackupLog();

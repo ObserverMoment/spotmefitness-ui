@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
@@ -94,6 +95,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         key: Key('LoggedWorkoutDetailsPage - ${query.operationName}'),
         query: query,
         parameterizeQuery: true,
+        loadingIndicator: ShimmerDetailsPage(title: 'Finding log...'),
         builder: (data) {
           final log = data.loggedWorkoutById;
 

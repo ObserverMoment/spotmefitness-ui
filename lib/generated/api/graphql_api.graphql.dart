@@ -5073,7 +5073,7 @@ class CreateWorkoutPlanReviewInput extends JsonSerializable
   String? comment;
 
   @JsonKey(name: 'WorkoutPlan')
-  late String workoutPlan;
+  late ConnectRelationInput workoutPlan;
 
   @override
   List<Object?> get props => [score, comment, workoutPlan];

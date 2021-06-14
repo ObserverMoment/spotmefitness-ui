@@ -3,8 +3,12 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/review_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
@@ -12,6 +16,7 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_review_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
@@ -26,6 +31,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:collection/collection.dart';
 
 class WorkoutPlanEnrolmentDetailsPage extends StatefulWidget {
   final String id;
@@ -205,6 +211,12 @@ class _WorkoutPlanEnrolmentDetailsPageState
           final enrolment = data.userWorkoutPlanEnrolmentById;
           final workoutPlan = enrolment.workoutPlan;
 
+          final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
+          final WorkoutPlanReview? loggedInUserReview = authedUserId == null
+              ? null
+              : enrolment.workoutPlan.workoutPlanReviews
+                  .firstWhereOrNull((r) => r.user.id == authedUserId);
+
           return CupertinoPageScaffold(
               navigationBar: BorderlessNavBar(
                 middle: NavBarTitle(enrolment.workoutPlan.name),
@@ -220,9 +232,14 @@ class _WorkoutPlanEnrolmentDetailsPageState
                           ),
                           items: [
                         BottomSheetMenuItem(
-                            text: 'Leave review',
-                            icon: Icon(CupertinoIcons.star_fill),
-                            onPressed: () => print('review flow')),
+                          text: 'Leave review',
+                          icon: Icon(CupertinoIcons.star_fill),
+                          onPressed: () => context.showBottomSheet(
+                              child: WorkoutPlanReviewCreator(
+                            parentWorkoutPlanEnrolmentId: enrolment.id,
+                            parentWorkoutPlanId: workoutPlan.id,
+                          )),
+                        ),
                         BottomSheetMenuItem(
                             text: 'Share progress',
                             icon: Icon(CupertinoIcons.share),
@@ -367,7 +384,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                   titles: [
                                     'Progress',
                                     'Goals',
-                                    'Reviews',
+                                    'Leave Review',
                                     'Participants',
                                   ],
                                   handleTabChange: _handleTabChange,
@@ -382,9 +399,11 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                   WorkoutPlanGoals(
                                     workoutPlan: workoutPlan,
                                   ),
-                                  WorkoutPlanReviews(
-                                      enableLeaveReview: true,
-                                      reviews: workoutPlan.workoutPlanReviews),
+                                  _YourReviewDisplay(
+                                    enrolment: enrolment,
+                                    loggedInUserReview: loggedInUserReview,
+                                    workoutPlan: workoutPlan,
+                                  ),
                                   WorkoutPlanParticipants(
                                     userSummaries: workoutPlan.enrolments
                                         .map((e) => e.user)
@@ -399,5 +418,72 @@ class _WorkoutPlanEnrolmentDetailsPageState
                 ],
               ));
         });
+  }
+}
+
+class _YourReviewDisplay extends StatelessWidget {
+  final WorkoutPlan workoutPlan;
+  final WorkoutPlanEnrolment enrolment;
+  final WorkoutPlanReview? loggedInUserReview;
+  const _YourReviewDisplay(
+      {Key? key,
+      required this.workoutPlan,
+      required this.enrolment,
+      required this.loggedInUserReview})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: loggedInUserReview != null
+              ? Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        H3('Your Review'),
+                        SizedBox(width: 8),
+                        BorderButton(
+                          mini: true,
+                          prefix: Icon(
+                            CupertinoIcons.star_fill,
+                            color: Styles.starGold,
+                            size: 14,
+                          ),
+                          text: 'Edit Review',
+                          onPressed: () => context.showBottomSheet(
+                              child: WorkoutPlanReviewCreator(
+                            parentWorkoutPlanEnrolmentId: enrolment.id,
+                            parentWorkoutPlanId: workoutPlan.id,
+                            workoutPlanReview: loggedInUserReview,
+                          )),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: WorkoutPlanReviewCard(
+                        review: loggedInUserReview!,
+                      ),
+                    )
+                  ],
+                )
+              : BorderButton(
+                  mini: true,
+                  prefix: Icon(
+                    CupertinoIcons.star_fill,
+                    color: Styles.starGold,
+                    size: 14,
+                  ),
+                  text: 'Leave Review',
+                  onPressed: () => context.showBottomSheet(
+                      child: WorkoutPlanReviewCreator(
+                    parentWorkoutPlanEnrolmentId: enrolment.id,
+                    parentWorkoutPlanId: workoutPlan.id,
+                  )),
+                )),
+    );
   }
 }

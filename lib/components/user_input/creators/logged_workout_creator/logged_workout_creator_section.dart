@@ -95,8 +95,11 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        Wrap(
+          spacing: 4,
+          runSpacing: 3,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             WorkoutSectionTypeTag(
               loggedWorkoutSection.workoutSectionType.name,

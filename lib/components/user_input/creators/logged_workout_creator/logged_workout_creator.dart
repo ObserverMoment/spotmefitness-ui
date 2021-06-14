@@ -55,7 +55,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
         'Workout Logged!',
         'You can go to Journals > Logs to view it.',
       );
-      context.pop(); // Close the logged workout creator.
+      context.pop(result: true); // Close the logged workout creator.
     }
   }
 
@@ -71,15 +71,23 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
       create: (context) =>
           LoggedWorkoutCreatorBloc(context: context, workout: widget.workout),
       builder: (context, child) {
-        final includedSections = context
+        final loggedWorkoutSections = context
             .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-                (b) => b.sectionsToIncludeInLog)
+                (b) => b.loggedWorkout.loggedWorkoutSections);
+
+        final includedSectionIds =
+            context.select<LoggedWorkoutCreatorBloc, List<String>>(
+                (b) => b.includedSectionIds);
+
+        final includedSections = loggedWorkoutSections
+            .where((s) => includedSectionIds.contains(s.id))
             .sortedBy<num>((s) => s.sortPosition);
 
         return CupertinoPageScaffold(
             navigationBar: BasicNavBar(
               heroTag: 'LoggedWorkoutCreatorPage',
-              customLeading: NavBarCancelButton(context.pop),
+              customLeading:
+                  NavBarCancelButton(() => context.pop(result: false)),
               middle: NavBarTitle('Log Workout'),
               trailing: includedSections.isNotEmpty
                   ? NavBarSaveButton(
