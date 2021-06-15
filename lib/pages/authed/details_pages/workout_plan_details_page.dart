@@ -17,6 +17,7 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/collection_selector.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
@@ -28,11 +29,11 @@ import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class WorkoutPlanDetailsPage extends StatefulWidget {
   final String id;
@@ -50,8 +51,6 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
   PageController _pageController = PageController();
 
   final _kthumbDisplaySize = Size(80, 80);
-
-  bool _liked = false;
 
   @override
   void initState() {
@@ -98,6 +97,90 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
           icon: Icon(Icons.thumb_up, color: Styles.white),
           message: 'Plan joined! Congratulations!',
           toastType: ToastType.success);
+    }
+  }
+
+  /// Either removes the workoutPlan from its current collection ([collection] is not null)
+  /// Or Adds to an existing collection.
+  /// Or adds to a newly created collection.
+  Future<void> _toggleSavedWorkoutPlan(
+      WorkoutPlan workoutPlan, Collection? collection) async {
+    if (collection != null) {
+      context.showConfirmDialog(
+          title: 'Remove from Saved',
+          content: MyText(
+            'Remove from: ${collection.name}?',
+            textAlign: TextAlign.center,
+            maxLines: 4,
+          ),
+          onConfirm: () =>
+              _removeWorkoutPlanFromCollection(collection, workoutPlan));
+    } else {
+      /// Add to collection flow.
+      /// First choose a collection
+      await context.showBottomSheet(
+          useRootNavigator: true,
+          expand: true,
+          child: CollectionSelector(
+              selectCollection: (collection) =>
+                  _addWorkoutPlanToCollection(collection, workoutPlan)));
+    }
+  }
+
+  Future<void> _addWorkoutPlanToCollection(
+      Collection collection, WorkoutPlan workoutPlan) async {
+    final updatedCollection = Collection.fromJson(collection.toJson());
+    updatedCollection.workoutPlans.add(workoutPlan);
+
+    final variables = AddWorkoutPlanToCollectionArguments(
+        data: AddWorkoutPlanToCollectionInput(
+            collectionId: collection.id,
+            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
+
+    final result = await context.graphQLStore.mutate<
+            AddWorkoutPlanToCollection$Mutation,
+            AddWorkoutPlanToCollectionArguments>(
+        mutation: AddWorkoutPlanToCollectionMutation(variables: variables),
+        optimisticData: updatedCollection.toJson(),
+        broadcastQueryIds: [
+          UserCollectionsQuery().operationName,
+          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
+        ]);
+
+    if (result.hasErrors || result.data == null) {
+      context.showErrorAlert(
+          'Sorry there was a problem, the workout plan was not added');
+    } else {
+      context.showToast(message: 'Saved to collection: ${collection.name}');
+    }
+  }
+
+  Future<void> _removeWorkoutPlanFromCollection(
+      Collection collection, WorkoutPlan workoutPlan) async {
+    final updatedCollection = Collection.fromJson(collection.toJson());
+    updatedCollection.workoutPlans =
+        collection.workoutPlans.where((wp) => wp.id != workoutPlan.id).toList();
+
+    final variables = RemoveWorkoutPlanFromCollectionArguments(
+        data: RemoveWorkoutPlanFromCollectionInput(
+            collectionId: collection.id,
+            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
+
+    final result = await context.graphQLStore.mutate<
+            RemoveWorkoutPlanFromCollection$Mutation,
+            RemoveWorkoutPlanFromCollectionArguments>(
+        mutation: RemoveWorkoutPlanFromCollectionMutation(variables: variables),
+        optimisticData: updatedCollection.toJson(),
+        broadcastQueryIds: [
+          UserCollectionsQuery().operationName,
+          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
+        ]);
+
+    if (result.hasErrors || result.data == null) {
+      context.showErrorAlert(
+          'Sorry there was a problem, the workout plan was not removed');
+    } else {
+      context.showToast(message: 'Removed from collection: ${collection.name}');
     }
   }
 
@@ -232,252 +315,274 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
         query: query,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
-        builder: (data) {
-          final workoutPlan = data.workoutPlanById;
+        builder: (workoutPlanData) {
+          return QueryObserver<UserCollections$Query, json.JsonSerializable>(
+              key: Key(
+                  'WorkoutPlanDetailsPage - ${UserCollectionsQuery().operationName}'),
+              query: UserCollectionsQuery(),
+              fetchPolicy: QueryFetchPolicy.storeFirst,
+              loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
+              builder: (collectionsData) {
+                final workoutPlan = workoutPlanData.workoutPlanById;
 
-          final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
-          final bool isOwner = workoutPlan.user.id == authedUserId;
+                final Collection? collection = collectionsData.userCollections
+                    .firstWhereOrNull((collection) =>
+                        collection.workoutPlans.contains(workoutPlan));
 
-          return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
-              middle: NavBarTitle(workoutPlan.name),
-              trailing: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.ellipsis_circle),
-                onPressed: () => context.showBottomSheet(
-                    child: BottomSheetMenu(
-                        header: BottomSheetMenuHeader(
-                          name: workoutPlan.name,
-                          subtitle: 'Workout Plan',
-                          imageUri: workoutPlan.coverImageUri,
-                        ),
-                        items: [
-                      BottomSheetMenuItem(
-                          text: 'Share',
-                          icon: Icon(CupertinoIcons.share),
-                          onPressed: () => print('share')),
-                      if (isOwner)
-                        BottomSheetMenuItem(
-                            text: 'Edit',
-                            icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () => context.navigateTo(
-                                WorkoutPlanCreatorRoute(
-                                    workoutPlan: workoutPlan))),
-                      BottomSheetMenuItem(
-                          text: 'Export',
-                          icon: Icon(CupertinoIcons.download_circle),
-                          onPressed: () => print('export')),
-                      if (isOwner)
-                        BottomSheetMenuItem(
-                            text:
-                                workoutPlan.archived ? 'Unarchive' : 'Archive',
-                            icon: Icon(
-                              CupertinoIcons.archivebox,
-                              color:
-                                  workoutPlan.archived ? null : Styles.errorRed,
-                            ),
-                            isDestructive: !workoutPlan.archived,
-                            onPressed: () => workoutPlan.archived
-                                ? _unarchiveWorkoutPlan(workoutPlan.id)
-                                : _archiveWorkoutPlan(workoutPlan.id)),
-                    ])),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
+                final bool isOwner = workoutPlan.user.id == authedUserId;
+
+                return CupertinoPageScaffold(
+                  navigationBar: BorderlessNavBar(
+                    middle: NavBarTitle(workoutPlan.name),
+                    trailing: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: Icon(CupertinoIcons.ellipsis_circle),
+                      onPressed: () => context.showBottomSheet(
+                          child: BottomSheetMenu(
+                              header: BottomSheetMenuHeader(
+                                name: workoutPlan.name,
+                                subtitle: 'Workout Plan',
+                                imageUri: workoutPlan.coverImageUri,
+                              ),
+                              items: [
+                            BottomSheetMenuItem(
+                                text: 'Share',
+                                icon: Icon(CupertinoIcons.share),
+                                onPressed: () => print('share')),
+                            if (isOwner)
+                              BottomSheetMenuItem(
+                                  text: 'Edit',
+                                  icon: Icon(CupertinoIcons.pencil),
+                                  onPressed: () => context.navigateTo(
+                                      WorkoutPlanCreatorRoute(
+                                          workoutPlan: workoutPlan))),
+                            BottomSheetMenuItem(
+                                text: 'Export',
+                                icon: Icon(CupertinoIcons.download_circle),
+                                onPressed: () => print('export')),
+                            if (isOwner)
+                              BottomSheetMenuItem(
+                                  text: workoutPlan.archived
+                                      ? 'Unarchive'
+                                      : 'Archive',
+                                  icon: Icon(
+                                    CupertinoIcons.archivebox,
+                                    color: workoutPlan.archived
+                                        ? null
+                                        : Styles.errorRed,
+                                  ),
+                                  isDestructive: !workoutPlan.archived,
+                                  onPressed: () => workoutPlan.archived
+                                      ? _unarchiveWorkoutPlan(workoutPlan.id)
+                                      : _archiveWorkoutPlan(workoutPlan.id)),
+                          ])),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Column(
                       children: [
-                        _buildAvatar(workoutPlan),
-                        Row(
-                          children: [
-                            QueryObserver<UserWorkoutPlanEnrolments$Query,
-                                    json.JsonSerializable>(
-                                key: Key(
-                                    'WorkoutPlanDetailsPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
-                                query: UserWorkoutPlanEnrolmentsQuery(),
-                                loadingIndicator: LoadingDots(size: 16),
-                                // Otherwise every single plan details page that you open will run a network query for all of your plan enrolments.
-                                fetchPolicy: QueryFetchPolicy.storeFirst,
-                                builder: (data) {
-                                  final enrolments =
-                                      data.userWorkoutPlanEnrolments;
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _buildAvatar(workoutPlan),
+                              Row(
+                                children: [
+                                  QueryObserver<UserWorkoutPlanEnrolments$Query,
+                                          json.JsonSerializable>(
+                                      key: Key(
+                                          'WorkoutPlanDetailsPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
+                                      query: UserWorkoutPlanEnrolmentsQuery(),
+                                      loadingIndicator: LoadingDots(size: 16),
+                                      // Otherwise every single plan details page that you open will run a network query for all of your plan enrolments.
+                                      fetchPolicy: QueryFetchPolicy.storeFirst,
+                                      builder: (data) {
+                                        final enrolments =
+                                            data.userWorkoutPlanEnrolments;
 
-                                  /// Is the user already enrolled in this plan?
-                                  final enrolmentInPlan =
-                                      enrolments.firstWhereOrNull((e) =>
-                                          e.workoutPlan.id == workoutPlan.id);
+                                        /// Is the user already enrolled in this plan?
+                                        final enrolmentInPlan =
+                                            enrolments.firstWhereOrNull((e) =>
+                                                e.workoutPlan.id ==
+                                                workoutPlan.id);
 
-                                  if (enrolmentInPlan != null) {
-                                    return DoItButton(
-                                        text: 'Progress',
-                                        onPressed: () => context.navigateTo(
-                                            WorkoutPlanEnrolmentDetailsRoute(
-                                                id: enrolmentInPlan.id)));
-                                  } else {
-                                    return DoItButton(
-                                        text: 'Join Plan',
-                                        onPressed: _createWorkoutPlanEnrolment);
-                                  }
-                                }),
-                            CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () =>
-                                    setState(() => _liked = !_liked),
-                                child: AnimatedLikeHeart(
-                                  active: _liked,
-                                )),
-                          ],
+                                        if (enrolmentInPlan != null) {
+                                          return DoItButton(
+                                              text: 'Progress',
+                                              onPressed: () => context.navigateTo(
+                                                  WorkoutPlanEnrolmentDetailsRoute(
+                                                      id: enrolmentInPlan.id)));
+                                        } else {
+                                          return DoItButton(
+                                              text: 'Join Plan',
+                                              onPressed:
+                                                  _createWorkoutPlanEnrolment);
+                                        }
+                                      }),
+                                  CupertinoButton(
+                                      pressedOpacity: 1.0,
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () => _toggleSavedWorkoutPlan(
+                                          workoutPlan, collection),
+                                      child: AnimatedLikeHeart(
+                                        active: collection != null,
+                                      )),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        HorizontalLine(),
+                        Expanded(
+                          child: NestedScrollView(
+                            controller: _scrollController,
+                            headerSliverBuilder: (context, innerBoxIsScrolled) {
+                              return [
+                                SliverList(
+                                    delegate: SliverChildListDelegate([
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: workoutPlan.coverImageUri != null
+                                            ? DecorationImage(
+                                                fit: BoxFit.cover,
+                                                colorFilter: ColorFilter.mode(
+                                                    context.theme.cardBackground
+                                                        .withOpacity(0.2),
+                                                    BlendMode.dstATop),
+                                                image: UploadcareImageProvider(
+                                                    workoutPlan.coverImageUri!))
+                                            : null),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Wrap(
+                                            alignment: WrapAlignment.center,
+                                            spacing: 5,
+                                            runSpacing: 5,
+                                            children: [
+                                              if (workoutPlan
+                                                  .workoutPlanDays.isNotEmpty)
+                                                DifficultyLevelTag(
+                                                    workoutPlan.calcDifficulty),
+                                              Tag(
+                                                tag: workoutPlan.lengthString,
+                                                color: Styles.white,
+                                                textColor: Styles.black,
+                                              ),
+                                              Tag(
+                                                tag:
+                                                    '${workoutPlan.sessionsPerWeek} days / week',
+                                                color: Styles.white,
+                                                textColor: Styles.black,
+                                              ),
+                                              ...workoutPlan.workoutTags
+                                                  .map((t) => Tag(
+                                                        tag: t.tag,
+                                                        color: Styles.colorOne,
+                                                        textColor: Styles.white,
+                                                      ))
+                                            ].toList(),
+                                          ),
+                                        ),
+                                        if (Utils.textNotNull(
+                                            workoutPlan.description))
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: MyText(
+                                              workoutPlan.description!,
+                                              maxLines: 10,
+                                              lineHeight: 1.3,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        if (Utils.anyNotNull([
+                                          workoutPlan.introAudioUri,
+                                          workoutPlan.introVideoUri
+                                        ]))
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 12.0, top: 4),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                if (workoutPlan.introVideoUri !=
+                                                    null)
+                                                  VideoThumbnailPlayer(
+                                                    videoUri: workoutPlan
+                                                        .introVideoUri,
+                                                    videoThumbUri: workoutPlan
+                                                        .introVideoThumbUri,
+                                                    displaySize:
+                                                        _kthumbDisplaySize,
+                                                  ),
+                                                if (workoutPlan.introAudioUri !=
+                                                    null)
+                                                  AudioThumbnailPlayer(
+                                                    audioUri: workoutPlan
+                                                        .introAudioUri!,
+                                                    displaySize:
+                                                        _kthumbDisplaySize,
+                                                    playerTitle:
+                                                        '${workoutPlan.name} - Intro',
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  )
+                                ])),
+                              ];
+                            },
+                            body: Column(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 12, bottom: 8),
+                                    child: MyTabBarNav(
+                                        titles: [
+                                          'Workouts',
+                                          'Goals',
+                                          'Reviews',
+                                          'Participants',
+                                        ],
+                                        handleTabChange: _handleTabChange,
+                                        activeTabIndex: _activeTabIndex)),
+                                Expanded(
+                                  child: PageView(
+                                      controller: _pageController,
+                                      children: [
+                                        WorkoutPlanWorkoutSchedule(
+                                          workoutPlan: workoutPlan,
+                                        ),
+                                        WorkoutPlanGoals(
+                                          workoutPlan: workoutPlan,
+                                        ),
+                                        WorkoutPlanReviews(
+                                            reviews:
+                                                workoutPlan.workoutPlanReviews),
+                                        WorkoutPlanParticipants(
+                                          userSummaries: workoutPlan.enrolments
+                                              .map((e) => e.user)
+                                              .toList(),
+                                        )
+                                      ]),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  HorizontalLine(),
-                  Expanded(
-                    child: NestedScrollView(
-                      controller: _scrollController,
-                      headerSliverBuilder: (context, innerBoxIsScrolled) {
-                        return [
-                          SliverList(
-                              delegate: SliverChildListDelegate([
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  image: workoutPlan.coverImageUri != null
-                                      ? DecorationImage(
-                                          fit: BoxFit.cover,
-                                          colorFilter: ColorFilter.mode(
-                                              context.theme.cardBackground
-                                                  .withOpacity(0.2),
-                                              BlendMode.dstATop),
-                                          image: UploadcareImageProvider(
-                                              workoutPlan.coverImageUri!))
-                                      : null),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Wrap(
-                                      alignment: WrapAlignment.center,
-                                      spacing: 5,
-                                      runSpacing: 5,
-                                      children: [
-                                        if (workoutPlan
-                                            .workoutPlanDays.isNotEmpty)
-                                          DifficultyLevelTag(
-                                              workoutPlan.calcDifficulty),
-                                        Tag(
-                                          tag: workoutPlan.lengthString,
-                                          color: Styles.white,
-                                          textColor: Styles.black,
-                                        ),
-                                        Tag(
-                                          tag:
-                                              '${workoutPlan.sessionsPerWeek} days / week',
-                                          color: Styles.white,
-                                          textColor: Styles.black,
-                                        ),
-                                        ...workoutPlan.workoutTags
-                                            .map((t) => Tag(
-                                                  tag: t.tag,
-                                                  color: Styles.colorOne,
-                                                  textColor: Styles.white,
-                                                ))
-                                      ].toList(),
-                                    ),
-                                  ),
-                                  if (Utils.textNotNull(
-                                      workoutPlan.description))
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: MyText(
-                                        workoutPlan.description!,
-                                        maxLines: 10,
-                                        lineHeight: 1.3,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  if (Utils.anyNotNull([
-                                    workoutPlan.introAudioUri,
-                                    workoutPlan.introVideoUri
-                                  ]))
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          bottom: 12.0, top: 4),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          if (workoutPlan.introVideoUri != null)
-                                            VideoThumbnailPlayer(
-                                              videoUri:
-                                                  workoutPlan.introVideoUri,
-                                              videoThumbUri: workoutPlan
-                                                  .introVideoThumbUri,
-                                              displaySize: _kthumbDisplaySize,
-                                            ),
-                                          if (workoutPlan.introAudioUri != null)
-                                            AudioThumbnailPlayer(
-                                              audioUri:
-                                                  workoutPlan.introAudioUri!,
-                                              displaySize: _kthumbDisplaySize,
-                                              playerTitle:
-                                                  '${workoutPlan.name} - Intro',
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            )
-                          ])),
-                        ];
-                      },
-                      body: Column(
-                        children: [
-                          Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 12, bottom: 8),
-                              child: MyTabBarNav(
-                                  titles: [
-                                    'Workouts',
-                                    'Goals',
-                                    'Reviews',
-                                    'Participants',
-                                  ],
-                                  handleTabChange: _handleTabChange,
-                                  activeTabIndex: _activeTabIndex)),
-                          Expanded(
-                            child: PageView(
-                                controller: _pageController,
-                                children: [
-                                  WorkoutPlanWorkoutSchedule(
-                                    workoutPlan: workoutPlan,
-                                  ),
-                                  WorkoutPlanGoals(
-                                    workoutPlan: workoutPlan,
-                                  ),
-                                  WorkoutPlanReviews(
-                                      reviews: workoutPlan.workoutPlanReviews),
-                                  WorkoutPlanParticipants(
-                                    userSummaries: workoutPlan.enrolments
-                                        .map((e) => e.user)
-                                        .toList(),
-                                  )
-                                ]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+                );
+              });
         });
   }
 }

@@ -8,13 +8,14 @@ import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 class CollectionCreator extends StatefulWidget {
   final Collection? collection;
+  final void Function(Collection collection)? onComplete;
   const CollectionCreator({
     Key? key,
     this.collection,
+    this.onComplete,
   }) : super(key: key);
 
   @override
@@ -79,6 +80,9 @@ class _CollectionCreatorState extends State<CollectionCreator> {
       context.showErrorAlert(
           'Sorry there was a problem, the collection was not created.');
     } else {
+      if (widget.onComplete != null) {
+        widget.onComplete!(result.data!.updateCollection);
+      }
       context.pop();
     }
   }
@@ -102,6 +106,9 @@ class _CollectionCreatorState extends State<CollectionCreator> {
       context.showErrorAlert(
           'Sorry there was a problem, the collection was not created.');
     } else {
+      if (widget.onComplete != null) {
+        widget.onComplete!(result.data!.createCollection);
+      }
       context.pop();
     }
   }

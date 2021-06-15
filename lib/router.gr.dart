@@ -19,7 +19,7 @@ import 'components/user_input/creators/workout_creator/workout_creator.dart'
 import 'components/user_input/creators/workout_plan_creator/workout_plan_creator.dart'
     as _i11;
 import 'components/workout/workout_finder/workout_finder.dart' as _i12;
-import 'generated/api/graphql_api.dart' as _i40;
+import 'generated/api/graphql_api.graphql.dart' as _i40;
 import 'pages/authed/app.dart' as _i5;
 import 'pages/authed/details_pages/benchmark_details_page.dart' as _i6;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i7;
@@ -36,7 +36,7 @@ import 'pages/authed/home/home_page.dart' as _i23;
 import 'pages/authed/home/your_clubs.dart' as _i28;
 import 'pages/authed/home/your_collections.dart' as _i24;
 import 'pages/authed/home/your_events.dart' as _i27;
-import 'pages/authed/home/your_plans.dart' as _i26;
+import 'pages/authed/home/your_plans/your_plans.dart' as _i26;
 import 'pages/authed/home/your_schedule.dart' as _i29;
 import 'pages/authed/home/your_workouts/your_workouts.dart' as _i25;
 import 'pages/authed/journal/journal_page.dart' as _i32;

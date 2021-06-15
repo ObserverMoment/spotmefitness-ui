@@ -117,13 +117,13 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
       context.showConfirmDialog(
           title: 'Remove from Saved',
           content: MyText(
-            'Remove workout from collection: ${collection.name}',
+            'Remove from: ${collection.name}?',
             textAlign: TextAlign.center,
             maxLines: 4,
           ),
           onConfirm: () => _removeWorkoutFromCollection(collection, workout));
     } else {
-      /// Run add to collection flow.
+      /// Add to collection flow.
       /// First choose a collection
       await context.showBottomSheet(
           useRootNavigator: true,
@@ -335,7 +335,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                   'WorkoutDetailsPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
               fetchPolicy: QueryFetchPolicy.storeFirst,
-              loadingIndicator: ShimmerCardList(itemCount: 20),
+              loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
               builder: (collectionsData) {
                 final Workout workout = workoutData.workoutById;
 

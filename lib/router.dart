@@ -21,7 +21,7 @@ import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_clubs.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
-import 'package:spotmefitness_ui/pages/authed/home/your_plans.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';

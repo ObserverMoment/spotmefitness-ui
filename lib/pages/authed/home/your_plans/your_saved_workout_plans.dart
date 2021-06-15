@@ -3,48 +3,47 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_workouts.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_plans.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
-class YourSavedWorkouts extends StatelessWidget {
-  final void Function(String workoutId) selectWorkout;
-  const YourSavedWorkouts({Key? key, required this.selectWorkout})
+class YourSavedPlans extends StatelessWidget {
+  final void Function(String workoutPlanId) selectWorkoutPlan;
+  const YourSavedPlans({Key? key, required this.selectWorkoutPlan})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserCollections$Query, json.JsonSerializable>(
-        key: Key('YourSavedWorkouts - ${UserCollectionsQuery().operationName}'),
+        key: Key('YourSavedPlans - ${UserCollectionsQuery().operationName}'),
         query: UserCollectionsQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
         loadingIndicator: ShimmerCardList(itemCount: 20),
         builder: (data) {
           final collections = data.userCollections;
 
-          return _FilterableSavedWorkouts(
-            selectWorkout: selectWorkout,
+          return _FilterableSavedPlans(
+            selectWorkoutPlan: selectWorkoutPlan,
             allCollections: collections,
           );
         });
   }
 }
 
-class _FilterableSavedWorkouts extends StatefulWidget {
-  final void Function(String workoutId) selectWorkout;
+class _FilterableSavedPlans extends StatefulWidget {
+  final void Function(String workoutPlanId) selectWorkoutPlan;
   final List<Collection> allCollections;
-  const _FilterableSavedWorkouts(
-      {Key? key, required this.selectWorkout, required this.allCollections})
+  const _FilterableSavedPlans(
+      {Key? key, required this.selectWorkoutPlan, required this.allCollections})
       : super(key: key);
 
   @override
-  __FilterableSavedWorkoutsState createState() =>
-      __FilterableSavedWorkoutsState();
+  __FilterableSavedPlansState createState() => __FilterableSavedPlansState();
 }
 
-class __FilterableSavedWorkoutsState extends State<_FilterableSavedWorkouts> {
+class __FilterableSavedPlansState extends State<_FilterableSavedPlans> {
   Collection? _selectedCollection;
 
   @override
@@ -56,14 +55,15 @@ class __FilterableSavedWorkoutsState extends State<_FilterableSavedWorkouts> {
                 .firstWhere((c) => c.id == _selectedCollection!.id)
           ];
 
-    final workouts = selectedCollections
-        .fold<List<Workout>>([], (acum, next) => [...acum, ...next.workouts])
+    final workoutPlans = selectedCollections
+        .fold<List<WorkoutPlan>>(
+            [], (acum, next) => [...acum, ...next.workoutPlans])
         .sortedBy<DateTime>((w) => w.createdAt)
         .reversed
         .toList();
 
-    final collectionsWithWorkouts =
-        widget.allCollections.where((c) => c.workouts.isNotEmpty).toList();
+    final collectionsWithPlans =
+        widget.allCollections.where((c) => c.workoutPlans.isNotEmpty).toList();
 
     return Column(
       children: [
@@ -74,25 +74,25 @@ class __FilterableSavedWorkoutsState extends State<_FilterableSavedWorkouts> {
               height: 35,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: collectionsWithWorkouts.length,
+                  itemCount: collectionsWithPlans.length,
                   itemBuilder: (c, i) => Padding(
                         padding: const EdgeInsets.only(right: 4.0),
                         child: SelectableTag(
-                          text: collectionsWithWorkouts[i].name,
+                          text: collectionsWithPlans[i].name,
                           selectedColor: Styles.infoBlue,
                           isSelected:
-                              collectionsWithWorkouts[i] == _selectedCollection,
+                              collectionsWithPlans[i] == _selectedCollection,
                           onPressed: () => setState(() => _selectedCollection =
-                              collectionsWithWorkouts[i] == _selectedCollection
+                              collectionsWithPlans[i] == _selectedCollection
                                   ? null
-                                  : collectionsWithWorkouts[i]),
+                                  : collectionsWithPlans[i]),
                         ),
                       ))),
         ),
         Expanded(
-          child: YourWorkoutsList(
-            workouts: workouts,
-            selectWorkout: widget.selectWorkout,
+          child: YourWorkoutPlansList(
+            workoutPlans: workoutPlans,
+            selectWorkoutPlan: widget.selectWorkoutPlan,
           ),
         ),
       ],

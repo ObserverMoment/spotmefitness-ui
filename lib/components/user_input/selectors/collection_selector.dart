@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -22,6 +24,17 @@ class CollectionSelector extends StatelessWidget {
   void _handleSelectCollection(BuildContext context, Collection collection) {
     selectCollection(collection);
     context.pop();
+  }
+
+  void _openCreateCollection(BuildContext context) {
+    context.showBottomSheet(
+        expand: true,
+        child: CollectionCreator(
+          onComplete: (collection) {
+            selectCollection(collection);
+            context.pop();
+          },
+        ));
   }
 
   @override
@@ -54,24 +67,27 @@ class CollectionSelector extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: CreateTextIconButton(
                             text: 'Create new collection',
-                            onPressed: () => print('what now')),
+                            onPressed: () => _openCreateCollection(context)),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: collections.length,
-                            gridDelegate:
-                                SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 200,
-                                    crossAxisSpacing: 20,
-                                    mainAxisSpacing: 20),
-                            itemBuilder: (c, i) => GestureDetector(
-                                  onTap: () => _handleSelectCollection(
-                                      context, collections[i]),
-                                  child: _CollectionSelectorItem(
-                                      collection: collections[i]),
-                                )),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16.0, left: 16, right: 16),
+                          child: GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: collections.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 200,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16),
+                              itemBuilder: (c, i) => GestureDetector(
+                                    onTap: () => _handleSelectCollection(
+                                        context, collections[i]),
+                                    child: _CollectionSelectorItem(
+                                        collection: collections[i]),
+                                  )),
+                        ),
                       ),
                     ],
                   ),
@@ -94,12 +110,18 @@ class _CollectionSelectorItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          H3(collection.name),
+          MyText(
+            collection.name,
+            maxLines: 2,
+            weight: FontWeight.bold,
+            size: FONTSIZE.BIG,
+            textAlign: TextAlign.center,
+          ),
           if (Utils.textNotNull(collection.description))
             MyText(
               collection.description!,
-              subtext: true,
-              maxLines: 4,
+              maxLines: 3,
+              color: Styles.colorTwo,
               textAlign: TextAlign.center,
             )
         ],
