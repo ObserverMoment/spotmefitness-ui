@@ -70,38 +70,36 @@ class _SignInState extends State<SignIn> {
       ),
       child: Column(
         children: [
-          Container(
-            child: CupertinoFormSection.insetGrouped(
-                margin: const EdgeInsets.all(16),
-                children: [
-                  if (_signInError != null)
-                    GrowIn(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MyText(
-                          _signInError!,
-                          color: Styles.errorRed,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                        ),
+          CupertinoFormSection.insetGrouped(
+              margin: const EdgeInsets.all(16),
+              children: [
+                if (_signInError != null)
+                  GrowIn(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText(
+                        _signInError!,
+                        color: Styles.errorRed,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  MyTextFormFieldRow(
-                    prefix: Icon(CupertinoIcons.envelope_fill),
-                    placeholder: 'Email',
-                    keyboardType: TextInputType.emailAddress,
-                    controller: _emailController,
-                    validator: _validateEmail,
-                    autofocus: true,
-                    autofillHints: const <String>[AutofillHints.email],
                   ),
-                  MyPasswordFieldRow(
-                    controller: _passwordController,
-                    validator: _validatePassword,
-                    autofillHints: const <String>[AutofillHints.password],
-                  ),
-                ]),
-          ),
+                MyTextFormFieldRow(
+                  prefix: Icon(CupertinoIcons.envelope_fill),
+                  placeholder: 'Email',
+                  keyboardType: TextInputType.emailAddress,
+                  controller: _emailController,
+                  validator: _validateEmail,
+                  autofocus: true,
+                  autofillHints: const <String>[AutofillHints.email],
+                ),
+                MyPasswordFieldRow(
+                  controller: _passwordController,
+                  validator: _validatePassword,
+                  autofillHints: const <String>[AutofillHints.password],
+                ),
+              ]),
           SizedBox(height: 10),
           PrimaryButton(
               loading: _signingInUser,

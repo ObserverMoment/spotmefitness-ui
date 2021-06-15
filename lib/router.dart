@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_cre
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/collection_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/progress_journal_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page.dart';
@@ -20,14 +21,14 @@ import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_clubs.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
-import 'package:spotmefitness_ui/pages/authed/home/your_moves.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
-import 'package:spotmefitness_ui/pages/authed/home/your_workouts.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/your_benchmarks.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/your_logged_workouts.dart';
 import 'package:spotmefitness_ui/pages/authed/journal/your_progress_journals.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/custom_moves_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';
@@ -58,7 +59,8 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   AutoRoute(path: 'your-plans', page: YourPlansPage),
                   AutoRoute(path: 'your-events', page: YourEventsPage),
                   AutoRoute(path: 'your-clubs', page: YourClubsPage),
-                  AutoRoute(path: 'your-moves', page: YourMovesPage),
+                  AutoRoute(
+                      path: 'your-collections', page: YourCollectionsPage),
                   AutoRoute(path: 'your-schedule', page: YourSchedulePage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
@@ -86,6 +88,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
             AutoRoute(path: 'profile', page: ProfilePage, children: [
               AutoRoute(path: 'personal', page: ProfilePersonalPage),
               AutoRoute(path: 'gym-profiles', page: ProfileGymProfilesPage),
+              AutoRoute(path: 'custom-moves', page: ProfileCustomMovesPage),
               RedirectRoute(path: '*', redirectTo: 'personal')
             ]),
           ]),
@@ -93,10 +96,11 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           // They can be pushed to from anywhere and are also pages that would want to be linkable. E.g. when sharing a workout details page with a group or another user.
           // Usually the flow from these pages always ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
           AutoRoute(path: 'benchmark/:id', page: BenchmarkDetailsPage),
+          AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
+          AutoRoute(path: 'create-benchmark', page: BenchmarkCreatorPage),
+          AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
           AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
           AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
-          AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
-          AutoRoute(path: 'create-benchmark', page: BenchmarkCreatorPage),
           AutoRoute(path: 'find-workout', page: WorkoutFinderPage),
           AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),
           AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),

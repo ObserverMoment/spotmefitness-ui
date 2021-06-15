@@ -23,7 +23,7 @@ class Tag extends StatelessWidget {
       this.prefix,
       this.suffix,
       this.withBorder = false,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      this.padding = const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
       this.fontSize = FONTSIZE.TINY});
   @override
   Widget build(BuildContext context) {
@@ -71,13 +71,14 @@ class SelectableTag extends StatelessWidget {
                 ? Border.all(color: selectedColor)
                 : Border.all(color: context.theme.primary.withOpacity(0.5)),
             color: isSelected ? selectedColor : context.theme.background,
-            borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+            borderRadius: BorderRadius.circular(16)),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: MyText(
           text,
           size: fontSize,
           color: isSelected ? Styles.white : null,
           weight: FontWeight.bold,
+          lineHeight: 1.1,
         ),
       ),
     );
@@ -92,7 +93,7 @@ class MoveTypeTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(color: context.theme.primary.withOpacity(0.15)),
+          border: Border.all(color: context.theme.primary.withOpacity(0.7)),
           color: Styles.grey,
           borderRadius: BorderRadius.circular(6)),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),

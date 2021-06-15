@@ -17,6 +17,7 @@ const kStandardAnimationDuration = const Duration(milliseconds: 250);
 
 /// Object Type names for the store.
 /// For use in [__typename:id] normalization and store ops.
+const kCollectionTypename = 'Collection';
 const kGymProfileTypename = 'GymProfile';
 const kUserTypename = 'User';
 const kWorkoutTypename = 'Workout';

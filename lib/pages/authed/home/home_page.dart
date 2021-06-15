@@ -125,10 +125,10 @@ class HomePage extends StatelessWidget {
                     ]),
               ),
               GestureDetector(
-                onTap: () => context.navigateTo(YourMovesRoute()),
+                onTap: () => context.navigateTo(YourCollectionsRoute()),
                 child: HomeScreenCard(
                   content: H2(
-                    'Moves',
+                    'Collections',
                     color: Styles.white,
                   ),
                   gradient: LinearGradient(

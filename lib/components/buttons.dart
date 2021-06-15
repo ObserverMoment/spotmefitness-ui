@@ -750,7 +750,6 @@ class NavBarCancelButton extends StatelessWidget {
         onPressed: onPressed,
         child: MyText(
           'Cancel',
-          color: Styles.errorRed,
         ));
   }
 }

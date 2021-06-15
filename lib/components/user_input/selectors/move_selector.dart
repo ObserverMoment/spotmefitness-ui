@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
@@ -247,7 +248,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                                 .sortedBy<String>((move) => move.name)
                                 .map((move) => GestureDetector(
                                     onTap: () => widget.selectMove(move),
-                                    child: MoveSelectorItem(
+                                    child: MoveListItem(
                                         move: move,
                                         optionalButton: _buildButton(move))))
                                 .toList(),
@@ -343,7 +344,7 @@ class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
                       .sortedBy<String>((move) => move.name)
                       .map((move) => GestureDetector(
                           onTap: () => _handleSelectMove(move),
-                          child: MoveSelectorItem(
+                          child: MoveListItem(
                             move: move,
                             optionalButton: move.scope == MoveScope.custom
                                 ? Padding(
@@ -358,42 +359,6 @@ class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MoveSelectorItem extends StatelessWidget {
-  final Move move;
-
-  /// Optional icon style button on far right of column. Eg. Info / Edit.
-  final Widget? optionalButton;
-  MoveSelectorItem({required this.move, this.optionalButton});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(color: Styles.grey))),
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: MyText(
-                    move.name,
-                  ),
-                ),
-                SizedBox(width: 8),
-                MoveTypeTag(move.moveType, fontSize: FONTSIZE.TINY)
-              ],
-            ),
-          ),
-          if (optionalButton != null) optionalButton!
-        ],
       ),
     );
   }

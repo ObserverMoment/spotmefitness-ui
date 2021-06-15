@@ -40,6 +40,7 @@ class MyTextFormFieldRow extends StatefulWidget {
 
 class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
   late TextEditingController _controller;
+
   @override
   void initState() {
     super.initState();
@@ -69,7 +70,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                 obscureText: widget.obscureText),
             if (_controller.text.length > 0)
               Positioned(
-                  left: 18,
+                  left: widget.prefix != null ? 8 : 17,
                   top: 5,
                   child: FadeIn(
                     child: MyText(
@@ -191,7 +192,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
             obscureText: obscureText),
         if (controller.text.length > 0)
           Positioned(
-              left: 18,
+              left: prefix != null ? 8 : 17,
               top: 5,
               child: FadeIn(
                 child: MyText(

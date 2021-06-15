@@ -3,6 +3,16 @@ schema {
   mutation: Mutation
 }
 
+input AddWorkoutPlanToCollectionInput {
+  collectionId: ID!
+  WorkoutPlan: ConnectRelationInput!
+}
+
+input AddWorkoutToCollectionInput {
+  collectionId: ID!
+  Workout: ConnectRelationInput!
+}
+
 """Enums"""
 enum BenchmarkType {
   MAXLOAD
@@ -47,6 +57,16 @@ enum BodyweightUnit {
   LB
 }
 
+type Collection {
+  id: ID!
+  createdAt: DateTime!
+  User: UserSummary!
+  name: String!
+  description: String
+  Workouts: [Workout!]!
+  WorkoutPlans: [WorkoutPlan!]!
+}
+
 input ConnectRelationInput {
   id: ID!
 }
@@ -60,6 +80,11 @@ enum ContentAccessScope {
 input CopyWorkoutPlanDayToAnotherDayInput {
   id: ID!
   copyToDay: Int!
+}
+
+input CreateCollectionInput {
+  name: String!
+  description: String
 }
 
 input CreateEquipmentInput {
@@ -496,6 +521,13 @@ type Mutation {
   createUserBenchmarkEntry(data: CreateUserBenchmarkEntryInput!): UserBenchmarkEntry!
   updateUserBenchmarkEntry(data: UpdateUserBenchmarkEntryInput!): UserBenchmarkEntry!
   deleteUserBenchmarkEntryById(id: ID!): ID!
+  createCollection(data: CreateCollectionInput!): Collection!
+  updateCollection(data: UpdateCollectionInput!): Collection!
+  deleteCollectionById(id: ID!): ID!
+  addWorkoutToCollection(data: AddWorkoutToCollectionInput!): Collection!
+  removeWorkoutFromCollection(data: RemoveWorkoutFromCollectionInput!): Collection!
+  addWorkoutPlanToCollection(data: AddWorkoutPlanToCollectionInput!): Collection!
+  removeWorkoutPlanFromCollection(data: RemoveWorkoutPlanFromCollectionInput!): Collection!
   makeCopyWorkoutById(id: ID!): Workout!
   createWorkout(data: CreateWorkoutInput!): Workout!
   updateWorkout(data: UpdateWorkoutInput!): Workout!
@@ -609,6 +641,8 @@ type Query {
   userWorkoutTags: [WorkoutTag!]!
   userBenchmarks(first: Int): [UserBenchmark!]!
   userBenchmarkById(id: ID!): UserBenchmark!
+  userCollections: [Collection!]!
+  userCollectionById(id: ID!): Collection!
   userPublicProfiles: [UserPublicProfile!]
   userPublicProfileByUserId(userId: ID!): UserPublicProfile!
   publicWorkouts(take: Int, cursor: ID, filters: WorkoutFiltersInput): [Workout!]!
@@ -619,6 +653,16 @@ type Query {
   userWorkoutPlans: [WorkoutPlan!]!
   userWorkoutPlanEnrolments: [WorkoutPlanEnrolment!]!
   userWorkoutPlanEnrolmentById(id: ID!): WorkoutPlanEnrolment!
+}
+
+input RemoveWorkoutFromCollectionInput {
+  collectionId: ID!
+  Workout: ConnectRelationInput!
+}
+
+input RemoveWorkoutPlanFromCollectionInput {
+  collectionId: ID!
+  WorkoutPlan: ConnectRelationInput!
 }
 
 type ScheduledWorkout {
@@ -645,6 +689,12 @@ enum TimeUnit {
   HOURS
   MINUTES
   SECONDS
+}
+
+input UpdateCollectionInput {
+  id: ID!
+  name: String
+  description: String
 }
 
 input UpdateEquipmentInput {

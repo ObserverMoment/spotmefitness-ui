@@ -91,7 +91,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
                       filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                       child: Container(
                           decoration: BoxDecoration(
-                            color: context.theme.background.withOpacity(0.8),
+                            color: context.theme.background.withOpacity(0.7),
                           ),
                           height: kBottomNavBarHeight,
                           child: Row(

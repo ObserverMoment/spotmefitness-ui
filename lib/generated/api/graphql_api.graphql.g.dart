@@ -4285,6 +4285,252 @@ Map<String, dynamic> _$CreateWorkoutPlanReviewInputToJson(
       'WorkoutPlan': instance.workoutPlan.toJson(),
     };
 
+DeleteCollectionById$Mutation _$DeleteCollectionById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteCollectionById$Mutation()
+    ..deleteCollectionById = json['deleteCollectionById'] as String;
+}
+
+Map<String, dynamic> _$DeleteCollectionById$MutationToJson(
+        DeleteCollectionById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteCollectionById': instance.deleteCollectionById,
+    };
+
+Collection _$CollectionFromJson(Map<String, dynamic> json) {
+  return Collection()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..user = UserSummary.fromJson(json['User'] as Map<String, dynamic>)
+    ..workouts = (json['Workouts'] as List<dynamic>)
+        .map((e) => Workout.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..workoutPlans = (json['WorkoutPlans'] as List<dynamic>)
+        .map((e) => WorkoutPlan.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$CollectionToJson(Collection instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'name': instance.name,
+      'description': instance.description,
+      'User': instance.user.toJson(),
+      'Workouts': instance.workouts.map((e) => e.toJson()).toList(),
+      'WorkoutPlans': instance.workoutPlans.map((e) => e.toJson()).toList(),
+    };
+
+CreateCollection$Mutation _$CreateCollection$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateCollection$Mutation()
+    ..createCollection =
+        Collection.fromJson(json['createCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateCollection$MutationToJson(
+        CreateCollection$Mutation instance) =>
+    <String, dynamic>{
+      'createCollection': instance.createCollection.toJson(),
+    };
+
+CreateCollectionInput _$CreateCollectionInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateCollectionInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CreateCollectionInputToJson(
+        CreateCollectionInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+UpdateCollection$Mutation _$UpdateCollection$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateCollection$Mutation()
+    ..updateCollection =
+        Collection.fromJson(json['updateCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateCollection$MutationToJson(
+        UpdateCollection$Mutation instance) =>
+    <String, dynamic>{
+      'updateCollection': instance.updateCollection.toJson(),
+    };
+
+UpdateCollectionInput _$UpdateCollectionInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateCollectionInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateCollectionInputToJson(
+        UpdateCollectionInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+AddWorkoutPlanToCollection$Mutation
+    _$AddWorkoutPlanToCollection$MutationFromJson(Map<String, dynamic> json) {
+  return AddWorkoutPlanToCollection$Mutation()
+    ..addWorkoutPlanToCollection = Collection.fromJson(
+        json['addWorkoutPlanToCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$AddWorkoutPlanToCollection$MutationToJson(
+        AddWorkoutPlanToCollection$Mutation instance) =>
+    <String, dynamic>{
+      'addWorkoutPlanToCollection':
+          instance.addWorkoutPlanToCollection.toJson(),
+    };
+
+AddWorkoutPlanToCollectionInput _$AddWorkoutPlanToCollectionInputFromJson(
+    Map<String, dynamic> json) {
+  return AddWorkoutPlanToCollectionInput(
+    collectionId: json['collectionId'] as String,
+    workoutPlan: ConnectRelationInput.fromJson(
+        json['WorkoutPlan'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AddWorkoutPlanToCollectionInputToJson(
+        AddWorkoutPlanToCollectionInput instance) =>
+    <String, dynamic>{
+      'collectionId': instance.collectionId,
+      'WorkoutPlan': instance.workoutPlan.toJson(),
+    };
+
+AddWorkoutToCollection$Mutation _$AddWorkoutToCollection$MutationFromJson(
+    Map<String, dynamic> json) {
+  return AddWorkoutToCollection$Mutation()
+    ..addWorkoutToCollection = Collection.fromJson(
+        json['addWorkoutToCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$AddWorkoutToCollection$MutationToJson(
+        AddWorkoutToCollection$Mutation instance) =>
+    <String, dynamic>{
+      'addWorkoutToCollection': instance.addWorkoutToCollection.toJson(),
+    };
+
+AddWorkoutToCollectionInput _$AddWorkoutToCollectionInputFromJson(
+    Map<String, dynamic> json) {
+  return AddWorkoutToCollectionInput(
+    collectionId: json['collectionId'] as String,
+    workout:
+        ConnectRelationInput.fromJson(json['Workout'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AddWorkoutToCollectionInputToJson(
+        AddWorkoutToCollectionInput instance) =>
+    <String, dynamic>{
+      'collectionId': instance.collectionId,
+      'Workout': instance.workout.toJson(),
+    };
+
+RemoveWorkoutPlanFromCollection$Mutation
+    _$RemoveWorkoutPlanFromCollection$MutationFromJson(
+        Map<String, dynamic> json) {
+  return RemoveWorkoutPlanFromCollection$Mutation()
+    ..removeWorkoutPlanFromCollection = Collection.fromJson(
+        json['removeWorkoutPlanFromCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$RemoveWorkoutPlanFromCollection$MutationToJson(
+        RemoveWorkoutPlanFromCollection$Mutation instance) =>
+    <String, dynamic>{
+      'removeWorkoutPlanFromCollection':
+          instance.removeWorkoutPlanFromCollection.toJson(),
+    };
+
+RemoveWorkoutPlanFromCollectionInput
+    _$RemoveWorkoutPlanFromCollectionInputFromJson(Map<String, dynamic> json) {
+  return RemoveWorkoutPlanFromCollectionInput(
+    collectionId: json['collectionId'] as String,
+    workoutPlan: ConnectRelationInput.fromJson(
+        json['WorkoutPlan'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$RemoveWorkoutPlanFromCollectionInputToJson(
+        RemoveWorkoutPlanFromCollectionInput instance) =>
+    <String, dynamic>{
+      'collectionId': instance.collectionId,
+      'WorkoutPlan': instance.workoutPlan.toJson(),
+    };
+
+RemoveWorkoutFromCollection$Mutation
+    _$RemoveWorkoutFromCollection$MutationFromJson(Map<String, dynamic> json) {
+  return RemoveWorkoutFromCollection$Mutation()
+    ..removeWorkoutFromCollection = Collection.fromJson(
+        json['removeWorkoutFromCollection'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$RemoveWorkoutFromCollection$MutationToJson(
+        RemoveWorkoutFromCollection$Mutation instance) =>
+    <String, dynamic>{
+      'removeWorkoutFromCollection':
+          instance.removeWorkoutFromCollection.toJson(),
+    };
+
+RemoveWorkoutFromCollectionInput _$RemoveWorkoutFromCollectionInputFromJson(
+    Map<String, dynamic> json) {
+  return RemoveWorkoutFromCollectionInput(
+    collectionId: json['collectionId'] as String,
+    workout:
+        ConnectRelationInput.fromJson(json['Workout'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$RemoveWorkoutFromCollectionInputToJson(
+        RemoveWorkoutFromCollectionInput instance) =>
+    <String, dynamic>{
+      'collectionId': instance.collectionId,
+      'Workout': instance.workout.toJson(),
+    };
+
+UserCollectionById$Query _$UserCollectionById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserCollectionById$Query()
+    ..userCollectionById =
+        Collection.fromJson(json['userCollectionById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UserCollectionById$QueryToJson(
+        UserCollectionById$Query instance) =>
+    <String, dynamic>{
+      'userCollectionById': instance.userCollectionById.toJson(),
+    };
+
+UserCollections$Query _$UserCollections$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserCollections$Query()
+    ..userCollections = (json['userCollections'] as List<dynamic>)
+        .map((e) => Collection.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserCollections$QueryToJson(
+        UserCollections$Query instance) =>
+    <String, dynamic>{
+      'userCollections':
+          instance.userCollections.map((e) => e.toJson()).toList(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -5466,4 +5712,113 @@ Map<String, dynamic> _$CreateWorkoutPlanReviewArgumentsToJson(
         CreateWorkoutPlanReviewArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
+    };
+
+DeleteCollectionByIdArguments _$DeleteCollectionByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteCollectionByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteCollectionByIdArgumentsToJson(
+        DeleteCollectionByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CreateCollectionArguments _$CreateCollectionArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateCollectionArguments(
+    data: CreateCollectionInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateCollectionArgumentsToJson(
+        CreateCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateCollectionArguments _$UpdateCollectionArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateCollectionArguments(
+    data: UpdateCollectionInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateCollectionArgumentsToJson(
+        UpdateCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+AddWorkoutPlanToCollectionArguments
+    _$AddWorkoutPlanToCollectionArgumentsFromJson(Map<String, dynamic> json) {
+  return AddWorkoutPlanToCollectionArguments(
+    data: AddWorkoutPlanToCollectionInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AddWorkoutPlanToCollectionArgumentsToJson(
+        AddWorkoutPlanToCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+AddWorkoutToCollectionArguments _$AddWorkoutToCollectionArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return AddWorkoutToCollectionArguments(
+    data: AddWorkoutToCollectionInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AddWorkoutToCollectionArgumentsToJson(
+        AddWorkoutToCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+RemoveWorkoutPlanFromCollectionArguments
+    _$RemoveWorkoutPlanFromCollectionArgumentsFromJson(
+        Map<String, dynamic> json) {
+  return RemoveWorkoutPlanFromCollectionArguments(
+    data: RemoveWorkoutPlanFromCollectionInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$RemoveWorkoutPlanFromCollectionArgumentsToJson(
+        RemoveWorkoutPlanFromCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+RemoveWorkoutFromCollectionArguments
+    _$RemoveWorkoutFromCollectionArgumentsFromJson(Map<String, dynamic> json) {
+  return RemoveWorkoutFromCollectionArguments(
+    data: RemoveWorkoutFromCollectionInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$RemoveWorkoutFromCollectionArgumentsToJson(
+        RemoveWorkoutFromCollectionArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UserCollectionByIdArguments _$UserCollectionByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserCollectionByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserCollectionByIdArgumentsToJson(
+        UserCollectionByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
     };

@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploade
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/pages/authed/profile/custom_moves_page.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -20,7 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   int _activeTabIndex = 0;
 
-  final _titles = <String>['Personal', 'Gym Profiles'];
+  final _titles = <String>['Personal', 'Gym Profiles', 'Custom Moves'];
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   routes: [
                     ProfilePersonalRoute(),
                     ProfileGymProfilesRoute(),
+                    ProfileCustomMovesRoute()
                   ],
                   builder: (context, child, animation) {
                     return Column(

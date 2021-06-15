@@ -43,6 +43,9 @@ class GQLVarParamKeys {
   static String userBenchmarkByIdQuery(String id) => getParameterizedQueryId(
       UserBenchmarkByIdQuery(variables: UserBenchmarkByIdArguments(id: id)));
 
+  static String userCollectionByIdQuery(String id) => getParameterizedQueryId(
+      UserCollectionByIdQuery(variables: UserCollectionByIdArguments(id: id)));
+
   static String workoutByIdQuery(String id) => getParameterizedQueryId(
       WorkoutByIdQuery(variables: WorkoutByIdArguments(id: id)));
 
