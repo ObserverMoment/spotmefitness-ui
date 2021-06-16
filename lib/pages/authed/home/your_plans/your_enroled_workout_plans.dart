@@ -75,27 +75,28 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
 
     return Column(
       children: [
-        Padding(
-          padding:
-              const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
-          child: SizedBox(
-              height: 35,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: allTags.length,
-                  itemBuilder: (c, i) => Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
-                        child: SelectableTag(
-                          text: allTags[i].tag,
-                          selectedColor: Styles.infoBlue,
-                          isSelected: allTags[i] == _workoutTagFilter,
-                          onPressed: () => setState(() => _workoutTagFilter =
-                              allTags[i] == _workoutTagFilter
-                                  ? null
-                                  : allTags[i]),
-                        ),
-                      ))),
-        ),
+        if (allTags.isNotEmpty)
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
+            child: SizedBox(
+                height: 35,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: allTags.length,
+                    itemBuilder: (c, i) => Padding(
+                          padding: const EdgeInsets.only(right: 4.0),
+                          child: SelectableTag(
+                            text: allTags[i].tag,
+                            selectedColor: Styles.infoBlue,
+                            isSelected: allTags[i] == _workoutTagFilter,
+                            onPressed: () => setState(() => _workoutTagFilter =
+                                allTags[i] == _workoutTagFilter
+                                    ? null
+                                    : allTags[i]),
+                          ),
+                        ))),
+          ),
         Expanded(
             child: sortedEnrolments.isEmpty
                 ? Center(child: MyText('No enrolments to display'))

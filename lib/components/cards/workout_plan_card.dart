@@ -17,11 +17,15 @@ class WorkoutPlanCard extends StatelessWidget {
   final EdgeInsets padding;
   final Color? backgroundColor;
   final bool withBoxShadow;
+  final bool showEnrolledAndReviews;
+  final bool showGoalsChart;
 
   const WorkoutPlanCard(this.workoutPlan,
       {this.hideBackgroundImage = false,
       this.backgroundColor,
       this.withBoxShadow = true,
+      this.showEnrolledAndReviews = true,
+      this.showGoalsChart = true,
       this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
 
   List<WaffleChartInput> calcInputs() {
@@ -151,27 +155,29 @@ class WorkoutPlanCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (workoutPlan.workoutGoalsInPlan.isNotEmpty)
+                      if (showGoalsChart &&
+                          workoutPlan.workoutGoalsInPlan.isNotEmpty)
                         WaffleChart(width: 90, inputs: calcInputs()),
                     ],
                   ),
                 )
               : Center(child: MyText('Nothing planned yet')),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                WorkoutPlanEnrolmentsSummary(
-                  enrolments: workoutPlan.enrolments,
-                  subtitle:
-                      '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
-                ),
-                WorkoutPlanReviewsSummary(
-                    reviews: workoutPlan.workoutPlanReviews),
-              ],
+          if (showEnrolledAndReviews)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  WorkoutPlanEnrolmentsSummary(
+                    enrolments: workoutPlan.enrolments,
+                    subtitle:
+                        '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
+                  ),
+                  WorkoutPlanReviewsSummary(
+                      reviews: workoutPlan.workoutPlanReviews),
+                ],
+              ),
             ),
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 7.0),
             child: Wrap(

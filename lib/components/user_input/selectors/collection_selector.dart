@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/cards/collection_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/collection_creator.dart';
@@ -72,7 +73,7 @@ class CollectionSelector extends StatelessWidget {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              top: 16.0, left: 16, right: 16),
+                              top: 16.0, left: 12, right: 12),
                           child: GridView.builder(
                               shrinkWrap: true,
                               itemCount: collections.length,
@@ -84,7 +85,9 @@ class CollectionSelector extends StatelessWidget {
                               itemBuilder: (c, i) => GestureDetector(
                                     onTap: () => _handleSelectCollection(
                                         context, collections[i]),
-                                    child: _CollectionSelectorItem(
+                                    child: CollectionCard(
+                                        backgroundColor:
+                                            context.theme.background,
                                         collection: collections[i]),
                                   )),
                         ),
@@ -94,38 +97,5 @@ class CollectionSelector extends StatelessWidget {
                 ),
               );
             }));
-  }
-}
-
-class _CollectionSelectorItem extends StatelessWidget {
-  final Collection collection;
-  const _CollectionSelectorItem({Key? key, required this.collection})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      backgroundColor: context.theme.background,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          MyText(
-            collection.name,
-            maxLines: 2,
-            weight: FontWeight.bold,
-            size: FONTSIZE.BIG,
-            textAlign: TextAlign.center,
-          ),
-          if (Utils.textNotNull(collection.description))
-            MyText(
-              collection.description!,
-              maxLines: 3,
-              color: Styles.colorTwo,
-              textAlign: TextAlign.center,
-            )
-        ],
-      ),
-    );
   }
 }

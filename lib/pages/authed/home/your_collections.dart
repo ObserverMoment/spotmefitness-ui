@@ -50,25 +50,37 @@ class YourCollectionsPage extends StatelessWidget {
               return collections.isNotEmpty
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(top: 12.0, left: 8, right: 8),
-                      child: ListView.builder(
+                          const EdgeInsets.only(top: 16.0, left: 12, right: 12),
+                      child: GridView.builder(
                         shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-
-                        // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
                         itemCount: collections.length,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16),
                         itemBuilder: (c, i) => GestureDetector(
                           onTap: () => context.navigateTo(
                               CollectionDetailsRoute(id: collections[i].id)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 2, vertical: 3.0),
-                            child: CollectionCard(
-                              collection: collections[i],
-                            ),
+                          child: CollectionCard(
+                            collection: collections[i],
                           ),
                         ),
                       ),
+                      // child: ListView.builder(
+                      //   shrinkWrap: true,
+                      //   itemCount: collections.length,
+                      //   itemBuilder: (c, i) => GestureDetector(
+                      //     onTap: () => context.navigateTo(
+                      //         CollectionDetailsRoute(id: collections[i].id)),
+                      //     child: Padding(
+                      //       padding: const EdgeInsets.symmetric(
+                      //           horizontal: 2, vertical: 3.0),
+                      //       child: CollectionCard(
+                      //         collection: collections[i],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     )
                   : MyText(
                       'No collections yet...',

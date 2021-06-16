@@ -85,7 +85,7 @@ class BottomSheetMenuHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: SizedUploadcareImage(
                 imageUri!,
-                displaySize: Size(70, 70),
+                displaySize: Size(64, 64),
               ),
             ),
           ),

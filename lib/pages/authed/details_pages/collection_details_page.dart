@@ -4,7 +4,10 @@ import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/collections/collection_workout_plans_list.dart';
+import 'package:spotmefitness_ui/components/collections/collection_workouts_list.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
@@ -15,10 +18,31 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class CollectionDetailsPage extends StatelessWidget {
+class CollectionDetailsPage extends StatefulWidget {
   final String id;
   const CollectionDetailsPage({Key? key, @PathParam('id') required this.id})
       : super(key: key);
+
+  @override
+  _CollectionDetailsPageState createState() => _CollectionDetailsPageState();
+}
+
+class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
+  int _activeTabIndex = 0;
+  late PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  void _changeTab(int index) {
+    _pageController.jumpToPage(
+      index,
+    );
+    setState(() => _activeTabIndex = index);
+  }
 
   void _confirmDeleteCollection(BuildContext context, Collection collection) {
     context.showConfirmDeleteDialog(
@@ -31,12 +55,12 @@ class CollectionDetailsPage extends StatelessWidget {
   Future<void> _deleteCollectionById(BuildContext context) async {
     context.showLoadingAlert('Deleting', customContext: context);
 
-    final variables = DeleteCollectionByIdArguments(id: id);
+    final variables = DeleteCollectionByIdArguments(id: widget.id);
 
     final result = await context.graphQLStore
         .delete<DeleteCollectionById$Mutation, DeleteCollectionByIdArguments>(
             mutation: DeleteCollectionByIdMutation(variables: variables),
-            objectId: id,
+            objectId: widget.id,
             typename: kCollectionTypename,
             removeAllRefsToId: true,
             removeRefFromQueries: [UserCollectionsQuery().operationName]);
@@ -45,7 +69,7 @@ class CollectionDetailsPage extends StatelessWidget {
 
     if (result.hasErrors ||
         result.data == null ||
-        result.data!.deleteCollectionById != id) {
+        result.data!.deleteCollectionById != widget.id) {
       context.showErrorAlert(
           'Sorry there was a problem, the collection was not deleted.');
     } else {
@@ -53,13 +77,33 @@ class CollectionDetailsPage extends StatelessWidget {
     }
   }
 
+  Widget _buildNumberDisplay(int number) {
+    return Positioned(
+      top: -4,
+      right: 4,
+      child: MyText(
+        number.toString(),
+        size: FONTSIZE.SMALL,
+        weight: FontWeight.bold,
+        lineHeight: 1,
+        color: Styles.colorTwo,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final query =
-        UserCollectionByIdQuery(variables: UserCollectionByIdArguments(id: id));
+    final query = UserCollectionByIdQuery(
+        variables: UserCollectionByIdArguments(id: widget.id));
 
     return QueryObserver<UserCollectionById$Query, UserCollectionByIdArguments>(
-        key: Key('CollectionDetailsPage - ${query.operationName}-$id'),
+        key: Key('CollectionDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         fetchPolicy: QueryFetchPolicy.storeAndNetwork,
         parameterizeQuery: true,
@@ -109,15 +153,65 @@ class CollectionDetailsPage extends StatelessWidget {
                     ])),
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MyText(collection.name),
-                if (Utils.textNotNull(collection.description))
-                  MyText(collection.description!),
-                MyText('${collection.workouts.length} workouts'),
-                MyText('${collection.workoutPlans.length} workout plans'),
-              ],
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24.0, vertical: 8),
+                      child: MyText(
+                        Utils.textNotNull(collection.description)
+                            ? collection.description!
+                            : 'No description',
+                        maxLines: 10,
+                        subtext: !Utils.textNotNull(collection.description),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                ];
+              },
+              body: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MyTabBarNav(
+                        titles: [
+                          'Workouts',
+                          'Plans'
+                        ],
+                        superscriptIcons: [
+                          collection.workouts.isEmpty
+                              ? null
+                              : _buildNumberDisplay(collection.workouts.length),
+                          collection.workoutPlans.isEmpty
+                              ? null
+                              : _buildNumberDisplay(
+                                  collection.workoutPlans.length),
+                        ],
+                        handleTabChange: _changeTab,
+                        activeTabIndex: _activeTabIndex),
+                    SizedBox(height: 8),
+                    Expanded(
+                      child: PageView(
+                        controller: _pageController,
+                        onPageChanged: _changeTab,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: [
+                          FilterableCollectionWorkouts(
+                            collection: collection,
+                          ),
+                          FilterableCollectionWorkoutPlans(
+                            collection: collection,
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           );
         });
