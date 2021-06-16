@@ -439,34 +439,30 @@ class _YourReviewDisplay extends StatelessWidget {
           child: loggedInUserReview != null
               ? Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        H3('Your Review'),
-                        SizedBox(width: 8),
-                        BorderButton(
-                          mini: true,
-                          prefix: Icon(
-                            CupertinoIcons.star_fill,
-                            color: Styles.starGold,
-                            size: 14,
-                          ),
-                          text: 'Edit Review',
-                          onPressed: () => context.showBottomSheet(
-                              child: WorkoutPlanReviewCreator(
-                            parentWorkoutPlanEnrolmentId: enrolment.id,
-                            parentWorkoutPlanId: workoutPlan.id,
-                            workoutPlanReview: loggedInUserReview,
-                          )),
-                        ),
-                      ],
-                    ),
+                    H3('Your Review'),
+                    SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: WorkoutPlanReviewCard(
                         review: loggedInUserReview!,
                       ),
-                    )
+                    ),
+                    SizedBox(height: 10),
+                    BorderButton(
+                      mini: true,
+                      prefix: Icon(
+                        CupertinoIcons.star_fill,
+                        color: Styles.starGold,
+                        size: 14,
+                      ),
+                      text: 'Edit Review',
+                      onPressed: () => context.showBottomSheet(
+                          child: WorkoutPlanReviewCreator(
+                        parentWorkoutPlanEnrolmentId: enrolment.id,
+                        parentWorkoutPlanId: workoutPlan.id,
+                        workoutPlanReview: loggedInUserReview,
+                      )),
+                    ),
                   ],
                 )
               : BorderButton(

@@ -10,8 +10,7 @@ const kAssumedFloatingButtonHeight = 72.0;
 const kBottomNavBarHeight = 68.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
-
-const kFullScreenImageViewerHeroTag = 'kFullScreenImageViewerHeroTag';
+const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);
 

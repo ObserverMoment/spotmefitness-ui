@@ -100,6 +100,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   Future<void> _openScheduleWorkout(Workout workout) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
+        expand: true,
         child: ScheduledWorkoutCreator(
           workout: workout,
         ));
@@ -284,6 +285,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     final size = 40.0;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         UserAvatar(
           avatarUri: workout.user.avatarUri!,
@@ -364,6 +366,15 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 imageUri: workout.coverImageUri,
                               ),
                               items: [
+                            if (!isOwner &&
+                                workout.user.userProfileScope ==
+                                    UserProfileScope.public)
+                              BottomSheetMenuItem(
+                                  text: 'View creator',
+                                  icon: Icon(CupertinoIcons.profile_circled),
+                                  onPressed: () => context.navigateTo(
+                                      UserPublicProfileDetailsRoute(
+                                          userId: workout.user.id))),
                             BottomSheetMenuItem(
                                 text: 'Log',
                                 icon: Icon(CupertinoIcons.graph_square),

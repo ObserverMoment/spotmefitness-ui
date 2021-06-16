@@ -70,6 +70,9 @@ class WorkoutFilters {
   /// Show workouts with / without class videos.
   bool? hasClassVideo;
 
+  /// Show workouts with / without class audio.
+  bool? hasClassAudio;
+
   /// [Workout.lengthMinutes] is between these two values. If null then ignore.
   Duration? minLength;
   Duration? maxLength;
@@ -103,6 +106,7 @@ class WorkoutFilters {
         e.equals(workoutGoals, o.workoutGoals) &&
         difficultyLevel == o.difficultyLevel &&
         hasClassVideo == o.hasClassVideo &&
+        hasClassAudio == o.hasClassAudio &&
         minLength?.inMinutes == o.minLength?.inMinutes &&
         maxLength?.inMinutes == o.maxLength?.inMinutes &&
         bodyweightOnly == o.bodyweightOnly &&
@@ -117,6 +121,7 @@ class WorkoutFilters {
       workoutGoals.isNotEmpty ||
       difficultyLevel != null ||
       hasClassVideo != null ||
+      hasClassAudio != null ||
       minLength != null ||
       maxLength != null ||
       bodyweightOnly ||
@@ -131,6 +136,7 @@ class WorkoutFilters {
     if (workoutGoals.isNotEmpty) active++;
     if (difficultyLevel != null) active++;
     if (hasClassVideo != null) active++;
+    if (hasClassAudio != null) active++;
     if (minLength != null || maxLength != null) active++;
     if (bodyweightOnly) active++;
     if (availableEquipments.isNotEmpty) active++;
@@ -176,14 +182,27 @@ class WorkoutFilters {
         ? byWorkoutGoals
         : byWorkoutGoals.where((w) => w.difficultyLevel == difficultyLevel);
 
+    /// [hasClassVideo] can be null (ignore), true (require video) or false (require no video)
     Iterable<Workout> byHasClassVideo = hasClassVideo == null
         ? byDifficultyLevel
-        : byDifficultyLevel.where((w) => w.workoutSections
-            .any((WorkoutSection ws) => ws.classVideoUri != null));
+        : hasClassVideo!
+            ? byDifficultyLevel.where((w) => w.workoutSections
+                .any((WorkoutSection ws) => ws.classVideoUri != null))
+            : byDifficultyLevel.where((w) => w.workoutSections
+                .every((WorkoutSection ws) => ws.classVideoUri == null));
+
+    /// [hasClassAudio] can be null (ignore), true (require video) or false (require no video)
+    Iterable<Workout> byHasClassAudio = hasClassAudio == null
+        ? byHasClassVideo
+        : hasClassAudio!
+            ? byHasClassVideo.where((w) => w.workoutSections
+                .any((WorkoutSection ws) => ws.classAudioUri != null))
+            : byHasClassVideo.where((w) => w.workoutSections
+                .every((WorkoutSection ws) => ws.classAudioUri == null));
 
     Iterable<Workout> byMinLength = minLength == null
-        ? byHasClassVideo
-        : byHasClassVideo.where((w) =>
+        ? byHasClassAudio
+        : byHasClassAudio.where((w) =>
             w.lengthMinutes != null &&
             (w.lengthMinutes!.minutes >= minLength!));
 
@@ -252,6 +271,9 @@ class WorkoutFilters {
         hasClassVideo = json['hasClassVideo'] != null
             ? (json['hasClassVideo'] as bool?)
             : null,
+        hasClassAudio = json['hasClassAudio'] != null
+            ? (json['hasClassAudio'] as bool?)
+            : null,
         minLength = json['minLength'] != null
             ? Duration(minutes: (json['minLength'] as int))
             : null,
@@ -286,6 +308,7 @@ class WorkoutFilters {
         'workoutGoals': workoutGoals.map((o) => o.toJson()).toList(),
         'difficultyLevel': difficultyLevel?.apiValue,
         'hasClassVideo': hasClassVideo,
+        'hasClassAudio': hasClassAudio,
         'minLength': minLength?.inMinutes,
         'maxLength': maxLength?.inMinutes,
         'bodyweightOnly': bodyweightOnly,
@@ -301,6 +324,7 @@ class WorkoutFilters {
         'workoutGoals': workoutGoals.map((o) => o.id).toList(),
         'difficultyLevel': difficultyLevel?.apiValue,
         'hasClassVideo': hasClassVideo,
+        'hasClassAudio': hasClassAudio,
         'minLength': minLength?.inMinutes,
         'maxLength': maxLength?.inMinutes,
         'bodyweightOnly': bodyweightOnly,

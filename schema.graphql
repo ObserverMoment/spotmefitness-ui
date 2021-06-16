@@ -1089,6 +1089,7 @@ type Workout {
 input WorkoutFiltersInput {
   difficultyLevel: DifficultyLevel
   hasClassVideo: Boolean
+  hasClassAudio: Boolean
   maxLength: Int
   minLength: Int
   workoutSectionTypes: [ID!]!

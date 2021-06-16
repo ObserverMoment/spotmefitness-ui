@@ -3,6 +3,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 
@@ -56,8 +57,7 @@ class FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          heroTag: 'FullScreenImageViewer',
+        navigationBar: BorderlessNavBar(
           middle: title != null ? NavBarTitle(title!) : null,
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,
@@ -69,6 +69,9 @@ class FullScreenImageViewer extends StatelessWidget {
           ),
         ),
         child: PhotoView(
+          heroAttributes: PhotoViewHeroAttributes(
+            tag: kFullScreenImageViewerHeroTag,
+          ),
           backgroundDecoration: BoxDecoration(color: context.theme.background),
           imageProvider: UploadcareImageProvider(uri),
         ));

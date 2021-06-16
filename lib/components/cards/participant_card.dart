@@ -5,8 +5,10 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/country.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ParticipantCard extends StatelessWidget {
   final UserSummary userSummary;
@@ -57,7 +59,8 @@ class ParticipantCard extends StatelessWidget {
                 size: 16,
                 color: context.theme.primary,
               ),
-              onPressed: () => print('view public profile'))
+              onPressed: () => context.navigateTo(
+                  UserPublicProfileDetailsRoute(userId: userSummary.id)))
       ],
     ));
   }

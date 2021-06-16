@@ -5,12 +5,15 @@ import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
+import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/other_app_icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/country.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_created_workout_plans.dart';
@@ -146,38 +149,57 @@ class _UserPublicProfileDetailsPageState
                                   userPublicProfile: userPublicProfile,
                                   avatarSize: kAvatarSize,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    UserAvatar(
-                                      avatarUri: userPublicProfile.avatarUri,
-                                      size: kAvatarSize,
-                                      border: true,
-                                      borderWidth: 2,
-                                    ),
-                                    if (Utils.textNotNull(
-                                        userPublicProfile.introVideoThumbUri))
-                                      Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          UserAvatar(
-                                            avatarUri: userPublicProfile
-                                                .introVideoThumbUri,
+                                if (Utils.textNotNull(
+                                    userPublicProfile.avatarUri))
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () => openFullScreenImageViewer(
+                                            context,
+                                            userPublicProfile.avatarUri!),
+                                        child: Hero(
+                                          tag: kFullScreenImageViewerHeroTag,
+                                          child: UserAvatar(
+                                            avatarUri:
+                                                userPublicProfile.avatarUri,
                                             size: kAvatarSize,
                                             border: true,
                                             borderWidth: 2,
                                           ),
-                                          Icon(
-                                            CupertinoIcons.play_circle,
-                                            size: 40,
-                                            color:
-                                                Styles.white.withOpacity(0.7),
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                  ],
-                                ),
+                                      if (Utils.textNotNull(
+                                          userPublicProfile.introVideoThumbUri))
+                                        GestureDetector(
+                                          onTap: () => VideoSetupManager
+                                              .openFullScreenVideoPlayer(
+                                                  context: context,
+                                                  videoUri: userPublicProfile
+                                                      .introVideoUri!,
+                                                  autoPlay: true),
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              UserAvatar(
+                                                avatarUri: userPublicProfile
+                                                    .introVideoThumbUri,
+                                                size: kAvatarSize,
+                                                border: true,
+                                                borderWidth: 2,
+                                              ),
+                                              Icon(
+                                                CupertinoIcons.play_circle,
+                                                size: 40,
+                                                color: Styles.white
+                                                    .withOpacity(0.7),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                               ],
                             ),
                           )
@@ -186,7 +208,7 @@ class _UserPublicProfileDetailsPageState
                     ];
                   },
                   body: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0, right: 8, left: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -294,17 +316,26 @@ class _HeaderContent extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (userPublicProfile.countryCode != null)
+                      if (Utils.textNotNull(userPublicProfile.countryCode))
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: H2(Country.fromIsoCode(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: H3(Country.fromIsoCode(
                                   userPublicProfile.countryCode!)
                               .name),
                         ),
+                      if (Utils.textNotNull(userPublicProfile.countryCode) &&
+                          Utils.textNotNull(userPublicProfile.townCity))
+                        Container(
+                            width: 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: context.theme.primary.withOpacity(0.6),
+                            )),
                       if (Utils.textNotNull(userPublicProfile.townCity))
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: H2(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: H3(
                             userPublicProfile.townCity!,
                           ),
                         ),

@@ -277,6 +277,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
     final size = 40.0;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         UserAvatar(
           avatarUri: workoutPlan.user.avatarUri,
@@ -346,6 +347,15 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                 imageUri: workoutPlan.coverImageUri,
                               ),
                               items: [
+                            if (!isOwner &&
+                                workoutPlan.user.userProfileScope ==
+                                    UserProfileScope.public)
+                              BottomSheetMenuItem(
+                                  text: 'View creator',
+                                  icon: Icon(CupertinoIcons.profile_circled),
+                                  onPressed: () => context.navigateTo(
+                                      UserPublicProfileDetailsRoute(
+                                          userId: workoutPlan.user.id))),
                             BottomSheetMenuItem(
                                 text: 'Share',
                                 icon: Icon(CupertinoIcons.share),

@@ -19,8 +19,7 @@ class WorkoutFiltersScreen extends StatefulWidget {
 
 class _WorkoutFiltersScreenState extends State<WorkoutFiltersScreen> {
   final kIconSize = 24.0;
-  final kTabPagePadding =
-      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8);
+  final kTabPagePadding = const EdgeInsets.only(left: 8.0, right: 8, top: 8);
 
   int _activeTabIndex = 0;
 

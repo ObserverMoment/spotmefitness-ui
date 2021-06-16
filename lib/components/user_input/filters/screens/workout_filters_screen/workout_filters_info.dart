@@ -13,7 +13,7 @@ class WorkoutFiltersInfo extends StatelessWidget {
   /// 0 = true / yes
   /// 1 = false / no
   /// 2 = null / don't care
-  int _hasClassVideoToInt(bool? b) {
+  int _nullableBoolToInt(bool? b) {
     return b == null
         ? 2
         : b
@@ -21,7 +21,7 @@ class WorkoutFiltersInfo extends StatelessWidget {
             : 1;
   }
 
-  bool? _intToClassVideo(int i) {
+  bool? _intToNullableBool(int i) {
     return i == 0
         ? true
         : i == 1
@@ -99,6 +99,8 @@ class WorkoutFiltersInfo extends StatelessWidget {
             (b) => b.filters.workoutSectionTypes);
     final hasClassVideo = context
         .select<WorkoutFiltersBloc, bool?>((b) => b.filters.hasClassVideo);
+    final hasClassAudio = context
+        .select<WorkoutFiltersBloc, bool?>((b) => b.filters.hasClassAudio);
     final difficultyLevel =
         context.select<WorkoutFiltersBloc, DifficultyLevel?>(
             (b) => b.filters.difficultyLevel);
@@ -161,11 +163,32 @@ class WorkoutFiltersInfo extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: SlidingSelect<int>(
-                      value: _hasClassVideoToInt(hasClassVideo),
+                      value: _nullableBoolToInt(hasClassVideo),
                       updateValue: (v) => context
                           .read<WorkoutFiltersBloc>()
                           .updateFilters(
-                              {'hasClassVideo': _intToClassVideo(v)}),
+                              {'hasClassVideo': _intToNullableBool(v)}),
+                      children: {
+                        0: MyText('Yes'),
+                        1: MyText('No'),
+                        2: MyText("Don't mind")
+                      }),
+                ),
+                SizedBox(height: 8),
+                MyText(
+                  'Class Audio',
+                  textAlign: TextAlign.start,
+                  size: FONTSIZE.BIG,
+                ),
+                SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: SlidingSelect<int>(
+                      value: _nullableBoolToInt(hasClassAudio),
+                      updateValue: (v) => context
+                          .read<WorkoutFiltersBloc>()
+                          .updateFilters(
+                              {'hasClassAudio': _intToNullableBool(v)}),
                       children: {
                         0: MyText('Yes'),
                         1: MyText('No'),

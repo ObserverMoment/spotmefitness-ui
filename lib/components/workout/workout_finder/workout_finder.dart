@@ -121,6 +121,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
         take: kfilterResultsPageSize,
         cursor: cursor,
         filters: WorkoutFiltersInput.fromJson(_bloc.filters.apiJson));
+
     final query = PublicWorkoutsQuery(variables: variables);
     final response = await context.graphQLStore.execute(query);
 
@@ -197,8 +198,10 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   }
 
   void _resetScrollPosition(ScrollController controller) {
-    controller.animateTo(0,
-        duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+    if (controller.hasClients) {
+      controller.animateTo(0,
+          duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+    }
   }
 
   /// Pops itself (and any stack items such as the text seach widget)

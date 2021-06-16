@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// Not wrapped in a page scaffold to allow inline opening or bottom sheet style.
 class GymProfileSelector extends StatefulWidget {
   final void Function(GymProfile? profile) selectGymProfile;
   final GymProfile? selectedGymProfile;
