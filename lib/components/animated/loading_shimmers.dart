@@ -69,6 +69,30 @@ class ShimmerCardList extends StatelessWidget {
   }
 }
 
+class ShimmerCardGrid extends StatelessWidget {
+  final int itemCount;
+  final double maxCardWidth;
+  final EdgeInsets cardPadding;
+  ShimmerCardGrid(
+      {required this.itemCount,
+      this.maxCardWidth = 200,
+      this.cardPadding = const EdgeInsets.all(6.0)});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0, left: 12, right: 12),
+      child: GridView.builder(
+          shrinkWrap: true,
+          itemCount: itemCount,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: maxCardWidth,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16),
+          itemBuilder: (c, i) => ShimmerCard()),
+    );
+  }
+}
+
 class ShimmerDetailsPage extends StatelessWidget {
   final String title;
   ShimmerDetailsPage({required this.title});

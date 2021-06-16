@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/media/video/user_intro_video_uploade
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/profile/custom_moves_page.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -26,10 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      key: Key('ProfilePage-CupertinoPageScaffold'),
-      navigationBar: BasicNavBar(
-          heroTag: 'ProfilePage',
-          key: Key('ProfilePage-BasicNavBar'),
+      navigationBar: BorderlessNavBar(
           customLeading: NavBarLargeTitle('Profile'),
           trailing: CupertinoButton(
               padding: EdgeInsets.zero,

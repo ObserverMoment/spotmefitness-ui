@@ -28,7 +28,7 @@ class YourCreatedWorkoutPlans extends StatelessWidget {
               .reversed
               .toList();
 
-          return _FilterableCreatedWorkoutPlans(
+          return FilterableCreatedWorkoutPlans(
             allWorkoutPlans: workoutPlans,
             selectWorkoutPlan: selectWorkoutPlan,
           );
@@ -36,22 +36,22 @@ class YourCreatedWorkoutPlans extends StatelessWidget {
   }
 }
 
-class _FilterableCreatedWorkoutPlans extends StatefulWidget {
+class FilterableCreatedWorkoutPlans extends StatefulWidget {
   final void Function(String workoutPlanId) selectWorkoutPlan;
   final List<WorkoutPlan> allWorkoutPlans;
-  const _FilterableCreatedWorkoutPlans(
+  const FilterableCreatedWorkoutPlans(
       {Key? key,
       required this.selectWorkoutPlan,
       required this.allWorkoutPlans})
       : super(key: key);
 
   @override
-  __FilterableCreatedWorkoutPlansState createState() =>
-      __FilterableCreatedWorkoutPlansState();
+  _FilterableCreatedWorkoutPlansState createState() =>
+      _FilterableCreatedWorkoutPlansState();
 }
 
-class __FilterableCreatedWorkoutPlansState
-    extends State<_FilterableCreatedWorkoutPlans> {
+class _FilterableCreatedWorkoutPlansState
+    extends State<FilterableCreatedWorkoutPlans> {
   WorkoutTag? _workoutTagFilter;
 
   @override

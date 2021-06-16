@@ -4531,6 +4531,109 @@ Map<String, dynamic> _$UserCollections$QueryToJson(
           instance.userCollections.map((e) => e.toJson()).toList(),
     };
 
+UserPublicProfileSummary _$UserPublicProfileSummaryFromJson(
+    Map<String, dynamic> json) {
+  return UserPublicProfileSummary()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..tagline = json['tagline'] as String?
+    ..townCity = json['townCity'] as String?
+    ..countryCode = json['countryCode'] as String?
+    ..displayName = json['displayName'] as String
+    ..numberPublicWorkouts = json['numberPublicWorkouts'] as int
+    ..numberPublicPlans = json['numberPublicPlans'] as int;
+}
+
+Map<String, dynamic> _$UserPublicProfileSummaryToJson(
+        UserPublicProfileSummary instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'tagline': instance.tagline,
+      'townCity': instance.townCity,
+      'countryCode': instance.countryCode,
+      'displayName': instance.displayName,
+      'numberPublicWorkouts': instance.numberPublicWorkouts,
+      'numberPublicPlans': instance.numberPublicPlans,
+    };
+
+UserPublicProfiles$Query _$UserPublicProfiles$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserPublicProfiles$Query()
+    ..userPublicProfiles = (json['userPublicProfiles'] as List<dynamic>)
+        .map(
+            (e) => UserPublicProfileSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserPublicProfiles$QueryToJson(
+        UserPublicProfiles$Query instance) =>
+    <String, dynamic>{
+      'userPublicProfiles':
+          instance.userPublicProfiles.map((e) => e.toJson()).toList(),
+    };
+
+UserPublicProfile _$UserPublicProfileFromJson(Map<String, dynamic> json) {
+  return UserPublicProfile()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
+    ..bio = json['bio'] as String?
+    ..tagline = json['tagline'] as String?
+    ..townCity = json['townCity'] as String?
+    ..instagramUrl = json['instagramUrl'] as String?
+    ..tiktokUrl = json['tiktokUrl'] as String?
+    ..youtubeUrl = json['youtubeUrl'] as String?
+    ..snapUrl = json['snapUrl'] as String?
+    ..linkedinUrl = json['linkedinUrl'] as String?
+    ..countryCode = json['countryCode'] as String?
+    ..displayName = json['displayName'] as String
+    ..workouts = (json['Workouts'] as List<dynamic>)
+        .map((e) => Workout.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..workoutPlans = (json['WorkoutPlans'] as List<dynamic>)
+        .map((e) => WorkoutPlan.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserPublicProfileToJson(UserPublicProfile instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+      'bio': instance.bio,
+      'tagline': instance.tagline,
+      'townCity': instance.townCity,
+      'instagramUrl': instance.instagramUrl,
+      'tiktokUrl': instance.tiktokUrl,
+      'youtubeUrl': instance.youtubeUrl,
+      'snapUrl': instance.snapUrl,
+      'linkedinUrl': instance.linkedinUrl,
+      'countryCode': instance.countryCode,
+      'displayName': instance.displayName,
+      'Workouts': instance.workouts.map((e) => e.toJson()).toList(),
+      'WorkoutPlans': instance.workoutPlans.map((e) => e.toJson()).toList(),
+    };
+
+UserPublicProfileById$Query _$UserPublicProfileById$QueryFromJson(
+    Map<String, dynamic> json) {
+  return UserPublicProfileById$Query()
+    ..userPublicProfileById = UserPublicProfile.fromJson(
+        json['userPublicProfileById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UserPublicProfileById$QueryToJson(
+        UserPublicProfileById$Query instance) =>
+    <String, dynamic>{
+      'userPublicProfileById': instance.userPublicProfileById.toJson(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -5362,14 +5465,14 @@ Map<String, dynamic> _$DeleteUserBenchmarkByIdArgumentsToJson(
 UserBenchmarksArguments _$UserBenchmarksArgumentsFromJson(
     Map<String, dynamic> json) {
   return UserBenchmarksArguments(
-    first: json['first'] as int?,
+    take: json['take'] as int?,
   );
 }
 
 Map<String, dynamic> _$UserBenchmarksArgumentsToJson(
         UserBenchmarksArguments instance) =>
     <String, dynamic>{
-      'first': instance.first,
+      'take': instance.take,
     };
 
 UserBenchmarkByIdArguments _$UserBenchmarkByIdArgumentsFromJson(
@@ -5552,20 +5655,20 @@ Map<String, dynamic> _$DeleteScheduledWorkoutByIdArgumentsToJson(
 PublicWorkoutsArguments _$PublicWorkoutsArgumentsFromJson(
     Map<String, dynamic> json) {
   return PublicWorkoutsArguments(
-    take: json['take'] as int?,
     cursor: json['cursor'] as String?,
     filters: json['filters'] == null
         ? null
         : WorkoutFiltersInput.fromJson(json['filters'] as Map<String, dynamic>),
+    take: json['take'] as int?,
   );
 }
 
 Map<String, dynamic> _$PublicWorkoutsArgumentsToJson(
         PublicWorkoutsArguments instance) =>
     <String, dynamic>{
-      'take': instance.take,
       'cursor': instance.cursor,
       'filters': instance.filters?.toJson(),
+      'take': instance.take,
     };
 
 UpdateWorkoutArguments _$UpdateWorkoutArgumentsFromJson(
@@ -5821,4 +5924,32 @@ Map<String, dynamic> _$UserCollectionByIdArgumentsToJson(
         UserCollectionByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+UserPublicProfilesArguments _$UserPublicProfilesArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserPublicProfilesArguments(
+    cursor: json['cursor'] as String?,
+    take: json['take'] as int?,
+  );
+}
+
+Map<String, dynamic> _$UserPublicProfilesArgumentsToJson(
+        UserPublicProfilesArguments instance) =>
+    <String, dynamic>{
+      'cursor': instance.cursor,
+      'take': instance.take,
+    };
+
+UserPublicProfileByIdArguments _$UserPublicProfileByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserPublicProfileByIdArguments(
+    userId: json['userId'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserPublicProfileByIdArgumentsToJson(
+        UserPublicProfileByIdArguments instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
     };

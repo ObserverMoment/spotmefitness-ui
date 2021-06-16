@@ -160,12 +160,3 @@ class WorkoutPlanDaySelector extends StatelessWidget {
     );
   }
 }
-
-class _DayContainer extends StatelessWidget {
-  const _DayContainer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

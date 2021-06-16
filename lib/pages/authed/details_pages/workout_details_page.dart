@@ -281,13 +281,13 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
       );
 
   Widget _buildAvatar(Workout workout) {
-    final radius = 40.0;
+    final size = 40.0;
 
     return Row(
       children: [
         UserAvatar(
           avatarUri: workout.user.avatarUri!,
-          radius: radius,
+          size: size,
         ),
         if (workout.user.displayName != '')
           _displayName(workout.user.displayName),

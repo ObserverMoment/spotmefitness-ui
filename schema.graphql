@@ -639,13 +639,13 @@ type Query {
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
   userWorkoutTags: [WorkoutTag!]!
-  userBenchmarks(first: Int): [UserBenchmark!]!
+  userBenchmarks(take: Int): [UserBenchmark!]!
   userBenchmarkById(id: ID!): UserBenchmark!
   userCollections: [Collection!]!
   userCollectionById(id: ID!): Collection!
-  userPublicProfiles: [UserPublicProfile!]
-  userPublicProfileByUserId(userId: ID!): UserPublicProfile!
-  publicWorkouts(take: Int, cursor: ID, filters: WorkoutFiltersInput): [Workout!]!
+  userPublicProfiles(cursor: ID, take: Int): [UserPublicProfileSummary!]!
+  userPublicProfileById(userId: ID!): UserPublicProfile!
+  publicWorkouts(cursor: ID, filters: WorkoutFiltersInput, take: Int): [Workout!]!
   userWorkouts: [Workout!]!
   workoutById(id: ID!): Workout!
   publicWorkoutPlans: [WorkoutPlan!]!
@@ -1022,13 +1022,6 @@ type UserBenchmarkEntry {
   videoThumbUri: String
 }
 
-type UserPrivateProfile {
-  LoggedWorkouts: [LoggedWorkout!]
-  Workouts: [Workout!]
-  WorkoutPlans: [WorkoutPlan!]
-  WorkoutPlanEnrolments: [WorkoutPlanEnrolment!]
-}
-
 enum UserProfileScope {
   PRIVATE
   PUBLIC
@@ -1048,10 +1041,20 @@ type UserPublicProfile {
   snapUrl: String
   linkedinUrl: String
   countryCode: String
-  displayName: String
-  CustomMoves: [Move!]
-  Workouts: [Workout!]
-  WorkoutPlans: [WorkoutPlan!]
+  displayName: String!
+  Workouts: [Workout!]!
+  WorkoutPlans: [WorkoutPlan!]!
+}
+
+type UserPublicProfileSummary {
+  id: ID!
+  avatarUri: String
+  tagline: String
+  townCity: String
+  countryCode: String
+  displayName: String!
+  numberPublicWorkouts: Int!
+  numberPublicPlans: Int!
 }
 
 type UserSummary {

@@ -6,40 +6,43 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class UserAvatar extends StatelessWidget {
   final String? avatarUri; // Uploadcare file ID. aka user.avatarUrl
-  final double radius;
+  final double size;
   final bool border;
   final double borderWidth;
+  final bool withBoxShadow;
 
-  UserAvatar({
-    this.radius = 100,
+  const UserAvatar({
+    this.size = 100,
     this.avatarUri,
     this.border = false,
     this.borderWidth = 3,
+    this.withBoxShadow = true,
   });
 
   Widget _buildAvatar(BuildContext context) => Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
           shape: BoxShape.circle, color: Styles.black.withOpacity(0.7)),
-      width: border ? radius - 10 : radius,
-      height: border ? radius - 10 : radius,
+      width: border ? size - 10 : size,
+      height: border ? size - 10 : size,
       child: avatarUri == null
           ? Center(
               child: Icon(
                 CupertinoIcons.person_alt,
-                size: radius / 1.5,
+                size: size / 1.5,
               ),
             )
           : SizedUploadcareImage(
               avatarUri!,
-              displaySize: Size.square(radius * 2),
+              displaySize: Size.square(size * 2),
             ));
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          boxShadow: [Styles.avatarBoxShadow], shape: BoxShape.circle),
+          boxShadow: withBoxShadow ? [Styles.avatarBoxShadow] : null,
+          shape: BoxShape.circle),
       child: border
           ? Container(
               padding: EdgeInsets.all(borderWidth),
@@ -61,13 +64,13 @@ class UserAvatar extends StatelessWidget {
 /// A circle that displays [+ overflow] in the same style as a user avatar.
 class PlusOthersIcon extends StatelessWidget {
   final int overflow;
-  final double radius;
+  final double size;
   final bool border;
   final double borderWidth;
 
   PlusOthersIcon(
       {required this.overflow,
-      this.radius = 100,
+      this.size = 100,
       this.border = false,
       this.borderWidth = 3});
 
@@ -75,8 +78,8 @@ class PlusOthersIcon extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
           shape: BoxShape.circle, color: Styles.black.withOpacity(0.9)),
-      width: border ? radius - 10 : radius,
-      height: border ? radius - 10 : radius,
+      width: border ? size - 10 : size,
+      height: border ? size - 10 : size,
       child: Center(
           child: MyText(
         '+ 3',

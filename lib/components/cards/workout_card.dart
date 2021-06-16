@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -106,7 +105,7 @@ class WorkoutCard extends StatelessWidget {
                       if (workout.user.avatarUri != null)
                         UserAvatar(
                           avatarUri: workout.user.avatarUri!,
-                          radius: 34,
+                          size: 34,
                           border: true,
                           borderWidth: 1,
                         ),

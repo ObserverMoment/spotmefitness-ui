@@ -66,7 +66,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
           ],
           builder: (context, child, animation) {
             final _mediaQuery = MediaQuery.of(context);
-            final _size = _mediaQuery.size;
             final _tabsRouter = context.tabsRouter;
             final _activeIndex = _tabsRouter.activeIndex;
             final _activeColor = context.theme.activeIcon;

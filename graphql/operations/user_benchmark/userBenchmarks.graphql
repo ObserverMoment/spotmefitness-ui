@@ -1,5 +1,5 @@
-query userBenchmarks($first: Int) {
-  userBenchmarks(first: $first) {
+query userBenchmarks($take: Int) {
+  userBenchmarks(take: $take) {
     ...UserBenchmark
     Equipment {
       ...Equipment

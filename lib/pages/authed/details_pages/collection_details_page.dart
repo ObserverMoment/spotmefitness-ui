@@ -77,6 +77,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
     }
   }
 
+  /// Top right of tabs to indicate how many of each type are in the list.
   Widget _buildNumberDisplay(int number) {
     return Positioned(
       top: -4,

@@ -25,7 +25,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 
 class BenchmarkDetailsPage extends StatefulWidget {
   final String id;
-  BenchmarkDetailsPage({@PathParam('id') required this.id});
+  const BenchmarkDetailsPage({@PathParam('id') required this.id});
 
   @override
   _BenchmarkDetailsPageState createState() => _BenchmarkDetailsPageState();

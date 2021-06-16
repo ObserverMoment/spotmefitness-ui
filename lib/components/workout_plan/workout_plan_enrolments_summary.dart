@@ -15,7 +15,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
 
   /// Less than one means an overlap.
   final kAvatarWidthFactor = 0.8;
-  final kAvatarRadius = 34.0;
+  final kAvatarSize = 34.0;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                                   border: true,
                                   borderWidth: 1,
                                   avatarUri: e.user.avatarUri,
-                                  radius: kAvatarRadius,
+                                  size: kAvatarSize,
                                 ),
                               ))
                           .toList(),
@@ -51,7 +51,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                           widthFactor: kAvatarWidthFactor,
                           child: PlusOthersIcon(
                             overflow: enrolments.length - showMax,
-                            radius: kAvatarRadius,
+                            size: kAvatarSize,
                           ),
                         )
                     ]),

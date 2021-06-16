@@ -11,6 +11,7 @@ import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_pa
 import 'package:spotmefitness_ui/pages/authed/details_pages/collection_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/progress_journal_details_page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/user_public_profile_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_enrolment_details_page.dart';
@@ -105,7 +106,10 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),
           AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),
           AutoRoute(
+              path: 'profile/:userId', page: UserPublicProfileDetailsPage),
+          AutoRoute(
               path: 'progress-journal/:id', page: ProgressJournalDetailsPage),
+
           AutoRoute(path: 'settings', page: SettingsPage),
           AutoRoute(path: 'workout/:id', page: WorkoutDetailsPage),
           AutoRoute(path: 'workout-plan/:id', page: WorkoutPlanDetailsPage),

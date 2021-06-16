@@ -218,10 +218,13 @@ class GraphQLStore {
         // Broadcast the error. Do not update the store.
         observableQuery.subject
             .add(GraphQLResponse(data: response.data, errors: response.errors));
-        print('_queryNetwork: There was an error - ${response.errors}');
         return false;
       } else {
         try {
+          /// Important! [normalizeOperation.variables] is by default in alphabetical order.
+          /// i.e. [userPublicProfiles({"cursor":null,"take":null})]
+          /// vs [userPublicProfiles({"take":null,"cursor":null})]
+          /// These will be different keys as far as the store is concerned.
           normalizeOperation(
               data: response.data ?? {},
               document: query.document,

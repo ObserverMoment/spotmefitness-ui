@@ -61,6 +61,36 @@ fragment User on User {
   gender
 }
 
+fragment UserPublicProfile on UserPublicProfile {
+  __typename
+  id
+  avatarUri
+  introVideoUri
+  introVideoThumbUri
+  bio
+  tagline
+  townCity
+  instagramUrl
+  tiktokUrl
+  youtubeUrl
+  snapUrl
+  linkedinUrl
+  countryCode
+  displayName
+}
+
+fragment UserPublicProfileSummary on UserPublicProfileSummary {
+  __typename
+  id
+  avatarUri
+  tagline
+  townCity
+  countryCode
+  displayName
+  numberPublicWorkouts
+  numberPublicPlans
+}
+
 fragment UserSummary on UserSummary {
   __typename
   id

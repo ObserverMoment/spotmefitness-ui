@@ -82,7 +82,7 @@ class WorkoutPlanCard extends StatelessWidget {
                       if (workoutPlan.user.avatarUri != null)
                         UserAvatar(
                           avatarUri: workoutPlan.user.avatarUri!,
-                          radius: 34,
+                          size: 34,
                           border: true,
                           borderWidth: 1,
                         ),

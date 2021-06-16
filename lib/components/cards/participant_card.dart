@@ -22,7 +22,7 @@ class ParticipantCard extends StatelessWidget {
         Row(
           children: [
             UserAvatar(
-              radius: 40,
+              size: 40,
               avatarUri: userSummary.avatarUri,
             ),
             SizedBox(width: 12),

@@ -20,7 +20,6 @@ import 'package:spotmefitness_ui/components/user_input/creators/workout_plan_rev
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
-import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_progress_summary.dart';
 import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_workouts_progress.dart';
 import 'package:spotmefitness_ui/constants.dart';

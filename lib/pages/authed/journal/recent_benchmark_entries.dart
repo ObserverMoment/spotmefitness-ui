@@ -18,7 +18,7 @@ class RecentBenchmarkEntries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query =
-        UserBenchmarksQuery(variables: UserBenchmarksArguments(first: 20));
+        UserBenchmarksQuery(variables: UserBenchmarksArguments(take: 20));
     return QueryObserver<UserBenchmarks$Query, json.JsonSerializable>(
         key: Key('RecentBenchmarkEntries - ${query.operationName}'),
         query: query,

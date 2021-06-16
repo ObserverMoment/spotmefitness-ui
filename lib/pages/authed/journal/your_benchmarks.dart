@@ -26,10 +26,7 @@ class YourBenchmarksPage extends StatelessWidget {
               .toList();
 
           return CupertinoPageScaffold(
-            key: Key('YourBenchmarksPage - CupertinoPageScaffold'),
-            navigationBar: BasicNavBar(
-              heroTag: 'YourBenchmarksPage',
-              key: Key('YourBenchmarksPage - BasicNavBar'),
+            navigationBar: BorderlessNavBar(
               middle: NavBarTitle('Benchmarks & PBs'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,

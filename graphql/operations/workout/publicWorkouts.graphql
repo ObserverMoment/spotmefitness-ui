@@ -1,6 +1,6 @@
 # Summary data only - for lists and search results.
-query publicWorkouts($take: Int, $cursor: ID, $filters: WorkoutFiltersInput) {
-  publicWorkouts(take: $take, cursor: $cursor, filters: $filters) {
+query publicWorkouts($cursor: ID, $filters: WorkoutFiltersInput, $take: Int) {
+  publicWorkouts(cursor: $cursor, filters: $filters, take: $take) {
     ...Workout
     User {
       ...UserSummary

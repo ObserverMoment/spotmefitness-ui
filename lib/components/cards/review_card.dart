@@ -29,7 +29,7 @@ class WorkoutPlanReviewCard extends StatelessWidget {
                   children: [
                     UserAvatar(
                       avatarUri: review.user.avatarUri,
-                      radius: 30,
+                      size: 30,
                     ),
                     SizedBox(
                       width: 10,
