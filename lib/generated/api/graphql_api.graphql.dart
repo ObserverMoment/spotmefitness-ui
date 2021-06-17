@@ -181,6 +181,7 @@ mixin WorkoutPlanMixin {
   late String name;
   String? description;
   late int lengthWeeks;
+  late int daysPerWeek;
   String? coverImageUri;
   String? introVideoUri;
   String? introVideoThumbUri;
@@ -1045,6 +1046,7 @@ class WorkoutPlan extends JsonSerializable
         name,
         description,
         lengthWeeks,
+        daysPerWeek,
         coverImageUri,
         introVideoUri,
         introVideoThumbUri,
@@ -3056,6 +3058,7 @@ class UpdateWorkoutPlan extends JsonSerializable
         name,
         description,
         lengthWeeks,
+        daysPerWeek,
         coverImageUri,
         introVideoUri,
         introVideoThumbUri,
@@ -3088,6 +3091,7 @@ class UpdateWorkoutPlanInput extends JsonSerializable with EquatableMixin {
       this.name,
       this.description,
       this.lengthWeeks,
+      this.daysPerWeek,
       this.coverImageUri,
       this.introVideoUri,
       this.introVideoThumbUri,
@@ -3107,6 +3111,8 @@ class UpdateWorkoutPlanInput extends JsonSerializable with EquatableMixin {
   String? description;
 
   int? lengthWeeks;
+
+  int? daysPerWeek;
 
   String? coverImageUri;
 
@@ -3129,6 +3135,7 @@ class UpdateWorkoutPlanInput extends JsonSerializable with EquatableMixin {
         name,
         description,
         lengthWeeks,
+        daysPerWeek,
         coverImageUri,
         introVideoUri,
         introVideoThumbUri,
@@ -3159,6 +3166,7 @@ class CreateWorkoutPlan extends JsonSerializable
         name,
         description,
         lengthWeeks,
+        daysPerWeek,
         coverImageUri,
         introVideoUri,
         introVideoThumbUri,
@@ -3186,22 +3194,18 @@ class CreateWorkoutPlan$Mutation extends JsonSerializable with EquatableMixin {
 @JsonSerializable(explicitToJson: true)
 class CreateWorkoutPlanInput extends JsonSerializable with EquatableMixin {
   CreateWorkoutPlanInput(
-      {required this.name,
-      required this.lengthWeeks,
-      required this.contentAccessScope});
+      {required this.name, required this.contentAccessScope});
 
   factory CreateWorkoutPlanInput.fromJson(Map<String, dynamic> json) =>
       _$CreateWorkoutPlanInputFromJson(json);
 
   late String name;
 
-  late int lengthWeeks;
-
   @JsonKey(unknownEnumValue: ContentAccessScope.artemisUnknown)
   late ContentAccessScope contentAccessScope;
 
   @override
-  List<Object?> get props => [name, lengthWeeks, contentAccessScope];
+  List<Object?> get props => [name, contentAccessScope];
   Map<String, dynamic> toJson() => _$CreateWorkoutPlanInputToJson(this);
 }
 
@@ -5493,6 +5497,51 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   @override
   List<Object?> get props => [workoutById];
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteWorkoutTagById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteWorkoutTagById$Mutation();
+
+  factory DeleteWorkoutTagById$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$DeleteWorkoutTagById$MutationFromJson(json);
+
+  late String deleteWorkoutTagById;
+
+  @override
+  List<Object?> get props => [deleteWorkoutTagById];
+  Map<String, dynamic> toJson() => _$DeleteWorkoutTagById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkoutTag$Mutation extends JsonSerializable with EquatableMixin {
+  UpdateWorkoutTag$Mutation();
+
+  factory UpdateWorkoutTag$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkoutTag$MutationFromJson(json);
+
+  late WorkoutTag updateWorkoutTag;
+
+  @override
+  List<Object?> get props => [updateWorkoutTag];
+  Map<String, dynamic> toJson() => _$UpdateWorkoutTag$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkoutTagInput extends JsonSerializable with EquatableMixin {
+  UpdateWorkoutTagInput({required this.id, required this.tag});
+
+  factory UpdateWorkoutTagInput.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkoutTagInputFromJson(json);
+
+  late String id;
+
+  late String tag;
+
+  @override
+  List<Object?> get props => [id, tag];
+  Map<String, dynamic> toJson() => _$UpdateWorkoutTagInputToJson(this);
 }
 
 enum BodyAreaFrontBack {
@@ -8215,6 +8264,12 @@ final ADD_WORKOUT_PLAN_TO_COLLECTION_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -9571,6 +9626,12 @@ final CREATE_COLLECTION_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -10919,6 +10980,12 @@ final USER_COLLECTION_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -12281,6 +12348,12 @@ final ADD_WORKOUT_TO_COLLECTION_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -13603,6 +13676,12 @@ final USER_COLLECTIONS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -14955,6 +15034,12 @@ final UPDATE_COLLECTION_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -16319,6 +16404,12 @@ final REMOVE_WORKOUT_PLAN_FROM_COLLECTION_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -17675,6 +17766,12 @@ final REMOVE_WORKOUT_FROM_COLLECTION_MUTATION_DOCUMENT =
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -20801,6 +20898,12 @@ final UPDATE_WORKOUT_PLAN_ENROLMENT_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -22033,6 +22136,12 @@ final CREATE_WORKOUT_PLAN_ENROLMENT_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -23197,6 +23306,12 @@ final USER_WORKOUT_PLAN_ENROLMENT_BY_ID_QUERY_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -24327,6 +24442,12 @@ final USER_WORKOUT_PLAN_ENROLMENTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -34596,6 +34717,12 @@ final USER_WORKOUT_PLANS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -35725,6 +35852,12 @@ final WORKOUT_PLAN_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'coverImageUri'),
             alias: null,
             arguments: [],
@@ -35902,6 +36035,12 @@ final UPDATE_WORKOUT_PLAN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -36114,6 +36253,12 @@ final CREATE_WORKOUT_PLAN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -39126,6 +39271,12 @@ final USER_PUBLIC_PROFILE_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'lengthWeeks'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'daysPerWeek'),
             alias: null,
             arguments: [],
             directives: [],
@@ -52820,4 +52971,160 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteWorkoutTagByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteWorkoutTagByIdArguments({required this.id});
+
+  @override
+  factory DeleteWorkoutTagByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$DeleteWorkoutTagByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$DeleteWorkoutTagByIdArgumentsToJson(this);
+}
+
+final DELETE_WORKOUT_TAG_BY_ID_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteWorkoutTagById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteWorkoutTagById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteWorkoutTagByIdMutation extends GraphQLQuery<
+    DeleteWorkoutTagById$Mutation, DeleteWorkoutTagByIdArguments> {
+  DeleteWorkoutTagByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document = DELETE_WORKOUT_TAG_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteWorkoutTagById';
+
+  @override
+  final DeleteWorkoutTagByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteWorkoutTagById$Mutation parse(Map<String, dynamic> json) =>
+      DeleteWorkoutTagById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateWorkoutTagArguments extends JsonSerializable with EquatableMixin {
+  UpdateWorkoutTagArguments({required this.data});
+
+  @override
+  factory UpdateWorkoutTagArguments.fromJson(Map<String, dynamic> json) =>
+      _$UpdateWorkoutTagArgumentsFromJson(json);
+
+  late UpdateWorkoutTagInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() => _$UpdateWorkoutTagArgumentsToJson(this);
+}
+
+final UPDATE_WORKOUT_TAG_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateWorkoutTag'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateWorkoutTagInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateWorkoutTag'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'WorkoutTag'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'WorkoutTag'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'WorkoutTag'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateWorkoutTagMutation
+    extends GraphQLQuery<UpdateWorkoutTag$Mutation, UpdateWorkoutTagArguments> {
+  UpdateWorkoutTagMutation({required this.variables});
+
+  @override
+  final DocumentNode document = UPDATE_WORKOUT_TAG_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateWorkoutTag';
+
+  @override
+  final UpdateWorkoutTagArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateWorkoutTag$Mutation parse(Map<String, dynamic> json) =>
+      UpdateWorkoutTag$Mutation.fromJson(json);
 }

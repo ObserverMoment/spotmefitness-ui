@@ -5,10 +5,15 @@ import 'package:spotmefitness_ui/services/store/store_utils.dart';
 /// Useful for managing store state - store mutations and QueryObserver updates.
 /// Variables / args are ignored - just the operation name is returned.
 class GQLOpNames {
+  /// By Id. This will (NEEDS testing!) trigger all byId queries of this type. i.e. all of the [progressJournalById] queries or all of the [workoutByIdQueries].
   static String get progressJournalByIdQuery =>
       ProgressJournalByIdQuery(variables: ProgressJournalByIdArguments(id: ''))
           .operationName;
 
+  static String get workoutByIdQuery =>
+      WorkoutByIdQuery(variables: WorkoutByIdArguments(id: '')).operationName;
+
+  /// List type queries where variables are not used.
   static String get userBenchmarksQuery =>
       UserBenchmarksQuery(variables: UserBenchmarksArguments()).operationName;
 

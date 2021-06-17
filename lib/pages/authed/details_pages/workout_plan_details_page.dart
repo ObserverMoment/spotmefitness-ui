@@ -34,6 +34,7 @@ import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class WorkoutPlanDetailsPage extends StatefulWidget {
   final String id;
@@ -268,13 +269,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
         });
   }
 
-  Widget _displayName(String text) => Padding(
-        padding: const EdgeInsets.only(left: 6.0),
-        child: MyText(text, weight: FontWeight.bold, size: FONTSIZE.SMALL),
-      );
-
-  Widget _buildAvatar(WorkoutPlan workoutPlan) {
-    final size = 40.0;
+  Widget _buildAvatar(WorkoutPlan workoutPlan, bool isOwner) {
+    final size = 36.0;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -283,8 +279,21 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
           avatarUri: workoutPlan.user.avatarUri,
           size: size,
         ),
-        if (workoutPlan.user.displayName != '')
-          _displayName(workoutPlan.user.displayName),
+        Padding(
+          padding: const EdgeInsets.only(left: 6.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyText(workoutPlan.user.displayName,
+                  weight: FontWeight.bold, size: FONTSIZE.SMALL),
+              if (isOwner)
+                MyText('${workoutPlan.contentAccessScope.display} plan',
+                    color: Styles.colorTwo,
+                    weight: FontWeight.bold,
+                    size: FONTSIZE.SMALL)
+            ],
+          ),
+        ),
         if (workoutPlan.archived)
           FadeIn(
             child: Padding(
@@ -398,7 +407,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildAvatar(workoutPlan),
+                              _buildAvatar(workoutPlan, isOwner),
                               Row(
                                 children: [
                                   QueryObserver<UserWorkoutPlanEnrolments$Query,
@@ -486,7 +495,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                               ),
                                               Tag(
                                                 tag:
-                                                    '${workoutPlan.sessionsPerWeek} days / week',
+                                                    '${workoutPlan.daysPerWeek} days / week',
                                                 color: Styles.white,
                                                 textColor: Styles.black,
                                               ),
@@ -560,7 +569,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                           'Workouts',
                                           'Goals',
                                           'Reviews',
-                                          'Participants',
+                                          'Social',
                                         ],
                                         handleTabChange: _handleTabChange,
                                         activeTabIndex: _activeTabIndex)),

@@ -287,7 +287,6 @@ input CreateWorkoutPlanDayWorkoutInput {
 
 input CreateWorkoutPlanInput {
   name: String!
-  lengthWeeks: Int!
   contentAccessScope: ContentAccessScope!
 }
 
@@ -515,6 +514,8 @@ type Mutation {
   deleteScheduledWorkoutById(id: ID!): ID!
   updateUser(data: UpdateUserInput!): User!
   createWorkoutTag(data: CreateWorkoutTagInput!): WorkoutTag!
+  updateWorkoutTag(data: UpdateWorkoutTagInput!): WorkoutTag!
+  deleteWorkoutTagById(id: ID!): ID!
   createUserBenchmark(data: CreateUserBenchmarkInput!): UserBenchmark!
   updateUserBenchmark(data: UpdateUserBenchmarkInput!): UserBenchmark!
   deleteUserBenchmarkById(id: ID!): ID!
@@ -911,6 +912,7 @@ input UpdateWorkoutPlanInput {
   name: String
   description: String
   lengthWeeks: Int
+  daysPerWeek: Int
   coverImageUri: String
   introVideoUri: String
   introVideoThumbUri: String
@@ -1135,6 +1137,7 @@ type WorkoutPlan {
   name: String!
   description: String
   lengthWeeks: Int!
+  daysPerWeek: Int!
   coverImageUri: String
   introVideoUri: String
   introVideoThumbUri: String

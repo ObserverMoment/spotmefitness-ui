@@ -91,6 +91,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
               SizedBox(height: 6),
               WorkoutGoalsSelectorRow(
                   selectedWorkoutGoals: workoutData.workoutGoals,
+                  max: 2,
                   updateSelectedWorkoutGoals: (goals) => _updateWorkoutMeta(
                       {'WorkoutGoals': goals.map((g) => g.toJson()).toList()})),
               SizedBox(height: 16),

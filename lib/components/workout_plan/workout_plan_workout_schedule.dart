@@ -92,8 +92,11 @@ class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
                     displayDayNumber: i,
                     minimize: _minimizePlanDayCards,
                   )
-                : WorkoutPlanRestDayCard(
-                    dayNumber: i,
+                : Opacity(
+                    opacity: 0.5,
+                    child: WorkoutPlanRestDayCard(
+                      dayNumber: i,
+                    ),
                   ),
           ),
         ),

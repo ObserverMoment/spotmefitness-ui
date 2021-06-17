@@ -30,6 +30,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 class WorkoutDetailsPage extends StatefulWidget {
@@ -276,13 +277,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
         });
   }
 
-  Widget _displayName(String text) => Padding(
-        padding: const EdgeInsets.only(left: 6.0),
-        child: MyText(text, weight: FontWeight.bold, size: FONTSIZE.SMALL),
-      );
-
-  Widget _buildAvatar(Workout workout) {
-    final size = 40.0;
+  Widget _buildAvatar(Workout workout, bool isOwner) {
+    final size = 36.0;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -291,8 +287,21 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           avatarUri: workout.user.avatarUri!,
           size: size,
         ),
-        if (workout.user.displayName != '')
-          _displayName(workout.user.displayName),
+        Padding(
+          padding: const EdgeInsets.only(left: 6.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyText(workout.user.displayName,
+                  weight: FontWeight.bold, size: FONTSIZE.SMALL),
+              if (isOwner)
+                MyText('${workout.contentAccessScope.display} workout',
+                    color: Styles.colorTwo,
+                    weight: FontWeight.bold,
+                    size: FONTSIZE.SMALL)
+            ],
+          ),
+        ),
         if (workout.archived)
           FadeIn(
             child: Padding(
@@ -376,7 +385,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                       UserPublicProfileDetailsRoute(
                                           userId: workout.user.id))),
                             BottomSheetMenuItem(
-                                text: 'Log',
+                                text: 'Log it',
                                 icon: Icon(CupertinoIcons.graph_square),
                                 onPressed: () => context.navigateTo(
                                     LoggedWorkoutCreatorRoute(
@@ -430,7 +439,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              _buildAvatar(workout),
+                              _buildAvatar(workout, isOwner),
                               Row(
                                 children: [
                                   DoItButton(

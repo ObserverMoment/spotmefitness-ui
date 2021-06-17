@@ -139,7 +139,21 @@ class WorkoutFiltersInfo extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 28),
+          SizedBox(height: 25),
+          DifficultyLevelSelectorRow(
+            difficultyLevel: difficultyLevel,
+            updateDifficultyLevel: (difficultyLevel) => context
+                .read<WorkoutFiltersBloc>()
+                .updateFilters({'difficultyLevel': difficultyLevel?.apiValue}),
+          ),
+          SizedBox(height: 16),
+          WorkoutGoalsSelectorRow(
+              selectedWorkoutGoals: workoutGoals,
+              updateSelectedWorkoutGoals: (goals) => context
+                  .read<WorkoutFiltersBloc>()
+                  .updateFilters(
+                      {'workoutGoals': goals.map((t) => t.toJson()).toList()})),
+          SizedBox(height: 12),
           WorkoutSectionTypeMultiSelector(
             selectedTypes: workoutSectionTypes,
             updateSelectedTypes: (types) => context
@@ -198,20 +212,6 @@ class WorkoutFiltersInfo extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 10),
-          DifficultyLevelSelectorRow(
-            difficultyLevel: difficultyLevel,
-            updateDifficultyLevel: (difficultyLevel) => context
-                .read<WorkoutFiltersBloc>()
-                .updateFilters({'difficultyLevel': difficultyLevel?.apiValue}),
-          ),
-          SizedBox(height: 16),
-          WorkoutGoalsSelectorRow(
-              selectedWorkoutGoals: workoutGoals,
-              updateSelectedWorkoutGoals: (goals) => context
-                  .read<WorkoutFiltersBloc>()
-                  .updateFilters(
-                      {'workoutGoals': goals.map((t) => t.toJson()).toList()})),
         ],
       ),
     );

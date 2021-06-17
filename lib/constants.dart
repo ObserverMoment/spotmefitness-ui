@@ -20,6 +20,7 @@ const kCollectionTypename = 'Collection';
 const kGymProfileTypename = 'GymProfile';
 const kUserTypename = 'User';
 const kWorkoutTypename = 'Workout';
+const kWorkoutTagTypename = 'WorkoutTag';
 const kScheduledWorkoutTypename = 'ScheduledWorkout';
 const kWorkoutSectionTypename = 'WorkoutSection';
 const kWorkoutSectionTypeTypename = 'WorkoutSectionType';

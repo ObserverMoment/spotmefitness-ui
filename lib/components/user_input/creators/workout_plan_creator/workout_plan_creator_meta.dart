@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sli
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
+import 'package:spotmefitness_ui/components/user_input/number_picker_modal.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -34,10 +35,10 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
             children: [
               TappableRow(
                   onTap: () => context.showBottomSheet<int>(
-                          child: NumberInputModalInt(
-                        value: workoutPlanData.lengthWeeks,
-                        // Need to cast to dynamic because of this.
-                        // https://github.com/dart-lang/sdk/issues/32042
+                          child: NumberPickerModal(
+                        initialValue: workoutPlanData.lengthWeeks,
+                        min: 1,
+                        max: 52,
                         saveValue: (lengthWeeks) {
                           if (lengthWeeks < workoutPlanData.lengthWeeks) {
                             context.showConfirmDialog(
@@ -64,6 +65,7 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
                           workoutPlanData.lengthWeeks.toString(),
                           size: FONTSIZE.DISPLAY,
                           weight: FontWeight.bold,
+                          lineHeight: 1.2,
                         ),
                       ),
                       SizedBox(
@@ -73,6 +75,36 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
                     ],
                   ),
                   title: 'Plan Length'),
+              TappableRow(
+                  onTap: () => context.showBottomSheet<int>(
+                          child: NumberPickerModal(
+                        initialValue: workoutPlanData.daysPerWeek,
+                        min: 1,
+                        max: 7,
+                        saveValue: (daysPerWeek) => _updateWorkoutPlanMeta(
+                            {'daysPerWeek': daysPerWeek}),
+                        title: 'Days Per Week',
+                      )),
+                  display: Row(
+                    children: [
+                      ContentBox(
+                        child: MyText(
+                          workoutPlanData.daysPerWeek.toString(),
+                          size: FONTSIZE.DISPLAY,
+                          weight: FontWeight.bold,
+                          lineHeight: 1.2,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      MyText(workoutPlanData.daysPerWeek == 1
+                          ? 'day / week'
+                          : 'days / week')
+                    ],
+                  ),
+                  title: 'Days Per Week'),
+              SizedBox(height: 12),
               EditableTextFieldRow(
                 title: 'Name',
                 text: workoutPlanData.name,

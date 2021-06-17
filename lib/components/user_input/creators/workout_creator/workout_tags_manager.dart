@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/color_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -16,29 +15,22 @@ import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-/// Allows the user to CRUD their set of [ProgressJournalGoalTags]
+/// Allows the user to CRUD their set of [WorkoutTags]
 /// Works via a [QueryObserver] and the [GraphQL store] directly to update state.
-class ProgressJournalGoalTagsManager extends StatefulWidget {
+class WorkoutTagsManager extends StatefulWidget {
   /// When accessing this widget during the flow of adding tags to some other object we do not need the user to be able to update / delete all of their tags.
   /// However, if being accessed from their profile or similar (i.e. they want to really manage their tags rather than just add a new tag to something) then this can be set false to give full functionality.
   final bool allowCreateTagOnly;
-  const ProgressJournalGoalTagsManager({this.allowCreateTagOnly = true});
+  const WorkoutTagsManager({this.allowCreateTagOnly = true});
 
   @override
-  _ProgressJournalGoalTagsManagerState createState() =>
-      _ProgressJournalGoalTagsManagerState();
+  WorkoutTagsManagerState createState() => WorkoutTagsManagerState();
 }
 
-class _ProgressJournalGoalTagsManagerState
-    extends State<ProgressJournalGoalTagsManager> {
+class WorkoutTagsManagerState extends State<WorkoutTagsManager> {
   late TextEditingController _tagNameController;
-  Color? _newTagColor;
   bool _isLoading = false;
-
-  final double kNewTagInputHeight = 240;
 
   @override
   void initState() {
@@ -49,23 +41,17 @@ class _ProgressJournalGoalTagsManagerState
     });
   }
 
-  void _updateNewTagColor(Color newColor) {
-    setState(() => _newTagColor = newColor);
-  }
-
-  bool get _canSaveNewTag =>
-      _tagNameController.text.length > 2 && _newTagColor != null;
+  bool get _canSaveNewTag => _tagNameController.text.length > 2;
 
   Future<void> _createNewTag() async {
     setState(() => _isLoading = true);
 
-    final variables = CreateProgressJournalGoalTagArguments(
-        data: CreateProgressJournalGoalTagInput(
-            tag: _tagNameController.text, hexColor: _newTagColor!.toHex()));
+    final variables = CreateWorkoutTagArguments(
+        data: CreateWorkoutTagInput(tag: _tagNameController.text));
 
     final result = await context.graphQLStore.create(
-        mutation: CreateProgressJournalGoalTagMutation(variables: variables),
-        addRefToQueries: [ProgressJournalGoalTagsQuery().operationName]);
+        mutation: CreateWorkoutTagMutation(variables: variables),
+        addRefToQueries: [UserWorkoutTagsQuery().operationName]);
 
     setState(() => _isLoading = false);
 
@@ -82,26 +68,23 @@ class _ProgressJournalGoalTagsManagerState
             message: 'New tag created!', toastType: ToastType.success);
         setState(() {
           _tagNameController.text = '';
-          _newTagColor = null;
         });
       }
     }
   }
 
-  Future<void> _updateTag(ProgressJournalGoalTag tag) async {
+  Future<void> _updateTag(WorkoutTag tag) async {
     setState(() => _isLoading = true);
 
-    final variables = UpdateProgressJournalGoalTagArguments(
-        data: UpdateProgressJournalGoalTagInput(
-            id: tag.id, tag: tag.tag, hexColor: tag.hexColor));
+    final variables = UpdateWorkoutTagArguments(
+        data: UpdateWorkoutTagInput(id: tag.id, tag: tag.tag));
 
-    final result = await context.graphQLStore.mutate<
-            UpdateProgressJournalGoalTag$Mutation,
-            UpdateProgressJournalGoalTagArguments>(
-        mutation: UpdateProgressJournalGoalTagMutation(variables: variables),
-        broadcastQueryIds: [
-          ProgressJournalGoalTagsQuery().operationName,
-          GQLOpNames.progressJournalByIdQuery,
+    final result = await context.graphQLStore
+        .mutate<UpdateWorkoutTag$Mutation, UpdateWorkoutTagArguments>(
+            mutation: UpdateWorkoutTagMutation(variables: variables),
+            broadcastQueryIds: [
+          UserWorkoutTagsQuery().operationName,
+          GQLOpNames.workoutByIdQuery,
         ]);
 
     setState(() => _isLoading = false);
@@ -115,34 +98,32 @@ class _ProgressJournalGoalTagsManagerState
     }
   }
 
-  void _handleTagDelete(ProgressJournalGoalTag tag) {
+  void _handleTagDelete(WorkoutTag tag) {
     context.showConfirmDeleteDialog(
-        itemType: 'Goal Tag',
-        message: 'This cannot be undone and may affect your journal goals.',
-        onConfirm: () => _deleteGoalTag(tag));
+        itemType: 'Workout Tag',
+        message:
+            'This tag will be removed from anything it has been assigned to. OK?',
+        onConfirm: () => _deleteWorkoutTag(tag));
   }
 
-  void _deleteGoalTag(ProgressJournalGoalTag tag) async {
+  void _deleteWorkoutTag(WorkoutTag tag) async {
     setState(() => _isLoading = true);
 
-    final variables = DeleteProgressJournalGoalTagByIdArguments(id: tag.id);
+    final variables = DeleteWorkoutTagByIdArguments(id: tag.id);
     final result = await context.graphQLStore.delete(
-        mutation:
-            DeleteProgressJournalGoalTagByIdMutation(variables: variables),
+        mutation: DeleteWorkoutTagByIdMutation(variables: variables),
         objectId: tag.id,
-        typename: kProgressJournalGoalTagTypename,
+        typename: kWorkoutTagTypename,
         removeAllRefsToId: true,
         removeRefFromQueries: [
-          ProgressJournalGoalTagsQuery().operationName
+          UserWorkoutTagsQuery().operationName
         ],
         broadcastQueryIds: [
-          UserProgressJournalsQuery().operationName,
-          GQLOpNames.progressJournalByIdQuery,
+          UserWorkoutsQuery().operationName,
         ]);
 
     setState(() => _isLoading = false);
-    if (result.hasErrors ||
-        result.data?.deleteProgressJournalGoalTagById != tag.id) {
+    if (result.hasErrors || result.data?.deleteWorkoutTagById != tag.id) {
       context.showToast(
           message: 'Sorry, there was a problem deleting the tag',
           toastType: ToastType.destructive);
@@ -178,83 +159,63 @@ class _ProgressJournalGoalTagsManagerState
               )
             : null,
       ),
-      child: QueryObserver<ProgressJournalGoalTags$Query,
-              json.JsonSerializable>(
+      child: QueryObserver<UserWorkoutTags$Query, json.JsonSerializable>(
           key: Key(
-              'ProgressJournalGoalTagsManager - ${ProgressJournalGoalTagsQuery().operationName}'),
-          query: ProgressJournalGoalTagsQuery(),
+              'WorkoutTagsManager - ${UserWorkoutTagsQuery().operationName}'),
+          query: UserWorkoutTagsQuery(),
           builder: (data) {
-            final tags = data.progressJournalGoalTags;
-
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 12),
-                  CupertinoFormSection.insetGrouped(children: [
-                    MyTextFormFieldRow(
-                      keyboardType: TextInputType.text,
-                      textAlign: TextAlign.center,
-                      placeholder: 'Enter new tag',
-                      controller: _tagNameController,
-                      validationMessage: 'Min 3, max 30 characters',
-                      validator: () =>
-                          _tagNameController.text.length > 2 &&
-                          _tagNameController.text.length < 31,
-                    ),
-                  ]),
-                  GrowInOut(
-                    show: _tagNameController.text.length > 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          BorderButton(
-                            prefix: _newTagColor != null
-                                ? Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: CircularBox(
-                                        color: _newTagColor,
-                                        child: SizedBox(height: 9, width: 9)),
-                                  )
-                                : null,
-                            text: _newTagColor != null
-                                ? 'Change Color'
-                                : 'Select Color',
-                            onPressed: () async {
-                              Utils.hideKeyboard(context);
-                              await openColorPickerDialog(
-                                  context: context,
-                                  onSave: (color) => _updateNewTagColor(color));
-                            },
+            final tags = data.userWorkoutTags;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(height: 12),
+                CupertinoFormSection.insetGrouped(children: [
+                  MyTextFormFieldRow(
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.text,
+                    placeholder: 'Enter new tag',
+                    controller: _tagNameController,
+                    validationMessage: 'Min 3, max 30 characters',
+                    validator: () =>
+                        _tagNameController.text.length > 2 &&
+                        _tagNameController.text.length < 31,
+                  ),
+                ]),
+                GrowInOut(
+                  show: _canSaveNewTag,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BorderButton(
+                            prefix: Icon(
+                              CupertinoIcons.add,
+                              size: 20,
+                            ),
                             loading: _isLoading,
-                          ),
-                          BorderButton(
-                              prefix: Icon(
-                                CupertinoIcons.add,
-                                size: 20,
-                              ),
-                              loading: _isLoading,
-                              disabled: !_canSaveNewTag,
-                              text: 'Create Tag',
-                              onPressed: _createNewTag)
-                        ],
-                      ),
+                            text: 'Create Tag',
+                            onPressed: _createNewTag),
+                      ],
                     ),
                   ),
-                  if (!widget.allowCreateTagOnly)
-                    Column(
+                ),
+                if (!widget.allowCreateTagOnly)
+                  Expanded(
+                    child: Column(
                       children: [
                         HorizontalLine(),
-                        _CurrentTagsList(
-                          handleTagDelete: _handleTagDelete,
-                          updateTag: _updateTag,
-                          tags: tags,
+                        Expanded(
+                          child: _CurrentTagsList(
+                            handleTagDelete: _handleTagDelete,
+                            tags: tags,
+                            updateTag: _updateTag,
+                          ),
                         ),
                       ],
-                    )
-                ],
-              ),
+                    ),
+                  ),
+              ],
             );
           }),
     );
@@ -262,9 +223,9 @@ class _ProgressJournalGoalTagsManagerState
 }
 
 class _CurrentTagsList extends StatelessWidget {
-  final List<ProgressJournalGoalTag> tags;
-  final void Function(ProgressJournalGoalTag tag) handleTagDelete;
-  final void Function(ProgressJournalGoalTag updatedTag) updateTag;
+  final List<WorkoutTag> tags;
+  final void Function(WorkoutTag tag) handleTagDelete;
+  final void Function(WorkoutTag updatedTag) updateTag;
   _CurrentTagsList(
       {required this.tags,
       required this.handleTagDelete,
@@ -280,7 +241,7 @@ class _CurrentTagsList extends StatelessWidget {
               subtext: true,
             ),
           )
-        : ImplicitlyAnimatedList<ProgressJournalGoalTag>(
+        : ImplicitlyAnimatedList<WorkoutTag>(
             shrinkWrap: true,
             items: sortedTags,
             itemBuilder: (context, animation, tag, index) {
@@ -317,22 +278,6 @@ class _CurrentTagsList extends StatelessWidget {
                                     tag.tag,
                                     weight: FontWeight.bold,
                                   ))),
-                              CupertinoButton(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                onPressed: () async {
-                                  Utils.hideKeyboard(context);
-                                  await openColorPickerDialog(
-                                      context: context,
-                                      onSave: (color) {
-                                        tag.hexColor = color.toHex();
-                                        updateTag(tag);
-                                      });
-                                },
-                                child: CircularBox(
-                                    child: SizedBox(width: 28, height: 28),
-                                    color: HexColor.fromHex(tag.hexColor)),
-                              ),
                             ],
                           ),
                           TextButton(

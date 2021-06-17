@@ -10,11 +10,15 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class ContentBox extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
-  ContentBox({required this.child, this.backgroundColor});
+  final EdgeInsets padding;
+  const ContentBox(
+      {required this.child,
+      this.backgroundColor,
+      this.padding = const EdgeInsets.symmetric(vertical: 6, horizontal: 12)});
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      padding: padding,
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,
           borderRadius: BorderRadius.circular(8)),
@@ -23,7 +27,7 @@ class ContentBox extends StatelessWidget {
   }
 }
 
-/// Box with rounded corners. No elevation.
+/// Clipping box with rounded corners. No elevation.
 class RoundedBox extends StatelessWidget {
   final Widget child;
   final bool border;

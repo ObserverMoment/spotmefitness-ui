@@ -33,19 +33,26 @@ class ProgressJournalGoalCard extends StatelessWidget {
         expand: false,
         child: _MarkGoalCompletedBottomSheet(progressJournalGoal));
 
-    _checkResult(context, result);
+    /// If null or some other value then the modal has just been closed with no action.
+    if (result is MutationResult) {
+      _checkResult(context, result);
+    }
   }
 
   Future<void> _markIncomplete(BuildContext context) async {
     context.showConfirmDialog(
         title: 'Mark Incomplete?',
         onConfirm: () async {
+          final updated =
+              ProgressJournalGoal.fromJson(progressJournalGoal.toJson());
+          updated.completedDate = null;
+
           final variables = UpdateProgressJournalGoalArguments(
-              data: UpdateProgressJournalGoalInput.fromJson(
-                  {...progressJournalGoal.toJson(), 'completedDate': null}));
+              data: UpdateProgressJournalGoalInput.fromJson(updated.toJson()));
 
           final result = await context.graphQLStore.mutate(
               mutation: UpdateProgressJournalGoalMutation(variables: variables),
+              optimisticData: updated.toJson(),
               broadcastQueryIds: [
                 /// Broadcasting the operation name with no variables (nullified or parameterized)
                 /// This will trigger all observerable queries with [progressJournalByIdQuery] keys to rebuild.
@@ -185,14 +192,17 @@ class __MarkGoalCompletedBottomSheetState
   DateTime _completedDate = DateTime.now();
 
   Future<void> _markComplete() async {
-    final input = UpdateProgressJournalGoalInput.fromJson(
-        widget.progressJournalGoal.toJson());
-    input.completedDate = _completedDate;
+    final updated =
+        ProgressJournalGoal.fromJson(widget.progressJournalGoal.toJson());
+    updated.completedDate = _completedDate;
+
+    final input = UpdateProgressJournalGoalInput.fromJson(updated.toJson());
 
     final variables = UpdateProgressJournalGoalArguments(data: input);
 
     final result = await context.graphQLStore.mutate(
         mutation: UpdateProgressJournalGoalMutation(variables: variables),
+        optimisticData: updated.toJson(),
         broadcastQueryIds: [
           GQLOpNames.progressJournalByIdQuery,
           UserProgressJournalsQuery().operationName

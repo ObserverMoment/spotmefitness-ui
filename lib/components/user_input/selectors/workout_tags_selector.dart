@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
+import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_tags_manager.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -43,24 +44,9 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
 
   void _openCreateNewTag() {
     context.push(
-        child: FullScreenTextEditing(
-      title: 'New Tag',
-      inputValidation: (text) => text.length > 2 && text.length <= 20,
-      validationMessage: 'Min chars: 3, Max chars 20',
-      initialValue: '',
-      onSave: (text) => _createNewTag(text),
-      maxChars: 20,
-      maxInputLines: 1,
+        child: WorkoutTagsManager(
+      allowCreateTagOnly: true,
     ));
-  }
-
-  Future<void> _createNewTag(String tag) async {
-    final variables =
-        CreateWorkoutTagArguments(data: CreateWorkoutTagInput(tag: tag));
-
-    await context.graphQLStore.create(
-        mutation: CreateWorkoutTagMutation(variables: variables),
-        addRefToQueries: [UserWorkoutTagsQuery().operationName]);
   }
 
   @override
@@ -80,7 +66,6 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              CreateIconButton(onPressed: _openCreateNewTag),
               InfoPopupButton(
                 infoWidget: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -102,12 +87,15 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12, horizontal: 24.0),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 24.0),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        CreateTextIconButton(
+                            text: 'New Tag', onPressed: _openCreateNewTag),
+                        SizedBox(height: 8),
                         MyText(
                           'Click to select / deselect.',
                           size: FONTSIZE.SMALL,

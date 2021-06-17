@@ -6,6 +6,7 @@ fragment WorkoutPlan on WorkoutPlan {
   name
   description
   lengthWeeks
+  daysPerWeek
   coverImageUri
   introVideoUri
   introVideoThumbUri

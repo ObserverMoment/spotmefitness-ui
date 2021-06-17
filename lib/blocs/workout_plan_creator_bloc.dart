@@ -58,7 +58,6 @@ class WorkoutPlanCreatorBloc extends ChangeNotifier {
         final variables = CreateWorkoutPlanArguments(
           data: CreateWorkoutPlanInput(
               name: 'Workout Plan ${DateTime.now().dateString}',
-              lengthWeeks: 2,
               contentAccessScope: ContentAccessScope.private),
         );
 

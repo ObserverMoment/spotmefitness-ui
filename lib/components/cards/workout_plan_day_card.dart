@@ -85,6 +85,7 @@ class WorkoutPlanDayCard extends StatelessWidget {
                             showMoves: !minimize,
                             showTags: !minimize,
                             showDescription: !minimize,
+                            showAccessScope: false,
                           ),
                         ),
                       ],
@@ -230,8 +231,16 @@ class WorkoutPlanRestDayCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          H3(' Day ${dayNumber + 1}'),
-          H3('Rest'),
+          MyText(
+            ' Day ${dayNumber + 1}',
+            weight: FontWeight.bold,
+            size: FONTSIZE.SMALL,
+          ),
+          MyText(
+            'Rest',
+            weight: FontWeight.bold,
+            size: FONTSIZE.SMALL,
+          ),
         ],
       ),
     );

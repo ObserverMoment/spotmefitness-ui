@@ -176,7 +176,7 @@ class WorkoutFilters {
     Iterable<Workout> byWorkoutGoals = workoutGoals.isEmpty
         ? byWorkoutSectionTypes
         : byWorkoutSectionTypes.where(
-            (w) => workoutGoals.every((g) => w.workoutGoals.contains(g)));
+            (w) => workoutGoals.any((g) => w.workoutGoals.contains(g)));
 
     Iterable<Workout> byDifficultyLevel = difficultyLevel == null
         ? byWorkoutGoals

@@ -17,10 +17,12 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 class WorkoutGoalsSelectorRow extends StatelessWidget {
   final List<WorkoutGoal> selectedWorkoutGoals;
   final void Function(List<WorkoutGoal>) updateSelectedWorkoutGoals;
+  final int? max;
   const WorkoutGoalsSelectorRow(
       {Key? key,
       required this.selectedWorkoutGoals,
-      required this.updateSelectedWorkoutGoals})
+      required this.updateSelectedWorkoutGoals,
+      this.max})
       : super(key: key);
 
   @override
@@ -29,7 +31,7 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
         title: 'Goals',
         display: selectedWorkoutGoals.isEmpty
             ? MyText(
-                'Add some goals...',
+                max != null ? 'Add goals (max $max)...' : 'Add goals...',
                 subtext: true,
               )
             : Padding(
@@ -49,6 +51,7 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
                 child: WorkoutGoalsSelector(
               selectedWorkoutGoals: selectedWorkoutGoals,
               updateSelectedWorkoutGoals: updateSelectedWorkoutGoals,
+              max: max,
             )));
   }
 }
@@ -56,9 +59,11 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
 class WorkoutGoalsSelector extends StatefulWidget {
   final List<WorkoutGoal> selectedWorkoutGoals;
   final void Function(List<WorkoutGoal> updated) updateSelectedWorkoutGoals;
+  final int? max;
   WorkoutGoalsSelector(
       {required this.selectedWorkoutGoals,
-      required this.updateSelectedWorkoutGoals});
+      required this.updateSelectedWorkoutGoals,
+      this.max});
   @override
   _WorkoutGoalsSelectorState createState() => _WorkoutGoalsSelectorState();
 }
@@ -73,11 +78,16 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
   }
 
   void _handleUpdateSelected(WorkoutGoal tapped) {
-    setState(() {
-      _activeSelectedWorkoutGoals =
-          _activeSelectedWorkoutGoals.toggleItem<WorkoutGoal>(tapped);
-    });
-    widget.updateSelectedWorkoutGoals(_activeSelectedWorkoutGoals);
+    if (widget.max == null ||
+        _activeSelectedWorkoutGoals.length < widget.max! ||
+        _activeSelectedWorkoutGoals.contains(tapped)) {
+      setState(() {
+        _activeSelectedWorkoutGoals =
+            _activeSelectedWorkoutGoals.toggleItem<WorkoutGoal>(tapped);
+      });
+
+      widget.updateSelectedWorkoutGoals(_activeSelectedWorkoutGoals);
+    }
   }
 
   @override
@@ -102,41 +112,63 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
           builder: (data) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListView(
-                children: data.workoutGoals
-                    .map((goal) => GestureDetector(
-                          onTap: () => _handleUpdateSelected(goal),
-                          child: Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: BorderSide(color: Styles.grey))),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    MyText(goal.name),
-                                    if (_activeSelectedWorkoutGoals
-                                        .contains(goal))
-                                      FadeIn(
-                                          child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 6.0),
-                                        child: ConfirmCheckIcon(),
-                                      )),
-                                  ],
+              child: Column(
+                children: [
+                  if (widget.max != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyText(
+                          'Select up to ${widget.max!} goals',
+                          color: Styles.infoBlue,
+                        ),
+                        MyText(
+                          ' - ${_activeSelectedWorkoutGoals.length} selected',
+                          color: Styles.colorTwo,
+                        ),
+                      ],
+                    ),
+                  Expanded(
+                    child: ListView(
+                      children: data.workoutGoals
+                          .map((goal) => GestureDetector(
+                                onTap: () => _handleUpdateSelected(goal),
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          bottom:
+                                              BorderSide(color: Styles.grey))),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 16),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          MyText(goal.name),
+                                          if (_activeSelectedWorkoutGoals
+                                              .contains(goal))
+                                            FadeIn(
+                                                child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 6.0),
+                                              child: ConfirmCheckIcon(),
+                                            )),
+                                        ],
+                                      ),
+                                      InfoPopupButton(
+                                          infoWidget:
+                                              MyText('Info about ${goal.name}'))
+                                    ],
+                                  ),
                                 ),
-                                InfoPopupButton(
-                                    infoWidget:
-                                        MyText('Info about ${goal.name}'))
-                              ],
-                            ),
-                          ),
-                        ))
-                    .toList(),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                ],
               ),
             );
           }),

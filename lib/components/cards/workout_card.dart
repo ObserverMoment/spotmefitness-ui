@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -9,6 +10,7 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
@@ -22,6 +24,8 @@ class WorkoutCard extends StatelessWidget {
   final bool showDescription;
   final bool hideBackgroundImage;
   final bool showCreatedBy;
+  final bool showAccessScope;
+
   WorkoutCard(this.workout,
       {this.backgroundColor,
       this.withBoxShadow = true,
@@ -30,6 +34,7 @@ class WorkoutCard extends StatelessWidget {
       this.hideBackgroundImage = false,
       this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       this.showCreatedBy = true,
+      this.showAccessScope = true,
       this.showTags = true,
       this.showDescription = true});
 
@@ -80,17 +85,27 @@ class WorkoutCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (showCreatedBy)
+          if (showCreatedBy || showAccessScope)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  MyText(
-                    'Created by ${workout.user.displayName}',
-                    textAlign: TextAlign.left,
-                    size: FONTSIZE.TINY,
-                  ),
+                  if (showCreatedBy)
+                    MyText(
+                      'Created by ${workout.user.displayName}',
+                      textAlign: TextAlign.left,
+                      size: FONTSIZE.TINY,
+                    ),
+                  if (showCreatedBy && showAccessScope) SizedBox(width: 6),
+                  if (showAccessScope)
+                    MyText(
+                      workout.contentAccessScope.display,
+                      textAlign: TextAlign.left,
+                      size: FONTSIZE.TINY,
+                      weight: FontWeight.bold,
+                      color: Styles.colorTwo,
+                    ),
                 ],
               ),
             ),

@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class WorkoutPlanCard extends StatelessWidget {
   final WorkoutPlan workoutPlan;
@@ -19,6 +20,8 @@ class WorkoutPlanCard extends StatelessWidget {
   final bool withBoxShadow;
   final bool showEnrolledAndReviews;
   final bool showGoalsChart;
+  final bool showCreatedBy;
+  final bool showAccessScope;
 
   const WorkoutPlanCard(this.workoutPlan,
       {this.hideBackgroundImage = false,
@@ -26,6 +29,8 @@ class WorkoutPlanCard extends StatelessWidget {
       this.withBoxShadow = true,
       this.showEnrolledAndReviews = true,
       this.showGoalsChart = true,
+      this.showCreatedBy = true,
+      this.showAccessScope = true,
       this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
 
   List<WaffleChartInput> calcInputs() {
@@ -57,19 +62,30 @@ class WorkoutPlanCard extends StatelessWidget {
       padding: padding,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                MyText(
-                  'Created by ${workoutPlan.user.displayName}',
-                  textAlign: TextAlign.left,
-                  size: FONTSIZE.TINY,
-                ),
-              ],
+          if (showCreatedBy || showAccessScope)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (showCreatedBy)
+                    MyText(
+                      'Created by ${workoutPlan.user.displayName}',
+                      textAlign: TextAlign.left,
+                      size: FONTSIZE.TINY,
+                    ),
+                  if (showCreatedBy && showAccessScope) SizedBox(width: 6),
+                  if (showAccessScope)
+                    MyText(
+                      workoutPlan.contentAccessScope.display,
+                      textAlign: TextAlign.left,
+                      size: FONTSIZE.TINY,
+                      weight: FontWeight.bold,
+                      color: Styles.colorTwo,
+                    ),
+                ],
+              ),
             ),
-          ),
           Padding(
             padding:
                 const EdgeInsets.only(top: 6.0, bottom: 0, left: 3, right: 3),
@@ -136,7 +152,7 @@ class WorkoutPlanCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 3.0),
                                 child: MyText(
-                                  '${workoutPlan.sessionsPerWeek} days / week',
+                                  '${workoutPlan.daysPerWeek} days / week',
                                   weight: FontWeight.bold,
                                 ),
                               ),

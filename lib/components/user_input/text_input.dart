@@ -13,6 +13,8 @@ class MyTextFormFieldRow extends StatefulWidget {
   final bool autofocus;
   final String? validationMessage;
   final bool Function()? validator;
+  final Color? backgroundColor;
+  final TextAlign textAlign;
 
   /// Pass a controller OR an initial value with and onChange function.
   final TextEditingController? controller;
@@ -29,8 +31,10 @@ class MyTextFormFieldRow extends StatefulWidget {
       this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
+      this.backgroundColor,
       this.validationMessage,
-      this.validator})
+      this.validator,
+      this.textAlign = TextAlign.left})
       : assert(
             controller != null || (initialValue != null && onChanged != null));
 
@@ -58,14 +62,22 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                 controller: widget.controller,
                 initialValue: widget.initialValue,
                 onChanged: widget.onChanged,
+                textAlign: widget.textAlign,
                 padding:
                     EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
                 prefix: widget.prefix,
                 autofocus: widget.autofocus,
                 placeholder: widget.placeholder,
                 keyboardType: widget.keyboardType,
+                decoration: widget.backgroundColor != null
+                    ? BoxDecoration(
+                        color: widget.backgroundColor,
+                        borderRadius: BorderRadius.circular(8))
+                    : null,
                 style: TextStyle(fontSize: 18),
-                placeholderStyle: TextStyle(fontSize: 16),
+                placeholderStyle: TextStyle(
+                    fontSize: 16,
+                    color: context.theme.primary.withOpacity(0.7)),
                 autofillHints: widget.autofillHints,
                 obscureText: widget.obscureText),
             if (_controller.text.length > 0)

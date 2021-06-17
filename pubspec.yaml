@@ -27,7 +27,7 @@ dependencies:
     sdk: flutter
   
   another_flushbar: ^1.10.22
-  audio_session: ^0.1.0
+  audio_session: ^0.1.5
   auto_route: ^2.2.0
   better_player: ^0.0.66
   carousel_slider: ^4.0.0-nullsafety.0
@@ -76,7 +76,7 @@ dependencies:
   url_launcher: ^6.0.6
 
 dev_dependencies:
-  artemis: 7.0.0-beta.11
+  artemis: 7.0.0-beta.13 
   auto_route_generator: ^2.1.0
   build_runner: ^2.0.3
   json_serializable: ^4.1.2

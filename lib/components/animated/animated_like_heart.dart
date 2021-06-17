@@ -107,9 +107,12 @@ class _AnimatedLikeHeartState extends State<AnimatedLikeHeart>
               builder: (BuildContext context, _) => Stack(
                     alignment: Alignment.center,
                     children: [
-                      Icon(CupertinoIcons.heart,
-                          size: 32,
-                          color: context.theme.primary.withOpacity(0.7)),
+                      if (!widget.active)
+                        FadeIn(
+                          child: Icon(CupertinoIcons.heart,
+                              size: 32,
+                              color: context.theme.primary.withOpacity(0.7)),
+                        ),
                       if (_isAnimating && widget.active)
                         _buildMiniHeart(-28, Offset(8, 2), 0.85),
                       if (_isAnimating && widget.active)
@@ -120,11 +123,6 @@ class _AnimatedLikeHeartState extends State<AnimatedLikeHeart>
                         scale: _mainHeartScaleAnimation,
                         child: Icon(CupertinoIcons.heart_solid,
                             size: 32, color: Styles.heartRed),
-                      ),
-                      ScaleTransition(
-                        scale: _mainHeartScaleAnimation,
-                        child: Icon(CupertinoIcons.heart,
-                            size: 32, color: context.theme.primary),
                       ),
                       if (_isAnimating && widget.active)
                         ...List.generate(

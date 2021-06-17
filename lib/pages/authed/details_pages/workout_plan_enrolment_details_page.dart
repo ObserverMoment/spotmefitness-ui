@@ -314,7 +314,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                         ),
                                         Tag(
                                           tag:
-                                              '${workoutPlan.sessionsPerWeek} days / week',
+                                              '${workoutPlan.daysPerWeek} days / week',
                                           color: Styles.white,
                                           textColor: Styles.black,
                                         ),
@@ -383,8 +383,8 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                   titles: [
                                     'Progress',
                                     'Goals',
-                                    'Leave Review',
-                                    'Participants',
+                                    'Review',
+                                    'Social',
                                   ],
                                   handleTabChange: _handleTabChange,
                                   activeTabIndex: _activeTabIndex)),

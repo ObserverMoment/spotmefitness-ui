@@ -8,7 +8,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 /// Originally this was a generic but was causing errors when trying to run [saveValue].
 /// [T] should be either [int] or [double]
 /// [class NumberInputModal<T> extends StatefulWidget]
-
+/// If you just want to input ints within a relatively small range then consider [NumberPickerModal]
 class NumberInputModalInt extends StatefulWidget {
   final String title;
   final int value;

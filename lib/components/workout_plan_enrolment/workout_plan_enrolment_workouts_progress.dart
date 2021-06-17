@@ -314,6 +314,7 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                               backgroundColor: context.theme.background,
                               hideBackgroundImage: true,
                               showCreatedBy: false,
+                              showAccessScope: false,
                               showEquipment: !minimize,
                               showMoves: !minimize,
                               showTags: !minimize,

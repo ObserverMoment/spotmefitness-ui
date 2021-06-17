@@ -741,6 +741,7 @@ WorkoutPlan _$WorkoutPlanFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..lengthWeeks = json['lengthWeeks'] as int
+    ..daysPerWeek = json['daysPerWeek'] as int
     ..coverImageUri = json['coverImageUri'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
@@ -773,6 +774,7 @@ Map<String, dynamic> _$WorkoutPlanToJson(WorkoutPlan instance) =>
       'name': instance.name,
       'description': instance.description,
       'lengthWeeks': instance.lengthWeeks,
+      'daysPerWeek': instance.daysPerWeek,
       'coverImageUri': instance.coverImageUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -2540,6 +2542,7 @@ UpdateWorkoutPlan _$UpdateWorkoutPlanFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..lengthWeeks = json['lengthWeeks'] as int
+    ..daysPerWeek = json['daysPerWeek'] as int
     ..coverImageUri = json['coverImageUri'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
@@ -2561,6 +2564,7 @@ Map<String, dynamic> _$UpdateWorkoutPlanToJson(UpdateWorkoutPlan instance) =>
       'name': instance.name,
       'description': instance.description,
       'lengthWeeks': instance.lengthWeeks,
+      'daysPerWeek': instance.daysPerWeek,
       'coverImageUri': instance.coverImageUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -2591,6 +2595,7 @@ UpdateWorkoutPlanInput _$UpdateWorkoutPlanInputFromJson(
     name: json['name'] as String?,
     description: json['description'] as String?,
     lengthWeeks: json['lengthWeeks'] as int?,
+    daysPerWeek: json['daysPerWeek'] as int?,
     coverImageUri: json['coverImageUri'] as String?,
     introVideoUri: json['introVideoUri'] as String?,
     introVideoThumbUri: json['introVideoThumbUri'] as String?,
@@ -2612,6 +2617,7 @@ Map<String, dynamic> _$UpdateWorkoutPlanInputToJson(
       'name': instance.name,
       'description': instance.description,
       'lengthWeeks': instance.lengthWeeks,
+      'daysPerWeek': instance.daysPerWeek,
       'coverImageUri': instance.coverImageUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -2630,6 +2636,7 @@ CreateWorkoutPlan _$CreateWorkoutPlanFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..lengthWeeks = json['lengthWeeks'] as int
+    ..daysPerWeek = json['daysPerWeek'] as int
     ..coverImageUri = json['coverImageUri'] as String?
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
@@ -2649,6 +2656,7 @@ Map<String, dynamic> _$CreateWorkoutPlanToJson(CreateWorkoutPlan instance) =>
       'name': instance.name,
       'description': instance.description,
       'lengthWeeks': instance.lengthWeeks,
+      'daysPerWeek': instance.daysPerWeek,
       'coverImageUri': instance.coverImageUri,
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
@@ -2675,7 +2683,6 @@ CreateWorkoutPlanInput _$CreateWorkoutPlanInputFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutPlanInput(
     name: json['name'] as String,
-    lengthWeeks: json['lengthWeeks'] as int,
     contentAccessScope: _$enumDecode(
         _$ContentAccessScopeEnumMap, json['contentAccessScope'],
         unknownValue: ContentAccessScope.artemisUnknown),
@@ -2686,7 +2693,6 @@ Map<String, dynamic> _$CreateWorkoutPlanInputToJson(
         CreateWorkoutPlanInput instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'lengthWeeks': instance.lengthWeeks,
       'contentAccessScope':
           _$ContentAccessScopeEnumMap[instance.contentAccessScope],
     };
@@ -4636,6 +4642,46 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+DeleteWorkoutTagById$Mutation _$DeleteWorkoutTagById$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteWorkoutTagById$Mutation()
+    ..deleteWorkoutTagById = json['deleteWorkoutTagById'] as String;
+}
+
+Map<String, dynamic> _$DeleteWorkoutTagById$MutationToJson(
+        DeleteWorkoutTagById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteWorkoutTagById': instance.deleteWorkoutTagById,
+    };
+
+UpdateWorkoutTag$Mutation _$UpdateWorkoutTag$MutationFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutTag$Mutation()
+    ..updateWorkoutTag =
+        WorkoutTag.fromJson(json['updateWorkoutTag'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateWorkoutTag$MutationToJson(
+        UpdateWorkoutTag$Mutation instance) =>
+    <String, dynamic>{
+      'updateWorkoutTag': instance.updateWorkoutTag.toJson(),
+    };
+
+UpdateWorkoutTagInput _$UpdateWorkoutTagInputFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutTagInput(
+    id: json['id'] as String,
+    tag: json['tag'] as String,
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutTagInputToJson(
+        UpdateWorkoutTagInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'tag': instance.tag,
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -5954,4 +6000,30 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+DeleteWorkoutTagByIdArguments _$DeleteWorkoutTagByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteWorkoutTagByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteWorkoutTagByIdArgumentsToJson(
+        DeleteWorkoutTagByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UpdateWorkoutTagArguments _$UpdateWorkoutTagArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UpdateWorkoutTagArguments(
+    data: UpdateWorkoutTagInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateWorkoutTagArgumentsToJson(
+        UpdateWorkoutTagArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
     };
