@@ -51,7 +51,7 @@ class WorkoutFiltersBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Filter methods.
+  /// Client side filter method.
   List<Workout> filterYourWorkouts(List<Workout> allWorkouts) {
     return _workoutFilters.filter(allWorkouts);
   }
@@ -78,9 +78,9 @@ class WorkoutFilters {
   Duration? maxLength;
 
   /// Equipment filters
-  /// If false, ignore.
+  /// If null, ignore, if true must be bodyweight only, if false must NOT be bodyweight only (i.e. must have equipment).
   /// This will take precedence over [availableEquipments]
-  bool bodyweightOnly = false;
+  bool? bodyweightOnly;
 
   /// Exclude any workouts that need equipments not in this list.
   /// Ignore if list is empty.
@@ -124,7 +124,7 @@ class WorkoutFilters {
       hasClassAudio != null ||
       minLength != null ||
       maxLength != null ||
-      bodyweightOnly ||
+      bodyweightOnly != null ||
       availableEquipments.isNotEmpty ||
       requiredMoves.isNotEmpty ||
       excludedMoves.isNotEmpty ||
@@ -138,7 +138,7 @@ class WorkoutFilters {
     if (hasClassVideo != null) active++;
     if (hasClassAudio != null) active++;
     if (minLength != null || maxLength != null) active++;
-    if (bodyweightOnly) active++;
+    if (bodyweightOnly != null) active++;
     if (availableEquipments.isNotEmpty) active++;
     if (requiredMoves.isNotEmpty) active++;
     if (excludedMoves.isNotEmpty) active++;
@@ -175,8 +175,8 @@ class WorkoutFilters {
 
     Iterable<Workout> byWorkoutGoals = workoutGoals.isEmpty
         ? byWorkoutSectionTypes
-        : byWorkoutSectionTypes.where(
-            (w) => workoutGoals.any((g) => w.workoutGoals.contains(g)));
+        : byWorkoutSectionTypes
+            .where((w) => workoutGoals.any((g) => w.workoutGoals.contains(g)));
 
     Iterable<Workout> byDifficultyLevel = difficultyLevel == null
         ? byWorkoutGoals
@@ -212,15 +212,16 @@ class WorkoutFilters {
             w.lengthMinutes != null &&
             (w.lengthMinutes!.minutes <= maxLength!));
 
-    Iterable<Workout> byBodyweightOnly = !bodyweightOnly
+    Iterable<Workout> byBodyweightOnly = bodyweightOnly == null
         ? byMaxLength
         : byMaxLength.where((w) => w.workoutSections.every(
-            (WorkoutSection ws) => ws.workoutSets.every((WorkoutSet ws) => ws
-                .workoutMoves
-                .every((WorkoutMove wm) => !_workoutMoveNeedsEquipment(wm)))));
+            (WorkoutSection ws) => ws.workoutSets.every((WorkoutSet ws) =>
+                ws.workoutMoves.every((WorkoutMove wm) => bodyweightOnly!
+                    ? !_workoutMoveNeedsEquipment(wm)
+                    : _workoutMoveNeedsEquipment(wm)))));
 
     /// if [bodyweightOnly] = true then available equipments is skipped / ignored.
-    Iterable<Workout> byAvailableEquipments = (bodyweightOnly ||
+    Iterable<Workout> byAvailableEquipments = (bodyweightOnly == true ||
             availableEquipments.isEmpty)
         ? byBodyweightOnly
         : byBodyweightOnly.where((w) => w.workoutSections.every(
@@ -280,7 +281,7 @@ class WorkoutFilters {
         maxLength = json['maxLength'] != null
             ? Duration(minutes: (json['maxLength'] as int))
             : null,
-        bodyweightOnly = (json['bodyweightOnly'] as bool?) ?? false,
+        bodyweightOnly = json['bodyweightOnly'] as bool?,
         availableEquipments = json['availableEquipments'] != null
             ? (json['availableEquipments'] as List)
                 .map((e) => Equipment.fromJson(Map<String, dynamic>.from(e)))

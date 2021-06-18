@@ -9,7 +9,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/components/user_input/number_picker_modal.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

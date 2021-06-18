@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -13,30 +12,26 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/screens/workout_filters_screen/workout_filters_screen.dart';
-import 'package:spotmefitness_ui/components/workout/workout_finder/filtered_workouts_list.dart';
-import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder_text_search.dart';
-import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder_workout_card.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/screens/workout_plan_filters_screen.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/filtered_workout_plans_list.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/finder_workout_plan_card.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder_text_search.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
-/// Widget that uses filters to find and select a workout.
-/// Wrapper around the UI which handles the [ObservableQuery]s [UserWorkouts] and [UserCollections]
-/// Client side the user can filter their created workouts and their saved workouts. Via the api their can filter public workouts.
-class WorkoutFinderPage extends StatelessWidget {
-  final void Function(Workout workout)? selectWorkout;
-
-  /// Rather than 'your workouts' - users client side plans list.
+/// Widget that uses filters to find and view / save a workout plan.
+/// Wrapper around the UI which handles the [ObservableQuery]s [UserWorkoutPlans] and [UserCollections]
+/// Client side the user can filter their created plans and their saved plans. Via the api their can filter public plans.
+class WorkoutPlanFinderPage extends StatelessWidget {
+  /// Rather than 'your plans' - users client side plans list.
   // https://github.com/Milad-Akarie/auto_route_library/issues/404
   final bool? initialOpenPublicTab;
-  const WorkoutFinderPage(
-      {this.selectWorkout, this.initialOpenPublicTab = false});
+  const WorkoutPlanFinderPage({this.initialOpenPublicTab = false});
 
   Widget _loadingIndicator() => CupertinoPageScaffold(
       navigationBar: BorderlessNavBar(
@@ -46,53 +41,48 @@ class WorkoutFinderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
-        key: Key('WorkoutFinderPage - ${UserWorkoutsQuery().operationName}'),
-        query: UserWorkoutsQuery(),
+    return QueryObserver<UserWorkoutPlans$Query, json.JsonSerializable>(
+        key: Key(
+            'WorkoutPlanFinderPage - ${UserWorkoutPlansQuery().operationName}'),
+        query: UserWorkoutPlansQuery(),
         loadingIndicator: _loadingIndicator(),
-        builder: (createdWorkoutsData) {
+        builder: (createdPlansData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
-                  'WorkoutFinderPage - ${UserCollectionsQuery().operationName}'),
+                  'WorkoutPlanFinderPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
               loadingIndicator: _loadingIndicator(),
               builder: (collectionsData) {
-                final userWorkouts = createdWorkoutsData.userWorkouts;
+                final userPlans = createdPlansData.userWorkoutPlans;
 
-                final savedWorkouts = collectionsData.userCollections
-                    .fold<List<Workout>>(
-                        [], (acum, next) => [...acum, ...next.workouts]);
+                final savedPlans = collectionsData.userCollections
+                    .fold<List<WorkoutPlan>>(
+                        [], (acum, next) => [...acum, ...next.workoutPlans]);
 
-                return WorkoutFinderPageUI(
-                  selectWorkout: selectWorkout,
+                return WorkoutPlanFinderPageUI(
+                  userPlans:
+                      [...userPlans, ...savedPlans].reversed.toSet().toList(),
                   initialOpenPublicTab: initialOpenPublicTab!,
-                  userWorkouts: [...userWorkouts, ...savedWorkouts]
-                      .reversed
-                      .toSet()
-                      .toList(),
                 );
               });
         });
   }
 }
 
-class WorkoutFinderPageUI extends StatefulWidget {
-  final List<Workout> userWorkouts;
-
-  /// Rather than 'your workouts' - users client side plans list.
+class WorkoutPlanFinderPageUI extends StatefulWidget {
+  final List<WorkoutPlan> userPlans;
   final bool initialOpenPublicTab;
-  final void Function(Workout workout)? selectWorkout;
-  const WorkoutFinderPageUI({
-    required this.userWorkouts,
-    this.selectWorkout,
+  const WorkoutPlanFinderPageUI({
+    required this.userPlans,
     this.initialOpenPublicTab = false,
   });
 
   @override
-  _WorkoutFinderPageUIState createState() => _WorkoutFinderPageUIState();
+  _WorkoutPlanFinderPageUIState createState() =>
+      _WorkoutPlanFinderPageUIState();
 }
 
-class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
+class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
   final kPanelBorderRadius = 30.0;
   final kCollapsedpanelheight = 66.0;
 
@@ -100,31 +90,30 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   final PanelController _panelController = PanelController();
   bool _panelIsOpen = false;
 
-  /// 0 is your workouts, 1 is public workouts.
+  /// 0 is your plans, 1 is public plans.
   late int _activePageIndex;
-
   late PageController _tabPageController;
 
-  late WorkoutFiltersBloc _bloc;
-  late WorkoutFilters _lastUsedFilters;
+  late WorkoutPlanFiltersBloc _bloc;
+  late WorkoutPlanFilters _lastUsedFilters;
 
   /// Manages client side list and scrolling.
-  List<Workout> _filteredUserWorkouts = [];
-  ScrollController _userWorkoutsListScrollController = ScrollController();
+  List<WorkoutPlan> _filteredUserWorkoutPlans = [];
+  ScrollController _userPlansListScrollController = ScrollController();
 
-  /// For inifinite scroll / pagination of public workouts from the network.
+  /// For inifinite scroll / pagination of public plans from the network.
   static const kfilterResultsPageSize = 15;
 
-  /// Cursor for public workouts pagination. The id of the last retrieved workout.
+  /// Cursor for public plans pagination. The id of the last retrieved plan.
   String? _cursor;
 
   /// Adjust the scroll position when refreshing this list.
   final ScrollController _pagingScrollController = ScrollController();
-  final PagingController<int, Workout> _pagingController =
+  final PagingController<int, WorkoutPlan> _pagingController =
       PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
 
   void _updateLastUsedFilters() {
-    _lastUsedFilters = WorkoutFilters.fromJson(_bloc.filters.json);
+    _lastUsedFilters = WorkoutPlanFilters.fromJson(_bloc.filters.json);
   }
 
   @override
@@ -133,26 +122,27 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     _activePageIndex = widget.initialOpenPublicTab ? 1 : 0;
     _tabPageController = PageController(initialPage: _activePageIndex);
 
-    _bloc = context.read<WorkoutFiltersBloc>();
-    _updateLastUsedFilters();
+    _bloc = context.read<WorkoutPlanFiltersBloc>();
 
-    _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
+    _updateLastUsedFilters();
+    _filteredUserWorkoutPlans = _bloc.filterYourWorkoutPlans(widget.userPlans);
 
     /// [nextPageKey] will be zero when the filters are refreshed. This means no cursor should be passed.
     /// Any other number for the pageKey causes this function to look up the [_cursor] from state.
     /// To standardize, we pass pageKey as [1] whenever a page is appended to the list.
     _pagingController.addPageRequestListener((nextPageKey) {
-      _fetchPublicWorkouts(nextPageKey);
+      _fetchPublicWorkoutPlans(nextPageKey);
     });
   }
 
-  Future<List<Workout>> _executePublicWorkoutsQuery({String? cursor}) async {
-    final variables = PublicWorkoutsArguments(
+  Future<List<WorkoutPlan>> _executePublicWorkoutPlansQuery(
+      {String? cursor}) async {
+    final variables = PublicWorkoutPlansArguments(
         take: kfilterResultsPageSize,
         cursor: cursor,
-        filters: WorkoutFiltersInput.fromJson(_bloc.filters.apiJson));
+        filters: WorkoutPlanFiltersInput.fromJson(_bloc.filters.apiJson));
 
-    final query = PublicWorkoutsQuery(variables: variables);
+    final query = PublicWorkoutPlansQuery(variables: variables);
     final response = await context.graphQLStore.execute(query);
 
     if ((response.errors != null && response.errors!.isNotEmpty) ||
@@ -161,23 +151,23 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
           'Sorry, something went wrong!: ${response.errors != null ? response.errors!.join(',') : ''}');
     }
 
-    return query.parse(response.data ?? {}).publicWorkouts;
+    return query.parse(response.data ?? {}).publicWorkoutPlans;
   }
 
-  Future<void> _fetchPublicWorkouts(int nextPageKey) async {
+  Future<void> _fetchPublicWorkoutPlans(int nextPageKey) async {
     try {
       /// [nextPageKey] aka cursor defaults to 0 when [_pagingController] is initialised.
-      final workouts = await _executePublicWorkoutsQuery(
+      final workoutPlans = await _executePublicWorkoutPlansQuery(
           cursor: nextPageKey == 0 ? null : _cursor);
 
-      final isLastPage = workouts.length < kfilterResultsPageSize;
+      final isLastPage = workoutPlans.length < kfilterResultsPageSize;
       if (isLastPage) {
-        _pagingController.appendLastPage(workouts);
+        _pagingController.appendLastPage(workoutPlans);
       } else {
-        _cursor = workouts.last.id;
+        _cursor = workoutPlans.last.id;
 
         /// Pass nextPageKey as 1. Acts like a boolean to tell future fetch calls to get the _[cursor] from local state.
-        _pagingController.appendPage(workouts, 1);
+        _pagingController.appendPage(workoutPlans, 1);
       }
     } catch (error) {
       _pagingController.error = error;
@@ -195,10 +185,10 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     _pagingController.refresh();
 
     /// Reset the user workouts list scroll position.
-    _resetScrollPosition(_userWorkoutsListScrollController);
+    _resetScrollPosition(_userPlansListScrollController);
     setState(() {
       _updateLastUsedFilters();
-      _filteredUserWorkouts = [...widget.userWorkouts];
+      _filteredUserWorkoutPlans = [...widget.userPlans];
     });
   }
 
@@ -221,8 +211,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     if (_bloc.filtersHaveChanged(_lastUsedFilters)) {
       _updateLastUsedFilters();
       _pagingController.refresh();
-      _filteredUserWorkouts = _bloc.filterYourWorkouts(widget.userWorkouts);
-      _resetScrollPosition(_userWorkoutsListScrollController);
+      _filteredUserWorkoutPlans =
+          _bloc.filterYourWorkoutPlans(widget.userPlans);
+      _resetScrollPosition(_userPlansListScrollController);
       setState(() {});
     }
   }
@@ -231,18 +222,6 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     if (controller.hasClients) {
       controller.animateTo(0,
           duration: Duration(milliseconds: 100), curve: Curves.easeIn);
-    }
-  }
-
-  /// Pops itself (and any stack items such as the text seach widget)
-  /// Then passes the selected workout to the parent.
-  void _selectWorkout(Workout workout) {
-    if (widget.selectWorkout != null) {
-      // If open - pop the text search route.
-      context.router.popUntilRouteWithName(WorkoutFinderRoute.name);
-      // Then pop itself.
-      context.pop();
-      widget.selectWorkout!(workout);
     }
   }
 
@@ -260,7 +239,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
     final size = mediaQuery.size;
 
     final numActiveFilters =
-        context.select<WorkoutFiltersBloc, int>((b) => b.numActiveFilters);
+        context.select<WorkoutPlanFiltersBloc, int>((b) => b.numActiveFilters);
 
     return CupertinoPageScaffold(
         child: SafeArea(
@@ -337,21 +316,21 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                 ),
               ),
             ),
-            Expanded(child: WorkoutFiltersScreen())
+            Expanded(child: WorkoutPlanFiltersScreen())
           ],
         ),
         body: CupertinoPageScaffold(
           navigationBar: BorderlessNavBar(
-            middle: NavBarTitle('Find a Workout'),
+            middle: NavBarTitle('Find a Workout Plan'),
             trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: () => context.push(
                   fullscreenDialog: true,
-                  child: WorkoutFinderTextSearch(
-                      initialPageIndex: _activePageIndex,
-                      userWorkouts: widget.userWorkouts,
-                      updateActivePageIndex: _updatePageIndex,
-                      selectWorkout: _selectWorkout)),
+                  child: WorkoutPlanFinderTextSearch(
+                    initialPageIndex: _activePageIndex,
+                    updateActivePageIndex: _updatePageIndex,
+                    userWorkoutPlans: widget.userPlans,
+                  )),
               child: Icon(
                 CupertinoIcons.search,
                 size: 25,
@@ -369,8 +348,8 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                       value: _activePageIndex,
                       updateValue: _updatePageIndex,
                       children: {
-                        0: MyText('Your Workouts'),
-                        1: MyText('All Workouts'),
+                        0: MyText('Your Plans'),
+                        1: MyText('All Plans'),
                       }),
                 ),
               ),
@@ -379,26 +358,25 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                   controller: _tabPageController,
                   physics: NeverScrollableScrollPhysics(),
                   children: [
-                    YourFilteredWorkoutsList(
+                    YourFilteredWorkoutPlansList(
                       listPositionScrollController:
-                          _userWorkoutsListScrollController,
-                      selectWorkout: _selectWorkout,
-                      workouts: _filteredUserWorkouts,
+                          _userPlansListScrollController,
+                      workoutPlans: _filteredUserWorkoutPlans,
                     ),
-                    PagedListView<int, Workout>(
+                    PagedListView<int, WorkoutPlan>(
                       // Bottom padding to push list up above floating filters panel.
                       padding: const EdgeInsets.only(
                           left: 8, right: 8, top: 4, bottom: 138),
                       pagingController: _pagingController,
                       scrollController: _pagingScrollController,
-                      builderDelegate: PagedChildBuilderDelegate<Workout>(
-                        itemBuilder: (context, workout, index) => SizeFadeIn(
+                      builderDelegate: PagedChildBuilderDelegate<WorkoutPlan>(
+                        itemBuilder: (context, workoutPlan, index) =>
+                            SizeFadeIn(
                           duration: 100,
                           delay: index,
                           delayBasis: 20,
-                          child: WorkoutFinderWorkoutCard(
-                            workout: workout,
-                            selectWorkout: widget.selectWorkout,
+                          child: FinderWorkoutPlanCard(
+                            workoutPlan: workoutPlan,
                           ),
                         ),
                         firstPageProgressIndicatorBuilder: (c) =>

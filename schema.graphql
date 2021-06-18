@@ -649,7 +649,7 @@ type Query {
   publicWorkouts(cursor: ID, filters: WorkoutFiltersInput, take: Int): [Workout!]!
   userWorkouts: [Workout!]!
   workoutById(id: ID!): Workout!
-  publicWorkoutPlans: [WorkoutPlan!]!
+  publicWorkoutPlans(cursor: ID, filters: WorkoutPlanFiltersInput, take: Int): [WorkoutPlan!]!
   workoutPlanById(id: ID!): WorkoutPlan!
   userWorkoutPlans: [WorkoutPlan!]!
   userWorkoutPlanEnrolments: [WorkoutPlanEnrolment!]!
@@ -1175,6 +1175,14 @@ type WorkoutPlanEnrolment {
 type WorkoutPlanEnrolmentSummary {
   id: ID!
   User: UserSummary!
+}
+
+input WorkoutPlanFiltersInput {
+  difficultyLevel: DifficultyLevel
+  lengthWeeks: Int
+  daysPerWeek: Int
+  workoutGoals: [ID!]!
+  bodyweightOnly: Boolean
 }
 
 type WorkoutPlanReview {

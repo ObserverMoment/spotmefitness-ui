@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// This widget uses scroll and step input to select an integer value within a min and max range.

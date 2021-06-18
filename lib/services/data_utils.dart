@@ -163,4 +163,23 @@ class DataUtils {
       return map;
     });
   }
+
+  /// 0 = true / yes
+  /// 1 = false / no
+  /// 2 = null / don't care
+  static int nullableBoolToInt(bool? b) {
+    return b == null
+        ? 2
+        : b
+            ? 0
+            : 1;
+  }
+
+  static bool? intToNullableBool(int i) {
+    return i == 0
+        ? true
+        : i == 1
+            ? false
+            : null;
+  }
 }

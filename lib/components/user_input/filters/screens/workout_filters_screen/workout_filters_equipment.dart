@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/cupertino_switch_row.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -32,35 +33,59 @@ class WorkoutFiltersEquipment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bodyweightOnly = context
-        .select<WorkoutFiltersBloc, bool>((b) => b.filters.bodyweightOnly);
+        .select<WorkoutFiltersBloc, bool?>((b) => b.filters.bodyweightOnly);
     final availableEquipments =
         context.select<WorkoutFiltersBloc, List<Equipment>>(
             (b) => b.filters.availableEquipments);
 
     return Column(
       children: [
-        Padding(
-          padding:
-              const EdgeInsets.only(top: 6.0, bottom: 8, left: 4, right: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CupertinoSwitchRow(
-                  value: bodyweightOnly,
-                  title: 'No equipment ',
-                  updateValue: (v) => context
-                      .read<WorkoutFiltersBloc>()
-                      .updateFilters({'bodyweightOnly': v})),
-              BorderButton(
-                  mini: true,
-                  text: 'From gym profile',
-                  onPressed: () => _handleImportFromGymProfile(context))
-            ],
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SlidingSelect<int>(
+                      value: DataUtils.nullableBoolToInt(bodyweightOnly),
+                      updateValue: (v) => context
+                              .read<WorkoutFiltersBloc>()
+                              .updateFilters({
+                            'bodyweightOnly': DataUtils.intToNullableBool(v)
+                          }),
+                      children: {
+                        0: MyText('No'),
+                        1: MyText('Yes'),
+                        2: MyText("Don't mind")
+                      }),
+                ),
+              ),
+            ),
+            InfoPopupButton(
+                infoWidget: MyText(
+              'No = bodyweight only, yes = not bodyweight only (i.e. has equipment',
+              maxLines: 5,
+            ))
+          ],
         ),
-        if (!bodyweightOnly)
+        if (bodyweightOnly != true)
+          SizeFadeIn(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: BorderButton(
+                  mini: true,
+                  prefix: Icon(
+                    CupertinoIcons.square_arrow_down,
+                    size: 20,
+                  ),
+                  text: 'From gym profile',
+                  onPressed: () => _handleImportFromGymProfile(context)),
+            ),
+          ),
+        if (bodyweightOnly != true)
           Expanded(
-            child: FadeIn(
+            child: SizeFadeIn(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: QueryObserver<Equipments$Query, json.JsonSerializable>(

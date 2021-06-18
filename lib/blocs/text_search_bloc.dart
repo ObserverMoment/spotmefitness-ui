@@ -66,27 +66,55 @@ class TextSearchBloc<T> {
         case TextSearchType.workout:
           final query = TextSearchWorkoutsQuery(
               variables: TextSearchWorkoutsArguments(text: text));
+
           response = await context.graphQLStore.execute(query);
+
           _checkResponse(response);
+
           _textSearchResults.add(
               query.parse(response.data ?? {}).textSearchWorkouts! as List<T>);
           break;
         case TextSearchType.workoutName:
           final query = TextSearchWorkoutNamesQuery(
               variables: TextSearchWorkoutNamesArguments(text: text));
+
           response = await context.graphQLStore.execute(query);
+
           _checkResponse(response);
+
           _textSearchResults.add(query
               .parse(response.data ?? {})
               .textSearchWorkoutNames! as List<T>);
           break;
         case TextSearchType.workoutPlan:
+          final query = TextSearchWorkoutPlansQuery(
+              variables: TextSearchWorkoutPlansArguments(text: text));
+
+          response = await context.graphQLStore.execute(query);
+
+          _checkResponse(response);
+
+          _textSearchResults.add(query
+              .parse(response.data ?? {})
+              .textSearchWorkoutPlans! as List<T>);
           break;
         case TextSearchType.workoutPlanName:
+          final query = TextSearchWorkoutPlanNamesQuery(
+              variables: TextSearchWorkoutPlanNamesArguments(text: text));
+
+          response = await context.graphQLStore.execute(query);
+
+          _checkResponse(response);
+
+          _textSearchResults.add(query
+              .parse(response.data ?? {})
+              .textSearchWorkoutPlanNames! as List<T>);
           break;
         case TextSearchType.publicProfile:
+          print('TextSearchType.publicProfile: Not implemented');
           break;
         case TextSearchType.publicProfileName:
+          print('TextSearchType.publicProfileName: Not implemented');
           break;
         default:
           throw Exception(

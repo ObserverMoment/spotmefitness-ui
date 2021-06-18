@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
@@ -26,7 +27,7 @@ void main() async {
   await Hive.openBox(kSettingsHiveBoxName);
   await Hive.openBox(GraphQLStore.boxName);
 
-  /// TODO: Remove this before pushing anything to staging.
+  /// TODO: Remove this before pushing anything to production. Once we have ensured that clean up and garbage collection is working well.
   Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();
@@ -85,6 +86,7 @@ class _AuthRouterState extends State<AuthRouter> {
               Provider(create: (_) => GraphQLStore()),
               ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
               ChangeNotifierProvider(create: (_) => WorkoutFiltersBloc()),
+              ChangeNotifierProvider(create: (_) => WorkoutPlanFiltersBloc()),
               ChangeNotifierProvider(
                   create: (_) =>
                       ThemeBloc(deviceBrightness: _userDeviceBrightness)),

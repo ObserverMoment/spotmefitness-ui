@@ -59,7 +59,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
       child: AutoTabsRouter(
           routes: [
             HomeStack(),
-            DiscoverRoute(),
+            DiscoverStack(),
             SocialRoute(),
             JournalStack(),
             ProfileRoute(),

@@ -8,54 +8,53 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/text_search_field.dart';
-import 'package:spotmefitness_ui/components/workout/workout_finder/filtered_workouts_list.dart';
+import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/filtered_workout_plans_list.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/text_search_filters.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
-class WorkoutFinderTextSearch extends StatefulWidget {
-  final List<Workout> userWorkouts;
-  final void Function(Workout workout)? selectWorkout;
+class WorkoutPlanFinderTextSearch extends StatefulWidget {
+  final List<WorkoutPlan> userWorkoutPlans;
   final int initialPageIndex;
   final void Function(int index) updateActivePageIndex;
 
-  WorkoutFinderTextSearch(
-      {required this.userWorkouts,
-      this.selectWorkout,
+  WorkoutPlanFinderTextSearch(
+      {required this.userWorkoutPlans,
       this.initialPageIndex = 0,
       required this.updateActivePageIndex})
       : assert(initialPageIndex == 0 || initialPageIndex == 1);
 
   @override
-  _WorkoutFinderTextSearchState createState() =>
-      _WorkoutFinderTextSearchState();
+  _WorkoutPlanFinderTextSearchState createState() =>
+      _WorkoutPlanFinderTextSearchState();
 }
 
-class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
+class _WorkoutPlanFinderTextSearchState
+    extends State<WorkoutPlanFinderTextSearch> {
   String _searchString = '';
   late FocusNode _focusNode;
 
-  /// 0 is 'Your Workouts', 1 is 'Public Workouts'
+  /// 0 is 'Your WorkoutPlans', 1 is 'Public WorkoutPlans'
   late int _activePageIndex;
   late PageController _pageController;
-  List<Workout> _filteredUserWorkouts = [];
+  List<WorkoutPlan> _filteredUserWorkoutPlans = [];
 
   /// Handles retrieving full workout objects from the API when the user presses submit (search) on the keyboard.
-  late TextSearchBloc<Workout> _workoutsTextSearchBloc;
+  late TextSearchBloc<WorkoutPlan> _workoutPlansTextSearchBloc;
 
   /// Handles retrieving just workout names (similar to a suggestions list) as the user is typing their search query.
-  late TextSearchBloc<TextSearchResult> _workoutNamesTextSearchBloc;
+  late TextSearchBloc<TextSearchResult> _workoutPlanNamesTextSearchBloc;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.initialPageIndex);
     _activePageIndex = widget.initialPageIndex;
-    _workoutsTextSearchBloc =
-        TextSearchBloc<Workout>(context, TextSearchType.workout);
-    _workoutNamesTextSearchBloc =
-        TextSearchBloc<TextSearchResult>(context, TextSearchType.workoutName);
+    _workoutPlansTextSearchBloc =
+        TextSearchBloc<WorkoutPlan>(context, TextSearchType.workoutPlan);
+    _workoutPlanNamesTextSearchBloc = TextSearchBloc<TextSearchResult>(
+        context, TextSearchType.workoutPlanName);
 
     _focusNode = FocusNode();
     _focusNode.requestFocus();
@@ -70,23 +69,24 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
 
   /// Similar functionality to Apple Podcasts.
   /// Two responses.
-  /// 1. For users own workouts data is all client side so updates happen immediately on user input. Results displayed as cards.
-  /// 2 For public workouts. Search the API for workouts based on the search string.
-  /// While user is typing a list of workout titles (only) will display.
+  /// 1. For users own workoutPlans data is all client side so updates happen immediately on user input. Results displayed as cards.
+  /// 2 For public workoutPlans. Search the API for workoutPlans based on the search string.
+  /// While user is typing a list of workoutPlan titles (only) will display.
   void _handleSearchStringUpdate(String text) {
     setState(() => _searchString = text.toLowerCase());
     if (_searchString.length > 2) {
       if (_activePageIndex == 0) {
         setState(() {
-          _filteredUserWorkouts = TextSearchFilters.workoutsBySearchString(
-              widget.userWorkouts, _searchString);
+          _filteredUserWorkoutPlans =
+              TextSearchFilters.workoutPlansBySearchString(
+                  widget.userWorkoutPlans, _searchString);
         });
       } else if (_activePageIndex == 1) {
-        // Clear the previous Workout list search results. We revert now to text list while user is inputting text.
-        _workoutsTextSearchBloc.clear(gotoState: TextSearchState.loading);
+        // Clear the previous WorkoutPlan list search results. We revert now to text list while user is inputting text.
+        _workoutPlansTextSearchBloc.clear(gotoState: TextSearchState.loading);
 
         /// Call the api (debounced) and return a list of workout titles that match.
-        _workoutNamesTextSearchBloc.search(_searchString);
+        _workoutPlanNamesTextSearchBloc.search(_searchString);
       }
     }
   }
@@ -98,16 +98,16 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
     if (_activePageIndex == 1) {
       // Clear the text lists data so that when workout list data is returned is can be displayed.
       // Text name list data will always display if it is not empty.
-      _workoutNamesTextSearchBloc.clear(gotoState: TextSearchState.loading);
+      _workoutPlanNamesTextSearchBloc.clear(gotoState: TextSearchState.loading);
       // handle the full api search (debounced) and return a list of full workouts that match.
-      _workoutsTextSearchBloc.search(text.toLowerCase());
+      _workoutPlansTextSearchBloc.search(text.toLowerCase());
     }
   }
 
   @override
   void dispose() {
-    _workoutsTextSearchBloc.dispose();
-    _workoutNamesTextSearchBloc.dispose();
+    _workoutPlansTextSearchBloc.dispose();
+    _workoutPlanNamesTextSearchBloc.dispose();
     _focusNode.dispose();
     _pageController.dispose();
     super.dispose();
@@ -127,8 +127,8 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                     padding: const EdgeInsets.symmetric(vertical: 3.0),
                     child: MyCupertinoSearchTextField(
                       placeholder: _activePageIndex == 0
-                          ? 'Search your workouts'
-                          : 'Search all workouts',
+                          ? 'Search your plans'
+                          : 'Search all plans',
                       focusNode: _focusNode,
                       onChanged: _handleSearchStringUpdate,
                       onSubmitted: _handleSearchSubmit,
@@ -148,8 +148,8 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                   value: _activePageIndex,
                   updateValue: _updatePageIndex,
                   children: {
-                    0: MyText('Your Workouts'),
-                    1: MyText('All Workouts'),
+                    0: MyText('Your Plans'),
+                    1: MyText('All Plans'),
                   }),
             ),
           ),
@@ -159,15 +159,14 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
             controller: _pageController,
             children: [
               _searchString.length > 2
-                  ? _filteredUserWorkouts.isEmpty
+                  ? _filteredUserWorkoutPlans.isEmpty
                       ? Center(
                           child: MyText(
                           'No results.',
                           subtext: true,
                         ))
-                      : YourFilteredWorkoutsList(
-                          selectWorkout: widget.selectWorkout,
-                          workouts: _filteredUserWorkouts)
+                      : YourFilteredWorkoutPlansList(
+                          workoutPlans: _filteredUserWorkoutPlans)
                   : Center(
                       child: MyText(
                       'Enter at least 3 characters.',
@@ -177,18 +176,19 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                   ? StreamBuilder<TextSearchState>(
                       initialData: TextSearchState.empty,
                       stream: StreamGroup.merge([
-                        _workoutsTextSearchBloc.state,
-                        _workoutNamesTextSearchBloc.state
+                        _workoutPlansTextSearchBloc.state,
+                        _workoutPlanNamesTextSearchBloc.state
                       ]),
                       builder: (context, stateSnapshot) {
-                        return StreamBuilder<List<Workout>>(
-                            initialData: <Workout>[],
-                            stream: _workoutsTextSearchBloc.results,
-                            builder: (context, workoutsSnapshot) {
+                        return StreamBuilder<List<WorkoutPlan>>(
+                            initialData: <WorkoutPlan>[],
+                            stream: _workoutPlansTextSearchBloc.results,
+                            builder: (context, workoutPlansSnapshot) {
                               return StreamBuilder<List<TextSearchResult>>(
                                   initialData: <TextSearchResult>[],
-                                  stream: _workoutNamesTextSearchBloc.results,
-                                  builder: (context, workoutNamesSnapshot) {
+                                  stream:
+                                      _workoutPlanNamesTextSearchBloc.results,
+                                  builder: (context, workoutPlanNamesSnapshot) {
                                     // Handle state.
                                     if (stateSnapshot.data ==
                                         TextSearchState.error) {
@@ -212,23 +212,24 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                                     } else {
                                       // Handle data
                                       // Always show names list if it is not empty
-                                      if (workoutNamesSnapshot
+                                      if (workoutPlanNamesSnapshot
                                           .data!.isNotEmpty) {
                                         return FadeIn(
                                           child: WorkoutFinderTextResultsNames(
-                                            results: workoutNamesSnapshot.data!,
+                                            results:
+                                                workoutPlanNamesSnapshot.data!,
                                             searchString: _searchString,
-                                            searchWorkoutName:
+                                            searchWorkoutPlanName:
                                                 _handleSearchSubmit,
                                           ),
                                         );
-                                      } else if (workoutsSnapshot
+                                      } else if (workoutPlansSnapshot
                                           .data!.isNotEmpty) {
                                         // Or show workouts list if not empty.
                                         return FadeIn(
-                                          child: YourFilteredWorkoutsList(
-                                            workouts: workoutsSnapshot.data!,
-                                            selectWorkout: widget.selectWorkout,
+                                          child: YourFilteredWorkoutPlansList(
+                                            workoutPlans:
+                                                workoutPlansSnapshot.data!,
                                           ),
                                         );
                                       } else {
@@ -258,14 +259,15 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
 
 /// Text only list of names being returned from the api based on the user input.
 /// On press of the text result we set the search string to the exact name of the search string and then run a text search returning full workout objects.
+/// !!!!Same functionality as [WorkoutFinder] so importing rather than duplicating!!!!
 class WorkoutFinderTextResultsNames extends StatelessWidget {
   final List<TextSearchResult> results;
   final String searchString;
-  final void Function(String name) searchWorkoutName;
+  final void Function(String name) searchWorkoutPlanName;
   WorkoutFinderTextResultsNames(
       {required this.results,
       required this.searchString,
-      required this.searchWorkoutName});
+      required this.searchWorkoutPlanName});
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +275,7 @@ class WorkoutFinderTextResultsNames extends StatelessWidget {
         shrinkWrap: true,
         itemCount: results.length,
         itemBuilder: (c, i) => GestureDetector(
-              onTap: () => searchWorkoutName(results[i].name),
+              onTap: () => searchWorkoutPlanName(results[i].name),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 child: Container(
