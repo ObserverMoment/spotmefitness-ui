@@ -33,10 +33,10 @@ class WorkoutFinderPage extends StatelessWidget {
   final void Function(Workout workout)? selectWorkout;
 
   /// Rather than 'your workouts' - users client side plans list.
-  // https://github.com/Milad-Akarie/auto_route_library/issues/404
+  /// https://github.com/Milad-Akarie/auto_route_library/issues/404
+  /// Re [initialOpenPublicTab]: nullable route args.
   final bool? initialOpenPublicTab;
-  const WorkoutFinderPage(
-      {this.selectWorkout, this.initialOpenPublicTab = false});
+  const WorkoutFinderPage({this.selectWorkout, this.initialOpenPublicTab});
 
   Widget _loadingIndicator() => CupertinoPageScaffold(
       navigationBar: BorderlessNavBar(
@@ -65,7 +65,7 @@ class WorkoutFinderPage extends StatelessWidget {
 
                 return WorkoutFinderPageUI(
                   selectWorkout: selectWorkout,
-                  initialOpenPublicTab: initialOpenPublicTab!,
+                  initialOpenPublicTab: initialOpenPublicTab ?? false,
                   userWorkouts: [...userWorkouts, ...savedWorkouts]
                       .reversed
                       .toSet()

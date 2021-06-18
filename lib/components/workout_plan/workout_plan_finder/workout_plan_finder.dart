@@ -29,7 +29,8 @@ import 'package:json_annotation/json_annotation.dart' as json;
 /// Client side the user can filter their created plans and their saved plans. Via the api their can filter public plans.
 class WorkoutPlanFinderPage extends StatelessWidget {
   /// Rather than 'your plans' - users client side plans list.
-  // https://github.com/Milad-Akarie/auto_route_library/issues/404
+  /// https://github.com/Milad-Akarie/auto_route_library/issues/404
+  /// Re [initialOpenPublicTab]: nullable route args.
   final bool? initialOpenPublicTab;
   const WorkoutPlanFinderPage({this.initialOpenPublicTab = false});
 
@@ -62,7 +63,7 @@ class WorkoutPlanFinderPage extends StatelessWidget {
                 return WorkoutPlanFinderPageUI(
                   userPlans:
                       [...userPlans, ...savedPlans].reversed.toSet().toList(),
-                  initialOpenPublicTab: initialOpenPublicTab!,
+                  initialOpenPublicTab: initialOpenPublicTab ?? false,
                 );
               });
         });
@@ -375,7 +376,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
                           duration: 100,
                           delay: index,
                           delayBasis: 20,
-                          child: FinderWorkoutPlanCard(
+                          child: WorkoutFinderWorkoutPlanCard(
                             workoutPlan: workoutPlan,
                           ),
                         ),

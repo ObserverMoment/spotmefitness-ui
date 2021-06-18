@@ -32,6 +32,12 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
   late DateTime _focusedDay;
   CalendarFormat _calendarFormat = CalendarFormat.week;
 
+  // https://github.com/aleksanderwozniak/table_calendar/issues/498
+  final BoxDecoration kDefaultDecoration = BoxDecoration(
+      shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10));
+
+  final kBoxDecorationRadius = BorderRadius.circular(10);
+
   @override
   void initState() {
     super.initState();
@@ -183,14 +189,17 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                                 markerDecoration: const BoxDecoration(
                                     color: Styles.colorFour,
                                     shape: BoxShape.circle),
+                                // https://github.com/aleksanderwozniak/table_calendar/issues/498
+                                defaultDecoration: kDefaultDecoration,
+                                weekendDecoration: kDefaultDecoration,
                                 selectedDecoration: BoxDecoration(
                                     color: context.theme.primary,
                                     shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10)),
+                                    borderRadius: kBoxDecorationRadius),
                                 todayDecoration: BoxDecoration(
                                     border: Border.all(color: Styles.colorOne),
                                     shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10)),
+                                    borderRadius: kBoxDecorationRadius),
                                 weekendTextStyle: primaryTextStyle,
                                 selectedTextStyle: primaryTextStyle.copyWith(
                                     color: context.theme.background,

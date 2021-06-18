@@ -33,13 +33,15 @@ class YourFilteredWorkoutPlansList extends StatelessWidget {
                       sizeFraction: 0.7,
                       curve: Curves.easeInOut,
                       animation: animation,
-                      child: FinderWorkoutPlanCard(workoutPlan: workoutPlan),
+                      child: WorkoutFinderWorkoutPlanCard(
+                          workoutPlan: workoutPlan),
                     ),
                 removeItemBuilder:
                     (context, animation, WorkoutPlan oldWorkoutPlan) {
                   return FadeTransition(
                     opacity: animation,
-                    child: FinderWorkoutPlanCard(workoutPlan: oldWorkoutPlan),
+                    child: WorkoutFinderWorkoutPlanCard(
+                        workoutPlan: oldWorkoutPlan),
                   );
                 },
                 areItemsTheSame: (a, b) => a == b);
