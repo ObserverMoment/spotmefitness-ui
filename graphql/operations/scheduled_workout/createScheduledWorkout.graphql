@@ -1,9 +1,6 @@
 mutation createScheduledWorkout($data: CreateScheduledWorkoutInput!) {
   createScheduledWorkout(data: $data) {
-    __typename
-    id
-    scheduledAt
-    note
+    ...ScheduledWorkout
     Workout {
       ...Workout
       User {

@@ -6,6 +6,14 @@ fragment BodyArea on BodyArea {
   upperLower
 }
 
+fragment Collection on Collection {
+  __typename
+  id
+  createdAt
+  name
+  description
+}
+
 fragment Equipment on Equipment {
   __typename
   id
@@ -32,20 +40,21 @@ fragment Move on Move {
   validRepTypes
 }
 
-fragment Collection on Collection {
-  __typename
-  id
-  createdAt
-  name
-  description
-}
-
 fragment MoveType on MoveType {
   __typename
   id
   name
   description
   imageUri
+}
+
+fragment ScheduledWorkout on ScheduledWorkout {
+  __typename
+  id
+  scheduledAt
+  note
+  workoutPlanEnrolmentId
+  workoutPlanDayWorkoutId
 }
 
 fragment User on User {
@@ -59,6 +68,33 @@ fragment User on User {
   introVideoUri
   introVideoThumbUri
   gender
+}
+
+fragment UserBenchmark on UserBenchmark {
+  __typename
+  id
+  createdAt
+  lastEntryAt
+  name
+  description
+  reps
+  repType
+  load
+  loadUnit
+  timeUnit
+  distanceUnit
+  benchmarkType
+}
+
+fragment UserBenchmarkEntry on UserBenchmarkEntry {
+  __typename
+  id
+  createdAt
+  completedOn
+  score
+  note
+  videoUri
+  videoThumbUri
 }
 
 fragment UserPublicProfile on UserPublicProfile {
@@ -100,31 +136,4 @@ fragment UserSummary on UserSummary {
   tagline
   countryCode
   townCity
-}
-
-fragment UserBenchmark on UserBenchmark {
-  __typename
-  id
-  createdAt
-  lastEntryAt
-  name
-  description
-  reps
-  repType
-  load
-  loadUnit
-  timeUnit
-  distanceUnit
-  benchmarkType
-}
-
-fragment UserBenchmarkEntry on UserBenchmarkEntry {
-  __typename
-  id
-  createdAt
-  completedOn
-  score
-  note
-  videoUri
-  videoThumbUri
 }

@@ -228,6 +228,8 @@ input CreateScheduledWorkoutInput {
   note: String
   Workout: ConnectRelationInput!
   GymProfile: ConnectRelationInput
+  WorkoutPlanEnrolment: ConnectRelationInput
+  WorkoutPlanDayWorkout: ConnectRelationInput
 }
 
 input CreateUserBenchmarkEntryInput {
@@ -674,6 +676,8 @@ type ScheduledWorkout {
   Workout: Workout
   LoggedWorkout: LoggedWorkout
   GymProfile: GymProfile
+  workoutPlanEnrolmentId: ID
+  workoutPlanDayWorkoutId: ID
 }
 
 type SortPositionUpdated {
@@ -806,6 +810,8 @@ input UpdateScheduledWorkoutInput {
   Workout: ConnectRelationInput
   LoggedWorkout: ConnectRelationInput
   GymProfile: ConnectRelationInput
+  WorkoutPlanEnrolment: ConnectRelationInput
+  WorkoutPlanDayWorkout: ConnectRelationInput
 }
 
 input UpdateSortPositionInput {

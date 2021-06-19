@@ -1,9 +1,6 @@
 mutation updateScheduledWorkout($data: UpdateScheduledWorkoutInput!) {
   updateScheduledWorkout(data: $data) {
-    __typename
-    id
-    scheduledAt
-    note
+    ...ScheduledWorkout
     Workout {
       ...Workout
       User {

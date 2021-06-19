@@ -1,9 +1,6 @@
 query userScheduledWorkouts {
   userScheduledWorkouts {
-    __typename
-    id
-    scheduledAt
-    note
+    ...ScheduledWorkout
     Workout {
       ...Workout
       User {

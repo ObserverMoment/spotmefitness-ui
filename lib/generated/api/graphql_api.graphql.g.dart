@@ -4302,6 +4302,8 @@ ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
     ..scheduledAt =
         fromGraphQLDateTimeToDartDateTime(json['scheduledAt'] as int)
     ..note = json['note'] as String?
+    ..workoutPlanEnrolmentId = json['workoutPlanEnrolmentId'] as String?
+    ..workoutPlanDayWorkoutId = json['workoutPlanDayWorkoutId'] as String?
     ..workout = json['Workout'] == null
         ? null
         : Workout.fromJson(json['Workout'] as Map<String, dynamic>)
@@ -4320,6 +4322,8 @@ Map<String, dynamic> _$ScheduledWorkoutToJson(ScheduledWorkout instance) =>
       'id': instance.id,
       'scheduledAt': fromDartDateTimeToGraphQLDateTime(instance.scheduledAt),
       'note': instance.note,
+      'workoutPlanEnrolmentId': instance.workoutPlanEnrolmentId,
+      'workoutPlanDayWorkoutId': instance.workoutPlanDayWorkoutId,
       'Workout': instance.workout?.toJson(),
       'LoggedWorkoutSummary': instance.loggedWorkoutSummary?.toJson(),
       'GymProfile': instance.gymProfile?.toJson(),
@@ -4357,6 +4361,14 @@ UpdateScheduledWorkoutInput _$UpdateScheduledWorkoutInputFromJson(
         ? null
         : ConnectRelationInput.fromJson(
             json['GymProfile'] as Map<String, dynamic>),
+    workoutPlanEnrolment: json['WorkoutPlanEnrolment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutPlanEnrolment'] as Map<String, dynamic>),
+    workoutPlanDayWorkout: json['WorkoutPlanDayWorkout'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutPlanDayWorkout'] as Map<String, dynamic>),
   );
 }
 
@@ -4370,6 +4382,8 @@ Map<String, dynamic> _$UpdateScheduledWorkoutInputToJson(
       'Workout': instance.workout?.toJson(),
       'LoggedWorkout': instance.loggedWorkout?.toJson(),
       'GymProfile': instance.gymProfile?.toJson(),
+      'WorkoutPlanEnrolment': instance.workoutPlanEnrolment?.toJson(),
+      'WorkoutPlanDayWorkout': instance.workoutPlanDayWorkout?.toJson(),
     };
 
 CreateScheduledWorkout$Mutation _$CreateScheduledWorkout$MutationFromJson(
@@ -4396,6 +4410,14 @@ CreateScheduledWorkoutInput _$CreateScheduledWorkoutInputFromJson(
         ? null
         : ConnectRelationInput.fromJson(
             json['GymProfile'] as Map<String, dynamic>),
+    workoutPlanEnrolment: json['WorkoutPlanEnrolment'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutPlanEnrolment'] as Map<String, dynamic>),
+    workoutPlanDayWorkout: json['WorkoutPlanDayWorkout'] == null
+        ? null
+        : ConnectRelationInput.fromJson(
+            json['WorkoutPlanDayWorkout'] as Map<String, dynamic>),
   );
 }
 
@@ -4406,6 +4428,8 @@ Map<String, dynamic> _$CreateScheduledWorkoutInputToJson(
       'note': instance.note,
       'Workout': instance.workout.toJson(),
       'GymProfile': instance.gymProfile?.toJson(),
+      'WorkoutPlanEnrolment': instance.workoutPlanEnrolment?.toJson(),
+      'WorkoutPlanDayWorkout': instance.workoutPlanDayWorkout?.toJson(),
     };
 
 UserScheduledWorkouts$Query _$UserScheduledWorkouts$QueryFromJson(
