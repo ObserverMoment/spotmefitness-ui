@@ -8,6 +8,7 @@ const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 const kAssumedDefaultTopNotchHeight = 54.0;
 const kAssumedFloatingButtonHeight = 72.0;
 const kBottomNavBarHeight = 68.0;
+const kDockedAudioPlayerHeight = 64.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
 const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';

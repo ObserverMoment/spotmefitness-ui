@@ -161,8 +161,13 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   final String name;
   final int? timecap; // Seconds
   final FONTSIZE fontSize;
+  final bool hasClassVideo;
+  final bool hasClassAudio;
   WorkoutSectionTypeTag(this.name,
-      {this.timecap, this.fontSize = FONTSIZE.SMALL});
+      {this.timecap,
+      this.fontSize = FONTSIZE.SMALL,
+      this.hasClassVideo = false,
+      this.hasClassAudio = false});
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +188,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
               MyText(
                 name,
                 weight: FontWeight.bold,
-                lineHeight: 1.2,
+                lineHeight: 1.3,
                 size: fontSize,
                 color: _color,
                 textAlign: TextAlign.center,
@@ -196,7 +201,25 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   size: fontSize,
                   color: _color,
                   textAlign: TextAlign.center,
-                )
+                ),
+              if (hasClassVideo)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    CupertinoIcons.film_fill,
+                    size: 18,
+                    color: _color,
+                  ),
+                ),
+              if (hasClassAudio)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    CupertinoIcons.volume_up,
+                    size: 18,
+                    color: _color,
+                  ),
+                ),
             ],
           ),
         ),

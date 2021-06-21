@@ -177,6 +177,8 @@ class WorkoutCard extends StatelessWidget {
                         Utils.textNotNull(section.name)
                             ? section.name!
                             : section.workoutSectionType.name,
+                        hasClassVideo: Utils.textNotNull(section.classVideoUri),
+                        hasClassAudio: Utils.textNotNull(section.classAudioUri),
                         timecap: _sectionDuration(section)))
                     .toList(),
               ]),

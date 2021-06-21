@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-enum FONTSIZE { TINY, SMALL, MAIN, BIG, LARGE, HUGE, TABTITLE, DISPLAY }
+enum FONTSIZE { TINY, SMALL, MAIN, BIG, LARGE, HUGE, TABTITLE, DISPLAY, GIANT }
 
 const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.TINY: 11,
@@ -12,7 +12,8 @@ const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.LARGE: 20,
   FONTSIZE.HUGE: 24,
   FONTSIZE.TABTITLE: 29,
-  FONTSIZE.DISPLAY: 40
+  FONTSIZE.DISPLAY: 40,
+  FONTSIZE.GIANT: 50
 };
 
 class MyText extends StatelessWidget {

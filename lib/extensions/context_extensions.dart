@@ -61,10 +61,12 @@ extension BuildContextExtension on BuildContext {
       {String? title,
       Widget? content,
       bool useRootNavigator = false,
+      bool barrierDismissible = false,
       required List<CupertinoDialogAction> actions}) async {
     final BuildContext context = this;
     final T res = await showCupertinoDialog(
         useRootNavigator: useRootNavigator,
+        barrierDismissible: barrierDismissible,
         context: context,
         builder: (context) => CupertinoAlertDialog(
             title:

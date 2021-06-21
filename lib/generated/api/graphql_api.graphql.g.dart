@@ -3925,19 +3925,20 @@ Map<String, dynamic> _$UserBenchmarkById$QueryToJson(
       'userBenchmarkById': instance.userBenchmarkById.toJson(),
     };
 
-TextSearchWorkouts$Query _$TextSearchWorkouts$QueryFromJson(
+TextSearchWorkoutPlans$Query _$TextSearchWorkoutPlans$QueryFromJson(
     Map<String, dynamic> json) {
-  return TextSearchWorkouts$Query()
-    ..textSearchWorkouts = (json['textSearchWorkouts'] as List<dynamic>?)
-        ?.map((e) => Workout.fromJson(e as Map<String, dynamic>))
-        .toList();
+  return TextSearchWorkoutPlans$Query()
+    ..textSearchWorkoutPlans =
+        (json['textSearchWorkoutPlans'] as List<dynamic>?)
+            ?.map((e) => WorkoutPlan.fromJson(e as Map<String, dynamic>))
+            .toList();
 }
 
-Map<String, dynamic> _$TextSearchWorkouts$QueryToJson(
-        TextSearchWorkouts$Query instance) =>
+Map<String, dynamic> _$TextSearchWorkoutPlans$QueryToJson(
+        TextSearchWorkoutPlans$Query instance) =>
     <String, dynamic>{
-      'textSearchWorkouts':
-          instance.textSearchWorkouts?.map((e) => e.toJson()).toList(),
+      'textSearchWorkoutPlans':
+          instance.textSearchWorkoutPlans?.map((e) => e.toJson()).toList(),
     };
 
 TextSearchResult _$TextSearchResultFromJson(Map<String, dynamic> json) {
@@ -3952,6 +3953,37 @@ Map<String, dynamic> _$TextSearchResultToJson(TextSearchResult instance) =>
       'id': instance.id,
       '__typename': instance.$$typename,
       'name': instance.name,
+    };
+
+TextSearchWorkoutPlanNames$Query _$TextSearchWorkoutPlanNames$QueryFromJson(
+    Map<String, dynamic> json) {
+  return TextSearchWorkoutPlanNames$Query()
+    ..textSearchWorkoutPlanNames =
+        (json['textSearchWorkoutPlanNames'] as List<dynamic>?)
+            ?.map((e) => TextSearchResult.fromJson(e as Map<String, dynamic>))
+            .toList();
+}
+
+Map<String, dynamic> _$TextSearchWorkoutPlanNames$QueryToJson(
+        TextSearchWorkoutPlanNames$Query instance) =>
+    <String, dynamic>{
+      'textSearchWorkoutPlanNames':
+          instance.textSearchWorkoutPlanNames?.map((e) => e.toJson()).toList(),
+    };
+
+TextSearchWorkouts$Query _$TextSearchWorkouts$QueryFromJson(
+    Map<String, dynamic> json) {
+  return TextSearchWorkouts$Query()
+    ..textSearchWorkouts = (json['textSearchWorkouts'] as List<dynamic>?)
+        ?.map((e) => Workout.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$TextSearchWorkouts$QueryToJson(
+        TextSearchWorkouts$Query instance) =>
+    <String, dynamic>{
+      'textSearchWorkouts':
+          instance.textSearchWorkouts?.map((e) => e.toJson()).toList(),
     };
 
 TextSearchWorkoutNames$Query _$TextSearchWorkoutNames$QueryFromJson(
@@ -4744,38 +4776,6 @@ WorkoutById$Query _$WorkoutById$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
     <String, dynamic>{
       'workoutById': instance.workoutById.toJson(),
-    };
-
-TextSearchWorkoutPlans$Query _$TextSearchWorkoutPlans$QueryFromJson(
-    Map<String, dynamic> json) {
-  return TextSearchWorkoutPlans$Query()
-    ..textSearchWorkoutPlans =
-        (json['textSearchWorkoutPlans'] as List<dynamic>?)
-            ?.map((e) => WorkoutPlan.fromJson(e as Map<String, dynamic>))
-            .toList();
-}
-
-Map<String, dynamic> _$TextSearchWorkoutPlans$QueryToJson(
-        TextSearchWorkoutPlans$Query instance) =>
-    <String, dynamic>{
-      'textSearchWorkoutPlans':
-          instance.textSearchWorkoutPlans?.map((e) => e.toJson()).toList(),
-    };
-
-TextSearchWorkoutPlanNames$Query _$TextSearchWorkoutPlanNames$QueryFromJson(
-    Map<String, dynamic> json) {
-  return TextSearchWorkoutPlanNames$Query()
-    ..textSearchWorkoutPlanNames =
-        (json['textSearchWorkoutPlanNames'] as List<dynamic>?)
-            ?.map((e) => TextSearchResult.fromJson(e as Map<String, dynamic>))
-            .toList();
-}
-
-Map<String, dynamic> _$TextSearchWorkoutPlanNames$QueryToJson(
-        TextSearchWorkoutPlanNames$Query instance) =>
-    <String, dynamic>{
-      'textSearchWorkoutPlanNames':
-          instance.textSearchWorkoutPlanNames?.map((e) => e.toJson()).toList(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
@@ -5897,6 +5897,32 @@ Map<String, dynamic> _$UserBenchmarkByIdArgumentsToJson(
       'id': instance.id,
     };
 
+TextSearchWorkoutPlansArguments _$TextSearchWorkoutPlansArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return TextSearchWorkoutPlansArguments(
+    text: json['text'] as String,
+  );
+}
+
+Map<String, dynamic> _$TextSearchWorkoutPlansArgumentsToJson(
+        TextSearchWorkoutPlansArguments instance) =>
+    <String, dynamic>{
+      'text': instance.text,
+    };
+
+TextSearchWorkoutPlanNamesArguments
+    _$TextSearchWorkoutPlanNamesArgumentsFromJson(Map<String, dynamic> json) {
+  return TextSearchWorkoutPlanNamesArguments(
+    text: json['text'] as String,
+  );
+}
+
+Map<String, dynamic> _$TextSearchWorkoutPlanNamesArgumentsToJson(
+        TextSearchWorkoutPlanNamesArguments instance) =>
+    <String, dynamic>{
+      'text': instance.text,
+    };
+
 TextSearchWorkoutsArguments _$TextSearchWorkoutsArgumentsFromJson(
     Map<String, dynamic> json) {
   return TextSearchWorkoutsArguments(
@@ -6142,30 +6168,4 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
-    };
-
-TextSearchWorkoutPlansArguments _$TextSearchWorkoutPlansArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return TextSearchWorkoutPlansArguments(
-    text: json['text'] as String,
-  );
-}
-
-Map<String, dynamic> _$TextSearchWorkoutPlansArgumentsToJson(
-        TextSearchWorkoutPlansArguments instance) =>
-    <String, dynamic>{
-      'text': instance.text,
-    };
-
-TextSearchWorkoutPlanNamesArguments
-    _$TextSearchWorkoutPlanNamesArgumentsFromJson(Map<String, dynamic> json) {
-  return TextSearchWorkoutPlanNamesArguments(
-    text: json['text'] as String,
-  );
-}
-
-Map<String, dynamic> _$TextSearchWorkoutPlanNamesArgumentsToJson(
-        TextSearchWorkoutPlanNamesArguments instance) =>
-    <String, dynamic>{
-      'text': instance.text,
     };

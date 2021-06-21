@@ -443,7 +443,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                               Row(
                                 children: [
                                   DoItButton(
-                                      onPressed: () => print('do workout')),
+                                      onPressed: () => context.navigateTo(
+                                          DoWorkoutWrapperRoute(
+                                              id: widget.id))),
                                   CupertinoButton(
                                       pressedOpacity: 1.0,
                                       padding: EdgeInsets.zero,
