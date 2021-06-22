@@ -195,7 +195,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
               ),
               if (timecap != null)
                 MyText(
-                  ' - ${timecap! ~/ 60} mins',
+                  ' - ${(timecap! / 60).round()} mins',
                   weight: FontWeight.bold,
                   lineHeight: 1.15,
                   size: fontSize,

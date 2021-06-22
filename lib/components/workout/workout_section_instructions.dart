@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// Builds a sentence explaining if the section as a whole should be repeated, how many times, and for how long.
 /// Based on [WorkoutSectionType], [Rounds], [Timecap]
-/// E.g AMRAP: Repeat everything as many times as you can for [timecap].
+/// E.g AMRAP: Repeat this as many times as you can for [timecap].
 class WorkoutSectionInstructions extends StatelessWidget {
   final String typeName;
   final int rounds;
@@ -26,15 +26,15 @@ class WorkoutSectionInstructions extends StatelessWidget {
       case kEMOMName:
       case kHIITCircuitName:
       case kTabataName:
-        return 'Repeat everything ${_getRoundsText()}.';
+        return 'Repeat this ${_getRoundsText()}.';
       case kForTimeName:
-        return 'Repeat everything ${_getRoundsText()}, as fast as possible.';
+        return 'Repeat this ${_getRoundsText()}, as fast as possible.';
       case kAMRAPName:
-        return 'Repeat everything as many times as possible in ${timecap!.secondsToTimeDisplay()}.';
+        return 'Repeat this as many times as possible in ${timecap!.secondsToTimeDisplay()}.';
       case kLastStandingName:
         return timecap != null
-            ? 'Repeat everything within the timecaps for ${timecap!.secondsToTimeDisplay()}...if you can!'
-            : 'Repeat everything within the timecaps for as long as you can!';
+            ? 'Repeat this within the timecaps for ${timecap!.secondsToTimeDisplay()}...if you can!'
+            : 'Repeat this within the timecaps for as long as you can!';
       default:
         throw Exception(
             'WorkoutSectionInstructions: $typeName is not a valid typename.');

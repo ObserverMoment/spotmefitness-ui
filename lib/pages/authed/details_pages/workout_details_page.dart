@@ -298,7 +298,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 MyText('${workout.contentAccessScope.display} workout',
                     color: Styles.colorTwo,
                     weight: FontWeight.bold,
-                    size: FONTSIZE.SMALL)
+                    size: FONTSIZE.TINY)
             ],
           ),
         ),

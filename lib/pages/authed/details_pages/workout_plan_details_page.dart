@@ -290,7 +290,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                 MyText('${workoutPlan.contentAccessScope.display} plan',
                     color: Styles.colorTwo,
                     weight: FontWeight.bold,
-                    size: FONTSIZE.SMALL)
+                    size: FONTSIZE.TINY)
             ],
           ),
         ),
