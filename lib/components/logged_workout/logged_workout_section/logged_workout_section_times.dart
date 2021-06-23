@@ -23,7 +23,7 @@ class LoggedWorkoutSectionTimes extends StatefulWidget {
 }
 
 class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
-  bool _showSetlapTimes = false;
+  bool _showSetLapTimes = false;
 
   void _updateSectionTimecap(
       LoggedWorkoutSection loggedWorkoutSection, Duration duration) {
@@ -42,12 +42,14 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
     final updated =
         LoggedWorkoutSection.fromJson(loggedWorkoutSection.toJson());
 
-    final prevRoundIndexData =
-        updated.roundTimesMs[roundIndex.toString()] ?? {};
+    final prevRoundData = updated.lapTimesMs[roundIndex.toString()] ?? {};
 
-    updated.roundTimesMs[roundIndex.toString()] = {
-      ...prevRoundIndexData,
-      'time': duration.inMilliseconds,
+    updated.lapTimesMs = {
+      ...updated.lapTimesMs,
+      roundIndex.toString(): {
+        ...prevRoundData,
+        'lapTimeMs': duration.inMilliseconds
+      }
     };
 
     context
@@ -89,8 +91,8 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
                 Row(
                   children: [
                     MyCupertinoSwitch(
-                      value: _showSetlapTimes,
-                      onChanged: (b) => setState(() => _showSetlapTimes = b),
+                      value: _showSetLapTimes,
+                      onChanged: (b) => setState(() => _showSetLapTimes = b),
                     ),
                     InfoPopupButton(
                       pageTitle: 'Lap Times',
@@ -109,7 +111,7 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
               children: List.generate(loggedWorkoutSection.roundsCompleted,
                   (sectionRound) {
                 final sectionRoundTimeMs = loggedWorkoutSection
-                    .roundTimesMs[sectionRound.toString()]?['time'];
+                    .lapTimesMs[sectionRound.toString()]?['lapTimeMs'];
 
                 final duration = sectionRoundTimeMs != null
                     ? Duration(milliseconds: sectionRoundTimeMs)
@@ -131,12 +133,12 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
                               subtext: true,
                             ),
                     ),
-                    if (_showSetlapTimes)
+                    if (_showSetLapTimes)
                       FadeIn(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 32.0),
-                          child: SetRoundsLogTimes(
-                              loggedWorkoutSection, sectionRound),
+                          child:
+                              SetLapTimes(loggedWorkoutSection, sectionRound),
                         ),
                       ),
                     HorizontalLine()
@@ -151,26 +153,26 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
   }
 }
 
-class SetRoundsLogTimes extends StatelessWidget {
+class SetLapTimes extends StatelessWidget {
   final LoggedWorkoutSection loggedWorkoutSection;
   final int sectionRoundNumber;
-  SetRoundsLogTimes(this.loggedWorkoutSection, this.sectionRoundNumber);
+  SetLapTimes(this.loggedWorkoutSection, this.sectionRoundNumber);
 
-  void _updateSetRoundTime(
-      BuildContext context, String setId, int roundNumber, Duration duration) {
+  void _updateSetLapTime(
+      BuildContext context, String setId, Duration duration) {
     final updated =
         LoggedWorkoutSection.fromJson(loggedWorkoutSection.toJson());
 
-    final prevRound = updated.roundTimesMs[sectionRoundNumber.toString()] ?? {};
-    final prevSet = prevRound?[setId] ?? {};
+    final roundData = updated.lapTimesMs[sectionRoundNumber.toString()] ?? {};
+    final setData = roundData?['setLapTimesMs'] ?? {};
 
-    updated.roundTimesMs[sectionRoundNumber.toString()] = {
-      ...prevRound,
-      setId: {...prevSet, roundNumber.toString(): duration.inMilliseconds}
+    updated.lapTimesMs = {
+      ...updated.lapTimesMs,
+      sectionRoundNumber.toString(): {
+        ...roundData,
+        'setLapTimesMs': {...setData, setId: duration.inMilliseconds}
+      }
     };
-
-    updated.roundTimesMs[sectionRoundNumber.toString()][setId]
-        [roundNumber.toString()] = duration.inMilliseconds;
 
     context
         .read<LoggedWorkoutCreatorBloc>()
@@ -188,45 +190,26 @@ class SetRoundsLogTimes extends StatelessWidget {
       itemCount: sortedSets.length,
       itemBuilder: (c, i) {
         final workoutSet = sortedSets[i];
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MyText('Set ${workoutSet.sortPosition + 1}'),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: ListView(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: List.generate(
-                  workoutSet.roundsCompleted,
-                  (setRound) {
-                    final setRoundTimeMs = loggedWorkoutSection
-                            .roundTimesMs[sectionRoundNumber.toString()]
-                        ?[workoutSet.id]?[setRound.toString()];
+        final setLapTime =
+            loggedWorkoutSection.lapTimesMs[sectionRoundNumber.toString()]
+                ?['setLapTimesMs']?[workoutSet.id];
 
-                    final duration = setRoundTimeMs != null
-                        ? Duration(milliseconds: setRoundTimeMs)
-                        : null;
+        final duration =
+            setLapTime != null ? Duration(milliseconds: setLapTime) : null;
 
-                    return TappableRow(
-                      onTap: () => context.showBottomSheet(
-                          child: DurationPicker(
-                              duration: duration,
-                              updateDuration: (d) => _updateSetRoundTime(
-                                  context, workoutSet.id, setRound, d))),
-                      title: 'Round ${setRound + 1}',
-                      display: duration != null
-                          ? MyText(duration.compactDisplay())
-                          : MyText(
-                              'Add time...',
-                              subtext: true,
-                            ),
-                    );
-                  },
+        return TappableRow(
+          onTap: () => context.showBottomSheet(
+              child: DurationPicker(
+                  duration: duration,
+                  updateDuration: (d) =>
+                      _updateSetLapTime(context, workoutSet.id, d))),
+          title: 'Set ${workoutSet.sortPosition + 1}',
+          display: duration != null
+              ? MyText(duration.compactDisplay())
+              : MyText(
+                  'Add time...',
+                  subtext: true,
                 ),
-              ),
-            )
-          ],
         );
       },
     );

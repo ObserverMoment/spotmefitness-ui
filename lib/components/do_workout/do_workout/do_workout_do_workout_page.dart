@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_section.dart';
@@ -84,10 +84,12 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
     final sortedWorkoutSections = widget.workout.workoutSections
         .sortedBy<num>((wSection) => wSection.sortPosition);
 
-    return Provider<DoWorkoutBloc>(
+    final classAudioUri =
+        sortedWorkoutSections[_activeSectionPageIndex].classAudioUri;
+
+    return ChangeNotifierProvider<DoWorkoutBloc>(
         create: (context) =>
             DoWorkoutBloc(context: context, workout: widget.workout),
-        dispose: (context, bloc) => bloc.dispose(),
         child: Builder(
             builder: (context) => CupertinoPageScaffold(
                   child: SafeArea(
@@ -135,7 +137,11 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        bottom: kDockedAudioPlayerHeight),
+                                        bottom: Utils.textNotNull(
+                                      classAudioUri,
+                                    )
+                                            ? kDockedAudioPlayerHeight
+                                            : 0),
                                     child: PageView(
                                       controller: _sectionPageViewController,
                                       physics: NeverScrollableScrollPhysics(),
@@ -152,10 +158,12 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
                                   Positioned(
                                       bottom: 0,
                                       left: 0,
-                                      child: _DockedAudioPlayer(
-                                        classAudioUri: sortedWorkoutSections[
-                                                _activeSectionPageIndex]
-                                            .classAudioUri,
+                                      child: GrowInOut(
+                                        show: Utils.textNotNull(classAudioUri),
+                                        duration: kStandardAnimationDuration,
+                                        child: _DockedAudioPlayer(
+                                          classAudioUri: classAudioUri,
+                                        ),
                                       ))
                                 ],
                               ),
@@ -220,18 +228,14 @@ class _DockedAudioPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GrowInOut(
-      duration: kStandardAnimationDuration,
-      show: Utils.textNotNull(classAudioUri),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        color: Styles.infoBlue.withOpacity(0.1),
-        height: kDockedAudioPlayerHeight,
-        child: MyText(
-          'Spotify style audio player - auto plays in time with workout - only button is a mute button - animated playing icon when playing. If user not doing this section show message "audio will auto play when you are doing this section"',
-          maxLines: 3,
-          size: FONTSIZE.TINY,
-        ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Styles.infoBlue.withOpacity(0.1),
+      height: kDockedAudioPlayerHeight,
+      child: MyText(
+        'Spotify style audio player - auto plays in time with workout - only button is a mute button - animated playing icon when playing. If user not doing this section show message "audio will auto play when you are doing this section"',
+        maxLines: 3,
+        size: FONTSIZE.TINY,
       ),
     );
   }

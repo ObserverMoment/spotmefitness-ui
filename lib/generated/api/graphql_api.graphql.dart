@@ -314,7 +314,7 @@ mixin LoggedWorkoutSectionMixin {
   int? repScore;
   int? timeTakenMs;
   @JsonKey(fromJson: fromGraphQLJsonToDartMap, toJson: fromDartMapToGraphQLJson)
-  late Map roundTimesMs;
+  late Map lapTimesMs;
   late int sortPosition;
 }
 mixin LoggedWorkoutMixin {
@@ -2542,7 +2542,7 @@ class LoggedWorkoutSection extends JsonSerializable
         roundsCompleted,
         repScore,
         timeTakenMs,
-        roundTimesMs,
+        lapTimesMs,
         sortPosition,
         workoutSectionType,
         loggedWorkoutSets
@@ -2827,7 +2827,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
       required this.sortPosition,
       required this.roundsCompleted,
       this.timeTakenMs,
-      this.roundTimesMs,
+      this.lapTimesMs,
       this.repScore,
       this.timecap,
       required this.workoutSectionType,
@@ -2850,7 +2850,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
   @JsonKey(
       fromJson: fromGraphQLJsonToDartMapNullable,
       toJson: fromDartMapToGraphQLJsonNullable)
-  Map? roundTimesMs;
+  Map? lapTimesMs;
 
   int? repScore;
 
@@ -2869,7 +2869,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
         sortPosition,
         roundsCompleted,
         timeTakenMs,
-        roundTimesMs,
+        lapTimesMs,
         repScore,
         timecap,
         workoutSectionType,
@@ -4082,7 +4082,7 @@ class UpdateLoggedWorkoutSection extends JsonSerializable
         roundsCompleted,
         repScore,
         timeTakenMs,
-        roundTimesMs,
+        lapTimesMs,
         sortPosition,
         workoutSectionType
       ];
@@ -4116,7 +4116,7 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
       this.name,
       this.roundsCompleted,
       this.timeTakenMs,
-      this.roundTimesMs,
+      this.lapTimesMs,
       this.timecap,
       this.repScore,
       this.note});
@@ -4135,7 +4135,7 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
   @JsonKey(
       fromJson: fromGraphQLJsonToDartMapNullable,
       toJson: fromDartMapToGraphQLJsonNullable)
-  Map? roundTimesMs;
+  Map? lapTimesMs;
 
   int? timecap;
 
@@ -4149,7 +4149,7 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
         name,
         roundsCompleted,
         timeTakenMs,
-        roundTimesMs,
+        lapTimesMs,
         timecap,
         repScore,
         note
@@ -31723,7 +31723,7 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
+            name: NameNode(value: 'lapTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -32451,7 +32451,7 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
+            name: NameNode(value: 'lapTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -33222,7 +33222,7 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
+            name: NameNode(value: 'lapTimesMs'),
             alias: null,
             arguments: [],
             directives: [],
@@ -41457,7 +41457,7 @@ final UPDATE_LOGGED_WORKOUT_SECTION_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundTimesMs'),
+            name: NameNode(value: 'lapTimesMs'),
             alias: null,
             arguments: [],
             directives: [],

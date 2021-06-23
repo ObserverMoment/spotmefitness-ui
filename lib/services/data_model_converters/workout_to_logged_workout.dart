@@ -1,12 +1,15 @@
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uuid/uuid.dart';
 
 // /// Converts a workout logged workout by first converting each workout section to a logged workout section. The process of doing this depends on the type of workout section.
 LoggedWorkout workoutToLoggedWorkout(
     {Workout? workout, ScheduledWorkout? scheduledWorkout}) {
-  final name = workout?.name ?? 'Log ${DateTime.now().dateString}';
+  final name = Utils.textNotNull(workout?.name)
+      ? 'Log - ${workout?.name}'
+      : 'Log - ${DateTime.now().dateString}';
   return LoggedWorkout()
     ..id = 'temp - $name'
     ..completedOn = scheduledWorkout?.scheduledAt ?? DateTime.now()
@@ -29,7 +32,7 @@ List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
         ..loggedWorkoutSets = workoutSetsToLoggedWorkoutSets(ws.workoutSets)
             .sortedBy<num>((ws) => ws.sortPosition)
         ..roundsCompleted = ws.rounds
-        ..roundTimesMs = {}
+        ..lapTimesMs = {}
         ..timecap = ws.timecap
         ..sortPosition = ws.sortPosition
         ..workoutSectionType =

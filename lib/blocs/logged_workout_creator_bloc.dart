@@ -127,7 +127,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
                   // Not the original index, the index from within the selected sections at [includedSectionIds]
                   sortPosition: index,
                   roundsCompleted: section.roundsCompleted,
-                  roundTimesMs: section.roundTimesMs,
+                  lapTimesMs: section.lapTimesMs,
                   repScore: section.repScore,
                   timeTakenMs: section.timeTakenMs,
                   timecap: section.timecap,

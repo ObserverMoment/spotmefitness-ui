@@ -15,7 +15,7 @@ fragment LoggedWorkoutSection on LoggedWorkoutSection {
   roundsCompleted
   repScore
   timeTakenMs
-  roundTimesMs
+  lapTimesMs
   sortPosition
 }
 

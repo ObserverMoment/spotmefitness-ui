@@ -2000,7 +2000,7 @@ LoggedWorkoutSection _$LoggedWorkoutSectionFromJson(Map<String, dynamic> json) {
     ..roundsCompleted = json['roundsCompleted'] as int
     ..repScore = json['repScore'] as int?
     ..timeTakenMs = json['timeTakenMs'] as int?
-    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
+    ..lapTimesMs = fromGraphQLJsonToDartMap(json['lapTimesMs'])
     ..sortPosition = json['sortPosition'] as int
     ..workoutSectionType = WorkoutSectionType.fromJson(
         json['WorkoutSectionType'] as Map<String, dynamic>)
@@ -2020,7 +2020,7 @@ Map<String, dynamic> _$LoggedWorkoutSectionToJson(
       'roundsCompleted': instance.roundsCompleted,
       'repScore': instance.repScore,
       'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
+      'lapTimesMs': fromDartMapToGraphQLJson(instance.lapTimesMs),
       'sortPosition': instance.sortPosition,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
       'LoggedWorkoutSets':
@@ -2254,7 +2254,7 @@ CreateLoggedWorkoutSectionInLoggedWorkoutInput
     sortPosition: json['sortPosition'] as int,
     roundsCompleted: json['roundsCompleted'] as int,
     timeTakenMs: json['timeTakenMs'] as int?,
-    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
+    lapTimesMs: fromGraphQLJsonToDartMapNullable(json['lapTimesMs']),
     repScore: json['repScore'] as int?,
     timecap: json['timecap'] as int?,
     workoutSectionType: ConnectRelationInput.fromJson(
@@ -2274,7 +2274,7 @@ Map<String, dynamic> _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(
       'sortPosition': instance.sortPosition,
       'roundsCompleted': instance.roundsCompleted,
       'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
+      'lapTimesMs': fromDartMapToGraphQLJsonNullable(instance.lapTimesMs),
       'repScore': instance.repScore,
       'timecap': instance.timecap,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
@@ -3310,7 +3310,7 @@ UpdateLoggedWorkoutSection _$UpdateLoggedWorkoutSectionFromJson(
     ..roundsCompleted = json['roundsCompleted'] as int
     ..repScore = json['repScore'] as int?
     ..timeTakenMs = json['timeTakenMs'] as int?
-    ..roundTimesMs = fromGraphQLJsonToDartMap(json['roundTimesMs'])
+    ..lapTimesMs = fromGraphQLJsonToDartMap(json['lapTimesMs'])
     ..sortPosition = json['sortPosition'] as int
     ..workoutSectionType = WorkoutSectionType.fromJson(
         json['WorkoutSectionType'] as Map<String, dynamic>);
@@ -3327,7 +3327,7 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionToJson(
       'roundsCompleted': instance.roundsCompleted,
       'repScore': instance.repScore,
       'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJson(instance.roundTimesMs),
+      'lapTimesMs': fromDartMapToGraphQLJson(instance.lapTimesMs),
       'sortPosition': instance.sortPosition,
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
     };
@@ -3353,7 +3353,7 @@ UpdateLoggedWorkoutSectionInput _$UpdateLoggedWorkoutSectionInputFromJson(
     name: json['name'] as String?,
     roundsCompleted: json['roundsCompleted'] as int?,
     timeTakenMs: json['timeTakenMs'] as int?,
-    roundTimesMs: fromGraphQLJsonToDartMapNullable(json['roundTimesMs']),
+    lapTimesMs: fromGraphQLJsonToDartMapNullable(json['lapTimesMs']),
     timecap: json['timecap'] as int?,
     repScore: json['repScore'] as int?,
     note: json['note'] as String?,
@@ -3367,7 +3367,7 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionInputToJson(
       'name': instance.name,
       'roundsCompleted': instance.roundsCompleted,
       'timeTakenMs': instance.timeTakenMs,
-      'roundTimesMs': fromDartMapToGraphQLJsonNullable(instance.roundTimesMs),
+      'lapTimesMs': fromDartMapToGraphQLJsonNullable(instance.lapTimesMs),
       'timecap': instance.timecap,
       'repScore': instance.repScore,
       'note': instance.note,

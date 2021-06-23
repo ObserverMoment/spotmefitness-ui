@@ -1,5 +1,6 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uuid/uuid.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -11,6 +12,29 @@ class DefaultObjectfactory {
       ..id = 0.toString()
       ..name = 'Section'
       ..description = '';
+  }
+
+  static LoggedWorkout defaultLoggedWorkout({required Workout workout}) {
+    return LoggedWorkout()
+      ..$$typename = kLoggedWorkoutTypename
+      ..id = 'temp-$kLoggedWorkoutTypename:${Uuid().v1()}'
+      ..name = 'Log - ${workout.name}'
+      ..completedOn = DateTime.now()
+      ..loggedWorkoutSections = [];
+  }
+
+  static LoggedWorkoutSection defaultLoggedWorkoutSection(
+      {required WorkoutSection workoutSection}) {
+    return LoggedWorkoutSection()
+      ..$$typename = kLoggedWorkoutSectionTypename
+      ..id = 'temp-$kLoggedWorkoutSectionTypename:${Uuid().v1()}'
+      ..name = Utils.textNotNull(workoutSection.name)
+          ? 'Log - ${workoutSection.name}'
+          : 'Log - ${workoutSection.workoutSectionType.name}'
+      ..roundsCompleted = workoutSection.rounds
+      ..lapTimesMs = {}
+      ..workoutSectionType = workoutSection.workoutSectionType
+      ..loggedWorkoutSets = [];
   }
 
   static LoggedWorkoutSet defaultLoggedWorkoutSet({required int sortPosition}) {

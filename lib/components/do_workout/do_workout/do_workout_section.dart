@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_progress_summary.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,10 @@ class DoWorkoutSectionTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final getStopWatchTimerForSection =
         context.read<DoWorkoutBloc>().getStopWatchTimerForSection;
+
+    final completedSection =
+        context.select<DoWorkoutBloc, LoggedWorkoutSection?>(
+            (b) => b.completedSections[workoutSection.sortPosition]);
 
     return Stack(
       alignment: Alignment.center,
@@ -53,34 +58,51 @@ class DoWorkoutSectionTimer extends StatelessWidget {
                 )),
         Positioned(
           right: 0,
-          child: StreamBuilder<StopWatchExecute>(
-              initialData: StopWatchExecute.stop,
-              stream: getStopWatchTimerForSection(workoutSection.sortPosition)
-                  .execute,
-              builder: (context, AsyncSnapshot<StopWatchExecute> snapshot) =>
-                  AnimatedSwitcher(
-                      duration: kStandardAnimationDuration,
-                      child: snapshot.data == StopWatchExecute.start
-                          ? CupertinoButton(
-                              onPressed: () => getStopWatchTimerForSection(
-                                      workoutSection.sortPosition)
-                                  .onExecute
-                                  .add(StopWatchExecute.stop),
-                              child: Icon(
-                                CupertinoIcons.pause_fill,
-                                size: kNavbarIconSize,
-                              ),
-                            )
-                          : CupertinoButton(
-                              onPressed: () => getStopWatchTimerForSection(
-                                      workoutSection.sortPosition)
-                                  .onExecute
-                                  .add(StopWatchExecute.start),
-                              child: Icon(
-                                CupertinoIcons.play_arrow_solid,
-                                size: kNavbarIconSize,
-                              ),
-                            ))),
+          child: AnimatedSwitcher(
+            duration: kStandardAnimationDuration,
+            child: completedSection != null
+                ? SizeFadeIn(
+                    child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                      CupertinoIcons.checkmark_alt_circle_fill,
+                      size: kNavbarIconSize,
+                      color: Styles.peachRed,
+                    ),
+                  ))
+                : StreamBuilder<StopWatchExecute>(
+                    initialData: StopWatchExecute.stop,
+                    stream:
+                        getStopWatchTimerForSection(workoutSection.sortPosition)
+                            .execute,
+                    builder:
+                        (context, AsyncSnapshot<StopWatchExecute> snapshot) =>
+                            AnimatedSwitcher(
+                                duration: kStandardAnimationDuration,
+                                child: snapshot.data == StopWatchExecute.start
+                                    ? CupertinoButton(
+                                        onPressed: () =>
+                                            getStopWatchTimerForSection(
+                                                    workoutSection.sortPosition)
+                                                .onExecute
+                                                .add(StopWatchExecute.stop),
+                                        child: Icon(
+                                          CupertinoIcons.pause_fill,
+                                          size: kNavbarIconSize,
+                                        ),
+                                      )
+                                    : CupertinoButton(
+                                        onPressed: () =>
+                                            getStopWatchTimerForSection(
+                                                    workoutSection.sortPosition)
+                                                .onExecute
+                                                .add(StopWatchExecute.start),
+                                        child: Icon(
+                                          CupertinoIcons.play_arrow_solid,
+                                          size: kNavbarIconSize,
+                                        ),
+                                      ))),
+          ),
         )
       ],
     );
@@ -99,25 +121,11 @@ class DoWorkoutSection extends StatefulWidget {
 class _DoWorkoutSectionState extends State<DoWorkoutSection> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return PageView(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: WorkoutSectionInstructions(
-            typeName: widget.workoutSection.workoutSectionType.name,
-            rounds: widget.workoutSection.rounds,
-            timecap: widget.workoutSection.timecap,
-          ),
-        ),
-        Expanded(
-          child: PageView(
-            children: [
-              DoWorkoutMovesList(workoutSection: widget.workoutSection),
-              DoWorkoutProgressSummary(),
-              MyText('Timer + lap times for sets and sections'),
-            ],
-          ),
-        )
+        DoWorkoutMovesList(workoutSection: widget.workoutSection),
+        DoWorkoutProgressSummary(),
+        MyText('Timer + lap times for sets and sections'),
       ],
     );
   }
