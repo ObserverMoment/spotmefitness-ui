@@ -116,6 +116,7 @@ flutter:
     - assets/body_areas/back/selection/
     - assets/equipment_icons/
     - assets/flags/png/
+    - assets/home_page_images/
     - assets/indicators/
     - assets/logos/
     - assets/other_app_icons/
