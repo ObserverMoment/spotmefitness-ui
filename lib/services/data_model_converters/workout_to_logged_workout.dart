@@ -23,21 +23,27 @@ LoggedWorkout workoutToLoggedWorkout(
 
 List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
     List<WorkoutSection> workoutSections) {
-  final uuid = Uuid();
   return workoutSections
       .sortedBy<num>((ws) => ws.sortPosition)
-      .map((ws) => LoggedWorkoutSection()
-        ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
-        ..name = ws.name
-        ..loggedWorkoutSets = workoutSetsToLoggedWorkoutSets(ws.workoutSets)
-            .sortedBy<num>((ws) => ws.sortPosition)
-        ..roundsCompleted = ws.rounds
-        ..lapTimesMs = {}
-        ..timecap = ws.timecap
-        ..sortPosition = ws.sortPosition
-        ..workoutSectionType =
-            WorkoutSectionType.fromJson(ws.workoutSectionType.toJson()))
+      .map((ws) => workoutSectionToLoggedWorkoutSection(ws))
       .toList();
+}
+
+LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
+    WorkoutSection workoutSection) {
+  final uuid = Uuid();
+  return LoggedWorkoutSection()
+    ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
+    ..name = workoutSection.name
+    ..loggedWorkoutSets =
+        workoutSetsToLoggedWorkoutSets(workoutSection.workoutSets)
+            .sortedBy<num>((ws) => ws.sortPosition)
+    ..roundsCompleted = workoutSection.rounds
+    ..lapTimesMs = {}
+    ..timecap = workoutSection.timecap
+    ..sortPosition = workoutSection.sortPosition
+    ..workoutSectionType =
+        WorkoutSectionType.fromJson(workoutSection.workoutSectionType.toJson());
 }
 
 List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(

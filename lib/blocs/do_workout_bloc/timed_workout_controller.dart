@@ -26,16 +26,16 @@ class TimedSectionController extends WorkoutSectionController {
   /// Used to know when to move forward one set and when to move to the next section round.
   late int _numberSetsPerSection;
 
-  int _latestSplitTimeMs = 0;
+  int _latestSectionSplitTimeMs = 0;
+  int _latestSetSplitTimeMs = 0;
 
   bool _sectionComplete = false;
 
   TimedSectionController(
       {required WorkoutSection workoutSection,
-      required void Function(WorkoutProgressState updated) updateProgressState,
-      required WorkoutProgressState Function() getProgressState,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete}) {
+      required void Function() markSectionComplete})
+      : super(workoutSection) {
     _totalRounds = workoutSection.rounds;
     _numberSetsPerSection = workoutSection.workoutSets.length;
 
@@ -51,52 +51,58 @@ class TimedSectionController extends WorkoutSectionController {
 
     _timerStreamSub = stopWatchTimer.secondTime.listen((seconds) async {
       if (_sectionComplete) {
+        stopWatchTimer.onExecute.add(StopWatchExecute.stop);
         return;
       } else {
-        final prevState = getProgressState();
-
         /// If need to. Update the progressState;
-        if (_hasSetChangeTimePassed(prevState, seconds)) {
-          final updated = _updateProgressState(prevState, seconds);
-          updateProgressState(updated);
+        if (_hasSetChangeTimePassed(seconds)) {
+          state = _updateProgressState(seconds);
+          progressStateController.add(state);
 
           /// Check for the end of the section.
-          if (updated.currentSectionRound == _totalRounds) {
+          if (state.currentSectionRound == _totalRounds) {
+            stopWatchTimer.onExecute.add(StopWatchExecute.stop);
             _sectionComplete = true;
             markSectionComplete();
-            stopWatchTimer.onExecute.add(StopWatchExecute.stop);
           }
         }
       }
     });
   }
 
-  bool _hasSetChangeTimePassed(WorkoutProgressState state, int secondsElapsed) {
+  bool _hasSetChangeTimePassed(int secondsElapsed) {
     return _setChangeTimes[state.currentSectionRound][state.currentSetIndex] <=
         secondsElapsed * 1000;
   }
 
-  WorkoutProgressState _updateProgressState(
-      WorkoutProgressState state, int secondsElapsed) {
+  WorkoutSectionProgressState _updateProgressState(int secondsElapsed) {
     final elapsedMs = secondsElapsed * 1000;
-    final lapTimeMs = elapsedMs - _latestSplitTimeMs;
+    final sectionLapTimeTimeMs = elapsedMs - _latestSectionSplitTimeMs;
+    final setLapTimeTimeMs = elapsedMs - _latestSetSplitTimeMs;
 
-    if (state.currentSetIndex + 1 >= _numberSetsPerSection) {
+    if (state.currentSetIndex >= _numberSetsPerSection - 1) {
       /// Move to the next section round.
-      final updated = WorkoutProgressState.copy(state);
+      final updated = WorkoutSectionProgressState.copy(state);
 
-      /// Add the latest lap time.
-      updated.addLapTime(lapTimeMs);
+      /// Add the latest lap times.
+      updated.addSectionRoundLapTime(sectionLapTimeTimeMs);
+      _latestSectionSplitTimeMs = elapsedMs;
+
+      updated.addSetLapTime(setLapTimeTimeMs);
+      _latestSetSplitTimeMs = elapsedMs;
+
       updated.currentSectionRound += 1;
       updated.currentSetIndex = 0;
 
       return updated;
     } else {
       /// Move to the next set.
-      final updated = WorkoutProgressState.copy(state);
+      final updated = WorkoutSectionProgressState.copy(state);
 
       /// Add the latest lap time.
-      updated.addLapTime(lapTimeMs);
+      updated.addSetLapTime(setLapTimeTimeMs);
+      _latestSetSplitTimeMs = elapsedMs;
+
       updated.currentSetIndex += 1;
 
       return updated;

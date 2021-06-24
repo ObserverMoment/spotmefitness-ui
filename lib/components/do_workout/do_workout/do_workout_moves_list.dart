@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
@@ -7,7 +8,9 @@ import 'package:collection/collection.dart';
 
 class DoWorkoutMovesList extends StatelessWidget {
   final WorkoutSection workoutSection;
-  const DoWorkoutMovesList({Key? key, required this.workoutSection})
+  final WorkoutSectionProgressState state;
+  const DoWorkoutMovesList(
+      {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   List<Widget> _singleSectionMovesList(int round) => [
