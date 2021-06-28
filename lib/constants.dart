@@ -11,6 +11,9 @@ const kBottomNavBarHeight = 68.0;
 const kDockedAudioPlayerHeight = 64.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
+const kDefaultTagHeight = 28.0;
+const kDefaultTagPadding =
+    const EdgeInsets.symmetric(horizontal: 11, vertical: 8);
 const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);

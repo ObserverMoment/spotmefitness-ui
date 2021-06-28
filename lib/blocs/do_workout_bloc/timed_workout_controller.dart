@@ -7,6 +7,8 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 /// EMOM and HIITCircuit sections check the workoutSet.duration value to know when to move onto the next set.
 /// The user should try and complete the moves in the set [workoutSet.rounds] times within that time.
 class TimedSectionController extends WorkoutSectionController {
+  late WorkoutSection _workoutSection;
+
   /// 2D List of values representing the set change checkpoints.
   /// /// i.e. the time at which user should move onto the next set.
   /// Values are [milliseconds] and accumlative.
@@ -32,11 +34,20 @@ class TimedSectionController extends WorkoutSectionController {
 
   bool _sectionComplete = false;
 
+  /// Run this to pass an updated log back up to the [DoWorkoutBloc].
+  late void Function(int sectionIndex, LoggedWorkoutSection updatedLog)
+      _updateLog;
+
   TimedSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete})
+      required void Function() markSectionComplete,
+      required void Function(
+              int sectionIndex, LoggedWorkoutSection updatedSectionLog)
+          updateLog})
       : super(workoutSection) {
+    _workoutSection = workoutSection;
+    _updateLog = updateLog;
     _totalRounds = workoutSection.rounds;
     _numberSetsPerSection = workoutSection.workoutSets.length;
 
@@ -76,7 +87,7 @@ class TimedSectionController extends WorkoutSectionController {
           }
         }
 
-        /// Update time to next checkpoint / set change - if not passed the last checkpoint.
+        /// Update time to next checkpoint / set change - only if not passed the last checkpoint.
         if (state.currentSectionRound < _totalRounds) {
           state.setTimeRemainingMs = _setChangeTimes[state.currentSectionRound]
                   [state.currentSetIndex] -
@@ -130,6 +141,15 @@ class TimedSectionController extends WorkoutSectionController {
 
       return updated;
     }
+  }
+
+  @override
+  void reset() {
+    _latestSectionSplitTimeMs = 0;
+    _latestSetSplitTimeMs = 0;
+    _sectionComplete = false;
+    state = WorkoutSectionProgressState(_workoutSection);
+    progressStateController.add(state);
   }
 
   @override

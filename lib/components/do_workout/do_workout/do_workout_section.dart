@@ -1,124 +1,17 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_bottom_navbar.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_progress_summary.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_complete_modal.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/start_section_modal.dart';
-import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-
-class DoWorkoutSectionTimer extends StatelessWidget {
-  final WorkoutSection workoutSection;
-  const DoWorkoutSectionTimer({Key? key, required this.workoutSection})
-      : super(key: key);
-
-  final kNavbarIconSize = 38.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final getStopWatchTimerForSection =
-        context.read<DoWorkoutBloc>().getStopWatchTimerForSection;
-
-    final sectionIsComplete =
-        context.select<DoWorkoutBloc, LoggedWorkoutSection?>(
-            (b) => b.completedSections[workoutSection.sortPosition]);
-
-    final sectionHasStarted = context.select<DoWorkoutBloc, bool>(
-        (b) => b.startedSections[workoutSection.sortPosition]);
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        StreamBuilder<int>(
-            initialData: 0,
-            stream: getStopWatchTimerForSection(workoutSection.sortPosition)
-                .rawTime,
-            builder: (context, AsyncSnapshot<int> snapshot) => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyText(
-                      'Elapsed',
-                      textAlign: TextAlign.right,
-                      size: FONTSIZE.TINY,
-                      subtext: true,
-                      lineHeight: 0.4,
-                    ),
-                    Text(
-                        StopWatchTimer.getDisplayTime(snapshot.data ?? 0,
-                            milliSecond: false),
-                        style: GoogleFonts.courierPrime(
-                            letterSpacing: -3,
-                            textStyle: TextStyle(
-                              color: context.theme.primary,
-                              fontSize: 44,
-                            ))),
-                  ],
-                )),
-        Positioned(
-          right: 0,
-          child: AnimatedSwitcher(
-            duration: kStandardAnimationDuration,
-            child: sectionIsComplete != null
-                ? SizeFadeIn(
-                    child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      CupertinoIcons.checkmark_alt_circle_fill,
-                      size: kNavbarIconSize,
-                      color: Styles.peachRed,
-                    ),
-                  ))
-                : StreamBuilder<StopWatchExecute>(
-                    initialData: StopWatchExecute.stop,
-                    stream:
-                        getStopWatchTimerForSection(workoutSection.sortPosition)
-                            .execute,
-                    builder: (context,
-                            AsyncSnapshot<StopWatchExecute> snapshot) =>
-                        AnimatedSwitcher(
-                            duration: kStandardAnimationDuration,
-                            child: sectionHasStarted
-                                ? snapshot.data == StopWatchExecute.start
-                                    ? CupertinoButton(
-                                        onPressed: () =>
-                                            getStopWatchTimerForSection(
-                                                    workoutSection.sortPosition)
-                                                .onExecute
-                                                .add(StopWatchExecute.stop),
-                                        child: Icon(
-                                          CupertinoIcons.pause_fill,
-                                          size: kNavbarIconSize,
-                                        ),
-                                      )
-                                    : CupertinoButton(
-                                        onPressed: () =>
-                                            getStopWatchTimerForSection(
-                                                    workoutSection.sortPosition)
-                                                .onExecute
-                                                .add(StopWatchExecute.start),
-                                        child: Icon(
-                                          CupertinoIcons.play_arrow_solid,
-                                          size: kNavbarIconSize,
-                                        ),
-                                      )
-                                : Container())),
-          ),
-        )
-      ],
-    );
-  }
-}
+import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DoWorkoutSection extends StatefulWidget {
   final WorkoutSection workoutSection;
@@ -130,7 +23,33 @@ class DoWorkoutSection extends StatefulWidget {
 }
 
 class _DoWorkoutSectionState extends State<DoWorkoutSection> {
-  int _activePageViewIndex = 0;
+  late PageController _pageController;
+
+  /// 0 = Moves list. This is always displayed, regardless of workout type.
+  /// 1 = Progress summary. Displays when doing AMRAPS, ForTime and Last Standing.
+  /// i.e. Competitive workouts only.
+  /// 2 = Timer / stopwatch page. Always displays but for different uses.
+  /// AMRAP = countdown to end. ForTime = large counting up clock. Free Session = countdown timer.
+  /// Last Standing = Period countdown clock + period countdown clock if has timecap.
+  /// HIITCircuit / EMOM = Current set countdown. Tabata = 20s then 10s.
+  int _activePageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  void _goToPage(int index) {
+    _pageController.toPage(index);
+    setState(() => _activePageIndex = index);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,6 +64,9 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
         context.select<DoWorkoutBloc, WorkoutSectionProgressState>(
             (b) => b.controllers[widget.workoutSection.sortPosition].state);
 
+    final showAudioTab = Utils.textNotNull(widget.workoutSection.classAudioUri);
+    final showVideoTab = Utils.textNotNull(widget.workoutSection.classVideoUri);
+
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -157,7 +79,8 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
             builder: (context, snapshot) {
               final progressState = snapshot.data!;
               return PageView(
-                onPageChanged: (i) => setState(() => _activePageViewIndex = i),
+                controller: _pageController,
+                onPageChanged: (i) => setState(() => _activePageIndex = i),
                 children: [
                   DoWorkoutMovesList(
                       workoutSection: widget.workoutSection,
@@ -170,7 +93,17 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
               );
             }),
         Align(
-            alignment: Alignment.bottomCenter, child: DoWorkoutBottomNavBar()),
+            alignment: Alignment.bottomCenter,
+            child: DoWorkoutBottomNavBar(
+              activePageIndex: _activePageIndex,
+              goToPage: _goToPage,
+              showAudioTab: showAudioTab,
+              showingAudio: false,
+              activateAudio: () => print('audio'),
+              showVideoTab: showVideoTab,
+              showingVideo: false,
+              activateVideo: () => print('video'),
+            )),
         if (!sectionHasStarted)
           Center(
               child: SizeFadeIn(

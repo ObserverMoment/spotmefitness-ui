@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -23,13 +24,14 @@ class Tag extends StatelessWidget {
       this.prefix,
       this.suffix,
       this.withBorder = false,
-      this.padding = const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+      this.padding = kDefaultTagPadding,
       this.fontSize = FONTSIZE.TINY});
   @override
   Widget build(BuildContext context) {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
+      height: kDefaultTagHeight,
       padding: padding,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -134,8 +136,8 @@ class DifficultyLevelTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      height: 24,
+      padding: kDefaultTagPadding,
+      height: kDefaultTagHeight,
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)
@@ -149,6 +151,7 @@ class DifficultyLevelTag extends StatelessWidget {
             difficultyLevel.display,
             size: FONTSIZE.TINY,
             color: Styles.white,
+            weight: FontWeight.bold,
             lineHeight: 1.1,
           ),
         ],

@@ -14,9 +14,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// As required by the workoutSectionType
 class DoWorkoutBloc extends ChangeNotifier {
   late BuildContext _context;
-  late LoggedWorkout loggedWorkout;
-  late Workout _originalWorkout;
   late List<WorkoutSection> _sortedWorkoutSections;
+  late LoggedWorkout loggedWorkout;
 
   /// List of timers - one for each workoutSection.
   /// Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
@@ -37,7 +36,6 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   DoWorkoutBloc({required BuildContext context, required Workout workout}) {
     _context = context;
-    _originalWorkout = workout;
     loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
 
     _sortedWorkoutSections = workout.workoutSections
@@ -60,6 +58,30 @@ class DoWorkoutBloc extends ChangeNotifier {
   void startSection(int sectionIndex) {
     startedSections[sectionIndex] = true;
     _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.start);
+    notifyListeners();
+  }
+
+  void resetSection(int sectionIndex) {
+    startedSections[sectionIndex] = false;
+    _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.reset);
+    completedSections[sectionIndex] = null;
+    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+        .where((lws) => lws.sortPosition != sectionIndex)
+        .toList();
+    allSectionsComplete = false;
+    notifyListeners();
+  }
+
+  void resetWorkout() {
+    _sortedWorkoutSections.forEach((ws) {
+      final i = ws.sortPosition;
+      startedSections[i];
+      _stopWatchTimers[i].onExecute.add(StopWatchExecute.reset);
+      completedSections[i] = null;
+      controllers[i].reset();
+    });
+    allSectionsComplete = false;
+    loggedWorkout.loggedWorkoutSections = [];
     notifyListeners();
   }
   /////
@@ -126,11 +148,17 @@ class DoWorkoutBloc extends ChangeNotifier {
     final typeName = workoutSection.workoutSectionType.name;
     switch (typeName) {
       case kEMOMName:
+      case kHIITCircuitName:
         return TimedSectionController(
             workoutSection: workoutSection,
             stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
             markSectionComplete: () =>
-                _markSectionComplete(workoutSection.sortPosition));
+                _markSectionComplete(workoutSection.sortPosition),
+            updateLog: (sectionIndex, updatedSectionLog) {
+              print('passing log to DoWorkoutBloc');
+              print(updatedSectionLog);
+            });
+
       default:
         throw Exception(
             'No mapping exists for workout section type $typeName.');
@@ -164,6 +192,8 @@ abstract class WorkoutSectionController {
     state = WorkoutSectionProgressState(workoutSection);
     progressStateController.add(state);
   }
+
+  void reset();
 
   void dispose();
 }

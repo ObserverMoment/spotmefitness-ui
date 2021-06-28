@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_section.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/docked_audio_player.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -43,21 +44,33 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
     setState(() => _activeSectionPageIndex = index);
   }
 
+  void _handleResetWorkout() {
+    context.showConfirmDialog(
+      title: 'Reset the whole workout?',
+      content: MyText(
+        'The work you have done will not be saved. OK?',
+        textAlign: TextAlign.center,
+        maxLines: 3,
+      ),
+      onConfirm: () => context.read<DoWorkoutBloc>().resetWorkout(),
+    );
+  }
+
   void _handleExitRequest() {
     context.read<DoWorkoutBloc>().pauseWorkout();
 
     context.showDialog(
-        title: 'Quit the Workout?',
+        title: 'Leave the Workout?',
         barrierDismissible: true,
         actions: [
           CupertinoDialogAction(
-              child: MyText('Quit without logging'),
+              child: MyText('Leave without logging'),
               onPressed: () {
                 context.pop();
                 context.popRoute();
               }),
           CupertinoDialogAction(
-              child: MyText('Log progress, then quit'),
+              child: MyText('Log progress, then Leave'),
               onPressed: () {
                 context.pop();
                 print('go to log');
@@ -66,7 +79,7 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
               child: MyText('Restart the workout'),
               onPressed: () {
                 context.pop();
-                print('reset log and restart');
+                _handleResetWorkout();
               }),
           CupertinoDialogAction(
             child: MyText('Cancel'),

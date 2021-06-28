@@ -5,7 +5,25 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class DoWorkoutBottomNavBar extends StatelessWidget {
-  const DoWorkoutBottomNavBar({Key? key}) : super(key: key);
+  final int activePageIndex;
+  final void Function(int pageIndex) goToPage;
+  final bool showAudioTab;
+  final bool showingAudio;
+  final void Function() activateAudio;
+  final bool showVideoTab;
+  final bool showingVideo;
+  final void Function() activateVideo;
+  const DoWorkoutBottomNavBar(
+      {Key? key,
+      required this.showVideoTab,
+      required this.showAudioTab,
+      required this.goToPage,
+      required this.showingAudio,
+      required this.showingVideo,
+      required this.activePageIndex,
+      required this.activateAudio,
+      required this.activateVideo})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,43 +42,35 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
                 _DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.list_number,
                   label: 'Moves',
-                  onTap: () {
-                    print('0');
-                  },
-                  isActive: true,
+                  onTap: () => goToPage(0),
+                  isActive: activePageIndex == 0,
                 ),
                 _DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.chart_bar_fill,
                   label: 'Progress',
-                  onTap: () {
-                    print('1');
-                  },
-                  isActive: false,
+                  onTap: () => goToPage(1),
+                  isActive: activePageIndex == 1,
                 ),
                 _DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.timer_fill,
                   label: 'Timer',
-                  onTap: () {
-                    print('2');
-                  },
-                  isActive: false,
+                  onTap: () => goToPage(2),
+                  isActive: activePageIndex == 2,
                 ),
-                _DoWorkoutBottomNavbarItem(
-                  iconData: CupertinoIcons.film_fill,
-                  label: 'Video',
-                  onTap: () {
-                    print('3');
-                  },
-                  isActive: false,
-                ),
-                _DoWorkoutBottomNavbarItem(
-                  iconData: CupertinoIcons.volume_up,
-                  label: 'Audio',
-                  onTap: () {
-                    print('4');
-                  },
-                  isActive: true,
-                ),
+                if (showVideoTab)
+                  _DoWorkoutBottomNavbarItem(
+                    iconData: CupertinoIcons.film_fill,
+                    label: 'Video',
+                    onTap: activateVideo,
+                    isActive: showingVideo,
+                  ),
+                if (showAudioTab)
+                  _DoWorkoutBottomNavbarItem(
+                    iconData: CupertinoIcons.volume_up,
+                    label: 'Audio',
+                    onTap: activateAudio,
+                    isActive: showingAudio,
+                  ),
               ],
             )),
       ),
