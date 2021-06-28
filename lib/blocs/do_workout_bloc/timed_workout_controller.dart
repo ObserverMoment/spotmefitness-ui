@@ -22,6 +22,7 @@ class TimedSectionController extends WorkoutSectionController {
   late StreamSubscription _timerStreamSub;
 
   late int _totalRounds;
+  late int _totalDurationMs;
 
   /// Used to know when to move forward one set and when to move to the next section round.
   late int _numberSetsPerSection;
@@ -49,15 +50,23 @@ class TimedSectionController extends WorkoutSectionController {
               return _acumTime;
             }).toList());
 
-    _timerStreamSub = stopWatchTimer.secondTime.listen((seconds) async {
+    _totalDurationMs =
+        _setChangeTimes[_totalRounds - 1][_numberSetsPerSection - 1];
+
+    /// Initialise the first checkpoint in the state.
+    state.setTimeRemainingMs = _setChangeTimes[0][0];
+
+    final updated = WorkoutSectionProgressState.copy(state);
+    progressStateController.add(updated);
+
+    _timerStreamSub = stopWatchTimer.secondTime.listen((secondsElapsed) async {
       if (_sectionComplete) {
         stopWatchTimer.onExecute.add(StopWatchExecute.stop);
         return;
       } else {
         /// If need to. Update the progressState;
-        if (_hasSetChangeTimePassed(seconds)) {
-          state = _updateProgressState(seconds);
-          progressStateController.add(state);
+        if (_hasSetChangeTimePassed(secondsElapsed)) {
+          state = _updateProgressState(secondsElapsed);
 
           /// Check for the end of the section.
           if (state.currentSectionRound == _totalRounds) {
@@ -66,6 +75,20 @@ class TimedSectionController extends WorkoutSectionController {
             markSectionComplete();
           }
         }
+
+        /// Update time to next checkpoint / set change - if not passed the last checkpoint.
+        if (state.currentSectionRound < _totalRounds) {
+          state.setTimeRemainingMs = _setChangeTimes[state.currentSectionRound]
+                  [state.currentSetIndex] -
+              (secondsElapsed * 1000);
+        }
+
+        /// Update percentage complete.
+        state.percentComplete = (secondsElapsed * 1000) / _totalDurationMs;
+
+        /// Broadcast new state.
+        final updated = WorkoutSectionProgressState.copy(state);
+        progressStateController.add(updated);
       }
     });
   }

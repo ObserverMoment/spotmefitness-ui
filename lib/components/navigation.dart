@@ -13,12 +13,14 @@ class MyTabBarNav extends StatefulWidget {
   final List<Widget?>? superscriptIcons;
   final int activeTabIndex;
   final Function(int newIndex) handleTabChange;
+  final Alignment alignment;
 
   const MyTabBarNav({
     required this.titles,
     required this.handleTabChange,
     required this.activeTabIndex,
     this.superscriptIcons,
+    this.alignment = Alignment.centerLeft,
   });
 
   @override
@@ -72,7 +74,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      alignment: Alignment.centerLeft,
+      alignment: widget.alignment,
       height: 30,
       child: ListView(
         scrollDirection: Axis.horizontal,

@@ -46,7 +46,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
           iconData,
           color: activeColor,
         ),
-        inActiveColor: inActiveColor,
+        inactiveColor: inActiveColor,
         activeColor: activeColor,
         label: label,
         isActive: activeIndex == tabIndex,
@@ -155,14 +155,14 @@ class TabIcon extends StatelessWidget {
   final Widget icon;
   final Widget activeIcon;
   final Color activeColor;
-  final Color inActiveColor;
+  final Color inactiveColor;
   final String label;
   final bool isActive;
   final void Function() onTap;
   TabIcon(
       {required this.icon,
       required this.activeIcon,
-      required this.inActiveColor,
+      required this.inactiveColor,
       required this.activeColor,
       required this.label,
       required this.isActive,
@@ -199,7 +199,7 @@ class TabIcon extends StatelessWidget {
                     children: [
                       icon,
                       SizedBox(height: 1),
-                      MyText(label, size: FONTSIZE.TINY, color: inActiveColor)
+                      MyText(label, size: FONTSIZE.TINY, color: inactiveColor)
                     ],
                   )),
       ),

@@ -575,6 +575,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                           titles: _sectionTitles(
                                               sortedWorkoutSections),
                                           handleTabChange: _handleTabChange,
+                                          alignment: Alignment.center,
                                           activeTabIndex:
                                               _activeSectionTabIndex)),
                                 if (workout.workoutSections.length == 1 &&

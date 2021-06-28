@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_workout_controller.dart';
@@ -15,7 +14,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// As required by the workoutSectionType
 class DoWorkoutBloc extends ChangeNotifier {
   late BuildContext _context;
-  late LoggedWorkout _loggedWorkout;
+  late LoggedWorkout loggedWorkout;
   late Workout _originalWorkout;
   late List<WorkoutSection> _sortedWorkoutSections;
 
@@ -31,6 +30,7 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   /// At completed LoggedWorkoutSection at index [workoutSection.sortPosition] when completed.
   late List<LoggedWorkoutSection?> completedSections;
+  bool allSectionsComplete = false;
 
   /// If false then an intro modal will show over the section page letting the user start the workout with countdown.
   late List<bool> startedSections;
@@ -38,8 +38,7 @@ class DoWorkoutBloc extends ChangeNotifier {
   DoWorkoutBloc({required BuildContext context, required Workout workout}) {
     _context = context;
     _originalWorkout = workout;
-    _loggedWorkout =
-        DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
+    loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
 
     _sortedWorkoutSections = workout.workoutSections
         .sortedBy<num>((wSection) => wSection.sortPosition);
@@ -57,17 +56,6 @@ class DoWorkoutBloc extends ChangeNotifier {
         .toList();
   }
 
-  /// Get the log with all completed sections added to it.
-  LoggedWorkout get loggedWorkout {
-    final logCopy = LoggedWorkout.fromJson(_loggedWorkout.toJson());
-    final loggedSections = completedSections.where((s) => s != null).toList()
-        as List<LoggedWorkoutSection>;
-
-    logCopy.loggedWorkoutSections =
-        loggedSections.isNotEmpty ? loggedSections : [];
-    return logCopy;
-  }
-
   //// Methods for user inputs - Public ////
   void startSection(int sectionIndex) {
     startedSections[sectionIndex] = true;
@@ -77,12 +65,21 @@ class DoWorkoutBloc extends ChangeNotifier {
   /////
 
   //// State progress updates and logged workout section generators ////
+  /// Generate the log from the section state.
+  /// Then add it to completedSections and loggedWorkout.loggedWorkoutSections.
   void _markSectionComplete(int sectionIndex) {
-    final newLog = _genLoggedWorkoutSection(sectionIndex);
+    final sectionLog = _genLoggedWorkoutSection(sectionIndex);
     completedSections = completedSections
         .mapIndexed((index, nullableLog) =>
-            index == sectionIndex ? newLog : nullableLog)
+            index == sectionIndex ? sectionLog : nullableLog)
         .toList();
+
+    loggedWorkout.loggedWorkoutSections.add(sectionLog);
+
+    if (completedSections.whereType<LoggedWorkoutSection>().length ==
+        _sortedWorkoutSections.length) {
+      allSectionsComplete = true;
+    }
     notifyListeners();
   }
 
@@ -90,11 +87,28 @@ class DoWorkoutBloc extends ChangeNotifier {
     final LoggedWorkoutSection sectionLog =
         workoutSectionToLoggedWorkoutSection(
             _sortedWorkoutSections[sectionIndex]);
+    sectionLog.timeTakenMs = _stopWatchTimers[sectionIndex].rawTime.value;
+    sectionLog.lapTimesMs = controllers[sectionIndex].state.lapTimesMs;
     return sectionLog;
   }
+
+  void addNoteToLoggedWorkoutSection(int sectionIndex, String note) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex].toJson();
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson({...prev, 'note': note});
+    notifyListeners();
+  }
+
   ////////
 
   //// Timer Related ////
+  /// Pause all timers.
+  void pauseWorkout() {
+    _stopWatchTimers.forEach((timer) {
+      timer.onExecute.add(StopWatchExecute.stop);
+    });
+  }
+
   StopWatchTimer getStopWatchTimerForSection(int index) =>
       _stopWatchTimers[index];
 
@@ -159,11 +173,11 @@ class WorkoutSectionProgressState {
 
   /// Add a lapTime at the [currentSectionRound] and [currentSetIndex]
   void addSetLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimes[currentSectionRound.toString()] ?? {};
+    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
     final prevSetData = prevSectionData['setLapTimesMs'] ?? {};
 
-    lapTimes = {
-      ...lapTimes,
+    lapTimesMs = {
+      ...lapTimesMs,
       currentSectionRound.toString(): {
         ...prevSectionData,
         'setLapTimesMs': {
@@ -175,9 +189,9 @@ class WorkoutSectionProgressState {
   }
 
   void addSectionRoundLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimes[currentSectionRound.toString()] ?? {};
-    lapTimes = {
-      ...lapTimes,
+    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
+    lapTimesMs = {
+      ...lapTimesMs,
       currentSectionRound.toString(): {
         ...prevSectionData,
         'lapTimeMs': lapTimeMs,
@@ -211,14 +225,27 @@ class WorkoutSectionProgressState {
   ///     }
   ///   }
   /// }
-  Map<String, Map<String, dynamic>> lapTimes = {};
+  Map<String, Map<String, dynamic>> lapTimesMs = {};
+
+  /// Used for timed workouts or timecaps.
+  int? setTimeRemainingMs;
+
+  /// Must be a double between 0.0 and 1.0 inclusive.
+  /// How this is calculated will depend on the type of workout / workout controller.
+  /// For example timed workouts are just curTime / totalTime.
+  /// ForTime and Free Session workouts are based on rounds and sets complete vs total rounds and set in the workout.
+  double percentComplete = 0.0;
 
   WorkoutSectionProgressState(WorkoutSection workoutSection) {
     _numberSets = workoutSection.workoutSets.length;
   }
 
+  /// This is invoked each time a new state is generated.
+  /// So make sure if you add any fields that they also get added to this copy method!
   WorkoutSectionProgressState.copy(WorkoutSectionProgressState o)
       : currentSectionRound = o.currentSectionRound,
         currentSetIndex = o.currentSetIndex,
-        lapTimes = o.lapTimes;
+        lapTimesMs = o.lapTimesMs,
+        percentComplete = o.percentComplete,
+        setTimeRemainingMs = o.setTimeRemainingMs;
 }

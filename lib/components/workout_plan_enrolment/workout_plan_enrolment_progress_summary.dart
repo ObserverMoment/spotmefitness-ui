@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -53,14 +53,12 @@ class WorkoutPlanEnrolmentProgressSummary extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 7),
-                  StepProgressIndicator(
-                    totalSteps: total,
-                    currentStep: completed,
-                    size: 6,
-                    padding: 0,
-                    selectedColor: Styles.peachRed,
-                    unselectedColor: context.theme.primary.withOpacity(0.3),
-                    roundedEdges: Radius.circular(16),
+                  LinearPercentIndicator(
+                    percent: completed / total,
+                    lineHeight: 6,
+                    padding: const EdgeInsets.only(left: 8),
+                    backgroundColor: context.theme.primary.withOpacity(0.3),
+                    progressColor: Styles.peachRed,
                   ),
                 ],
               ),

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_page.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_share_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/benchmark_creator/benchmark_creator.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator.dart';
@@ -125,7 +124,6 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
               children: [
                 AutoRoute(page: DoWorkoutDoWorkoutPage),
                 AutoRoute(page: DoWorkoutLogWorkoutPage),
-                AutoRoute(page: DoWorkoutShareWorkoutPage),
               ]),
           AutoRoute(path: 'find-workout', page: WorkoutFinderPage),
           AutoRoute(path: 'find-plan', page: WorkoutPlanFinderPage),

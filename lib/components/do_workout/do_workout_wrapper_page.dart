@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -29,6 +31,8 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
   /// This can be identical to the original if the user does not make adjustments.
   Workout? _adjustedWorkout;
 
+  LoggedWorkout? _loggedWorkout;
+
   Future<Workout> _getWorkoutById() async {
     final variables = WorkoutByIdArguments(id: widget.id);
     final query = WorkoutByIdQuery(variables: variables);
@@ -57,10 +61,18 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
   Widget build(BuildContext context) => FutureBuilderHandler<Workout>(
       loadingWidget: ShimmerDetailsPage(title: 'Warming Up'),
       future: _initWorkoutFn,
-      builder: (workout) => AutoRouter.declarative(
-          routes: (_) => [
-                if (_pageIndex == 0) DoWorkoutDoWorkoutRoute(workout: workout),
-                if (_pageIndex == 1) DoWorkoutLogWorkoutRoute(),
-                if (_pageIndex == 2) DoWorkoutShareWorkoutRoute(),
-              ]));
+      builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
+          create: (context) =>
+              DoWorkoutBloc(context: context, workout: workout),
+          child: Builder(builder: (context) {
+            final allSectionsComplete = context
+                .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
+
+            return AutoRouter.declarative(
+                routes: (_) => [
+                      if (!allSectionsComplete)
+                        DoWorkoutDoWorkoutRoute(workout: workout),
+                      if (allSectionsComplete) DoWorkoutLogWorkoutRoute(),
+                    ]);
+          })));
 }

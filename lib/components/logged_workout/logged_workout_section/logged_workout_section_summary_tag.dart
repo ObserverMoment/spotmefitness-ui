@@ -77,7 +77,6 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
             MyText(
               '${section.workoutSectionType.name}',
               size: fontsize,
-              color: Styles.colorTwo,
             ),
             Row(
               mainAxisSize: MainAxisSize.min,

@@ -5,13 +5,12 @@
 // **************************************************************************
 
 import 'package:auto_route/auto_route.dart' as _i1;
-import 'package:flutter/cupertino.dart' as _i47;
+import 'package:flutter/cupertino.dart' as _i46;
 import 'package:flutter/material.dart' as _i2;
 
 import 'components/do_workout/do_workout/do_workout_do_workout_page.dart'
     as _i44;
 import 'components/do_workout/do_workout_log_workout_page.dart' as _i45;
-import 'components/do_workout/do_workout_share_workout_page.dart' as _i46;
 import 'components/do_workout/do_workout_wrapper_page.dart' as _i12;
 import 'components/user_input/creators/benchmark_creator/benchmark_creator.dart'
     as _i8;
@@ -26,7 +25,7 @@ import 'components/user_input/creators/workout_plan_creator/workout_plan_creator
 import 'components/workout/workout_finder/workout_finder.dart' as _i13;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i14;
-import 'generated/api/graphql_api.graphql.dart' as _i48;
+import 'generated/api/graphql_api.graphql.dart' as _i47;
 import 'pages/authed/app.dart' as _i5;
 import 'pages/authed/details_pages/benchmark_details_page.dart' as _i6;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i7;
@@ -362,11 +361,6 @@ class AppRouter extends _i1.RootStackRouter {
         routeData: routeData,
         builder: (_) {
           return const _i45.DoWorkoutLogWorkoutPage();
-        }),
-    DoWorkoutShareWorkoutRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return const _i46.DoWorkoutShareWorkoutPage();
         })
   };
 
@@ -437,9 +431,7 @@ class AppRouter extends _i1.RootStackRouter {
                 _i1.RouteConfig(DoWorkoutDoWorkoutRoute.name,
                     path: 'do-workout-do-workout-page'),
                 _i1.RouteConfig(DoWorkoutLogWorkoutRoute.name,
-                    path: 'do-workout-log-workout-page'),
-                _i1.RouteConfig(DoWorkoutShareWorkoutRoute.name,
-                    path: 'do-workout-share-workout-page')
+                    path: 'do-workout-log-workout-page')
               ]),
           _i1.RouteConfig(WorkoutFinderRoute.name, path: 'find-workout'),
           _i1.RouteConfig(WorkoutPlanFinderRoute.name, path: 'find-plan'),
@@ -501,7 +493,7 @@ class BenchmarkDetailsRouteArgs {
 
 class CollectionDetailsRoute
     extends _i1.PageRouteInfo<CollectionDetailsRouteArgs> {
-  CollectionDetailsRoute({_i47.Key? key, required String id})
+  CollectionDetailsRoute({_i46.Key? key, required String id})
       : super(name,
             path: 'collection/:id',
             args: CollectionDetailsRouteArgs(key: key, id: id),
@@ -513,14 +505,14 @@ class CollectionDetailsRoute
 class CollectionDetailsRouteArgs {
   const CollectionDetailsRouteArgs({this.key, required this.id});
 
-  final _i47.Key? key;
+  final _i46.Key? key;
 
   final String id;
 }
 
 class BenchmarkCreatorRoute
     extends _i1.PageRouteInfo<BenchmarkCreatorRouteArgs> {
-  BenchmarkCreatorRoute({_i48.UserBenchmark? userBenchmark})
+  BenchmarkCreatorRoute({_i47.UserBenchmark? userBenchmark})
       : super(name,
             path: 'create-benchmark',
             args: BenchmarkCreatorRouteArgs(userBenchmark: userBenchmark));
@@ -531,12 +523,12 @@ class BenchmarkCreatorRoute
 class BenchmarkCreatorRouteArgs {
   const BenchmarkCreatorRouteArgs({this.userBenchmark});
 
-  final _i48.UserBenchmark? userBenchmark;
+  final _i47.UserBenchmark? userBenchmark;
 }
 
 class ProgressJournalCreatorRoute
     extends _i1.PageRouteInfo<ProgressJournalCreatorRouteArgs> {
-  ProgressJournalCreatorRoute({_i48.ProgressJournal? progressJournal})
+  ProgressJournalCreatorRoute({_i47.ProgressJournal? progressJournal})
       : super(name,
             path: 'create-journal',
             args: ProgressJournalCreatorRouteArgs(
@@ -548,11 +540,11 @@ class ProgressJournalCreatorRoute
 class ProgressJournalCreatorRouteArgs {
   const ProgressJournalCreatorRouteArgs({this.progressJournal});
 
-  final _i48.ProgressJournal? progressJournal;
+  final _i47.ProgressJournal? progressJournal;
 }
 
 class WorkoutCreatorRoute extends _i1.PageRouteInfo<WorkoutCreatorRouteArgs> {
-  WorkoutCreatorRoute({_i48.Workout? workout})
+  WorkoutCreatorRoute({_i47.Workout? workout})
       : super(name,
             path: 'create-workout',
             args: WorkoutCreatorRouteArgs(workout: workout));
@@ -563,12 +555,12 @@ class WorkoutCreatorRoute extends _i1.PageRouteInfo<WorkoutCreatorRouteArgs> {
 class WorkoutCreatorRouteArgs {
   const WorkoutCreatorRouteArgs({this.workout});
 
-  final _i48.Workout? workout;
+  final _i47.Workout? workout;
 }
 
 class WorkoutPlanCreatorRoute
     extends _i1.PageRouteInfo<WorkoutPlanCreatorRouteArgs> {
-  WorkoutPlanCreatorRoute({_i47.Key? key, _i48.WorkoutPlan? workoutPlan})
+  WorkoutPlanCreatorRoute({_i46.Key? key, _i47.WorkoutPlan? workoutPlan})
       : super(name,
             path: 'create-workout-plan',
             args: WorkoutPlanCreatorRouteArgs(
@@ -580,15 +572,15 @@ class WorkoutPlanCreatorRoute
 class WorkoutPlanCreatorRouteArgs {
   const WorkoutPlanCreatorRouteArgs({this.key, this.workoutPlan});
 
-  final _i47.Key? key;
+  final _i46.Key? key;
 
-  final _i48.WorkoutPlan? workoutPlan;
+  final _i47.WorkoutPlan? workoutPlan;
 }
 
 class DoWorkoutWrapperRoute
     extends _i1.PageRouteInfo<DoWorkoutWrapperRouteArgs> {
   DoWorkoutWrapperRoute(
-      {_i47.Key? key, required String id, List<_i1.PageRouteInfo>? children})
+      {_i46.Key? key, required String id, List<_i1.PageRouteInfo>? children})
       : super(name,
             path: 'do-workout/:id',
             args: DoWorkoutWrapperRouteArgs(key: key, id: id),
@@ -601,14 +593,14 @@ class DoWorkoutWrapperRoute
 class DoWorkoutWrapperRouteArgs {
   const DoWorkoutWrapperRouteArgs({this.key, required this.id});
 
-  final _i47.Key? key;
+  final _i46.Key? key;
 
   final String id;
 }
 
 class WorkoutFinderRoute extends _i1.PageRouteInfo<WorkoutFinderRouteArgs> {
   WorkoutFinderRoute(
-      {void Function(_i48.Workout)? selectWorkout, bool? initialOpenPublicTab})
+      {void Function(_i47.Workout)? selectWorkout, bool? initialOpenPublicTab})
       : super(name,
             path: 'find-workout',
             args: WorkoutFinderRouteArgs(
@@ -621,7 +613,7 @@ class WorkoutFinderRoute extends _i1.PageRouteInfo<WorkoutFinderRouteArgs> {
 class WorkoutFinderRouteArgs {
   const WorkoutFinderRouteArgs({this.selectWorkout, this.initialOpenPublicTab});
 
-  final void Function(_i48.Workout)? selectWorkout;
+  final void Function(_i47.Workout)? selectWorkout;
 
   final bool? initialOpenPublicTab;
 }
@@ -646,7 +638,7 @@ class WorkoutPlanFinderRouteArgs {
 class LoggedWorkoutCreatorRoute
     extends _i1.PageRouteInfo<LoggedWorkoutCreatorRouteArgs> {
   LoggedWorkoutCreatorRoute(
-      {required _i48.Workout workout, _i48.ScheduledWorkout? scheduledWorkout})
+      {required _i47.Workout workout, _i47.ScheduledWorkout? scheduledWorkout})
       : super(name,
             path: 'log-workout',
             args: LoggedWorkoutCreatorRouteArgs(
@@ -659,9 +651,9 @@ class LoggedWorkoutCreatorRouteArgs {
   const LoggedWorkoutCreatorRouteArgs(
       {required this.workout, this.scheduledWorkout});
 
-  final _i48.Workout workout;
+  final _i47.Workout workout;
 
-  final _i48.ScheduledWorkout? scheduledWorkout;
+  final _i47.ScheduledWorkout? scheduledWorkout;
 }
 
 class LoggedWorkoutDetailsRoute
@@ -756,7 +748,7 @@ class WorkoutPlanDetailsRouteArgs {
 
 class WorkoutPlanEnrolmentDetailsRoute
     extends _i1.PageRouteInfo<WorkoutPlanEnrolmentDetailsRouteArgs> {
-  WorkoutPlanEnrolmentDetailsRoute({_i47.Key? key, required String id})
+  WorkoutPlanEnrolmentDetailsRoute({_i46.Key? key, required String id})
       : super(name,
             path: 'workout-plan-progress/:id',
             args: WorkoutPlanEnrolmentDetailsRouteArgs(key: key, id: id),
@@ -768,7 +760,7 @@ class WorkoutPlanEnrolmentDetailsRoute
 class WorkoutPlanEnrolmentDetailsRouteArgs {
   const WorkoutPlanEnrolmentDetailsRouteArgs({this.key, required this.id});
 
-  final _i47.Key? key;
+  final _i46.Key? key;
 
   final String id;
 }
@@ -933,7 +925,7 @@ class ProfileCustomMovesRoute extends _i1.PageRouteInfo {
 
 class DoWorkoutDoWorkoutRoute
     extends _i1.PageRouteInfo<DoWorkoutDoWorkoutRouteArgs> {
-  DoWorkoutDoWorkoutRoute({_i47.Key? key, required _i48.Workout workout})
+  DoWorkoutDoWorkoutRoute({_i46.Key? key, required _i47.Workout workout})
       : super(name,
             path: 'do-workout-do-workout-page',
             args: DoWorkoutDoWorkoutRouteArgs(key: key, workout: workout));
@@ -944,9 +936,9 @@ class DoWorkoutDoWorkoutRoute
 class DoWorkoutDoWorkoutRouteArgs {
   const DoWorkoutDoWorkoutRouteArgs({this.key, required this.workout});
 
-  final _i47.Key? key;
+  final _i46.Key? key;
 
-  final _i48.Workout workout;
+  final _i47.Workout workout;
 }
 
 class DoWorkoutLogWorkoutRoute extends _i1.PageRouteInfo {
@@ -954,11 +946,4 @@ class DoWorkoutLogWorkoutRoute extends _i1.PageRouteInfo {
       : super(name, path: 'do-workout-log-workout-page');
 
   static const String name = 'DoWorkoutLogWorkoutRoute';
-}
-
-class DoWorkoutShareWorkoutRoute extends _i1.PageRouteInfo {
-  const DoWorkoutShareWorkoutRoute()
-      : super(name, path: 'do-workout-share-workout-page');
-
-  static const String name = 'DoWorkoutShareWorkoutRoute';
 }

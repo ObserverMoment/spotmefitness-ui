@@ -12,8 +12,7 @@ class JournalPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       key: Key('JournalPage-CupertinoPageScaffold'),
-      navigationBar: BasicNavBar(
-        heroTag: 'JournalPage',
+      navigationBar: BorderlessNavBar(
         key: Key('JournalPage-BasicNavBar'),
         customLeading: NavBarLargeTitle('Journal'),
       ),

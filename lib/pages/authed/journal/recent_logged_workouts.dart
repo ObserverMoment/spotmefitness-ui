@@ -54,8 +54,6 @@ class RecentLoggedWorkouts extends StatelessWidget {
                           H2(
                             'Logs',
                           ),
-                          CreateTextIconButton(
-                              text: 'Add', onPressed: () => print('add log')),
                           TextButton(
                             onPressed: () =>
                                 context.pushRoute(YourLoggedWorkoutsRoute()),
