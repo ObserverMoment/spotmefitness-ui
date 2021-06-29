@@ -38,6 +38,8 @@ class _StartWorkoutCountdownButtonState
                   countdownTotal: 3,
                   onFinished: widget.startSectionAfterCountdown,
                   countdownCurrentColor: Styles.peachRed,
+                  countdownTotalColor: context.theme.background,
+                  countdownRemainingColor: context.theme.primary,
                   textStyle: GoogleFonts.courierPrime(
                       textStyle: TextStyle(
                     color: context.theme.primary,
@@ -50,7 +52,7 @@ class _StartWorkoutCountdownButtonState
                     decoration: BoxDecoration(
                         border: Border.all(
                             color: context.theme.primary.withOpacity(0.6),
-                            width: 3),
+                            width: 1),
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                             colors: [Styles.colorTwo, Styles.peachRed])),

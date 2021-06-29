@@ -65,6 +65,7 @@ class DoWorkoutBloc extends ChangeNotifier {
     startedSections[sectionIndex] = false;
     _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.reset);
     completedSections[sectionIndex] = null;
+    controllers[sectionIndex].reset();
     loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
         .where((lws) => lws.sortPosition != sectionIndex)
         .toList();
@@ -75,7 +76,7 @@ class DoWorkoutBloc extends ChangeNotifier {
   void resetWorkout() {
     _sortedWorkoutSections.forEach((ws) {
       final i = ws.sortPosition;
-      startedSections[i];
+      startedSections[i] = false;
       _stopWatchTimers[i].onExecute.add(StopWatchExecute.reset);
       completedSections[i] = null;
       controllers[i].reset();

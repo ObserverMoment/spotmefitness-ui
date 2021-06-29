@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_bottom_navbar.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_lap_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_progress_summary.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_complete_modal.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/start_section_modal.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -67,55 +71,86 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
     final showAudioTab = Utils.textNotNull(widget.workoutSection.classAudioUri);
     final showVideoTab = Utils.textNotNull(widget.workoutSection.classVideoUri);
 
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        StreamBuilder<WorkoutSectionProgressState>(
-            initialData: initialState,
-            stream: context
-                .read<DoWorkoutBloc>()
-                .controllers[widget.workoutSection.sortPosition]
-                .progressStream,
-            builder: (context, snapshot) {
-              final progressState = snapshot.data!;
-              return PageView(
-                controller: _pageController,
-                onPageChanged: (i) => setState(() => _activePageIndex = i),
+    return StreamBuilder<WorkoutSectionProgressState>(
+        initialData: initialState,
+        stream: context
+            .read<DoWorkoutBloc>()
+            .controllers[widget.workoutSection.sortPosition]
+            .progressStream,
+        builder: (context, snapshot) {
+          final progressState = snapshot.data!;
+          return Column(
+            children: [
+              SizedBox(height: 8),
+              Column(
                 children: [
-                  DoWorkoutMovesList(
-                      workoutSection: widget.workoutSection,
-                      state: progressState),
-                  DoWorkoutProgressSummary(
-                      workoutSection: widget.workoutSection,
-                      state: progressState),
-                  MyText('Timer + lap times for sets and sections'),
+                  LinearPercentIndicator(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    lineHeight: 6,
+                    percent: progressState.percentComplete,
+                    backgroundColor: context.theme.primary.withOpacity(0.07),
+                    linearGradient: Styles.pinkGradient,
+                    linearStrokeCap: LinearStrokeCap.roundAll,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      MyText(widget.workoutSection.workoutSectionType.name,
+                          weight: FontWeight.bold),
+                      InfoPopupButton(
+                          infoWidget: MyText(
+                              'Info about the wokout type ${widget.workoutSection.workoutSectionType.name}'))
+                    ],
+                  ),
                 ],
-              );
-            }),
-        Align(
-            alignment: Alignment.bottomCenter,
-            child: DoWorkoutBottomNavBar(
-              activePageIndex: _activePageIndex,
-              goToPage: _goToPage,
-              showAudioTab: showAudioTab,
-              showingAudio: false,
-              activateAudio: () => print('audio'),
-              showVideoTab: showVideoTab,
-              showingVideo: false,
-              activateVideo: () => print('video'),
-            )),
-        if (!sectionHasStarted)
-          Center(
-              child: SizeFadeIn(
-                  child: StartSectionModal(
-                      workoutSection: widget.workoutSection))),
-        if (loggedWorkoutSection != null)
-          Center(
-              child: SizeFadeIn(
-                  child: SectionCompleteModal(
-            loggedWorkoutSection: loggedWorkoutSection,
-          )))
-      ],
-    );
+              ),
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    PageView(
+                      controller: _pageController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        DoWorkoutMovesList(
+                            workoutSection: widget.workoutSection,
+                            state: progressState),
+                        DoWorkoutProgressSummary(
+                            workoutSection: widget.workoutSection,
+                            state: progressState),
+                        DoWorkoutLapTimer(
+                            workoutSection: widget.workoutSection,
+                            state: progressState),
+                      ],
+                    ),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: DoWorkoutBottomNavBar(
+                          activePageIndex: _activePageIndex,
+                          goToPage: _goToPage,
+                          showAudioTab: showAudioTab,
+                          showingAudio: false,
+                          activateAudio: () => print('audio'),
+                          showVideoTab: showVideoTab,
+                          showingVideo: false,
+                          activateVideo: () => print('video'),
+                        )),
+                    if (!sectionHasStarted)
+                      Center(
+                          child: SizeFadeIn(
+                              child: StartSectionModal(
+                                  workoutSection: widget.workoutSection))),
+                    if (loggedWorkoutSection != null)
+                      Center(
+                          child: SizeFadeIn(
+                              child: SectionCompleteModal(
+                        loggedWorkoutSection: loggedWorkoutSection,
+                      )))
+                  ],
+                ),
+              ),
+            ],
+          );
+        });
   }
 }

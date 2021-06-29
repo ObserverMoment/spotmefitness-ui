@@ -5,13 +5,12 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/utils.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class DoWorkoutMovesList extends StatefulWidget {
@@ -116,58 +115,27 @@ class _DoWorkoutMovesListState extends State<DoWorkoutMovesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            LinearPercentIndicator(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              lineHeight: 32,
-              percent: widget.state.percentComplete,
-              backgroundColor: context.theme.primary.withOpacity(0.07),
-              progressColor: Styles.peachRed,
-              linearStrokeCap: LinearStrokeCap.roundAll,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(widget.workoutSection.workoutSectionType.name,
-                    weight: FontWeight.bold),
-                InfoPopupButton(
-                    infoWidget: MyText(
-                        'Info about the wokout type ${widget.workoutSection.workoutSectionType.name}'))
-              ],
-            ),
-          ],
-        ),
-        Expanded(
-          child: NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification notification) {
-              // https://stackoverflow.com/questions/57841166/how-to-detect-if-the-user-started-scrolling-the-listview-builder-vertically
-              // https://api.flutter.dev/flutter/widgets/ScrollStartNotification-class.html
-              if (notification is ScrollStartNotification &&
-                  notification.dragDetails != null) {
-                // Disable the auto scroll to stop bouncing the user around as they search the workout.
-                _handleUserScroll();
-              }
-              // Returning false to
-              // "allow the notification to continue to be dispatched to further ancestors".
-              return false;
-            },
-            child: ListView(
-                shrinkWrap: true,
-                controller: _autoScrollController,
-                padding: const EdgeInsets.only(bottom: kBottomNavBarHeight),
-                children: [
-                  ...List.generate(widget.workoutSection.rounds,
-                          (roundNumber) => _movesList(roundNumber))
-                      .expand((x) => x)
-                      .toList()
-                ]),
-          ),
-        ),
-      ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification notification) {
+        // https://stackoverflow.com/questions/57841166/how-to-detect-if-the-user-started-scrolling-the-listview-builder-vertically
+        // https://api.flutter.dev/flutter/widgets/ScrollStartNotification-class.html
+        if (notification is ScrollStartNotification &&
+            notification.dragDetails != null) {
+          // Disable the auto scroll to stop bouncing the user around as they search the workout.
+          _handleUserScroll();
+        }
+        // Returning false to
+        // "allow the notification to continue to be dispatched to further ancestors".
+        return false;
+      },
+      child: ListView(
+          shrinkWrap: true,
+          controller: _autoScrollController,
+          padding: const EdgeInsets.only(bottom: kBottomNavBarHeight),
+          children: List.generate(widget.workoutSection.rounds,
+                  (roundNumber) => _movesList(roundNumber))
+              .expand((x) => x)
+              .toList()),
     );
   }
 }
@@ -185,16 +153,13 @@ class _WorkoutSetInMovesList extends StatelessWidget {
       required this.workoutSectionType})
       : super(key: key);
 
-  bool _moveCompleted(int moveRoundNumber, int moveSetIndex) {
-    return state.currentSectionRound > moveRoundNumber ||
-        (state.currentSectionRound == moveRoundNumber &&
-            state.currentSetIndex > moveSetIndex);
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: _moveCompleted(roundNumber, workoutSet.sortPosition) ? 0.6 : 1,
+      opacity: DoWorkoutUtils.moveIsCompleted(
+              state, roundNumber, workoutSet.sortPosition)
+          ? 0.6
+          : 1,
       duration: kStandardAnimationDuration,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -213,7 +178,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
                       percent: 1 -
                           (state.setTimeRemainingMs! /
                               (workoutSet.duration! * 1000)),
-                      progressColor: Styles.peachRed,
+                      linearGradient: Styles.pinkGradient,
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       lineHeight: 4,
                     ),

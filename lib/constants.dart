@@ -67,6 +67,15 @@ const kLastStandingName = 'Last One Standing';
 const kAMRAPName = 'AMRAP';
 const kTabataName = 'Tabata Style';
 
+/// Do Workout Settings
+const kSectionTypesWithFinishLine = [
+  kForTimeName,
+  kHIITCircuitName,
+  kEMOMName,
+  kTabataName,
+  kFreeSessionName
+];
+
 /// BodyArea selector SVG viewbox sizes.
 /// Required to correctly render custom path clips on top of graphical SVG elements.
 const double kBodyAreaSelector_svg_width = 93.6;
