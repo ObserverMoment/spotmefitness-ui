@@ -13,7 +13,9 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 /// Barbell
 class WorkoutMoveMinimalDisplay extends StatelessWidget {
   final WorkoutMove workoutMove;
-  const WorkoutMoveMinimalDisplay({Key? key, required this.workoutMove})
+  final FONTSIZE fontSize;
+  const WorkoutMoveMinimalDisplay(
+      {Key? key, required this.workoutMove, this.fontSize = FONTSIZE.MAIN})
       : super(key: key);
 
   Widget _buildMoveRepDisplay() {
@@ -23,6 +25,7 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
       children: [
         MyText(
           workoutMove.reps.stringMyDouble(),
+          size: fontSize,
         ),
         SizedBox(
           width: 4,
@@ -31,6 +34,7 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
           workoutMove.repType == WorkoutMoveRepType.distance
               ? workoutMove.distanceUnit.shortDisplay
               : describeEnum(workoutMove.repType),
+          size: fontSize,
         ),
       ],
     );
@@ -42,12 +46,14 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
       children: [
         MyText(
           workoutMove.loadAmount.stringMyDouble(),
+          size: fontSize,
         ),
         SizedBox(
           width: 4,
         ),
         MyText(
           workoutMove.loadUnit.display,
+          size: fontSize,
         ),
       ],
     );
@@ -61,7 +67,7 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            MyText(workoutMove.move.name),
+            MyText(workoutMove.move.name, size: fontSize),
             MyText(' - '),
             _buildMoveRepDisplay(),
           ],
@@ -78,6 +84,7 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
                   child: MyText(
                     workoutMove.equipment!.name,
                     subtext: true,
+                    size: fontSize,
                   ),
                 )
             ],

@@ -159,7 +159,7 @@ class SetLapTimes extends StatelessWidget {
   SetLapTimes(this.loggedWorkoutSection, this.sectionRoundNumber);
 
   void _updateSetLapTime(
-      BuildContext context, String setId, Duration duration) {
+      BuildContext context, int setSortPosition, Duration duration) {
     final updated =
         LoggedWorkoutSection.fromJson(loggedWorkoutSection.toJson());
 
@@ -170,7 +170,10 @@ class SetLapTimes extends StatelessWidget {
       ...updated.lapTimesMs,
       sectionRoundNumber.toString(): {
         ...roundData,
-        'setLapTimesMs': {...setData, setId: duration.inMilliseconds}
+        'setLapTimesMs': {
+          ...setData,
+          setSortPosition.toString(): duration.inMilliseconds
+        }
       }
     };
 
@@ -192,7 +195,7 @@ class SetLapTimes extends StatelessWidget {
         final workoutSet = sortedSets[i];
         final setLapTime =
             loggedWorkoutSection.lapTimesMs[sectionRoundNumber.toString()]
-                ?['setLapTimesMs']?[workoutSet.id];
+                ?['setLapTimesMs']?[workoutSet.sortPosition.toString()];
 
         final duration =
             setLapTime != null ? Duration(milliseconds: setLapTime) : null;
@@ -202,7 +205,7 @@ class SetLapTimes extends StatelessWidget {
               child: DurationPicker(
                   duration: duration,
                   updateDuration: (d) =>
-                      _updateSetLapTime(context, workoutSet.id, d))),
+                      _updateSetLapTime(context, workoutSet.sortPosition, d))),
           title: 'Set ${workoutSet.sortPosition + 1}',
           display: duration != null
               ? MyText(duration.compactDisplay())

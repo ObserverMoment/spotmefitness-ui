@@ -121,8 +121,11 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 6.0, bottom: 4),
                 child: ContentBox(
+                  padding: kDefaultTagPadding,
                   child: MyText(
-                      'Duration: ${DataUtils.calculateTimedLoggedSectionDuration(loggedWorkoutSection).compactDisplay()}'),
+                    'Duration: ${DataUtils.calculateTimedLoggedSectionDuration(loggedWorkoutSection).compactDisplay()}',
+                    lineHeight: 1,
+                  ),
                 ),
               ),
             if ([kAMRAPName, kLastStandingName]

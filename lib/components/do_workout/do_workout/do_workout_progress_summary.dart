@@ -119,40 +119,74 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(6),
-
-      /// TODO: Uncomment when done.
-      // physics: NeverScrollableScrollPhysics(),
-      controller: _autoScrollController,
+    final remainingSeconds =
+        (widget.state.setTimeRemainingMs! ~/ 1000).toString();
+    return Column(
       children: [
-        AutoScrollTag(
-          controller: _autoScrollController,
-          index: 0,
-          key: Key(0.toString()),
-          child: Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MyText('Next set in'),
+            SizedBox(width: 6),
+            SizedBox(
+              width: 50,
+              child: Center(
+                child: SizeFadeIn(
+                  key: Key(remainingSeconds),
+                  child: MyText(
+                    remainingSeconds,
+                    size: FONTSIZE.DISPLAY,
+                    lineHeight: 1,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 6),
+            MyText('seconds'),
+          ],
+        ),
+        HorizontalLine(),
+        SizedBox(height: 8),
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(6),
+
+            /// TODO: Uncomment when done.
+            // physics: NeverScrollableScrollPhysics(),
+            controller: _autoScrollController,
             children: [
-              MyText('Start'),
-              HorizontalLine(),
+              AutoScrollTag(
+                controller: _autoScrollController,
+                index: 0,
+                key: Key(0.toString()),
+                child: Column(
+                  children: [
+                    MyText('Start'),
+                    HorizontalLine(),
+                  ],
+                ),
+              ),
+              ...List.generate(widget.workoutSection.rounds,
+                      (roundNumber) => _movesList(roundNumber))
+                  .expand((x) => x)
+                  .toList(),
+              if (_hasFinishLine)
+                AutoScrollTag(
+                  controller: _autoScrollController,
+                  index: _finishLineIndex,
+                  key: Key(_finishLineIndex.toString()),
+                  child: Column(
+                    children: [
+                      HorizontalLine(),
+                      MyText('Finish'),
+                      HorizontalLine(),
+                      SizedBox(height: kBottomNavBarHeight)
+                    ],
+                  ),
+                )
             ],
           ),
         ),
-        ...List.generate(widget.workoutSection.rounds,
-            (roundNumber) => _movesList(roundNumber)).expand((x) => x).toList(),
-        if (_hasFinishLine)
-          AutoScrollTag(
-            controller: _autoScrollController,
-            index: _finishLineIndex,
-            key: Key(_finishLineIndex.toString()),
-            child: Column(
-              children: [
-                HorizontalLine(),
-                MyText('Finish'),
-                HorizontalLine(),
-                SizedBox(height: kBottomNavBarHeight)
-              ],
-            ),
-          )
       ],
     );
   }

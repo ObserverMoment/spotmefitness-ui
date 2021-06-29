@@ -12,6 +12,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -33,8 +34,9 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
     final variables = CreateLoggedWorkoutArguments(
         data: CreateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
 
-    final result = await context.graphQLStore
-        .create(mutation: CreateLoggedWorkoutMutation(variables: variables));
+    final result = await context.graphQLStore.create(
+        mutation: CreateLoggedWorkoutMutation(variables: variables),
+        addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
 
     setState(() => _savingToDB = false);
 
@@ -45,7 +47,6 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
     } else {
       setState(() => _logSavedToDB = true);
     }
-    print(result);
   }
 
   void _handleExitRequest() {

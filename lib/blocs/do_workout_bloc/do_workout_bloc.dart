@@ -61,6 +61,19 @@ class DoWorkoutBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void generatePartialLog() {
+    startedSections.forEachIndexed((index, started) {
+      if (started) {
+        final sectionLog = _genLoggedWorkoutSection(index);
+        loggedWorkout.loggedWorkoutSections.add(sectionLog);
+      }
+    });
+
+    /// This will prompt the UI to route to the workout log screen.
+    allSectionsComplete = true;
+    notifyListeners();
+  }
+
   void resetSection(int sectionIndex) {
     startedSections[sectionIndex] = false;
     _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.reset);
@@ -151,14 +164,11 @@ class DoWorkoutBloc extends ChangeNotifier {
       case kEMOMName:
       case kHIITCircuitName:
         return TimedSectionController(
-            workoutSection: workoutSection,
-            stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-            markSectionComplete: () =>
-                _markSectionComplete(workoutSection.sortPosition),
-            updateLog: (sectionIndex, updatedSectionLog) {
-              print('passing log to DoWorkoutBloc');
-              print(updatedSectionLog);
-            });
+          workoutSection: workoutSection,
+          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+          markSectionComplete: () =>
+              _markSectionComplete(workoutSection.sortPosition),
+        );
 
       default:
         throw Exception(

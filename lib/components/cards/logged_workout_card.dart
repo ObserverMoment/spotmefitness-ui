@@ -15,7 +15,7 @@ class LoggedWorkoutCard extends StatelessWidget {
   LoggedWorkoutCard(this.loggedWorkout);
 
   final kNumSectionTags = 3;
-  final kNumBodyAreaTags = 5;
+  final kNumBodyAreaTags = 4;
   final kNumMoveTypeTags = 4;
 
   @override
@@ -47,6 +47,7 @@ class LoggedWorkoutCard extends StatelessWidget {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 2.0, top: 4),
@@ -67,70 +68,61 @@ class LoggedWorkoutCard extends StatelessWidget {
               ],
             ),
           ),
-          if (loggedWorkout.loggedWorkoutSections.isNotEmpty)
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: [
-                        ...moveTypes
-                            .take(kNumMoveTypeTags)
-                            .map((moveType) => Tag(
-                                  tag: moveType.name,
-                                  color: context.theme.background,
-                                  textColor: context.theme.primary,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 6, vertical: 6),
-                                ))
-                            .toList(),
-                        if (moveTypesOverflow) MyText(' ... more')
-                      ]),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-                  child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        ...loggedWorkout.loggedWorkoutSections
-                            .take(kNumSectionTags)
-                            .map((section) =>
-                                LoggedWorkoutSectionSummaryTag(section))
-                            .toList(),
-                        if (sectionTagsOverflow) MyText(' ... more')
-                      ]),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: [
-                        ...bodyAreas
-                            .take(kNumBodyAreaTags)
-                            .map((bodyArea) => Tag(
-                                tag: bodyArea.name,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 4)))
-                            .toList(),
-                        if (bodyAreasOverflow) MyText(' ... more')
-                      ]),
-                ),
-              ],
-            )
-          else
-            MyText('No sections logged...')
+          if (loggedWorkout.loggedWorkoutSections.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    ...moveTypes
+                        .take(kNumMoveTypeTags)
+                        .map((moveType) => Tag(
+                              tag: moveType.name,
+                              color: context.theme.background,
+                              textColor: context.theme.primary,
+                            ))
+                        .toList(),
+                    if (moveTypesOverflow) MyText(' ... more')
+                  ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
+              child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    ...loggedWorkout.loggedWorkoutSections
+                        .take(kNumSectionTags)
+                        .map((section) =>
+                            LoggedWorkoutSectionSummaryTag(section))
+                        .toList(),
+                    if (sectionTagsOverflow) MyText(' ... more')
+                  ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: [
+                    ...bodyAreas
+                        .take(kNumBodyAreaTags)
+                        .map((bodyArea) => Tag(
+                              tag: bodyArea.name,
+                            ))
+                        .toList(),
+                    if (bodyAreasOverflow) MyText(' ... more')
+                  ]),
+            ),
+          ] else
+            MyText('No sections logged...'),
         ],
       ),
     );

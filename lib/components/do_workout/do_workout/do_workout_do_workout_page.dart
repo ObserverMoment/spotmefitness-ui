@@ -73,7 +73,7 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
               child: MyText('Log progress, then Leave'),
               onPressed: () {
                 context.pop();
-                print('go to log');
+                context.read<DoWorkoutBloc>().generatePartialLog();
               }),
           CupertinoDialogAction(
               child: MyText('Restart the workout'),

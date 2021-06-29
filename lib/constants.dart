@@ -13,7 +13,7 @@ const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
 const kDefaultTagHeight = 28.0;
 const kDefaultTagPadding =
-    const EdgeInsets.symmetric(horizontal: 11, vertical: 8);
+    const EdgeInsets.symmetric(horizontal: 11, vertical: 6);
 const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);

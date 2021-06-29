@@ -34,20 +34,12 @@ class TimedSectionController extends WorkoutSectionController {
 
   bool _sectionComplete = false;
 
-  /// Run this to pass an updated log back up to the [DoWorkoutBloc].
-  late void Function(int sectionIndex, LoggedWorkoutSection updatedLog)
-      _updateLog;
-
   TimedSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete,
-      required void Function(
-              int sectionIndex, LoggedWorkoutSection updatedSectionLog)
-          updateLog})
+      required void Function() markSectionComplete})
       : super(workoutSection) {
     _workoutSection = workoutSection;
-    _updateLog = updateLog;
     _totalRounds = workoutSection.rounds;
     _numberSetsPerSection = workoutSection.workoutSets.length;
 

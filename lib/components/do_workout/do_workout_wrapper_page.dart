@@ -18,20 +18,8 @@ class DoWorkoutWrapperPage extends StatefulWidget {
 }
 
 class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
-  // 0 = Adjustments (optional).
-  // 1 = Do it.
-  // 2 = Log it.
-  // 3 = Share it.
-  int _pageIndex = 0;
-
   /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
   late Future<Workout> _initWorkoutFn;
-  Workout? _originalWorkout;
-
-  /// This can be identical to the original if the user does not make adjustments.
-  Workout? _adjustedWorkout;
-
-  LoggedWorkout? _loggedWorkout;
 
   Future<Workout> _getWorkoutById() async {
     final variables = WorkoutByIdArguments(id: widget.id);
@@ -44,10 +32,7 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
       throw Exception(
           'DoWorkoutWrapperPage._getWorkoutById was not able to retrieve data for workout ${widget.id}');
     } else {
-      final workout =
-          WorkoutById$Query.fromJson(response.data ?? {}).workoutById;
-      _originalWorkout = workout;
-      return workout;
+      return WorkoutById$Query.fromJson(response.data ?? {}).workoutById;
     }
   }
 

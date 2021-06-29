@@ -34,8 +34,7 @@ class YourLoggedWorkoutsPage extends StatelessWidget {
 
           return CupertinoPageScaffold(
             key: Key('YourLoggedWorkoutsPage - CupertinoPageScaffold'),
-            navigationBar: BasicNavBar(
-              heroTag: 'YourLoggedWorkoutsPage',
+            navigationBar: BorderlessNavBar(
               key: Key('YourLoggedWorkoutsPage - BasicNavBar'),
               middle: NavBarTitle('Workout Logs'),
               trailing: Row(

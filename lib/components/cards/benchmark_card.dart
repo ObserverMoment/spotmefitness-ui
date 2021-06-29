@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/Benchmark/benchmark_move_display.dart';
 import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
@@ -23,11 +23,15 @@ class BenchmarkCard extends StatelessWidget {
         : entries.reversed.toList();
   }
 
-  Widget _buildScore(int index, UserBenchmarkEntry entry) => Padding(
-        padding: const EdgeInsets.only(bottom: 3.0),
-        child: UnRaisedButtonContainer(
+  Widget _buildScore(
+          BuildContext context, int index, UserBenchmarkEntry entry) =>
+      Padding(
+        padding: const EdgeInsets.only(bottom: 4.0),
+        child: Container(
           padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
-          borderRadius: BorderRadius.circular(40),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: context.theme.background.withOpacity(0.8)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -95,7 +99,7 @@ class BenchmarkCard extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: _sortEntries()
                               .take(3)
-                              .mapIndexed((i, e) => _buildScore(i, e))
+                              .mapIndexed((i, e) => _buildScore(context, i, e))
                               .toList()),
                 ],
               ),

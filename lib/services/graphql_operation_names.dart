@@ -14,13 +14,6 @@ class GQLOpNames {
       WorkoutByIdQuery(variables: WorkoutByIdArguments(id: '')).operationName;
 
   /// List type queries where variables are not used.
-  static String get userBenchmarksQuery =>
-      UserBenchmarksQuery(variables: UserBenchmarksArguments()).operationName;
-
-  static String get userLoggedWorkoutsQuery =>
-      UserLoggedWorkoutsQuery(variables: UserLoggedWorkoutsArguments())
-          .operationName;
-
   static String get userProgressJournalsQuery =>
       UserProgressJournalsQuery().operationName;
 
