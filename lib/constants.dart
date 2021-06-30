@@ -15,6 +15,7 @@ const kDefaultTagHeight = 28.0;
 const kDefaultTagPadding =
     const EdgeInsets.symmetric(horizontal: 11, vertical: 6);
 const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';
+final kStandardCardBorderRadius = BorderRadius.circular(12);
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);
 

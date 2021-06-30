@@ -13,10 +13,10 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class DoWorkoutLapTimer extends StatelessWidget {
+class TimedSectionLapTimer extends StatelessWidget {
   final WorkoutSectionProgressState state;
   final WorkoutSection workoutSection;
-  const DoWorkoutLapTimer(
+  const TimedSectionLapTimer(
       {Key? key, required this.state, required this.workoutSection})
       : super(key: key);
 
@@ -69,7 +69,6 @@ class DoWorkoutLapTimer extends StatelessWidget {
         ? sortedWorkoutSets[0]
         : sortedWorkoutSets[state.currentSetIndex + 1];
 
-    /// TODO: For the free session this page will be a 'rest timer' (widget that needs building).
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.only(bottom: kBottomNavBarHeight),

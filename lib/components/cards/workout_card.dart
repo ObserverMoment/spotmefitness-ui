@@ -46,7 +46,7 @@ class WorkoutCard extends StatelessWidget {
         .contains(workoutSection.workoutSectionType.name)) {
       return DataUtils.calculateTimedSectionDuration(workoutSection).inSeconds;
     } else {
-      workoutSection.timecap;
+      return workoutSection.timecap;
     }
   }
 
@@ -150,7 +150,7 @@ class WorkoutCard extends StatelessWidget {
               child: Wrap(spacing: 4, runSpacing: 4, children: [
                 if (workout.lengthMinutes != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    padding: kDefaultTagPadding,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         color: context.theme.background),
@@ -162,11 +162,12 @@ class WorkoutCard extends StatelessWidget {
                           'Total: ',
                           weight: FontWeight.bold,
                           textAlign: TextAlign.center,
+                          size: FONTSIZE.SMALL,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0),
                           child: Duration(minutes: workout.lengthMinutes!)
-                              .display(bold: true),
+                              .display(bold: true, fontSize: FONTSIZE.SMALL),
                         ),
                       ],
                     ),

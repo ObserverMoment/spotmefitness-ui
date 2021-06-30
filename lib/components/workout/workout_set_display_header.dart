@@ -50,7 +50,7 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
           !showRounds ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
       children: [
         if (showRounds) MyText(_buildMainText()),
-        WorkoutSetDefinition(workoutSet)
+        if (workoutSet.workoutMoves.length > 1) WorkoutSetDefinition(workoutSet)
       ],
     );
   }

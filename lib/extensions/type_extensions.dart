@@ -84,7 +84,10 @@ extension DoubleExtension on double {
 
 extension DurationExtension on Duration {
   Widget display(
-      {Axis direction = Axis.horizontal, bool bold = false, Color? color}) {
+      {Axis direction = Axis.horizontal,
+      bool bold = false,
+      Color? color,
+      FONTSIZE fontSize = FONTSIZE.MAIN}) {
     final int minutes = this.inMinutes;
     final int seconds = this.inSeconds.remainder(60);
     final FontWeight weight = bold ? FontWeight.bold : FontWeight.normal;
@@ -96,8 +99,9 @@ extension DurationExtension on Duration {
             MyText(
               minutes.toString(),
               weight: weight,
-              lineHeight: 1.3,
+              lineHeight: 1.2,
               color: color,
+              size: fontSize,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 3.0),

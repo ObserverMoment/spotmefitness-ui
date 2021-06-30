@@ -14,19 +14,20 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class DoWorkoutProgressSummary extends StatefulWidget {
+class TimedSectionProgressSummary extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const DoWorkoutProgressSummary(
+  const TimedSectionProgressSummary(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  _DoWorkoutProgressSummaryState createState() =>
-      _DoWorkoutProgressSummaryState();
+  TimedSectionProgressSummaryState createState() =>
+      TimedSectionProgressSummaryState();
 }
 
-class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
+class TimedSectionProgressSummaryState
+    extends State<TimedSectionProgressSummary> {
   /// Logic is similar to that found in [DoWorkoutMovesList] but with no user interaction.
   /// It also needs to take into account the start line (and finish line) which are also in the scroll_to_index list. Start line has an index of 0 so everything else is pushed up one index vs the start calculation which is found in [DoWorkoutMovesList] logic.
   /// This list scrolls with progress. There is no need for the user to search it. View only.
@@ -54,7 +55,7 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
   }
 
   @override
-  void didUpdateWidget(DoWorkoutProgressSummary oldWidget) {
+  void didUpdateWidget(TimedSectionProgressSummary oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.

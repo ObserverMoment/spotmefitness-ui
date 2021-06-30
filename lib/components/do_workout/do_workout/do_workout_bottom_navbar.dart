@@ -33,26 +33,26 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _DoWorkoutBottomNavbarItem(
+                DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.list_number,
                   label: 'Moves',
                   onTap: () => goToPage(0),
                   isActive: activePageIndex == 0,
                 ),
-                _DoWorkoutBottomNavbarItem(
+                DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.chart_bar_fill,
                   label: 'Progress',
                   onTap: () => goToPage(1),
                   isActive: activePageIndex == 1,
                 ),
-                _DoWorkoutBottomNavbarItem(
+                DoWorkoutBottomNavbarItem(
                   iconData: CupertinoIcons.timer_fill,
                   label: 'Timer',
                   onTap: () => goToPage(2),
                   isActive: activePageIndex == 2,
                 ),
                 if (showAudioTab)
-                  _DoWorkoutBottomNavbarItem(
+                  DoWorkoutBottomNavbarItem(
                     iconData: CupertinoIcons.volume_up,
                     label: 'Audio',
                     onTap: toggleMuteAudio,
@@ -65,12 +65,12 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
   }
 }
 
-class _DoWorkoutBottomNavbarItem extends StatelessWidget {
+class DoWorkoutBottomNavbarItem extends StatelessWidget {
   final IconData iconData;
   final String label;
   final bool isActive;
   final void Function() onTap;
-  const _DoWorkoutBottomNavbarItem(
+  const DoWorkoutBottomNavbarItem(
       {Key? key,
       required this.iconData,
       required this.label,

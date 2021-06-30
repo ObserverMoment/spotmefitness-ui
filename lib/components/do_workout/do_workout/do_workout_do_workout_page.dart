@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_section.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_workout_section.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/docked_audio_player.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';

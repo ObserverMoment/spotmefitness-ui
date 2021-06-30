@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_workout_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -199,7 +200,7 @@ class DoWorkoutBloc extends ChangeNotifier {
   void pauseSection(int index) {
     if (_stopWatchTimers[index].isRunning) {
       _stopWatchTimers[index].onExecute.add(StopWatchExecute.stop);
-      _context.showToast(message: 'Timer Paused');
+      _context.showToast(message: 'Workout Paused');
     }
 
     _audioPlayers[index]?.pause();
@@ -222,6 +223,9 @@ class DoWorkoutBloc extends ChangeNotifier {
           markSectionComplete: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
+
+      case kAMRAPName:
+        return AMRAPSectionController(workoutSection: workoutSection);
 
       default:
         throw Exception(

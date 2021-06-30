@@ -13,18 +13,18 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
-class DoWorkoutMovesList extends StatefulWidget {
+class TimedSectionMovesList extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const DoWorkoutMovesList(
+  const TimedSectionMovesList(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  _DoWorkoutMovesListState createState() => _DoWorkoutMovesListState();
+  _TimedSectionMovesListState createState() => _TimedSectionMovesListState();
 }
 
-class _DoWorkoutMovesListState extends State<DoWorkoutMovesList> {
+class _TimedSectionMovesListState extends State<TimedSectionMovesList> {
   late AutoScrollController _autoScrollController;
 
   /// This list will auto scroll downwards as the workout progresses, with the current set at the top of the visible list.
@@ -40,7 +40,7 @@ class _DoWorkoutMovesListState extends State<DoWorkoutMovesList> {
   }
 
   @override
-  void didUpdateWidget(DoWorkoutMovesList oldWidget) {
+  void didUpdateWidget(TimedSectionMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.

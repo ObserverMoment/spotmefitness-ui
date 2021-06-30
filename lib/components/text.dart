@@ -48,7 +48,7 @@ class MyText extends StatelessWidget {
       this.maxLines = 1,
       this.color,
       this.decoration,
-      this.lineHeight = 1.4,
+      this.lineHeight = 1.3,
       this.subtext = false});
 
   @override

@@ -181,7 +181,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: Styles.colorOne,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(2),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

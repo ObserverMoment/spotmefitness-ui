@@ -31,7 +31,9 @@ class WorkoutSetDisplay extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6.0),
             child: WorkoutSetDisplayHeader(
-                workoutSet: workoutSet, workoutSectionType: workoutSectionType),
+              workoutSet: workoutSet,
+              workoutSectionType: workoutSectionType,
+            ),
           ),
           if (sortedMoves.isNotEmpty)
             Flexible(

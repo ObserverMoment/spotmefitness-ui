@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -35,7 +36,7 @@ class Card extends StatelessWidget {
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,
           boxShadow: withBoxShadow ? [Styles.cardBoxShadow] : null,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kStandardCardBorderRadius,
           image: backgroundImageUri != null
               ? DecorationImage(
                   fit: BoxFit.cover,
