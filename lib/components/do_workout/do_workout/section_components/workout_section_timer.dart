@@ -68,7 +68,7 @@ class DoWorkoutSectionTimer extends StatelessWidget {
                     child: Icon(
                       CupertinoIcons.checkmark_alt_circle_fill,
                       size: kNavbarIconSize,
-                      color: Styles.peachRed,
+                      color: Styles.pink,
                     ),
                   ))
                 : StreamBuilder<StopWatchExecute>(
@@ -83,22 +83,20 @@ class DoWorkoutSectionTimer extends StatelessWidget {
                             child: sectionHasStarted
                                 ? snapshot.data == StopWatchExecute.start
                                     ? CupertinoButton(
-                                        onPressed: () =>
-                                            getStopWatchTimerForSection(
-                                                    workoutSection.sortPosition)
-                                                .onExecute
-                                                .add(StopWatchExecute.stop),
+                                        onPressed: () => context
+                                            .read<DoWorkoutBloc>()
+                                            .pauseSection(
+                                                workoutSection.sortPosition),
                                         child: Icon(
                                           CupertinoIcons.pause_fill,
                                           size: kNavbarIconSize,
                                         ),
                                       )
                                     : CupertinoButton(
-                                        onPressed: () =>
-                                            getStopWatchTimerForSection(
-                                                    workoutSection.sortPosition)
-                                                .onExecute
-                                                .add(StopWatchExecute.start),
+                                        onPressed: () => context
+                                            .read<DoWorkoutBloc>()
+                                            .playSection(
+                                                workoutSection.sortPosition),
                                         child: Icon(
                                           CupertinoIcons.play_arrow_solid,
                                           size: kNavbarIconSize,

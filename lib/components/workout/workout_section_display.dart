@@ -24,7 +24,12 @@ import 'package:collection/collection.dart';
 class WorkoutDetailsSection extends StatelessWidget {
   final WorkoutSection workoutSection;
   final bool scrollable;
-  WorkoutDetailsSection(this.workoutSection, {this.scrollable = false});
+  final bool showMediaThumbs;
+  final bool showSectionTypeTag;
+  WorkoutDetailsSection(this.workoutSection,
+      {this.scrollable = false,
+      this.showMediaThumbs = true,
+      this.showSectionTypeTag = true});
 
   final Size _kthumbDisplaySize = Size(64, 64);
 
@@ -70,11 +75,12 @@ class WorkoutDetailsSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WorkoutSectionTypeTag(
-                workoutSection.workoutSectionType.name,
-                timecap: workoutSection.timecap,
-                fontSize: FONTSIZE.MAIN,
-              ),
+              if (showSectionTypeTag)
+                WorkoutSectionTypeTag(
+                  workoutSection.workoutSectionType.name,
+                  timecap: workoutSection.timecap,
+                  fontSize: FONTSIZE.MAIN,
+                ),
               if ([kHIITCircuitName, kTabataName, kEMOMName]
                   .contains(workoutSection.workoutSectionType.name))
                 ContentBox(
@@ -84,12 +90,13 @@ class WorkoutDetailsSection extends StatelessWidget {
             ],
           ),
           SizedBox(height: 4),
-          if (Utils.anyNotNull([
-            workoutSection.introAudioUri,
-            workoutSection.introVideoUri,
-            workoutSection.classAudioUri,
-            workoutSection.classVideoUri
-          ]))
+          if (showMediaThumbs &&
+              Utils.anyNotNull([
+                workoutSection.introAudioUri,
+                workoutSection.introVideoUri,
+                workoutSection.classAudioUri,
+                workoutSection.classVideoUri
+              ]))
             Padding(
               padding: const EdgeInsets.only(top: 10.0, bottom: 12),
               child: Row(
@@ -130,14 +137,14 @@ class WorkoutDetailsSection extends StatelessWidget {
                 children: allEquipments
                     .map((e) => Tag(
                           tag: e.name,
-                          color: context.theme.background,
+                          color: context.theme.cardBackground,
                           textColor: context.theme.primary,
                         ))
                     .toList(),
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 2.0),
+            padding: const EdgeInsets.only(top: 8, bottom: 6.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -145,7 +152,10 @@ class WorkoutDetailsSection extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      NumberRoundsIcon(workoutSection.rounds),
+                      NumberRoundsIcon(
+                        workoutSection.rounds,
+                        alignment: Axis.vertical,
+                      ),
                     ],
                   ),
                 BorderButton(
@@ -155,14 +165,14 @@ class WorkoutDetailsSection extends StatelessWidget {
                     children: [
                       SvgPicture.asset(
                         'assets/body_areas/body_button.svg',
-                        width: 46,
+                        width: 54,
                         alignment: Alignment.topCenter,
                         color: context.theme.primary.withOpacity(0.3),
                       ),
                       Icon(
                         CupertinoIcons.smallcircle_circle_fill,
                         color: Styles.infoBlue,
-                        size: 24,
+                        size: 30,
                       ),
                     ],
                   ),
@@ -187,14 +197,16 @@ class WorkoutDetailsSection extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20),
-            child: WorkoutSectionInstructions(
-              typeName: workoutSection.workoutSectionType.name,
-              rounds: workoutSection.rounds,
-              timecap: workoutSection.timecap,
+          if (workoutSection.timecap != null || workoutSection.rounds > 1)
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20),
+              child: WorkoutSectionInstructions(
+                typeName: workoutSection.workoutSectionType.name,
+                rounds: workoutSection.rounds,
+                timecap: workoutSection.timecap,
+              ),
             ),
-          ),
           if (sortedSets.isNotEmpty)
             Flexible(
               child: ListView(

@@ -162,6 +162,7 @@ abstract class Styles {
   static const Color colorFour = const Color(0xff6DD5ED);
   static const Color neonBlueOne = const Color(0xff2193B0);
   static const Color peachRed = const Color(0xffF28367);
+  static const Color pink = const Color(0xffFF5282);
   static const Color starGold = Colors.amber;
 
   // Difficulty Level Colours
@@ -201,7 +202,7 @@ abstract class Styles {
   static final pinkGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Styles.peachRed, const Color(0xffFF5282)],
+    colors: [Styles.peachRed, Styles.pink],
     stops: [0.1, 0.9],
   );
 

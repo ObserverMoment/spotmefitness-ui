@@ -174,7 +174,7 @@ class _WorkoutCircuitSetCreatorState extends State<WorkoutCircuitSetCreator> {
   String _buildStationTimeText() {
     if (_workoutSet.duration == null) {
       throw Exception(
-          '_workoutSet.duration should be set when a new station (workoutSet) is created. It should never be null at this point.');
+          '_workoutSet.duration should be set when a new station (timed workoutSet) is created. It should never be null at this point.');
     } else {
       return _workoutSet.duration!.secondsToTimeDisplay();
     }

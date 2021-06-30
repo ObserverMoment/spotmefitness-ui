@@ -22,7 +22,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
       children: [
         MyText(
           workoutMove.reps.stringMyDouble(),
-          lineHeight: 1.2,
+          lineHeight: 1,
           weight: FontWeight.bold,
         ),
         MyText(

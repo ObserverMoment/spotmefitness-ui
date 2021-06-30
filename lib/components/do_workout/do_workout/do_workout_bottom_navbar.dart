@@ -8,22 +8,16 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
   final int activePageIndex;
   final void Function(int pageIndex) goToPage;
   final bool showAudioTab;
-  final bool showingAudio;
-  final void Function() activateAudio;
-  final bool showVideoTab;
-  final bool showingVideo;
-  final void Function() activateVideo;
-  const DoWorkoutBottomNavBar(
-      {Key? key,
-      required this.showVideoTab,
-      required this.showAudioTab,
-      required this.goToPage,
-      required this.showingAudio,
-      required this.showingVideo,
-      required this.activePageIndex,
-      required this.activateAudio,
-      required this.activateVideo})
-      : super(key: key);
+  final bool muteAudio;
+  final void Function() toggleMuteAudio;
+  const DoWorkoutBottomNavBar({
+    Key? key,
+    required this.showAudioTab,
+    required this.goToPage,
+    required this.muteAudio,
+    required this.activePageIndex,
+    required this.toggleMuteAudio,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,19 +51,12 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
                   onTap: () => goToPage(2),
                   isActive: activePageIndex == 2,
                 ),
-                if (showVideoTab)
-                  _DoWorkoutBottomNavbarItem(
-                    iconData: CupertinoIcons.film_fill,
-                    label: 'Video',
-                    onTap: activateVideo,
-                    isActive: showingVideo,
-                  ),
                 if (showAudioTab)
                   _DoWorkoutBottomNavbarItem(
                     iconData: CupertinoIcons.volume_up,
                     label: 'Audio',
-                    onTap: activateAudio,
-                    isActive: showingAudio,
+                    onTap: toggleMuteAudio,
+                    isActive: !muteAudio,
                   ),
               ],
             )),

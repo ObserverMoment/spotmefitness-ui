@@ -116,7 +116,7 @@ class _DoWorkoutMovesListState extends State<DoWorkoutMovesList> {
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
-      onNotification: (ScrollNotification notification) {
+      onNotification: (notification) {
         // https://stackoverflow.com/questions/57841166/how-to-detect-if-the-user-started-scrolling-the-listview-builder-vertically
         // https://api.flutter.dev/flutter/widgets/ScrollStartNotification-class.html
         if (notification is ScrollStartNotification &&
@@ -155,6 +155,9 @@ class _WorkoutSetInMovesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isCurrentActiveSet = state.currentSectionRound == roundNumber &&
+        state.currentSetIndex == workoutSet.sortPosition;
+
     return AnimatedOpacity(
       opacity: DoWorkoutUtils.moveIsCompleted(
               state, roundNumber, workoutSet.sortPosition)
@@ -170,14 +173,15 @@ class _WorkoutSetInMovesList extends StatelessWidget {
                 workoutSet: workoutSet, workoutSectionType: workoutSectionType),
             if (state.setTimeRemainingMs != null && workoutSet.duration != null)
               GrowInOut(
-                  show: state.currentSectionRound == roundNumber &&
-                      state.currentSetIndex == workoutSet.sortPosition,
+                  show: isCurrentActiveSet,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: LinearPercentIndicator(
-                      percent: 1 -
-                          (state.setTimeRemainingMs! /
-                              (workoutSet.duration! * 1000)),
+                      percent: isCurrentActiveSet
+                          ? 1 -
+                              (state.setTimeRemainingMs! /
+                                  (workoutSet.duration! * 1000))
+                          : 0,
                       linearGradient: Styles.pinkGradient,
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       lineHeight: 4,

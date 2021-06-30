@@ -18,7 +18,7 @@ class TabataCreator extends StatelessWidget {
   final int sectionIndex;
   final List<WorkoutSet> sortedWorkoutSets;
   final int totalRounds;
-  final void Function() createWorkoutSet;
+  final void Function(Map<String, dynamic> defaults) createWorkoutSet;
   final void Function(Move move, Duration duration) createRestSet;
 
   TabataCreator({
@@ -84,9 +84,10 @@ class TabataCreator extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       CreateTextIconButton(
-                        text: 'Add Tabata',
+                        text: 'Add Set',
                         loading: creatingSet,
-                        onPressed: createWorkoutSet, // Seconds
+                        onPressed: () =>
+                            createWorkoutSet({'duration': 20}), // Seconds
                       ),
                       if (sortedWorkoutSets.isNotEmpty)
                         FadeIn(
@@ -94,7 +95,7 @@ class TabataCreator extends StatelessWidget {
                             text: 'Add Rest',
                             loading: creatingSet,
                             onPressed: () =>
-                                createRestSet(rest, Duration(seconds: 30)),
+                                createRestSet(rest, Duration(seconds: 10)),
                           ),
                         ),
                     ],

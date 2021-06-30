@@ -229,7 +229,10 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             totalRounds: _workoutSection.rounds,
             // workoutMoveIgnoreReps is used when creating a workout move for a timed workout set.
             // No need to set the reps and the length of time working is determined by workoutSet.duration.
-            createWorkoutSet: _createEmptyWorkoutSet,
+            createWorkoutSet: (defaults) => _createEmptyWorkoutSet(
+                openWorkoutMoveSelector: true,
+                workoutMoveIgnoreReps: true,
+                defaults: defaults),
             createRestSet: (restMoveObj, duration) => _createRestSet(
                 restMoveObj,
                 defaults: {'duration': duration.inSeconds}));

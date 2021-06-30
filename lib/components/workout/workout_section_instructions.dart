@@ -26,11 +26,11 @@ class WorkoutSectionInstructions extends StatelessWidget {
       case kEMOMName:
       case kHIITCircuitName:
       case kTabataName:
-        return 'Repeat this ${_getRoundsText()}.';
+        return 'Repeat everything ${_getRoundsText()}.';
       case kForTimeName:
-        return 'Repeat this ${_getRoundsText()}, as fast as possible.';
+        return 'Repeat everything ${_getRoundsText()}, as fast as possible.';
       case kAMRAPName:
-        return 'Repeat this as many times as possible in ${timecap!.secondsToTimeDisplay()}.';
+        return 'Repeat everything as many times as possible in ${timecap!.secondsToTimeDisplay()}.';
       case kLastStandingName:
         return timecap != null
             ? 'Repeat this within the timecaps for ${timecap!.secondsToTimeDisplay()}...if you can!'

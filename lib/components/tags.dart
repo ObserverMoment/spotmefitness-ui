@@ -31,7 +31,6 @@ class Tag extends StatelessWidget {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
     return Container(
-      // height: kDefaultTagHeight,
       padding: padding,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -137,7 +136,6 @@ class DifficultyLevelTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: kDefaultTagPadding,
-      height: kDefaultTagHeight,
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)

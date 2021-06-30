@@ -46,6 +46,8 @@ class DoWorkoutLapTimer extends StatelessWidget {
               .map((workoutMove) => ContentBox(
                     child: WorkoutMoveMinimalDisplay(
                       workoutMove: workoutMove,
+                      showReps: ![kTabataName, kHIITCircuitName]
+                          .contains(workoutSection.workoutSectionType.name),
                     ),
                   ))
               .toList(),

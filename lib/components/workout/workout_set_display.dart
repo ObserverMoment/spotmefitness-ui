@@ -21,20 +21,18 @@ class WorkoutSetDisplay extends StatelessWidget {
     final List<WorkoutMove> sortedMoves =
         workoutSet.workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
 
-    final bool isRestSet = workoutSet.workoutMoves.length == 1 &&
-        workoutSet.workoutMoves[0].move.id == kRestMoveId;
+    final showReps =
+        ![kTabataName, kHIITCircuitName].contains(workoutSectionType.name);
 
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isRestSet)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0),
-              child: WorkoutSetDisplayHeader(
-                  workoutSet: workoutSet,
-                  workoutSectionType: workoutSectionType),
-            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            child: WorkoutSetDisplayHeader(
+                workoutSet: workoutSet, workoutSectionType: workoutSectionType),
+          ),
           if (sortedMoves.isNotEmpty)
             Flexible(
               child: ListView(
@@ -47,6 +45,7 @@ class WorkoutSetDisplay extends StatelessWidget {
                           child: WorkoutMoveDisplay(
                             wm,
                             isLast: wm.sortPosition == sortedMoves.length - 1,
+                            showReps: showReps,
                           ),
                         ))
                     .toList(),

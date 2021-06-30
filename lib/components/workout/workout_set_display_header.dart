@@ -27,11 +27,11 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
             ? 'Within ${workoutSet.duration!.secondsToTimeDisplay()}'
             : 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"} within ${workoutSet.duration!.secondsToTimeDisplay()}';
       case kHIITCircuitName:
-        return 'Repeat for ${workoutSet.duration!.secondsToTimeDisplay()}';
+      case kTabataName:
+        return 'For ${workoutSet.duration!.secondsToTimeDisplay()}';
       case kFreeSessionName:
       case kForTimeName:
       case kAMRAPName:
-      case kTabataName:
         return 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"}';
       default:
         throw Exception(
@@ -42,18 +42,15 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showRounds = (workoutSet.rounds > 1 ||
-        [kEMOMName, kLastStandingName, kHIITCircuitName]
+        [kEMOMName, kLastStandingName, kHIITCircuitName, kTabataName]
             .contains(workoutSectionType.name));
 
-    final showSetDef = (![kTabataName].contains(workoutSectionType.name));
-
     return Row(
-      mainAxisAlignment: showSetDef && !showRounds
-          ? MainAxisAlignment.end
-          : MainAxisAlignment.spaceBetween,
+      mainAxisAlignment:
+          !showRounds ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
       children: [
         if (showRounds) MyText(_buildMainText()),
-        if (showSetDef) WorkoutSetDefinition(workoutSet)
+        WorkoutSetDefinition(workoutSet)
       ],
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -14,8 +15,12 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 class WorkoutMoveMinimalDisplay extends StatelessWidget {
   final WorkoutMove workoutMove;
   final FONTSIZE fontSize;
+  final bool showReps;
   const WorkoutMoveMinimalDisplay(
-      {Key? key, required this.workoutMove, this.fontSize = FONTSIZE.MAIN})
+      {Key? key,
+      required this.workoutMove,
+      this.fontSize = FONTSIZE.MAIN,
+      this.showReps = true})
       : super(key: key);
 
   Widget _buildMoveRepDisplay() {
@@ -68,8 +73,8 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             MyText(workoutMove.move.name, size: fontSize),
-            MyText(' - '),
-            _buildMoveRepDisplay(),
+            if (showReps) MyText(' - '),
+            if (showReps) _buildMoveRepDisplay(),
           ],
         ),
         if (workoutMove.loadAmount != 0 || workoutMove.equipment != null)
@@ -81,11 +86,8 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       left: workoutMove.loadAmount != 0 ? 6.0 : 0.0),
-                  child: MyText(
-                    workoutMove.equipment!.name,
-                    subtext: true,
-                    size: fontSize,
-                  ),
+                  child: MyText(workoutMove.equipment!.name,
+                      size: fontSize, color: Styles.colorTwo),
                 )
             ],
           ),

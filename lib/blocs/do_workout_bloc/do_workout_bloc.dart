@@ -1,10 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_workout_controller.dart';
+import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -19,6 +22,10 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// List of timers - one for each workoutSection.
   /// Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
   late List<StopWatchTimer> _stopWatchTimers;
+
+  /// [AudioPlayer]s for any sections which have [classAudioUri]. Null if no audio.
+  /// One for each section. Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
+  late List<AudioPlayer?> _audioPlayers;
 
   /// List of controllers - one for each workoutSection.
   /// Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
@@ -51,15 +58,30 @@ class DoWorkoutBloc extends ChangeNotifier {
     controllers = _sortedWorkoutSections
         .map((wSection) => _mapSectionTypeToControllerType(wSection))
         .toList();
+
+    /// One per section. Create null filled list then call async function to generate the required audio players.
+    _audioPlayers = _sortedWorkoutSections.map((wSection) => null).toList();
+    initAudioPlayers();
   }
 
-  //// Methods for user inputs - Public ////
-  void startSection(int sectionIndex) {
-    startedSections[sectionIndex] = true;
-    _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.start);
-    notifyListeners();
+  /// Constructor async helper ///
+  Future<void> initAudioPlayers() async {
+    for (final section in _sortedWorkoutSections) {
+      if (Utils.textNotNull(section.classAudioUri)) {
+        final player = await AudioPlayerController.init(
+            audioUri: section.classAudioUri!, player: AudioPlayer());
+
+        _audioPlayers = _audioPlayers
+            .mapIndexed(
+                (i, original) => i == section.sortPosition ? player : original)
+            .toList();
+
+        notifyListeners();
+      }
+    }
   }
 
+  //// User inputs - Public ////
   void generatePartialLog() {
     startedSections.forEachIndexed((index, started) {
       if (started) {
@@ -81,6 +103,8 @@ class DoWorkoutBloc extends ChangeNotifier {
     loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
         .where((lws) => lws.sortPosition != sectionIndex)
         .toList();
+    _audioPlayers[sectionIndex]?.stop();
+    _audioPlayers[sectionIndex]?.seek(Duration.zero);
     allSectionsComplete = false;
     notifyListeners();
   }
@@ -92,6 +116,8 @@ class DoWorkoutBloc extends ChangeNotifier {
       _stopWatchTimers[i].onExecute.add(StopWatchExecute.reset);
       completedSections[i] = null;
       controllers[i].reset();
+      _audioPlayers[i]?.stop();
+      _audioPlayers[i]?.seek(Duration.zero);
     });
     allSectionsComplete = false;
     loggedWorkout.loggedWorkoutSections = [];
@@ -103,6 +129,10 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// Generate the log from the section state.
   /// Then add it to completedSections and loggedWorkout.loggedWorkoutSections.
   void _markSectionComplete(int sectionIndex) {
+    /// Pause audio and stop timer if necessary.
+    _audioPlayers[sectionIndex]?.stop();
+    _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.stop);
+
     final sectionLog = _genLoggedWorkoutSection(sectionIndex);
     completedSections = completedSections
         .mapIndexed((index, nullableLog) =>
@@ -132,27 +162,51 @@ class DoWorkoutBloc extends ChangeNotifier {
         LoggedWorkoutSection.fromJson({...prev, 'note': note});
     notifyListeners();
   }
-
   ////////
 
-  //// Timer Related ////
-  /// Pause all timers.
+  //// Timer and Audio related ////
+  /// Audio playback is synced to timer progress so play / pause the timer causes play / pause the audio.
+  /// Pause all timers and audio.
   void pauseWorkout() {
     _stopWatchTimers.forEach((timer) {
       timer.onExecute.add(StopWatchExecute.stop);
+    });
+
+    _audioPlayers.forEach((player) {
+      player?.pause();
     });
   }
 
   StopWatchTimer getStopWatchTimerForSection(int index) =>
       _stopWatchTimers[index];
 
-  void pauseStopWatchTimerForSection(int index) {
+  /// For when user first starts the section from the StartSectionModal.
+  /// For play / pause use [playSection(int)]
+  void startSection(int index) {
+    startedSections[index] = true;
+    playSection(index);
+    notifyListeners();
+  }
+
+  void playSection(int index) {
+    if (!_stopWatchTimers[index].isRunning) {
+      _stopWatchTimers[index].onExecute.add(StopWatchExecute.start);
+    }
+
+    _audioPlayers[index]?.play();
+  }
+
+  void pauseSection(int index) {
     if (_stopWatchTimers[index].isRunning) {
       _stopWatchTimers[index].onExecute.add(StopWatchExecute.stop);
       _context.showToast(message: 'Timer Paused');
     }
+
+    _audioPlayers[index]?.pause();
   }
-  //// Timer Related ////
+
+  AudioPlayer? getAudioPlayerForSection(int index) => _audioPlayers[index];
+  //// Timer and Audio related ////
 
   //// Generate controllers for all sections in the workout using this mapping ////
   WorkoutSectionController _mapSectionTypeToControllerType(
@@ -161,6 +215,7 @@ class DoWorkoutBloc extends ChangeNotifier {
     switch (typeName) {
       case kEMOMName:
       case kHIITCircuitName:
+      case kTabataName:
         return TimedSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
@@ -182,6 +237,9 @@ class DoWorkoutBloc extends ChangeNotifier {
     }
     for (final t in _stopWatchTimers) {
       await t.dispose();
+    }
+    for (final p in _audioPlayers) {
+      await p?.dispose();
     }
     super.dispose();
   }

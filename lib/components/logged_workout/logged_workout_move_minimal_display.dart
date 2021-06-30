@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -9,8 +10,9 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 /// Eg. 40kg Bench Press x 10 (Barbell)
 class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
   final LoggedWorkoutMove loggedWorkoutMove;
+  final bool showReps;
   const LoggedWorkoutMoveMinimalDisplay(
-      {Key? key, required this.loggedWorkoutMove})
+      {Key? key, required this.loggedWorkoutMove, this.showReps = true})
       : super(key: key);
 
   Widget _buildMoveRepDisplay() {
@@ -52,24 +54,27 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MyText(loggedWorkoutMove.move.name),
-        MyText(' - '),
-        _buildMoveRepDisplay(),
-        if (loggedWorkoutMove.loadAmount != null &&
-            loggedWorkoutMove.loadAmount != 0)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: _buildLoadDisplay(),
-          ),
+        Row(
+          children: [
+            MyText(loggedWorkoutMove.move.name),
+            if (showReps) MyText(' - '),
+            if (showReps) _buildMoveRepDisplay(),
+            if (loggedWorkoutMove.loadAmount != null &&
+                loggedWorkoutMove.loadAmount != 0)
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: _buildLoadDisplay(),
+              ),
+          ],
+        ),
         if (loggedWorkoutMove.equipment != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: MyText(
-              '(${loggedWorkoutMove.equipment!.name})',
-              subtext: true,
-            ),
+          MyText(
+            '(${loggedWorkoutMove.equipment!.name})',
+            size: FONTSIZE.SMALL,
+            color: Styles.colorTwo,
           )
       ],
     );

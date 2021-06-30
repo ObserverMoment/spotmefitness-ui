@@ -35,9 +35,7 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
 
   void _navigateToSectionPage(int index) {
     /// Changing section page pauses the timer for the section that you were previously on + alerts users.
-    context
-        .read<DoWorkoutBloc>()
-        .pauseStopWatchTimerForSection(_activeSectionPageIndex);
+    context.read<DoWorkoutBloc>().pauseSection(_activeSectionPageIndex);
 
     _sectionPageViewController.toPage(index);
     _sectionTimerPageController.toPage(index);
@@ -100,9 +98,6 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
     final sortedWorkoutSections = widget.workout.workoutSections
         .sortedBy<num>((wSection) => wSection.sortPosition);
 
-    final classAudioUri =
-        sortedWorkoutSections[_activeSectionPageIndex].classAudioUri;
-
     return CupertinoPageScaffold(
       child: SafeArea(
         child: Stack(
@@ -141,37 +136,15 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
                   ),
                 ),
                 Expanded(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: Utils.textNotNull(classAudioUri)
-                                ? kDockedAudioPlayerHeight
-                                : 0),
-                        child: PageView(
-                          controller: _sectionPageViewController,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: sortedWorkoutSections
-                              .map((wSection) => Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: DoWorkoutSection(
-                                        workoutSection: wSection),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          left: 0,
-                          child: GrowInOut(
-                            show: Utils.textNotNull(classAudioUri),
-                            duration: kStandardAnimationDuration,
-                            child: DockedAudioPlayer(
-                              classAudioUri: classAudioUri,
-                            ),
-                          ))
-                    ],
+                  child: PageView(
+                    controller: _sectionPageViewController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: sortedWorkoutSections
+                        .map((wSection) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: DoWorkoutSection(workoutSection: wSection),
+                            ))
+                        .toList(),
                   ),
                 ),
               ],
@@ -223,15 +196,14 @@ class _SectionPageButton extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(
-                        color: completed
-                            ? Styles.peachRed
-                            : context.theme.primary)),
+                        color:
+                            completed ? Styles.pink : context.theme.primary)),
                 child: MyText(
                     workoutSection.name ??
                         'Section ${workoutSection.sortPosition + 1}',
                     weight: FontWeight.bold,
                     lineHeight: 1.2,
-                    color: completed ? Styles.peachRed : context.theme.primary),
+                    color: context.theme.primary),
               ),
               if (completed)
                 Positioned(
@@ -241,7 +213,6 @@ class _SectionPageButton extends StatelessWidget {
                       child: Icon(
                     CupertinoIcons.checkmark_alt,
                     size: 14,
-                    color: Styles.peachRed,
                   )),
                 )
             ],

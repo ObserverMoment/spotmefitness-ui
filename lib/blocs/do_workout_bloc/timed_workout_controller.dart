@@ -6,8 +6,8 @@ import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logge
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:collection/collection.dart';
 
-/// EMOM and HIITCircuit sections check the workoutSet.duration value to know when to move onto the next set.
-/// The user should try and complete the moves in the set [workoutSet.rounds] times within that time.
+/// [EMOM], [Tabata] and [HIITCircuit].
+/// These section types check the workoutSet.duration value to know when to move onto the next set. Reps are ignored in HIITCircuit and Tabata types so they should not be displayed on the UI.
 class TimedSectionController extends WorkoutSectionController {
   /// Original WorkoutSection
   late WorkoutSection _workoutSection;
@@ -27,7 +27,7 @@ class TimedSectionController extends WorkoutSectionController {
   /// A section with 3 rounds and 2 x 1 minute sets would be
   /// [[60000, 120000], [180000, 240000], [30000, 36000]]
   late List<List<int>> _setChangeTimes;
-  late StreamSubscription _timerStreamSub;
+  late StreamSubscription _timerStreamSubscription;
 
   late int _totalRounds;
   late int _totalDurationMs;
@@ -59,7 +59,7 @@ class TimedSectionController extends WorkoutSectionController {
     int _acumTime = 0;
     _setChangeTimes = List.generate(
         workoutSection.rounds,
-        (index) => workoutSection.workoutSets
+        (index) => _sortedWorkoutSets
                 // wSet.duration is in seconds in the DB. Convert it to ms.
                 .map((wSet) {
               _acumTime += wSet.duration! * 1000;
@@ -75,7 +75,8 @@ class TimedSectionController extends WorkoutSectionController {
     final updated = WorkoutSectionProgressState.copy(state);
     progressStateController.add(updated);
 
-    _timerStreamSub = stopWatchTimer.secondTime.listen((secondsElapsed) async {
+    _timerStreamSubscription =
+        stopWatchTimer.secondTime.listen((secondsElapsed) async {
       if (_sectionComplete) {
         stopWatchTimer.onExecute.add(StopWatchExecute.stop);
         return;
@@ -165,6 +166,6 @@ class TimedSectionController extends WorkoutSectionController {
 
   @override
   void dispose() async {
-    await _timerStreamSub.cancel();
+    await _timerStreamSubscription.cancel();
   }
 }

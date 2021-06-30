@@ -29,13 +29,6 @@ class MoveDetails extends StatelessWidget {
                 children: [
                   H3('Required Equipment'),
                   SizedBox(height: 10),
-                  MyText(
-                    'Equipment that you must have to be able to properly complete this move.',
-                    size: FONTSIZE.SMALL,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                  ),
-                  SizedBox(height: 10),
                   Wrap(
                     alignment: WrapAlignment.center,
                     crossAxisAlignment: WrapCrossAlignment.center,

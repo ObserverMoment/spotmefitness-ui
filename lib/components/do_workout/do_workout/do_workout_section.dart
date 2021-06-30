@@ -38,6 +38,8 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
   /// HIITCircuit / EMOM = Current set countdown. Tabata = 20s then 10s.
   int _activePageIndex = 0;
 
+  bool _muteAudio = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,19 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
   void _goToPage(int index) {
     _pageController.toPage(index);
     setState(() => _activePageIndex = index);
+  }
+
+  void _toggleMuteAudio() {
+    /// get the audio player and mute / unmute it.
+    final player = context
+        .read<DoWorkoutBloc>()
+        .getAudioPlayerForSection(widget.workoutSection.sortPosition);
+
+    if (player != null) {
+      final isMuted = player.volume == 0.0;
+      player.setVolume(isMuted ? 1.0 : 0.0);
+      setState(() => _muteAudio = !_muteAudio);
+    }
   }
 
   @override
@@ -129,11 +144,8 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
                           activePageIndex: _activePageIndex,
                           goToPage: _goToPage,
                           showAudioTab: showAudioTab,
-                          showingAudio: false,
-                          activateAudio: () => print('audio'),
-                          showVideoTab: showVideoTab,
-                          showingVideo: false,
-                          activateVideo: () => print('video'),
+                          muteAudio: _muteAudio,
+                          toggleMuteAudio: _toggleMuteAudio,
                         )),
                     if (!sectionHasStarted)
                       Center(

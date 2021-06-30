@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
@@ -30,6 +32,12 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
   /// This list scrolls with progress. There is no need for the user to search it. View only.
   late AutoScrollController _autoScrollController;
 
+  /// This list will auto scroll downwards as the workout progresses, with the current set at the top of the visible list.
+  /// When the user interacts we start a ?? second timer. During this time autoscroll is disabled, allowing the user to check whichever part of the workout they need to.
+  /// After ?? seconds we re-enable autoscroll and rejoin the flow of the workout.
+  bool _disableAutoScroll = false;
+  Timer? _enableAutoScrollTimer;
+
   late bool _hasFinishLine;
   late int _finishLineIndex;
 
@@ -50,18 +58,28 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
-    if (widget.state.currentSectionRound < widget.workoutSection.rounds) {
-      _autoScrollController.scrollToIndex(
-          _calcCurrentSetIndex(
-              widget.state.currentSectionRound, widget.state.currentSetIndex),
-          preferPosition: AutoScrollPosition.begin);
-    } else {
-      /// Go to the finish line.
-      _autoScrollController.scrollToIndex(
-          _calcCurrentSetIndex(
-              widget.state.currentSectionRound, widget.state.currentSetIndex),
-          preferPosition: AutoScrollPosition.begin);
+    if (!!_disableAutoScroll) {
+      if (widget.state.currentSectionRound < widget.workoutSection.rounds) {
+        _autoScrollController.scrollToIndex(
+            _calcCurrentSetIndex(
+                widget.state.currentSectionRound, widget.state.currentSetIndex),
+            preferPosition: AutoScrollPosition.begin);
+      } else {
+        /// Go to the finish line.
+        _autoScrollController.scrollToIndex(
+            _calcCurrentSetIndex(
+                widget.state.currentSectionRound, widget.state.currentSetIndex),
+            preferPosition: AutoScrollPosition.begin);
+      }
     }
+  }
+
+  void _handleUserScroll() {
+    setState(() => _disableAutoScroll = true);
+    _enableAutoScrollTimer = Timer(Duration(seconds: 10), () {
+      setState(() => _disableAutoScroll = false);
+      _enableAutoScrollTimer!.cancel();
+    });
   }
 
   /// Need to add 1 because the start line is also an index in this list.
@@ -103,10 +121,11 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
             index: listItemIndex,
             key: Key(listItemIndex.toString()),
             child: _TimedWorkoutSetDisplay(
-              roundNumber: roundNumber,
-              state: widget.state,
-              workoutSet: workoutSet,
-            ),
+                roundNumber: roundNumber,
+                state: widget.state,
+                workoutSet: workoutSet,
+                showReps: ![kTabataName, kHIITCircuitName]
+                    .contains(widget.workoutSection.workoutSectionType.name)),
           );
         }).toList(),
       ];
@@ -148,43 +167,54 @@ class _DoWorkoutProgressSummaryState extends State<DoWorkoutProgressSummary> {
         HorizontalLine(),
         SizedBox(height: 8),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(6),
-
-            /// TODO: Uncomment when done.
-            // physics: NeverScrollableScrollPhysics(),
-            controller: _autoScrollController,
-            children: [
-              AutoScrollTag(
-                controller: _autoScrollController,
-                index: 0,
-                key: Key(0.toString()),
-                child: Column(
-                  children: [
-                    MyText('Start'),
-                    HorizontalLine(),
-                  ],
-                ),
-              ),
-              ...List.generate(widget.workoutSection.rounds,
-                      (roundNumber) => _movesList(roundNumber))
-                  .expand((x) => x)
-                  .toList(),
-              if (_hasFinishLine)
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              // https://stackoverflow.com/questions/57841166/how-to-detect-if-the-user-started-scrolling-the-listview-builder-vertically
+              // https://api.flutter.dev/flutter/widgets/ScrollStartNotification-class.html
+              if (notification is ScrollStartNotification &&
+                  notification.dragDetails != null) {
+                // Disable the auto scroll to stop bouncing the user around as they search the workout.
+                _handleUserScroll();
+              }
+              // Returning false to
+              // "allow the notification to continue to be dispatched to further ancestors".
+              return false;
+            },
+            child: ListView(
+              padding: const EdgeInsets.all(6),
+              controller: _autoScrollController,
+              children: [
                 AutoScrollTag(
                   controller: _autoScrollController,
-                  index: _finishLineIndex,
-                  key: Key(_finishLineIndex.toString()),
+                  index: 0,
+                  key: Key(0.toString()),
                   child: Column(
                     children: [
+                      MyText('Start'),
                       HorizontalLine(),
-                      MyText('Finish'),
-                      HorizontalLine(),
-                      SizedBox(height: kBottomNavBarHeight)
                     ],
                   ),
-                )
-            ],
+                ),
+                ...List.generate(widget.workoutSection.rounds,
+                        (roundNumber) => _movesList(roundNumber))
+                    .expand((x) => x)
+                    .toList(),
+                if (_hasFinishLine)
+                  AutoScrollTag(
+                    controller: _autoScrollController,
+                    index: _finishLineIndex,
+                    key: Key(_finishLineIndex.toString()),
+                    child: Column(
+                      children: [
+                        HorizontalLine(),
+                        MyText('Finish'),
+                        HorizontalLine(),
+                        SizedBox(height: kBottomNavBarHeight)
+                      ],
+                    ),
+                  )
+              ],
+            ),
           ),
         ),
       ],
@@ -196,11 +226,13 @@ class _TimedWorkoutSetDisplay extends StatelessWidget {
   final int roundNumber;
   final WorkoutSet workoutSet;
   final WorkoutSectionProgressState state;
+  final bool showReps;
   const _TimedWorkoutSetDisplay(
       {Key? key,
       required this.workoutSet,
       required this.state,
-      required this.roundNumber})
+      required this.roundNumber,
+      this.showReps = true})
       : super(key: key);
 
   @override
@@ -233,6 +265,7 @@ class _TimedWorkoutSetDisplay extends StatelessWidget {
                 .map((workoutMove) => ContentBox(
                       child: WorkoutMoveMinimalDisplay(
                         workoutMove: workoutMove,
+                        showReps: showReps,
                       ),
                     ))
                 .toList(),

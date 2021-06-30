@@ -5,24 +5,21 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
-import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
+import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:flutter/material.dart' as material;
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// For [Tabata Style] workouts.
+/// Single move per set - set defaults to 20 seconds duration.
 class WorkoutTabataSetCreator extends StatefulWidget {
   final Key key;
   final int sectionIndex;
@@ -121,33 +118,6 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
         widget.sectionIndex, widget.setIndex, widget.setIndex + 1);
   }
 
-  void _openAddWorkoutMoveToSet() {
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => WorkoutMoveCreator(
-          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-          saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
-              widget.sectionIndex, widget.setIndex, workoutMove),
-          workoutMoveIndex: _sortedWorkoutMoves.length,
-          fixedTimeReps: FixedTimeReps(reps: 20),
-        ),
-      ),
-    );
-  }
-
-  void _addRestMoveToSet() {
-    _bloc.createWorkoutMove(
-        widget.sectionIndex,
-        widget.setIndex,
-        DefaultObjectfactory.defaultRestWorkoutMove(
-            move: widget.restMove,
-            sortPosition: _sortedWorkoutMoves.length,
-            timeAmount: 10,
-            timeUnit: TimeUnit.seconds));
-  }
-
   void _openEditWorkoutMove(WorkoutMove workoutMove) {
     // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
@@ -165,24 +135,24 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
     );
   }
 
-  void _deleteWorkoutMove(int workoutMoveIndex) {
-    _bloc.deleteWorkoutMove(
-        widget.sectionIndex, widget.setIndex, workoutMoveIndex);
-  }
+  // void _deleteWorkoutMove(int workoutMoveIndex) {
+  //   _bloc.deleteWorkoutMove(
+  //       widget.sectionIndex, widget.setIndex, workoutMoveIndex);
+  // }
 
-  void _duplicateWorkoutMove(int workoutMoveIndex) {
-    _bloc.duplicateWorkoutMove(
-        widget.sectionIndex, widget.setIndex, workoutMoveIndex);
-  }
+  // void _duplicateWorkoutMove(int workoutMoveIndex) {
+  //   _bloc.duplicateWorkoutMove(
+  //       widget.sectionIndex, widget.setIndex, workoutMoveIndex);
+  // }
 
-  void _reorderWorkoutMoves(int from, int to) {
-    _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
-  }
+  // void _reorderWorkoutMoves(int from, int to) {
+  //   _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
+  // }
 
   String _buildStationTimeText() {
     if (_workoutSet.duration == null) {
       throw Exception(
-          '_workoutSet.duration should be set when a new station (workoutSet) is created. It should never be null at this point.');
+          '_workoutSet.duration should be set when a new timed workoutSet is created. It should never be null at this point.');
     } else {
       return _workoutSet.duration!.secondsToTimeDisplay();
     }
@@ -214,56 +184,40 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                         '${widget.setIndex + 1}',
                         color: Styles.white,
                         weight: FontWeight.bold,
+                        lineHeight: 1,
                       ),
                       color: Styles.colorOne,
                       padding: const EdgeInsets.all(9),
                     ),
-                    if (isRestSet)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Row(
-                          children: [
-                            BorderButton(
-                                mini: true,
-                                text: _buildStationTimeText(),
-                                onPressed: () => context.showBottomSheet(
-                                    child: DurationPicker(
-                                        duration: Duration(
-                                            seconds: _workoutSet.duration!),
-                                        updateDuration: (duration) => context
-                                                .read<WorkoutCreatorBloc>()
-                                                .editWorkoutSet(
-                                                    widget.sectionIndex,
-                                                    widget.setIndex, {
-                                              'duration': duration.inSeconds
-                                            })))),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Tag(
-                                tag: 'REST',
-                                fontSize: FONTSIZE.SMALL,
-                              ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    BorderButton(
+                        mini: true,
+                        text: _buildStationTimeText(),
+                        onPressed: () => context.showBottomSheet(
+                            child: DurationPicker(
+                                duration:
+                                    Duration(seconds: _workoutSet.duration!),
+                                updateDuration: (duration) => context
+                                    .read<WorkoutCreatorBloc>()
+                                    .editWorkoutSet(
+                                        widget.sectionIndex,
+                                        widget.setIndex,
+                                        {'duration': duration.inSeconds})))),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        if (isRestSet)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Tag(
+                              tag: 'REST',
+                              fontSize: FONTSIZE.SMALL,
                             ),
-                          ],
-                        ),
-                      )
-                    else
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: BorderButton(
-                            mini: true,
-                            text:
-                                'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
-                            onPressed: () => context.showBottomSheet<int>(
-                                    child: NumberInputModalInt(
-                                  value: _workoutSet.rounds,
-                                  saveValue: (r) => context
-                                      .read<WorkoutCreatorBloc>()
-                                      .editWorkoutSet(widget.sectionIndex,
-                                          widget.setIndex, {'rounds': r}),
-                                  title: 'How many repeats?',
-                                ))),
-                      ),
+                          ),
+                      ],
+                    ),
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [
@@ -301,43 +255,25 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                   Column(
                     children: [
                       AnimatedContainer(
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.easeInOut,
-                        height: _sortedWorkoutMoves.length *
-                            kWorkoutMoveListItemHeight,
-                        child: material.ReorderableListView.builder(
-                            proxyDecorator: (child, index, animation) =>
-                                DraggedItem(child: child),
+                          duration: kStandardAnimationDuration,
+                          curve: Curves.easeInOut,
+                          height: _sortedWorkoutMoves.length *
+                              kWorkoutMoveListItemHeight,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: _sortedWorkoutMoves.length,
-                            itemBuilder: (context, index) => WorkoutMoveInSet(
-                                  key: Key(
-                                      '$index-workout_tabata_set_creator-${_sortedWorkoutMoves[index].id}'),
-                                  workoutMove: _sortedWorkoutMoves[index],
-                                  deleteWorkoutMove: _deleteWorkoutMove,
-                                  duplicateWorkoutMove: _duplicateWorkoutMove,
-                                  openEditWorkoutMove: _openEditWorkoutMove,
-                                  isLast:
-                                      index == _sortedWorkoutMoves.length - 1,
-                                  showReps: _sortedWorkoutMoves.length > 1,
-                                ),
-                            onReorder: _reorderWorkoutMoves),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CreateTextIconButton(
-                            text: 'Add Move',
-                            onPressed: _openAddWorkoutMoveToSet,
-                          ),
-                          if (_sortedWorkoutMoves.isNotEmpty)
-                            CreateTextIconButton(
-                              text: 'Add Rest',
-                              onPressed: _addRestMoveToSet,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () => _openEditWorkoutMove(
+                                  _sortedWorkoutMoves[index]),
+                              child: WorkoutMoveDisplay(
+                                _sortedWorkoutMoves[index],
+                                isLast: true,
+                                showReps: false,
+                              ),
                             ),
-                        ],
-                      ),
+                          )),
                     ],
                   )
               ],

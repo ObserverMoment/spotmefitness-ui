@@ -13,37 +13,33 @@ import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-/// Playes an audio file from an uploadcare uri
-class MiniAudioPlayer extends StatefulWidget {
-  final String audioUri;
-  MiniAudioPlayer({required this.audioUri});
-
-  @override
-  _MiniAudioPlayerState createState() => _MiniAudioPlayerState();
-}
-
-class _MiniAudioPlayerState extends State<MiniAudioPlayer> {
-  late AudioPlayer _player;
-
-  @override
-  void initState() {
-    super.initState();
-    _player = AudioPlayer();
-    _init();
-  }
-
-  Future<void> _init() async {
+class AudioPlayerController {
+  static Future<AudioPlayer> init(
+      {required AudioPlayer player,
+      AudioSessionConfiguration? sessionType,
+      required String audioUri,
+      LoopMode loopMode = LoopMode.one,
+      bool autoPlay = false,
+      Duration}) async {
     final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
-    // Listen to errors during playback.
-    _player.playbackEventStream.listen((event) {},
-        onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
-    });
+    await session.configure(sessionType ?? AudioSessionConfiguration.speech());
+
     try {
-      final url = await UploadcareService.getFileUrl(widget.audioUri);
+      final url = await UploadcareService.getFileUrl(audioUri);
+
       if (Utils.textNotNull(url)) {
-        await _player.setUrl(url!);
+        await player.setUrl(url!);
+        await player.setLoopMode(loopMode);
+
+        // Listen to errors during playback.
+        player.playbackEventStream.listen(null,
+            onError: (Object e, StackTrace stackTrace) {
+          print('A stream error occurred: $e');
+        });
+
+        if (autoPlay) {
+          player.play();
+        }
       } else {
         throw Exception('Could not retrieve a valid url for this file.');
       }
@@ -55,58 +51,106 @@ class _MiniAudioPlayerState extends State<MiniAudioPlayer> {
     } catch (e) {
       // Fallback for all errors
       print(e);
+    } finally {
+      return player;
     }
   }
-
-  @override
-  void dispose() {
-    _player.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0, left: 14, right: 14, bottom: 4),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: context.theme.background.withOpacity(0.7),
-                  border: Border.all(
-                      color: context.theme.primary.withOpacity(0.15))),
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      MyText('Image / icon'),
-                      Column(
-                        children: [
-                          MyText('Title'),
-                          MyText('Subtitle'),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      MyText('Play / Pause'),
-                      MyText('Stop'),
-                      MyText('Close'),
-                    ],
-                  ),
-                ],
-              )),
-        ),
-      ),
-    );
-  }
 }
+
+/// Playes an audio file from an uploadcare uri
+// class MiniAudioPlayer extends StatefulWidget {
+//   final String audioUri;
+//   MiniAudioPlayer({required this.audioUri});
+
+//   @override
+//   _MiniAudioPlayerState createState() => _MiniAudioPlayerState();
+// }
+
+// class _MiniAudioPlayerState extends State<MiniAudioPlayer> {
+//   late AudioPlayer _player;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _player = AudioPlayer();
+//     AudioPlayerController.init(player: _player);
+//   }
+
+//   Future<void> _init() async {
+//     final session = await AudioSession.instance;
+//     await session.configure(AudioSessionConfiguration.speech());
+//     // Listen to errors during playback.
+//     _player.playbackEventStream.listen((event) {},
+//         onError: (Object e, StackTrace stackTrace) {
+//       print('A stream error occurred: $e');
+//     });
+//     try {
+//       final url = await UploadcareService.getFileUrl(widget.audioUri);
+//       if (Utils.textNotNull(url)) {
+//         await _player.setUrl(url!);
+//       } else {
+//         throw Exception('Could not retrieve a valid url for this file.');
+//       }
+//     } on PlayerException catch (e) {
+//       print("Error code: ${e.code}");
+//       print("Error message: ${e.message}");
+//     } on PlayerInterruptedException catch (e) {
+//       print("Connection aborted: ${e.message}");
+//     } catch (e) {
+//       // Fallback for all errors
+//       print(e);
+//     }
+//   }
+
+//   @override
+//   void dispose() {
+//     _player.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.only(top: 10.0, left: 14, right: 14, bottom: 4),
+//       child: ClipRRect(
+//         borderRadius: BorderRadius.circular(18),
+//         child: BackdropFilter(
+//           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+//           child: Container(
+//               decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(18),
+//                   color: context.theme.background.withOpacity(0.7),
+//                   border: Border.all(
+//                       color: context.theme.primary.withOpacity(0.15))),
+//               height: 60,
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   Row(
+//                     children: [
+//                       MyText('Image / icon'),
+//                       Column(
+//                         children: [
+//                           MyText('Title'),
+//                           MyText('Subtitle'),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                   Row(
+//                     children: [
+//                       MyText('Play / Pause'),
+//                       MyText('Stop'),
+//                       MyText('Close'),
+//                     ],
+//                   ),
+//                 ],
+//               )),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 /// Playes an audio file from an uploadcare uri
 class FullAudioPlayer extends StatefulWidget {
@@ -141,37 +185,11 @@ class _FullAudioPlayerState extends State<FullAudioPlayer> {
   }
 
   Future<void> _init() async {
-    final session = await AudioSession.instance;
-    await session.configure(AudioSessionConfiguration.speech());
-
-    try {
-      final url = await UploadcareService.getFileUrl(widget.audioUri);
-      if (Utils.textNotNull(url)) {
-        await _player.setUrl(url!);
-        await _player.setLoopMode(LoopMode.one);
-        // Listen to errors during playback.
-        _player.playbackEventStream.listen(null,
-            onError: (Object e, StackTrace stackTrace) {
-          print('A stream error occurred: $e');
-        });
-        setState(() {
-          _totalDuration = _player.duration!;
-        });
-        if (widget.autoPlay) {
-          _player.play();
-        }
-      } else {
-        throw Exception('Could not retrieve a valid url for this file.');
-      }
-    } on PlayerException catch (e) {
-      print("Error code: ${e.code}");
-      print("Error message: ${e.message}");
-    } on PlayerInterruptedException catch (e) {
-      print("Connection aborted: ${e.message}");
-    } catch (e) {
-      // Fallback for all errors
-      print(e);
-    }
+    await AudioPlayerController.init(
+        player: _player, audioUri: widget.audioUri);
+    setState(() {
+      _totalDuration = _player.duration!;
+    });
   }
 
   void _handleScrubSeek(double position) {

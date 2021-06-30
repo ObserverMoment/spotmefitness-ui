@@ -31,7 +31,6 @@ dependencies:
   auto_route: ^2.2.0
   better_player: ^0.0.70
   carousel_slider: ^4.0.0
-  circular_countdown: ^2.1.0 # An arc sweep style countdown - with control over outer UI
   cupertino_icons: ^1.0.3
   custom_pop_up_menu: ^1.2.0 # Possibly remove this due to being buggy / freezing on open.
   equatable: ^2.0.0

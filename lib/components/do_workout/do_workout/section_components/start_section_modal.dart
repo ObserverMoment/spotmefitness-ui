@@ -11,10 +11,6 @@ class StartSectionModal extends StatelessWidget {
   const StartSectionModal({Key? key, required this.workoutSection})
       : super(key: key);
 
-  void _startSection(BuildContext context) {
-    context.read<DoWorkoutBloc>().startSection(workoutSection.sortPosition);
-  }
-
   @override
   Widget build(BuildContext context) {
     return SectionModalContainer(
@@ -23,13 +19,17 @@ class StartSectionModal extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(6.0),
           child: StartWorkoutCountdownButton(
-              startSectionAfterCountdown: () => _startSection(context),
-              size: 180),
+            startSectionAfterCountdown: () => context
+                .read<DoWorkoutBloc>()
+                .startSection(workoutSection.sortPosition),
+          ),
         ),
         Expanded(
           child: SingleChildScrollView(
             child: WorkoutDetailsSection(
               workoutSection,
+              showMediaThumbs: false,
+              showSectionTypeTag: false,
             ),
           ),
         ),

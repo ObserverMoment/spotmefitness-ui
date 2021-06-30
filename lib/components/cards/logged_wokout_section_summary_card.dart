@@ -35,6 +35,8 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
 
     return Column(
       children: [
+        if (Utils.textNotNull(loggedWorkoutSection.name))
+          H3('"${loggedWorkoutSection.name!}"'),
         Row(
           mainAxisAlignment: addNoteToLoggedSection != null
               ? MainAxisAlignment.spaceBetween
@@ -42,18 +44,9 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                children: [
-                  LoggedWorkoutSectionSummaryTag(
-                    loggedWorkoutSection,
-                    fontsize: FONTSIZE.MAIN,
-                  ),
-                  if (Utils.textNotNull(loggedWorkoutSection.name))
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: H3('"${loggedWorkoutSection.name!}"'),
-                    ),
-                ],
+              child: LoggedWorkoutSectionSummaryTag(
+                loggedWorkoutSection,
+                fontsize: FONTSIZE.MAIN,
               ),
             ),
             if (addNoteToLoggedSection == null &&
@@ -130,8 +123,19 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                             children: [
                               Column(
                                 children: loggedWorkoutSet.loggedWorkoutMoves
-                                    .map((m) => LoggedWorkoutMoveMinimalDisplay(
-                                        loggedWorkoutMove: m))
+                                    .map((m) => Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 3.0),
+                                          child:
+                                              LoggedWorkoutMoveMinimalDisplay(
+                                            loggedWorkoutMove: m,
+                                            showReps: ![
+                                              kTabataName,
+                                              kHIITCircuitName
+                                            ].contains(loggedWorkoutSection
+                                                .workoutSectionType.name),
+                                          ),
+                                        ))
                                     .toList(),
                               ),
                               MyText(duration.compactDisplay()),

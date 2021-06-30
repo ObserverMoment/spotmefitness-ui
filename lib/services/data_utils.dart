@@ -29,16 +29,10 @@ class DataUtils {
     switch (workoutSection.workoutSectionType.name) {
       case kHIITCircuitName:
       case kEMOMName:
-        return Duration(
-            seconds: workoutSection.rounds *
-                workoutSection.workoutSets.sumBy((s) => s.duration!));
       case kTabataName:
         return Duration(
             seconds: workoutSection.rounds *
-                workoutSection.workoutSets.sumBy((workoutSet) =>
-                    workoutSet.rounds *
-                    workoutSet.workoutMoves
-                        .sumBy((wm) => workoutMoveTimeRepsInSeconds(wm))));
+                workoutSection.workoutSets.sumBy((s) => s.duration!));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${workoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
@@ -51,14 +45,10 @@ class DataUtils {
     switch (loggedWorkoutSection.workoutSectionType.name) {
       case kHIITCircuitName:
       case kEMOMName:
+      case kTabataName:
         return Duration(
             milliseconds: loggedWorkoutSection.loggedWorkoutSets
                 .sumBy((s) => s.duration! * 1000));
-      case kTabataName:
-        return Duration(
-            milliseconds: loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
-                s.roundsCompleted *
-                s.loggedWorkoutMoves.sumBy((lwm) => lwm.reps.toInt() * 1000)));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
