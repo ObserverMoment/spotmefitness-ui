@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graph
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class LoggedWorkoutSectionBody extends StatelessWidget {
         key:
             Key('LoggedWorkoutSectionBody - ${BodyAreasQuery().operationName}'),
         query: BodyAreasQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
           return SingleChildScrollView(
             child: Padding(

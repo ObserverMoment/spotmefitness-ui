@@ -54,7 +54,7 @@ class _RepsScorePickerState<T> extends State<RepsScorePicker<T>> {
   @override
   void initState() {
     super.initState();
-    _repsPerRound = DataUtils.totalRepsPerSectionRound<T>(widget.section);
+    _repsPerRound = DataUtils.totalRepsInSection<T>(widget.section);
 
     if (widget.score != null) {
       final rounds = widget.score! ~/ _repsPerRound;

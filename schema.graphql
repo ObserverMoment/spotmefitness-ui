@@ -111,7 +111,6 @@ input CreateLoggedWorkoutInput {
 
 input CreateLoggedWorkoutMoveInLoggedSetInput {
   sortPosition: Int!
-  note: String
   repType: WorkoutMoveRepType!
   reps: Float!
   distanceUnit: DistanceUnit
@@ -124,7 +123,6 @@ input CreateLoggedWorkoutMoveInLoggedSetInput {
 
 input CreateLoggedWorkoutMoveInput {
   sortPosition: Int!
-  note: String
   repType: WorkoutMoveRepType!
   reps: Float!
   distanceUnit: DistanceUnit
@@ -140,7 +138,6 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   name: String
   note: String
   sortPosition: Int!
-  roundsCompleted: Int!
   timeTakenMs: Int
   lapTimesMs: JSON
   repScore: Int
@@ -153,7 +150,6 @@ input CreateLoggedWorkoutSectionInput {
   name: String
   note: String
   sortPosition: Int!
-  roundsCompleted: Int!
   timeTakenMs: Int
   lapTimesMs: JSON
   repScore: Int
@@ -165,12 +161,14 @@ input CreateLoggedWorkoutSectionInput {
 input CreateLoggedWorkoutSetInLoggedSectionInput {
   sortPosition: Int!
   note: String
+  roundNumber: Int!
   roundsCompleted: Int!
   duration: Int
   LoggedWorkoutMoves: [CreateLoggedWorkoutMoveInLoggedSetInput!]!
 }
 
 input CreateLoggedWorkoutSetInput {
+  roundNumber: Int!
   sortPosition: Int!
   note: String
   roundsCompleted: Int!
@@ -404,7 +402,6 @@ type LoggedWorkout {
 type LoggedWorkoutMove {
   id: ID!
   sortPosition: Int!
-  note: String
   repType: WorkoutMoveRepType!
   reps: Float!
   distanceUnit: DistanceUnit!
@@ -420,7 +417,6 @@ type LoggedWorkoutSection {
   name: String
   sortPosition: Int!
   timecap: Int
-  roundsCompleted: Int!
   timeTakenMs: Int
   lapTimesMs: JSON!
   repScore: Int
@@ -433,6 +429,7 @@ type LoggedWorkoutSection {
 type LoggedWorkoutSet {
   id: ID!
   note: String
+  roundNumber: Int!
   sortPosition: Int!
   roundsCompleted: Int!
   duration: Int
@@ -726,7 +723,6 @@ input UpdateLoggedWorkoutInput {
 
 input UpdateLoggedWorkoutMoveInput {
   id: ID!
-  note: String
   reps: Float
   distanceUnit: DistanceUnit
   loadAmount: Float
@@ -739,7 +735,6 @@ input UpdateLoggedWorkoutMoveInput {
 input UpdateLoggedWorkoutSectionInput {
   id: ID!
   name: String
-  roundsCompleted: Int
   timeTakenMs: Int
   lapTimesMs: JSON
   timecap: Int

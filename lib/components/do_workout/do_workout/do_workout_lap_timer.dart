@@ -62,10 +62,10 @@ class DoWorkoutLapTimer extends StatelessWidget {
         workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
 
     final currentSet = sortedWorkoutSets[state.currentSetIndex];
-    final nextSet =
-        state.currentSetIndex == workoutSection.workoutSets.length - 1
-            ? sortedWorkoutSets[0]
-            : workoutSection.workoutSets[state.currentSetIndex + 1];
+
+    final nextSet = state.currentSetIndex == sortedWorkoutSets.length - 1
+        ? sortedWorkoutSets[0]
+        : sortedWorkoutSets[state.currentSetIndex + 1];
 
     /// TODO: For the free session this page will be a 'rest timer' (widget that needs building).
     return SingleChildScrollView(

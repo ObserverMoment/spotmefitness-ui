@@ -2,12 +2,18 @@ import 'dart:async';
 
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:collection/collection.dart';
 
 /// EMOM and HIITCircuit sections check the workoutSet.duration value to know when to move onto the next set.
 /// The user should try and complete the moves in the set [workoutSet.rounds] times within that time.
 class TimedSectionController extends WorkoutSectionController {
+  /// Original WorkoutSection
   late WorkoutSection _workoutSection;
+
+  /// The sorted sets from the original workout section.
+  late List<WorkoutSet> _sortedWorkoutSets;
 
   /// 2D List of values representing the set change checkpoints.
   /// /// i.e. the time at which user should move onto the next set.
@@ -40,6 +46,13 @@ class TimedSectionController extends WorkoutSectionController {
       required void Function() markSectionComplete})
       : super(workoutSection) {
     _workoutSection = workoutSection;
+    _sortedWorkoutSets =
+        workoutSection.workoutSets.sortedBy<num>((s) => s.sortPosition);
+
+    /// LoggedWorkout section with empty loggedWorkoutSets list to be added to as the workout progresses.
+    loggedWorkoutSection = workoutSectionToLoggedWorkoutSection(workoutSection);
+    loggedWorkoutSection.loggedWorkoutSets = [];
+
     _totalRounds = workoutSection.rounds;
     _numberSetsPerSection = workoutSection.workoutSets.length;
 
@@ -69,6 +82,12 @@ class TimedSectionController extends WorkoutSectionController {
       } else {
         /// If need to. Update the progressState;
         if (_hasSetChangeTimePassed(secondsElapsed)) {
+          /// Update the [loggedWorkoutSection]
+          loggedWorkoutSection.loggedWorkoutSets.add(
+              workoutSetToLoggedWorkoutSet(
+                  _sortedWorkoutSets[state.currentSetIndex],
+                  state.currentSectionRound));
+
           state = _updateProgressState(secondsElapsed);
 
           /// Check for the end of the section.

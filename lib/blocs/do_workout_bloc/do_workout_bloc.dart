@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_workout_controller.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:collection/collection.dart';
@@ -121,8 +120,7 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   LoggedWorkoutSection _genLoggedWorkoutSection(int sectionIndex) {
     final LoggedWorkoutSection sectionLog =
-        workoutSectionToLoggedWorkoutSection(
-            _sortedWorkoutSections[sectionIndex]);
+        controllers[sectionIndex].loggedWorkoutSection;
     sectionLog.timeTakenMs = _stopWatchTimers[sectionIndex].rawTime.value;
     sectionLog.lapTimesMs = controllers[sectionIndex].state.lapTimesMs;
     return sectionLog;
@@ -189,6 +187,7 @@ class DoWorkoutBloc extends ChangeNotifier {
   }
 }
 
+/// Abstract parent for all workout section type sub controllers.
 abstract class WorkoutSectionController {
   /// Broadcast changes to the progress state.
   StreamController<WorkoutSectionProgressState> progressStateController =
@@ -203,6 +202,10 @@ abstract class WorkoutSectionController {
     state = WorkoutSectionProgressState(workoutSection);
     progressStateController.add(state);
   }
+
+  /// The log that will be generated incrementally as the workout progresses.
+  /// Can be retrieved by the [DoWorkoutBloc] at any stage to be added to the main [LoggedWorkout.loggedWorkoutSections] list.
+  late LoggedWorkoutSection loggedWorkoutSection;
 
   void reset();
 

@@ -36,6 +36,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       this.scheduledWorkout})
       : assert(workout != null || initialLoggedWorkout != null,
             'Must provide either a workout (to create a logged workout from) or a loggedWorkout (to edit)') {
+
     if (initialLoggedWorkout != null) {
       _isEditing = true;
       loggedWorkout = LoggedWorkout.fromJson(initialLoggedWorkout!.toJson());
@@ -118,53 +119,44 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       loggedWorkoutSections: log.loggedWorkoutSections
           .where((s) => includedSectionIds.contains(s.id))
           .sortedBy<num>((s) => s.sortPosition)
-          .asMap()
-          .map((index, section) => MapEntry(
-              index,
+          .mapIndexed((index, section) =>
               CreateLoggedWorkoutSectionInLoggedWorkoutInput(
                   name: section.name,
                   note: section.note,
                   // Not the original sortPosition, the index from within the selected sections list at [includedSectionIds]
                   sortPosition: index,
-                  roundsCompleted: section.roundsCompleted,
                   lapTimesMs: section.lapTimesMs,
                   repScore: section.repScore,
                   timeTakenMs: section.timeTakenMs,
                   timecap: section.timecap,
-                  workoutSectionType: ConnectRelationInput(
-                      id: section.workoutSectionType.id),
+                  workoutSectionType:
+                      ConnectRelationInput(id: section.workoutSectionType.id),
                   loggedWorkoutSets: section.loggedWorkoutSets
-                      .map((logSet) =>
-                          CreateLoggedWorkoutSetInLoggedSectionInput(
-                              sortPosition: logSet.sortPosition,
-                              note: logSet.note,
-                              roundsCompleted: logSet.roundsCompleted,
-                              duration: logSet.duration,
-                              loggedWorkoutMoves: logSet
-                                  .loggedWorkoutMoves
-                                  .map((logWorkoutMove) =>
-                                      CreateLoggedWorkoutMoveInLoggedSetInput(
-                                          sortPosition:
-                                              logWorkoutMove.sortPosition,
-                                          note: logWorkoutMove.note,
-                                          repType: logWorkoutMove.repType,
-                                          reps: logWorkoutMove.reps,
-                                          distanceUnit:
-                                              logWorkoutMove.distanceUnit,
-                                          loadAmount: logWorkoutMove.loadAmount,
-                                          loadUnit: logWorkoutMove.loadUnit,
-                                          timeUnit: logWorkoutMove.timeUnit,
-                                          equipment:
-                                              logWorkoutMove.equipment != null
-                                                  ? ConnectRelationInput(
-                                                      id: logWorkoutMove
-                                                          .equipment!.id)
-                                                  : null,
-                                          move: ConnectRelationInput(
-                                              id: logWorkoutMove.move.id)))
-                                  .toList()))
-                      .toList())))
-          .values
+                      .map((logSet) => CreateLoggedWorkoutSetInLoggedSectionInput(
+                          sortPosition: logSet.sortPosition,
+                          note: logSet.note,
+                          roundNumber: logSet.roundNumber,
+                          roundsCompleted: logSet.roundsCompleted,
+                          duration: logSet.duration,
+                          loggedWorkoutMoves: logSet.loggedWorkoutMoves
+                              .map((logWorkoutMove) =>
+                                  CreateLoggedWorkoutMoveInLoggedSetInput(
+                                      sortPosition: logWorkoutMove.sortPosition,
+                                      repType: logWorkoutMove.repType,
+                                      reps: logWorkoutMove.reps,
+                                      distanceUnit: logWorkoutMove.distanceUnit,
+                                      loadAmount: logWorkoutMove.loadAmount,
+                                      loadUnit: logWorkoutMove.loadUnit,
+                                      timeUnit: logWorkoutMove.timeUnit,
+                                      equipment: logWorkoutMove.equipment !=
+                                              null
+                                          ? ConnectRelationInput(
+                                              id: logWorkoutMove.equipment!.id)
+                                          : null,
+                                      move: ConnectRelationInput(
+                                          id: logWorkoutMove.move.id)))
+                              .toList()))
+                      .toList()))
           .toList(),
     );
 
@@ -197,7 +189,10 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       final result = await context.graphQLStore.mutate(
         mutation: UpdateLoggedWorkoutMutation(variables: variables),
         customVariablesMap: {
-          'data': {'id': loggedWorkout.id, 'gymProfile': profile?.toJson()}
+          'data': {
+            'id': loggedWorkout.id,
+            'GymProfile': profile == null ? null : {'id': profile.id}
+          }
         },
         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
       );
@@ -277,88 +272,102 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   /// Write to store when the user closes the section editing screen.
   ///
   /// When updating "score" inputs (section reps, time, rounds) we check if the section is being included in the log via [includedSectionIds]. If the user is entering a score for this section then we can assume that they want to include it and so should update this automatically.
-  Future<void> updateSectionRepsScore(int sectionIndex, int repScore) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    final updated = LoggedWorkoutSection.fromJson({
-      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-      'repScore': repScore
-    });
+  // Future<void> updateSectionRepsScore(int sectionIndex, int repScore) async {
+  //   _backupSectionAndMarkDirty(sectionIndex);
+  //   final updated = LoggedWorkoutSection.fromJson({
+  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+  //     'repScore': repScore
+  //   });
 
-    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-        .toList();
+  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+  //       .toList();
 
-    /// Add to included section if not already there.
-    if (!includedSectionIds.contains(updated.id)) {
-      includedSectionIds.add(updated.id);
-    }
+  //   /// Add to included section if not already there.
+  //   if (!includedSectionIds.contains(updated.id)) {
+  //     includedSectionIds.add(updated.id);
+  //   }
 
-    notifyListeners();
+  //   notifyListeners();
 
-    if (_isEditing) {
-      await apiUpdateLoggedWorkoutSection(
-          loggedWorkout.loggedWorkoutSections[sectionIndex]);
-    }
-  }
+  //   if (_isEditing) {
+  //     await apiUpdateLoggedWorkoutSection(
+  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
+  //   }
+  // }
 
-  Future<void> updateSectionTimeTakenMs(
-      int sectionIndex, int timeTakenMs) async {
-    _backupSectionAndMarkDirty(sectionIndex);
+  // Future<void> updateSectionTimeTakenMs(
+  //     int sectionIndex, int timeTakenMs) async {
+  //   _backupSectionAndMarkDirty(sectionIndex);
 
-    final updated = LoggedWorkoutSection.fromJson({
-      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-      'timeTakenMs': timeTakenMs
-    });
+  //   final updated = LoggedWorkoutSection.fromJson({
+  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+  //     'timeTakenMs': timeTakenMs
+  //   });
 
-    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-        .toList();
+  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+  //       .toList();
 
-    /// Add to included section if not already there.
-    if (!includedSectionIds.contains(updated.id)) {
-      includedSectionIds.add(updated.id);
-    }
+  //   /// Add to included section if not already there.
+  //   if (!includedSectionIds.contains(updated.id)) {
+  //     includedSectionIds.add(updated.id);
+  //   }
 
-    notifyListeners();
+  //   notifyListeners();
 
-    if (_isEditing) {
-      await apiUpdateLoggedWorkoutSection(
-          loggedWorkout.loggedWorkoutSections[sectionIndex]);
-    }
-  }
+  //   if (_isEditing) {
+  //     await apiUpdateLoggedWorkoutSection(
+  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
+  //   }
+  // }
 
-  Future<void> updateSectionRoundsCompleted(
-      int sectionIndex, int roundsCompleted) async {
-    _backupSectionAndMarkDirty(sectionIndex);
+  // Future<void> updateSectionRoundsCompleted(
+  //     int sectionIndex, int roundsCompleted) async {
+  //   _backupSectionAndMarkDirty(sectionIndex);
 
-    final updated = LoggedWorkoutSection.fromJson({
-      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-      'roundsCompleted': roundsCompleted
-    });
+  //   final updated = LoggedWorkoutSection.fromJson({
+  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+  //     'roundsCompleted': roundsCompleted
+  //   });
 
-    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-        .toList();
+  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+  //       .toList();
 
-    /// Add to included section if not already there.
-    if (!includedSectionIds.contains(updated.id)) {
-      includedSectionIds.add(updated.id);
-    }
+  //   /// Add to included section if not already there.
+  //   if (!includedSectionIds.contains(updated.id)) {
+  //     includedSectionIds.add(updated.id);
+  //   }
 
-    notifyListeners();
+  //   notifyListeners();
 
-    if (_isEditing) {
-      await apiUpdateLoggedWorkoutSection(
-          loggedWorkout.loggedWorkoutSections[sectionIndex]);
-    }
-  }
+  //   if (_isEditing) {
+  //     await apiUpdateLoggedWorkoutSection(
+  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
+  //   }
+  // }
 
   /// Also calls the API to update the DB.
   /// Does not write to graphql store.
   Future<void> editLoggedWorkoutSection(
-      int sectionIndex, LoggedWorkoutSection section) async {
+      int sectionIndex, Map<String, dynamic> data) async {
     _backupSectionAndMarkDirty(sectionIndex);
-    loggedWorkout.loggedWorkoutSections[sectionIndex] = section;
+
+    final updated = LoggedWorkoutSection.fromJson({
+      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
+      ...data,
+    });
+
+    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
+        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
+        .toList();
+
+    /// Add to included sections if not already there.
+    if (!includedSectionIds.contains(updated.id)) {
+      includedSectionIds.add(updated.id);
+    }
+
     notifyListeners();
 
     if (_isEditing) {

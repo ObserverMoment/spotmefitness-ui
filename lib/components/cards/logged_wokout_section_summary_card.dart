@@ -12,6 +12,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:supercharged/supercharged.dart';
 
 /// Summary of the list of moves from a logged section, with a smaller footprint.
 /// Simple text style list of moves + laptimes if they exist for each set.
@@ -28,13 +29,16 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sortedSets = loggedWorkoutSection.loggedWorkoutSets
-        .sortedBy<num>((ls) => ls.sortPosition);
+    final loggedWorkoutSetsBySectionRound = loggedWorkoutSection
+        .loggedWorkoutSets
+        .groupBy<int, LoggedWorkoutSet>((lwSet) => lwSet.roundNumber);
 
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: addNoteToLoggedSection != null
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -74,59 +78,74 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                           inputValidation: (t) => true)))
           ],
         ),
-        ...List.generate(loggedWorkoutSection.roundsCompleted, (sectionRound) {
-          final int sectionRoundTimeMs = loggedWorkoutSection
-              .lapTimesMs[sectionRound.toString()]?['lapTimeMs'];
 
-          final roundDuration = Duration(milliseconds: sectionRoundTimeMs);
+        /// Similar to [LoggedWorkout > LoggedWorkoutSectionTimes] logic.
+        Expanded(
+          child: ListView(
+            shrinkWrap: true,
+            children: loggedWorkoutSetsBySectionRound.keys
+                .sortedBy<num>((roundNumber) => roundNumber)
+                .map((roundNumber) {
+              final int sectionRoundTimeMs = loggedWorkoutSection
+                  .lapTimesMs[roundNumber.toString()]?['lapTimeMs'];
 
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              final roundDuration = Duration(milliseconds: sectionRoundTimeMs);
+
+              final sortedSetsInSectionRound =
+                  loggedWorkoutSetsBySectionRound[roundNumber]!
+                      .sortedBy<num>((s) => s.sortPosition);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 4.0),
+                child: Column(
                   children: [
-                    MyText(
-                      'Round ${sectionRound + 1}',
-                      color: Styles.infoBlue,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MyText(
+                          'Round ${roundNumber + 1}',
+                          color: Styles.infoBlue,
+                        ),
+                        MyText(
+                          roundDuration.compactDisplay(),
+                          color: Styles.infoBlue,
+                        )
+                      ],
                     ),
-                    MyText(
-                      roundDuration.compactDisplay(),
-                      color: Styles.infoBlue,
-                    )
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 12.0, top: 2, bottom: 2),
+                      child: Column(
+                        children:
+                            sortedSetsInSectionRound.map((loggedWorkoutSet) {
+                          final int setLapTime = loggedWorkoutSection
+                                      .lapTimesMs[roundNumber.toString()]
+                                  ['setLapTimesMs']
+                              [loggedWorkoutSet.sortPosition.toString()];
+
+                          final duration = Duration(milliseconds: setLapTime);
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: loggedWorkoutSet.loggedWorkoutMoves
+                                    .map((m) => LoggedWorkoutMoveMinimalDisplay(
+                                        loggedWorkoutMove: m))
+                                    .toList(),
+                              ),
+                              MyText(duration.compactDisplay()),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, top: 2, bottom: 2),
-                  child: Column(
-                    children: sortedSets.map((loggedWorkoutSet) {
-                      final int setLapTime = loggedWorkoutSection
-                                  .lapTimesMs[sectionRound.toString()]
-                              ['setLapTimesMs']
-                          [loggedWorkoutSet.sortPosition.toString()];
-
-                      final duration = Duration(milliseconds: setLapTime);
-
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: loggedWorkoutSet.loggedWorkoutMoves
-                                .map((m) => LoggedWorkoutMoveMinimalDisplay(
-                                    loggedWorkoutMove: m))
-                                .toList(),
-                          ),
-                          MyText(duration.compactDisplay()),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          );
-        })
+              );
+            }).toList(),
+          ),
+        ),
       ],
     );
   }

@@ -12,6 +12,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:supercharged/supercharged.dart';
 
 class LoggedWorkoutSectionTimes extends StatefulWidget {
   final int sectionIndex;
@@ -27,14 +28,8 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
 
   void _updateSectionTimecap(
       LoggedWorkoutSection loggedWorkoutSection, Duration duration) {
-    final updated =
-        LoggedWorkoutSection.fromJson(loggedWorkoutSection.toJson());
-
-    updated.timecap = duration.inSeconds;
-
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .editLoggedWorkoutSection(widget.sectionIndex, updated);
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSection(
+        widget.sectionIndex, {'timecap': duration.inSeconds});
   }
 
   void _updateSectionLapTime(LoggedWorkoutSection loggedWorkoutSection,
@@ -44,7 +39,7 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
 
     final prevRoundData = updated.lapTimesMs[roundIndex.toString()] ?? {};
 
-    updated.lapTimesMs = {
+    final updatedLapTimesMs = {
       ...updated.lapTimesMs,
       roundIndex.toString(): {
         ...prevRoundData,
@@ -52,9 +47,8 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
       }
     };
 
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .editLoggedWorkoutSection(widget.sectionIndex, updated);
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSection(
+        widget.sectionIndex, {'lapTimesMs': updatedLapTimesMs});
   }
 
   @override
@@ -62,6 +56,10 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
     final loggedWorkoutSection =
         context.select<LoggedWorkoutCreatorBloc, LoggedWorkoutSection>(
             (b) => b.loggedWorkout.loggedWorkoutSections[widget.sectionIndex]);
+
+    final loggedWorkoutSetsBySectionRound = loggedWorkoutSection
+        .loggedWorkoutSets
+        .groupBy<int, LoggedWorkoutSet>((lwSet) => lwSet.roundNumber);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -106,47 +104,50 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
             ),
           ),
           Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: List.generate(loggedWorkoutSection.roundsCompleted,
-                  (sectionRound) {
-                final sectionRoundTimeMs = loggedWorkoutSection
-                    .lapTimesMs[sectionRound.toString()]?['lapTimeMs'];
+              child: ListView(
+            shrinkWrap: true,
+            children: loggedWorkoutSetsBySectionRound.keys
+                .sortedBy<num>((roundNumber) => roundNumber)
+                .map((roundNumber) {
+              final sectionRoundTimeMs = loggedWorkoutSection
+                  .lapTimesMs[roundNumber.toString()]?['lapTimeMs'];
 
-                final duration = sectionRoundTimeMs != null
-                    ? Duration(milliseconds: sectionRoundTimeMs)
-                    : null;
+              final duration = sectionRoundTimeMs != null
+                  ? Duration(milliseconds: sectionRoundTimeMs)
+                  : null;
 
-                return Column(
-                  children: [
-                    TappableRow(
-                      onTap: () => context.showBottomSheet(
-                          child: DurationPicker(
-                              duration: duration,
-                              updateDuration: (d) => _updateSectionLapTime(
-                                  loggedWorkoutSection, sectionRound, d))),
-                      title: 'Round ${sectionRound + 1}',
-                      display: duration != null
-                          ? MyText(duration.compactDisplay())
-                          : MyText(
-                              'Add time...',
-                              subtext: true,
-                            ),
-                    ),
-                    if (_showSetLapTimes)
-                      FadeIn(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 32.0),
-                          child:
-                              SetLapTimes(loggedWorkoutSection, sectionRound),
-                        ),
+              return Column(
+                children: [
+                  TappableRow(
+                    onTap: () => context.showBottomSheet(
+                        child: DurationPicker(
+                            duration: duration,
+                            updateDuration: (d) => _updateSectionLapTime(
+                                loggedWorkoutSection, roundNumber, d))),
+                    title: 'Round ${roundNumber + 1}',
+                    display: duration != null
+                        ? MyText(duration.compactDisplay())
+                        : MyText(
+                            'Add time...',
+                            subtext: true,
+                          ),
+                  ),
+                  if (_showSetLapTimes)
+                    FadeIn(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 32.0),
+                        child: SetLapTimes(
+                            loggedWorkoutSection: loggedWorkoutSection,
+                            loggedWorkoutSets:
+                                loggedWorkoutSetsBySectionRound[roundNumber]!,
+                            sectionRoundNumber: roundNumber),
                       ),
-                    HorizontalLine()
-                  ],
-                );
-              }),
-            ),
-          )
+                    ),
+                  HorizontalLine()
+                ],
+              );
+            }).toList(),
+          )),
         ],
       ),
     );
@@ -155,8 +156,12 @@ class _LoggedWorkoutSectionTimesState extends State<LoggedWorkoutSectionTimes> {
 
 class SetLapTimes extends StatelessWidget {
   final LoggedWorkoutSection loggedWorkoutSection;
+  final List<LoggedWorkoutSet> loggedWorkoutSets;
   final int sectionRoundNumber;
-  SetLapTimes(this.loggedWorkoutSection, this.sectionRoundNumber);
+  SetLapTimes(
+      {required this.loggedWorkoutSection,
+      required this.sectionRoundNumber,
+      required this.loggedWorkoutSets});
 
   void _updateSetLapTime(
       BuildContext context, int setSortPosition, Duration duration) {
@@ -166,7 +171,7 @@ class SetLapTimes extends StatelessWidget {
     final roundData = updated.lapTimesMs[sectionRoundNumber.toString()] ?? {};
     final setData = roundData?['setLapTimesMs'] ?? {};
 
-    updated.lapTimesMs = {
+    final updatedLapTimesMs = {
       ...updated.lapTimesMs,
       sectionRoundNumber.toString(): {
         ...roundData,
@@ -177,15 +182,13 @@ class SetLapTimes extends StatelessWidget {
       }
     };
 
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .editLoggedWorkoutSection(loggedWorkoutSection.sortPosition, updated);
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSection(
+        loggedWorkoutSection.sortPosition, {'lapTimesMs': updatedLapTimesMs});
   }
 
   @override
   Widget build(BuildContext context) {
-    final sortedSets = loggedWorkoutSection.loggedWorkoutSets
-        .sortedBy<num>((s) => s.sortPosition);
+    final sortedSets = loggedWorkoutSets.sortedBy<num>((s) => s.sortPosition);
 
     return ListView.builder(
       shrinkWrap: true,

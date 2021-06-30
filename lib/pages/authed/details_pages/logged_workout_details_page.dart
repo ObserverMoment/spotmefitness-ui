@@ -20,6 +20,7 @@ import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_sel
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -95,6 +96,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         key: Key('LoggedWorkoutDetailsPage - ${query.operationName}'),
         query: query,
         parameterizeQuery: true,
+        fetchPolicy: QueryFetchPolicy.networkOnly,
         loadingIndicator: ShimmerDetailsPage(title: 'Finding log...'),
         builder: (data) {
           final log = data.loggedWorkoutById;
@@ -126,8 +128,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
 
               return CupertinoPageScaffold(
                 key: Key('LoggedWorkoutDetailsPage - CupertinoPageScaffold'),
-                navigationBar: BasicNavBar(
-                  heroTag: 'LoggedWorkoutDetailsPage',
+                navigationBar: BorderlessNavBar(
                   key: Key('LoggedWorkoutDetailsPage - BasicNavBar'),
                   middle: NavBarTitle(log.name),
                   trailing: CupertinoButton(
@@ -147,10 +148,6 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                           BottomSheetMenuItem(
                               text: 'Do again',
                               icon: Icon(CupertinoIcons.repeat),
-                              onPressed: () => print('repeat flow')),
-                          BottomSheetMenuItem(
-                              text: 'Original workout',
-                              icon: Icon(CupertinoIcons.eye),
                               onPressed: () => print('go to original workout')),
                           BottomSheetMenuItem(
                               text: 'Export',

@@ -35,10 +35,11 @@ LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
   return LoggedWorkoutSection()
     ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
     ..name = workoutSection.name
-    ..loggedWorkoutSets =
-        workoutSetsToLoggedWorkoutSets(workoutSection.workoutSets)
-            .sortedBy<num>((ws) => ws.sortPosition)
-    ..roundsCompleted = workoutSection.rounds
+    ..loggedWorkoutSets = List.generate(
+        workoutSection.rounds,
+        (roundNumber) => workoutSetsToLoggedWorkoutSets(
+                workoutSection.workoutSets, roundNumber)
+            .sortedBy<num>((ws) => ws.sortPosition)).expand((x) => x).toList()
     ..lapTimesMs = {}
     ..timecap = workoutSection.timecap
     ..sortPosition = workoutSection.sortPosition
@@ -47,18 +48,25 @@ LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
 }
 
 List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
-    List<WorkoutSet> workoutSets) {
-  final uuid = Uuid();
+    List<WorkoutSet> workoutSets, int roundNumber) {
   return workoutSets
-      .map((workoutSet) => LoggedWorkoutSet()
-        ..id = 'temp - loggedWorkoutSet:${uuid.v1()}'
-        ..sortPosition = workoutSet.sortPosition
-        ..roundsCompleted = workoutSet.rounds
-        ..duration = workoutSet.duration
-        ..loggedWorkoutMoves =
-            workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
-                .sortedBy<num>((wm) => wm.sortPosition))
+      .map(
+          (workoutSet) => workoutSetToLoggedWorkoutSet(workoutSet, roundNumber))
       .toList();
+}
+
+LoggedWorkoutSet workoutSetToLoggedWorkoutSet(
+    WorkoutSet workoutSet, int roundNumber) {
+  final uuid = Uuid();
+  return LoggedWorkoutSet()
+    ..id = 'temp - loggedWorkoutSet:${uuid.v1()}'
+    ..sortPosition = workoutSet.sortPosition
+    ..roundNumber = roundNumber
+    ..roundsCompleted = workoutSet.rounds
+    ..duration = workoutSet.duration
+    ..loggedWorkoutMoves =
+        workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
+            .sortedBy<num>((wm) => wm.sortPosition);
 }
 
 List<LoggedWorkoutMove> workoutMovesToLoggedWorkoutMoves(

@@ -281,7 +281,6 @@ mixin LoggedWorkoutMoveMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
   late String id;
-  String? note;
   late int sortPosition;
   late double reps;
   @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
@@ -302,6 +301,7 @@ mixin LoggedWorkoutSetMixin {
   late int roundsCompleted;
   int? duration;
   late int sortPosition;
+  late int roundNumber;
 }
 mixin LoggedWorkoutSectionMixin {
   @JsonKey(name: '__typename')
@@ -310,7 +310,6 @@ mixin LoggedWorkoutSectionMixin {
   String? name;
   String? note;
   int? timecap;
-  late int roundsCompleted;
   int? repScore;
   int? timeTakenMs;
   @JsonKey(fromJson: fromGraphQLJsonToDartMap, toJson: fromDartMapToGraphQLJson)
@@ -2478,7 +2477,6 @@ class LoggedWorkoutMove extends JsonSerializable
   List<Object?> get props => [
         $$typename,
         id,
-        note,
         sortPosition,
         reps,
         repType,
@@ -2512,6 +2510,7 @@ class LoggedWorkoutSet extends JsonSerializable
         roundsCompleted,
         duration,
         sortPosition,
+        roundNumber,
         loggedWorkoutMoves
       ];
   @override
@@ -2539,7 +2538,6 @@ class LoggedWorkoutSection extends JsonSerializable
         name,
         note,
         timecap,
-        roundsCompleted,
         repScore,
         timeTakenMs,
         lapTimesMs,
@@ -2760,7 +2758,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
     with EquatableMixin {
   CreateLoggedWorkoutMoveInLoggedSetInput(
       {required this.sortPosition,
-      this.note,
       required this.repType,
       required this.reps,
       this.distanceUnit,
@@ -2775,8 +2772,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
       _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
 
   late int sortPosition;
-
-  String? note;
 
   @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
   late WorkoutMoveRepType repType;
@@ -2803,7 +2798,6 @@ class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
   @override
   List<Object?> get props => [
         sortPosition,
-        note,
         repType,
         reps,
         distanceUnit,
@@ -2825,7 +2819,6 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
       {this.name,
       this.note,
       required this.sortPosition,
-      required this.roundsCompleted,
       this.timeTakenMs,
       this.lapTimesMs,
       this.repScore,
@@ -2842,8 +2835,6 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
   String? note;
 
   late int sortPosition;
-
-  late int roundsCompleted;
 
   int? timeTakenMs;
 
@@ -2867,7 +2858,6 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
         name,
         note,
         sortPosition,
-        roundsCompleted,
         timeTakenMs,
         lapTimesMs,
         repScore,
@@ -2886,6 +2876,7 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
   CreateLoggedWorkoutSetInLoggedSectionInput(
       {required this.sortPosition,
       this.note,
+      required this.roundNumber,
       required this.roundsCompleted,
       this.duration,
       required this.loggedWorkoutMoves});
@@ -2898,6 +2889,8 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
 
   String? note;
 
+  late int roundNumber;
+
   late int roundsCompleted;
 
   int? duration;
@@ -2906,8 +2899,14 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
   late List<CreateLoggedWorkoutMoveInLoggedSetInput> loggedWorkoutMoves;
 
   @override
-  List<Object?> get props =>
-      [sortPosition, note, roundsCompleted, duration, loggedWorkoutMoves];
+  List<Object?> get props => [
+        sortPosition,
+        note,
+        roundNumber,
+        roundsCompleted,
+        duration,
+        loggedWorkoutMoves
+      ];
   @override
   Map<String, dynamic> toJson() =>
       _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(this);
@@ -3036,8 +3035,15 @@ class CreateLoggedWorkoutSet extends JsonSerializable
       _$CreateLoggedWorkoutSetFromJson(json);
 
   @override
-  List<Object?> get props =>
-      [$$typename, id, note, roundsCompleted, duration, sortPosition];
+  List<Object?> get props => [
+        $$typename,
+        id,
+        note,
+        roundsCompleted,
+        duration,
+        sortPosition,
+        roundNumber
+      ];
   @override
   Map<String, dynamic> toJson() => _$CreateLoggedWorkoutSetToJson(this);
 }
@@ -3062,7 +3068,8 @@ class CreateLoggedWorkoutSet$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class CreateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
   CreateLoggedWorkoutSetInput(
-      {required this.sortPosition,
+      {required this.roundNumber,
+      required this.sortPosition,
       this.note,
       required this.roundsCompleted,
       this.duration,
@@ -3070,6 +3077,8 @@ class CreateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
 
   factory CreateLoggedWorkoutSetInput.fromJson(Map<String, dynamic> json) =>
       _$CreateLoggedWorkoutSetInputFromJson(json);
+
+  late int roundNumber;
 
   late int sortPosition;
 
@@ -3083,8 +3092,14 @@ class CreateLoggedWorkoutSetInput extends JsonSerializable with EquatableMixin {
   late ConnectRelationInput loggedWorkoutSection;
 
   @override
-  List<Object?> get props =>
-      [sortPosition, note, roundsCompleted, duration, loggedWorkoutSection];
+  List<Object?> get props => [
+        roundNumber,
+        sortPosition,
+        note,
+        roundsCompleted,
+        duration,
+        loggedWorkoutSection
+      ];
   @override
   Map<String, dynamic> toJson() => _$CreateLoggedWorkoutSetInputToJson(this);
 }
@@ -3098,8 +3113,15 @@ class UpdateLoggedWorkoutSet extends JsonSerializable
       _$UpdateLoggedWorkoutSetFromJson(json);
 
   @override
-  List<Object?> get props =>
-      [$$typename, id, note, roundsCompleted, duration, sortPosition];
+  List<Object?> get props => [
+        $$typename,
+        id,
+        note,
+        roundsCompleted,
+        duration,
+        sortPosition,
+        roundNumber
+      ];
   @override
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutSetToJson(this);
 }
@@ -4079,7 +4101,6 @@ class UpdateLoggedWorkoutSection extends JsonSerializable
         name,
         note,
         timecap,
-        roundsCompleted,
         repScore,
         timeTakenMs,
         lapTimesMs,
@@ -4114,7 +4135,6 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
   UpdateLoggedWorkoutSectionInput(
       {required this.id,
       this.name,
-      this.roundsCompleted,
       this.timeTakenMs,
       this.lapTimesMs,
       this.timecap,
@@ -4127,8 +4147,6 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
   late String id;
 
   String? name;
-
-  int? roundsCompleted;
 
   int? timeTakenMs;
 
@@ -4144,16 +4162,8 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
   String? note;
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        roundsCompleted,
-        timeTakenMs,
-        lapTimesMs,
-        timecap,
-        repScore,
-        note
-      ];
+  List<Object?> get props =>
+      [id, name, timeTakenMs, lapTimesMs, timecap, repScore, note];
   @override
   Map<String, dynamic> toJson() =>
       _$UpdateLoggedWorkoutSectionInputToJson(this);
@@ -4947,7 +4957,6 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
     with EquatableMixin {
   UpdateLoggedWorkoutMoveInput(
       {required this.id,
-      this.note,
       this.reps,
       this.distanceUnit,
       this.loadAmount,
@@ -4960,8 +4969,6 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
       _$UpdateLoggedWorkoutMoveInputFromJson(json);
 
   late String id;
-
-  String? note;
 
   double? reps;
 
@@ -4983,17 +4990,8 @@ class UpdateLoggedWorkoutMoveInput extends JsonSerializable
   ConnectRelationInput? equipment;
 
   @override
-  List<Object?> get props => [
-        id,
-        note,
-        reps,
-        distanceUnit,
-        loadAmount,
-        loadUnit,
-        timeUnit,
-        move,
-        equipment
-      ];
+  List<Object?> get props =>
+      [id, reps, distanceUnit, loadAmount, loadUnit, timeUnit, move, equipment];
   @override
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutMoveInputToJson(this);
 }
@@ -5021,7 +5019,6 @@ class CreateLoggedWorkoutMoveInput extends JsonSerializable
     with EquatableMixin {
   CreateLoggedWorkoutMoveInput(
       {required this.sortPosition,
-      this.note,
       required this.repType,
       required this.reps,
       this.distanceUnit,
@@ -5036,8 +5033,6 @@ class CreateLoggedWorkoutMoveInput extends JsonSerializable
       _$CreateLoggedWorkoutMoveInputFromJson(json);
 
   late int sortPosition;
-
-  String? note;
 
   @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
   late WorkoutMoveRepType repType;
@@ -5067,7 +5062,6 @@ class CreateLoggedWorkoutMoveInput extends JsonSerializable
   @override
   List<Object?> get props => [
         sortPosition,
-        note,
         repType,
         reps,
         distanceUnit,
@@ -31575,12 +31569,6 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'sortPosition'),
             alias: null,
             arguments: [],
@@ -31665,6 +31653,12 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'roundNumber'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -31700,12 +31694,6 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'timecap'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundsCompleted'),
             alias: null,
             arguments: [],
             directives: [],
@@ -32303,12 +32291,6 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'sortPosition'),
             alias: null,
             arguments: [],
@@ -32393,6 +32375,12 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'roundNumber'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -32428,12 +32416,6 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'timecap'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundsCompleted'),
             alias: null,
             arguments: [],
             directives: [],
@@ -33074,12 +33056,6 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'sortPosition'),
             alias: null,
             arguments: [],
@@ -33164,6 +33140,12 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'roundNumber'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
@@ -33199,12 +33181,6 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'timecap'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'roundsCompleted'),
             alias: null,
             arguments: [],
             directives: [],
@@ -33864,6 +33840,12 @@ final CREATE_LOGGED_WORKOUT_SET_MUTATION_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'roundNumber'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ]))
 ]);
@@ -33974,6 +33956,12 @@ final UPDATE_LOGGED_WORKOUT_SET_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'sortPosition'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'roundNumber'),
             alias: null,
             arguments: [],
             directives: [],
@@ -41439,12 +41427,6 @@ final UPDATE_LOGGED_WORKOUT_SECTION_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'roundsCompleted'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'repScore'),
             alias: null,
             arguments: [],
@@ -47670,12 +47652,6 @@ final UPDATE_LOGGED_WORKOUT_MOVE_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'sortPosition'),
             alias: null,
             arguments: [],
@@ -48042,12 +48018,6 @@ final CREATE_LOGGED_WORKOUT_MOVE_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
             alias: null,
             arguments: [],
             directives: [],

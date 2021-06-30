@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_body.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_times.dart';
@@ -75,7 +76,7 @@ class _LoggedWorkoutSectionDetailsEditableState
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4),
               child: MyTabBarNav(
-                  titles: ['Moves', 'Body', 'Times'],
+                  titles: ['Summary', 'Edit Sets', 'Body', 'Times'],
                   handleTabChange: _changeTab,
                   activeTabIndex: _activeTabIndex),
             ),
@@ -87,19 +88,11 @@ class _LoggedWorkoutSectionDetailsEditableState
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(6.0),
-                    child: NestedScrollView(
-                      headerSliverBuilder: (context, innerBoxIsScrolled) {
-                        return [
-                          SliverToBoxAdapter(
-                              child: LoggedWorkoutSectionSummary(section,
-                                  showBodyAreas: false))
-                        ];
-                      },
-                      body: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: LoggedWorkoutCreatorSection(widget.sectionIndex),
-                      ),
-                    ),
+                    child: _LoggedWorkoutSectionWrapper(widget.sectionIndex),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: LoggedWorkoutCreatorSection(widget.sectionIndex),
                   ),
                   LoggedWorkoutSectionBody(widget.sectionIndex),
                   Padding(
@@ -111,5 +104,28 @@ class _LoggedWorkoutSectionDetailsEditableState
             )
           ],
         ));
+  }
+}
+
+/// Copied from [DoWorkoutLogWorkoutPage] logic.
+/// Hooks into the bloc to pull out the correct logged workout section based on the section index and provides it to the pure UI widget [LoggedWorkoutSectionSummarycard].
+class _LoggedWorkoutSectionWrapper extends StatelessWidget {
+  final int sectionIndex;
+  const _LoggedWorkoutSectionWrapper(this.sectionIndex);
+
+  @override
+  Widget build(BuildContext context) {
+    final loggedWorkoutSection =
+        context.select<LoggedWorkoutCreatorBloc, LoggedWorkoutSection>(
+            (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex]);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+      child: LoggedWorkoutSectionSummaryCard(
+          loggedWorkoutSection: loggedWorkoutSection,
+          addNoteToLoggedSection: (note) => context
+              .read<LoggedWorkoutCreatorBloc>()
+              .editLoggedWorkoutSection(sectionIndex, {'note': note})),
+    );
   }
 }

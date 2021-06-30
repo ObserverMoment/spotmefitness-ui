@@ -33,16 +33,14 @@ class SectionCompleteModal extends StatelessWidget {
         child: Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: const EdgeInsets.all(2.0),
           child: H1('Nice Work!'),
         ),
         Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: LoggedWorkoutSectionSummaryCard(
-                  loggedWorkoutSection: loggedWorkoutSection),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: LoggedWorkoutSectionSummaryCard(
+                loggedWorkoutSection: loggedWorkoutSection),
           ),
         ),
         Padding(

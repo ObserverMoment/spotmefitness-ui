@@ -52,16 +52,13 @@ class DataUtils {
       case kHIITCircuitName:
       case kEMOMName:
         return Duration(
-            milliseconds: loggedWorkoutSection.roundsCompleted *
-                loggedWorkoutSection.loggedWorkoutSets
-                    .sumBy((s) => s.duration! * 1000));
+            milliseconds: loggedWorkoutSection.loggedWorkoutSets
+                .sumBy((s) => s.duration! * 1000));
       case kTabataName:
         return Duration(
-            milliseconds: loggedWorkoutSection.roundsCompleted *
-                loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
-                    s.roundsCompleted *
-                    s.loggedWorkoutMoves
-                        .sumBy((lwm) => lwm.reps.toInt() * 1000)));
+            milliseconds: loggedWorkoutSection.loggedWorkoutSets.sumBy((s) =>
+                s.roundsCompleted *
+                s.loggedWorkoutMoves.sumBy((lwm) => lwm.reps.toInt() * 1000)));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
@@ -83,7 +80,7 @@ class DataUtils {
   }
 
   /// Time and distance moves: a workoutMove counts as one 'rep'.
-  static int totalRepsPerSectionRound<T>(T section) {
+  static int totalRepsInSection<T>(T section) {
     assert(section is WorkoutSection || section is LoggedWorkoutSection,
         'DataUtils.totalRepsPerSectionRound: section must (currently) be WorkoutSection or LoggedWorkoutSection.');
     if (section is WorkoutSection) {

@@ -8,7 +8,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/logging/reps_score_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_set.dart';
-import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
@@ -36,42 +35,6 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
     context.showBottomSheet(
         child: ChangeNotifierProvider.value(
             value: bloc, child: LoggedWorkoutSectionTimes(sectionIndex)));
-  }
-
-  Widget _buildSectionRepeats(
-      BuildContext context, LoggedWorkoutSection loggedWorkoutSection) {
-    final roundsCompleted = context.select<LoggedWorkoutCreatorBloc, int>((b) =>
-        b.loggedWorkout.loggedWorkoutSections[sectionIndex].roundsCompleted);
-
-    switch (loggedWorkoutSection.workoutSectionType.name) {
-      case kAMRAPName:
-        return MyText(
-            'Repeated the below for ${loggedWorkoutSection.timecap!.secondsToTimeDisplay()}.');
-      case kLastStandingName:
-        return MyText('Repeated the below for as long as possible.');
-      default:
-        final once = loggedWorkoutSection.roundsCompleted == 1;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyText('Repeated everything'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6.0),
-              child: BorderButton(
-                  mini: true,
-                  text: '$roundsCompleted ${once ? "time" : "times"}',
-                  onPressed: () => context.showBottomSheet<int>(
-                          child: NumberInputModalInt(
-                        value: roundsCompleted,
-                        saveValue: (r) => context
-                            .read<LoggedWorkoutCreatorBloc>()
-                            .updateSectionRoundsCompleted(sectionIndex, r),
-                        title: 'How many repeats?',
-                      ))),
-            ),
-          ],
-        );
-    }
   }
 
   @override
@@ -113,8 +76,8 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                     : null,
                 updateDuration: (duration) => context
                     .read<LoggedWorkoutCreatorBloc>()
-                    .updateSectionTimeTakenMs(loggedWorkoutSection.sortPosition,
-                        duration.inMilliseconds),
+                    .editLoggedWorkoutSection(loggedWorkoutSection.sortPosition,
+                        {'timeTakenMs': duration.inMilliseconds}),
               ),
             if ([kEMOMName, kHIITCircuitName, kTabataName]
                 .contains(loggedWorkoutSection.workoutSectionType.name))
@@ -133,10 +96,11 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
               RepsScoreDisplay(
                   score: repScore,
                   section: loggedWorkoutSection,
-                  updateScore: (int score) => context
+                  updateScore: (repScore) => context
                       .read<LoggedWorkoutCreatorBloc>()
-                      .updateSectionRepsScore(
-                          loggedWorkoutSection.sortPosition, score)),
+                      .editLoggedWorkoutSection(
+                          loggedWorkoutSection.sortPosition,
+                          {'repScore': repScore})),
             if (showLapTimesButton &&
                 !([kEMOMName, kHIITCircuitName, kTabataName]
                     .contains(loggedWorkoutSection.workoutSectionType.name)))
@@ -151,8 +115,6 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
           ],
         ),
         SizedBox(height: 6),
-        _buildSectionRepeats(context, loggedWorkoutSection),
-        SizedBox(height: 12),
         Flexible(
             child: ListView.builder(
                 itemCount: loggedWorkoutSets.length + 1,

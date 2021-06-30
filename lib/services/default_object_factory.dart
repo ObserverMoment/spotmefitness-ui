@@ -31,7 +31,6 @@ class DefaultObjectfactory {
       ..name = Utils.textNotNull(workoutSection.name)
           ? 'Log - ${workoutSection.name}'
           : 'Log - ${workoutSection.workoutSectionType.name}'
-      ..roundsCompleted = workoutSection.rounds
       ..lapTimesMs = {}
       ..workoutSectionType = workoutSection.workoutSectionType
       ..loggedWorkoutSets = [];

@@ -12,7 +12,6 @@ fragment LoggedWorkoutSection on LoggedWorkoutSection {
   name
   note
   timecap
-  roundsCompleted
   repScore
   timeTakenMs
   lapTimesMs
@@ -26,12 +25,12 @@ fragment LoggedWorkoutSet on LoggedWorkoutSet {
   roundsCompleted
   duration
   sortPosition
+  roundNumber
 }
 
 fragment LoggedWorkoutMove on LoggedWorkoutMove {
   __typename
   id
-  note
   sortPosition
   reps
   repType

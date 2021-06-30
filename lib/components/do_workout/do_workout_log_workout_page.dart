@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -13,6 +14,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -25,6 +27,10 @@ class DoWorkoutLogWorkoutPage extends StatefulWidget {
 }
 
 class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
+  /// Each section displays a list style summary on a single page ()
+  PageController _pageController = PageController();
+  int _activeTabIndex = 0;
+
   final kNavbarIconSize = 34.0;
   bool _logSavedToDB = false;
   bool _savingToDB = false;
@@ -69,6 +75,12 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
             ),
           ]);
     }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,14 +168,36 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                 onPressed: () => print('share')),
           ],
         ),
-        SizedBox(height: 12),
+        SizedBox(height: 20),
         Expanded(
-          child: ListView(
-              shrinkWrap: true,
-              children: sortedSections
-                  .mapIndexed(
-                      (i, _) => _LoggedWorkoutSectionWrapper(sectionIndex: i))
-                  .toList()),
+          child: ContentBox(
+              padding: const EdgeInsets.only(top: 16),
+              child: Column(
+                children: [
+                  MyTabBarNav(
+                      titles: sortedSections
+                          .map<String>((section) =>
+                              Utils.textNotNull(section.name)
+                                  ? section.name!
+                                  : 'Section ${section.sortPosition + 1}')
+                          .toList(),
+                      handleTabChange: (i) {
+                        _pageController.toPage(i);
+                        setState(() => _activeTabIndex = i);
+                      },
+                      activeTabIndex: _activeTabIndex),
+                  Expanded(
+                    child: PageView(
+                        controller: _pageController,
+                        onPageChanged: (i) =>
+                            setState(() => _activeTabIndex = i),
+                        children: sortedSections
+                            .mapIndexed((i, _) =>
+                                _LoggedWorkoutSectionWrapper(sectionIndex: i))
+                            .toList()),
+                  ),
+                ],
+              )),
         ),
       ]),
     ));
@@ -184,14 +218,12 @@ class _LoggedWorkoutSectionWrapper extends StatelessWidget {
             .firstWhere((lws) => lws.sortPosition == sectionIndex));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
-      child: ContentBox(
-        child: LoggedWorkoutSectionSummaryCard(
-            loggedWorkoutSection: loggedWorkoutSection,
-            addNoteToLoggedSection: (note) => context
-                .read<DoWorkoutBloc>()
-                .addNoteToLoggedWorkoutSection(sectionIndex, note)),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+      child: LoggedWorkoutSectionSummaryCard(
+          loggedWorkoutSection: loggedWorkoutSection,
+          addNoteToLoggedSection: (note) => context
+              .read<DoWorkoutBloc>()
+              .addNoteToLoggedWorkoutSection(sectionIndex, note)),
     );
   }
 }

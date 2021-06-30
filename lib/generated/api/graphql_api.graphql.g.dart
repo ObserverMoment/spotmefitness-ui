@@ -1931,7 +1931,6 @@ LoggedWorkoutMove _$LoggedWorkoutMoveFromJson(Map<String, dynamic> json) {
   return LoggedWorkoutMove()
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
-    ..note = json['note'] as String?
     ..sortPosition = json['sortPosition'] as int
     ..reps = (json['reps'] as num).toDouble()
     ..repType = _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
@@ -1953,7 +1952,6 @@ Map<String, dynamic> _$LoggedWorkoutMoveToJson(LoggedWorkoutMove instance) =>
     <String, dynamic>{
       '__typename': instance.$$typename,
       'id': instance.id,
-      'note': instance.note,
       'sortPosition': instance.sortPosition,
       'reps': instance.reps,
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
@@ -1973,6 +1971,7 @@ LoggedWorkoutSet _$LoggedWorkoutSetFromJson(Map<String, dynamic> json) {
     ..roundsCompleted = json['roundsCompleted'] as int
     ..duration = json['duration'] as int?
     ..sortPosition = json['sortPosition'] as int
+    ..roundNumber = json['roundNumber'] as int
     ..loggedWorkoutMoves = (json['LoggedWorkoutMoves'] as List<dynamic>)
         .map((e) => LoggedWorkoutMove.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -1986,6 +1985,7 @@ Map<String, dynamic> _$LoggedWorkoutSetToJson(LoggedWorkoutSet instance) =>
       'roundsCompleted': instance.roundsCompleted,
       'duration': instance.duration,
       'sortPosition': instance.sortPosition,
+      'roundNumber': instance.roundNumber,
       'LoggedWorkoutMoves':
           instance.loggedWorkoutMoves.map((e) => e.toJson()).toList(),
     };
@@ -1997,7 +1997,6 @@ LoggedWorkoutSection _$LoggedWorkoutSectionFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String?
     ..note = json['note'] as String?
     ..timecap = json['timecap'] as int?
-    ..roundsCompleted = json['roundsCompleted'] as int
     ..repScore = json['repScore'] as int?
     ..timeTakenMs = json['timeTakenMs'] as int?
     ..lapTimesMs = fromGraphQLJsonToDartMap(json['lapTimesMs'])
@@ -2017,7 +2016,6 @@ Map<String, dynamic> _$LoggedWorkoutSectionToJson(
       'name': instance.name,
       'note': instance.note,
       'timecap': instance.timecap,
-      'roundsCompleted': instance.roundsCompleted,
       'repScore': instance.repScore,
       'timeTakenMs': instance.timeTakenMs,
       'lapTimesMs': fromDartMapToGraphQLJson(instance.lapTimesMs),
@@ -2210,7 +2208,6 @@ CreateLoggedWorkoutMoveInLoggedSetInput
         Map<String, dynamic> json) {
   return CreateLoggedWorkoutMoveInLoggedSetInput(
     sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
     repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
         unknownValue: WorkoutMoveRepType.artemisUnknown),
     reps: (json['reps'] as num).toDouble(),
@@ -2234,7 +2231,6 @@ Map<String, dynamic> _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(
         CreateLoggedWorkoutMoveInLoggedSetInput instance) =>
     <String, dynamic>{
       'sortPosition': instance.sortPosition,
-      'note': instance.note,
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'reps': instance.reps,
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
@@ -2252,7 +2248,6 @@ CreateLoggedWorkoutSectionInLoggedWorkoutInput
     name: json['name'] as String?,
     note: json['note'] as String?,
     sortPosition: json['sortPosition'] as int,
-    roundsCompleted: json['roundsCompleted'] as int,
     timeTakenMs: json['timeTakenMs'] as int?,
     lapTimesMs: fromGraphQLJsonToDartMapNullable(json['lapTimesMs']),
     repScore: json['repScore'] as int?,
@@ -2272,7 +2267,6 @@ Map<String, dynamic> _$CreateLoggedWorkoutSectionInLoggedWorkoutInputToJson(
       'name': instance.name,
       'note': instance.note,
       'sortPosition': instance.sortPosition,
-      'roundsCompleted': instance.roundsCompleted,
       'timeTakenMs': instance.timeTakenMs,
       'lapTimesMs': fromDartMapToGraphQLJsonNullable(instance.lapTimesMs),
       'repScore': instance.repScore,
@@ -2288,6 +2282,7 @@ CreateLoggedWorkoutSetInLoggedSectionInput
   return CreateLoggedWorkoutSetInLoggedSectionInput(
     sortPosition: json['sortPosition'] as int,
     note: json['note'] as String?,
+    roundNumber: json['roundNumber'] as int,
     roundsCompleted: json['roundsCompleted'] as int,
     duration: json['duration'] as int?,
     loggedWorkoutMoves: (json['LoggedWorkoutMoves'] as List<dynamic>)
@@ -2302,6 +2297,7 @@ Map<String, dynamic> _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(
     <String, dynamic>{
       'sortPosition': instance.sortPosition,
       'note': instance.note,
+      'roundNumber': instance.roundNumber,
       'roundsCompleted': instance.roundsCompleted,
       'duration': instance.duration,
       'LoggedWorkoutMoves':
@@ -2402,7 +2398,8 @@ CreateLoggedWorkoutSet _$CreateLoggedWorkoutSetFromJson(
     ..note = json['note'] as String?
     ..roundsCompleted = json['roundsCompleted'] as int
     ..duration = json['duration'] as int?
-    ..sortPosition = json['sortPosition'] as int;
+    ..sortPosition = json['sortPosition'] as int
+    ..roundNumber = json['roundNumber'] as int;
 }
 
 Map<String, dynamic> _$CreateLoggedWorkoutSetToJson(
@@ -2414,6 +2411,7 @@ Map<String, dynamic> _$CreateLoggedWorkoutSetToJson(
       'roundsCompleted': instance.roundsCompleted,
       'duration': instance.duration,
       'sortPosition': instance.sortPosition,
+      'roundNumber': instance.roundNumber,
     };
 
 CreateLoggedWorkoutSet$Mutation _$CreateLoggedWorkoutSet$MutationFromJson(
@@ -2432,6 +2430,7 @@ Map<String, dynamic> _$CreateLoggedWorkoutSet$MutationToJson(
 CreateLoggedWorkoutSetInput _$CreateLoggedWorkoutSetInputFromJson(
     Map<String, dynamic> json) {
   return CreateLoggedWorkoutSetInput(
+    roundNumber: json['roundNumber'] as int,
     sortPosition: json['sortPosition'] as int,
     note: json['note'] as String?,
     roundsCompleted: json['roundsCompleted'] as int,
@@ -2444,6 +2443,7 @@ CreateLoggedWorkoutSetInput _$CreateLoggedWorkoutSetInputFromJson(
 Map<String, dynamic> _$CreateLoggedWorkoutSetInputToJson(
         CreateLoggedWorkoutSetInput instance) =>
     <String, dynamic>{
+      'roundNumber': instance.roundNumber,
       'sortPosition': instance.sortPosition,
       'note': instance.note,
       'roundsCompleted': instance.roundsCompleted,
@@ -2459,7 +2459,8 @@ UpdateLoggedWorkoutSet _$UpdateLoggedWorkoutSetFromJson(
     ..note = json['note'] as String?
     ..roundsCompleted = json['roundsCompleted'] as int
     ..duration = json['duration'] as int?
-    ..sortPosition = json['sortPosition'] as int;
+    ..sortPosition = json['sortPosition'] as int
+    ..roundNumber = json['roundNumber'] as int;
 }
 
 Map<String, dynamic> _$UpdateLoggedWorkoutSetToJson(
@@ -2471,6 +2472,7 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSetToJson(
       'roundsCompleted': instance.roundsCompleted,
       'duration': instance.duration,
       'sortPosition': instance.sortPosition,
+      'roundNumber': instance.roundNumber,
     };
 
 UpdateLoggedWorkoutSet$Mutation _$UpdateLoggedWorkoutSet$MutationFromJson(
@@ -3307,7 +3309,6 @@ UpdateLoggedWorkoutSection _$UpdateLoggedWorkoutSectionFromJson(
     ..name = json['name'] as String?
     ..note = json['note'] as String?
     ..timecap = json['timecap'] as int?
-    ..roundsCompleted = json['roundsCompleted'] as int
     ..repScore = json['repScore'] as int?
     ..timeTakenMs = json['timeTakenMs'] as int?
     ..lapTimesMs = fromGraphQLJsonToDartMap(json['lapTimesMs'])
@@ -3324,7 +3325,6 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionToJson(
       'name': instance.name,
       'note': instance.note,
       'timecap': instance.timecap,
-      'roundsCompleted': instance.roundsCompleted,
       'repScore': instance.repScore,
       'timeTakenMs': instance.timeTakenMs,
       'lapTimesMs': fromDartMapToGraphQLJson(instance.lapTimesMs),
@@ -3351,7 +3351,6 @@ UpdateLoggedWorkoutSectionInput _$UpdateLoggedWorkoutSectionInputFromJson(
   return UpdateLoggedWorkoutSectionInput(
     id: json['id'] as String,
     name: json['name'] as String?,
-    roundsCompleted: json['roundsCompleted'] as int?,
     timeTakenMs: json['timeTakenMs'] as int?,
     lapTimesMs: fromGraphQLJsonToDartMapNullable(json['lapTimesMs']),
     timecap: json['timecap'] as int?,
@@ -3365,7 +3364,6 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionInputToJson(
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'roundsCompleted': instance.roundsCompleted,
       'timeTakenMs': instance.timeTakenMs,
       'lapTimesMs': fromDartMapToGraphQLJsonNullable(instance.lapTimesMs),
       'timecap': instance.timecap,
@@ -4032,7 +4030,6 @@ UpdateLoggedWorkoutMoveInput _$UpdateLoggedWorkoutMoveInputFromJson(
     Map<String, dynamic> json) {
   return UpdateLoggedWorkoutMoveInput(
     id: json['id'] as String,
-    note: json['note'] as String?,
     reps: (json['reps'] as num?)?.toDouble(),
     distanceUnit: _$enumDecodeNullable(
         _$DistanceUnitEnumMap, json['distanceUnit'],
@@ -4056,7 +4053,6 @@ Map<String, dynamic> _$UpdateLoggedWorkoutMoveInputToJson(
         UpdateLoggedWorkoutMoveInput instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'note': instance.note,
       'reps': instance.reps,
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],
       'loadAmount': instance.loadAmount,
@@ -4083,7 +4079,6 @@ CreateLoggedWorkoutMoveInput _$CreateLoggedWorkoutMoveInputFromJson(
     Map<String, dynamic> json) {
   return CreateLoggedWorkoutMoveInput(
     sortPosition: json['sortPosition'] as int,
-    note: json['note'] as String?,
     repType: _$enumDecode(_$WorkoutMoveRepTypeEnumMap, json['repType'],
         unknownValue: WorkoutMoveRepType.artemisUnknown),
     reps: (json['reps'] as num).toDouble(),
@@ -4109,7 +4104,6 @@ Map<String, dynamic> _$CreateLoggedWorkoutMoveInputToJson(
         CreateLoggedWorkoutMoveInput instance) =>
     <String, dynamic>{
       'sortPosition': instance.sortPosition,
-      'note': instance.note,
       'repType': _$WorkoutMoveRepTypeEnumMap[instance.repType],
       'reps': instance.reps,
       'distanceUnit': _$DistanceUnitEnumMap[instance.distanceUnit],

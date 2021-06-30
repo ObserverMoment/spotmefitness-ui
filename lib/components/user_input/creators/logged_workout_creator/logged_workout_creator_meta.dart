@@ -147,15 +147,14 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
       required this.isSelected,
       required this.toggleSelection});
 
-  void _updateScore(BuildContext context, int score) {
-    context
-        .read<LoggedWorkoutCreatorBloc>()
-        .updateSectionRepsScore(loggedWorkoutSection.sortPosition, score);
+  void _updateScore(BuildContext context, int repScore) {
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSection(
+        loggedWorkoutSection.sortPosition, {'repScore': repScore});
   }
 
   void _updateDuration(BuildContext context, int timeTakenMs) {
-    context.read<LoggedWorkoutCreatorBloc>().updateSectionTimeTakenMs(
-        loggedWorkoutSection.sortPosition, timeTakenMs);
+    context.read<LoggedWorkoutCreatorBloc>().editLoggedWorkoutSection(
+        loggedWorkoutSection.sortPosition, {'timeTakenMs': timeTakenMs});
   }
 
   void _toggleSelection(BuildContext context) {
