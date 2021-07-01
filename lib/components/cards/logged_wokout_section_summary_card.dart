@@ -79,10 +79,8 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
             children: loggedWorkoutSetsBySectionRound.keys
                 .sortedBy<num>((roundNumber) => roundNumber)
                 .map((roundNumber) {
-              final int sectionRoundTimeMs = loggedWorkoutSection
+              final int? sectionRoundTimeMs = loggedWorkoutSection
                   .lapTimesMs[roundNumber.toString()]?['lapTimeMs'];
-
-              final roundDuration = Duration(milliseconds: sectionRoundTimeMs);
 
               final sortedSetsInSectionRound =
                   loggedWorkoutSetsBySectionRound[roundNumber]!
@@ -99,10 +97,12 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                           'Round ${roundNumber + 1}',
                           color: Styles.infoBlue,
                         ),
-                        MyText(
-                          roundDuration.compactDisplay(),
-                          color: Styles.infoBlue,
-                        )
+                        if (sectionRoundTimeMs != null)
+                          MyText(
+                            Duration(milliseconds: sectionRoundTimeMs)
+                                .compactDisplay(),
+                            color: Styles.infoBlue,
+                          )
                       ],
                     ),
                     Padding(
@@ -111,12 +111,10 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                       child: Column(
                         children:
                             sortedSetsInSectionRound.map((loggedWorkoutSet) {
-                          final int setLapTime = loggedWorkoutSection
+                          final int? setLapTime = loggedWorkoutSection
                                       .lapTimesMs[roundNumber.toString()]
-                                  ['setLapTimesMs']
+                                  ?['setLapTimesMs']
                               [loggedWorkoutSet.sortPosition.toString()];
-
-                          final duration = Duration(milliseconds: setLapTime);
 
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -138,7 +136,9 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                                         ))
                                     .toList(),
                               ),
-                              MyText(duration.compactDisplay()),
+                              if (setLapTime != null)
+                                MyText(Duration(milliseconds: setLapTime)
+                                    .compactDisplay()),
                             ],
                           );
                         }).toList(),

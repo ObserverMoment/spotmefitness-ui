@@ -1,4 +1,4 @@
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 
 class DoWorkoutUtils {
   static bool moveIsCompleted(WorkoutSectionProgressState state,

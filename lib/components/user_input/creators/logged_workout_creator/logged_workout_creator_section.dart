@@ -15,6 +15,7 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
+import 'package:supercharged/supercharged.dart';
 
 class LoggedWorkoutCreatorSection extends StatelessWidget {
   final int sectionIndex;
@@ -49,12 +50,21 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
     final repScore = context.select<LoggedWorkoutCreatorBloc, int?>(
         (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex].repScore);
 
-    final loggedWorkoutSets = context
-        .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSet>>((b) => b
-            .loggedWorkout
-            .loggedWorkoutSections[sectionIndex]
-            .loggedWorkoutSets)
-        .sortedBy<num>((s) => s.sortPosition);
+    final loggedWorkoutSetsBySectionRound = loggedWorkoutSection
+        .loggedWorkoutSets
+        .groupBy<int, LoggedWorkoutSet>((lwSet) => lwSet.roundNumber);
+
+    // final loggedWorkoutSets = context
+    //     .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSet>>((b) => b
+    //         .loggedWorkout
+    //         .loggedWorkoutSections[sectionIndex]
+    //         .loggedWorkoutSets)
+    //     .sortedBy<num>((s) => s.sortPosition);
+
+    /// Only FreeSession allows you to add extra sets onto the workout.
+    /// Doesn't make sense for other types.
+    final isFreeSession =
+        loggedWorkoutSection.workoutSectionType.name == kFreeSessionName;
 
     return Column(
       children: [
@@ -64,10 +74,6 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            WorkoutSectionTypeTag(
-              loggedWorkoutSection.workoutSectionType.name,
-              timecap: loggedWorkoutSection.timecap,
-            ),
             if ([kFreeSessionName, kForTimeName]
                 .contains(loggedWorkoutSection.workoutSectionType.name))
               DurationPickerDisplay(
@@ -105,7 +111,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                 !([kEMOMName, kHIITCircuitName, kTabataName]
                     .contains(loggedWorkoutSection.workoutSectionType.name)))
               BorderButton(
-                  text: 'Times',
+                  text: 'Lap Times',
                   prefix: Icon(
                     CupertinoIcons.timer,
                     size: 14,
@@ -117,21 +123,24 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
         SizedBox(height: 6),
         Flexible(
             child: ListView.builder(
-                itemCount: loggedWorkoutSets.length + 1,
+                itemCount: loggedWorkoutSection.loggedWorkoutSets.length + 1,
                 itemBuilder: (c, i) {
-                  if (i == loggedWorkoutSets.length) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CreateTextIconButton(
-                            text: 'Add Set',
-                            onPressed: () => _addLoggedWorkoutSet(context),
-                          ),
-                        ],
-                      ),
-                    );
+                  if (i == loggedWorkoutSection.loggedWorkoutSets.length) {
+                    return isFreeSession
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                CreateTextIconButton(
+                                  text: 'Add Set',
+                                  onPressed: () =>
+                                      _addLoggedWorkoutSet(context),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container();
                   } else {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 3.0),

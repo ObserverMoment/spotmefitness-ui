@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/utils.dart';
@@ -171,7 +171,8 @@ class _WorkoutSetInMovesList extends StatelessWidget {
           children: [
             WorkoutSetDisplay(
                 workoutSet: workoutSet, workoutSectionType: workoutSectionType),
-            if (state.setTimeRemainingMs != null && workoutSet.duration != null)
+            if (state.timeToNextCheckpointMs != null &&
+                workoutSet.duration != null)
               GrowInOut(
                   show: isCurrentActiveSet,
                   child: Padding(
@@ -179,7 +180,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
                     child: LinearPercentIndicator(
                       percent: isCurrentActiveSet
                           ? 1 -
-                              (state.setTimeRemainingMs! /
+                              (state.timeToNextCheckpointMs! /
                                   (workoutSet.duration! * 1000))
                           : 0,
                       linearGradient: Styles.pinkGradient,

@@ -4,13 +4,14 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controll
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class AMRAPSectionController extends WorkoutSectionController {
-  late int _sectionTimecapSeconds;
+class ForTimeSectionController extends WorkoutSectionController {
   late StreamSubscription _timerStreamSubscription;
+  late int _totalRepsToComplete;
 
-  AMRAPSectionController(
+  ForTimeSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
       required void Function() markSectionComplete})
@@ -18,36 +19,8 @@ class AMRAPSectionController extends WorkoutSectionController {
             stopWatchTimer: stopWatchTimer,
             workoutSection: workoutSection,
             markSectionComplete: markSectionComplete) {
-    /// [workoutSection.timecap] must not be null for an AMRAP.
-    _sectionTimecapSeconds = workoutSection.timecap!;
-
-    /// Time till the AMRAP timecap at the end of the section.
-    state.timeToNextCheckpointMs = _sectionTimecapSeconds * 1000;
-    progressStateController.add(state);
-
-    _timerStreamSubscription =
-        stopWatchTimer.secondTime.listen(timerStreamListener);
-  }
-
-  void timerStreamListener(int secondsElapsed) async {
-    if (sectionComplete) {
-      return;
-    } else {
-      /// Check for the end of the workout
-      if (secondsElapsed >= _sectionTimecapSeconds) {
-        sectionComplete = true;
-        stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-        markSectionComplete();
-      }
-
-      /// Update time left till timecap and percent complete.
-      state.timeToNextCheckpointMs =
-          (_sectionTimecapSeconds - secondsElapsed) * 1000;
-
-      state.percentComplete = secondsElapsed / _sectionTimecapSeconds;
-
-      progressStateController.add(state);
-    }
+    _totalRepsToComplete =
+        DataUtils.totalRepsInSection<WorkoutSection>(workoutSection);
   }
 
   /// Public method for the user to progress to the next set (or section if this is the last set)
@@ -60,7 +33,9 @@ class AMRAPSectionController extends WorkoutSectionController {
     state.moveToNextSetOrSection(secondsElapsed);
 
     /// Update percentage complete.
-    state.percentComplete = (secondsElapsed) / _sectionTimecapSeconds;
+    state.percentComplete = DataUtils.totalRepsInSection<LoggedWorkoutSection>(
+            loggedWorkoutSection) /
+        _totalRepsToComplete;
 
     /// Broadcast new state.
     progressStateController.add(state);

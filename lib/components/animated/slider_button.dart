@@ -72,7 +72,7 @@ class SliderButton extends StatefulWidget {
     this.outerColor,
     this.borderRadius = 52,
     this.elevation = 6,
-    this.animationDuration = const Duration(milliseconds: 300),
+    this.animationDuration = const Duration(milliseconds: 200),
     this.reversed = false,
     this.alignment = Alignment.center,
     this.submittedIcon,
@@ -107,103 +107,101 @@ class SliderButtonState extends State<SliderButton>
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: widget.alignment,
-      child: Transform(
-        alignment: Alignment.center,
-        transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-        child: Container(
-          key: _containerKey,
-          height: widget.height,
-          width: _containerWidth,
-          constraints: _containerWidth != null
-              ? null
-              : BoxConstraints.expand(height: widget.height),
-          child: Material(
-            elevation: widget.elevation,
-            color: widget.outerColor ?? Theme.of(context).accentColor,
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            child: submitted
-                ? Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.rotationY(widget.reversed ? pi : 0),
-                    child: Center(
-                      child: Stack(
-                        clipBehavior: Clip.antiAlias,
-                        children: <Widget>[
-                          widget.submittedIcon ??
-                              Icon(
-                                Icons.done,
-                                color: widget.innerColor ??
-                                    Theme.of(context).primaryIconTheme.color,
-                              ),
-                          Positioned.fill(
-                            right: 0,
-                            child: Transform(
-                              transform: Matrix4.rotationY(
-                                  _checkAnimationDx * (pi / 2)),
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                color: widget.outerColor ??
-                                    Theme.of(context).accentColor,
+    return GestureDetector(
+      onHorizontalDragUpdate: onHorizontalDragUpdate,
+      onHorizontalDragEnd: (details) async {
+        _endDx = _dx;
+        if (_progress <= 0.25 || widget.onSubmit == null) {
+          _cancelAnimation();
+        } else {
+          await _resizeAnimation();
+
+          await _shrinkAnimation();
+
+          await _checkAnimation();
+
+          widget.onSubmit!();
+
+          Future.delayed(Duration(milliseconds: 500), () async {
+            await reset();
+          });
+        }
+      },
+      child: Align(
+        alignment: widget.alignment,
+        child: Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.rotationY(widget.reversed ? pi : 0),
+          child: Container(
+            key: _containerKey,
+            height: widget.height,
+            width: _containerWidth,
+            constraints: _containerWidth != null
+                ? null
+                : BoxConstraints.expand(height: widget.height),
+            child: Material(
+              elevation: widget.elevation,
+              color: widget.outerColor ?? Theme.of(context).accentColor,
+              borderRadius: BorderRadius.circular(widget.borderRadius),
+              child: submitted
+                  ? Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(widget.reversed ? pi : 0),
+                      child: Center(
+                        child: Stack(
+                          clipBehavior: Clip.antiAlias,
+                          children: <Widget>[
+                            widget.submittedIcon ??
+                                Icon(
+                                  Icons.done,
+                                  color: widget.innerColor ??
+                                      Theme.of(context).primaryIconTheme.color,
+                                ),
+                            Positioned.fill(
+                              right: 0,
+                              child: Transform(
+                                transform: Matrix4.rotationY(
+                                    _checkAnimationDx * (pi / 2)),
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  color: widget.outerColor ??
+                                      Theme.of(context).accentColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : Stack(
-                    alignment: Alignment.center,
-                    clipBehavior: Clip.none,
-                    children: <Widget>[
-                      Opacity(
-                        opacity: 1 - 1 * _progress,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform:
-                              Matrix4.rotationY(widget.reversed ? pi : 0),
-                          child: widget.child ??
-                              MyText(
-                                (widget.text ?? 'Slide to act').toUpperCase(),
-                                textAlign: TextAlign.center,
-                                size: widget.fontSize,
-                                color: widget.innerColor,
-                                weight: FontWeight.bold,
-                              ),
+                          ],
                         ),
                       ),
-                      Positioned(
-                        left: widget.sliderButtonYOffset,
-                        child: Transform.scale(
-                          scale: _dz,
-                          origin: Offset(_dx, 0),
-                          child: Transform.translate(
-                            offset: Offset(_dx, 0),
-                            child: Container(
-                              key: _sliderKey,
-                              child: GestureDetector(
-                                onHorizontalDragUpdate: onHorizontalDragUpdate,
-                                onHorizontalDragEnd: (details) async {
-                                  _endDx = _dx;
-                                  if (_progress <= 0.8 ||
-                                      widget.onSubmit == null) {
-                                    _cancelAnimation();
-                                  } else {
-                                    await _resizeAnimation();
-
-                                    await _shrinkAnimation();
-
-                                    await _checkAnimation();
-
-                                    widget.onSubmit!();
-
-                                    Future.delayed(Duration(seconds: 1),
-                                        () async {
-                                      await reset();
-                                    });
-                                  }
-                                },
+                    )
+                  : Stack(
+                      alignment: Alignment.center,
+                      clipBehavior: Clip.none,
+                      children: <Widget>[
+                        Opacity(
+                          opacity: 1 - 1 * _progress,
+                          child: Transform(
+                            alignment: Alignment.center,
+                            transform:
+                                Matrix4.rotationY(widget.reversed ? pi : 0),
+                            child: widget.child ??
+                                MyText(
+                                  (widget.text ?? 'Slide to act').toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  size: widget.fontSize,
+                                  color: widget.innerColor,
+                                  weight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                        Positioned(
+                          left: widget.sliderButtonYOffset,
+                          child: Transform.scale(
+                            scale: _dz,
+                            origin: Offset(_dx, 0),
+                            child: Transform.translate(
+                              offset: Offset(_dx, 0),
+                              child: Container(
+                                key: _sliderKey,
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
@@ -240,9 +238,9 @@ class SliderButtonState extends State<SliderButton>
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+            ),
           ),
         ),
       ),
@@ -257,103 +255,114 @@ class SliderButtonState extends State<SliderButton>
 
   /// Call this method to revert the animations
   Future reset() async {
-    await _checkAnimationController.reverse().orCancel;
+    if (mounted) {
+      await _checkAnimationController.reverse().orCancel;
 
-    submitted = false;
+      submitted = false;
 
-    await _shrinkAnimationController.reverse().orCancel;
+      await _shrinkAnimationController.reverse().orCancel;
 
-    await _resizeAnimationController.reverse().orCancel;
+      await _resizeAnimationController.reverse().orCancel;
 
-    await _cancelAnimation();
+      await _cancelAnimation();
+    }
   }
 
   Future _checkAnimation() async {
-    _checkAnimationController.reset();
+    if (mounted) {
+      _checkAnimationController.reset();
 
-    final animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _checkAnimationController,
-      curve: Curves.slowMiddle,
-    ));
+      final animation = Tween<double>(
+        begin: 0,
+        end: 1,
+      ).animate(CurvedAnimation(
+        parent: _checkAnimationController,
+        curve: Curves.slowMiddle,
+      ));
 
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {
-          _checkAnimationDx = animation.value;
-        });
-      }
-    });
-    await _checkAnimationController.forward().orCancel;
+      animation.addListener(() {
+        if (mounted) {
+          setState(() {
+            _checkAnimationDx = animation.value;
+          });
+        }
+      });
+      await _checkAnimationController.forward().orCancel;
+    }
   }
 
   Future _shrinkAnimation() async {
-    _shrinkAnimationController.reset();
+    if (mounted) {
+      _shrinkAnimationController.reset();
 
-    final diff = _initialContainerWidth! - widget.height;
-    final animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _shrinkAnimationController,
-      curve: Curves.easeOutCirc,
-    ));
+      final diff = _initialContainerWidth! - widget.height;
+      final animation = Tween<double>(
+        begin: 0,
+        end: 1,
+      ).animate(CurvedAnimation(
+        parent: _shrinkAnimationController,
+        curve: Curves.easeOutCirc,
+      ));
 
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {
-          _containerWidth = _initialContainerWidth! - (diff * animation.value);
-        });
-      }
-    });
+      animation.addListener(() {
+        if (mounted) {
+          setState(() {
+            _containerWidth =
+                _initialContainerWidth! - (diff * animation.value);
+          });
+        }
+      });
 
-    setState(() {
-      submitted = true;
-    });
-    await _shrinkAnimationController.forward().orCancel;
+      setState(() {
+        submitted = true;
+      });
+      await _shrinkAnimationController.forward().orCancel;
+    }
   }
 
   Future _resizeAnimation() async {
-    _resizeAnimationController.reset();
+    if (mounted) {
+      _resizeAnimationController.reset();
 
-    final animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _resizeAnimationController,
-      curve: Curves.easeInBack,
-    ));
+      final animation = Tween<double>(
+        begin: 0,
+        end: 1,
+      ).animate(CurvedAnimation(
+        parent: _resizeAnimationController,
+        curve: Curves.easeInBack,
+      ));
 
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {
-          _dz = 1 - animation.value;
-        });
-      }
-    });
-    await _resizeAnimationController.forward().orCancel;
+      animation.addListener(() {
+        if (mounted) {
+          setState(() {
+            _dz = 1 - animation.value;
+          });
+        }
+      });
+      await _resizeAnimationController.forward().orCancel;
+    }
   }
 
   Future _cancelAnimation() async {
-    _cancelAnimationController.reset();
-    final animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
-      parent: _cancelAnimationController,
-      curve: Curves.fastOutSlowIn,
-    ));
+    if (mounted) {
+      _cancelAnimationController.reset();
+      final animation = Tween<double>(
+        begin: 0,
+        end: 1,
+      ).animate(CurvedAnimation(
+        parent: _cancelAnimationController,
+        curve: Curves.fastOutSlowIn,
+      ));
 
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {
-          _dx = (_endDx - (_endDx * animation.value));
-        });
-      }
-    });
-    _cancelAnimationController.forward().orCancel;
+      animation.addListener(() {
+        if (mounted) {
+          setState(() {
+            _dx = (_endDx - (_endDx * animation.value));
+          });
+        }
+      });
+      _cancelAnimationController.forward().orCancel;
+    }
   }
 
   @override

@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/fortime_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -19,6 +22,10 @@ class DoWorkoutBloc extends ChangeNotifier {
   late BuildContext _context;
   late List<WorkoutSection> _sortedWorkoutSections;
   late LoggedWorkout loggedWorkout;
+
+  /// AMRAP, ForTime and LastStanding types will use this.
+  /// Initialise all to zero in constructor.
+  late List<int> totalReps;
 
   /// List of timers - one for each workoutSection.
   /// Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
@@ -41,6 +48,9 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// If false then an intro modal will show over the section page letting the user start the workout with countdown.
   late List<bool> startedSections;
 
+  /// This is true whenever any section is in progress. False
+  bool workoutInProgress = false;
+
   DoWorkoutBloc({required BuildContext context, required Workout workout}) {
     _context = context;
     loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
@@ -48,12 +58,13 @@ class DoWorkoutBloc extends ChangeNotifier {
     _sortedWorkoutSections = workout.workoutSections
         .sortedBy<num>((wSection) => wSection.sortPosition);
 
-    completedSections = _sortedWorkoutSections.map((wSection) => null).toList();
-    startedSections = _sortedWorkoutSections.map((wSection) => false).toList();
+    completedSections = _sortedWorkoutSections.map((_) => null).toList();
+    startedSections = _sortedWorkoutSections.map((_) => false).toList();
+    totalReps = _sortedWorkoutSections.map((_) => 0).toList();
 
     /// One per section.
     _stopWatchTimers =
-        _sortedWorkoutSections.map((wSection) => StopWatchTimer()).toList();
+        _sortedWorkoutSections.map((_) => StopWatchTimer()).toList();
 
     /// One per section.
     controllers = _sortedWorkoutSections
@@ -61,7 +72,7 @@ class DoWorkoutBloc extends ChangeNotifier {
         .toList();
 
     /// One per section. Create null filled list then call async function to generate the required audio players.
-    _audioPlayers = _sortedWorkoutSections.map((wSection) => null).toList();
+    _audioPlayers = _sortedWorkoutSections.map((_) => null).toList();
     initAudioPlayers();
   }
 
@@ -83,11 +94,36 @@ class DoWorkoutBloc extends ChangeNotifier {
   }
 
   //// User inputs - Public ////
+  /// Used for workouts where the user is stepping through sets as they complete them.
+  /// [AMRAP], [ForTime], [LastStanding]
+  void markCurrentWorkoutSetAsComplete(int sectionIndex) {
+    controllers[sectionIndex].markCurrentWorkoutSetAsComplete();
+    _calculateTotalReps(sectionIndex);
+  }
+
+  void _calculateTotalReps(int sectionIndex) {
+    totalReps[sectionIndex] =
+        DataUtils.totalRepsInSection<LoggedWorkoutSection>(
+            controllers[sectionIndex].loggedWorkoutSection);
+
+    controllers[sectionIndex].loggedWorkoutSection.repScore =
+        totalReps[sectionIndex];
+
+    notifyListeners();
+  }
+
+  /// Used for [FreeSession] where the user can complete moves in any order they want.
+  void addWorkoutSetToLog(int sectionIndex, int setIndex) {
+    // (controllers[sectionIndex] as FreeSessionSectionController)
+    print('TODO- addWorkoutSetToLog');
+  }
+
   void generatePartialLog() {
     startedSections.forEachIndexed((index, started) {
       if (started) {
         final sectionLog = _genLoggedWorkoutSection(index);
         loggedWorkout.loggedWorkoutSections.add(sectionLog);
+        _calculateTotalReps(index);
       }
     });
 
@@ -107,21 +143,18 @@ class DoWorkoutBloc extends ChangeNotifier {
     _audioPlayers[sectionIndex]?.stop();
     _audioPlayers[sectionIndex]?.seek(Duration.zero);
     allSectionsComplete = false;
+    _calculateTotalReps(sectionIndex);
+    workoutInProgress = false;
     notifyListeners();
   }
 
   void resetWorkout() {
     _sortedWorkoutSections.forEach((ws) {
-      final i = ws.sortPosition;
-      startedSections[i] = false;
-      _stopWatchTimers[i].onExecute.add(StopWatchExecute.reset);
-      completedSections[i] = null;
-      controllers[i].reset();
-      _audioPlayers[i]?.stop();
-      _audioPlayers[i]?.seek(Duration.zero);
+      resetSection(ws.sortPosition);
     });
     allSectionsComplete = false;
     loggedWorkout.loggedWorkoutSections = [];
+    workoutInProgress = false;
     notifyListeners();
   }
   /////
@@ -146,6 +179,7 @@ class DoWorkoutBloc extends ChangeNotifier {
         _sortedWorkoutSections.length) {
       allSectionsComplete = true;
     }
+    workoutInProgress = false;
     notifyListeners();
   }
 
@@ -176,6 +210,9 @@ class DoWorkoutBloc extends ChangeNotifier {
     _audioPlayers.forEach((player) {
       player?.pause();
     });
+
+    workoutInProgress = false;
+    notifyListeners();
   }
 
   StopWatchTimer getStopWatchTimerForSection(int index) =>
@@ -195,6 +232,8 @@ class DoWorkoutBloc extends ChangeNotifier {
     }
 
     _audioPlayers[index]?.play();
+    workoutInProgress = true;
+    notifyListeners();
   }
 
   void pauseSection(int index) {
@@ -204,6 +243,8 @@ class DoWorkoutBloc extends ChangeNotifier {
     }
 
     _audioPlayers[index]?.pause();
+    workoutInProgress = false;
+    notifyListeners();
   }
 
   AudioPlayer? getAudioPlayerForSection(int index) => _audioPlayers[index];
@@ -223,10 +264,20 @@ class DoWorkoutBloc extends ChangeNotifier {
           markSectionComplete: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
-
       case kAMRAPName:
-        return AMRAPSectionController(workoutSection: workoutSection);
-
+        return AMRAPSectionController(
+          workoutSection: workoutSection,
+          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+          markSectionComplete: () =>
+              _markSectionComplete(workoutSection.sortPosition),
+        );
+      case kForTimeName:
+        return ForTimeSectionController(
+          workoutSection: workoutSection,
+          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+          markSectionComplete: () =>
+              _markSectionComplete(workoutSection.sortPosition),
+        );
       default:
         throw Exception(
             'No mapping exists for workout section type $typeName.');
@@ -247,111 +298,4 @@ class DoWorkoutBloc extends ChangeNotifier {
     }
     super.dispose();
   }
-}
-
-/// Abstract parent for all workout section type sub controllers.
-abstract class WorkoutSectionController {
-  /// Broadcast changes to the progress state.
-  StreamController<WorkoutSectionProgressState> progressStateController =
-      StreamController<WorkoutSectionProgressState>.broadcast();
-
-  Stream<WorkoutSectionProgressState> get progressStream =>
-      progressStateController.stream;
-
-  late WorkoutSectionProgressState state;
-
-  WorkoutSectionController(WorkoutSection workoutSection) {
-    state = WorkoutSectionProgressState(workoutSection);
-    progressStateController.add(state);
-  }
-
-  /// The log that will be generated incrementally as the workout progresses.
-  /// Can be retrieved by the [DoWorkoutBloc] at any stage to be added to the main [LoggedWorkout.loggedWorkoutSections] list.
-  late LoggedWorkoutSection loggedWorkoutSection;
-
-  void reset();
-
-  void dispose();
-}
-
-class WorkoutSectionProgressState {
-  late int _numberSets;
-
-  /// Add a lapTime at the [currentSectionRound] and [currentSetIndex]
-  void addSetLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
-    final prevSetData = prevSectionData['setLapTimesMs'] ?? {};
-
-    lapTimesMs = {
-      ...lapTimesMs,
-      currentSectionRound.toString(): {
-        ...prevSectionData,
-        'setLapTimesMs': {
-          ...prevSetData,
-          currentSetIndex.toString(): lapTimeMs
-        },
-      }
-    };
-  }
-
-  void addSectionRoundLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
-    lapTimesMs = {
-      ...lapTimesMs,
-      currentSectionRound.toString(): {
-        ...prevSectionData,
-        'lapTimeMs': lapTimeMs,
-      }
-    };
-  }
-
-  void moveToNextSet() {
-    if (currentSetIndex == _numberSets - 1) {
-      currentSectionRound++;
-      currentSetIndex = 0;
-    } else {
-      currentSetIndex++;
-    }
-  }
-
-  void moveToNextSection() {
-    currentSectionRound++;
-    currentSetIndex = 0;
-  }
-
-  int currentSectionRound = 0;
-  int currentSetIndex = 0;
-
-  /// Shape of this map matches the shape required by the Joi validation that runs before JSON blob is saved to the DB.
-  /// {
-  ///   [sectionRoundNumber.toString()]: {
-  ///     lapTimeMs: int, (lap time for section round)
-  ///     setLapTimesMs: {
-  ///       [currentSetIndex.toString()]: int (lap time for set at sortPosition [currentSetIndex] within round)
-  ///     }
-  ///   }
-  /// }
-  Map<String, Map<String, dynamic>> lapTimesMs = {};
-
-  /// Used for timed workouts or timecaps.
-  int? setTimeRemainingMs;
-
-  /// Must be a double between 0.0 and 1.0 inclusive.
-  /// How this is calculated will depend on the type of workout / workout controller.
-  /// For example timed workouts are just curTime / totalTime.
-  /// ForTime and Free Session workouts are based on rounds and sets complete vs total rounds and set in the workout.
-  double percentComplete = 0.0;
-
-  WorkoutSectionProgressState(WorkoutSection workoutSection) {
-    _numberSets = workoutSection.workoutSets.length;
-  }
-
-  /// This is invoked each time a new state is generated.
-  /// So make sure if you add any fields that they also get added to this copy method!
-  WorkoutSectionProgressState.copy(WorkoutSectionProgressState o)
-      : currentSectionRound = o.currentSectionRound,
-        currentSetIndex = o.currentSetIndex,
-        lapTimesMs = o.lapTimesMs,
-        percentComplete = o.percentComplete,
-        setTimeRemainingMs = o.setTimeRemainingMs;
 }

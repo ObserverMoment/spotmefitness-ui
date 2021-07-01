@@ -3,10 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_set_creator.dart';
-import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
@@ -34,23 +32,10 @@ class FreeSessionCreator extends StatelessWidget {
                 .contains(workoutSectionType.name),
             'FreeSessionCreator is only for FreeSessions, AMRAPs and ForTime workouts, not ${workoutSectionType.name}.');
 
-  /// Shows instruction at the end of the lists of moves with regards to how to act on them.
-  Widget _buildInstructions() => FadeIn(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0, left: 24, right: 24),
-          child: WorkoutSectionInstructions(
-            rounds: totalRounds,
-            typeName: workoutSectionType.name,
-            timecap: timecap,
-          ),
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     return Flexible(
       child: ListView(shrinkWrap: true, children: [
-        if (sortedWorkoutSets.isNotEmpty) _buildInstructions(),
         ImplicitlyAnimatedList<WorkoutSet>(
           items: sortedWorkoutSets,
           shrinkWrap: true,

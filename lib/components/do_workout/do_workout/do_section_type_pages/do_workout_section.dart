@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_amrap.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_fortime.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_timed.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_bottom_navbar.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_complete_modal.dart';
@@ -78,27 +80,8 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
           workoutSection: widget.workoutSection,
           activePageIndex: _activePageIndex,
         );
-
-      default:
-        throw Exception(
-            'No DoSectionPages builder defined for section type: ${widget.workoutSection.workoutSectionType.name}');
-    }
-  }
-
-  /// Build the bottom navigation for the different workout section sub types.
-  Widget _buildDoSectionBottomNav(WorkoutSectionProgressState progressState) {
-    switch (widget.workoutSection.workoutSectionType.name) {
-      case kTabataName:
-      case kHIITCircuitName:
-      case kEMOMName:
-        return DoWorkoutSectionTimed(
-          pageController: _pageController,
-          progressState: progressState,
-          workoutSection: widget.workoutSection,
-          activePageIndex: _activePageIndex,
-        );
-      case kAMRAPName:
-        return DoWorkoutSectionAMRAP(
+      case kForTimeName:
+        return DoWorkoutSectionForTime(
           pageController: _pageController,
           progressState: progressState,
           workoutSection: widget.workoutSection,

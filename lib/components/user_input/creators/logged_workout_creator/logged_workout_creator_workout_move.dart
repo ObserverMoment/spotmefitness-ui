@@ -92,7 +92,10 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
           )),
         ),
       ],
-      child: LoggedWorkoutMoveDisplay(loggedWorkoutMove),
+      child: LoggedWorkoutMoveDisplay(
+        loggedWorkoutMove,
+        isLast: isLast,
+      ),
     );
   }
 }

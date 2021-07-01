@@ -123,7 +123,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
               H3('Time spent working:'),
               SizedBox(width: 8),
               H3(
-                (totalTimeMs ~/ 1000).secondsToTimeDisplay(),
+                Duration(milliseconds: totalTimeMs).compactDisplay(),
                 color: Styles.colorTwo,
               ),
             ],

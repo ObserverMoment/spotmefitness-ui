@@ -36,7 +36,6 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       this.scheduledWorkout})
       : assert(workout != null || initialLoggedWorkout != null,
             'Must provide either a workout (to create a logged workout from) or a loggedWorkout (to edit)') {
-
     if (initialLoggedWorkout != null) {
       _isEditing = true;
       loggedWorkout = LoggedWorkout.fromJson(initialLoggedWorkout!.toJson());
@@ -272,81 +271,6 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   /// Write to store when the user closes the section editing screen.
   ///
   /// When updating "score" inputs (section reps, time, rounds) we check if the section is being included in the log via [includedSectionIds]. If the user is entering a score for this section then we can assume that they want to include it and so should update this automatically.
-  // Future<void> updateSectionRepsScore(int sectionIndex, int repScore) async {
-  //   _backupSectionAndMarkDirty(sectionIndex);
-  //   final updated = LoggedWorkoutSection.fromJson({
-  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-  //     'repScore': repScore
-  //   });
-
-  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-  //       .toList();
-
-  //   /// Add to included section if not already there.
-  //   if (!includedSectionIds.contains(updated.id)) {
-  //     includedSectionIds.add(updated.id);
-  //   }
-
-  //   notifyListeners();
-
-  //   if (_isEditing) {
-  //     await apiUpdateLoggedWorkoutSection(
-  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
-  //   }
-  // }
-
-  // Future<void> updateSectionTimeTakenMs(
-  //     int sectionIndex, int timeTakenMs) async {
-  //   _backupSectionAndMarkDirty(sectionIndex);
-
-  //   final updated = LoggedWorkoutSection.fromJson({
-  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-  //     'timeTakenMs': timeTakenMs
-  //   });
-
-  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-  //       .toList();
-
-  //   /// Add to included section if not already there.
-  //   if (!includedSectionIds.contains(updated.id)) {
-  //     includedSectionIds.add(updated.id);
-  //   }
-
-  //   notifyListeners();
-
-  //   if (_isEditing) {
-  //     await apiUpdateLoggedWorkoutSection(
-  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
-  //   }
-  // }
-
-  // Future<void> updateSectionRoundsCompleted(
-  //     int sectionIndex, int roundsCompleted) async {
-  //   _backupSectionAndMarkDirty(sectionIndex);
-
-  //   final updated = LoggedWorkoutSection.fromJson({
-  //     ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-  //     'roundsCompleted': roundsCompleted
-  //   });
-
-  //   loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-  //       .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-  //       .toList();
-
-  //   /// Add to included section if not already there.
-  //   if (!includedSectionIds.contains(updated.id)) {
-  //     includedSectionIds.add(updated.id);
-  //   }
-
-  //   notifyListeners();
-
-  //   if (_isEditing) {
-  //     await apiUpdateLoggedWorkoutSection(
-  //         loggedWorkout.loggedWorkoutSections[sectionIndex]);
-  //   }
-  // }
 
   /// Also calls the API to update the DB.
   /// Does not write to graphql store.

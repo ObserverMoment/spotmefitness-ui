@@ -13,11 +13,13 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-class TimedSectionLapTimer extends StatelessWidget {
+/// A minute based timer like iOS timer. The outer circles fills over a one minute period.
+class ForTimeTimer extends StatelessWidget {
   final WorkoutSectionProgressState state;
   final WorkoutSection workoutSection;
-  const TimedSectionLapTimer(
+  const ForTimeTimer(
       {Key? key, required this.state, required this.workoutSection})
       : super(key: key);
 
@@ -30,11 +32,6 @@ class TimedSectionLapTimer extends StatelessWidget {
     timer.onExecute
         .add(isRunning ? StopWatchExecute.stop : StopWatchExecute.start);
   }
-
-  /// currentWorkoutSet.duration should never be null for timed sets.
-  int get _currentSetDuration => workoutSection.workoutSets
-      .sortedBy<num>((wSet) => wSet.sortPosition)[state.currentSetIndex]
-      .duration!;
 
   Widget _buildWorkoutSetDisplay(WorkoutSet workoutSet) => Padding(
         padding: const EdgeInsets.all(6.0),
@@ -57,10 +54,6 @@ class TimedSectionLapTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalRounds = workoutSection.rounds;
-    final totalSetsPerRound = workoutSection.workoutSets.length;
-    final remainingSeconds = (state.timeToNextCheckpointMs! ~/ 1000).toString();
-
     final sortedWorkoutSets =
         workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
 
@@ -76,69 +69,74 @@ class TimedSectionLapTimer extends StatelessWidget {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => _handlePlayPause(context),
-          child: LayoutBuilder(
-              builder: (context, constraints) => Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      CircularPercentIndicator(
-                          header: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    H3('Round ${state.currentSectionRound + 1} of $totalRounds'),
-                                    H3('Set ${state.currentSetIndex + 1} of $totalSetsPerRound'),
-                                  ],
-                                ),
-                                Row(
+          child: StreamBuilder<int>(
+            initialData: 0,
+            stream: context
+                .read<DoWorkoutBloc>()
+                .getStopWatchTimerForSection(workoutSection.sortPosition)
+                .secondTime,
+            builder: (context, AsyncSnapshot<int> snapshot) {
+              final seconds = snapshot.data!;
+
+              /// Get the remaining seconds in the minute.
+              final remainingOfCurrentMinute = (seconds % 60) / 60;
+
+              /// Get the display time.
+              final overAnHour = seconds > 3600;
+              final displayTime = StopWatchTimer.getDisplayTime(seconds * 1000,
+                  milliSecond: false, hours: overAnHour);
+
+              return LayoutBuilder(
+                  builder: (context, constraints) => Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          CircularPercentIndicator(
+                              header: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     H3('Now: '),
                                     _buildWorkoutSetDisplay(currentSet),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          center: MyText(
-                            remainingSeconds,
-                            size: FONTSIZE.EXTREME,
-                            lineHeight: 1,
-                          ),
-                          footer: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              center: MyText(
+                                displayTime,
+                                size: FONTSIZE.DISPLAY,
+                                lineHeight: 1,
+                              ),
+                              footer: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
                                   children: [
-                                    H3('Next: '),
-                                    _buildWorkoutSetDisplay(nextSet),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        H3('Next: '),
+                                        _buildWorkoutSetDisplay(nextSet),
+                                      ],
+                                    ),
+                                    MyText(
+                                      'Tap screen to start / pause',
+                                      size: FONTSIZE.SMALL,
+                                      subtext: true,
+                                    )
                                   ],
                                 ),
-                                MyText(
-                                  'Tap screen to start / pause',
-                                  size: FONTSIZE.SMALL,
-                                  subtext: true,
-                                )
-                              ],
-                            ),
-                          ),
-                          backgroundColor:
-                              context.theme.primary.withOpacity(0.1),
-                          linearGradient: Styles.pinkGradient,
-                          // progressColor: Styles.peachRed,
-                          circularStrokeCap: CircularStrokeCap.round,
-                          percent: 1 -
-                              (state.timeToNextCheckpointMs! /
-                                  (_currentSetDuration * 1000)),
-                          radius: constraints.maxWidth / 1.5),
-                    ],
-                  )),
+                              ),
+                              backgroundColor:
+                                  context.theme.primary.withOpacity(0.1),
+                              linearGradient: Styles.pinkGradient,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              percent: remainingOfCurrentMinute,
+                              radius: constraints.maxWidth / 1.8),
+                        ],
+                      ));
+            },
+          ),
         ),
       ),
     );

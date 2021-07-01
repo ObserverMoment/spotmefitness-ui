@@ -35,10 +35,11 @@ class SectionModalContainer extends StatelessWidget {
                             ))
                       ],
                       color: context.theme.background
-                          .withOpacity(isDark ? 0.45 : 0.6),
+                          .withOpacity(isDark ? 0.45 : 0.8),
                     ),
                     child: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding:
+                          const EdgeInsets.only(top: 12, left: 12, right: 12),
                       height: constraints.maxHeight,
                       width: constraints.maxWidth,
                       child: child,

@@ -329,19 +329,21 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                                   'Duration: ${DataUtils.calculateTimedSectionDuration(_workoutSection).compactDisplay()}'),
                             ),
                           ),
-                        if (![kLastStandingName, kAMRAPName]
-                            .contains(_workoutSection.workoutSectionType.name))
+                        if (![
+                          kLastStandingName,
+                          kAMRAPName,
+                          kTabataName,
+                          kFreeSessionName
+                        ].contains(_workoutSection.workoutSectionType.name))
                           RoundPicker(
                             rounds: _workoutSection.rounds,
                             saveValue: (value) =>
                                 _updateWorkoutSection({'rounds': value}),
                             modalTitle: 'How many rounds?',
                           ),
-                        if (![
-                          kHIITCircuitName,
-                          kEMOMName,
-                          kTabataName,
-                          kForTimeName,
+                        if ([
+                          kAMRAPName,
+                          kLastStandingName,
                         ].contains(_workoutSection.workoutSectionType.name))
                           TimecapPicker(
                             allowNoTimecap:

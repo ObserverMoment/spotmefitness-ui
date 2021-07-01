@@ -17,7 +17,6 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoggedWorkoutCreatorSet extends StatefulWidget {
@@ -126,22 +125,22 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
             .deleteLoggedWorkoutSet(widget.sectionIndex, widget.setIndex));
   }
 
-  void _openAddLoggedWorkoutMoveToSet() {
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => WorkoutMoveCreator(
-          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-          saveWorkoutMove: (workoutMove) => _bloc.addLoggedWorkoutMove(
-              widget.sectionIndex,
-              widget.setIndex,
-              workoutMoveToLoggedWorkoutMove(workoutMove)),
-          workoutMoveIndex: _loggedWorkoutSet.loggedWorkoutMoves.length,
-        ),
-      ),
-    );
-  }
+  // void _openAddLoggedWorkoutMoveToSet() {
+  //   // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
+  //   Navigator.push(
+  //     context,
+  //     CupertinoPageRoute(
+  //       builder: (context) => WorkoutMoveCreator(
+  //         pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+  //         saveWorkoutMove: (workoutMove) => _bloc.addLoggedWorkoutMove(
+  //             widget.sectionIndex,
+  //             widget.setIndex,
+  //             workoutMoveToLoggedWorkoutMove(workoutMove)),
+  //         workoutMoveIndex: _loggedWorkoutSet.loggedWorkoutMoves.length,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _updateLoggedWorkoutMove(LoggedWorkoutMove loggedWorkoutMove) {
     _bloc.editLoggedWorkoutMove(
@@ -156,7 +155,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
   Widget _buildSetRepeats() => BorderButton(
       mini: true,
       text:
-          '${_loggedWorkoutSet.roundsCompleted} ${_loggedWorkoutSet.roundsCompleted == 1 ? "time" : "times"}',
+          '${_loggedWorkoutSet.roundsCompleted} ${_loggedWorkoutSet.roundsCompleted == 1 ? "set" : "sets"}',
       onPressed: () => context.showBottomSheet<int>(
               child: NumberInputModalInt(
             value: _loggedWorkoutSet.roundsCompleted,
@@ -284,13 +283,14 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                       key: Key(
                           'LoggedWorkoutCreatorWorkoutMove - ${_sortedLoggedWorkoutMoves[index].id}'),
                       loggedWorkoutMove: _sortedLoggedWorkoutMoves[index],
+                      isLast: index == _sortedLoggedWorkoutMoves.length - 1,
                     ),
                   ),
                 ),
-                CreateTextIconButton(
-                  text: 'Add Move',
-                  onPressed: _openAddLoggedWorkoutMoveToSet,
-                ),
+                // CreateTextIconButton(
+                //   text: 'Add Move',
+                //   onPressed: _openAddLoggedWorkoutMoveToSet,
+                // ),
               ],
             ),
         ],

@@ -104,9 +104,10 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
           fit: StackFit.expand,
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 64,
+                  height: 60,
                   child: PageView(
                     controller: _sectionTimerPageController,
                     physics: NeverScrollableScrollPhysics(),
@@ -116,23 +117,29 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
                         .toList(),
                   ),
                 ),
-                Container(
-                  height: 48,
-                  padding: const EdgeInsets.only(left: 8),
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: sortedWorkoutSections
-                        .map((wSection) => Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: _SectionPageButton(
-                                workoutSection: wSection,
-                                onPressed: () => _navigateToSectionPage(
-                                    wSection.sortPosition),
-                                activeSectionPageIndex: _activeSectionPageIndex,
-                              ),
-                            ))
-                        .toList(),
+                GrowInOut(
+                  show: context
+                      .select<DoWorkoutBloc, bool>((b) => !b.workoutInProgress),
+                  child: Container(
+                    height: 48,
+                    padding: const EdgeInsets.only(left: 8),
+                    alignment: Alignment.center,
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: sortedWorkoutSections
+                          .map((wSection) => Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: _SectionPageButton(
+                                  workoutSection: wSection,
+                                  onPressed: () => _navigateToSectionPage(
+                                      wSection.sortPosition),
+                                  activeSectionPageIndex:
+                                      _activeSectionPageIndex,
+                                ),
+                              ))
+                          .toList(),
+                    ),
                   ),
                 ),
                 Expanded(

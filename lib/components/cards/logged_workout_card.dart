@@ -68,6 +68,21 @@ class LoggedWorkoutCard extends StatelessWidget {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
+            child: Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  ...loggedWorkout.loggedWorkoutSections
+                      .take(kNumSectionTags)
+                      .map((section) => LoggedWorkoutSectionSummaryTag(section))
+                      .toList(),
+                  if (sectionTagsOverflow) MyText(' ... more')
+                ]),
+          ),
           if (loggedWorkout.loggedWorkoutSections.isNotEmpty) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -86,22 +101,6 @@ class LoggedWorkoutCard extends StatelessWidget {
                             ))
                         .toList(),
                     if (moveTypesOverflow) MyText(' ... more')
-                  ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, top: 4.0),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    ...loggedWorkout.loggedWorkoutSections
-                        .take(kNumSectionTags)
-                        .map((section) =>
-                            LoggedWorkoutSectionSummaryTag(section))
-                        .toList(),
-                    if (sectionTagsOverflow) MyText(' ... more')
                   ]),
             ),
             Padding(

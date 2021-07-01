@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_type_creators/workout_tabata_set_creator.dart';
-import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
@@ -45,15 +44,6 @@ class TabataCreator extends StatelessWidget {
                   data.standardMoves.firstWhere((m) => m.id == kRestMoveId);
 
               return ListView(shrinkWrap: true, children: [
-                if (sortedWorkoutSets.isNotEmpty)
-                  FadeIn(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 8.0, left: 24, right: 24),
-                      child: WorkoutSectionInstructions(
-                          typeName: kTabataName, rounds: totalRounds),
-                    ),
-                  ),
                 ImplicitlyAnimatedList<WorkoutSet>(
                   items: sortedWorkoutSets,
                   shrinkWrap: true,

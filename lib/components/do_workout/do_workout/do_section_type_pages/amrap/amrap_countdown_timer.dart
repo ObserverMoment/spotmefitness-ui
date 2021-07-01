@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -12,6 +13,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class AMRAPCountdownTimer extends StatelessWidget {
   final WorkoutSectionProgressState state;
@@ -29,11 +31,6 @@ class AMRAPCountdownTimer extends StatelessWidget {
     timer.onExecute
         .add(isRunning ? StopWatchExecute.stop : StopWatchExecute.start);
   }
-
-  /// currentWorkoutSet.duration should never be null for timed sets.
-  int get _currentSetDuration => workoutSection.workoutSets
-      .sortedBy<num>((wSet) => wSet.sortPosition)[state.currentSetIndex]
-      .duration!;
 
   Widget _buildWorkoutSetDisplay(WorkoutSet workoutSet) => Padding(
         padding: const EdgeInsets.all(6.0),
@@ -56,10 +53,10 @@ class AMRAPCountdownTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// TODO: Use setTimeremaining for time till timecap in AMRAP.
-    /// Change name of the field? TimeTillNextCapMs?
-    // final remainingSeconds = (state.setTimeRemainingMs! ~/ 1000).toString();
-    final remainingSeconds = '136';
+    final remainingSeconds = state.timeToNextCheckpointMs! ~/ 1000;
+    final remainingDisplay = remainingSeconds > 60
+        ? Duration(seconds: remainingSeconds).compactDisplay()
+        : remainingSeconds.toString();
 
     final sortedWorkoutSets =
         workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
@@ -92,13 +89,10 @@ class AMRAPCountdownTimer extends StatelessWidget {
                               ],
                             ),
                           ),
-                          center: SizeFadeIn(
-                            key: Key(remainingSeconds),
-                            child: MyText(
-                              remainingSeconds,
-                              size: FONTSIZE.EXTREME,
-                              lineHeight: 1,
-                            ),
+                          center: MyText(
+                            remainingDisplay,
+                            size: FONTSIZE.EXTREME,
+                            lineHeight: 1,
                           ),
                           footer: Padding(
                             padding: const EdgeInsets.all(12.0),
@@ -114,6 +108,7 @@ class AMRAPCountdownTimer extends StatelessWidget {
                                 MyText(
                                   'Tap screen to start / pause',
                                   size: FONTSIZE.SMALL,
+                                  subtext: true,
                                 )
                               ],
                             ),
@@ -122,7 +117,7 @@ class AMRAPCountdownTimer extends StatelessWidget {
                               context.theme.primary.withOpacity(0.1),
                           linearGradient: Styles.pinkGradient,
                           circularStrokeCap: CircularStrokeCap.round,
-                          percent: 0.2,
+                          percent: state.percentComplete,
                           radius: constraints.maxWidth / 1.8),
                     ],
                   )),

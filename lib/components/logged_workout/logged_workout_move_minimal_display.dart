@@ -21,7 +21,7 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         MyText(
-          loggedWorkoutMove.reps.stringMyDouble(),
+          ' - ${loggedWorkoutMove.reps.stringMyDouble()}',
         ),
         SizedBox(
           width: 4,
@@ -40,7 +40,7 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         MyText(
-          loggedWorkoutMove.loadAmount!.stringMyDouble(),
+          ' - ${loggedWorkoutMove.loadAmount!.stringMyDouble()}',
         ),
         SizedBox(
           width: 4,
@@ -60,14 +60,10 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
         Row(
           children: [
             MyText(loggedWorkoutMove.move.name),
-            if (showReps) MyText(' - '),
             if (showReps) _buildMoveRepDisplay(),
             if (loggedWorkoutMove.loadAmount != null &&
                 loggedWorkoutMove.loadAmount != 0)
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: _buildLoadDisplay(),
-              ),
+              _buildLoadDisplay(),
           ],
         ),
         if (loggedWorkoutMove.equipment != null)

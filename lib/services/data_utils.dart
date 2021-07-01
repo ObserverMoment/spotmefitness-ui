@@ -70,6 +70,7 @@ class DataUtils {
   }
 
   /// Time and distance moves: a workoutMove counts as one 'rep'.
+  /// E.g. 10mtr row would be 1 rep. 10 seconds hang hold would be one rep.
   static int totalRepsInSection<T>(T section) {
     assert(section is WorkoutSection || section is LoggedWorkoutSection,
         'DataUtils.totalRepsPerSectionRound: section must (currently) be WorkoutSection or LoggedWorkoutSection.');

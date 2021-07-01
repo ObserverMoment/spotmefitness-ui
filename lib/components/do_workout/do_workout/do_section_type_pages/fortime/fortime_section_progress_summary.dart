@@ -13,21 +13,22 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-class TimedSectionProgressSummary extends StatefulWidget {
+class ForTimeSectionProgressSummary extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const TimedSectionProgressSummary(
+  const ForTimeSectionProgressSummary(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  TimedSectionProgressSummaryState createState() =>
-      TimedSectionProgressSummaryState();
+  ForTimeSectionProgressSummaryState createState() =>
+      ForTimeSectionProgressSummaryState();
 }
 
-class TimedSectionProgressSummaryState
-    extends State<TimedSectionProgressSummary> {
+class ForTimeSectionProgressSummaryState
+    extends State<ForTimeSectionProgressSummary> {
   /// Logic is similar to that found in [DoWorkoutMovesList] but with no user interaction.
   /// It also needs to take into account the start line (and finish line) which are also in the scroll_to_index list. Start line has an index of 0 so everything else is pushed up one index vs the start calculation which is found in [DoWorkoutMovesList] logic.
   /// This list scrolls with progress. There is no need for the user to search it. View only.
@@ -52,7 +53,7 @@ class TimedSectionProgressSummaryState
   }
 
   @override
-  void didUpdateWidget(TimedSectionProgressSummary oldWidget) {
+  void didUpdateWidget(ForTimeSectionProgressSummary oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
@@ -118,7 +119,7 @@ class TimedSectionProgressSummaryState
             controller: _autoScrollController,
             index: listItemIndex,
             key: Key(listItemIndex.toString()),
-            child: _TimedWorkoutSetDisplay(
+            child: _ForTimeWorkoutSetDisplay(
                 roundNumber: roundNumber,
                 state: widget.state,
                 workoutSet: workoutSet,
@@ -136,34 +137,8 @@ class TimedSectionProgressSummaryState
 
   @override
   Widget build(BuildContext context) {
-    final remainingSeconds =
-        (widget.state.timeToNextCheckpointMs! ~/ 1000).toString();
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyText('Next set in'),
-            SizedBox(width: 6),
-            SizedBox(
-              width: 50,
-              child: Center(
-                child: SizeFadeIn(
-                  key: Key(remainingSeconds),
-                  child: MyText(
-                    remainingSeconds,
-                    size: FONTSIZE.DISPLAY,
-                    lineHeight: 1,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 6),
-            MyText('seconds'),
-          ],
-        ),
-        HorizontalLine(),
-        SizedBox(height: 8),
         Expanded(
           child: NotificationListener<ScrollNotification>(
             onNotification: (notification) {
@@ -219,12 +194,12 @@ class TimedSectionProgressSummaryState
   }
 }
 
-class _TimedWorkoutSetDisplay extends StatelessWidget {
+class _ForTimeWorkoutSetDisplay extends StatelessWidget {
   final int roundNumber;
   final WorkoutSet workoutSet;
   final WorkoutSectionProgressState state;
   final bool showReps;
-  const _TimedWorkoutSetDisplay(
+  const _ForTimeWorkoutSetDisplay(
       {Key? key,
       required this.workoutSet,
       required this.state,
@@ -236,6 +211,9 @@ class _TimedWorkoutSetDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     final isActive = state.currentSectionRound == roundNumber &&
         state.currentSetIndex == workoutSet.sortPosition;
+
+    final int? lapTimeMs = state.lapTimesMs[roundNumber.toString()]
+        ?['setLapTimesMs'][workoutSet.sortPosition.toString()];
 
     return AnimatedOpacity(
       opacity: DoWorkoutUtils.moveIsCompleted(
@@ -253,19 +231,30 @@ class _TimedWorkoutSetDisplay extends StatelessWidget {
             : null,
         child: Padding(
           padding: const EdgeInsets.all(6.0),
-          child: Wrap(
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
-            spacing: 12,
-            runSpacing: 6,
-            children: workoutSet.workoutMoves
-                .map((workoutMove) => ContentBox(
-                      child: WorkoutMoveMinimalDisplay(
-                        workoutMove: workoutMove,
-                        showReps: showReps,
-                      ),
-                    ))
-                .toList(),
+          child: Row(
+            mainAxisAlignment: lapTimeMs != null
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.center,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                spacing: 12,
+                runSpacing: 6,
+                children: workoutSet.workoutMoves
+                    .map((workoutMove) => ContentBox(
+                          child: WorkoutMoveMinimalDisplay(
+                            workoutMove: workoutMove,
+                            showReps: showReps,
+                          ),
+                        ))
+                    .toList(),
+              ),
+              if (lapTimeMs != null)
+                SizeFadeIn(
+                    child: MyText(
+                        Duration(milliseconds: lapTimeMs).compactDisplay()))
+            ],
           ),
         ),
       ),

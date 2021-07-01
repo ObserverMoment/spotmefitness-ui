@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/utils.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -72,27 +69,6 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
   }
 
   List<Widget> _movesList(int roundNumber) => [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              MyText(
-                'Round ${roundNumber + 1}',
-                subtext: widget.state.currentSectionRound > roundNumber,
-              ),
-              if (widget.state.currentSectionRound > roundNumber)
-                FadeIn(
-                    child: Padding(
-                  padding: const EdgeInsets.only(left: 6.0),
-                  child: Icon(
-                    CupertinoIcons.checkmark_alt,
-                    color: Styles.peachRed,
-                    size: 20,
-                  ),
-                ))
-            ],
-          ),
-        ),
         ...widget.workoutSection.workoutSets
             .sortedBy<num>((workoutSet) => workoutSet.sortPosition)
             .map((workoutSet) {
@@ -106,7 +82,6 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
             child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: _WorkoutSetInMovesList(
-                roundNumber: roundNumber,
                 state: widget.state,
                 workoutSectionType: widget.workoutSection.workoutSectionType,
                 workoutSet: workoutSet,
@@ -146,26 +121,21 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
 class _WorkoutSetInMovesList extends StatelessWidget {
   final WorkoutSectionType workoutSectionType;
   final WorkoutSectionProgressState state;
-  final int roundNumber;
   final WorkoutSet workoutSet;
   const _WorkoutSetInMovesList(
       {Key? key,
       required this.state,
-      required this.roundNumber,
       required this.workoutSet,
       required this.workoutSectionType})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final bool isCurrentActiveSet = state.currentSectionRound == roundNumber &&
+    final bool isCurrentActiveSet =
         state.currentSetIndex == workoutSet.sortPosition;
 
     return AnimatedOpacity(
-      opacity: DoWorkoutUtils.moveIsCompleted(
-              state, roundNumber, workoutSet.sortPosition)
-          ? 0.6
-          : 1,
+      opacity: state.currentSetIndex > workoutSet.sortPosition ? 0.6 : 1,
       duration: kStandardAnimationDuration,
       child: AnimatedContainer(
         duration: kStandardAnimationDuration,
