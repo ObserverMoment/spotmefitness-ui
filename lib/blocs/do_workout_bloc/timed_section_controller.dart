@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -106,5 +105,6 @@ class TimedSectionController extends WorkoutSectionController {
   @override
   void dispose() async {
     await _timerStreamSubscription.cancel();
+    super.dispose();
   }
 }

@@ -69,5 +69,6 @@ class AMRAPSectionController extends WorkoutSectionController {
   @override
   void dispose() async {
     await _timerStreamSubscription.cancel();
+    super.dispose();
   }
 }

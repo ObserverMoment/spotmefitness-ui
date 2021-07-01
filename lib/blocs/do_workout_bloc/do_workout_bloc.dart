@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/fortime_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -273,6 +274,13 @@ class DoWorkoutBloc extends ChangeNotifier {
         );
       case kForTimeName:
         return ForTimeSectionController(
+          workoutSection: workoutSection,
+          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+          markSectionComplete: () =>
+              _markSectionComplete(workoutSection.sortPosition),
+        );
+      case kFreeSessionName:
+        return FreeSessionSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
           markSectionComplete: () =>

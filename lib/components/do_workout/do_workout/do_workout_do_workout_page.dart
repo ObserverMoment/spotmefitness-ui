@@ -5,13 +5,11 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_workout_section.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/docked_audio_player.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +25,7 @@ class DoWorkoutDoWorkoutPage extends StatefulWidget {
 }
 
 class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
-  final kNavbarIconSize = 34.0;
+  final kNavbarIconSize = 32.0;
 
   int _activeSectionPageIndex = 0;
   final _sectionTimerPageController = PageController();
@@ -107,7 +105,7 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 60,
+                  height: 62,
                   child: PageView(
                     controller: _sectionTimerPageController,
                     physics: NeverScrollableScrollPhysics(),

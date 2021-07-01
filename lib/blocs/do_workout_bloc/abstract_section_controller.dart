@@ -63,5 +63,9 @@ abstract class WorkoutSectionController {
     progressStateController.add(state);
   }
 
-  void dispose();
+  @mustCallSuper
+  void dispose() {
+    progressStateController.close();
+    stopWatchTimer.dispose();
+  }
 }

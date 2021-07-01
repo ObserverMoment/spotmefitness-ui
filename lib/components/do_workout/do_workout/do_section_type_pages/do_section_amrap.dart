@@ -45,7 +45,7 @@ class DoWorkoutSectionAMRAP extends StatelessWidget {
                           'Info about the wokout type ${workoutSection.workoutSectionType.name}'))
                 ],
               ),
-              RepsScore(sectionIndex: workoutSection.sortPosition),
+              _RepScore(sectionIndex: workoutSection.sortPosition),
             ],
           ),
         ),
@@ -82,9 +82,9 @@ class DoWorkoutSectionAMRAP extends StatelessWidget {
   }
 }
 
-class RepsScore extends StatelessWidget {
+class _RepScore extends StatelessWidget {
   final int sectionIndex;
-  const RepsScore({Key? key, required this.sectionIndex}) : super(key: key);
+  const _RepScore({Key? key, required this.sectionIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

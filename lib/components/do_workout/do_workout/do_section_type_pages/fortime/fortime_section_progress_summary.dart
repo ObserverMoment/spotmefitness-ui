@@ -132,6 +132,7 @@ class ForTimeSectionProgressSummaryState
   @override
   void dispose() {
     _autoScrollController.dispose();
+    _enableAutoScrollTimer?.cancel();
     super.dispose();
   }
 

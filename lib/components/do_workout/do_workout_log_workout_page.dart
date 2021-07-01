@@ -192,8 +192,9 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                         onPageChanged: (i) =>
                             setState(() => _activeTabIndex = i),
                         children: sortedSections
-                            .mapIndexed((i, _) =>
-                                _LoggedWorkoutSectionWrapper(sectionIndex: i))
+                            .mapIndexed((i, _) => _LoggedWorkoutSectionWrapper(
+                                sectionIndex: i,
+                                logAlreadySavedToDB: _logSavedToDB))
                             .toList()),
                   ),
                 ],
@@ -207,7 +208,11 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
 /// Hooks into the bloc to pull out the correct logged workout section based on the section index and provides it to the pure UI widget [LoggedWorkoutSectionSummarycard].
 class _LoggedWorkoutSectionWrapper extends StatelessWidget {
   final int sectionIndex;
-  const _LoggedWorkoutSectionWrapper({Key? key, required this.sectionIndex})
+
+  /// So disable note editing functionality.
+  final bool logAlreadySavedToDB;
+  const _LoggedWorkoutSectionWrapper(
+      {Key? key, required this.sectionIndex, required this.logAlreadySavedToDB})
       : super(key: key);
 
   @override
@@ -221,9 +226,11 @@ class _LoggedWorkoutSectionWrapper extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
       child: LoggedWorkoutSectionSummaryCard(
           loggedWorkoutSection: loggedWorkoutSection,
-          addNoteToLoggedSection: (note) => context
-              .read<DoWorkoutBloc>()
-              .addNoteToLoggedWorkoutSection(sectionIndex, note)),
+          addNoteToLoggedSection: logAlreadySavedToDB
+              ? null
+              : (note) => context
+                  .read<DoWorkoutBloc>()
+                  .addNoteToLoggedWorkoutSection(sectionIndex, note)),
     );
   }
 }

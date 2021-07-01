@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/stopwatch_lap_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -15,7 +16,7 @@ class DoWorkoutSectionTimer extends StatelessWidget {
   const DoWorkoutSectionTimer({Key? key, required this.workoutSection})
       : super(key: key);
 
-  final kNavbarIconSize = 38.0;
+  final kNavbarIconSize = 34.0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +42,15 @@ class DoWorkoutSectionTimer extends StatelessWidget {
                   children: [
                     MyText(
                       'Elapsed',
-                      textAlign: TextAlign.right,
                       size: FONTSIZE.TINY,
                       subtext: true,
-                      lineHeight: 0.4,
+                      lineHeight: 0.8,
                     ),
-                    Text(
-                        StopWatchTimer.getDisplayTime(snapshot.data ?? 0,
-                            milliSecond: false),
-                        style: GoogleFonts.courierPrime(
-                            letterSpacing: -3,
-                            textStyle: TextStyle(
-                              color: context.theme.primary,
-                              fontSize: 44,
-                            ))),
+                    TimerDisplayText(
+                      milliseconds: snapshot.data ?? 0,
+                      size: 32,
+                      showHours: true,
+                    ),
                   ],
                 )),
         Positioned(
