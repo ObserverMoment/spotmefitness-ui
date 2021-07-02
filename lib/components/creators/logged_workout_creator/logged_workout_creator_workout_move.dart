@@ -69,6 +69,7 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
           iconWidget: Icon(
             CupertinoIcons.plus_slash_minus,
             size: 20,
+            color: Styles.white,
           ),
           onTap: () => context.showBottomSheet(
               expand: true,
@@ -83,6 +84,7 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
           iconWidget: Icon(
             CupertinoIcons.plus_slash_minus,
             size: 20,
+            color: Styles.white,
           ),
           onTap: () => context.showBottomSheet(
               child: LoadPickerModal(

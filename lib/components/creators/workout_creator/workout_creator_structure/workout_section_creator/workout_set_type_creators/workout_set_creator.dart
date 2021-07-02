@@ -17,8 +17,8 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 
-/// Displays a workout set with user interactions cuch as
 /// For [Free Session], [AMRAP]
+/// Displays a workout set with user interactions such as
 /// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
 class WorkoutSetCreator extends StatefulWidget {
   final Key key;

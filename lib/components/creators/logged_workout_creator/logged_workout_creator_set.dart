@@ -124,23 +124,6 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
             .deleteLoggedWorkoutSet(widget.sectionIndex, widget.setIndex));
   }
 
-  // void _openAddLoggedWorkoutMoveToSet() {
-  //   // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
-  //   Navigator.push(
-  //     context,
-  //     CupertinoPageRoute(
-  //       builder: (context) => WorkoutMoveCreator(
-  //         pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-  //         saveWorkoutMove: (workoutMove) => _bloc.addLoggedWorkoutMove(
-  //             widget.sectionIndex,
-  //             widget.setIndex,
-  //             workoutMoveToLoggedWorkoutMove(workoutMove)),
-  //         workoutMoveIndex: _loggedWorkoutSet.loggedWorkoutMoves.length,
-  //       ),
-  //     ),
-  //   );
-  // }
-
   void _updateLoggedWorkoutMove(LoggedWorkoutMove loggedWorkoutMove) {
     _bloc.editLoggedWorkoutMove(
         widget.sectionIndex, widget.setIndex, loggedWorkoutMove);
@@ -286,10 +269,6 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                     ),
                   ),
                 ),
-                // CreateTextIconButton(
-                //   text: 'Add Move',
-                //   onPressed: _openAddLoggedWorkoutMoveToSet,
-                // ),
               ],
             ),
         ],

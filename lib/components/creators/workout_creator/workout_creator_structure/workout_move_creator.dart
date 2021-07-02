@@ -42,7 +42,6 @@ class WorkoutMoveCreator extends StatefulWidget {
 }
 
 class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
-  // late WorkoutCreatorBloc _bloc;
   late PageController _pageController;
   WorkoutMove? _activeWorkoutMove;
 
@@ -191,8 +190,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'WorkoutMoveCreator',
+      navigationBar: BorderlessNavBar(
         customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),
