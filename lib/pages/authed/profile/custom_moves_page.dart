@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
+import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_move_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/custom_move_creator/custom_move_creator.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;

@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_goal_tags_manager.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_tags_manager.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/progress_journal/progress_journal_goal_tags_manager.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/workout_creator/workout_tags_manager.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class SettingsPage extends StatefulWidget {

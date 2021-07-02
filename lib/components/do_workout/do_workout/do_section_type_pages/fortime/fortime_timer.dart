@@ -3,7 +3,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
@@ -13,7 +12,6 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// A minute based timer like iOS timer. The outer circles fills over a one minute period.
 class ForTimeTimer extends StatelessWidget {

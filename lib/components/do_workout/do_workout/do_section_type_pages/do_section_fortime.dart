@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/animated/slider_button.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_countdown_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/fortime/fortime_section_progress_summary.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/fortime/fortime_timer.dart';

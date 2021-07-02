@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/collection_card.dart';
+import 'package:spotmefitness_ui/components/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/router.gr.dart';

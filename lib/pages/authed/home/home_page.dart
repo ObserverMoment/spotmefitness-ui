@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/schedule/coming_up_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/timers/stopwatch_and_timer.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -14,17 +15,30 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       key: Key('HomePage-CupertinoPageScaffold'),
-      navigationBar: BasicNavBar(
-        heroTag: 'HomePage',
+      navigationBar: BorderlessNavBar(
         key: Key('HomePage-BasicNavBar'),
         customLeading: NavBarLargeTitle('Home'),
-        trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Icon(
-              CupertinoIcons.calendar,
-              size: 30,
-            ),
-            onPressed: () => context.navigateTo(YourScheduleRoute())),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  CupertinoIcons.timer_fill,
+                  size: 30,
+                ),
+                onPressed: () => context.push(
+                    child: StopwatchAndTimer(), rootNavigator: true)),
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  CupertinoIcons.calendar,
+                  size: 30,
+                ),
+                onPressed: () => context.navigateTo(YourScheduleRoute())),
+          ],
+        ),
       ),
       child: ListView(
         padding: const EdgeInsets.only(

@@ -1,22 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/animated/slider_button.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_countdown_timer.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_moves_list.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_progress_summary.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_progress.dart';
-import 'package:spotmefitness_ui/components/stopwatch_lap_timer.dart';
-import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
+import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:provider/provider.dart';
 
 class DoWorkoutSectionFreeSession extends StatelessWidget {
   final PageController pageController;
@@ -31,35 +20,13 @@ class DoWorkoutSectionFreeSession extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return PageView(
+      controller: pageController,
+      physics: NeverScrollableScrollPhysics(),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                H3(
-                  'Free Session',
-                ),
-                InfoPopupButton(
-                    infoWidget: MyText(
-                        'Info about the wokout type ${workoutSection.workoutSectionType.name}'))
-              ],
-            ),
-          ],
-        ),
-        Expanded(
-          child: PageView(
-            controller: pageController,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              FreeSessionMovesList(),
-              FreeSessionProgress(),
-              _StopwatchLapTimer()
-            ],
-          ),
-        ),
+        FreeSessionMovesList(workoutSection: workoutSection),
+        FreeSessionProgress(),
+        _StopwatchLapTimer()
       ],
     );
   }
@@ -87,7 +54,7 @@ class __StopwatchLapTimerState extends State<_StopwatchLapTimer> {
             children: {
               0: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Icon(CupertinoIcons.stopwatch_fill),
+                child: Icon(CupertinoIcons.stopwatch),
               ),
               1: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -98,7 +65,7 @@ class __StopwatchLapTimerState extends State<_StopwatchLapTimer> {
         Expanded(
             child: Padding(
           padding: const EdgeInsets.only(bottom: kBottomNavBarHeight),
-          child: _activeTabIndex == 0 ? StopwatchLapTimer() : CountdownTimer(),
+          child: _activeTabIndex == 0 ? StopwatchWithLaps() : CountdownTimer(),
         ))
       ],
     );

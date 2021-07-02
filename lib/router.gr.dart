@@ -8,20 +8,18 @@ import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/cupertino.dart' as _i46;
 import 'package:flutter/material.dart' as _i2;
 
+import 'components/creators/benchmark_creator/benchmark_creator.dart' as _i8;
+import 'components/creators/logged_workout_creator/logged_workout_creator.dart'
+    as _i15;
+import 'components/creators/progress_journal/progress_journal_creator.dart'
+    as _i9;
+import 'components/creators/workout_creator/workout_creator.dart' as _i10;
+import 'components/creators/workout_plan_creator/workout_plan_creator.dart'
+    as _i11;
 import 'components/do_workout/do_workout/do_workout_do_workout_page.dart'
     as _i44;
 import 'components/do_workout/do_workout_log_workout_page.dart' as _i45;
 import 'components/do_workout/do_workout_wrapper_page.dart' as _i12;
-import 'components/user_input/creators/benchmark_creator/benchmark_creator.dart'
-    as _i8;
-import 'components/user_input/creators/logged_workout_creator/logged_workout_creator.dart'
-    as _i15;
-import 'components/user_input/creators/progress_journal/progress_journal_creator.dart'
-    as _i9;
-import 'components/user_input/creators/workout_creator/workout_creator.dart'
-    as _i10;
-import 'components/user_input/creators/workout_plan_creator/workout_plan_creator.dart'
-    as _i11;
 import 'components/workout/workout_finder/workout_finder.dart' as _i13;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i14;

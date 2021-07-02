@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
 class FreeSessionMovesList extends StatelessWidget {
-  const FreeSessionMovesList({Key? key}) : super(key: key);
+  final WorkoutSection workoutSection;
+  const FreeSessionMovesList({Key? key, required this.workoutSection})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
+import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_section.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_body.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_times.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
-import 'package:spotmefitness_ui/components/user_input/creators/logged_workout_creator/logged_workout_creator_section.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
