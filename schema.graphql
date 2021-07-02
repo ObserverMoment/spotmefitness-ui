@@ -351,6 +351,52 @@ enum DifficultyLevel {
   ELITE
 }
 
+type DiscoverFeatured {
+  id: String!
+  createdAt: DateTime!
+  tag: String!
+  name: String!
+  tagline: String!
+  description: String!
+  coverImageUri: String!
+}
+
+type DiscoverWorkout {
+  id: String!
+  createdAt: DateTime!
+  Workout: Workout!
+  DiscoverWorkoutCategory: DiscoverWorkoutCategory!
+}
+
+type DiscoverWorkoutCategory {
+  id: String!
+  createdAt: DateTime!
+  active: Boolean!
+  name: String!
+  tagline: String!
+  description: String!
+  coverImageUri: String!
+  DiscoverWorkouts: [DiscoverWorkout!]!
+}
+
+type DiscoverWorkoutPlan {
+  id: String!
+  createdAt: DateTime!
+  WorkoutPlan: WorkoutPlan!
+  DiscoverWorkoutPlanCategory: DiscoverWorkoutPlanCategory!
+}
+
+type DiscoverWorkoutPlanCategory {
+  id: String!
+  createdAt: DateTime!
+  active: Boolean!
+  name: String!
+  tagline: String!
+  description: String!
+  coverImageUri: String!
+  DiscoverWorkoutPlans: [DiscoverWorkoutPlan!]!
+}
+
 enum DistanceUnit {
   METRES
   KILOMETRES
@@ -621,6 +667,9 @@ type Query {
   moveTypes: [MoveType!]!
   workoutGoals: [WorkoutGoal!]!
   workoutSectionTypes: [WorkoutSectionType!]!
+  discoverFeatured: [DiscoverFeatured!]!
+  discoverWorkoutCategories: [DiscoverWorkoutCategory!]!
+  discoverWorkoutPlanCategories: [DiscoverWorkoutPlanCategory!]!
   userLoggedWorkouts(take: Int): [LoggedWorkout!]!
   loggedWorkoutById(id: ID!): LoggedWorkout!
   standardMoves: [Move!]!

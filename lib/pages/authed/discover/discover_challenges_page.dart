@@ -19,8 +19,7 @@ class DiscoverChallengesPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Card(
                   child: SizedBox(
-                      height: 150,
-                      child: H1('Curated Challenge Content ${index + 1}'))),
+                      height: 150, child: Center(child: H1('Coming soon')))),
             ),
           ),
         ),
