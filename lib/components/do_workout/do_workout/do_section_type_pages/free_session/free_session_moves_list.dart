@@ -102,6 +102,7 @@ class _WorkoutSetInFreeSession extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortedWorkoutMoves =
         workoutSet.workoutMoves.sortedBy<num>((wMove) => wMove.sortPosition);
+
     return Card(
       child: Column(
         children: [

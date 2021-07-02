@@ -72,7 +72,7 @@ class SliderButton extends StatefulWidget {
     this.outerColor,
     this.borderRadius = 52,
     this.elevation = 6,
-    this.animationDuration = const Duration(milliseconds: 200),
+    this.animationDuration = const Duration(milliseconds: 150),
     this.reversed = false,
     this.alignment = Alignment.center,
     this.submittedIcon,
@@ -114,15 +114,14 @@ class SliderButtonState extends State<SliderButton>
         if (_progress <= 0.25 || widget.onSubmit == null) {
           _cancelAnimation();
         } else {
+          widget.onSubmit!();
           await _resizeAnimation();
 
           await _shrinkAnimation();
 
           await _checkAnimation();
 
-          widget.onSubmit!();
-
-          Future.delayed(Duration(milliseconds: 500), () async {
+          Future.delayed(Duration(milliseconds: 300), () async {
             await reset();
           });
         }
@@ -256,13 +255,13 @@ class SliderButtonState extends State<SliderButton>
   /// Call this method to revert the animations
   Future reset() async {
     if (mounted) {
-      await _checkAnimationController.reverse().orCancel;
+      await _checkAnimationController.reverse();
 
       submitted = false;
 
-      await _shrinkAnimationController.reverse().orCancel;
+      await _shrinkAnimationController.reverse();
 
-      await _resizeAnimationController.reverse().orCancel;
+      await _resizeAnimationController.reverse();
 
       await _cancelAnimation();
     }
@@ -287,7 +286,7 @@ class SliderButtonState extends State<SliderButton>
           });
         }
       });
-      await _checkAnimationController.forward().orCancel;
+      await _checkAnimationController.forward();
     }
   }
 
@@ -316,7 +315,7 @@ class SliderButtonState extends State<SliderButton>
       setState(() {
         submitted = true;
       });
-      await _shrinkAnimationController.forward().orCancel;
+      await _shrinkAnimationController.forward();
     }
   }
 
@@ -339,7 +338,7 @@ class SliderButtonState extends State<SliderButton>
           });
         }
       });
-      await _resizeAnimationController.forward().orCancel;
+      await _resizeAnimationController.forward();
     }
   }
 
@@ -361,7 +360,7 @@ class SliderButtonState extends State<SliderButton>
           });
         }
       });
-      _cancelAnimationController.forward().orCancel;
+      _cancelAnimationController.forward();
     }
   }
 

@@ -14,10 +14,12 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class AMRAPCountdownTimer extends StatelessWidget {
+/// Almost identical to the [AMRAPCountdownTimer].
+/// The Circular progress indicator here indicates time remaining to complete the current set, not time remaining until the section timecap like in [AMRAPCountdownTimer].
+class LastStandingCountdownTimer extends StatelessWidget {
   final WorkoutSectionProgressState state;
   final WorkoutSection workoutSection;
-  const AMRAPCountdownTimer(
+  const LastStandingCountdownTimer(
       {Key? key, required this.state, required this.workoutSection})
       : super(key: key);
 
@@ -30,6 +32,14 @@ class AMRAPCountdownTimer extends StatelessWidget {
     timer.onExecute
         .add(isRunning ? StopWatchExecute.stop : StopWatchExecute.start);
   }
+
+  /// currentWorkoutSet.duration should never be null for last standing sets.
+  int get _currentSetDuration => workoutSection.workoutSets
+      .sortedBy<num>((wSet) => wSet.sortPosition)[state.currentSetIndex]
+      .duration!;
+
+  double get _currentSetTimeRemaining =>
+      1 - (state.timeToNextCheckpointMs! / (_currentSetDuration * 1000));
 
   Widget _buildWorkoutSetDisplay(WorkoutSet workoutSet) => Padding(
         padding: const EdgeInsets.all(6.0),
@@ -112,7 +122,7 @@ class AMRAPCountdownTimer extends StatelessWidget {
                               context.theme.primary.withOpacity(0.1),
                           linearGradient: Styles.pinkGradient,
                           circularStrokeCap: CircularStrokeCap.round,
-                          percent: state.percentComplete,
+                          percent: _currentSetTimeRemaining,
                           radius: constraints.maxWidth / 1.8),
                     ],
                   )),

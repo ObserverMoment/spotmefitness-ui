@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.da
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/timers/timer_components.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -35,6 +36,9 @@ class TimedSectionLapTimer extends StatelessWidget {
       .sortedBy<num>((wSet) => wSet.sortPosition)[state.currentSetIndex]
       .duration!;
 
+  double get _currentSetTimeRemaining =>
+      1 - (state.timeToNextCheckpointMs! / (_currentSetDuration * 1000));
+
   Widget _buildWorkoutSetDisplay(WorkoutSet workoutSet) => Padding(
         padding: const EdgeInsets.all(6.0),
         child: Wrap(
@@ -58,7 +62,6 @@ class TimedSectionLapTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalRounds = workoutSection.rounds;
     final totalSetsPerRound = workoutSection.workoutSets.length;
-    final remainingSeconds = (state.timeToNextCheckpointMs! ~/ 1000).toString();
 
     final sortedWorkoutSets =
         workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
@@ -103,10 +106,9 @@ class TimedSectionLapTimer extends StatelessWidget {
                               ],
                             ),
                           ),
-                          center: MyText(
-                            remainingSeconds,
-                            size: FONTSIZE.EXTREME,
-                            lineHeight: 1,
+                          center: TimerDisplayText(
+                            milliseconds: state.timeToNextCheckpointMs!,
+                            size: 50,
                           ),
                           footer: Padding(
                             padding: const EdgeInsets.all(12.0),
@@ -132,10 +134,8 @@ class TimedSectionLapTimer extends StatelessWidget {
                           linearGradient: Styles.pinkGradient,
                           // progressColor: Styles.peachRed,
                           circularStrokeCap: CircularStrokeCap.round,
-                          percent: 1 -
-                              (state.timeToNextCheckpointMs! /
-                                  (_currentSetDuration * 1000)),
-                          radius: constraints.maxWidth / 1.5),
+                          percent: _currentSetTimeRemaining,
+                          radius: constraints.maxWidth / 1.6),
                     ],
                   )),
         ),

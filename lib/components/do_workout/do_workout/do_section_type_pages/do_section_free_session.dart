@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_progress.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
@@ -52,6 +51,11 @@ class _DoWorkoutSectionFreeSessionState
     setState(() {});
   }
 
+  /// If this is the only section in the workout then this will move you to the log workout screen.
+  void _markSectionComplete() {
+    _freeSessionController.markSectionComplete();
+  }
+
   @override
   void dispose() {
     _freeSessionController.removeListener(_listener);
@@ -77,7 +81,7 @@ class _DoWorkoutSectionFreeSessionState
                         size: 20,
                       ),
                       text: 'Log Your Work',
-                      onPressed: () => print('Log what you have done')),
+                      onPressed: _markSectionComplete),
                 ],
               ),
             )),
@@ -90,7 +94,10 @@ class _DoWorkoutSectionFreeSessionState
                   freeSessionController: _freeSessionController),
               FreeSessionProgress(
                   freeSessionController: _freeSessionController),
-              _StopwatchLapTimer()
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _StopwatchLapTimer(),
+              )
             ],
           ),
         ),

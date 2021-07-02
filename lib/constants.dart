@@ -64,7 +64,7 @@ const kFreeSessionName = 'Free Session';
 const kHIITCircuitName = 'HIIT Circuit';
 const kForTimeName = 'For Time';
 const kEMOMName = 'EMOM';
-const kLastStandingName = 'Last One Standing';
+const kLastStandingName = 'Last Standing';
 const kAMRAPName = 'AMRAP';
 const kTabataName = 'Tabata Style';
 

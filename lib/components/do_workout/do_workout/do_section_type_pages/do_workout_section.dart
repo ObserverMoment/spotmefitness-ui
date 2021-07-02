@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_amrap.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_fortime.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_free_session.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_last_standing.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_section_timed.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_bottom_navbar.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_complete_modal.dart';
@@ -90,6 +91,13 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
         );
       case kFreeSessionName:
         return DoWorkoutSectionFreeSession(
+          pageController: _pageController,
+          workoutSection: widget.workoutSection,
+          activePageIndex: _activePageIndex,
+        );
+      case kLastStandingName:
+        return DoWorkoutSectionLastStanding(
+          progressState: progressState,
           pageController: _pageController,
           workoutSection: widget.workoutSection,
           activePageIndex: _activePageIndex,

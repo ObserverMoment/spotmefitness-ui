@@ -29,7 +29,9 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
         MyText(
           loggedWorkoutMove.repType == WorkoutMoveRepType.distance
               ? loggedWorkoutMove.distanceUnit.shortDisplay
-              : describeEnum(loggedWorkoutMove.repType),
+              : loggedWorkoutMove.repType == WorkoutMoveRepType.time
+                  ? loggedWorkoutMove.timeUnit.shortDisplay
+                  : describeEnum(loggedWorkoutMove.repType),
         ),
       ],
     );

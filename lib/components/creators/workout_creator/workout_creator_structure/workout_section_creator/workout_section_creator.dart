@@ -238,7 +238,8 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                 defaults: {'duration': duration.inSeconds}));
 
       default:
-        return Container();
+        throw Exception(
+            'WorkoutSectionCreator._buildSectionTypeCreator: No builder defined for ${workoutSectionType.name}');
     }
   }
 
@@ -251,7 +252,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
           WorkoutSectionTypeTag(
               _workoutSection.workoutSectionType.name.toUpperCase()),
           if (workoutSection.name != null)
-            NavBarTitle(' - ${workoutSection.name!}'),
+            Expanded(child: MyText(' - ${workoutSection.name!}')),
         ],
       ),
     );
@@ -270,8 +271,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         context.select<WorkoutCreatorBloc, bool>((b) => b.showFullSetInfo);
 
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'WorkoutSectionCreator',
+      navigationBar: BorderlessNavBar(
         middle: _buildTitle(_workoutSection),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(

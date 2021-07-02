@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
-import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 
 class FreeSessionProgress extends StatelessWidget {
   final FreeSessionSectionController freeSessionController;
@@ -9,10 +9,10 @@ class FreeSessionProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loggedWorkoutSets =
-        freeSessionController.loggedWorkoutSection.loggedWorkoutSets;
-    return Container(
-      child: MyText(loggedWorkoutSets.length.toString()),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: LoggedWorkoutSectionSummaryCard(
+          loggedWorkoutSection: freeSessionController.loggedWorkoutSection),
     );
   }
 }

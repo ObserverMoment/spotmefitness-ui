@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controll
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/fortime_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/last_standing_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -113,12 +114,6 @@ class DoWorkoutBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Used for [FreeSession] where the user can complete moves in any order they want.
-  void addWorkoutSetToLog(int sectionIndex, int setIndex) {
-    // (controllers[sectionIndex] as FreeSessionSectionController)
-    print('TODO- addWorkoutSetToLog');
-  }
-
   void generatePartialLog() {
     startedSections.forEachIndexed((index, started) {
       if (started) {
@@ -219,6 +214,9 @@ class DoWorkoutBloc extends ChangeNotifier {
   StopWatchTimer getStopWatchTimerForSection(int index) =>
       _stopWatchTimers[index];
 
+  LoggedWorkoutSection getLoggedWorkoutSectionForSection(int index) =>
+      controllers[index].loggedWorkoutSection;
+
   /// For when user first starts the section from the StartSectionModal.
   /// For play / pause use [playSection(int)]
   void startSection(int index) {
@@ -281,6 +279,13 @@ class DoWorkoutBloc extends ChangeNotifier {
         );
       case kFreeSessionName:
         return FreeSessionSectionController(
+          workoutSection: workoutSection,
+          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+          markSectionComplete: () =>
+              _markSectionComplete(workoutSection.sortPosition),
+        );
+      case kLastStandingName:
+        return LastStandingSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
           markSectionComplete: () =>

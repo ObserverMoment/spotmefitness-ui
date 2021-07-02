@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_move_minimal_display.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -32,6 +33,8 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
     final loggedWorkoutSetsBySectionRound = loggedWorkoutSection
         .loggedWorkoutSets
         .groupBy<int, LoggedWorkoutSet>((lwSet) => lwSet.roundNumber);
+
+    final multipleRounds = loggedWorkoutSetsBySectionRound.keys.length > 1;
 
     return Column(
       children: [
@@ -73,83 +76,106 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
         ),
 
         /// Similar to [LoggedWorkout > LoggedWorkoutSectionTimes] logic.
-        Expanded(
-          child: ListView(
-            shrinkWrap: true,
-            children: loggedWorkoutSetsBySectionRound.keys
-                .sortedBy<num>((roundNumber) => roundNumber)
-                .map((roundNumber) {
-              final int? sectionRoundTimeMs = loggedWorkoutSection
-                  .lapTimesMs[roundNumber.toString()]?['lapTimeMs'];
+        loggedWorkoutSection.loggedWorkoutSets.isEmpty
+            ? Center(child: MyText('Nothing here...'))
+            : Expanded(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: loggedWorkoutSetsBySectionRound.keys
+                      .sortedBy<num>((roundNumber) => roundNumber)
+                      .map((roundNumber) {
+                    final int? sectionRoundTimeMs = loggedWorkoutSection
+                        .lapTimesMs[roundNumber.toString()]?['lapTimeMs'];
 
-              final sortedSetsInSectionRound =
-                  loggedWorkoutSetsBySectionRound[roundNumber]!
-                      .sortedBy<num>((s) => s.sortPosition);
+                    final sortedSetsInSectionRound =
+                        loggedWorkoutSetsBySectionRound[roundNumber]!
+                            .sortedBy<num>((s) => s.sortPosition);
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        MyText(
-                          'Round ${roundNumber + 1}',
-                          color: Styles.infoBlue,
-                        ),
-                        if (sectionRoundTimeMs != null)
-                          MyText(
-                            Duration(milliseconds: sectionRoundTimeMs)
-                                .compactDisplay(),
-                            color: Styles.infoBlue,
-                          )
-                      ],
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 12.0, top: 2, bottom: 2),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
                       child: Column(
-                        children:
-                            sortedSetsInSectionRound.map((loggedWorkoutSet) {
-                          final int? setLapTime = loggedWorkoutSection
-                                      .lapTimesMs[roundNumber.toString()]
-                                  ?['setLapTimesMs']
-                              [loggedWorkoutSet.sortPosition.toString()];
+                        children: [
+                          if (multipleRounds)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                MyText(
+                                  'Round ${roundNumber + 1}',
+                                  color: Styles.infoBlue,
+                                ),
+                                if (sectionRoundTimeMs != null)
+                                  MyText(
+                                    Duration(milliseconds: sectionRoundTimeMs)
+                                        .compactDisplay(),
+                                    color: Styles.infoBlue,
+                                  )
+                              ],
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 6, top: 5, bottom: 5),
+                            child: Column(
+                              children: sortedSetsInSectionRound
+                                  .map((loggedWorkoutSet) {
+                                final int? setLapTime = loggedWorkoutSection
+                                            .lapTimesMs[roundNumber.toString()]
+                                        ?['setLapTimesMs']
+                                    [loggedWorkoutSet.sortPosition.toString()];
 
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: loggedWorkoutSet.loggedWorkoutMoves
-                                    .map((m) => Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 3.0),
-                                          child:
-                                              LoggedWorkoutMoveMinimalDisplay(
-                                            loggedWorkoutMove: m,
-                                            showReps: ![
-                                              kTabataName,
-                                              kHIITCircuitName
-                                            ].contains(loggedWorkoutSection
-                                                .workoutSectionType.name),
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                              if (setLapTime != null)
-                                MyText(Duration(milliseconds: setLapTime)
-                                    .compactDisplay()),
-                            ],
-                          );
-                        }).toList(),
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (loggedWorkoutSet.roundsCompleted > 1)
+                                      MyText(
+                                        '${loggedWorkoutSet.roundsCompleted} rounds',
+                                        color: Styles.infoBlue,
+                                        size: FONTSIZE.SMALL,
+                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: loggedWorkoutSet
+                                              .loggedWorkoutMoves
+                                              .map((m) => Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 3.0),
+                                                    child:
+                                                        LoggedWorkoutMoveMinimalDisplay(
+                                                      loggedWorkoutMove: m,
+                                                      showReps: ![
+                                                        kTabataName,
+                                                        kHIITCircuitName
+                                                      ].contains(
+                                                          loggedWorkoutSection
+                                                              .workoutSectionType
+                                                              .name),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        ),
+                                        if (setLapTime != null)
+                                          MyText(
+                                              Duration(milliseconds: setLapTime)
+                                                  .compactDisplay()),
+                                      ],
+                                    ),
+                                    HorizontalLine()
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    );
+                  }).toList(),
                 ),
-              );
-            }).toList(),
-          ),
-        ),
+              ),
       ],
     );
   }

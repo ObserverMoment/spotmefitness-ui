@@ -446,6 +446,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                       onPressed: () => context.navigateTo(
                                           DoWorkoutWrapperRoute(
                                               id: widget.id))),
+                                  SizedBox(width: 4),
                                   CupertinoButton(
                                       pressedOpacity: 1.0,
                                       padding: EdgeInsets.zero,
@@ -459,7 +460,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                     onPressed: () =>
                                         _openScheduleWorkout(workout),
                                     child: Icon(
-                                        CupertinoIcons.calendar_badge_plus),
+                                      CupertinoIcons.calendar_badge_plus,
+                                      size: 28,
+                                    ),
                                   ),
                                 ],
                               ),
