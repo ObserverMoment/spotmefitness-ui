@@ -200,6 +200,48 @@ mixin CollectionMixin {
   late String name;
   String? description;
 }
+mixin DiscoverFeaturedMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  late String tag;
+  late String name;
+  late String tagline;
+  late String description;
+  late String coverImageUri;
+}
+mixin DiscoverWorkoutPlanCategoryMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  late bool active;
+  late String name;
+  late String tagline;
+  late String description;
+  late String coverImageUri;
+}
+mixin DiscoverWorkoutCategoryMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  late bool active;
+  late String name;
+  late String tagline;
+  late String description;
+  late String coverImageUri;
+}
 mixin WorkoutPlanEnrolmentMixin {
   late String id;
   @JsonKey(name: '__typename')
@@ -429,48 +471,6 @@ mixin ScheduledWorkoutMixin {
   String? note;
   String? workoutPlanEnrolmentId;
   String? workoutPlanDayWorkoutId;
-}
-mixin DiscoverFeaturedMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime createdAt;
-  late String tag;
-  late String name;
-  late String tagline;
-  late String description;
-  late String coverImageUri;
-}
-mixin DiscoverWorkoutPlanCategoryMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime createdAt;
-  late bool active;
-  late String name;
-  late String tagline;
-  late String description;
-  late String coverImageUri;
-}
-mixin DiscoverWorkoutCategoryMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime createdAt;
-  late bool active;
-  late String name;
-  late String tagline;
-  late String description;
-  late String coverImageUri;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1423,6 +1423,125 @@ class RemoveWorkoutFromCollectionInput extends JsonSerializable
   @override
   Map<String, dynamic> toJson() =>
       _$RemoveWorkoutFromCollectionInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverFeatured extends JsonSerializable
+    with EquatableMixin, DiscoverFeaturedMixin {
+  DiscoverFeatured();
+
+  factory DiscoverFeatured.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverFeaturedFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        createdAt,
+        tag,
+        name,
+        tagline,
+        description,
+        coverImageUri
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$DiscoverFeaturedToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverFeatured$Query extends JsonSerializable with EquatableMixin {
+  DiscoverFeatured$Query();
+
+  factory DiscoverFeatured$Query.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverFeatured$QueryFromJson(json);
+
+  late List<DiscoverFeatured> discoverFeatured;
+
+  @override
+  List<Object?> get props => [discoverFeatured];
+  @override
+  Map<String, dynamic> toJson() => _$DiscoverFeatured$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverWorkoutPlanCategory extends JsonSerializable
+    with EquatableMixin, DiscoverWorkoutPlanCategoryMixin {
+  DiscoverWorkoutPlanCategory();
+
+  factory DiscoverWorkoutPlanCategory.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverWorkoutPlanCategoryFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        createdAt,
+        active,
+        name,
+        tagline,
+        description,
+        coverImageUri
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$DiscoverWorkoutPlanCategoryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverWorkoutPlanCategories$Query extends JsonSerializable
+    with EquatableMixin {
+  DiscoverWorkoutPlanCategories$Query();
+
+  factory DiscoverWorkoutPlanCategories$Query.fromJson(
+          Map<String, dynamic> json) =>
+      _$DiscoverWorkoutPlanCategories$QueryFromJson(json);
+
+  late List<DiscoverWorkoutPlanCategory> discoverWorkoutPlanCategories;
+
+  @override
+  List<Object?> get props => [discoverWorkoutPlanCategories];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DiscoverWorkoutPlanCategories$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverWorkoutCategory extends JsonSerializable
+    with EquatableMixin, DiscoverWorkoutCategoryMixin {
+  DiscoverWorkoutCategory();
+
+  factory DiscoverWorkoutCategory.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverWorkoutCategoryFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        createdAt,
+        active,
+        name,
+        tagline,
+        description,
+        coverImageUri
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$DiscoverWorkoutCategoryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DiscoverWorkoutCategories$Query extends JsonSerializable
+    with EquatableMixin {
+  DiscoverWorkoutCategories$Query();
+
+  factory DiscoverWorkoutCategories$Query.fromJson(Map<String, dynamic> json) =>
+      _$DiscoverWorkoutCategories$QueryFromJson(json);
+
+  late List<DiscoverWorkoutCategory> discoverWorkoutCategories;
+
+  @override
+  List<Object?> get props => [discoverWorkoutCategories];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DiscoverWorkoutCategories$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -5916,125 +6035,6 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   List<Object?> get props => [workoutById];
   @override
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverFeatured extends JsonSerializable
-    with EquatableMixin, DiscoverFeaturedMixin {
-  DiscoverFeatured();
-
-  factory DiscoverFeatured.fromJson(Map<String, dynamic> json) =>
-      _$DiscoverFeaturedFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        createdAt,
-        tag,
-        name,
-        tagline,
-        description,
-        coverImageUri
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$DiscoverFeaturedToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverFeatured$Query extends JsonSerializable with EquatableMixin {
-  DiscoverFeatured$Query();
-
-  factory DiscoverFeatured$Query.fromJson(Map<String, dynamic> json) =>
-      _$DiscoverFeatured$QueryFromJson(json);
-
-  late List<DiscoverFeatured> discoverFeatured;
-
-  @override
-  List<Object?> get props => [discoverFeatured];
-  @override
-  Map<String, dynamic> toJson() => _$DiscoverFeatured$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverWorkoutPlanCategory extends JsonSerializable
-    with EquatableMixin, DiscoverWorkoutPlanCategoryMixin {
-  DiscoverWorkoutPlanCategory();
-
-  factory DiscoverWorkoutPlanCategory.fromJson(Map<String, dynamic> json) =>
-      _$DiscoverWorkoutPlanCategoryFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        createdAt,
-        active,
-        name,
-        tagline,
-        description,
-        coverImageUri
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$DiscoverWorkoutPlanCategoryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverWorkoutPlanCategories$Query extends JsonSerializable
-    with EquatableMixin {
-  DiscoverWorkoutPlanCategories$Query();
-
-  factory DiscoverWorkoutPlanCategories$Query.fromJson(
-          Map<String, dynamic> json) =>
-      _$DiscoverWorkoutPlanCategories$QueryFromJson(json);
-
-  late List<DiscoverWorkoutPlanCategory> discoverWorkoutPlanCategories;
-
-  @override
-  List<Object?> get props => [discoverWorkoutPlanCategories];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DiscoverWorkoutPlanCategories$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverWorkoutCategory extends JsonSerializable
-    with EquatableMixin, DiscoverWorkoutCategoryMixin {
-  DiscoverWorkoutCategory();
-
-  factory DiscoverWorkoutCategory.fromJson(Map<String, dynamic> json) =>
-      _$DiscoverWorkoutCategoryFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        createdAt,
-        active,
-        name,
-        tagline,
-        description,
-        coverImageUri
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$DiscoverWorkoutCategoryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DiscoverWorkoutCategories$Query extends JsonSerializable
-    with EquatableMixin {
-  DiscoverWorkoutCategories$Query();
-
-  factory DiscoverWorkoutCategories$Query.fromJson(Map<String, dynamic> json) =>
-      _$DiscoverWorkoutCategories$QueryFromJson(json);
-
-  late List<DiscoverWorkoutCategory> discoverWorkoutCategories;
-
-  @override
-  List<Object?> get props => [discoverWorkoutCategories];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DiscoverWorkoutCategories$QueryToJson(this);
 }
 
 enum BodyAreaFrontBack {
@@ -18360,6 +18360,287 @@ class RemoveWorkoutFromCollectionMutation extends GraphQLQuery<
   @override
   RemoveWorkoutFromCollection$Mutation parse(Map<String, dynamic> json) =>
       RemoveWorkoutFromCollection$Mutation.fromJson(json);
+}
+
+final DISCOVER_FEATURED_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'discoverFeatured'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'discoverFeatured'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'DiscoverFeatured'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'DiscoverFeatured'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'DiscoverFeatured'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tag'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DiscoverFeaturedQuery
+    extends GraphQLQuery<DiscoverFeatured$Query, JsonSerializable> {
+  DiscoverFeaturedQuery();
+
+  @override
+  final DocumentNode document = DISCOVER_FEATURED_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'discoverFeatured';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  DiscoverFeatured$Query parse(Map<String, dynamic> json) =>
+      DiscoverFeatured$Query.fromJson(json);
+}
+
+final DISCOVER_WORKOUT_PLAN_CATEGORIES_QUERY_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'discoverWorkoutPlanCategories'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'discoverWorkoutPlanCategories'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'active'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DiscoverWorkoutPlanCategoriesQuery extends GraphQLQuery<
+    DiscoverWorkoutPlanCategories$Query, JsonSerializable> {
+  DiscoverWorkoutPlanCategoriesQuery();
+
+  @override
+  final DocumentNode document = DISCOVER_WORKOUT_PLAN_CATEGORIES_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'discoverWorkoutPlanCategories';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  DiscoverWorkoutPlanCategories$Query parse(Map<String, dynamic> json) =>
+      DiscoverWorkoutPlanCategories$Query.fromJson(json);
+}
+
+final DISCOVER_WORKOUT_CATEGORIES_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'discoverWorkoutCategories'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'discoverWorkoutCategories'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'DiscoverWorkoutCategory'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'DiscoverWorkoutCategory'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'DiscoverWorkoutCategory'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'active'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DiscoverWorkoutCategoriesQuery
+    extends GraphQLQuery<DiscoverWorkoutCategories$Query, JsonSerializable> {
+  DiscoverWorkoutCategoriesQuery();
+
+  @override
+  final DocumentNode document = DISCOVER_WORKOUT_CATEGORIES_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'discoverWorkoutCategories';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  DiscoverWorkoutCategories$Query parse(Map<String, dynamic> json) =>
+      DiscoverWorkoutCategories$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -56049,285 +56330,4 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
-}
-
-final DISCOVER_FEATURED_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'discoverFeatured'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'discoverFeatured'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'DiscoverFeatured'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'DiscoverFeatured'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'DiscoverFeatured'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tag'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tagline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DiscoverFeaturedQuery
-    extends GraphQLQuery<DiscoverFeatured$Query, JsonSerializable> {
-  DiscoverFeaturedQuery();
-
-  @override
-  final DocumentNode document = DISCOVER_FEATURED_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'discoverFeatured';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  DiscoverFeatured$Query parse(Map<String, dynamic> json) =>
-      DiscoverFeatured$Query.fromJson(json);
-}
-
-final DISCOVER_WORKOUT_PLAN_CATEGORIES_QUERY_DOCUMENT =
-    DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'discoverWorkoutPlanCategories'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'discoverWorkoutPlanCategories'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
-                  directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'DiscoverWorkoutPlanCategory'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'active'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tagline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DiscoverWorkoutPlanCategoriesQuery extends GraphQLQuery<
-    DiscoverWorkoutPlanCategories$Query, JsonSerializable> {
-  DiscoverWorkoutPlanCategoriesQuery();
-
-  @override
-  final DocumentNode document = DISCOVER_WORKOUT_PLAN_CATEGORIES_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'discoverWorkoutPlanCategories';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  DiscoverWorkoutPlanCategories$Query parse(Map<String, dynamic> json) =>
-      DiscoverWorkoutPlanCategories$Query.fromJson(json);
-}
-
-final DISCOVER_WORKOUT_CATEGORIES_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'discoverWorkoutCategories'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'discoverWorkoutCategories'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'DiscoverWorkoutCategory'),
-                  directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'DiscoverWorkoutCategory'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'DiscoverWorkoutCategory'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'createdAt'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'active'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tagline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'description'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DiscoverWorkoutCategoriesQuery
-    extends GraphQLQuery<DiscoverWorkoutCategories$Query, JsonSerializable> {
-  DiscoverWorkoutCategoriesQuery();
-
-  @override
-  final DocumentNode document = DISCOVER_WORKOUT_CATEGORIES_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'discoverWorkoutCategories';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  DiscoverWorkoutCategories$Query parse(Map<String, dynamic> json) =>
-      DiscoverWorkoutCategories$Query.fromJson(json);
 }

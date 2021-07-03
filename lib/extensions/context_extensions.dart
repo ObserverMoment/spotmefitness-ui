@@ -292,6 +292,7 @@ extension BuildContextExtension on BuildContext {
     Widget? icon,
     ToastType toastType = ToastType.standard,
     TextAlign textAlign = TextAlign.center,
+    FlushbarPosition flushbarPosition = FlushbarPosition.TOP,
   }) =>
       Flushbar(
         backgroundColor: toastType == ToastType.destructive
@@ -301,6 +302,7 @@ extension BuildContextExtension on BuildContext {
                 : CupertinoColors.darkBackgroundGray,
         icon: icon,
         maxWidth: 400,
+        flushbarPosition: flushbarPosition,
         animationDuration: Duration(milliseconds: 300),
         borderRadius: BorderRadius.circular(20),
         margin: const EdgeInsets.only(bottom: 8, left: 18, right: 18),

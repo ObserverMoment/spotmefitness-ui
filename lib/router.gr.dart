@@ -23,7 +23,7 @@ import 'components/do_workout/do_workout_wrapper_page.dart' as _i12;
 import 'components/workout/workout_finder/workout_finder.dart' as _i13;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i14;
-import 'generated/api/graphql_api.graphql.dart' as _i47;
+import 'generated/api/graphql_api.dart' as _i47;
 import 'pages/authed/app.dart' as _i5;
 import 'pages/authed/details_pages/benchmark_details_page.dart' as _i6;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i7;
@@ -137,7 +137,10 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<DoWorkoutWrapperRouteArgs>(
               orElse: () =>
                   DoWorkoutWrapperRouteArgs(id: pathParams.getString('id')));
-          return _i12.DoWorkoutWrapperPage(key: args.key, id: args.id);
+          return _i12.DoWorkoutWrapperPage(
+              key: args.key,
+              id: args.id,
+              scheduledWorkoutId: args.scheduledWorkoutId);
         }),
     WorkoutFinderRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -357,8 +360,11 @@ class AppRouter extends _i1.RootStackRouter {
         }),
     DoWorkoutLogWorkoutRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
-        builder: (_) {
-          return const _i45.DoWorkoutLogWorkoutPage();
+        builder: (data) {
+          final args = data.argsAs<DoWorkoutLogWorkoutRouteArgs>(
+              orElse: () => const DoWorkoutLogWorkoutRouteArgs());
+          return _i45.DoWorkoutLogWorkoutPage(
+              key: args.key, scheduledWorkoutId: args.scheduledWorkoutId);
         })
   };
 
@@ -578,10 +584,14 @@ class WorkoutPlanCreatorRouteArgs {
 class DoWorkoutWrapperRoute
     extends _i1.PageRouteInfo<DoWorkoutWrapperRouteArgs> {
   DoWorkoutWrapperRoute(
-      {_i46.Key? key, required String id, List<_i1.PageRouteInfo>? children})
+      {_i46.Key? key,
+      required String id,
+      String? scheduledWorkoutId,
+      List<_i1.PageRouteInfo>? children})
       : super(name,
             path: 'do-workout/:id',
-            args: DoWorkoutWrapperRouteArgs(key: key, id: id),
+            args: DoWorkoutWrapperRouteArgs(
+                key: key, id: id, scheduledWorkoutId: scheduledWorkoutId),
             rawPathParams: {'id': id},
             initialChildren: children);
 
@@ -589,11 +599,14 @@ class DoWorkoutWrapperRoute
 }
 
 class DoWorkoutWrapperRouteArgs {
-  const DoWorkoutWrapperRouteArgs({this.key, required this.id});
+  const DoWorkoutWrapperRouteArgs(
+      {this.key, required this.id, this.scheduledWorkoutId});
 
   final _i46.Key? key;
 
   final String id;
+
+  final String? scheduledWorkoutId;
 }
 
 class WorkoutFinderRoute extends _i1.PageRouteInfo<WorkoutFinderRouteArgs> {
@@ -939,9 +952,21 @@ class DoWorkoutDoWorkoutRouteArgs {
   final _i47.Workout workout;
 }
 
-class DoWorkoutLogWorkoutRoute extends _i1.PageRouteInfo {
-  const DoWorkoutLogWorkoutRoute()
-      : super(name, path: 'do-workout-log-workout-page');
+class DoWorkoutLogWorkoutRoute
+    extends _i1.PageRouteInfo<DoWorkoutLogWorkoutRouteArgs> {
+  DoWorkoutLogWorkoutRoute({_i46.Key? key, String? scheduledWorkoutId})
+      : super(name,
+            path: 'do-workout-log-workout-page',
+            args: DoWorkoutLogWorkoutRouteArgs(
+                key: key, scheduledWorkoutId: scheduledWorkoutId));
 
   static const String name = 'DoWorkoutLogWorkoutRoute';
+}
+
+class DoWorkoutLogWorkoutRouteArgs {
+  const DoWorkoutLogWorkoutRouteArgs({this.key, this.scheduledWorkoutId});
+
+  final _i46.Key? key;
+
+  final String? scheduledWorkoutId;
 }

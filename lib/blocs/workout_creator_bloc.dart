@@ -164,7 +164,6 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     _backupAndMarkDirty();
     workout = Workout.fromJson({...workout.toJson(), ...data});
     notifyListeners();
-    print(workout.workoutGoals);
 
     /// Api
     final variables = UpdateWorkoutArguments(

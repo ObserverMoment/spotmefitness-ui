@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder_workout_card.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:collection/collection.dart';
 
 class YourFilteredWorkoutsList extends StatelessWidget {
   final List<Workout> workouts;
@@ -29,7 +30,10 @@ class YourFilteredWorkoutsList extends StatelessWidget {
                 // Bottom padding to push list up above floating filters panel.
                 padding: const EdgeInsets.only(
                     left: 8, right: 8, top: 4, bottom: 138),
-                items: workouts,
+                items: workouts
+                    .sortedBy<DateTime>((w) => w.createdAt)
+                    .reversed
+                    .toList(),
                 itemBuilder: (context, animation, Workout workout, i) =>
                     SizeFadeTransition(
                       sizeFraction: 0.7,

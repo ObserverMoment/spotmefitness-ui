@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_sound_lite/flutter_sound.dart';
-import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:record/record.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/timers/timer_components.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> openMicAudioRecorder(
     {required BuildContext context,
@@ -29,7 +29,6 @@ Future<void> openMicAudioRecorder(
 
 class MicAudioRecorder extends StatefulWidget {
   final Key key;
-
   final Function(String filePath) saveAudioRecording;
 
   MicAudioRecorder({
@@ -42,219 +41,228 @@ class MicAudioRecorder extends StatefulWidget {
 }
 
 class _MicAudioRecorderState extends State<MicAudioRecorder> {
-  FlutterSoundRecorder _mRecorder = FlutterSoundRecorder();
-  bool _mRecorderIsInited = false;
+  bool _isStopped = true;
+  bool _isPaused = false;
+  int _recordDuration = 0;
+  Timer? _timer;
+  Timer? _ampTimer;
+  final _audioRecorder = Record();
+  Amplitude? _amplitude;
   String? _recordedFilePath;
-
-  double _volumeDecibels = 0;
-  Duration _recordingLength = Duration.zero;
-
-  late StreamSubscription<RecordingDisposition> _progressListener;
-
-  Duration _animDuration = Duration(milliseconds: 500);
 
   @override
   void initState() {
     super.initState();
-
-    _initRecorder().then((value) {
-      _mRecorder.setSubscriptionDuration(Duration(milliseconds: 50));
-
-      // Set up listener.
-      _progressListener = _mRecorder.onProgress!.listen((e) {
-        setState(() {
-          _volumeDecibels = e.decibels ?? 0;
-          _recordingLength = e.duration;
-        });
-      });
-
-      setState(() => _mRecorderIsInited = true);
-    });
-  }
-
-  Future<void> _initRecorder() async {
-    PermissionStatus status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      context.showDialog(
-          title: 'Microphone Permission',
-          content: MyText(
-              'Please enable microphone access to be able to take voice notes.'),
-          actions: [CupertinoDialogAction(child: MyText('OK'))]);
-      context.pop();
-    }
-
-    Directory tempDir = await getTemporaryDirectory();
-
-    final rand = DateTime.now().millisecondsSinceEpoch.toString();
-
-    _recordedFilePath =
-        '${tempDir.path}/${rand}journal_entry_voice_note_temp.aac';
-
-    await _mRecorder.openAudioSession(
-        category: SessionCategory.record, mode: SessionMode.modeSpokenAudio);
-  }
-
-  Future<void> _startRecorder() async {
-    await _mRecorder.startRecorder(
-        toFile: _recordedFilePath, audioSource: AudioSource.microphone);
-  }
-
-  Future<void> _stopRecorder() async {
-    await _mRecorder.stopRecorder();
   }
 
   Future<void> _pauseStartOrResume() async {
-    if (_mRecorder.isRecording) {
-      await _mRecorder.pauseRecorder();
-    } else if (_mRecorder.isPaused) {
-      await _mRecorder.resumeRecorder();
-    } else if (_mRecorder.isStopped) {
-      await _startRecorder();
+    if (_isStopped) {
+      await _start();
+    } else if (_isPaused) {
+      await _resume();
+    } else {
+      await _pause();
     }
-    setState(() {});
   }
 
-  Future<void> _saveRecording() async {
-    if (!_mRecorder.isStopped) {
-      await _mRecorder.stopRecorder();
+  Future<void> _start() async {
+    try {
+      if (await _audioRecorder.hasPermission()) {
+        Directory tempDir = await getTemporaryDirectory();
+
+        final rand = DateTime.now().millisecondsSinceEpoch.toString();
+
+        _recordedFilePath =
+            '${tempDir.path}/${rand}journal_entry_voice_note_temp.aac';
+
+        await _audioRecorder.start(
+            path: _recordedFilePath, encoder: AudioEncoder.AAC);
+
+        bool isRecording = await _audioRecorder.isRecording();
+        setState(() {
+          _isStopped = !isRecording;
+          _recordDuration = 0;
+        });
+
+        _startTimer();
+      }
+    } catch (e) {
+      print(e);
     }
-    widget.saveAudioRecording(_recordedFilePath!);
-    context.pop();
+  }
+
+  Future<void> _pause() async {
+    _timer?.cancel();
+    _ampTimer?.cancel();
+    await _audioRecorder.pause();
+
+    setState(() => _isPaused = true);
+  }
+
+  Future<void> _resume() async {
+    _startTimer();
+    await _audioRecorder.resume();
+
+    setState(() => _isPaused = false);
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _ampTimer?.cancel();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      setState(() => _recordDuration++);
+    });
+
+    _ampTimer =
+        Timer.periodic(const Duration(milliseconds: 200), (Timer t) async {
+      _amplitude = await _audioRecorder.getAmplitude();
+      setState(() {});
+    });
   }
 
   Future<void> _clearAndReset() async {
-    await context.showConfirmDialog(
-        title: 'Clear recording?',
-        onConfirm: () async {
-          if (!_mRecorder.isStopped) {
-            await _mRecorder.stopRecorder();
-          }
-          setState(() {
-            _volumeDecibels = 0;
-            _recordingLength = Duration.zero;
-          });
-        });
+    _timer?.cancel();
+    _ampTimer?.cancel();
+    await _audioRecorder.stop();
+
+    setState(() {
+      _recordDuration = 0;
+      _isStopped = true;
+      _isPaused = false;
+    });
   }
 
-  Future<void> _handleCancelAndClose(BuildContext context) async {
-    await _mRecorder.stopRecorder();
+  Future<void> _saveRecording() async {
+    _timer?.cancel();
+    _ampTimer?.cancel();
+    final path = await _audioRecorder.stop();
+
+    widget.saveAudioRecording(path!);
+
+    setState(() => _isStopped = true);
+    context.pop();
+  }
+
+  /// dBFS amplitude
+  /// 10^(x/20)
+  /// https://www.moellerstudios.org/converting-amplitude-representations/
+  double _calcVolumePeakPercent() {
+    if (_amplitude == null || _amplitude!.current == double.negativeInfinity) {
+      return 0.0;
+    } else {
+      return pow(10, (-_amplitude!.current / 20)).clamp(0.0, 1.0).toDouble();
+    }
+  }
+
+  Future<void> _handleCancelAndClose() async {
     context.pop();
   }
 
   @override
   void dispose() {
-    _progressListener.cancel();
-    // https://github.com/dooboolab/flutter_sound/blob/master/flutter_sound/example/lib/simple_recorder/simple_recorder.dart
-    _stopRecorder();
-    _mRecorder.closeAudioSession();
-    // NOTE: This clean up (from docs) is not required - we want to be able to access the file and upload it subsequently.
-    // if (_recordedFilePath != null) {
-    //   File _outputFile = File(_recordedFilePath);
-    //   if (_outputFile.existsSync()) {
-    //     _outputFile.delete();
-    //   }
-    // }
+    _timer?.cancel();
+    _ampTimer?.cancel();
+    _audioRecorder.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-          heroTag: 'MicAudioRecorder',
-          customLeading:
-              NavBarCancelButton(() => _handleCancelAndClose(context)),
+      navigationBar: BorderlessNavBar(
+          customLeading: NavBarCancelButton(_handleCancelAndClose),
           middle: NavBarTitle('Record Mic'),
           trailing: InfoPopupButton(
               infoWidget: MyText('Explains how the audio recorder works'))),
       child: SizedBox.expand(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: _mRecorderIsInited
-              ? Column(
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: 100,
-                          child: AnimatedSwitcher(
-                            duration: _animDuration,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: _mRecorder.isRecording
-                                  ? SpinKitDoubleBounce(
-                                      color: context.theme.primary
-                                          .withOpacity(0.7),
-                                      size: 26,
-                                      duration: Duration(seconds: 4),
-                                    )
-                                  : Icon(
-                                      CupertinoIcons.circle_fill,
-                                      color: context.theme.primary
-                                          .withOpacity(0.1),
-                                      size: 26,
-                                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircularPercentIndicator(
+                  percent: _calcVolumePeakPercent(),
+                  lineWidth: 1,
+                  radius: MediaQuery.of(context).size.width * 0.4,
+                  center: _amplitude != null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MyText(
+                              'Current: ${_amplitude?.current ?? 0.0}',
+                              size: FONTSIZE.SMALL,
+                              subtext: true,
                             ),
-                          ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: LinearProgressIndicator(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              height: 2,
-                              progress: min(1, _volumeDecibels / 120),
-                              animationDuration: Duration(milliseconds: 50),
-                            )),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: MyText(
-                        _recordingLength == Duration.zero
-                            ? ''
-                            : '${_recordingLength.inSeconds} seconds recorded',
-                        weight: FontWeight.bold,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: context.theme.primary,
-                            shape: BoxShape.circle),
-                        child: CupertinoButton(
-                            child: AnimatedSwitcher(
-                              duration: _animDuration,
-                              child: _mRecorder.isRecording
-                                  ? Icon(CupertinoIcons.pause_solid,
-                                      color: context.theme.background, size: 36)
-                                  : Icon(CupertinoIcons.mic_fill,
-                                      color: context.theme.background,
-                                      size: 36),
+                            MyText(
+                              'Max: ${_amplitude?.max ?? 0.0}',
+                              size: FONTSIZE.SMALL,
+                              subtext: true,
                             ),
-                            onPressed: _pauseStartOrResume),
-                      ),
-                    ),
-                    if (!_mRecorder.isRecording &&
-                        _recordingLength != Duration.zero)
-                      FadeIn(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            children: [
-                              PrimaryButton(
-                                  text: 'Save Recording',
-                                  onPressed: _saveRecording),
-                              SizedBox(height: 12),
-                              DestructiveButton(
-                                  text: 'Clear', onPressed: _clearAndReset)
-                            ],
-                          ),
-                        ),
+                          ],
+                        )
+                      : null,
+                  backgroundColor: context.theme.primary.withOpacity(0.1),
+                  progressColor: Styles.peachRed,
+                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AnimatedSwitcher(
+                duration: kStandardAnimationDuration,
+                child: !_isPaused && !_isStopped
+                    ? SpinKitDoubleBounce(
+                        color: Styles.peachRed.withOpacity(0.7),
+                        size: 30,
+                        duration: Duration(seconds: 4),
                       )
-                  ],
-                )
-              : LoadingCircle(),
+                    : Icon(
+                        CupertinoIcons.circle_fill,
+                        color: context.theme.primary.withOpacity(0.07),
+                        size: 30,
+                      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TimerDisplayText(
+                milliseconds: _recordDuration * 1000,
+                size: 24,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: context.theme.primary, shape: BoxShape.circle),
+                child: CupertinoButton(
+                    child: AnimatedSwitcher(
+                      duration: kStandardAnimationDuration,
+                      child: !_isPaused
+                          ? Icon(CupertinoIcons.pause_solid,
+                              color: context.theme.background, size: 36)
+                          : Icon(CupertinoIcons.mic_fill,
+                              color: context.theme.background, size: 36),
+                    ),
+                    onPressed: _pauseStartOrResume),
+              ),
+            ),
+            if (_isPaused && _recordDuration > 0)
+              FadeIn(
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      PrimaryButton(
+                          text: 'Save Recording', onPressed: _saveRecording),
+                      SizedBox(height: 12),
+                      DestructiveButton(
+                          text: 'Clear', onPressed: _clearAndReset)
+                    ],
+                  ),
+                ),
+              )
+          ],
         ),
       ),
     );

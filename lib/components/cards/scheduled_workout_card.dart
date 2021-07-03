@@ -150,11 +150,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
                     '(The workout may have been deleted)',
                     maxLines: 4,
                   ),
-
-                  /// TODO: add select a workout flow
-                  TextButton(
-                      text: 'Select a workout?',
-                      onPressed: () => print('select a workout flow'))
                 ],
               )
             : Column(
@@ -192,12 +187,16 @@ class ScheduledWorkoutCard extends StatelessWidget {
       actions: [
         ContextMenuAction(
           text: 'Do it',
-          onTap: () => print('do it'),
+          onTap: () => context.pushRoute(DoWorkoutWrapperRoute(
+              id: scheduledWorkout.workout!.id,
+              scheduledWorkoutId: scheduledWorkout.id)),
           iconData: CupertinoIcons.arrow_right_square,
         ),
         ContextMenuAction(
           text: 'Log it',
-          onTap: () => print('log it'),
+          onTap: () => context.pushRoute(LoggedWorkoutCreatorRoute(
+              workout: scheduledWorkout.workout!,
+              scheduledWorkout: scheduledWorkout)),
           iconData: CupertinoIcons.doc_on_clipboard,
         ),
         ContextMenuAction(

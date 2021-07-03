@@ -19,7 +19,9 @@ import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DoWorkoutLogWorkoutPage extends StatefulWidget {
-  const DoWorkoutLogWorkoutPage({Key? key}) : super(key: key);
+  final String? scheduledWorkoutId;
+  const DoWorkoutLogWorkoutPage({Key? key, this.scheduledWorkoutId})
+      : super(key: key);
 
   @override
   _DoWorkoutLogWorkoutPageState createState() =>
@@ -35,14 +37,22 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
   bool _logSavedToDB = false;
   bool _savingToDB = false;
 
-  Future<void> _createLoggedWorkout(LoggedWorkout loggedWorkout) async {
+  Future<void> _createLoggedWorkout(
+      LoggedWorkout loggedWorkout, String? scheduledWorkoutId) async {
     setState(() => _savingToDB = true);
-    final variables = CreateLoggedWorkoutArguments(
-        data: CreateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
 
-    final result = await context.graphQLStore.create(
-        mutation: CreateLoggedWorkoutMutation(variables: variables),
-        addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
+    final input = CreateLoggedWorkoutInput.fromJson(loggedWorkout.toJson());
+    if (scheduledWorkoutId != null) {
+      input.scheduledWorkout = ConnectRelationInput(id: scheduledWorkoutId);
+    }
+
+    final variables = CreateLoggedWorkoutArguments(data: input);
+
+    final result = await context.graphQLStore
+        .mutate<CreateLoggedWorkout$Mutation, CreateLoggedWorkoutArguments>(
+            mutation: CreateLoggedWorkoutMutation(variables: variables),
+            addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
+            broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
 
     setState(() => _savingToDB = false);
 
@@ -85,6 +95,9 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final String? scheduledWorkoutId =
+        context.select<DoWorkoutBloc, String?>((b) => b.scheduledWorkoutId);
+
     final loggedWorkout =
         context.select<DoWorkoutBloc, LoggedWorkout>((b) => b.loggedWorkout);
 
@@ -155,7 +168,8 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                       withMinWidth: false,
                       loading: _savingToDB,
                       text: 'Save Log',
-                      onPressed: () => _createLoggedWorkout(loggedWorkout)),
+                      onPressed: () => _createLoggedWorkout(
+                          loggedWorkout, scheduledWorkoutId)),
             ),
             PrimaryButton(
                 prefix: Icon(

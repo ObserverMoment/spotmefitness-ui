@@ -65,6 +65,7 @@ class _AudioUploaderState extends State<AudioUploader> {
     if (widget.onUploadStart != null) {
       widget.onUploadStart!();
     }
+
     await GetIt.I<UploadcareService>().uploadFile(
         file: SharedFile(file),
         onComplete: (uri) {

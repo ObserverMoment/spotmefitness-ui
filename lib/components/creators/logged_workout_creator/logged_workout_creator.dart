@@ -68,8 +68,10 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) =>
-          LoggedWorkoutCreatorBloc(context: context, workout: widget.workout),
+      create: (context) => LoggedWorkoutCreatorBloc(
+          context: context,
+          workout: widget.workout,
+          scheduledWorkout: widget.scheduledWorkout),
       builder: (context, child) {
         final loggedWorkoutSections = context
             .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(

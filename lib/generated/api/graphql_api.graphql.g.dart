@@ -1024,6 +1024,131 @@ Map<String, dynamic> _$RemoveWorkoutFromCollectionInputToJson(
       'Workout': instance.workout.toJson(),
     };
 
+DiscoverFeatured _$DiscoverFeaturedFromJson(Map<String, dynamic> json) {
+  return DiscoverFeatured()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..tag = json['tag'] as String
+    ..name = json['name'] as String
+    ..tagline = json['tagline'] as String
+    ..description = json['description'] as String
+    ..coverImageUri = json['coverImageUri'] as String;
+}
+
+Map<String, dynamic> _$DiscoverFeaturedToJson(DiscoverFeatured instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'tag': instance.tag,
+      'name': instance.name,
+      'tagline': instance.tagline,
+      'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
+    };
+
+DiscoverFeatured$Query _$DiscoverFeatured$QueryFromJson(
+    Map<String, dynamic> json) {
+  return DiscoverFeatured$Query()
+    ..discoverFeatured = (json['discoverFeatured'] as List<dynamic>)
+        .map((e) => DiscoverFeatured.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$DiscoverFeatured$QueryToJson(
+        DiscoverFeatured$Query instance) =>
+    <String, dynamic>{
+      'discoverFeatured':
+          instance.discoverFeatured.map((e) => e.toJson()).toList(),
+    };
+
+DiscoverWorkoutPlanCategory _$DiscoverWorkoutPlanCategoryFromJson(
+    Map<String, dynamic> json) {
+  return DiscoverWorkoutPlanCategory()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..active = json['active'] as bool
+    ..name = json['name'] as String
+    ..tagline = json['tagline'] as String
+    ..description = json['description'] as String
+    ..coverImageUri = json['coverImageUri'] as String;
+}
+
+Map<String, dynamic> _$DiscoverWorkoutPlanCategoryToJson(
+        DiscoverWorkoutPlanCategory instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'active': instance.active,
+      'name': instance.name,
+      'tagline': instance.tagline,
+      'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
+    };
+
+DiscoverWorkoutPlanCategories$Query
+    _$DiscoverWorkoutPlanCategories$QueryFromJson(Map<String, dynamic> json) {
+  return DiscoverWorkoutPlanCategories$Query()
+    ..discoverWorkoutPlanCategories =
+        (json['discoverWorkoutPlanCategories'] as List<dynamic>)
+            .map((e) =>
+                DiscoverWorkoutPlanCategory.fromJson(e as Map<String, dynamic>))
+            .toList();
+}
+
+Map<String, dynamic> _$DiscoverWorkoutPlanCategories$QueryToJson(
+        DiscoverWorkoutPlanCategories$Query instance) =>
+    <String, dynamic>{
+      'discoverWorkoutPlanCategories': instance.discoverWorkoutPlanCategories
+          .map((e) => e.toJson())
+          .toList(),
+    };
+
+DiscoverWorkoutCategory _$DiscoverWorkoutCategoryFromJson(
+    Map<String, dynamic> json) {
+  return DiscoverWorkoutCategory()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..active = json['active'] as bool
+    ..name = json['name'] as String
+    ..tagline = json['tagline'] as String
+    ..description = json['description'] as String
+    ..coverImageUri = json['coverImageUri'] as String;
+}
+
+Map<String, dynamic> _$DiscoverWorkoutCategoryToJson(
+        DiscoverWorkoutCategory instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'active': instance.active,
+      'name': instance.name,
+      'tagline': instance.tagline,
+      'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
+    };
+
+DiscoverWorkoutCategories$Query _$DiscoverWorkoutCategories$QueryFromJson(
+    Map<String, dynamic> json) {
+  return DiscoverWorkoutCategories$Query()
+    ..discoverWorkoutCategories = (json['discoverWorkoutCategories']
+            as List<dynamic>)
+        .map((e) => DiscoverWorkoutCategory.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$DiscoverWorkoutCategories$QueryToJson(
+        DiscoverWorkoutCategories$Query instance) =>
+    <String, dynamic>{
+      'discoverWorkoutCategories':
+          instance.discoverWorkoutCategories.map((e) => e.toJson()).toList(),
+    };
+
 ReorderWorkoutPlanDayWorkouts$Mutation
     _$ReorderWorkoutPlanDayWorkouts$MutationFromJson(
         Map<String, dynamic> json) {
@@ -4770,131 +4895,6 @@ WorkoutById$Query _$WorkoutById$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
     <String, dynamic>{
       'workoutById': instance.workoutById.toJson(),
-    };
-
-DiscoverFeatured _$DiscoverFeaturedFromJson(Map<String, dynamic> json) {
-  return DiscoverFeatured()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..tag = json['tag'] as String
-    ..name = json['name'] as String
-    ..tagline = json['tagline'] as String
-    ..description = json['description'] as String
-    ..coverImageUri = json['coverImageUri'] as String;
-}
-
-Map<String, dynamic> _$DiscoverFeaturedToJson(DiscoverFeatured instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'tag': instance.tag,
-      'name': instance.name,
-      'tagline': instance.tagline,
-      'description': instance.description,
-      'coverImageUri': instance.coverImageUri,
-    };
-
-DiscoverFeatured$Query _$DiscoverFeatured$QueryFromJson(
-    Map<String, dynamic> json) {
-  return DiscoverFeatured$Query()
-    ..discoverFeatured = (json['discoverFeatured'] as List<dynamic>)
-        .map((e) => DiscoverFeatured.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$DiscoverFeatured$QueryToJson(
-        DiscoverFeatured$Query instance) =>
-    <String, dynamic>{
-      'discoverFeatured':
-          instance.discoverFeatured.map((e) => e.toJson()).toList(),
-    };
-
-DiscoverWorkoutPlanCategory _$DiscoverWorkoutPlanCategoryFromJson(
-    Map<String, dynamic> json) {
-  return DiscoverWorkoutPlanCategory()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..active = json['active'] as bool
-    ..name = json['name'] as String
-    ..tagline = json['tagline'] as String
-    ..description = json['description'] as String
-    ..coverImageUri = json['coverImageUri'] as String;
-}
-
-Map<String, dynamic> _$DiscoverWorkoutPlanCategoryToJson(
-        DiscoverWorkoutPlanCategory instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'active': instance.active,
-      'name': instance.name,
-      'tagline': instance.tagline,
-      'description': instance.description,
-      'coverImageUri': instance.coverImageUri,
-    };
-
-DiscoverWorkoutPlanCategories$Query
-    _$DiscoverWorkoutPlanCategories$QueryFromJson(Map<String, dynamic> json) {
-  return DiscoverWorkoutPlanCategories$Query()
-    ..discoverWorkoutPlanCategories =
-        (json['discoverWorkoutPlanCategories'] as List<dynamic>)
-            .map((e) =>
-                DiscoverWorkoutPlanCategory.fromJson(e as Map<String, dynamic>))
-            .toList();
-}
-
-Map<String, dynamic> _$DiscoverWorkoutPlanCategories$QueryToJson(
-        DiscoverWorkoutPlanCategories$Query instance) =>
-    <String, dynamic>{
-      'discoverWorkoutPlanCategories': instance.discoverWorkoutPlanCategories
-          .map((e) => e.toJson())
-          .toList(),
-    };
-
-DiscoverWorkoutCategory _$DiscoverWorkoutCategoryFromJson(
-    Map<String, dynamic> json) {
-  return DiscoverWorkoutCategory()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-    ..active = json['active'] as bool
-    ..name = json['name'] as String
-    ..tagline = json['tagline'] as String
-    ..description = json['description'] as String
-    ..coverImageUri = json['coverImageUri'] as String;
-}
-
-Map<String, dynamic> _$DiscoverWorkoutCategoryToJson(
-        DiscoverWorkoutCategory instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'active': instance.active,
-      'name': instance.name,
-      'tagline': instance.tagline,
-      'description': instance.description,
-      'coverImageUri': instance.coverImageUri,
-    };
-
-DiscoverWorkoutCategories$Query _$DiscoverWorkoutCategories$QueryFromJson(
-    Map<String, dynamic> json) {
-  return DiscoverWorkoutCategories$Query()
-    ..discoverWorkoutCategories = (json['discoverWorkoutCategories']
-            as List<dynamic>)
-        .map((e) => DiscoverWorkoutCategory.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$DiscoverWorkoutCategories$QueryToJson(
-        DiscoverWorkoutCategories$Query instance) =>
-    <String, dynamic>{
-      'discoverWorkoutCategories':
-          instance.discoverWorkoutCategories.map((e) => e.toJson()).toList(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(

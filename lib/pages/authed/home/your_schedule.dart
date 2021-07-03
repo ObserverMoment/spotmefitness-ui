@@ -97,7 +97,8 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
           'YourSchedulePage - ${UserScheduledWorkoutsQuery().operationName}'),
       query: UserScheduledWorkoutsQuery(),
       builder: (data) {
-        final allScheduled = data.userScheduledWorkouts;
+        final allScheduled =
+            data.userScheduledWorkouts.sortedBy<DateTime>((s) => s.scheduledAt);
 
         final selectedDayScheduled = allScheduled
             .where((s) => isSameDay(s.scheduledAt, _selectedDay))
@@ -192,6 +193,9 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                                 // https://github.com/aleksanderwozniak/table_calendar/issues/498
                                 defaultDecoration: kDefaultDecoration,
                                 weekendDecoration: kDefaultDecoration,
+                                outsideDecoration: kDefaultDecoration,
+                                disabledDecoration: kDefaultDecoration,
+                                holidayDecoration: kDefaultDecoration,
                                 selectedDecoration: BoxDecoration(
                                     color: context.theme.primary,
                                     shape: BoxShape.rectangle,

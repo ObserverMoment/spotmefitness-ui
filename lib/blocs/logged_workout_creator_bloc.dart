@@ -110,7 +110,9 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     final input = CreateLoggedWorkoutInput(
       name: log.name,
       note: log.note,
-      scheduledWorkout: null,
+      scheduledWorkout: scheduledWorkout != null
+          ? ConnectRelationInput(id: scheduledWorkout!.id)
+          : null,
       gymProfile: log.gymProfile != null
           ? ConnectRelationInput(id: log.gymProfile!.id)
           : null,

@@ -10,7 +10,9 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class DoWorkoutWrapperPage extends StatefulWidget {
   final String id;
-  const DoWorkoutWrapperPage({Key? key, @PathParam('id') required this.id})
+  final String? scheduledWorkoutId;
+  const DoWorkoutWrapperPage(
+      {Key? key, @PathParam('id') required this.id, this.scheduledWorkoutId})
       : super(key: key);
 
   @override
@@ -43,21 +45,25 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
   }
 
   @override
-  Widget build(BuildContext context) => FutureBuilderHandler<Workout>(
-      loadingWidget: ShimmerDetailsPage(title: 'Warming Up'),
-      future: _initWorkoutFn,
-      builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
-          create: (context) =>
-              DoWorkoutBloc(context: context, workout: workout),
-          child: Builder(builder: (context) {
-            final allSectionsComplete = context
-                .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
+  Widget build(BuildContext context) {
+    return FutureBuilderHandler<Workout>(
+        loadingWidget: ShimmerDetailsPage(title: 'Warming Up'),
+        future: _initWorkoutFn,
+        builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
+            create: (context) => DoWorkoutBloc(
+                context: context,
+                workout: workout,
+                scheduledWorkoutId: widget.scheduledWorkoutId),
+            child: Builder(builder: (context) {
+              final allSectionsComplete = context
+                  .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
 
-            return AutoRouter.declarative(
-                routes: (_) => [
-                      if (!allSectionsComplete)
-                        DoWorkoutDoWorkoutRoute(workout: workout),
-                      if (allSectionsComplete) DoWorkoutLogWorkoutRoute(),
-                    ]);
-          })));
+              return AutoRouter.declarative(
+                  routes: (_) => [
+                        if (!allSectionsComplete)
+                          DoWorkoutDoWorkoutRoute(workout: workout),
+                        if (allSectionsComplete) DoWorkoutLogWorkoutRoute(),
+                      ]);
+            })));
+  }
 }
