@@ -14,11 +14,11 @@ class EnvironmentConfig {
       'SPOTME_GRAPHQL_ENDPOINT',
       defaultValue: 'http://${EnvironmentConfig.gethost()}:4000/graphql');
 
-  // Either from ENV or local (ios, web or android)
+  // Either from ENV or local (ios, web or android). Used for sign on + auth.
   static Uri getRestApiEndpoint(String endpoint) {
-    final _isLocal = !bool.hasEnvironment('SPOTME_REST_API_ENDPOINT');
+    final isLocal = !bool.hasEnvironment('SPOTME_REST_API_ENDPOINT');
 
-    return _isLocal
+    return isLocal
         // Use raw Uri due to host setting issues with other constructors
         ? Uri(
             scheme: 'http', host: gethost(), port: 4000, path: '/api/$endpoint')
