@@ -49,29 +49,30 @@ class AuthBloc {
   }
 
   AuthedUser? get authedUser => _authedUser;
+
   ValueNotifier<AuthState> authState = ValueNotifier(AuthState.UNAUTHED);
 
   Future<void> registerWithEmailAndPassword(
       String email, String password) async {
     try {
       authState.value = AuthState.REGISTERING;
-      UserCredential _user = await _firebaseClient
+      UserCredential user = await _firebaseClient
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      if (_user.user?.uid != null) {
-        final _token = await getIdToken();
-        final _endpoint = EnvironmentConfig.getRestApiEndpoint('user/register');
+      if (user.user?.uid != null) {
+        final token = await getIdToken();
+        final endpoint = EnvironmentConfig.getRestApiEndpoint('user/register');
 
-        final _res = await http.post(
-          _endpoint,
-          headers: {HttpHeaders.authorizationHeader: 'Bearer $_token'},
+        final res = await http.post(
+          endpoint,
+          headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
         );
 
-        String _body = _res.body;
-        Map<String, dynamic> _json = jsonDecode(_body);
+        String body = res.body;
+        Map<String, dynamic> json = jsonDecode(body);
 
-        if (_json['id'] != null) {
-          _authedUser = AuthedUser.fromJson(_json);
+        if (json['id'] != null) {
+          _authedUser = AuthedUser.fromJson(json);
         } else {
           print(
               'No valid user ID was returned when trying to register a new user.');
@@ -80,7 +81,7 @@ class AuthBloc {
         }
       } else {
         print(
-            '_user?.uid was null - no user was returned by registerWithEmailAndPassword');
+            'user?.uid was null - no user was returned by registerWithEmailAndPassword');
         throw new Exception('Sorry, there was an issue registering.');
       }
     } on FirebaseAuthException catch (e) {
@@ -134,8 +135,8 @@ class AuthBloc {
   Future<String> getIdToken() async {
     if (_firebaseClient.currentUser != null) {
       try {
-        String _token = await _firebaseClient.currentUser!.getIdToken(true);
-        return _token;
+        String token = await _firebaseClient.currentUser!.getIdToken(true);
+        return token;
       } on FirebaseAuthException catch (e) {
         print(e.toString());
         throw new Exception(e.message);
@@ -153,19 +154,19 @@ class AuthBloc {
 
   Future<void> validateUserAgainstFirebaseUid() async {
     authState.value = AuthState.VALIDATING;
-    final _token = await getIdToken();
-    final _endpoint = EnvironmentConfig.getRestApiEndpoint('user/current');
+    final token = await getIdToken();
+    final endpoint = EnvironmentConfig.getRestApiEndpoint('user/current');
 
-    final _res = await http.post(
-      _endpoint,
-      headers: {HttpHeaders.authorizationHeader: 'Bearer $_token'},
+    final res = await http.post(
+      endpoint,
+      headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
     );
 
-    String _body = _res.body;
-    Map<String, dynamic> _json = jsonDecode(_body);
+    String body = res.body;
+    Map<String, dynamic> json = jsonDecode(body);
 
-    if (_json['id'] != null) {
-      _authedUser = AuthedUser.fromJson(_json);
+    if (json['id'] != null) {
+      _authedUser = AuthedUser.fromJson(json);
     } else {
       print(
           'No valid user ID was returned when trying to register a new user.');
