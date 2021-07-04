@@ -40,7 +40,6 @@ class DiscoverWorkoutPlanCategoryCard extends StatelessWidget {
           MyText(
             discoverWorkoutPlanCategory.description,
             maxLines: 3,
-            weight: FontWeight.bold,
           ),
         ],
       ),

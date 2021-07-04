@@ -32,7 +32,7 @@ class YourWorkoutPlanEnrolments extends StatelessWidget {
 
         return _FilterableEnroledPlans(
           allEnrolments: enrolments,
-          selectEnrolledPlan: (String enrolmentId) {},
+          selectEnrolledPlan: selectEnrolledPlan,
         );
       },
     );

@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Box with rounded corners. No elevation. Card background color.
@@ -123,7 +124,7 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar ? 72 : 12,
+            bottom: pageHasBottomNavBar ? kBottomNavBarHeight : 40,
             right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))

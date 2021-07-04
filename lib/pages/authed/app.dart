@@ -94,6 +94,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
                           ),
                           height: kBottomNavBarHeight,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -173,7 +174,7 @@ class TabIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      padding: const EdgeInsets.all(0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       pressedOpacity: 0.9,
       onPressed: onTap,
       child: AnimatedOpacity(
@@ -183,7 +184,7 @@ class TabIcon extends StatelessWidget {
             duration: kAnimationDuration,
             child: isActive
                 ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       activeIcon,
                       SizedBox(height: 1),
@@ -195,7 +196,7 @@ class TabIcon extends StatelessWidget {
                     ],
                   )
                 : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       icon,
                       SizedBox(height: 1),
