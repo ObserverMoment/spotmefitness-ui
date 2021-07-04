@@ -35,145 +35,147 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return CupertinoPageScaffold(
       key: Key('SettingsPage - CupertinoPageScaffold'),
-      navigationBar: BasicNavBar(
-        heroTag: 'SettingsPage',
+      navigationBar: BorderlessNavBar(
         key: Key('SettingsPage - BasicNavBar'),
         middle: NavBarTitle('Settings'),
       ),
-      child: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _spacer(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MyText(
-                    'Dark Mode',
-                    weight: FontWeight.bold,
-                  ),
-                  SlidingSelect<ThemeName>(
-                      value: context.watch<ThemeBloc>().themeName,
-                      children: <ThemeName, Widget>{
-                        ThemeName.dark: Icon(
-                          CupertinoIcons.moon_fill,
-                          color: CupertinoColors.white,
-                        ),
-                        ThemeName.light: Icon(
-                          CupertinoIcons.sun_max_fill,
-                          color: CupertinoColors.systemYellow.withOpacity(0.7),
-                        ),
-                      },
-                      updateValue: (themeName) =>
-                          context.read<ThemeBloc>().switchToTheme(themeName)),
-                ],
+      child: SafeArea(
+        child: SingleChildScrollView(
+            child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _spacer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText(
+                      'Dark Mode',
+                      weight: FontWeight.bold,
+                    ),
+                    SlidingSelect<ThemeName>(
+                        value: context.watch<ThemeBloc>().themeName,
+                        children: <ThemeName, Widget>{
+                          ThemeName.dark: Icon(
+                            CupertinoIcons.moon_fill,
+                            color: CupertinoColors.white,
+                          ),
+                          ThemeName.light: Icon(
+                            CupertinoIcons.sun_max_fill,
+                            color:
+                                CupertinoColors.systemYellow.withOpacity(0.7),
+                          ),
+                        },
+                        updateValue: (themeName) =>
+                            context.read<ThemeBloc>().switchToTheme(themeName)),
+                  ],
+                ),
               ),
-            ),
-            PageLink(
-              linkText: 'Upgrade to PRO',
-              onPress: () => {},
-              infoHighlight: true,
-            ),
-            _spacer(),
-            MyText('ACCOUNT', color: _headingColor),
-            _spacer(),
-            PageLink(
-              linkText: 'Profile Privacy',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Subscription',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Linked accounts',
-              onPress: () => {},
-            ),
-            _spacer(),
-            MyText(
-              'CONTENT',
-              color: _headingColor,
-            ),
-            _spacer(),
-            PageLink(
-              linkText: 'Manage Workout Tags',
-              onPress: () => context.push(
-                  child: WorkoutTagsManager(allowCreateTagOnly: false)),
-            ),
-            _spacer(),
-            PageLink(
-              linkText: 'Manage Journal Goal Tags',
-              onPress: () => context.push(
-                  child: ProgressJournalGoalTagsManager(
-                      allowCreateTagOnly: false)),
-            ),
-            _spacer(),
-            PageLink(
-              linkText: 'Push notifications',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Health trackers',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Clear cache',
-              onPress: () => _cleareCache(context),
-              icon: Icon(Icons.cached_rounded),
-              loading: _loading,
-            ),
-            _spacer(),
-            MyText(
-              'SUPPORT',
-              color: _headingColor,
-            ),
-            _spacer(),
-            PageLink(
-              linkText: 'Report a problem',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Help center',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Community discussions',
-              onPress: () => {},
-            ),
-            _spacer(),
-            MyText(
-              'ABOUT US',
-              color: _headingColor,
-            ),
-            _spacer(),
-            PageLink(
-              linkText: 'Our story',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Become a Spotter',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Become a Shaper',
-              onPress: () => {},
-            ),
-            PageLink(
-              linkText: 'Company policies',
-              onPress: () => {},
-            ),
-            _spacer(),
-            PageLink(
-                linkText: 'Sign out',
-                onPress: () async => await GetIt.I<AuthBloc>().signOut(),
-                icon: Icon(CupertinoIcons.square_arrow_right))
-          ],
-        ),
-      )),
+              PageLink(
+                linkText: 'Upgrade to PRO',
+                onPress: () => {},
+                infoHighlight: true,
+              ),
+              _spacer(),
+              MyText('ACCOUNT', color: _headingColor),
+              _spacer(),
+              PageLink(
+                linkText: 'Profile Privacy',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Subscription',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Linked accounts',
+                onPress: () => {},
+              ),
+              _spacer(),
+              MyText(
+                'CONTENT',
+                color: _headingColor,
+              ),
+              _spacer(),
+              PageLink(
+                linkText: 'Manage Workout Tags',
+                onPress: () => context.push(
+                    child: WorkoutTagsManager(allowCreateTagOnly: false)),
+              ),
+              _spacer(),
+              PageLink(
+                linkText: 'Manage Journal Goal Tags',
+                onPress: () => context.push(
+                    child: ProgressJournalGoalTagsManager(
+                        allowCreateTagOnly: false)),
+              ),
+              _spacer(),
+              PageLink(
+                linkText: 'Push notifications',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Health trackers',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Clear cache',
+                onPress: () => _cleareCache(context),
+                icon: Icon(Icons.cached_rounded),
+                loading: _loading,
+              ),
+              _spacer(),
+              MyText(
+                'SUPPORT',
+                color: _headingColor,
+              ),
+              _spacer(),
+              PageLink(
+                linkText: 'Report a problem',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Help center',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Community discussions',
+                onPress: () => {},
+              ),
+              _spacer(),
+              MyText(
+                'ABOUT US',
+                color: _headingColor,
+              ),
+              _spacer(),
+              PageLink(
+                linkText: 'Our story',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Become a Spotter',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Become a Shaper',
+                onPress: () => {},
+              ),
+              PageLink(
+                linkText: 'Company policies',
+                onPress: () => {},
+              ),
+              _spacer(),
+              PageLink(
+                  linkText: 'Sign out',
+                  onPress: () async => await GetIt.I<AuthBloc>().signOut(),
+                  icon: Icon(CupertinoIcons.square_arrow_right))
+            ],
+          ),
+        )),
+      ),
     );
   }
 }
