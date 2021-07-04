@@ -187,14 +187,14 @@ class ScheduledWorkoutCard extends StatelessWidget {
       actions: [
         ContextMenuAction(
           text: 'Do it',
-          onTap: () => context.pushRoute(DoWorkoutWrapperRoute(
+          onTap: () => context.navigateTo(DoWorkoutWrapperRoute(
               id: scheduledWorkout.workout!.id,
               scheduledWorkoutId: scheduledWorkout.id)),
           iconData: CupertinoIcons.arrow_right_square,
         ),
         ContextMenuAction(
           text: 'Log it',
-          onTap: () => context.pushRoute(LoggedWorkoutCreatorRoute(
+          onTap: () => context.navigateTo(LoggedWorkoutCreatorRoute(
               workout: scheduledWorkout.workout!,
               scheduledWorkout: scheduledWorkout)),
           iconData: CupertinoIcons.doc_on_clipboard,
@@ -202,12 +202,13 @@ class ScheduledWorkoutCard extends StatelessWidget {
         ContextMenuAction(
             text: 'View it',
             iconData: CupertinoIcons.eye,
-            onTap: () => context.router
-                .push(WorkoutDetailsRoute(id: scheduledWorkout.workout!.id))),
+            onTap: () => context.navigateTo(
+                WorkoutDetailsRoute(id: scheduledWorkout.workout!.id))),
         if (scheduledWorkout.loggedWorkoutSummary != null)
           ContextMenuAction(
             text: 'View log',
-            onTap: () => print('view log'),
+            onTap: () => context.navigateTo(LoggedWorkoutDetailsRoute(
+                id: scheduledWorkout.loggedWorkoutSummary!.id)),
             iconData: CupertinoIcons.doc_richtext,
           ),
         ContextMenuAction(
