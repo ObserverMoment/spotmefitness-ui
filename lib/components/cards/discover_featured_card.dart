@@ -13,59 +13,53 @@ class DiscoverFeaturedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textBackgroundColor = context.theme.background.withOpacity(0.6);
-    final padding = const EdgeInsets.symmetric(vertical: 0.5, horizontal: 3);
-    return Card(
-      height: 180,
-      opaqueBackgroundImage: false,
-      backgroundImageUri: discoverFeatured.coverImageUri,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
+    final padding = const EdgeInsets.symmetric(vertical: 3, horizontal: 6);
+    return Column(
+      children: [
+        Card(
+          height: 240,
+          opaqueBackgroundImage: false,
+          backgroundImageUri: discoverFeatured.coverImageUri,
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ContentBox(
-                padding: padding,
-                backgroundColor: textBackgroundColor,
-                child: MyText(
-                  discoverFeatured.tag,
-                  color: context.theme.brightness == Brightness.dark
-                      ? Styles.colorFour
-                      : Styles.colorThree,
-                  weight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  ContentBox(
+                    padding: padding,
+                    borderRadius: 0,
+                    child: MyText(
+                      discoverFeatured.tag,
+                      color: context.theme.brightness == Brightness.dark
+                          ? Styles.colorFour
+                          : Styles.colorThree,
+                      weight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               ContentBox(
                 padding: padding,
-                backgroundColor: textBackgroundColor,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    MyText(
-                      discoverFeatured.name,
-                      size: FONTSIZE.BIG,
-                      weight: FontWeight.bold,
-                    ),
-                    MyText(
-                      discoverFeatured.tagline,
-                    ),
-                  ],
+                borderRadius: 0,
+                child: MyText(
+                  discoverFeatured.name,
+                  size: FONTSIZE.LARGE,
+                  weight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          ContentBox(
-            padding: padding,
-            backgroundColor: textBackgroundColor,
-            child: MyText(
-              discoverFeatured.description,
-              maxLines: 3,
-            ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+          child: MyText(
+            discoverFeatured.description,
+            maxLines: 4,
+            textAlign: TextAlign.center,
+            lineHeight: 1.1,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

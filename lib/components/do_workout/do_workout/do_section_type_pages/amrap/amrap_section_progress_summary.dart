@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -51,8 +51,8 @@ class AMRAPSectionProgressSummary extends StatelessWidget {
             : Expanded(
                 child: ListView(
                   shrinkWrap: true,
-                  padding: const EdgeInsets.only(
-                      bottom: kBottomNavBarHeight,
+                  padding: EdgeInsets.only(
+                      bottom: EnvironmentConfig.bottomNavBarHeight,
                       top: 12,
                       left: 16,
                       right: 16),

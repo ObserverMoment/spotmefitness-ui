@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/discover_workout_category_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -18,23 +21,35 @@ class DiscoverWorkoutsPage extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: BorderlessNavBar(
         middle: NavBarTitle('Workouts'),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Transform.rotate(
+              angle: pi / 2,
+              child: Icon(
+                CupertinoIcons.slider_horizontal_3,
+                size: 30,
+              ),
+            ),
+            onPressed: () => context
+                .navigateTo(WorkoutFinderRoute(initialOpenPublicTab: true))),
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: SecondaryButton(
-                  text: 'Find a Workout',
-                  prefix: Icon(
-                    CupertinoIcons.viewfinder_circle,
-                    color: Styles.white,
-                    size: 20,
-                  ),
-                  onPressed: () => context.navigateTo(
-                      WorkoutFinderRoute(initialOpenPublicTab: true))),
-            ),
-          ),
+          Container(
+              padding: const EdgeInsets.only(left: 12, bottom: 8, top: 8),
+              height: 50,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: List.generate(
+                    6,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: SelectableTag(
+                          isSelected: false,
+                          onPressed: () => {},
+                          text: 'Popular Tag'),
+                    ),
+                  ))),
           Expanded(
             child: QueryObserver<DiscoverWorkoutCategories$Query,
                     json.JsonSerializable>(
@@ -50,7 +65,8 @@ class DiscoverWorkoutsPage extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: discoverWorkoutCategories.length,
                       itemBuilder: (c, i) => Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12.0),
                             child: DiscoverWorkoutCategoryCard(
                               discoverWorkoutCategory:
                                   discoverWorkoutCategories[i],

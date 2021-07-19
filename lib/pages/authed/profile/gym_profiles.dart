@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
@@ -44,7 +45,7 @@ class ProfileGymProfilesPage extends StatelessWidget {
                           if (i == gymProfiles.length) {
                             return SizedBox(
                                 height: kAssumedFloatingButtonHeight +
-                                    kBottomNavBarHeight);
+                                    EnvironmentConfig.bottomNavBarHeight);
                           } else {
                             return GestureDetector(
                               onTap: () => context.push(

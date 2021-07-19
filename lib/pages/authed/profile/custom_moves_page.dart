@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -53,7 +54,7 @@ class ProfileCustomMovesPage extends StatelessWidget {
                           if (i == customMoves.length) {
                             return SizedBox(
                                 height: kAssumedFloatingButtonHeight +
-                                    kBottomNavBarHeight);
+                                    EnvironmentConfig.bottomNavBarHeight);
                           } else {
                             return GestureDetector(
                                 onTap: () => _openCustomMoveCreator(
@@ -66,7 +67,7 @@ class ProfileCustomMovesPage extends StatelessWidget {
                         }),
                   )
                 : MyText(
-                    'No gym profiles yet...',
+                    'No custom moves yet...',
                     textAlign: TextAlign.center,
                   ),
           );

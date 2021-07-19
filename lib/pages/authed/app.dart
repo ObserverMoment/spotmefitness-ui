@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -79,8 +80,9 @@ class _MainTabsPageState extends State<MainTabsPage> {
                 FadeTransition(
                     child: MediaQuery(
                         data: _mediaQuery.copyWith(
-                            padding: _mediaQuery.padding
-                                .copyWith(bottom: kBottomNavBarHeight + 4)),
+                            padding: _mediaQuery.padding.copyWith(
+                                bottom:
+                                    EnvironmentConfig.bottomNavBarHeight + 4)),
                         child: child),
                     opacity: animation),
                 Align(
@@ -92,7 +94,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
                           decoration: BoxDecoration(
                             color: context.theme.background.withOpacity(0.7),
                           ),
-                          height: kBottomNavBarHeight,
+                          height: EnvironmentConfig.bottomNavBarHeight,
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,

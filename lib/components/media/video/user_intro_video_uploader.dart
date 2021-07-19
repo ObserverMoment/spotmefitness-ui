@@ -157,50 +157,34 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
               },
             )),
       ),
-      child: Stack(
-        children: [
-          Container(
-            width: widget.displaySize.width,
-            height: widget.displaySize.height,
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _primary.withOpacity(0.7),
-                boxShadow: [Styles.avatarBoxShadow]),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 400),
-              child: _uploading
-                  ? LinearProgressIndicator(
-                      width: widget.displaySize.width * 0.8,
-                      height: 3,
-                      progress: _uploadProgress,
+      child: Container(
+        width: widget.displaySize.width,
+        height: widget.displaySize.height,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _primary.withOpacity(0.7),
+            boxShadow: [Styles.avatarBoxShadow]),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 400),
+          child: _uploading
+              ? LinearProgressIndicator(
+                  width: widget.displaySize.width * 0.8,
+                  height: 3,
+                  progress: _uploadProgress,
+                )
+              : _processing
+                  ? LoadingCircle(
+                      color: _background.withOpacity(0.4),
                     )
-                  : _processing
-                      ? LoadingCircle(
+                  : Utils.textNotNull(widget.introVideoThumbUri)
+                      ? SizedUploadcareImage(widget.introVideoThumbUri!)
+                      : Icon(
+                          CupertinoIcons.film,
+                          size: widget.displaySize.width / 2.5,
                           color: _background.withOpacity(0.4),
-                        )
-                      : Utils.textNotNull(widget.introVideoThumbUri)
-                          ? SizedUploadcareImage(widget.introVideoThumbUri!)
-                          : Icon(
-                              CupertinoIcons.film,
-                              size: widget.displaySize.width / 2.5,
-                              color: _background.withOpacity(0.4),
-                            ),
-            ),
-          ),
-          Positioned(
-            bottom: widget.displaySize.width / 25,
-            right: widget.displaySize.width / 25,
-            child: Container(
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: _primary),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Icon(CupertinoIcons.plus_circle,
-                  size: widget.displaySize.width / 4.5,
-                  color: _background.withOpacity(0.7)),
-            ),
-          )
-        ],
+                        ),
+        ),
       ),
     );
   }

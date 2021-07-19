@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -182,7 +183,7 @@ class ForTimeSectionProgressSummaryState
                       HorizontalLine(),
                       MyText('Finish'),
                       HorizontalLine(),
-                      SizedBox(height: kBottomNavBarHeight)
+                      SizedBox(height: EnvironmentConfig.bottomNavBarHeight)
                     ],
                   ),
                 )

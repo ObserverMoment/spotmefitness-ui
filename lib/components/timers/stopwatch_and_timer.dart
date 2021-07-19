@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Full screen widget with bottom navigation bar.
@@ -46,8 +46,11 @@ class _StopwatchAndTimerState extends State<StopwatchAndTimer> {
         clipBehavior: Clip.none,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-                top: 16, left: 16, right: 16, bottom: kBottomNavBarHeight),
+            padding: EdgeInsets.only(
+                top: 16,
+                left: 16,
+                right: 16,
+                bottom: EnvironmentConfig.bottomNavBarHeight),
             child: PageView(
               controller: _pageController,
               onPageChanged: (i) => setState(() => _activeTabIndex = i),
@@ -95,7 +98,7 @@ class TimersBottomNavBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.theme.background.withOpacity(0.2),
             ),
-            height: kBottomNavBarHeight,
+            height: EnvironmentConfig.bottomNavBarHeight,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

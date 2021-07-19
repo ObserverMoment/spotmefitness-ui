@@ -54,7 +54,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     MyText(
                       'Dark Mode',
-                      weight: FontWeight.bold,
                     ),
                     SlidingSelect<ThemeName>(
                         value: context.watch<ThemeBloc>().themeName,

@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/loa
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -34,7 +35,7 @@ class FreeSessionMovesList extends StatelessWidget {
       itemCount: sortedWorkoutSets.length + 2,
       itemBuilder: (c, i) {
         if (i == sortedWorkoutSets.length + 1) {
-          return SizedBox(height: kBottomNavBarHeight);
+          return SizedBox(height: EnvironmentConfig.bottomNavBarHeight);
         } else if (i == sortedWorkoutSets.length) {
           return Padding(
             padding: const EdgeInsets.all(8.0),

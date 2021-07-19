@@ -10,6 +10,7 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class DiscoverPage extends StatelessWidget {
   @override
@@ -26,23 +27,19 @@ class DiscoverPage extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  BorderButton(
-                      mini: true,
+                  DiscoverPageButton(
                       text: 'Workouts',
                       onPressed: () =>
                           context.navigateTo(DiscoverWorkoutsRoute())),
-                  BorderButton(
-                      mini: true,
+                  DiscoverPageButton(
                       text: 'Plans',
                       onPressed: () =>
                           context.navigateTo(DiscoverPlansRoute())),
-                  BorderButton(
-                      mini: true,
+                  DiscoverPageButton(
                       text: 'Challenges',
                       onPressed: () =>
                           context.navigateTo(DiscoverChallengesRoute())),
-                  BorderButton(
-                      mini: true,
+                  DiscoverPageButton(
                       text: 'Events',
                       onPressed: () =>
                           context.navigateTo(DiscoverEventsRoute())),
@@ -60,7 +57,8 @@ class DiscoverPage extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: discoverFeatured.length,
                       itemBuilder: (c, i) => Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 12.0),
                             child: DiscoverFeaturedCard(
                               discoverFeatured: discoverFeatured[i],
                             ),
@@ -68,6 +66,34 @@ class DiscoverPage extends StatelessWidget {
                 }),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class DiscoverPageButton extends StatelessWidget {
+  final String text;
+  final void Function() onPressed;
+  const DiscoverPageButton(
+      {Key? key, required this.text, required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(right: 6),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(color: context.theme.primary)),
+      child: CupertinoButton(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        onPressed: onPressed,
+        child: MyText(
+          text.toUpperCase(),
+          weight: FontWeight.bold,
+          size: FONTSIZE.SMALL,
+        ),
       ),
     );
   }

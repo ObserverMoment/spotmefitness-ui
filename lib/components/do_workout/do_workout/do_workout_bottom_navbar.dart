@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class DoWorkoutBottomNavBar extends StatelessWidget {
@@ -28,7 +29,7 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
             decoration: BoxDecoration(
               color: context.theme.background.withOpacity(0.2),
             ),
-            height: kBottomNavBarHeight,
+            height: EnvironmentConfig.bottomNavBarHeight,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

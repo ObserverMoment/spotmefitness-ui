@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Box with rounded corners. No elevation. Card background color.
@@ -12,17 +12,19 @@ class ContentBox extends StatelessWidget {
   final Widget child;
   final Color? backgroundColor;
   final EdgeInsets padding;
+  final double borderRadius;
   const ContentBox(
       {required this.child,
       this.backgroundColor,
-      this.padding = const EdgeInsets.symmetric(vertical: 6, horizontal: 12)});
+      this.padding = const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      this.borderRadius = 8});
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,
-          borderRadius: BorderRadius.circular(8)),
+          borderRadius: BorderRadius.circular(borderRadius)),
       child: child,
     );
   }
@@ -124,7 +126,8 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar ? kBottomNavBarHeight : 40,
+            bottom:
+                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 40,
             right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))

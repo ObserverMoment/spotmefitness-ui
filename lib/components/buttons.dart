@@ -418,13 +418,14 @@ class PageLink extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 8.0),
                       child: icon,
                     ),
-                  MyText(linkText,
-                      color: infoHighlight
-                          ? Styles.infoBlue
-                          : destructiveHighlight
-                              ? Styles.errorRed
-                              : null,
-                      weight: FontWeight.bold),
+                  MyText(
+                    linkText,
+                    color: infoHighlight
+                        ? Styles.infoBlue
+                        : destructiveHighlight
+                            ? Styles.errorRed
+                            : null,
+                  ),
                   if (loading)
                     FadeIn(
                       child: Padding(

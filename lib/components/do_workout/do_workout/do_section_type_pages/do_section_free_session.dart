@@ -9,7 +9,7 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_typ
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
 
@@ -138,7 +138,8 @@ class __StopwatchLapTimerState extends State<_StopwatchLapTimer> {
         SizedBox(height: 24),
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.only(bottom: kBottomNavBarHeight),
+          padding:
+              EdgeInsets.only(bottom: EnvironmentConfig.bottomNavBarHeight),
           child: _activeTabIndex == 0 ? StopwatchWithLaps() : CountdownTimer(),
         ))
       ],

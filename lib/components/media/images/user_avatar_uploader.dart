@@ -123,45 +123,29 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
               },
             )),
       ),
-      child: Stack(
-        children: [
-          Container(
-            width: widget.displaySize.width,
-            height: widget.displaySize.height,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _primary.withOpacity(0.7),
-              boxShadow: [Styles.avatarBoxShadow],
-            ),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 400),
-              child: _uploading
-                  ? LoadingCircle(
+      child: Container(
+        width: widget.displaySize.width,
+        height: widget.displaySize.height,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: _primary.withOpacity(0.7),
+          boxShadow: [Styles.avatarBoxShadow],
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 400),
+          child: _uploading
+              ? LoadingCircle(
+                  color: _background.withOpacity(0.4),
+                )
+              : widget.avatarUri != null
+                  ? SizedUploadcareImage(widget.avatarUri!)
+                  : Icon(
+                      CupertinoIcons.photo,
+                      size: widget.displaySize.width / 2.5,
                       color: _background.withOpacity(0.4),
-                    )
-                  : widget.avatarUri != null
-                      ? SizedUploadcareImage(widget.avatarUri!)
-                      : Icon(
-                          CupertinoIcons.photo,
-                          size: widget.displaySize.width / 2.5,
-                          color: _background.withOpacity(0.4),
-                        ),
-            ),
-          ),
-          Positioned(
-            bottom: widget.displaySize.width / 25,
-            right: widget.displaySize.width / 25,
-            child: Container(
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: _primary),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              child: Icon(CupertinoIcons.plus_circle,
-                  size: widget.displaySize.width / 4.5,
-                  color: _background.withOpacity(0.7)),
-            ),
-          )
-        ],
+                    ),
+        ),
       ),
     );
   }

@@ -8,7 +8,7 @@ import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
-import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -186,7 +186,7 @@ class _FilterableLoggedWorkoutsListState
                 ],
               ),
         Positioned(
-            bottom: kBottomNavBarHeight + 10,
+            bottom: EnvironmentConfig.bottomNavBarHeight + 10,
             child: RaisedButtonContainer(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
               child: SizedBox(

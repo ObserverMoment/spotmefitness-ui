@@ -62,7 +62,12 @@ class _ProfilePageState extends State<ProfilePage> {
                               avatarUri: user.avatarUri,
                               displaySize: Size(100, 100),
                             ),
-                            MyText('Photo')
+                            SizedBox(height: 6),
+                            MyText(
+                              'Photo',
+                              size: FONTSIZE.SMALL,
+                              subtext: true,
+                            )
                           ],
                         ),
                         Column(
@@ -72,7 +77,12 @@ class _ProfilePageState extends State<ProfilePage> {
                               introVideoThumbUri: user.introVideoThumbUri,
                               displaySize: Size(100, 100),
                             ),
-                            MyText('Video')
+                            SizedBox(height: 6),
+                            MyText(
+                              'Video',
+                              subtext: true,
+                              size: FONTSIZE.SMALL,
+                            )
                           ],
                         ),
                       ],

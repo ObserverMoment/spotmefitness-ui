@@ -18,14 +18,14 @@ enum FONTSIZE {
 const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.TINY: 11,
   FONTSIZE.SMALL: 14,
-  FONTSIZE.MAIN: 16,
-  FONTSIZE.BIG: 18,
-  FONTSIZE.LARGE: 20,
+  FONTSIZE.MAIN: 17,
+  FONTSIZE.BIG: 19,
+  FONTSIZE.LARGE: 22,
   FONTSIZE.HUGE: 24,
-  FONTSIZE.TABTITLE: 29,
   FONTSIZE.DISPLAY: 40,
   FONTSIZE.GIANT: 50,
   FONTSIZE.EXTREME: 60,
+  FONTSIZE.TABTITLE: 26,
 };
 
 class MyText extends StatelessWidget {
@@ -48,7 +48,7 @@ class MyText extends StatelessWidget {
       this.maxLines = 1,
       this.color,
       this.decoration,
-      this.lineHeight = 1.3,
+      this.lineHeight = 1,
       this.subtext = false});
 
   @override
@@ -85,7 +85,6 @@ class H1 extends StatelessWidget {
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.HUGE,
-        lineHeight: 1.6,
         weight: FontWeight.bold,
         overflow: TextOverflow.ellipsis);
   }
@@ -106,7 +105,6 @@ class H2 extends StatelessWidget {
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.LARGE,
-        lineHeight: 1.6,
         weight: FontWeight.bold,
         overflow: TextOverflow.ellipsis);
   }
@@ -128,7 +126,6 @@ class H3 extends StatelessWidget {
       color: color,
       textAlign: textAlign,
       size: FONTSIZE.BIG,
-      lineHeight: 1.6,
       weight: FontWeight.bold,
       overflow: TextOverflow.ellipsis,
     );
@@ -150,7 +147,6 @@ class NavBarLargeTitle extends StatelessWidget {
           textAlign: TextAlign.start,
           size: FONTSIZE.TABTITLE,
           weight: FontWeight.bold,
-          lineHeight: 1,
         ),
       ],
     );
@@ -163,8 +159,11 @@ class NavBarTitle extends StatelessWidget {
   NavBarTitle(this.text);
   @override
   Widget build(BuildContext context) {
-    return MyText(text.toUpperCase(),
-        size: FONTSIZE.SMALL, weight: FontWeight.bold);
+    return MyText(
+      text.toUpperCase(),
+      size: FONTSIZE.SMALL,
+      weight: FontWeight.bold,
+    );
   }
 }
 
@@ -223,7 +222,7 @@ class _UnderlineTitleState extends State<UnderlineTitle> {
               MyText(
                 widget.text,
                 weight: FontWeight.bold,
-                lineHeight: 1.2,
+                lineHeight: 1.3,
               ),
               Container(
                 height: 2.5,
