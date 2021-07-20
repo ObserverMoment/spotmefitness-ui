@@ -200,13 +200,15 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyText(
-                  Utils.textNotNull(loggedWorkoutSection.name)
-                      ? '${loggedWorkoutSection.sortPosition + 1}. ${loggedWorkoutSection.name}'
-                      : '${loggedWorkoutSection.sortPosition + 1}. ${loggedWorkoutSection.workoutSectionType.name}',
-                  subtext: !isSelected,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: MyText(
+                    Utils.textNotNull(loggedWorkoutSection.name)
+                        ? loggedWorkoutSection.name!
+                        : '${loggedWorkoutSection.sortPosition + 1}. ${loggedWorkoutSection.workoutSectionType.name}',
+                    subtext: !isSelected,
+                  ),
                 ),
               ),
               AnimatedOpacity(
@@ -231,7 +233,7 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
                     if ([kForTimeName, kFreeSessionName]
                         .contains(loggedWorkoutSection.workoutSectionType.name))
                       DurationPickerDisplay(
-                        modalTitle: 'Workout duration',
+                        modalTitle: 'Workout Duration',
                         duration: loggedWorkoutSection.timeTakenMs != null
                             ? Duration(
                                 milliseconds: loggedWorkoutSection.timeTakenMs!)

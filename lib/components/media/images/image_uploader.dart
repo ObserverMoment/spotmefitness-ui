@@ -38,7 +38,7 @@ class _ImageUploaderState extends State<ImageUploader> {
   bool _uploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    PickedFile? pickedFile = await ImagePicker().getImage(source: source);
+    XFile? pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       File? croppedFile = await ImageCropper.cropImage(
         cropStyle: CropStyle.rectangle,

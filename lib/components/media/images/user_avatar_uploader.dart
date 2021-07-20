@@ -32,7 +32,7 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
   bool _uploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    PickedFile? pickedFile = await ImagePicker().getImage(source: source);
+    XFile? pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       File? croppedFile = await ImageCropper.cropImage(
         cropStyle: CropStyle.circle,

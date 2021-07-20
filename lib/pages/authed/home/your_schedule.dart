@@ -57,7 +57,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   Widget? _buildSingleMarker(
       BuildContext context, DateTime dateTime, Object scheduled) {
-    final color = (scheduled as ScheduledWorkout).loggedWorkoutSummary != null
+    final color = (scheduled as ScheduledWorkout).loggedWorkoutId != null
         ? Styles.colorOne // Done
         : scheduled.scheduledAt.isBefore(DateTime.now())
             ? Styles.errorRed // Missed
@@ -89,9 +89,10 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryTextStyle = GoogleFonts.palanquin(
+    final primaryTextStyle = GoogleFonts.varela(
         textStyle:
             TextStyle(color: context.theme.primary, height: 1, fontSize: 15));
+
     return QueryObserver<UserScheduledWorkouts$Query, json.JsonSerializable>(
       key: Key(
           'YourSchedulePage - ${UserScheduledWorkoutsQuery().operationName}'),
@@ -112,7 +113,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: H3(DateFormat.yMMM().format(_focusedDay)),
+                    child: MyText(DateFormat.yMMM().format(_focusedDay)),
                   ),
                   CupertinoButton(
                     padding: EdgeInsets.zero,

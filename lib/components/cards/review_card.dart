@@ -54,12 +54,11 @@ class WorkoutPlanReviewCard extends StatelessWidget {
                     ),
                     CircularBox(
                       border: true,
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(7),
                       child: MyText(
                         review.score.stringMyDouble(),
                         color: context.theme.primary,
-                        lineHeight: 1,
-                        weight: FontWeight.bold,
+                        lineHeight: 1.05,
                       ),
                     )
                   ],
@@ -70,7 +69,12 @@ class WorkoutPlanReviewCard extends StatelessWidget {
           if (Utils.textNotNull(review.comment))
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: MyText(review.comment!),
+              child: MyText(
+                review.comment!,
+                lineHeight: 1.4,
+                maxLines: 5,
+                textAlign: TextAlign.center,
+              ),
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

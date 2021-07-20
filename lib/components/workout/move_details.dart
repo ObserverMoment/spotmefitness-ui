@@ -65,7 +65,8 @@ class MoveDetails extends StatelessWidget {
                     'You can select one of these for completing the move. Generally, these will be different modes of load / resistance (free weights, bands, machines etc), or items needed for certain modifications.',
                     size: FONTSIZE.SMALL,
                     textAlign: TextAlign.center,
-                    maxLines: 4,
+                    maxLines: 8,
+                    lineHeight: 1.25,
                   ),
                   SizedBox(height: 10),
                   Wrap(
@@ -106,8 +107,7 @@ class MoveDetails extends StatelessWidget {
         fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
           return CupertinoPageScaffold(
-            navigationBar: BasicNavBar(
-              heroTag: 'MoveDetails',
+            navigationBar: BorderlessNavBar(
               middle: NavBarTitle(move.name),
             ),
             child: SingleChildScrollView(
@@ -126,7 +126,7 @@ class MoveDetails extends StatelessWidget {
                           move.description!,
                           textAlign: TextAlign.center,
                           maxLines: 10,
-                          lineHeight: 1.3,
+                          lineHeight: 1.5,
                         ),
                       ),
                     ),

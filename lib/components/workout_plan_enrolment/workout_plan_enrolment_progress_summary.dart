@@ -28,11 +28,11 @@ class WorkoutPlanEnrolmentProgressSummary extends StatelessWidget {
             children: [
               MyText(
                 'Started on',
-                size: FONTSIZE.SMALL,
+                size: FONTSIZE.TINY,
+                lineHeight: 1.5,
               ),
               MyText(
                 workoutPlanEnrolment.startDate.compactDateString,
-                weight: FontWeight.bold,
               ),
             ],
           ),
@@ -48,14 +48,14 @@ class WorkoutPlanEnrolmentProgressSummary extends StatelessWidget {
                     children: [
                       MyText(
                         '$completed of $total workouts complete',
-                        weight: FontWeight.bold,
+                        size: FONTSIZE.SMALL,
                       ),
                     ],
                   ),
                   SizedBox(height: 7),
                   LinearPercentIndicator(
                     percent: completed / total,
-                    lineHeight: 6,
+                    lineHeight: 4,
                     padding: const EdgeInsets.only(left: 8),
                     backgroundColor: context.theme.primary.withOpacity(0.3),
                     progressColor: Styles.peachRed,

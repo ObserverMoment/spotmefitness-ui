@@ -261,8 +261,8 @@ class _HeaderContent extends StatelessWidget {
       {Key? key, required this.userPublicProfile, this.avatarSize = 100})
       : super(key: key);
 
-  final kButtonIconSize = 18.0;
-  final verticalPadding = const EdgeInsets.symmetric(vertical: 3.0);
+  final kButtonIconSize = 14.0;
+  final verticalPadding = const EdgeInsets.symmetric(vertical: 6.0);
 
   @override
   Widget build(BuildContext context) {
@@ -278,26 +278,28 @@ class _HeaderContent extends StatelessWidget {
       padding: EdgeInsets.only(top: avatarSize / 2),
       child: Card(
           padding: EdgeInsets.only(
-              top: avatarSize / 2, left: 8, right: 8, bottom: 8),
+              top: avatarSize / 2, left: 10, right: 10, bottom: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MyText(
-                    userPublicProfile.displayName,
-                    weight: FontWeight.bold,
-                    size: FONTSIZE.LARGE,
-                  ),
-                  if (userPublicProfile.countryCode != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: CountryFlag(userPublicProfile.countryCode!, 40),
+              Padding(
+                padding: verticalPadding,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText(
+                      userPublicProfile.displayName,
+                      size: FONTSIZE.BIG,
                     ),
-                ],
+                    if (userPublicProfile.countryCode != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: CountryFlag(userPublicProfile.countryCode!, 34),
+                      ),
+                  ],
+                ),
               ),
               if (Utils.textNotNull(userPublicProfile.tagline))
                 Padding(
@@ -319,7 +321,7 @@ class _HeaderContent extends StatelessWidget {
                       if (Utils.textNotNull(userPublicProfile.countryCode))
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: H3(Country.fromIsoCode(
+                          child: MyText(Country.fromIsoCode(
                                   userPublicProfile.countryCode!)
                               .name),
                         ),
@@ -335,7 +337,7 @@ class _HeaderContent extends StatelessWidget {
                       if (Utils.textNotNull(userPublicProfile.townCity))
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: H3(
+                          child: MyText(
                             userPublicProfile.townCity!,
                           ),
                         ),
@@ -398,7 +400,8 @@ class _HeaderContent extends StatelessWidget {
 
                       /// TODO: Only show [read more] if the content has overflowed.
                       TextButton(
-                          text: 'Read more...',
+                          text: 'More...',
+                          underline: false,
                           onPressed: () => context.showBottomSheet(
                               useRootNavigator: true,
                               expand: true,

@@ -128,6 +128,9 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
                                         child: WorkoutPlanCard(
                                           sortedEnrolments[i].workoutPlan,
                                           withBoxShadow: false,
+                                          hideBackgroundImage: true,
+                                          showCreatedBy: false,
+                                          showAccessScope: false,
                                         ),
                                       ),
                                     ],

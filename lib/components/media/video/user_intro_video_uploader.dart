@@ -38,7 +38,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   double _uploadProgress = 0;
 
   Future<void> _pickVideo(ImageSource source) async {
-    PickedFile? _pickedFile = await ImagePicker().getVideo(source: source);
+    XFile? _pickedFile = await ImagePicker().pickVideo(source: source);
     if (_pickedFile != null) {
       final _file = File(_pickedFile.path);
 

@@ -125,11 +125,13 @@ class ScheduledWorkoutReminderCard extends StatelessWidget {
                             : scheduledWorkout.scheduledAt.minimalDateString,
                     color: context.theme.background,
                     weight: FontWeight.bold,
+                    lineHeight: 1.3,
                   ),
                   MyText(
                     scheduledWorkout.scheduledAt.timeString,
                     color: context.theme.background,
                     weight: FontWeight.bold,
+                    lineHeight: 1.3,
                   ),
                 ],
               )),
@@ -142,8 +144,8 @@ class ScheduledWorkoutReminderCard extends StatelessWidget {
                 children: [
                   MyText(
                     scheduledWorkout.workout!.name,
-                    weight: FontWeight.bold,
                     textAlign: TextAlign.center,
+                    lineHeight: 1.3,
                   ),
                   if (scheduledWorkout.gymProfile != null)
                     MyText(
@@ -151,6 +153,7 @@ class ScheduledWorkoutReminderCard extends StatelessWidget {
                       textAlign: TextAlign.center,
                       color: Styles.colorTwo,
                       size: FONTSIZE.SMALL,
+                      lineHeight: 1.3,
                     ),
                 ],
               ),

@@ -73,9 +73,9 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
       alignment: widget.alignment,
-      height: 30,
+      height: 38,
       child: ListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,

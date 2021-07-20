@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/data_vis/percentage_bar_chart.dart';
 import 'package:spotmefitness_ui/components/data_vis/waffle_chart.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -19,7 +20,7 @@ class WorkoutPlanCard extends StatelessWidget {
   final Color? backgroundColor;
   final bool withBoxShadow;
   final bool showEnrolledAndReviews;
-  final bool showGoalsChart;
+  final bool showGoalsBarDisplay;
   final bool showCreatedBy;
   final bool showAccessScope;
 
@@ -28,7 +29,7 @@ class WorkoutPlanCard extends StatelessWidget {
       this.backgroundColor,
       this.withBoxShadow = true,
       this.showEnrolledAndReviews = true,
-      this.showGoalsChart = true,
+      this.showGoalsBarDisplay = true,
       this.showCreatedBy = true,
       this.showAccessScope = true,
       this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
@@ -70,17 +71,23 @@ class WorkoutPlanCard extends StatelessWidget {
                 children: [
                   if (showCreatedBy)
                     MyText(
-                      'Created by ${workoutPlan.user.displayName}',
+                      'By ${workoutPlan.user.displayName}',
                       textAlign: TextAlign.left,
                       size: FONTSIZE.TINY,
+                      lineHeight: 1.3,
                     ),
-                  if (showCreatedBy && showAccessScope) SizedBox(width: 6),
+                  if (showCreatedBy && showAccessScope)
+                    MyText(
+                      ' | ',
+                      size: FONTSIZE.TINY,
+                      lineHeight: 1.3,
+                    ),
                   if (showAccessScope)
                     MyText(
                       workoutPlan.contentAccessScope.display,
                       textAlign: TextAlign.left,
                       size: FONTSIZE.TINY,
-                      weight: FontWeight.bold,
+                      lineHeight: 1.3,
                       color: Styles.colorTwo,
                     ),
                 ],
@@ -107,7 +114,6 @@ class WorkoutPlanCard extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 6.0),
                           child: MyText(
                             workoutPlan.name,
-                            weight: FontWeight.bold,
                             maxLines: 2,
                           ),
                         ),
@@ -126,63 +132,55 @@ class WorkoutPlanCard extends StatelessWidget {
           workoutPlan.workoutPlanDays.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0, top: 6, bottom: 6),
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Styles.colorOne.withOpacity(0.85)),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 0, horizontal: 8),
-                                  child: MyText(
-                                    workoutPlan.lengthString,
-                                    weight: FontWeight.bold,
-                                    color: Styles.white,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 3.0),
-                                child: MyText(
-                                  '${workoutPlan.daysPerWeek} days / week',
-                                  weight: FontWeight.bold,
-                                ),
-                              ),
-                              if (Utils.textNotNull(workoutPlan.description))
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 3.0),
-                                  child: MyText(
-                                    workoutPlan.description!,
-                                    maxLines: 4,
-                                    textAlign: TextAlign.center,
-                                    lineHeight: 1.2,
-                                    size: FONTSIZE.SMALL,
-                                  ),
-                                ),
-                            ],
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Tag(
+                              tag: workoutPlan.lengthString,
+                              fontSize: FONTSIZE.SMALL,
+                              textColor: Styles.white,
+                              color: Styles.colorOne,
+                            ),
+                            Tag(
+                              tag: '${workoutPlan.daysPerWeek} days / week',
+                              fontSize: FONTSIZE.SMALL,
+                              color: Styles.colorOne,
+                              textColor: Styles.white,
+                            ),
+                          ],
                         ),
                       ),
-                      if (showGoalsChart &&
-                          workoutPlan.workoutGoalsInPlan.isNotEmpty)
-                        WaffleChart(width: 90, inputs: calcInputs()),
+                      if (Utils.textNotNull(workoutPlan.description))
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: MyText(
+                            workoutPlan.description!,
+                            maxLines: 4,
+                            textAlign: TextAlign.center,
+                            lineHeight: 1.3,
+                          ),
+                        ),
                     ],
                   ),
                 )
-              : Center(child: MyText('Nothing planned yet')),
+              : Center(
+                  child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: MyText(
+                    'Nothing here...',
+                    subtext: true,
+                  ),
+                )),
           if (showEnrolledAndReviews)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   WorkoutPlanEnrolmentsSummary(
                     enrolments: workoutPlan.enrolments,
@@ -195,7 +193,7 @@ class WorkoutPlanCard extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 7.0),
+            padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
               alignment: WrapAlignment.center,
@@ -210,6 +208,14 @@ class WorkoutPlanCard extends StatelessWidget {
                   .toList(),
             ),
           ),
+          if (showGoalsBarDisplay && workoutPlan.workoutGoalsInPlan.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: PercentageBarChartSingle(
+                inputs: calcInputs(),
+                barHeight: 12,
+              ),
+            ),
         ],
       ),
     );

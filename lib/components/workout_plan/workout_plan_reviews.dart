@@ -42,22 +42,31 @@ class WorkoutPlanReviews extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        H1('${average.stringMyDouble()}'),
-                        H3(' out of $itemCount'),
+                        MyText(
+                          '${average.stringMyDouble()}',
+                          size: FONTSIZE.BIG,
+                        ),
+                        MyText(
+                          ' out of $itemCount',
+                          size: FONTSIZE.BIG,
+                        ),
                       ],
                     ),
-                    RatingBarIndicator(
-                      rating: average,
-                      itemBuilder: (context, index) => Icon(
-                        CupertinoIcons.star_fill,
-                        color: Styles.starGold,
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: RatingBarIndicator(
+                        rating: average,
+                        itemBuilder: (context, index) => Icon(
+                          CupertinoIcons.star_fill,
+                          color: Styles.starGold,
+                        ),
+                        unratedColor: Styles.starGold.withOpacity(0.2),
+                        itemCount: itemCount,
+                        itemSize: itemSize,
                       ),
-                      unratedColor: Styles.starGold.withOpacity(0.2),
-                      itemCount: itemCount,
-                      itemSize: itemSize,
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(4.0),
+                      padding: const EdgeInsets.all(6.0),
                       child: MyText('From ${dateSortedReviews.length} reviews'),
                     ),
                     Expanded(

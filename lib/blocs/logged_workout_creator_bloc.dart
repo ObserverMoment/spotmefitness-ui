@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
@@ -166,6 +167,20 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     final result = await context.graphQLStore.create(
         mutation: CreateLoggedWorkoutMutation(variables: variables),
         addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
+
+    /// If the log is being created from a scheduled workout then we need to add the newly completed workout log to the scheduledWorkout.loggedWorkout (or the alias for the field if there is one) in the store.
+    if (scheduledWorkout != null && result.data != null) {
+      final prevData = context.graphQLStore.readDenomalized(
+          '$kScheduledWorkoutTypename:${scheduledWorkout!.id}');
+
+      final updatedScheduledWorkout = ScheduledWorkout.fromJson(prevData);
+      updatedScheduledWorkout.loggedWorkoutId =
+          result.data!.createLoggedWorkout.id;
+
+      context.graphQLStore.writeDataToStore(
+          data: updatedScheduledWorkout.toJson(),
+          broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
+    }
 
     return result;
   }

@@ -439,7 +439,7 @@ class _YourReviewDisplay extends StatelessWidget {
           child: loggedInUserReview != null
               ? Column(
                   children: [
-                    H3('Your Review'),
+                    MyText('Your Review'),
                     SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.all(4.0),

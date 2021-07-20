@@ -93,17 +93,21 @@ class WorkoutCard extends StatelessWidget {
                 children: [
                   if (showCreatedBy)
                     MyText(
-                      'Created by ${workout.user.displayName}',
+                      'By ${workout.user.displayName}',
                       textAlign: TextAlign.left,
                       size: FONTSIZE.TINY,
+                      lineHeight: 1.4,
                     ),
-                  if (showCreatedBy && showAccessScope) SizedBox(width: 6),
+                  if (showCreatedBy && showAccessScope)
+                    MyText(
+                      ' | ',
+                      size: FONTSIZE.TINY,
+                    ),
                   if (showAccessScope)
                     MyText(
                       workout.contentAccessScope.display,
                       textAlign: TextAlign.left,
                       size: FONTSIZE.TINY,
-                      weight: FontWeight.bold,
                       color: Styles.colorTwo,
                     ),
                 ],
@@ -129,7 +133,6 @@ class WorkoutCard extends StatelessWidget {
                           padding: const EdgeInsets.only(left: 6.0),
                           child: MyText(
                             workout.name,
-                            weight: FontWeight.bold,
                             maxLines: 2,
                           ),
                         ),
@@ -160,14 +163,13 @@ class WorkoutCard extends StatelessWidget {
                       children: [
                         MyText(
                           'Total: ',
-                          weight: FontWeight.bold,
                           textAlign: TextAlign.center,
                           size: FONTSIZE.SMALL,
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0),
                           child: Duration(minutes: workout.lengthMinutes!)
-                              .display(bold: true, fontSize: FONTSIZE.SMALL),
+                              .display(fontSize: FONTSIZE.SMALL),
                         ),
                       ],
                     ),
@@ -210,9 +212,9 @@ class WorkoutCard extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 3.0, horizontal: 6),
                 child: MyText(
                   workout.description!,
-                  maxLines: 2,
+                  maxLines: 3,
                   size: FONTSIZE.SMALL,
-                  weight: FontWeight.bold,
+                  lineHeight: 1.3,
                 ),
               ),
             ),

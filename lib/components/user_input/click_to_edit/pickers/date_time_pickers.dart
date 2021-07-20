@@ -10,12 +10,11 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
   return base.copyWith(
     // Selected date in header.
-    headline4: GoogleFonts.palanquin(textStyle: TextStyle(fontSize: 30)),
+    headline4: GoogleFonts.varela(textStyle: TextStyle(fontSize: 30)),
     // Month picker dropdown.
-    subtitle2: GoogleFonts.palanquin(),
+    subtitle2: GoogleFonts.varela(),
     // Days and dates.
-    caption:
-        GoogleFonts.palanquin(textStyle: TextStyle(fontSize: 18, height: 1)),
+    caption: GoogleFonts.varela(textStyle: TextStyle(fontSize: 18, height: 1)),
   );
 }
 

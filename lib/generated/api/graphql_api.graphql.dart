@@ -5495,20 +5495,6 @@ class DeleteWorkoutSectionById$Mutation extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class LoggedWorkoutSummary extends JsonSerializable
-    with EquatableMixin, LoggedWorkoutMixin {
-  LoggedWorkoutSummary();
-
-  factory LoggedWorkoutSummary.fromJson(Map<String, dynamic> json) =>
-      _$LoggedWorkoutSummaryFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, completedOn, note, name];
-  @override
-  Map<String, dynamic> toJson() => _$LoggedWorkoutSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class ScheduledWorkout extends JsonSerializable
     with EquatableMixin, ScheduledWorkoutMixin {
   ScheduledWorkout();
@@ -5519,11 +5505,14 @@ class ScheduledWorkout extends JsonSerializable
   @JsonKey(name: 'Workout')
   Workout? workout;
 
-  @JsonKey(name: 'LoggedWorkoutSummary')
-  LoggedWorkoutSummary? loggedWorkoutSummary;
-
   @JsonKey(name: 'GymProfile')
   GymProfile? gymProfile;
+
+  String? loggedWorkoutId;
+
+  String? workoutPlanEnrolmentId;
+
+  String? workoutPlanDayWorkoutId;
 
   @override
   List<Object?> get props => [
@@ -5534,8 +5523,10 @@ class ScheduledWorkout extends JsonSerializable
         workoutPlanEnrolmentId,
         workoutPlanDayWorkoutId,
         workout,
-        loggedWorkoutSummary,
-        gymProfile
+        gymProfile,
+        loggedWorkoutId,
+        workoutPlanEnrolmentId,
+        workoutPlanDayWorkoutId
       ];
   @override
   Map<String, dynamic> toJson() => _$ScheduledWorkoutToJson(this);
@@ -49693,15 +49684,6 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                         ]))
                   ])),
               FieldNode(
-                  name: NameNode(value: 'LoggedWorkout'),
-                  alias: NameNode(value: 'LoggedWorkoutSummary'),
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'LoggedWorkout'), directives: [])
-                  ])),
-              FieldNode(
                   name: NameNode(value: 'GymProfile'),
                   alias: null,
                   arguments: [],
@@ -49719,7 +49701,25 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'Equipment'),
                               directives: [])
                         ]))
-                  ]))
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'loggedWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanEnrolmentId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null)
             ]))
       ])),
   FragmentDefinitionNode(
@@ -50328,44 +50328,6 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'introAudioUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'LoggedWorkout'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedOn'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
             alias: null,
             arguments: [],
             directives: [],
@@ -50694,15 +50656,6 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                         ]))
                   ])),
               FieldNode(
-                  name: NameNode(value: 'LoggedWorkout'),
-                  alias: NameNode(value: 'LoggedWorkoutSummary'),
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'LoggedWorkout'), directives: [])
-                  ])),
-              FieldNode(
                   name: NameNode(value: 'GymProfile'),
                   alias: null,
                   arguments: [],
@@ -50720,7 +50673,25 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'Equipment'),
                               directives: [])
                         ]))
-                  ]))
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'loggedWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanEnrolmentId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null)
             ]))
       ])),
   FragmentDefinitionNode(
@@ -51329,44 +51300,6 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'introAudioUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'LoggedWorkout'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedOn'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
             alias: null,
             arguments: [],
             directives: [],
@@ -51665,15 +51598,6 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                         ]))
                   ])),
               FieldNode(
-                  name: NameNode(value: 'LoggedWorkout'),
-                  alias: NameNode(value: 'LoggedWorkoutSummary'),
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'LoggedWorkout'), directives: [])
-                  ])),
-              FieldNode(
                   name: NameNode(value: 'GymProfile'),
                   alias: null,
                   arguments: [],
@@ -51691,7 +51615,25 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'Equipment'),
                               directives: [])
                         ]))
-                  ]))
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'loggedWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanEnrolmentId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null)
             ]))
       ])),
   FragmentDefinitionNode(
@@ -52300,44 +52242,6 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'introAudioUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'LoggedWorkout'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'LoggedWorkout'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'completedOn'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'note'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
             alias: null,
             arguments: [],
             directives: [],

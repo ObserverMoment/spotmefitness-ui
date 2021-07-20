@@ -96,17 +96,24 @@ class WorkoutPlanWeekGoals extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               children: [
-                H3('Week $weekNumber'),
+                MyText('Week $weekNumber'),
               ],
             ),
           ),
           SizedBox(height: 8),
           allGoals.isEmpty
-              ? Center(child: MyText('No goals specified'))
+              ? Center(
+                  child: MyText(
+                  'No goals specified',
+                  subtext: true,
+                ))
               : Padding(
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-                  child: PercentageBarChartSingle(inputs: calcInputs(allGoals)),
+                  child: PercentageBarChartSingle(
+                    inputs: calcInputs(allGoals),
+                    barHeight: 20,
+                  ),
                 ),
           if (allTags.isNotEmpty)
             Padding(

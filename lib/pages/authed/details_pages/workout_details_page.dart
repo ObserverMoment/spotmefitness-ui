@@ -292,13 +292,14 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(workout.user.displayName,
-                  weight: FontWeight.bold, size: FONTSIZE.SMALL),
+              MyText(workout.user.displayName, size: FONTSIZE.SMALL),
               if (isOwner)
-                MyText('${workout.contentAccessScope.display} workout',
-                    color: Styles.colorTwo,
-                    weight: FontWeight.bold,
-                    size: FONTSIZE.TINY)
+                MyText(
+                  '${workout.contentAccessScope.display} workout',
+                  color: Styles.colorTwo,
+                  size: FONTSIZE.TINY,
+                  lineHeight: 1.4,
+                )
             ],
           ),
         ),
@@ -592,12 +593,16 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                   ),
                                 if (sortedWorkoutSections.isNotEmpty)
                                   Expanded(
-                                    child: PageView(
-                                      controller: _pageController,
-                                      children: sortedWorkoutSections
-                                          .map((ws) => SingleChildScrollView(
-                                              child: WorkoutDetailsSection(ws)))
-                                          .toList(),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10.0),
+                                      child: PageView(
+                                        controller: _pageController,
+                                        children: sortedWorkoutSections
+                                            .map((ws) => SingleChildScrollView(
+                                                child:
+                                                    WorkoutDetailsSection(ws)))
+                                            .toList(),
+                                      ),
                                     ),
                                   ),
                               ],

@@ -46,10 +46,10 @@ class PercentageBarChartSingle extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 10),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: 10,
+          runSpacing: 10,
           children: sortedInputs
               .map((i) => Container(
                     child: Row(
@@ -63,10 +63,9 @@ class PercentageBarChartSingle extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                         ),
-                        SizedBox(width: 3),
+                        SizedBox(width: 5),
                         MyText(
                           i.name,
-                          weight: FontWeight.bold,
                           size: FONTSIZE.SMALL,
                         ),
                       ],

@@ -1,12 +1,14 @@
 import 'package:artemis/artemis.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql/client.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/services/store/links/auth_link.dart';
+import 'package:spotmefitness_ui/services/store/links/gql_links.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:normalize/normalize.dart';
 

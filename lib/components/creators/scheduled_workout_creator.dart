@@ -25,8 +25,14 @@ class ScheduledWorkoutCreator extends StatefulWidget {
   final ScheduledWorkout? scheduledWorkout;
   final Workout? workout;
   final DateTime? scheduleOn;
+  final String? workoutPlanEnrolmentId;
+  final String? workoutPlanDayWorkoutId;
   ScheduledWorkoutCreator(
-      {this.scheduledWorkout, this.workout, this.scheduleOn})
+      {this.scheduledWorkout,
+      this.workout,
+      this.scheduleOn,
+      this.workoutPlanEnrolmentId,
+      this.workoutPlanDayWorkoutId})
       : assert(scheduledWorkout != null || workout != null);
 
   @override

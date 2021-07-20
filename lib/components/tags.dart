@@ -26,10 +26,12 @@ class Tag extends StatelessWidget {
       this.withBorder = false,
       this.padding = kDefaultTagPadding,
       this.fontSize = FONTSIZE.TINY});
+
   @override
   Widget build(BuildContext context) {
     final _color = color ?? context.theme.primary.withOpacity(0.85);
     final _textColor = textColor ?? context.theme.background;
+
     return Container(
       padding: padding,
       decoration: BoxDecoration(
@@ -177,18 +179,17 @@ class WorkoutSectionTypeTag extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: Styles.colorOne,
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(60),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               MyText(
                 name,
-                weight: FontWeight.bold,
                 lineHeight: 1.3,
                 size: fontSize,
                 color: _color,
@@ -197,7 +198,6 @@ class WorkoutSectionTypeTag extends StatelessWidget {
               if (timecap != null)
                 MyText(
                   ' - ${(timecap! / 60).round()} mins',
-                  weight: FontWeight.bold,
                   lineHeight: 1.15,
                   size: fontSize,
                   color: _color,

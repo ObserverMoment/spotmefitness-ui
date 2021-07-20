@@ -18,50 +18,59 @@ class ParticipantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            UserAvatar(
-              size: 40,
-              avatarUri: userSummary.avatarUri,
-            ),
-            SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    H3(userSummary.displayName),
-                    if (userSummary.countryCode != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6.0),
-                        child: CountryFlag(userSummary.countryCode!, 28),
-                      ),
-                  ],
-                ),
-                if (Utils.textNotNull(userSummary.tagline))
-                  MyText(
-                    userSummary.tagline!,
-                    size: FONTSIZE.SMALL,
-                  )
-              ],
-            ),
-          ],
-        ),
-        if (userSummary.userProfileScope == UserProfileScope.public)
-          BorderButton(
-              mini: true,
-              text: 'Profile',
-              prefix: Icon(
-                CupertinoIcons.chevron_right_square_fill,
-                size: 16,
-                color: context.theme.primary,
+            Expanded(
+              child: Row(
+                children: [
+                  UserAvatar(
+                    size: 40,
+                    avatarUri: userSummary.avatarUri,
+                  ),
+                  SizedBox(width: 12),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            MyText(
+                              userSummary.displayName,
+                              size: FONTSIZE.BIG,
+                            ),
+                            if (userSummary.countryCode != null)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0),
+                                child:
+                                    CountryFlag(userSummary.countryCode!, 32),
+                              ),
+                          ],
+                        ),
+                        if (Utils.textNotNull(userSummary.tagline))
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: MyText(
+                              userSummary.tagline!,
+                              size: FONTSIZE.SMALL,
+                              maxLines: 2,
+                              lineHeight: 1.4,
+                            ),
+                          )
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () => context.navigateTo(
-                  UserPublicProfileDetailsRoute(userId: userSummary.id)))
-      ],
-    ));
+            ),
+            if (userSummary.userProfileScope == UserProfileScope.public)
+              BorderButton(
+                  mini: true,
+                  text: 'Profile',
+                  onPressed: () => context.navigateTo(
+                      UserPublicProfileDetailsRoute(userId: userSummary.id)))
+          ],
+        ));
   }
 }

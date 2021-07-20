@@ -44,13 +44,13 @@ class BottomSheetMenu extends StatelessWidget {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 12.0, left: 20, right: 20, bottom: 20),
+                  top: 12.0, left: 16, right: 16, bottom: 20),
               child: ContentBox(
                 child: ListView.separated(
                     shrinkWrap: true,
-                    separatorBuilder: (context, index) => Container(
-                          height: 1,
+                    separatorBuilder: (context, index) => HorizontalLine(
                           color: context.theme.primary.withOpacity(0.07),
+                          verticalPadding: 2,
                         ),
                     itemCount: items.length,
                     itemBuilder: (context, index) =>
@@ -96,14 +96,13 @@ class BottomSheetMenuHeader extends StatelessWidget {
             children: [
               MyText(
                 name,
-                weight: FontWeight.bold,
                 size: FONTSIZE.BIG,
               ),
               MyText(
                 subtitle,
                 subtext: true,
-                weight: FontWeight.bold,
-                size: FONTSIZE.BIG,
+                size: FONTSIZE.MAIN,
+                lineHeight: 1.4,
               ),
             ],
           ),

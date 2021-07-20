@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -132,8 +131,8 @@ class _MainTabsPageState extends State<MainTabsPage> {
                                   activeColor: _activeColor,
                                   inActiveColor: _inActiveColor,
                                   tabIndex: 3,
-                                  label: 'Journal',
-                                  iconData: CupertinoIcons.doc_plaintext),
+                                  label: 'Progress',
+                                  iconData: CupertinoIcons.graph_square),
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,

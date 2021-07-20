@@ -46,14 +46,14 @@ mutation createScheduledWorkout($data: CreateScheduledWorkoutInput!) {
         }
       }
     }
-    LoggedWorkoutSummary: LoggedWorkout {
-      ...LoggedWorkout
-    }
     GymProfile {
       ...GymProfile
       Equipments {
         ...Equipment
       }
     }
+    loggedWorkoutId
+    workoutPlanEnrolmentId
+    workoutPlanDayWorkoutId
   }
 }

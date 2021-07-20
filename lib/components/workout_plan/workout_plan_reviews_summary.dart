@@ -4,7 +4,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:supercharged/supercharged.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class WorkoutPlanReviewsSummary extends StatelessWidget {
   final List<WorkoutPlanReview> reviews;
@@ -21,6 +20,7 @@ class WorkoutPlanReviewsSummary extends StatelessWidget {
         ? MyText(
             'No reviews yet',
             subtext: true,
+            size: FONTSIZE.SMALL,
           )
         : Column(
             children: [
@@ -36,19 +36,12 @@ class WorkoutPlanReviewsSummary extends StatelessWidget {
                     itemCount: itemCount,
                     itemSize: itemSize,
                   ),
-                  SizedBox(
-                    width: 6,
-                  ),
-                  MyText(
-                    average.stringMyDouble(),
-                    size: FONTSIZE.BIG,
-                    weight: FontWeight.bold,
-                  ),
                 ],
               ),
               MyText(
                 'from ${reviews.length} reviews',
                 size: FONTSIZE.TINY,
+                lineHeight: 1.5,
               )
             ],
           );

@@ -4426,26 +4426,6 @@ Map<String, dynamic> _$DeleteWorkoutSectionById$MutationToJson(
       'deleteWorkoutSectionById': instance.deleteWorkoutSectionById,
     };
 
-LoggedWorkoutSummary _$LoggedWorkoutSummaryFromJson(Map<String, dynamic> json) {
-  return LoggedWorkoutSummary()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..completedOn =
-        fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
-    ..note = json['note'] as String?
-    ..name = json['name'] as String;
-}
-
-Map<String, dynamic> _$LoggedWorkoutSummaryToJson(
-        LoggedWorkoutSummary instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
-      'note': instance.note,
-      'name': instance.name,
-    };
-
 ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
   return ScheduledWorkout()
     ..$$typename = json['__typename'] as String?
@@ -4453,18 +4433,15 @@ ScheduledWorkout _$ScheduledWorkoutFromJson(Map<String, dynamic> json) {
     ..scheduledAt =
         fromGraphQLDateTimeToDartDateTime(json['scheduledAt'] as int)
     ..note = json['note'] as String?
-    ..workoutPlanEnrolmentId = json['workoutPlanEnrolmentId'] as String?
-    ..workoutPlanDayWorkoutId = json['workoutPlanDayWorkoutId'] as String?
     ..workout = json['Workout'] == null
         ? null
         : Workout.fromJson(json['Workout'] as Map<String, dynamic>)
-    ..loggedWorkoutSummary = json['LoggedWorkoutSummary'] == null
-        ? null
-        : LoggedWorkoutSummary.fromJson(
-            json['LoggedWorkoutSummary'] as Map<String, dynamic>)
     ..gymProfile = json['GymProfile'] == null
         ? null
-        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>);
+        : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>)
+    ..loggedWorkoutId = json['loggedWorkoutId'] as String?
+    ..workoutPlanEnrolmentId = json['workoutPlanEnrolmentId'] as String?
+    ..workoutPlanDayWorkoutId = json['workoutPlanDayWorkoutId'] as String?;
 }
 
 Map<String, dynamic> _$ScheduledWorkoutToJson(ScheduledWorkout instance) =>
@@ -4473,11 +4450,11 @@ Map<String, dynamic> _$ScheduledWorkoutToJson(ScheduledWorkout instance) =>
       'id': instance.id,
       'scheduledAt': fromDartDateTimeToGraphQLDateTime(instance.scheduledAt),
       'note': instance.note,
+      'Workout': instance.workout?.toJson(),
+      'GymProfile': instance.gymProfile?.toJson(),
+      'loggedWorkoutId': instance.loggedWorkoutId,
       'workoutPlanEnrolmentId': instance.workoutPlanEnrolmentId,
       'workoutPlanDayWorkoutId': instance.workoutPlanDayWorkoutId,
-      'Workout': instance.workout?.toJson(),
-      'LoggedWorkoutSummary': instance.loggedWorkoutSummary?.toJson(),
-      'GymProfile': instance.gymProfile?.toJson(),
     };
 
 UpdateScheduledWorkout$Mutation _$UpdateScheduledWorkout$MutationFromJson(

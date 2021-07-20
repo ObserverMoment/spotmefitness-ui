@@ -270,27 +270,24 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
   }
 
   Widget _buildAvatar(WorkoutPlan workoutPlan, bool isOwner) {
-    final size = 36.0;
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         UserAvatar(
           avatarUri: workoutPlan.user.avatarUri,
-          size: size,
+          size: 34,
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 6.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(workoutPlan.user.displayName,
-                  weight: FontWeight.bold, size: FONTSIZE.SMALL),
+              MyText(workoutPlan.user.displayName, size: FONTSIZE.SMALL),
               if (isOwner)
                 MyText('${workoutPlan.contentAccessScope.display} plan',
                     color: Styles.colorTwo,
-                    weight: FontWeight.bold,
-                    size: FONTSIZE.TINY)
+                    size: FONTSIZE.TINY,
+                    lineHeight: 1.4),
             ],
           ),
         ),
@@ -398,207 +395,204 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                           ])),
                     ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildAvatar(workoutPlan, isOwner),
+                            Row(
+                              children: [
+                                QueryObserver<UserWorkoutPlanEnrolments$Query,
+                                        json.JsonSerializable>(
+                                    key: Key(
+                                        'WorkoutPlanDetailsPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
+                                    query: UserWorkoutPlanEnrolmentsQuery(),
+                                    loadingIndicator: LoadingDots(size: 16),
+                                    // Otherwise every single plan details page that you open will run a network query for all of your plan enrolments.
+                                    fetchPolicy: QueryFetchPolicy.storeFirst,
+                                    builder: (data) {
+                                      final enrolments =
+                                          data.userWorkoutPlanEnrolments;
+
+                                      /// Is the user already enrolled in this plan?
+                                      final enrolmentInPlan =
+                                          enrolments.firstWhereOrNull((e) =>
+                                              e.workoutPlan.id ==
+                                              workoutPlan.id);
+
+                                      if (enrolmentInPlan != null) {
+                                        return DoItButton(
+                                            text: 'Progress',
+                                            onPressed: () => context.navigateTo(
+                                                WorkoutPlanEnrolmentDetailsRoute(
+                                                    id: enrolmentInPlan.id)));
+                                      } else {
+                                        return DoItButton(
+                                            text: 'Join Plan',
+                                            onPressed:
+                                                _createWorkoutPlanEnrolment);
+                                      }
+                                    }),
+                                CupertinoButton(
+                                    pressedOpacity: 1.0,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => _toggleSavedWorkoutPlan(
+                                        workoutPlan, collection),
+                                    child: AnimatedLikeHeart(
+                                      active: collection != null,
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      HorizontalLine(),
+                      Expanded(
+                        child: NestedScrollView(
+                          controller: _scrollController,
+                          headerSliverBuilder: (context, innerBoxIsScrolled) {
+                            return [
+                              SliverList(
+                                  delegate: SliverChildListDelegate([
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: workoutPlan.coverImageUri != null
+                                          ? DecorationImage(
+                                              fit: BoxFit.cover,
+                                              colorFilter: ColorFilter.mode(
+                                                  context.theme.cardBackground
+                                                      .withOpacity(0.2),
+                                                  BlendMode.dstATop),
+                                              image: UploadcareImageProvider(
+                                                  workoutPlan.coverImageUri!))
+                                          : null),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Wrap(
+                                          alignment: WrapAlignment.center,
+                                          spacing: 5,
+                                          runSpacing: 5,
+                                          children: [
+                                            if (workoutPlan
+                                                .workoutPlanDays.isNotEmpty)
+                                              DifficultyLevelTag(
+                                                  workoutPlan.calcDifficulty),
+                                            Tag(
+                                              tag: workoutPlan.lengthString,
+                                              color: Styles.white,
+                                              textColor: Styles.black,
+                                            ),
+                                            Tag(
+                                              tag:
+                                                  '${workoutPlan.daysPerWeek} days / week',
+                                              color: Styles.white,
+                                              textColor: Styles.black,
+                                            ),
+                                            ...workoutPlan.workoutTags
+                                                .map((t) => Tag(
+                                                      tag: t.tag,
+                                                      color: Styles.colorOne,
+                                                      textColor: Styles.white,
+                                                    ))
+                                          ].toList(),
+                                        ),
+                                      ),
+                                      if (Utils.textNotNull(
+                                          workoutPlan.description))
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: MyText(
+                                            workoutPlan.description!,
+                                            maxLines: 10,
+                                            lineHeight: 1.3,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      if (Utils.anyNotNull([
+                                        workoutPlan.introAudioUri,
+                                        workoutPlan.introVideoUri
+                                      ]))
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 12.0, top: 4),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              if (workoutPlan.introVideoUri !=
+                                                  null)
+                                                VideoThumbnailPlayer(
+                                                  videoUri:
+                                                      workoutPlan.introVideoUri,
+                                                  videoThumbUri: workoutPlan
+                                                      .introVideoThumbUri,
+                                                  displaySize:
+                                                      _kthumbDisplaySize,
+                                                ),
+                                              if (workoutPlan.introAudioUri !=
+                                                  null)
+                                                AudioThumbnailPlayer(
+                                                  audioUri: workoutPlan
+                                                      .introAudioUri!,
+                                                  displaySize:
+                                                      _kthumbDisplaySize,
+                                                  playerTitle:
+                                                      '${workoutPlan.name} - Intro',
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                )
+                              ])),
+                            ];
+                          },
+                          body: Column(
                             children: [
-                              _buildAvatar(workoutPlan, isOwner),
-                              Row(
-                                children: [
-                                  QueryObserver<UserWorkoutPlanEnrolments$Query,
-                                          json.JsonSerializable>(
-                                      key: Key(
-                                          'WorkoutPlanDetailsPage - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
-                                      query: UserWorkoutPlanEnrolmentsQuery(),
-                                      loadingIndicator: LoadingDots(size: 16),
-                                      // Otherwise every single plan details page that you open will run a network query for all of your plan enrolments.
-                                      fetchPolicy: QueryFetchPolicy.storeFirst,
-                                      builder: (data) {
-                                        final enrolments =
-                                            data.userWorkoutPlanEnrolments;
-
-                                        /// Is the user already enrolled in this plan?
-                                        final enrolmentInPlan =
-                                            enrolments.firstWhereOrNull((e) =>
-                                                e.workoutPlan.id ==
-                                                workoutPlan.id);
-
-                                        if (enrolmentInPlan != null) {
-                                          return DoItButton(
-                                              text: 'Progress',
-                                              onPressed: () => context.navigateTo(
-                                                  WorkoutPlanEnrolmentDetailsRoute(
-                                                      id: enrolmentInPlan.id)));
-                                        } else {
-                                          return DoItButton(
-                                              text: 'Join Plan',
-                                              onPressed:
-                                                  _createWorkoutPlanEnrolment);
-                                        }
-                                      }),
-                                  CupertinoButton(
-                                      pressedOpacity: 1.0,
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () => _toggleSavedWorkoutPlan(
-                                          workoutPlan, collection),
-                                      child: AnimatedLikeHeart(
-                                        active: collection != null,
-                                      )),
-                                ],
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 14, bottom: 2),
+                                  child: MyTabBarNav(
+                                      titles: [
+                                        'Workouts',
+                                        'Goals',
+                                        'Reviews',
+                                        'Social',
+                                      ],
+                                      handleTabChange: _handleTabChange,
+                                      activeTabIndex: _activeTabIndex)),
+                              Expanded(
+                                child: PageView(
+                                    controller: _pageController,
+                                    children: [
+                                      WorkoutPlanWorkoutSchedule(
+                                        workoutPlan: workoutPlan,
+                                      ),
+                                      WorkoutPlanGoals(
+                                        workoutPlan: workoutPlan,
+                                      ),
+                                      WorkoutPlanReviews(
+                                          reviews:
+                                              workoutPlan.workoutPlanReviews),
+                                      WorkoutPlanParticipants(
+                                        userSummaries: workoutPlan.enrolments
+                                            .map((e) => e.user)
+                                            .toList(),
+                                      )
+                                    ]),
                               ),
                             ],
                           ),
                         ),
-                        HorizontalLine(),
-                        Expanded(
-                          child: NestedScrollView(
-                            controller: _scrollController,
-                            headerSliverBuilder: (context, innerBoxIsScrolled) {
-                              return [
-                                SliverList(
-                                    delegate: SliverChildListDelegate([
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: workoutPlan.coverImageUri != null
-                                            ? DecorationImage(
-                                                fit: BoxFit.cover,
-                                                colorFilter: ColorFilter.mode(
-                                                    context.theme.cardBackground
-                                                        .withOpacity(0.2),
-                                                    BlendMode.dstATop),
-                                                image: UploadcareImageProvider(
-                                                    workoutPlan.coverImageUri!))
-                                            : null),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Wrap(
-                                            alignment: WrapAlignment.center,
-                                            spacing: 5,
-                                            runSpacing: 5,
-                                            children: [
-                                              if (workoutPlan
-                                                  .workoutPlanDays.isNotEmpty)
-                                                DifficultyLevelTag(
-                                                    workoutPlan.calcDifficulty),
-                                              Tag(
-                                                tag: workoutPlan.lengthString,
-                                                color: Styles.white,
-                                                textColor: Styles.black,
-                                              ),
-                                              Tag(
-                                                tag:
-                                                    '${workoutPlan.daysPerWeek} days / week',
-                                                color: Styles.white,
-                                                textColor: Styles.black,
-                                              ),
-                                              ...workoutPlan.workoutTags
-                                                  .map((t) => Tag(
-                                                        tag: t.tag,
-                                                        color: Styles.colorOne,
-                                                        textColor: Styles.white,
-                                                      ))
-                                            ].toList(),
-                                          ),
-                                        ),
-                                        if (Utils.textNotNull(
-                                            workoutPlan.description))
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: MyText(
-                                              workoutPlan.description!,
-                                              maxLines: 10,
-                                              lineHeight: 1.3,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        if (Utils.anyNotNull([
-                                          workoutPlan.introAudioUri,
-                                          workoutPlan.introVideoUri
-                                        ]))
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 12.0, top: 4),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                if (workoutPlan.introVideoUri !=
-                                                    null)
-                                                  VideoThumbnailPlayer(
-                                                    videoUri: workoutPlan
-                                                        .introVideoUri,
-                                                    videoThumbUri: workoutPlan
-                                                        .introVideoThumbUri,
-                                                    displaySize:
-                                                        _kthumbDisplaySize,
-                                                  ),
-                                                if (workoutPlan.introAudioUri !=
-                                                    null)
-                                                  AudioThumbnailPlayer(
-                                                    audioUri: workoutPlan
-                                                        .introAudioUri!,
-                                                    displaySize:
-                                                        _kthumbDisplaySize,
-                                                    playerTitle:
-                                                        '${workoutPlan.name} - Intro',
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  )
-                                ])),
-                              ];
-                            },
-                            body: Column(
-                              children: [
-                                Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 12, bottom: 8),
-                                    child: MyTabBarNav(
-                                        titles: [
-                                          'Workouts',
-                                          'Goals',
-                                          'Reviews',
-                                          'Social',
-                                        ],
-                                        handleTabChange: _handleTabChange,
-                                        activeTabIndex: _activeTabIndex)),
-                                Expanded(
-                                  child: PageView(
-                                      controller: _pageController,
-                                      children: [
-                                        WorkoutPlanWorkoutSchedule(
-                                          workoutPlan: workoutPlan,
-                                        ),
-                                        WorkoutPlanGoals(
-                                          workoutPlan: workoutPlan,
-                                        ),
-                                        WorkoutPlanReviews(
-                                            reviews:
-                                                workoutPlan.workoutPlanReviews),
-                                        WorkoutPlanParticipants(
-                                          userSummaries: workoutPlan.enrolments
-                                              .map((e) => e.user)
-                                              .toList(),
-                                        )
-                                      ]),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               });

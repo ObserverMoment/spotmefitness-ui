@@ -222,7 +222,7 @@ class _CollectionWorkoutPlansList extends StatelessWidget {
                       menuChild: WorkoutPlanCard(
                         workoutPlans[i],
                         showEnrolledAndReviews: false,
-                        showGoalsChart: false,
+                        showGoalsBarDisplay: false,
                       ),
                     )),
           );

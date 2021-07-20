@@ -23,7 +23,6 @@ class WorkoutMoveDisplay extends StatelessWidget {
         MyText(
           workoutMove.reps.stringMyDouble(),
           lineHeight: 1,
-          weight: FontWeight.bold,
         ),
         MyText(
           workoutMove.repType == WorkoutMoveRepType.time
@@ -32,7 +31,6 @@ class WorkoutMoveDisplay extends StatelessWidget {
                   ? workoutMove.distanceUnit.shortDisplay
                   : describeEnum(workoutMove.repType),
           size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
         ),
       ],
     );
@@ -45,12 +43,10 @@ class WorkoutMoveDisplay extends StatelessWidget {
         MyText(
           workoutMove.loadAmount.stringMyDouble(),
           lineHeight: 1.2,
-          weight: FontWeight.bold,
         ),
         MyText(
           workoutMove.loadUnit.display,
           size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
         ),
       ],
     );
@@ -67,6 +63,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
       equipmentNames.join(', '),
       size: FONTSIZE.SMALL,
       color: Styles.colorTwo,
+      lineHeight: 1.4,
     );
   }
 

@@ -719,11 +719,11 @@ type ScheduledWorkout {
   createdAt: DateTime!
   scheduledAt: DateTime!
   note: String
-  Workout: Workout
-  LoggedWorkout: LoggedWorkout
-  GymProfile: GymProfile
+  loggedWorkoutId: ID
   workoutPlanEnrolmentId: ID
   workoutPlanDayWorkoutId: ID
+  GymProfile: GymProfile
+  Workout: Workout
 }
 
 type SortPositionUpdated {

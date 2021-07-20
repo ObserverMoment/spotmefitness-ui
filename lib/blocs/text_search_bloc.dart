@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:graphql/client.dart';
+import 'package:gql_exec/gql_exec.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/debounce.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';

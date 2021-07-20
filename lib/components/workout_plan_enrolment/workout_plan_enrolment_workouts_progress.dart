@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
@@ -85,15 +86,12 @@ class _WorkoutPlanEnrolmentWorkoutsWeekState
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              H2('Week ${widget.weekNumber + 1}'),
-              CupertinoButton(
+              H3('Week ${widget.weekNumber + 1}'),
+              ShowHideDetailsButton(
                 onPressed: () => setState(
                     () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                padding: EdgeInsets.zero,
-                child: _minimizePlanDayCards
-                    ? Icon(CupertinoIcons.eye)
-                    : Icon(CupertinoIcons.eye_slash),
-              )
+                showDetails: !_minimizePlanDayCards,
+              ),
             ],
           ),
         ),
@@ -112,7 +110,7 @@ class _WorkoutPlanEnrolmentWorkoutsWeekState
                     workoutPlanEnrolment: widget.workoutPlanEnrolment,
                   )
                 : Opacity(
-                    opacity: 0.5,
+                    opacity: 0.35,
                     child: WorkoutPlanRestDayCard(
                       dayNumber: i,
                     ),
@@ -139,11 +137,15 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
       : super(key: key);
 
   Future<void> _openScheduleWorkout(
-      BuildContext context, Workout workout) async {
+      BuildContext context, WorkoutPlanDayWorkout workoutPlanDayWorkout) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
         useRootNavigator: true,
-        child: ScheduledWorkoutCreator(workout: workout));
+        child: ScheduledWorkoutCreator(
+          workout: workoutPlanDayWorkout.workout,
+          workoutPlanDayWorkoutId: workoutPlanDayWorkout.id,
+          workoutPlanEnrolmentId: workoutPlanEnrolment.id,
+        ));
     if (result is ToastRequest) {
       context.showToast(message: result.message, toastType: result.type);
     }
@@ -209,19 +211,18 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16, top: 5, bottom: 2),
+            padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                H3('Day ${displayDayNumber + 1}'),
+                MyText('Day ${displayDayNumber + 1}'),
                 if (dayComplete)
                   FadeIn(
                       child: Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: Row(
                       children: [
-                        MyText('Day Complete',
-                            size: FONTSIZE.SMALL, weight: FontWeight.bold),
+                        MyText('Day Complete', size: FONTSIZE.SMALL),
                         SizedBox(width: 6),
                         Icon(
                           CupertinoIcons.checkmark_alt_circle,
@@ -278,8 +279,8 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                         BottomSheetMenuItem(
                             text: 'Schedule it',
                             icon: Icon(CupertinoIcons.calendar_badge_plus),
-                            onPressed: () => _openScheduleWorkout(
-                                context, dayWorkout.workout)),
+                            onPressed: () =>
+                                _openScheduleWorkout(context, dayWorkout)),
                         BottomSheetMenuItem(
                             text: 'Log it',
                             icon: Icon(CupertinoIcons.doc_plaintext),

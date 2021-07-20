@@ -72,22 +72,25 @@ class WorkoutDetailsSection extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              if (showSectionTypeTag)
-                WorkoutSectionTypeTag(
-                  workoutSection.workoutSectionType.name,
-                  timecap: workoutSection.timecap,
-                  fontSize: FONTSIZE.MAIN,
-                ),
-              if ([kHIITCircuitName, kTabataName, kEMOMName]
-                  .contains(workoutSection.workoutSectionType.name))
-                ContentBox(
-                  child: MyText(
-                      'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}'),
-                ),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                if (showSectionTypeTag)
+                  WorkoutSectionTypeTag(
+                    workoutSection.workoutSectionType.name,
+                    timecap: workoutSection.timecap,
+                    fontSize: FONTSIZE.MAIN,
+                  ),
+                if ([kHIITCircuitName, kTabataName, kEMOMName]
+                    .contains(workoutSection.workoutSectionType.name))
+                  ContentBox(
+                    child: MyText(
+                        'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}'),
+                  ),
+              ],
+            ),
           ),
           SizedBox(height: 4),
           if (showMediaThumbs &&

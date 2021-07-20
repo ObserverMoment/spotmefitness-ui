@@ -19,7 +19,7 @@ class DurationPickerDisplay extends StatelessWidget {
     return BorderButton(
       mini: true,
       text: duration != null ? duration!.compactDisplay() : 'Duration...',
-      prefix: Icon(CupertinoIcons.stopwatch, size: 13),
+      prefix: Icon(CupertinoIcons.stopwatch, size: 18),
       onPressed: () => context.showBottomSheet(
           child: DurationPicker(
         duration: duration,
@@ -68,7 +68,7 @@ class _DurationPickerState extends State<DurationPicker> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.only(bottom: 32.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

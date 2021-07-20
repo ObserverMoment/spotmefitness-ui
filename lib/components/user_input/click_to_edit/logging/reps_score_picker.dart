@@ -20,7 +20,8 @@ class RepsScoreDisplay<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BorderButton(
-      text: score != null ? '$score reps' : 'Reps...',
+      text: score != null ? '$score reps' : 'Reps',
+      mini: true,
       prefix: Icon(CupertinoIcons.chart_bar, size: 16),
       onPressed: () => context.showBottomSheet(
           expand: true,

@@ -180,7 +180,7 @@ class BorderButton extends StatelessWidget {
         opacity: disabled ? 0 : 1,
         duration: Duration(milliseconds: 250),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
               border:
@@ -456,7 +456,7 @@ class DoItButton extends StatelessWidget {
       pressedOpacity: 0.8,
       onPressed: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: context.theme.primary,
           borderRadius: BorderRadius.circular(8),
@@ -901,5 +901,26 @@ class CircularCheckbox extends StatelessWidget {
                 ? Icon(CupertinoIcons.checkmark_alt_circle_fill)
                 : Icon(CupertinoIcons.circle)),
         onPressed: () => onPressed(isSelected ? false : true));
+  }
+}
+
+class ShowHideDetailsButton extends StatelessWidget {
+  final void Function() onPressed;
+  final bool showDetails;
+  const ShowHideDetailsButton(
+      {Key? key, required this.onPressed, required this.showDetails})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: MyText(
+        showDetails ? 'Hide Details' : 'Show Details',
+        size: FONTSIZE.SMALL,
+        weight: FontWeight.bold,
+      ),
+    );
   }
 }

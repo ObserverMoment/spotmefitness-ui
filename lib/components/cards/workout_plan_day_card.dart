@@ -39,10 +39,10 @@ class WorkoutPlanDayCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          H3(' Day ${displayDayNumber + 1}'),
+          MyText('Day ${displayDayNumber + 1}'),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
+              padding: const EdgeInsets.only(top: 6),
               child: MyText(
                 workoutPlanDay.note!,
                 subtext: true,
@@ -62,7 +62,7 @@ class WorkoutPlanDayCard extends StatelessWidget {
                         if (Utils.textNotNull(
                             sortedWorkoutPlanDayWorkouts[i].note))
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            padding: const EdgeInsets.symmetric(vertical: 6),
                             child: MyText(
                               sortedWorkoutPlanDayWorkouts[i].note!,
                               color: Styles.infoBlue,
@@ -233,12 +233,10 @@ class WorkoutPlanRestDayCard extends StatelessWidget {
         children: [
           MyText(
             ' Day ${dayNumber + 1}',
-            weight: FontWeight.bold,
             size: FONTSIZE.SMALL,
           ),
           MyText(
             'Rest',
-            weight: FontWeight.bold,
             size: FONTSIZE.SMALL,
           ),
         ],

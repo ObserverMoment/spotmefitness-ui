@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -62,20 +63,11 @@ class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Row(
             children: [
-              Expanded(
-                  child: Center(
-                      child: Padding(
-                padding: const EdgeInsets.only(left: 40.0),
-                child: H2('Week ${widget.weekNumber + 1}'),
-              ))),
-              CupertinoButton(
-                onPressed: () => setState(
-                    () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: _minimizePlanDayCards
-                    ? Icon(CupertinoIcons.eye)
-                    : Icon(CupertinoIcons.eye_slash),
-              )
+              Expanded(child: H3('Week ${widget.weekNumber + 1}')),
+              ShowHideDetailsButton(
+                  onPressed: () => setState(
+                      () => _minimizePlanDayCards = !_minimizePlanDayCards),
+                  showDetails: !_minimizePlanDayCards),
             ],
           ),
         ),
@@ -93,7 +85,7 @@ class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
                     minimize: _minimizePlanDayCards,
                   )
                 : Opacity(
-                    opacity: 0.5,
+                    opacity: 0.35,
                     child: WorkoutPlanRestDayCard(
                       dayNumber: i,
                     ),
