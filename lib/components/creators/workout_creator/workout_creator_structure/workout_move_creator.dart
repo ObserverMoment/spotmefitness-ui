@@ -337,7 +337,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(2.0),
-                                          child: MyText('Select from...'),
+                                          child: MyText('Select from...',
+                                              lineHeight: 1.4),
                                         ),
                                         EquipmentMultiSelector(
                                             showIcon: true,
@@ -373,6 +374,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             MyText('Selected'),
+                                            SizedBox(height: 4),
                                             ContentBox(
                                               child: MyText(
                                                 _activeWorkoutMove!

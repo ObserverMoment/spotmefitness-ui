@@ -138,9 +138,9 @@ class EditableWorkoutPlanDayCard extends StatelessWidget {
               child: MyText(
                 workoutPlanDay.note!,
                 subtext: true,
+                lineHeight: 1.4,
               ),
             ),
-          SizedBox(height: 3),
           ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

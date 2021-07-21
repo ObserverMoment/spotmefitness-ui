@@ -21,14 +21,12 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
         MyText(
           loggedWorkoutMove.reps.stringMyDouble(),
           lineHeight: 1.2,
-          weight: FontWeight.bold,
         ),
         MyText(
           loggedWorkoutMove.repType == WorkoutMoveRepType.distance
               ? loggedWorkoutMove.distanceUnit.shortDisplay
               : describeEnum(loggedWorkoutMove.repType),
           size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
         ),
       ],
     );
@@ -41,12 +39,10 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
         MyText(
           loggedWorkoutMove.loadAmount!.stringMyDouble(),
           lineHeight: 1.2,
-          weight: FontWeight.bold,
         ),
         MyText(
           loggedWorkoutMove.loadUnit.display,
           size: FONTSIZE.TINY,
-          weight: FontWeight.bold,
         ),
       ],
     );
@@ -63,6 +59,7 @@ class LoggedWorkoutMoveDisplay extends StatelessWidget {
       equipmentNames.join(', '),
       size: FONTSIZE.SMALL,
       color: Styles.colorTwo,
+      lineHeight: 1.4,
     );
   }
 

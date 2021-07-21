@@ -470,7 +470,6 @@ mixin ScheduledWorkoutMixin {
   late DateTime scheduledAt;
   String? note;
   String? workoutPlanEnrolmentId;
-  String? workoutPlanDayWorkoutId;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -5512,8 +5511,6 @@ class ScheduledWorkout extends JsonSerializable
 
   String? workoutPlanEnrolmentId;
 
-  String? workoutPlanDayWorkoutId;
-
   @override
   List<Object?> get props => [
         $$typename,
@@ -5521,12 +5518,10 @@ class ScheduledWorkout extends JsonSerializable
         scheduledAt,
         note,
         workoutPlanEnrolmentId,
-        workoutPlanDayWorkoutId,
         workout,
         gymProfile,
         loggedWorkoutId,
-        workoutPlanEnrolmentId,
-        workoutPlanDayWorkoutId
+        workoutPlanEnrolmentId
       ];
   @override
   Map<String, dynamic> toJson() => _$ScheduledWorkoutToJson(this);
@@ -5558,8 +5553,7 @@ class UpdateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
       this.workout,
       this.loggedWorkout,
       this.gymProfile,
-      this.workoutPlanEnrolment,
-      this.workoutPlanDayWorkout});
+      this.workoutPlanEnrolment});
 
   factory UpdateScheduledWorkoutInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateScheduledWorkoutInputFromJson(json);
@@ -5585,9 +5579,6 @@ class UpdateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'WorkoutPlanEnrolment')
   ConnectRelationInput? workoutPlanEnrolment;
 
-  @JsonKey(name: 'WorkoutPlanDayWorkout')
-  ConnectRelationInput? workoutPlanDayWorkout;
-
   @override
   List<Object?> get props => [
         id,
@@ -5596,8 +5587,7 @@ class UpdateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
         workout,
         loggedWorkout,
         gymProfile,
-        workoutPlanEnrolment,
-        workoutPlanDayWorkout
+        workoutPlanEnrolment
       ];
   @override
   Map<String, dynamic> toJson() => _$UpdateScheduledWorkoutInputToJson(this);
@@ -5627,8 +5617,7 @@ class CreateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
       this.note,
       required this.workout,
       this.gymProfile,
-      this.workoutPlanEnrolment,
-      this.workoutPlanDayWorkout});
+      this.workoutPlanEnrolment});
 
   factory CreateScheduledWorkoutInput.fromJson(Map<String, dynamic> json) =>
       _$CreateScheduledWorkoutInputFromJson(json);
@@ -5649,18 +5638,9 @@ class CreateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'WorkoutPlanEnrolment')
   ConnectRelationInput? workoutPlanEnrolment;
 
-  @JsonKey(name: 'WorkoutPlanDayWorkout')
-  ConnectRelationInput? workoutPlanDayWorkout;
-
   @override
-  List<Object?> get props => [
-        scheduledAt,
-        note,
-        workout,
-        gymProfile,
-        workoutPlanEnrolment,
-        workoutPlanDayWorkout
-      ];
+  List<Object?> get props =>
+      [scheduledAt, note, workout, gymProfile, workoutPlanEnrolment];
   @override
   Map<String, dynamic> toJson() => _$CreateScheduledWorkoutInputToJson(this);
 }
@@ -49713,12 +49693,6 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                   alias: null,
                   arguments: [],
                   directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
                   selectionSet: null)
             ]))
       ])),
@@ -50398,12 +50372,6 @@ final UPDATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'workoutPlanEnrolmentId'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'workoutPlanDayWorkoutId'),
             alias: null,
             arguments: [],
             directives: [],
@@ -50685,12 +50653,6 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                   alias: null,
                   arguments: [],
                   directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
                   selectionSet: null)
             ]))
       ])),
@@ -51370,12 +51332,6 @@ final CREATE_SCHEDULED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'workoutPlanEnrolmentId'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'workoutPlanDayWorkoutId'),
             alias: null,
             arguments: [],
             directives: [],
@@ -51627,12 +51583,6 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                   alias: null,
                   arguments: [],
                   directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'workoutPlanDayWorkoutId'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
                   selectionSet: null)
             ]))
       ])),
@@ -52312,12 +52262,6 @@ final USER_SCHEDULED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'workoutPlanEnrolmentId'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'workoutPlanDayWorkoutId'),
             alias: null,
             arguments: [],
             directives: [],

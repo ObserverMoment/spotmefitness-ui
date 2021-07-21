@@ -64,7 +64,7 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             border: Border.all(color: context.theme.primary)),

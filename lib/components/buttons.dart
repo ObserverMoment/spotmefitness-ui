@@ -67,7 +67,7 @@ class MyButton extends StatelessWidget {
                           color: contentColor,
                         )
                       : MyText(
-                          text.toUpperCase(),
+                          text,
                           weight: FontWeight.bold,
                           color: contentColor,
                         ),
@@ -907,8 +907,14 @@ class CircularCheckbox extends StatelessWidget {
 class ShowHideDetailsButton extends StatelessWidget {
   final void Function() onPressed;
   final bool showDetails;
+  final String showText;
+  final String hideText;
   const ShowHideDetailsButton(
-      {Key? key, required this.onPressed, required this.showDetails})
+      {Key? key,
+      required this.onPressed,
+      required this.showDetails,
+      this.showText = 'Show Details',
+      this.hideText = 'Hide Details'})
       : super(key: key);
 
   @override
@@ -917,7 +923,7 @@ class ShowHideDetailsButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: onPressed,
       child: MyText(
-        showDetails ? 'Hide Details' : 'Show Details',
+        showDetails ? hideText : showText,
         size: FONTSIZE.SMALL,
         weight: FontWeight.bold,
       ),

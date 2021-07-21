@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/blocs/workout_plan_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -151,23 +152,18 @@ class _WorkoutPlanCreatorStructureWeekState
       children: [
         HorizontalLine(),
         // https://stackoverflow.com/questions/51587003/how-to-center-only-one-element-in-a-row-of-2-elements-in-flutter
-        Row(
-          children: [
-            Expanded(
-                child: Center(
-                    child: Padding(
-              padding: const EdgeInsets.only(left: 40.0),
-              child: H2('Week ${widget.weekNumber + 1}'),
-            ))),
-            CupertinoButton(
-              onPressed: () => setState(
-                  () => _minimizePlanDayCards = !_minimizePlanDayCards),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: _minimizePlanDayCards
-                  ? Icon(CupertinoIcons.eye)
-                  : Icon(CupertinoIcons.eye_slash),
-            )
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              H3('Week ${widget.weekNumber + 1}'),
+              ShowHideDetailsButton(
+                  onPressed: () => setState(
+                      () => _minimizePlanDayCards = !_minimizePlanDayCards),
+                  showDetails: !_minimizePlanDayCards)
+            ],
+          ),
         ),
         HorizontalLine(),
         ListView.builder(

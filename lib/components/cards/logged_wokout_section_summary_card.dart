@@ -22,10 +22,12 @@ import 'package:supercharged/supercharged.dart';
 class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
   final LoggedWorkoutSection loggedWorkoutSection;
   final void Function(String note)? addNoteToLoggedSection;
+  final bool showSectionName;
   const LoggedWorkoutSectionSummaryCard(
       {Key? key,
       required this.loggedWorkoutSection,
-      this.addNoteToLoggedSection})
+      this.addNoteToLoggedSection,
+      this.showSectionName = true})
       : super(key: key);
 
   @override
@@ -38,25 +40,20 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
 
     return Column(
       children: [
-        if (Utils.textNotNull(loggedWorkoutSection.name))
-          H3('"${loggedWorkoutSection.name!}"'),
+        if (showSectionName && Utils.textNotNull(loggedWorkoutSection.name))
+          MyText(
+            '"${loggedWorkoutSection.name!}"',
+            weight: FontWeight.bold,
+          ),
         Row(
-          mainAxisAlignment: addNoteToLoggedSection != null
-              ? MainAxisAlignment.spaceBetween
-              : MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: LoggedWorkoutSectionSummaryTag(
-                loggedWorkoutSection,
-                fontsize: FONTSIZE.MAIN,
-              ),
-            ),
             if (addNoteToLoggedSection == null &&
                 Utils.textNotNull(loggedWorkoutSection.note))
               NoteIconViewerButton(loggedWorkoutSection.note!),
             if (addNoteToLoggedSection != null)
               CupertinoButton(
+                  padding: EdgeInsets.zero,
                   child: AnimatedSwitcher(
                     duration: kStandardAnimationDuration,
                     child: Utils.textNotNull(loggedWorkoutSection.note)
@@ -72,6 +69,20 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                           initialValue: loggedWorkoutSection.note,
                           onSave: addNoteToLoggedSection!,
                           inputValidation: (t) => true)))
+          ],
+        ),
+        Row(
+          mainAxisAlignment: addNoteToLoggedSection != null
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: LoggedWorkoutSectionSummaryTag(
+                loggedWorkoutSection,
+                fontsize: FONTSIZE.MAIN,
+              ),
+            ),
           ],
         ),
 

@@ -54,6 +54,5 @@ query userScheduledWorkouts {
     }
     loggedWorkoutId
     workoutPlanEnrolmentId
-    workoutPlanDayWorkoutId
   }
 }

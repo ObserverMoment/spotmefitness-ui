@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/circuit_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/section_type_creators/emom_creator.dart';
@@ -361,16 +362,12 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                           saveNote: (note) =>
                               _updateWorkoutSection({'note': note}),
                         ),
-                        CupertinoButton(
-                            pressedOpacity: 0.8,
-                            padding: EdgeInsets.zero,
-                            child: AnimatedSwitcher(
-                              duration: Duration(milliseconds: 250),
-                              child: showFullSetInfo
-                                  ? Icon(CupertinoIcons.eye_slash)
-                                  : Icon(CupertinoIcons.eye),
-                            ),
-                            onPressed: toggleShowFullSetInfo),
+                        ShowHideDetailsButton(
+                          onPressed: toggleShowFullSetInfo,
+                          showDetails: showFullSetInfo,
+                          showText: 'Full',
+                          hideText: 'Minimal',
+                        ),
                       ],
                     ),
                     _buildSectionTypeCreator(

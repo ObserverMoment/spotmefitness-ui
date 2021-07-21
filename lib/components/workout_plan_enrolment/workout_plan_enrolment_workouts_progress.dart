@@ -143,7 +143,6 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
         useRootNavigator: true,
         child: ScheduledWorkoutCreator(
           workout: workoutPlanDayWorkout.workout,
-          workoutPlanDayWorkoutId: workoutPlanDayWorkout.id,
           workoutPlanEnrolmentId: workoutPlanEnrolment.id,
         ));
     if (result is ToastRequest) {
@@ -151,26 +150,38 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
     }
   }
 
-  /// Goes through then log workout flow and then, once finished, updates the [completedPlanDayWorkoutIds].
   Future<void> _handleLogWorkoutProgramWorkout(
       BuildContext context, WorkoutPlanDayWorkout planDayWorkout) async {
-    final success = await context
+    await context
         .pushRoute(LoggedWorkoutCreatorRoute(workout: planDayWorkout.workout));
 
-    if (success != null && success == true) {
-      if (!workoutPlanEnrolment.completedPlanDayWorkoutIds
-          .contains(planDayWorkout.id)) {
-        workoutPlanEnrolment.completedPlanDayWorkoutIds.add(planDayWorkout.id);
-        _updateCompletedWorkoutIds(
-            context, workoutPlanEnrolment.completedPlanDayWorkoutIds);
-      }
-    }
+    /// Note: Currently there is no automated marking of workouts as done.
+    /// This is because only the Plan -> Log flow can be implemented in a sensible was at the moment.
+    /// The below is disabled pending further research on how to manage these flows.
+    /// All Flows
+    // Log (Directly from view workout)
+    // Do -> Log
+    // Schedule -> Log
+    // Schedule -> Do -> Log
+    // PlanEnrolment -> Log
+    // PlanEnrolment -> Do -> Log
+    // PlanEnrolment -> Schedule -> Log
+    // PlanEnrolment -> Schedule -> Do -> Log
+
+    // if (success != null && success == true) {
+    //   if (!workoutPlanEnrolment.completedPlanDayWorkoutIds
+    //       .contains(planDayWorkout.id)) {
+    //     workoutPlanEnrolment.completedPlanDayWorkoutIds.add(planDayWorkout.id);
+    //     _updateCompletedWorkoutIds(
+    //         context, workoutPlanEnrolment.completedPlanDayWorkoutIds);
+    //   }
+    // }
   }
 
   Future<void> _updateCompletedWorkoutIds(
       BuildContext context, List<String> updatedIds) async {
     final variables = UpdateWorkoutPlanEnrolmentArguments(
-        data: UpdateWorkoutPlanEnrolmentInput(id: ''));
+        data: UpdateWorkoutPlanEnrolmentInput(id: workoutPlanEnrolment.id));
 
     final result = await context.graphQLStore.mutate<
             UpdateWorkoutPlanEnrolment$Mutation,
@@ -250,6 +261,7 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
               separatorBuilder: (c, i) => HorizontalLine(),
               itemBuilder: (c, i) {
                 final dayWorkout = sortedWorkoutPlanDayWorkouts[i];
+                final workoutCompleted = completedIds.contains(dayWorkout.id);
                 return GestureDetector(
                   onTap: () => context.showBottomSheet(
                       child: BottomSheetMenu(
@@ -259,7 +271,7 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                             imageUri: dayWorkout.workout.coverImageUri,
                           ),
                           items: [
-                        completedIds.contains(dayWorkout.id)
+                        workoutCompleted
                             ? BottomSheetMenuItem(
                                 text: 'Unmark as done',
                                 icon: Icon(CupertinoIcons.clear_thick),
@@ -272,22 +284,28 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                                 onPressed: () => _updateCompletedWorkoutIds(
                                     context,
                                     completedIds.toggleItem(dayWorkout.id))),
-                        BottomSheetMenuItem(
+                        if (!workoutCompleted) ...[
+                          BottomSheetMenuItem(
                             text: 'Do it',
                             icon: Icon(CupertinoIcons.arrow_right_square),
-                            onPressed: () => print('do it')),
-                        BottomSheetMenuItem(
-                            text: 'Schedule it',
-                            icon: Icon(CupertinoIcons.calendar_badge_plus),
                             onPressed: () =>
-                                _openScheduleWorkout(context, dayWorkout)),
+                                context.navigateTo(DoWorkoutWrapperRoute(
+                              id: dayWorkout.workout.id,
+                            )),
+                          ),
+                          BottomSheetMenuItem(
+                              text: 'Log it',
+                              icon: Icon(CupertinoIcons.doc_plaintext),
+                              onPressed: () => _handleLogWorkoutProgramWorkout(
+                                  context, dayWorkout)),
+                          BottomSheetMenuItem(
+                              text: 'Schedule it',
+                              icon: Icon(CupertinoIcons.calendar_badge_plus),
+                              onPressed: () =>
+                                  _openScheduleWorkout(context, dayWorkout)),
+                        ],
                         BottomSheetMenuItem(
-                            text: 'Log it',
-                            icon: Icon(CupertinoIcons.doc_plaintext),
-                            onPressed: () => _handleLogWorkoutProgramWorkout(
-                                context, dayWorkout)),
-                        BottomSheetMenuItem(
-                            text: 'View details',
+                            text: 'View workout',
                             icon: Icon(CupertinoIcons.eye),
                             onPressed: () => context.navigateTo(
                                 WorkoutDetailsRoute(

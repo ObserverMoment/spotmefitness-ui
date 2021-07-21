@@ -227,7 +227,6 @@ input CreateScheduledWorkoutInput {
   Workout: ConnectRelationInput!
   GymProfile: ConnectRelationInput
   WorkoutPlanEnrolment: ConnectRelationInput
-  WorkoutPlanDayWorkout: ConnectRelationInput
 }
 
 input CreateUserBenchmarkEntryInput {
@@ -721,7 +720,6 @@ type ScheduledWorkout {
   note: String
   loggedWorkoutId: ID
   workoutPlanEnrolmentId: ID
-  workoutPlanDayWorkoutId: ID
   GymProfile: GymProfile
   Workout: Workout
 }
@@ -855,7 +853,6 @@ input UpdateScheduledWorkoutInput {
   LoggedWorkout: ConnectRelationInput
   GymProfile: ConnectRelationInput
   WorkoutPlanEnrolment: ConnectRelationInput
-  WorkoutPlanDayWorkout: ConnectRelationInput
 }
 
 input UpdateSortPositionInput {

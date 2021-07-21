@@ -46,6 +46,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
         Icon(
           icon,
           size: 12,
+          color: Styles.white,
         )
       ],
     );
@@ -143,7 +144,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasLog = scheduledWorkout.loggedWorkoutId != null;
-    final isPartOfPlan = scheduledWorkout.workoutPlanDayWorkoutId != null;
+    final isPartOfPlan = scheduledWorkout.workoutPlanEnrolmentId != null;
 
     return ContextMenu(
       key: Key('ScheduledWorkoutCard ${scheduledWorkout.id}'),
@@ -215,19 +216,19 @@ class ScheduledWorkoutCard extends StatelessWidget {
             iconData: CupertinoIcons.eye,
             onTap: () => context.navigateTo(
                 WorkoutDetailsRoute(id: scheduledWorkout.workout!.id))),
+        if (isPartOfPlan)
+          ContextMenuAction(
+            text: 'View Plan',
+            onTap: () => context.navigateTo(WorkoutPlanEnrolmentDetailsRoute(
+                id: scheduledWorkout.workoutPlanEnrolmentId!)),
+            iconData: CupertinoIcons.list_bullet,
+          ),
         if (hasLog)
           ContextMenuAction(
             text: 'View log',
             onTap: () => context.navigateTo(LoggedWorkoutDetailsRoute(
                 id: scheduledWorkout.loggedWorkoutId!)),
             iconData: CupertinoIcons.doc_chart,
-          ),
-        if (isPartOfPlan)
-          ContextMenuAction(
-            text: 'View Plan',
-            onTap: () => context.navigateTo(WorkoutPlanEnrolmentDetailsRoute(
-                id: scheduledWorkout.workoutPlanEnrolmentId!)),
-            iconData: CupertinoIcons.calendar_circle,
           ),
         if (!hasLog)
           ContextMenuAction(

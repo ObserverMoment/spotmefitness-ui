@@ -21,9 +21,7 @@ class CompactTimerIcon extends StatelessWidget {
 
   List<Widget> _buildChildren() => [
         Icon(CupertinoIcons.timer),
-        SizedBox(
-          width: 4,
-        ),
+        alignment == Axis.vertical ? SizedBox(height: 4) : SizedBox(width: 4),
         MyText(duration?.compactDisplay() ?? '---')
       ];
 

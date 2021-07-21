@@ -26,14 +26,12 @@ class ScheduledWorkoutCreator extends StatefulWidget {
   final Workout? workout;
   final DateTime? scheduleOn;
   final String? workoutPlanEnrolmentId;
-  final String? workoutPlanDayWorkoutId;
-  ScheduledWorkoutCreator(
-      {this.scheduledWorkout,
-      this.workout,
-      this.scheduleOn,
-      this.workoutPlanEnrolmentId,
-      this.workoutPlanDayWorkoutId})
-      : assert(scheduledWorkout != null || workout != null);
+  ScheduledWorkoutCreator({
+    this.scheduledWorkout,
+    this.workout,
+    this.scheduleOn,
+    this.workoutPlanEnrolmentId,
+  }) : assert(scheduledWorkout != null || workout != null);
 
   @override
   _ScheduledWorkoutCreatorState createState() =>
@@ -49,15 +47,18 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
     return ScheduledWorkout()
       ..id = 'tempId'
       ..workout = widget.workout!
+      ..workoutPlanEnrolmentId = widget.workoutPlanEnrolmentId
       ..scheduledAt = widget.scheduleOn ?? DateTime.now();
   }
 
   @override
   void initState() {
     _isCreate = widget.scheduledWorkout == null;
+
     _activeScheduledWorkout = widget.scheduledWorkout != null
         ? widget.scheduledWorkout!
         : _defaultScheduledWorkout();
+
     super.initState();
   }
 
@@ -67,9 +68,16 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
   Future<void> _schedule() async {
     setState(() => _loading = true);
     if (_isCreate) {
-      final createVariables = CreateScheduledWorkoutArguments(
-          data: CreateScheduledWorkoutInput.fromJson(
-              _activeScheduledWorkout.toJson()));
+      final input = CreateScheduledWorkoutInput.fromJson(
+          _activeScheduledWorkout.toJson());
+
+      /// Connect to the users plan enrolment if it exists.
+      if (widget.workoutPlanEnrolmentId != null) {
+        input.workoutPlanEnrolment = ConnectRelationInput(
+            id: _activeScheduledWorkout.workoutPlanEnrolmentId!);
+      }
+
+      final createVariables = CreateScheduledWorkoutArguments(data: input);
 
       final result = await context.graphQLStore.create(
           mutation: CreateScheduledWorkoutMutation(variables: createVariables),

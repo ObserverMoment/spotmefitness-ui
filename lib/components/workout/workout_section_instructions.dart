@@ -49,9 +49,9 @@ class WorkoutSectionInstructions extends StatelessWidget {
         Expanded(
           child: MyText(
             _buildInstructionText(),
-            weight: FontWeight.bold,
             maxLines: 3,
             textAlign: TextAlign.center,
+            lineHeight: 1.4,
           ),
         )
       ],

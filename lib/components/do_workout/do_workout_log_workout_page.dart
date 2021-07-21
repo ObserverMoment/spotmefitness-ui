@@ -117,7 +117,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              H2("All done, great work!"),
+              H3("All done, great work!"),
               TextButton(
                 padding:
                     const EdgeInsets.symmetric(vertical: 2, horizontal: 12),
@@ -133,7 +133,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              H3('Time spent working:'),
+              MyText('Time spent working:'),
               SizedBox(width: 8),
               H3(
                 Duration(milliseconds: totalTimeMs).compactDisplay(),
@@ -164,6 +164,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                       prefix: Icon(
                         CupertinoIcons.doc_chart,
                         color: context.theme.background,
+                        size: 20,
                       ),
                       withMinWidth: false,
                       loading: _savingToDB,
@@ -175,6 +176,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                 prefix: Icon(
                   CupertinoIcons.share,
                   color: context.theme.background,
+                  size: 20,
                 ),
                 withMinWidth: false,
                 loading: _savingToDB,
@@ -240,6 +242,7 @@ class _LoggedWorkoutSectionWrapper extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
       child: LoggedWorkoutSectionSummaryCard(
           loggedWorkoutSection: loggedWorkoutSection,
+          showSectionName: false,
           addNoteToLoggedSection: logAlreadySavedToDB
               ? null
               : (note) => context

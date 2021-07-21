@@ -54,7 +54,6 @@ fragment ScheduledWorkout on ScheduledWorkout {
   scheduledAt
   note
   workoutPlanEnrolmentId
-  workoutPlanDayWorkoutId
 }
 
 fragment User on User {

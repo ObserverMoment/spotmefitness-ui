@@ -71,7 +71,6 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                   children: [
                     MyText(
                       'Workout',
-                      weight: FontWeight.bold,
                     ),
                     InfoPopupButton(
                         infoWidget: MyText(
@@ -92,9 +91,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                           removeImage: (_) =>
                               _updateWorkoutData({'coverImageUri': null}),
                         ),
-                        MyText(
-                          'Cover Image',
-                          size: FONTSIZE.TINY,
+                        _LabelText(
+                          label: 'Cover Image',
                         )
                       ],
                     ),
@@ -117,9 +115,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                             'introVideoThumbUri': null
                           }),
                         ),
-                        MyText(
-                          'Intro Video',
-                          size: FONTSIZE.TINY,
+                        _LabelText(
+                          label: 'Intro Video',
                         )
                       ],
                     ),
@@ -139,9 +136,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                             'introAudioUri': null,
                           }),
                         ),
-                        MyText(
-                          'Intro Audio',
-                          size: FONTSIZE.TINY,
+                        _LabelText(
+                          label: 'Intro Audio',
                         )
                       ],
                     ),
@@ -162,7 +158,6 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                             Utils.textNotNull(section.name)
                                 ? section.name!
                                 : 'Section ${section.sortPosition + 1}',
-                            weight: FontWeight.bold,
                           ),
                           InfoPopupButton(
                               infoWidget: MyText(
@@ -194,9 +189,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'introVideoThumbUri': null
                                 }),
                               ),
-                              MyText(
-                                'Intro Video',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Intro Video',
                               )
                             ],
                           ),
@@ -221,9 +215,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'classVideoThumbUri': null
                                 }),
                               ),
-                              MyText(
-                                'Class Video',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Class Video',
                               )
                             ],
                           ),
@@ -248,9 +241,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'outroVideoThumbUri': null
                                 }),
                               ),
-                              MyText(
-                                'Outro Video',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Outro Video',
                               )
                             ],
                           ),
@@ -278,9 +270,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'introAudioUri': null,
                                 }),
                               ),
-                              MyText(
-                                'Intro Audio',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Intro Audio',
                               )
                             ],
                           ),
@@ -302,9 +293,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'classAudioUri': null,
                                 }),
                               ),
-                              MyText(
-                                'Class Audio',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Class Audio',
                               )
                             ],
                           ),
@@ -326,9 +316,8 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
                                   'outroAudioUri': null,
                                 }),
                               ),
-                              MyText(
-                                'Outro Audio',
-                                size: FONTSIZE.TINY,
+                              _LabelText(
+                                label: 'Outro Audio',
                               )
                             ],
                           ),
@@ -341,6 +330,20 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
               .toList()
         ],
       ),
+    );
+  }
+}
+
+class _LabelText extends StatelessWidget {
+  final String label;
+  const _LabelText({Key? key, required this.label}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MyText(
+      label,
+      size: FONTSIZE.TINY,
+      lineHeight: 1.5,
     );
   }
 }

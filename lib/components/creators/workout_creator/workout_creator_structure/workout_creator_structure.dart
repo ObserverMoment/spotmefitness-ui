@@ -228,15 +228,14 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                         ),
                         child: MyText(
                           '${workoutSection.sortPosition + 1}',
-                          weight: FontWeight.bold,
                           color: Styles.white,
+                          size: FONTSIZE.SMALL,
                         )),
                     Expanded(
                       child: MyText(
                         Utils.textNotNull(workoutSection.name)
                             ? workoutSection.name!
                             : 'Section ${workoutSection.sortPosition + 1}',
-                        weight: FontWeight.bold,
                       ),
                     ),
                     Row(
