@@ -38,8 +38,8 @@ class ProgressJournalEntryCreatorBloc extends ChangeNotifier {
         // User is creating - make an empty entry in the db and return for editing.
         final variables = CreateProgressJournalEntryArguments(
           data: CreateProgressJournalEntryInput(
-              progressJournal: ConnectRelationInput(id: parentJournalId),
-              progressPhotoUris: []),
+            progressJournal: ConnectRelationInput(id: parentJournalId),
+          ),
         );
 
         /// Use [mutate] here instead of [create] as we will hold off from writing the new entry to the store until the user has finished their editing session.

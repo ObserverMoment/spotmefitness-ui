@@ -18,14 +18,14 @@ enum FONTSIZE {
 const Map<FONTSIZE, double> _fontSizeMap = {
   FONTSIZE.TINY: 11,
   FONTSIZE.SMALL: 14,
-  FONTSIZE.MAIN: 17,
-  FONTSIZE.BIG: 19,
-  FONTSIZE.LARGE: 22,
+  FONTSIZE.MAIN: 16,
+  FONTSIZE.BIG: 18,
+  FONTSIZE.LARGE: 21,
   FONTSIZE.HUGE: 24,
   FONTSIZE.DISPLAY: 40,
   FONTSIZE.GIANT: 50,
   FONTSIZE.EXTREME: 60,
-  FONTSIZE.TABTITLE: 26,
+  FONTSIZE.TABTITLE: 22,
 };
 
 class MyText extends StatelessWidget {
@@ -48,7 +48,7 @@ class MyText extends StatelessWidget {
       this.maxLines = 1,
       this.color,
       this.decoration,
-      this.lineHeight = 1,
+      this.lineHeight = 1.1,
       this.subtext = false});
 
   @override

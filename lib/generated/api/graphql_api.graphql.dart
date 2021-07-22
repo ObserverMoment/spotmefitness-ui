@@ -278,9 +278,8 @@ mixin ProgressJournalEntryMixin {
   late BodyweightUnit bodyweightUnit;
   double? moodScore;
   double? energyScore;
-  double? stressScore;
+  double? confidenceScore;
   double? motivationScore;
-  late List<String> progressPhotoUris;
 }
 mixin ProgressJournalGoalMixin {
   @JsonKey(name: '__typename')
@@ -1878,9 +1877,8 @@ class ProgressJournalEntry extends JsonSerializable
         bodyweightUnit,
         moodScore,
         energyScore,
-        stressScore,
-        motivationScore,
-        progressPhotoUris
+        confidenceScore,
+        motivationScore
       ];
   @override
   Map<String, dynamic> toJson() => _$ProgressJournalEntryToJson(this);
@@ -1983,9 +1981,8 @@ class CreateProgressJournalEntryInput extends JsonSerializable
       this.bodyweightUnit,
       this.moodScore,
       this.energyScore,
-      this.stressScore,
+      this.confidenceScore,
       this.motivationScore,
-      required this.progressPhotoUris,
       required this.progressJournal});
 
   factory CreateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
@@ -2004,11 +2001,9 @@ class CreateProgressJournalEntryInput extends JsonSerializable
 
   double? energyScore;
 
-  double? stressScore;
+  double? confidenceScore;
 
   double? motivationScore;
-
-  late List<String> progressPhotoUris;
 
   @JsonKey(name: 'ProgressJournal')
   late ConnectRelationInput progressJournal;
@@ -2021,9 +2016,8 @@ class CreateProgressJournalEntryInput extends JsonSerializable
         bodyweightUnit,
         moodScore,
         energyScore,
-        stressScore,
+        confidenceScore,
         motivationScore,
-        progressPhotoUris,
         progressJournal
       ];
   @override
@@ -2164,9 +2158,8 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
       this.bodyweightUnit,
       this.moodScore,
       this.energyScore,
-      this.stressScore,
-      this.motivationScore,
-      required this.progressPhotoUris});
+      this.confidenceScore,
+      this.motivationScore});
 
   factory UpdateProgressJournalEntryInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateProgressJournalEntryInputFromJson(json);
@@ -2186,11 +2179,9 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
 
   double? energyScore;
 
-  double? stressScore;
+  double? confidenceScore;
 
   double? motivationScore;
-
-  late List<String> progressPhotoUris;
 
   @override
   List<Object?> get props => [
@@ -2201,9 +2192,8 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
         bodyweightUnit,
         moodScore,
         energyScore,
-        stressScore,
-        motivationScore,
-        progressPhotoUris
+        confidenceScore,
+        motivationScore
       ];
   @override
   Map<String, dynamic> toJson() =>
@@ -25528,19 +25518,13 @@ final PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],
@@ -25806,19 +25790,13 @@ final CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26050,19 +26028,13 @@ final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26355,19 +26327,13 @@ final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26701,19 +26667,13 @@ final UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],
@@ -27020,19 +26980,13 @@ final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'stressScore'),
+            name: NameNode(value: 'confidenceScore'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'motivationScore'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'progressPhotoUris'),
             alias: null,
             arguments: [],
             directives: [],

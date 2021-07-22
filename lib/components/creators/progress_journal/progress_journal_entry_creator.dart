@@ -9,15 +9,12 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_uploader.dart';
-import 'package:spotmefitness_ui/components/media/images/image_uploader.dart';
-import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/bodyweight_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -36,8 +33,6 @@ class ProgressJournalEntryCreator extends StatefulWidget {
 class _ProgressJournalEntryCreatorState
     extends State<ProgressJournalEntryCreator> {
   ProgressJournalEntry? _activeProgressJournalEntry;
-  int _activeTabIndex = 0;
-  final PageController _pageController = PageController();
   late bool _isCreate;
 
   Future<ProgressJournalEntry> _initEntry() async {
@@ -57,14 +52,6 @@ class _ProgressJournalEntryCreatorState
     super.initState();
   }
 
-  void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
-    Utils.hideKeyboard(context);
-    setState(() => _activeTabIndex = index);
-  }
-
   void _saveAndClose(BuildContext context) {
     final success = context
         .read<ProgressJournalEntryCreatorBloc>()
@@ -78,17 +65,10 @@ class _ProgressJournalEntryCreatorState
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<ProgressJournalEntry>(
         loadingWidget: CupertinoPageScaffold(
-          navigationBar: BasicNavBar(
-            heroTag: 'ProgressJournalEntryCreator',
+          navigationBar: BorderlessNavBar(
             automaticallyImplyLeading: false,
             middle: NavBarTitle('Getting ready...'),
           ),
@@ -128,56 +108,17 @@ class _ProgressJournalEntryCreatorState
                         ? 'New Entry'
                         : 'Edit Entry',
                   ),
-                  child: Column(
-                    children: [
-                      if (uploadingMedia)
-                        FadeIn(
-                          child: Container(
-                              height: 30,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  MyText('Uploading media, please wait...'),
-                                  SizedBox(width: 8),
-                                  LoadingDots(
-                                    size: 12,
-                                  )
-                                ],
-                              )),
-                        )
-                      else
-                        FadeIn(
-                          child: MyTabBarNav(
-                              titles: ['Notes', 'Scores', 'Photos'],
-                              handleTabChange: _changeTab,
-                              activeTabIndex: _activeTabIndex),
-                        ),
-                      Expanded(
-                          child: PageView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _pageController,
-                        onPageChanged: _changeTab,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SingleChildScrollView(
+                      child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 6.0, horizontal: 12),
-                            child: ProgressJournalEntryCreatorNotes(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 6.0, horizontal: 12),
-                            child: ProgressJournalEntryCreatorScores(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 6.0, horizontal: 12),
-                            child: ProgressJournalEntryPhotos(),
-                          ),
+                          ProgressJournalEntryCreatorNotes(),
+                          SizedBox(height: 12),
+                          ProgressJournalEntryCreatorScores()
                         ],
-                      )),
-                    ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -205,24 +146,30 @@ class ProgressJournalEntryCreatorNotes extends StatelessWidget {
             inputValidation: (t) => true),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: MyText(
-            'Voice Note',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MyText(
+                'Voice Note',
+              ),
+              AudioUploader(
+                  audioUri: voiceNoteUri,
+                  onUploadStart: () => context
+                      .read<ProgressJournalEntryCreatorBloc>()
+                      .setUploadingMedia(true),
+                  onUploadSuccess: (uri) {
+                    final bloc =
+                        context.read<ProgressJournalEntryCreatorBloc>();
+                    bloc.updateEntry({'voiceNoteUri': uri});
+                    bloc.setUploadingMedia(false);
+                  },
+                  iconData: CupertinoIcons.mic_solid,
+                  removeAudio: () => context
+                      .read<ProgressJournalEntryCreatorBloc>()
+                      .updateEntry({'voiceNoteUri': null})),
+            ],
           ),
         ),
-        AudioUploader(
-            audioUri: voiceNoteUri,
-            onUploadStart: () => context
-                .read<ProgressJournalEntryCreatorBloc>()
-                .setUploadingMedia(true),
-            onUploadSuccess: (uri) {
-              final bloc = context.read<ProgressJournalEntryCreatorBloc>();
-              bloc.updateEntry({'voiceNoteUri': uri});
-              bloc.setUploadingMedia(false);
-            },
-            iconData: CupertinoIcons.mic_solid,
-            removeAudio: () => context
-                .read<ProgressJournalEntryCreatorBloc>()
-                .updateEntry({'voiceNoteUri': null})),
       ],
     );
   }
@@ -232,6 +179,8 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
   final kMaxScore = 10.0;
 
   void _updateScore(BuildContext context, String key, double score) {
+    print(key);
+    print(score);
     context.read<ProgressJournalEntryCreatorBloc>().updateEntry({
       key: score,
     });
@@ -241,7 +190,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
         progressJournalEntry.moodScore,
         progressJournalEntry.energyScore,
         progressJournalEntry.motivationScore,
-        progressJournalEntry.stressScore
+        progressJournalEntry.confidenceScore
       ].any((s) => s != null);
 
   double _calcOverallAverage(ProgressJournalEntry progressJournalEntry) {
@@ -250,7 +199,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
         progressJournalEntry.moodScore,
         progressJournalEntry.energyScore,
         progressJournalEntry.motivationScore,
-        progressJournalEntry.stressScore,
+        progressJournalEntry.confidenceScore
       ])
         if (s != null) s
     ];
@@ -272,7 +221,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ListView(
+      child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -301,7 +250,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
                   child: Row(
                     children: [
                       MyText(
-                        'Self Reporting',
+                        'Reflective Journaling',
                       ),
                       InfoPopupButton(
                           infoWidget: MyText(
@@ -351,10 +300,9 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
             score: entry.energyScore,
           ),
           JournalEntryScoreInput(
-            title: 'Stress',
-            updateScore: (s) => _updateScore(context, 'stressScore', s),
-            score: entry.stressScore,
-          ),
+              title: 'Confidence',
+              updateScore: (s) => _updateScore(context, 'confidenceScore', s),
+              score: entry.confidenceScore),
           JournalEntryScoreInput(
             title: 'Motivation',
             updateScore: (s) => _updateScore(context, 'motivationScore', s),
@@ -408,7 +356,7 @@ class _JournalEntryScoreInputState extends State<JournalEntryScoreInput> {
                     widget.title,
                     weight: FontWeight.bold,
                   ),
-                  H2(
+                  H3(
                     _activeScore != null
                         ? _activeScore!.stringMyDouble()
                         : ' - ',
@@ -442,93 +390,6 @@ class _JournalEntryScoreInputState extends State<JournalEntryScoreInput> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProgressJournalEntryPhotos extends StatelessWidget {
-  final kMaxPhotos = 6;
-
-  @override
-  Widget build(BuildContext context) {
-    final progressPhotoUris =
-        context.select<ProgressJournalEntryCreatorBloc, List<String>>(
-            (b) => b.entry.progressPhotoUris);
-
-    return Container(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                MyText(
-                  'Transformation Photos',
-                  weight: FontWeight.bold,
-                ),
-                InfoPopupButton(
-                    pageTitle: 'Transformation Tracking',
-                    infoWidget: MyText(
-                      'Explains how to use these photos and why you might want to take them.',
-                      maxLines: 6,
-                      textAlign: TextAlign.center,
-                    ))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              mainAxisSpacing: 4,
-              crossAxisSpacing: 4,
-              children: List.generate(
-                  kMaxPhotos,
-                  (index) => Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: ImageUploader(
-                          imageUri: progressPhotoUris.length > index
-                              ? progressPhotoUris[index]
-                              : null,
-                          onUploadStart: () => context
-                              .read<ProgressJournalEntryCreatorBloc>()
-                              .setUploadingMedia(true),
-                          onUploadSuccess: (uri) async {
-                            final bloc =
-                                context.read<ProgressJournalEntryCreatorBloc>();
-
-                            /// Are we adding a new image uri to the list or are we replacing one that is already there?
-                            final isEdit = progressPhotoUris.length > index;
-
-                            final updatedUriList = [...progressPhotoUris];
-
-                            if (isEdit) {
-                              updatedUriList.removeAt(index);
-                              updatedUriList.insert(index, uri);
-                            } else {
-                              updatedUriList.add(uri);
-                            }
-
-                            await bloc.updateEntry(
-                                {'progressPhotoUris': updatedUriList});
-                            bloc.setUploadingMedia(false);
-                          },
-                          removeImage: (uri) async {
-                            await context
-                                .read<ProgressJournalEntryCreatorBloc>()
-                                .updateEntry({
-                              'progressPhotoUris':
-                                  progressPhotoUris.toggleItem<String>(uri)
-                            });
-                          },
-                        ),
-                      )),
-            ),
-          )
-        ],
       ),
     );
   }

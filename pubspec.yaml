@@ -121,6 +121,7 @@ flutter:
     - assets/indicators/
     - assets/logos/
     - assets/other_app_icons/
+    - assets/progress_page_images/
     - assets/stock_images/
     - assets/workout_filters_icons/
 

@@ -89,7 +89,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryTextStyle = GoogleFonts.varela(
+    final primaryTextStyle = GoogleFonts.openSans(
         textStyle:
             TextStyle(color: context.theme.primary, height: 1, fontSize: 15));
 

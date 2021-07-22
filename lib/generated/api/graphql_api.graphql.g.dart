@@ -1367,11 +1367,8 @@ ProgressJournalEntry _$ProgressJournalEntryFromJson(
           unknownValue: BodyweightUnit.artemisUnknown)
       ..moodScore = (json['moodScore'] as num?)?.toDouble()
       ..energyScore = (json['energyScore'] as num?)?.toDouble()
-      ..stressScore = (json['stressScore'] as num?)?.toDouble()
-      ..motivationScore = (json['motivationScore'] as num?)?.toDouble()
-      ..progressPhotoUris = (json['progressPhotoUris'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList();
+      ..confidenceScore = (json['confidenceScore'] as num?)?.toDouble()
+      ..motivationScore = (json['motivationScore'] as num?)?.toDouble();
 
 Map<String, dynamic> _$ProgressJournalEntryToJson(
         ProgressJournalEntry instance) =>
@@ -1385,9 +1382,8 @@ Map<String, dynamic> _$ProgressJournalEntryToJson(
       'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
+      'confidenceScore': instance.confidenceScore,
       'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
     };
 
 const _$BodyweightUnitEnumMap = {
@@ -1492,11 +1488,8 @@ CreateProgressJournalEntryInput _$CreateProgressJournalEntryInputFromJson(
           unknownValue: BodyweightUnit.artemisUnknown),
       moodScore: (json['moodScore'] as num?)?.toDouble(),
       energyScore: (json['energyScore'] as num?)?.toDouble(),
-      stressScore: (json['stressScore'] as num?)?.toDouble(),
+      confidenceScore: (json['confidenceScore'] as num?)?.toDouble(),
       motivationScore: (json['motivationScore'] as num?)?.toDouble(),
-      progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
       progressJournal: ConnectRelationInput.fromJson(
           json['ProgressJournal'] as Map<String, dynamic>),
     );
@@ -1510,9 +1503,8 @@ Map<String, dynamic> _$CreateProgressJournalEntryInputToJson(
       'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
+      'confidenceScore': instance.confidenceScore,
       'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
       'ProgressJournal': instance.progressJournal.toJson(),
     };
 
@@ -1619,11 +1611,8 @@ UpdateProgressJournalEntryInput _$UpdateProgressJournalEntryInputFromJson(
           unknownValue: BodyweightUnit.artemisUnknown),
       moodScore: (json['moodScore'] as num?)?.toDouble(),
       energyScore: (json['energyScore'] as num?)?.toDouble(),
-      stressScore: (json['stressScore'] as num?)?.toDouble(),
+      confidenceScore: (json['confidenceScore'] as num?)?.toDouble(),
       motivationScore: (json['motivationScore'] as num?)?.toDouble(),
-      progressPhotoUris: (json['progressPhotoUris'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
     );
 
 Map<String, dynamic> _$UpdateProgressJournalEntryInputToJson(
@@ -1636,9 +1625,8 @@ Map<String, dynamic> _$UpdateProgressJournalEntryInputToJson(
       'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
-      'stressScore': instance.stressScore,
+      'confidenceScore': instance.confidenceScore,
       'motivationScore': instance.motivationScore,
-      'progressPhotoUris': instance.progressPhotoUris,
     };
 
 CreateProgressJournalGoal$Mutation _$CreateProgressJournalGoal$MutationFromJson(

@@ -17,9 +17,8 @@ fragment ProgressJournalEntry on ProgressJournalEntry {
   bodyweightUnit
   moodScore
   energyScore
-  stressScore
+  confidenceScore
   motivationScore
-  progressPhotoUris
 }
 
 fragment ProgressJournalGoal on ProgressJournalGoal {

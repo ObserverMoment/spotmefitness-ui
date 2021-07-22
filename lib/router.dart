@@ -31,15 +31,16 @@ import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_workouts.dart';
-import 'package:spotmefitness_ui/pages/authed/journal/journal_page.dart';
-import 'package:spotmefitness_ui/pages/authed/journal/your_benchmarks.dart';
-import 'package:spotmefitness_ui/pages/authed/journal/your_logged_workouts.dart';
-import 'package:spotmefitness_ui/pages/authed/journal/your_progress_journals.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/custom_moves_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/settings.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/benchmarks_page.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/body_transformation_page.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/logged_workouts_page.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/journals_page.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/progress_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 
@@ -88,18 +89,16 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                 ]),
             AutoRoute(path: 'social', page: SocialPage),
             AutoRoute(
-                path: 'journal',
-                name: 'journalStack',
+                path: 'progress',
+                name: 'progressStack',
                 page: HeroEmptyRouterPage,
                 children: [
-                  AutoRoute(path: '', page: JournalPage),
-                  AutoRoute(path: 'your-benchmarks', page: YourBenchmarksPage),
+                  AutoRoute(path: '', page: ProgressPage),
+                  AutoRoute(path: 'benchmarks', page: BenchmarksPage),
+                  AutoRoute(path: 'journals', page: JournalsPage),
                   AutoRoute(
-                      path: 'your-logged-workouts',
-                      page: YourLoggedWorkoutsPage),
-                  AutoRoute(
-                      path: 'your-progress-journals',
-                      page: YourProgressJournalsPage),
+                      path: 'transformation', page: BodyTransformationPage),
+                  AutoRoute(path: 'workout-logs', page: LoggedWorkoutsPage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
             AutoRoute(path: 'profile', page: ProfilePage, children: [

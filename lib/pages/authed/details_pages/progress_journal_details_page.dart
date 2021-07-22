@@ -109,7 +109,7 @@ class _ProgressJournalDetailsPageState
             'ProgressJournalDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         parameterizeQuery: true,
-        loadingIndicator: ShimmerDetailsPage(title: 'Journals'),
+        loadingIndicator: ShimmerListPage(),
         builder: (data) {
           final journal = data.progressJournalById;
           return CupertinoPageScaffold(

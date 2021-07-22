@@ -197,9 +197,8 @@ input CreateProgressJournalEntryInput {
   bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
-  stressScore: Float
+  confidenceScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]!
   ProgressJournal: ConnectRelationInput!
 }
 
@@ -636,9 +635,8 @@ type ProgressJournalEntry {
   bodyweightUnit: BodyweightUnit!
   moodScore: Float
   energyScore: Float
-  stressScore: Float
+  confidenceScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]!
   ProgressJournal: ProgressJournal!
 }
 
@@ -819,9 +817,8 @@ input UpdateProgressJournalEntryInput {
   bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
-  stressScore: Float
+  confidenceScore: Float
   motivationScore: Float
-  progressPhotoUris: [String!]!
 }
 
 input UpdateProgressJournalGoalInput {

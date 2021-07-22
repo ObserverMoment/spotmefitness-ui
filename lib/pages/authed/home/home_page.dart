@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
     return CupertinoPageScaffold(
       key: Key('HomePage-CupertinoPageScaffold'),
       navigationBar: BorderlessNavBar(
-        key: Key('HomePage-BasicNavBar'),
+        key: Key('HomePage-BorderlessNavBar'),
         customLeading: NavBarLargeTitle('Home'),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -66,48 +66,48 @@ class HomePage extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => context.navigateTo(YourWorkoutsRoute()),
-                  child: HomeScreenCard(
+                  child: _HomeScreenCard(
                     label: 'Workouts',
                     assetImagePath: 'home_page_workouts.jpg',
                   ),
                 ),
                 GestureDetector(
                   onTap: () => context.navigateTo(YourPlansRoute()),
-                  child: HomeScreenCard(
+                  child: _HomeScreenCard(
                     label: 'Plans',
                     assetImagePath: 'home_page_plans.jpg',
                   ),
                 ),
                 GestureDetector(
                   onTap: () => context.navigateTo(YourClubsRoute()),
-                  child: HomeScreenCard(
+                  child: _HomeScreenCard(
                     label: 'Clubs',
                     assetImagePath: 'home_page_clubs.jpg',
                   ),
                 ),
                 GestureDetector(
                   onTap: () => context.navigateTo(YourEventsRoute()),
-                  child: HomeScreenCard(
+                  child: _HomeScreenCard(
                     label: 'Events',
                     assetImagePath: 'home_page_events.jpg',
                   ),
                 ),
-                HomeScreenCard(
+                _HomeScreenCard(
                   label: 'Challenges',
                   assetImagePath: 'home_page_challenges.jpg',
                 ),
                 GestureDetector(
                   onTap: () => context.navigateTo(YourCollectionsRoute()),
-                  child: HomeScreenCard(
+                  child: _HomeScreenCard(
                     label: 'Collections',
                     assetImagePath: 'home_page_collections.jpg',
                   ),
                 ),
-                HomeScreenCard(
+                _HomeScreenCard(
                   label: 'Nutrition',
                   assetImagePath: 'home_page_nutrition.jpg',
                 ),
-                HomeScreenCard(
+                _HomeScreenCard(
                   label: 'Mind',
                   assetImagePath: 'home_page_mind.jpg',
                 ),
@@ -120,31 +120,33 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class HomeScreenCard extends StatelessWidget {
+class _HomeScreenCard extends StatelessWidget {
   final String label;
 
-  final String? assetImagePath;
-  HomeScreenCard({required this.label, this.assetImagePath});
+  final String assetImagePath;
+  _HomeScreenCard({required this.label, required this.assetImagePath});
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(6),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
-          image: assetImagePath != null
-              ? DecorationImage(
-                  fit: BoxFit.cover,
-                  image:
-                      AssetImage('assets/home_page_images/${assetImagePath!}'))
-              : null,
+          image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage('assets/home_page_images/${assetImagePath}')),
           borderRadius: BorderRadius.circular(5)),
       child: Align(
           alignment: Alignment.bottomLeft,
           child: Padding(
             padding: const EdgeInsets.all(6),
             child: ContentBox(
-              child: H3(label),
-              borderRadius: 40,
+              child: MyText(
+                label,
+                weight: FontWeight.bold,
+                maxLines: 2,
+                lineHeight: 1.3,
+              ),
+              borderRadius: 4,
             ),
           )),
     );

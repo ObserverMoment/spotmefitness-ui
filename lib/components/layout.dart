@@ -127,7 +127,7 @@ class StackAndFloatingButton extends StatelessWidget {
         child,
         Positioned(
             bottom:
-                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 40,
+                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 24,
             right: 10,
             child:
                 RoundIconButton(iconData: buttonIconData, onPressed: onPressed))

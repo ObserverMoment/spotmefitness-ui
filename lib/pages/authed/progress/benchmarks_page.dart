@@ -11,12 +11,12 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
-class YourBenchmarksPage extends StatelessWidget {
+class BenchmarksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query = UserBenchmarksQuery(variables: UserBenchmarksArguments());
     return QueryObserver<UserBenchmarks$Query, json.JsonSerializable>(
-        key: Key('YourBenchmarksPage - ${query.operationName}'),
+        key: Key('BenchmarksPage - ${query.operationName}'),
         query: query,
         loadingIndicator: ShimmerCardList(itemCount: 10),
         builder: (data) {

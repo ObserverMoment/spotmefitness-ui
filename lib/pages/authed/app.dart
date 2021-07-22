@@ -61,7 +61,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
             HomeStack(),
             DiscoverStack(),
             SocialRoute(),
-            JournalStack(),
+            ProgressStack(),
             ProfileRoute(),
           ],
           builder: (context, child, animation) {

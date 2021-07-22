@@ -17,13 +17,13 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class YourLoggedWorkoutsPage extends StatelessWidget {
+class LoggedWorkoutsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query =
         UserLoggedWorkoutsQuery(variables: UserLoggedWorkoutsArguments());
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
-        key: Key('YourLoggedWorkoutsPage - ${query.operationName}'),
+        key: Key('LoggedWorkoutsPage - ${query.operationName}'),
         query: query,
         loadingIndicator: ShimmerCardList(itemCount: 10),
         builder: (data) {
@@ -33,20 +33,12 @@ class YourLoggedWorkoutsPage extends StatelessWidget {
               .toList();
 
           return CupertinoPageScaffold(
-            key: Key('YourLoggedWorkoutsPage - CupertinoPageScaffold'),
+            key: Key('LoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: BorderlessNavBar(
-              key: Key('YourLoggedWorkoutsPage - BasicNavBar'),
+              key: Key('LoggedWorkoutsPage - BasicNavBar'),
               middle: NavBarTitle('Workout Logs'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CreateIconButton(
-                    onPressed: () => print('open manual entry log'),
-                  ),
-                  InfoPopupButton(infoWidget: MyText('Info about the logs'))
-                ],
-              ),
+              trailing:
+                  InfoPopupButton(infoWidget: MyText('Info about the logs')),
             ),
             child: FilterableLoggedWorkoutsList(logs),
           );

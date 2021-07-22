@@ -93,6 +93,24 @@ class ShimmerCardGrid extends StatelessWidget {
   }
 }
 
+class ShimmerListPage extends StatelessWidget {
+  final String title;
+  ShimmerListPage({this.title = 'Getting ready...'});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        navigationBar: BorderlessNavBar(
+          middle: NavBarTitle(title),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ShimmerCardList(
+            itemCount: 10,
+          ),
+        ));
+  }
+}
+
 class ShimmerDetailsPage extends StatelessWidget {
   final String title;
   ShimmerDetailsPage({required this.title});

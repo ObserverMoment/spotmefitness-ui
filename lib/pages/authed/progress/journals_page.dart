@@ -11,14 +11,13 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
-class YourProgressJournalsPage extends StatelessWidget {
+class JournalsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserProgressJournals$Query, json.JsonSerializable>(
-        key: Key(
-            'YourProgressJournalsPage - ${UserProgressJournalsQuery().operationName}'),
+        key: Key('JournalsPage - ${UserProgressJournalsQuery().operationName}'),
         query: UserProgressJournalsQuery(),
-        loadingIndicator: ShimmerCardList(itemCount: 10),
+        loadingIndicator: ShimmerListPage(),
         builder: (data) {
           final journals = data.userProgressJournals
               .sortedBy<DateTime>((j) => j.createdAt)
@@ -26,9 +25,9 @@ class YourProgressJournalsPage extends StatelessWidget {
               .toList();
 
           return CupertinoPageScaffold(
-            key: Key('YourProgressJournalsPage - CupertinoPageScaffold'),
+            key: Key('JournalsPage - CupertinoPageScaffold'),
             navigationBar: BorderlessNavBar(
-              key: Key('YourProgressJournalsPage - BasicNavBar'),
+              key: Key('JournalsPage - BorderlessNavBar'),
               middle: NavBarTitle('Journals'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
