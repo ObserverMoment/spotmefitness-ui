@@ -276,7 +276,7 @@ class RoundIconButton extends StatelessWidget {
         pressedOpacity: 0.8,
         onPressed: disabled ? null : onPressed,
         child: Container(
-          height: 50,
+          height: 60,
           alignment: Alignment.center,
           padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
           decoration: BoxDecoration(

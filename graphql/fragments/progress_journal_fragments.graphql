@@ -1,3 +1,13 @@
+fragment BodyTransformationPhoto on BodyTransformationPhoto {
+  __typename
+  id
+  createdAt
+  takenOnDate
+  bodyweight
+  note
+  photoUri
+}
+
 fragment ProgressJournal on ProgressJournal {
   __typename
   id

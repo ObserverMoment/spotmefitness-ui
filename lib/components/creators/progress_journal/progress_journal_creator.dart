@@ -61,7 +61,6 @@ class _ProgressJournalCreatorPageState
   void _handleSave() async {
     setState(() => _isLoading = true);
     if (_isEditing) {
-      print(_activeProgressJournal.description);
       final variables = UpdateProgressJournalArguments(
           data: UpdateProgressJournalInput(
               id: _activeProgressJournal.id,

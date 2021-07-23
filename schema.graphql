@@ -52,6 +52,15 @@ enum BodyAreaUpperLower {
   UPPER
 }
 
+type BodyTransformationPhoto {
+  id: ID!
+  createdAt: DateTime!
+  takenOnDate: DateTime!
+  bodyweight: Float
+  note: String
+  photoUri: String!
+}
+
 enum BodyweightUnit {
   KG
   LB
@@ -80,6 +89,13 @@ enum ContentAccessScope {
 input CopyWorkoutPlanDayToAnotherDayInput {
   id: ID!
   copyToDay: Int!
+}
+
+input CreateBodyTransformationPhotoInput {
+  takenOnDate: DateTime!
+  bodyweight: Float
+  note: String
+  photoUri: String!
 }
 
 input CreateCollectionInput {
@@ -525,6 +541,9 @@ type Mutation {
   createProgressJournal(data: CreateProgressJournalInput!): ProgressJournal!
   updateProgressJournal(data: UpdateProgressJournalInput!): ProgressJournal!
   deleteProgressJournalById(id: ID!): ID!
+  createBodyTransformationPhotos(data: [CreateBodyTransformationPhotoInput!]!): [BodyTransformationPhoto!]!
+  updateBodyTransformationPhoto(data: UpdateBodyTransformationPhotoInput!): BodyTransformationPhoto!
+  deleteBodyTransformationPhotosById(ids: [ID!]!): [ID!]!
   createProgressJournalEntry(data: CreateProgressJournalEntryInput!): ProgressJournalEntry!
   updateProgressJournalEntry(data: UpdateProgressJournalEntryInput!): ProgressJournalEntry!
   deleteProgressJournalEntryById(id: ID!): ID!
@@ -671,6 +690,7 @@ type Query {
   loggedWorkoutById(id: ID!): LoggedWorkout!
   standardMoves: [Move!]!
   userCustomMoves: [Move!]!
+  bodyTransformationPhotos: [BodyTransformationPhoto!]!
   userProgressJournals: [ProgressJournal!]!
   progressJournalById(id: ID!): ProgressJournal!
   progressJournalGoalTags: [ProgressJournalGoalTag!]!
@@ -736,6 +756,14 @@ enum TimeUnit {
   HOURS
   MINUTES
   SECONDS
+}
+
+input UpdateBodyTransformationPhotoInput {
+  id: ID!
+  takenOnDate: DateTime
+  bodyweight: Float
+  note: String
+  photoUri: String
 }
 
 input UpdateCollectionInput {

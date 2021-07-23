@@ -1,0 +1,3 @@
+mutation deleteBodyTransformationPhotosById($ids: [ID!]!) {
+  deleteBodyTransformationPhotosById(ids: $ids)
+}

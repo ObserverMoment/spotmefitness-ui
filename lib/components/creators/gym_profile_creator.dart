@@ -61,14 +61,6 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
     });
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _nameController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
   void _checkDirtyAndSetState(void Function() fn) {
     _formIsDirty = true;
     setState(fn);
@@ -186,6 +178,14 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   }
 
   bool _inputValid() => _nameController.text.length > 1;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

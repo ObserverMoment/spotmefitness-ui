@@ -16,11 +16,17 @@ class FullScreenImageGallery extends StatefulWidget {
   final List<String> fileIds;
   final String pageTitle;
   final Axis scrollDirection;
+  final bool showProgressDots;
+
+  /// If [false] the image will take up the full screen.
+  final bool withTopNavBar;
 
   FullScreenImageGallery(this.fileIds,
       {this.pageTitle = 'Gallery',
       this.scrollDirection = Axis.vertical,
-      this.initialPageIndex = 0});
+      this.initialPageIndex = 0,
+      this.withTopNavBar = true,
+      this.showProgressDots = false});
 
   @override
   _FullScreenImageGalleryState createState() => _FullScreenImageGalleryState();
@@ -49,11 +55,12 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
     final width = size.width;
     final height = size.height;
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          heroTag: 'FullScreenImageGallery',
-          customLeading: NavBarCloseButton(context.pop),
-          middle: NavBarTitle(widget.pageTitle),
-        ),
+        navigationBar: widget.withTopNavBar
+            ? BorderlessNavBar(
+                customLeading: NavBarCloseButton(context.pop),
+                middle: NavBarTitle(widget.pageTitle),
+              )
+            : null,
         child: Column(
           children: [
             Expanded(
@@ -62,6 +69,7 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
                 onPageChanged: (newIndex) =>
                     setState(() => _activeIndex = newIndex),
                 scrollPhysics: const BouncingScrollPhysics(),
+                scrollDirection: widget.scrollDirection,
                 backgroundDecoration:
                     BoxDecoration(color: context.theme.background),
                 gaplessPlayback: true,
@@ -86,14 +94,15 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: BasicProgressDots(
-                numDots: widget.fileIds.length,
-                currentIndex: _activeIndex,
-                dotSize: 16,
-              ),
-            )
+            if (widget.showProgressDots)
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: BasicProgressDots(
+                  numDots: widget.fileIds.length,
+                  currentIndex: _activeIndex,
+                  dotSize: 16,
+                ),
+              )
           ],
         ));
   }

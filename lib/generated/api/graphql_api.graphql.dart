@@ -470,6 +470,22 @@ mixin ScheduledWorkoutMixin {
   String? note;
   String? workoutPlanEnrolmentId;
 }
+mixin BodyTransformationPhotoMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime createdAt;
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime takenOnDate;
+  double? bodyweight;
+  String? note;
+  late String photoUri;
+}
 
 @JsonSerializable(explicitToJson: true)
 class Equipment extends JsonSerializable with EquatableMixin, EquipmentMixin {
@@ -5996,6 +6012,156 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   List<Object?> get props => [workoutById];
   @override
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteBodyTransformationPhotosById$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteBodyTransformationPhotosById$Mutation();
+
+  factory DeleteBodyTransformationPhotosById$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteBodyTransformationPhotosById$MutationFromJson(json);
+
+  late List<String> deleteBodyTransformationPhotosById;
+
+  @override
+  List<Object?> get props => [deleteBodyTransformationPhotosById];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteBodyTransformationPhotosById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class BodyTransformationPhoto extends JsonSerializable
+    with EquatableMixin, BodyTransformationPhotoMixin {
+  BodyTransformationPhoto();
+
+  factory BodyTransformationPhoto.fromJson(Map<String, dynamic> json) =>
+      _$BodyTransformationPhotoFromJson(json);
+
+  @override
+  List<Object?> get props =>
+      [$$typename, id, createdAt, takenOnDate, bodyweight, note, photoUri];
+  @override
+  Map<String, dynamic> toJson() => _$BodyTransformationPhotoToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateBodyTransformationPhoto$Mutation extends JsonSerializable
+    with EquatableMixin {
+  UpdateBodyTransformationPhoto$Mutation();
+
+  factory UpdateBodyTransformationPhoto$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateBodyTransformationPhoto$MutationFromJson(json);
+
+  late BodyTransformationPhoto updateBodyTransformationPhoto;
+
+  @override
+  List<Object?> get props => [updateBodyTransformationPhoto];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateBodyTransformationPhoto$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateBodyTransformationPhotoInput extends JsonSerializable
+    with EquatableMixin {
+  UpdateBodyTransformationPhotoInput(
+      {required this.id,
+      this.takenOnDate,
+      this.bodyweight,
+      this.note,
+      this.photoUri});
+
+  factory UpdateBodyTransformationPhotoInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateBodyTransformationPhotoInputFromJson(json);
+
+  late String id;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
+      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+  DateTime? takenOnDate;
+
+  double? bodyweight;
+
+  String? note;
+
+  String? photoUri;
+
+  @override
+  List<Object?> get props => [id, takenOnDate, bodyweight, note, photoUri];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateBodyTransformationPhotoInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateBodyTransformationPhotos$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateBodyTransformationPhotos$Mutation();
+
+  factory CreateBodyTransformationPhotos$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateBodyTransformationPhotos$MutationFromJson(json);
+
+  late List<BodyTransformationPhoto> createBodyTransformationPhotos;
+
+  @override
+  List<Object?> get props => [createBodyTransformationPhotos];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateBodyTransformationPhotos$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateBodyTransformationPhotoInput extends JsonSerializable
+    with EquatableMixin {
+  CreateBodyTransformationPhotoInput(
+      {required this.takenOnDate,
+      this.bodyweight,
+      this.note,
+      required this.photoUri});
+
+  factory CreateBodyTransformationPhotoInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateBodyTransformationPhotoInputFromJson(json);
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime takenOnDate;
+
+  double? bodyweight;
+
+  String? note;
+
+  late String photoUri;
+
+  @override
+  List<Object?> get props => [takenOnDate, bodyweight, note, photoUri];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateBodyTransformationPhotoInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class BodyTransformationPhotos$Query extends JsonSerializable
+    with EquatableMixin {
+  BodyTransformationPhotos$Query();
+
+  factory BodyTransformationPhotos$Query.fromJson(Map<String, dynamic> json) =>
+      _$BodyTransformationPhotos$QueryFromJson(json);
+
+  late List<BodyTransformationPhoto> bodyTransformationPhotos;
+
+  @override
+  List<Object?> get props => [bodyTransformationPhotos];
+  @override
+  Map<String, dynamic> toJson() => _$BodyTransformationPhotos$QueryToJson(this);
 }
 
 enum BodyAreaFrontBack {
@@ -56132,4 +56298,416 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteBodyTransformationPhotosByIdArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteBodyTransformationPhotosByIdArguments({required this.ids});
+
+  @override
+  factory DeleteBodyTransformationPhotosByIdArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$DeleteBodyTransformationPhotosByIdArgumentsFromJson(json);
+
+  late List<String> ids;
+
+  @override
+  List<Object?> get props => [ids];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteBodyTransformationPhotosByIdArgumentsToJson(this);
+}
+
+final DELETE_BODY_TRANSFORMATION_PHOTOS_BY_ID_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteBodyTransformationPhotosById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'ids')),
+            type: ListTypeNode(
+                type:
+                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteBodyTransformationPhotosById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'ids'),
+                  value: VariableNode(name: NameNode(value: 'ids')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteBodyTransformationPhotosByIdMutation extends GraphQLQuery<
+    DeleteBodyTransformationPhotosById$Mutation,
+    DeleteBodyTransformationPhotosByIdArguments> {
+  DeleteBodyTransformationPhotosByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      DELETE_BODY_TRANSFORMATION_PHOTOS_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteBodyTransformationPhotosById';
+
+  @override
+  final DeleteBodyTransformationPhotosByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteBodyTransformationPhotosById$Mutation parse(
+          Map<String, dynamic> json) =>
+      DeleteBodyTransformationPhotosById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UpdateBodyTransformationPhotoArguments extends JsonSerializable
+    with EquatableMixin {
+  UpdateBodyTransformationPhotoArguments({required this.data});
+
+  @override
+  factory UpdateBodyTransformationPhotoArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$UpdateBodyTransformationPhotoArgumentsFromJson(json);
+
+  late UpdateBodyTransformationPhotoInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UpdateBodyTransformationPhotoArgumentsToJson(this);
+}
+
+final UPDATE_BODY_TRANSFORMATION_PHOTO_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'updateBodyTransformationPhoto'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'UpdateBodyTransformationPhotoInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'updateBodyTransformationPhoto'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'BodyTransformationPhoto'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'BodyTransformationPhoto'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'BodyTransformationPhoto'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'takenOnDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'photoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UpdateBodyTransformationPhotoMutation extends GraphQLQuery<
+    UpdateBodyTransformationPhoto$Mutation,
+    UpdateBodyTransformationPhotoArguments> {
+  UpdateBodyTransformationPhotoMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      UPDATE_BODY_TRANSFORMATION_PHOTO_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'updateBodyTransformationPhoto';
+
+  @override
+  final UpdateBodyTransformationPhotoArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UpdateBodyTransformationPhoto$Mutation parse(Map<String, dynamic> json) =>
+      UpdateBodyTransformationPhoto$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateBodyTransformationPhotosArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateBodyTransformationPhotosArguments({required this.data});
+
+  @override
+  factory CreateBodyTransformationPhotosArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateBodyTransformationPhotosArgumentsFromJson(json);
+
+  late List<CreateBodyTransformationPhotoInput> data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateBodyTransformationPhotosArgumentsToJson(this);
+}
+
+final CREATE_BODY_TRANSFORMATION_PHOTOS_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createBodyTransformationPhotos'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: ListTypeNode(
+                type: NamedTypeNode(
+                    name: NameNode(value: 'CreateBodyTransformationPhotoInput'),
+                    isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createBodyTransformationPhotos'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'BodyTransformationPhoto'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'BodyTransformationPhoto'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'BodyTransformationPhoto'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'takenOnDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'photoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateBodyTransformationPhotosMutation extends GraphQLQuery<
+    CreateBodyTransformationPhotos$Mutation,
+    CreateBodyTransformationPhotosArguments> {
+  CreateBodyTransformationPhotosMutation({required this.variables});
+
+  @override
+  final DocumentNode document =
+      CREATE_BODY_TRANSFORMATION_PHOTOS_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createBodyTransformationPhotos';
+
+  @override
+  final CreateBodyTransformationPhotosArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateBodyTransformationPhotos$Mutation parse(Map<String, dynamic> json) =>
+      CreateBodyTransformationPhotos$Mutation.fromJson(json);
+}
+
+final BODY_TRANSFORMATION_PHOTOS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'bodyTransformationPhotos'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'bodyTransformationPhotos'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'BodyTransformationPhoto'),
+                  directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'BodyTransformationPhoto'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'BodyTransformationPhoto'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'takenOnDate'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweight'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'note'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'photoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class BodyTransformationPhotosQuery
+    extends GraphQLQuery<BodyTransformationPhotos$Query, JsonSerializable> {
+  BodyTransformationPhotosQuery();
+
+  @override
+  final DocumentNode document = BODY_TRANSFORMATION_PHOTOS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'bodyTransformationPhotos';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  BodyTransformationPhotos$Query parse(Map<String, dynamic> json) =>
+      BodyTransformationPhotos$Query.fromJson(json);
 }

@@ -1,0 +1,5 @@
+query bodyTransformationPhotos {
+  bodyTransformationPhotos {
+    ...BodyTransformationPhoto
+  }
+}

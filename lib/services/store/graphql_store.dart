@@ -321,10 +321,20 @@ class GraphQLStore {
       final alias = extractRootFieldAliasFromOperation(mutation);
       final data = response.data?[alias ?? mutation.operationName] ?? {};
 
-      normalizeToStore(
-          data: data, write: mergeWriteNormalized, read: readNormalized);
-
-      _addRefToQueries(data: data, queryIds: addRefToQueries);
+      /// Handle cases where returned data is a list of objects.
+      /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
+      /// Note: Optimistic data cannot be a list...currently.
+      if (data is List) {
+        data.forEach((e) {
+          normalizeToStore(
+              data: e, write: mergeWriteNormalized, read: readNormalized);
+          _addRefToQueries(data: e, queryIds: addRefToQueries);
+        });
+      } else {
+        normalizeToStore(
+            data: data, write: mergeWriteNormalized, read: readNormalized);
+        _addRefToQueries(data: data, queryIds: addRefToQueries);
+      }
     }
 
     return result;
@@ -405,18 +415,35 @@ class GraphQLStore {
 
       final data = response.data?[alias ?? mutation.operationName] ?? {};
 
-      normalizeToStore(
-          data: data, write: mergeWriteNormalized, read: readNormalized);
-
       if (addRefToQueries.isNotEmpty) {
-        _addRefToQueries(data: data, queryIds: addRefToQueries);
+        /// Handle cases where returned data is a list of objects.
+        /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
+        /// Note: Optimistic data cannot be a list...currently.
+        if (data is List) {
+          data.forEach((e) {
+            normalizeToStore(
+                data: e, write: mergeWriteNormalized, read: readNormalized);
+            _addRefToQueries(data: e, queryIds: addRefToQueries);
+          });
+        } else {
+          normalizeToStore(
+              data: data, write: mergeWriteNormalized, read: readNormalized);
+          _addRefToQueries(data: data, queryIds: addRefToQueries);
+        }
       }
 
       if (removeRefFromQueries.isNotEmpty) {
+        /// Handle cases where returned data is a list of objects.
+        /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
+        if (data is List) {
+          data.forEach((e) {
+            _removeRefFromQueries(data: e, queryIds: removeRefFromQueries);
+          });
+        } else {
+          _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
+        }
         _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
       }
-
-      _broadcast(broadcastQueryIds);
     }
 
     return result;

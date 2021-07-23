@@ -4632,6 +4632,135 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+DeleteBodyTransformationPhotosById$Mutation
+    _$DeleteBodyTransformationPhotosById$MutationFromJson(
+            Map<String, dynamic> json) =>
+        DeleteBodyTransformationPhotosById$Mutation()
+          ..deleteBodyTransformationPhotosById =
+              (json['deleteBodyTransformationPhotosById'] as List<dynamic>)
+                  .map((e) => e as String)
+                  .toList();
+
+Map<String, dynamic> _$DeleteBodyTransformationPhotosById$MutationToJson(
+        DeleteBodyTransformationPhotosById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteBodyTransformationPhotosById':
+          instance.deleteBodyTransformationPhotosById,
+    };
+
+BodyTransformationPhoto _$BodyTransformationPhotoFromJson(
+        Map<String, dynamic> json) =>
+    BodyTransformationPhoto()
+      ..$$typename = json['__typename'] as String?
+      ..id = json['id'] as String
+      ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+      ..takenOnDate =
+          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int)
+      ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
+      ..note = json['note'] as String?
+      ..photoUri = json['photoUri'] as String;
+
+Map<String, dynamic> _$BodyTransformationPhotoToJson(
+        BodyTransformationPhoto instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+UpdateBodyTransformationPhoto$Mutation
+    _$UpdateBodyTransformationPhoto$MutationFromJson(
+            Map<String, dynamic> json) =>
+        UpdateBodyTransformationPhoto$Mutation()
+          ..updateBodyTransformationPhoto = BodyTransformationPhoto.fromJson(
+              json['updateBodyTransformationPhoto'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$UpdateBodyTransformationPhoto$MutationToJson(
+        UpdateBodyTransformationPhoto$Mutation instance) =>
+    <String, dynamic>{
+      'updateBodyTransformationPhoto':
+          instance.updateBodyTransformationPhoto.toJson(),
+    };
+
+UpdateBodyTransformationPhotoInput _$UpdateBodyTransformationPhotoInputFromJson(
+        Map<String, dynamic> json) =>
+    UpdateBodyTransformationPhotoInput(
+      id: json['id'] as String,
+      takenOnDate: fromGraphQLDateTimeToDartDateTimeNullable(
+          json['takenOnDate'] as int?),
+      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+      note: json['note'] as String?,
+      photoUri: json['photoUri'] as String?,
+    );
+
+Map<String, dynamic> _$UpdateBodyTransformationPhotoInputToJson(
+        UpdateBodyTransformationPhotoInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'takenOnDate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+CreateBodyTransformationPhotos$Mutation
+    _$CreateBodyTransformationPhotos$MutationFromJson(
+            Map<String, dynamic> json) =>
+        CreateBodyTransformationPhotos$Mutation()
+          ..createBodyTransformationPhotos =
+              (json['createBodyTransformationPhotos'] as List<dynamic>)
+                  .map((e) => BodyTransformationPhoto.fromJson(
+                      e as Map<String, dynamic>))
+                  .toList();
+
+Map<String, dynamic> _$CreateBodyTransformationPhotos$MutationToJson(
+        CreateBodyTransformationPhotos$Mutation instance) =>
+    <String, dynamic>{
+      'createBodyTransformationPhotos': instance.createBodyTransformationPhotos
+          .map((e) => e.toJson())
+          .toList(),
+    };
+
+CreateBodyTransformationPhotoInput _$CreateBodyTransformationPhotoInputFromJson(
+        Map<String, dynamic> json) =>
+    CreateBodyTransformationPhotoInput(
+      takenOnDate:
+          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int),
+      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+      note: json['note'] as String?,
+      photoUri: json['photoUri'] as String,
+    );
+
+Map<String, dynamic> _$CreateBodyTransformationPhotoInputToJson(
+        CreateBodyTransformationPhotoInput instance) =>
+    <String, dynamic>{
+      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+BodyTransformationPhotos$Query _$BodyTransformationPhotos$QueryFromJson(
+        Map<String, dynamic> json) =>
+    BodyTransformationPhotos$Query()
+      ..bodyTransformationPhotos =
+          (json['bodyTransformationPhotos'] as List<dynamic>)
+              .map((e) =>
+                  BodyTransformationPhoto.fromJson(e as Map<String, dynamic>))
+              .toList();
+
+Map<String, dynamic> _$BodyTransformationPhotos$QueryToJson(
+        BodyTransformationPhotos$Query instance) =>
+    <String, dynamic>{
+      'bodyTransformationPhotos':
+          instance.bodyTransformationPhotos.map((e) => e.toJson()).toList(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
         Map<String, dynamic> json) =>
     CreateWorkoutMoveArguments(
@@ -5942,4 +6071,47 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+DeleteBodyTransformationPhotosByIdArguments
+    _$DeleteBodyTransformationPhotosByIdArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        DeleteBodyTransformationPhotosByIdArguments(
+          ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
+        );
+
+Map<String, dynamic> _$DeleteBodyTransformationPhotosByIdArgumentsToJson(
+        DeleteBodyTransformationPhotosByIdArguments instance) =>
+    <String, dynamic>{
+      'ids': instance.ids,
+    };
+
+UpdateBodyTransformationPhotoArguments
+    _$UpdateBodyTransformationPhotoArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        UpdateBodyTransformationPhotoArguments(
+          data: UpdateBodyTransformationPhotoInput.fromJson(
+              json['data'] as Map<String, dynamic>),
+        );
+
+Map<String, dynamic> _$UpdateBodyTransformationPhotoArgumentsToJson(
+        UpdateBodyTransformationPhotoArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateBodyTransformationPhotosArguments
+    _$CreateBodyTransformationPhotosArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        CreateBodyTransformationPhotosArguments(
+          data: (json['data'] as List<dynamic>)
+              .map((e) => CreateBodyTransformationPhotoInput.fromJson(
+                  e as Map<String, dynamic>))
+              .toList(),
+        );
+
+Map<String, dynamic> _$CreateBodyTransformationPhotosArgumentsToJson(
+        CreateBodyTransformationPhotosArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.map((e) => e.toJson()).toList(),
     };
