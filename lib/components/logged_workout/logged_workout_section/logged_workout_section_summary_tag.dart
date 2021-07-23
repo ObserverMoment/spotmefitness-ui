@@ -10,18 +10,16 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
   final LoggedWorkoutSection section;
   final FONTSIZE fontsize;
+  final FontWeight fontWeight;
   LoggedWorkoutSectionSummaryTag(this.section,
-      {this.fontsize = FONTSIZE.SMALL});
+      {this.fontsize = FONTSIZE.SMALL, this.fontWeight = FontWeight.normal});
 
   /// The number of reps as specified by the workout plan. For AMRAPs etc use [repsScore].
   int _reps() => DataUtils.totalRepsInSection<LoggedWorkoutSection>(section);
 
   int? _repsScore() => section.repScore ?? null;
 
-  Widget _text(String t) => MyText(
-        t,
-        size: fontsize,
-      );
+  Widget _text(String t) => MyText(t, size: fontsize, weight: fontWeight);
 
   List<Widget> _build() {
     final time = section.timeTakenMs != null
@@ -41,7 +39,9 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
       case kForTimeName:
         return [
           SizedBox(width: 4),
-          MyText('${_reps()} reps'),
+          _text(
+            '${_reps()} reps',
+          ),
           if (time != null) _text(' in '),
           if (time != null) _text(Duration(seconds: time).compactDisplay())
         ];
@@ -66,15 +66,13 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(60),
             border: Border.all(color: context.theme.primary)),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            MyText(
-              '${section.workoutSectionType.name}',
-              size: fontsize,
-            ),
+            MyText('${section.workoutSectionType.name}',
+                size: fontsize, weight: fontWeight),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: _build(),

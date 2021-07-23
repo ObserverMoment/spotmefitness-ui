@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -13,10 +14,6 @@ class LoggedWorkoutCard extends StatelessWidget {
   final LoggedWorkout loggedWorkout;
 
   LoggedWorkoutCard(this.loggedWorkout);
-
-  final kNumSectionTags = 3;
-  final kNumBodyAreaTags = 4;
-  final kNumMoveTypeTags = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -37,91 +34,66 @@ class LoggedWorkoutCard extends StatelessWidget {
       }
     }
 
-    final bool sectionTagsOverflow =
-        loggedWorkout.loggedWorkoutSections.length > kNumSectionTags;
-
-    final bool moveTypesOverflow = moveTypes.length > kNumMoveTypeTags;
-
-    final bool bodyAreasOverflow = bodyAreas.length > kNumBodyAreaTags;
-
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 2.0, top: 4),
+            padding: const EdgeInsets.all(4.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Flexible(
-                  child: MyText(
-                    loggedWorkout.name,
-                    weight: FontWeight.bold,
-                  ),
-                ),
                 MyText(
                   loggedWorkout.completedOn.compactDateString,
                   color: Styles.infoBlue,
-                  weight: FontWeight.bold,
-                )
+                  size: FONTSIZE.SMALL,
+                ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 4.0, top: 4.0),
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              children: [
+                MyText(
+                  loggedWorkout.name,
+                ),
+              ],
+            ),
+          ),
+          HorizontalLine(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
             child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 6,
+                spacing: 8,
+                runSpacing: 12,
                 children: [
                   ...loggedWorkout.loggedWorkoutSections
-                      .take(kNumSectionTags)
-                      .map((section) => LoggedWorkoutSectionSummaryTag(section))
+                      .map((section) => LoggedWorkoutSectionSummaryTag(
+                            section,
+                            fontsize: FONTSIZE.TINY,
+                            fontWeight: FontWeight.bold,
+                          ))
                       .toList(),
-                  if (sectionTagsOverflow) MyText(' ... more')
-                ]),
-          ),
-          if (loggedWorkout.loggedWorkoutSections.isNotEmpty) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [
+                  if (loggedWorkout.loggedWorkoutSections.isNotEmpty)
                     ...moveTypes
-                        .take(kNumMoveTypeTags)
                         .map((moveType) => Tag(
                               tag: moveType.name,
                               color: context.theme.background,
                               textColor: context.theme.primary,
                             ))
                         .toList(),
-                    if (moveTypesOverflow) MyText(' ... more')
-                  ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: Wrap(
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  spacing: 4,
-                  runSpacing: 4,
-                  children: [
-                    ...bodyAreas
-                        .take(kNumBodyAreaTags)
-                        .map((bodyArea) => Tag(
-                              tag: bodyArea.name,
-                            ))
-                        .toList(),
-                    if (bodyAreasOverflow) MyText(' ... more')
-                  ]),
-            ),
-          ] else
-            MyText('No sections logged...'),
+                  ...bodyAreas
+                      // .take(kNumBodyAreaTags)
+                      .map((bodyArea) => Tag(
+                            tag: bodyArea.name,
+                          ))
+                      .toList(),
+                  // if (bodyAreasOverflow) MyText(' ... more')
+                ]),
+          ),
         ],
       ),
     );

@@ -72,9 +72,7 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
           ],
         ),
         Row(
-          mainAxisAlignment: addNoteToLoggedSection != null
-              ? MainAxisAlignment.spaceBetween
-              : MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -141,6 +139,7 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                                         '${loggedWorkoutSet.roundsCompleted} rounds',
                                         color: Styles.infoBlue,
                                         size: FONTSIZE.SMALL,
+                                        lineHeight: 1.5,
                                       ),
                                     Row(
                                       mainAxisAlignment:
@@ -154,7 +153,8 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                                               .map((m) => Padding(
                                                     padding:
                                                         const EdgeInsets.only(
-                                                            bottom: 3.0),
+                                                            bottom: 4.0,
+                                                            top: 4),
                                                     child:
                                                         LoggedWorkoutMoveMinimalDisplay(
                                                       loggedWorkoutMove: m,
@@ -171,8 +171,10 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                                         ),
                                         if (setLapTime != null)
                                           MyText(
-                                              Duration(milliseconds: setLapTime)
-                                                  .compactDisplay()),
+                                            Duration(milliseconds: setLapTime)
+                                                .compactDisplay(),
+                                            lineHeight: 1.5,
+                                          ),
                                       ],
                                     ),
                                     HorizontalLine()

@@ -163,6 +163,7 @@ class NavBarTitle extends StatelessWidget {
       text.toUpperCase(),
       size: FONTSIZE.SMALL,
       weight: FontWeight.bold,
+      textAlign: TextAlign.center,
     );
   }
 }

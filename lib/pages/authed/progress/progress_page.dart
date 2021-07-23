@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class ProgressPage extends StatelessWidget {
   const ProgressPage({Key? key}) : super(key: key);
@@ -105,24 +106,26 @@ class _ProgressPageTile extends StatelessWidget {
         margin: const EdgeInsets.all(6),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(
-                    'assets/progress_page_images/${assetImagePath}')),
-            borderRadius: BorderRadius.circular(5)),
+          borderRadius: BorderRadius.circular(8),
+          image: DecorationImage(
+              fit: BoxFit.cover,
+              image:
+                  AssetImage('assets/progress_page_images/${assetImagePath}')),
+        ),
         child: Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(6),
-              child: ContentBox(
-                child: MyText(
-                  label,
-                  weight: FontWeight.bold,
-                  maxLines: 2,
-                  lineHeight: 1.3,
-                  textAlign: TextAlign.center,
-                ),
-                borderRadius: 4,
+            child: Container(
+              decoration: BoxDecoration(
+                color: context.theme.cardBackground.withOpacity(0.9),
+              ),
+              padding:
+                  const EdgeInsets.only(bottom: 8, right: 20, left: 20, top: 8),
+              child: MyText(
+                label,
+                weight: FontWeight.bold,
+                maxLines: 2,
+                lineHeight: 1.3,
+                textAlign: TextAlign.center,
               ),
             )),
       ),

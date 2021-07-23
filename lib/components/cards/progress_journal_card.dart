@@ -13,7 +13,7 @@ class ProgressJournalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -25,29 +25,31 @@ class ProgressJournalCard extends StatelessWidget {
                 child: MyText(
                   progressJournal.description!,
                   subtext: true,
-                  maxLines: 4,
+                  maxLines: 8,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
                 ),
               ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyText(
-                    '${progressJournal.progressJournalEntries.length} entries since '),
-                MyText(
-                  DateFormat('dd-MM-yyyy').format(progressJournal.createdAt),
-                  weight: FontWeight.bold,
-                  color: Styles.colorTwo,
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MyText(
+                      '${progressJournal.progressJournalEntries.length} entries since '),
+                  MyText(
+                    DateFormat('dd-MM-yyyy').format(progressJournal.createdAt),
+                    color: Styles.colorTwo,
+                  ),
+                ],
+              ),
             ),
             if (progressJournal.progressJournalGoals.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(12.0),
                 child: Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
+                  spacing: 12,
+                  runSpacing: 12,
                   alignment: WrapAlignment.center,
                   children: progressJournal.progressJournalGoals
                       .map((g) => ProgressJournalGoalAndTagsTag(g))

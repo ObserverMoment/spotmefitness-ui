@@ -25,7 +25,7 @@ class LoggedWorkoutsPage extends StatelessWidget {
     return QueryObserver<UserLoggedWorkouts$Query, json.JsonSerializable>(
         key: Key('LoggedWorkoutsPage - ${query.operationName}'),
         query: query,
-        loadingIndicator: ShimmerCardList(itemCount: 10),
+        loadingIndicator: ShimmerListPage(),
         builder: (data) {
           final logs = data.userLoggedWorkouts
               .sortedBy<DateTime>((l) => l.completedOn)

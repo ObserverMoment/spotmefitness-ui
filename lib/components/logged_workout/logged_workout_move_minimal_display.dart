@@ -70,9 +70,10 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
         ),
         if (loggedWorkoutMove.equipment != null)
           MyText(
-            '(${loggedWorkoutMove.equipment!.name})',
+            '${loggedWorkoutMove.equipment!.name}',
             size: FONTSIZE.SMALL,
             color: Styles.colorTwo,
+            lineHeight: 1.4,
           )
       ],
     );

@@ -102,7 +102,7 @@ class BenchmarkMoveCreator extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               MyText('Required'),
-              SizedBox(height: 4),
+              SizedBox(height: 6),
               Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 8,
@@ -126,7 +126,7 @@ class BenchmarkMoveCreator extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(6.0),
                     child: MyText('Select from...'),
                   ),
                   EquipmentMultiSelector(

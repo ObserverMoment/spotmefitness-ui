@@ -296,11 +296,11 @@ class LoggedWorkoutSectionSummary extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: LoggedWorkoutSectionSummaryTag(
                   loggedWorkoutSection,
-                  fontsize: FONTSIZE.MAIN,
+                  fontsize: FONTSIZE.SMALL,
                 ),
               ),
               if (Utils.textNotNull(loggedWorkoutSection.name))
-                H3('"${loggedWorkoutSection.name!}"'),
+                MyText('"${loggedWorkoutSection.name!}"'),
               if (Utils.textNotNull(loggedWorkoutSection.note))
                 MyText(loggedWorkoutSection.note!),
               Padding(

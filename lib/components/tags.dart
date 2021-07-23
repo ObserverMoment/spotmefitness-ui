@@ -252,16 +252,20 @@ class ProgressJournalGoalAndTagsTag extends StatelessWidget {
                 : null,
           ),
           if (progressJournalGoal.progressJournalGoalTags.isNotEmpty)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: progressJournalGoal.progressJournalGoalTags
-                  .map((t) => Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Dot(
-                            diameter: 10, color: HexColor.fromHex(t.hexColor)),
-                      ))
-                  .toList(),
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: progressJournalGoal.progressJournalGoalTags
+                    .map((t) => Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Dot(
+                              diameter: 10,
+                              color: HexColor.fromHex(t.hexColor)),
+                        ))
+                    .toList(),
+              ),
             )
         ],
       ),

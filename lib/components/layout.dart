@@ -158,8 +158,15 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
       this.loading = false})
       : super(
           border: null,
-          leading:
-              Align(alignment: Alignment.centerLeft, child: NavBarTitle(title)),
+          automaticallyImplyLeading: false,
+          middle: Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  SizedBox(width: 8),
+                  NavBarTitle(title),
+                ],
+              )),
           trailing: AnimatedSwitcher(
               duration: Duration(milliseconds: 250),
               child: loading

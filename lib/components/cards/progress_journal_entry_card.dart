@@ -56,7 +56,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.only(left: 6.0, right: 6.0, bottom: 3),
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 3),
                   child: CircularPercentIndicator(
                     startAngle: 180,
                     backgroundColor: Styles.colorOne.withOpacity(0.35),

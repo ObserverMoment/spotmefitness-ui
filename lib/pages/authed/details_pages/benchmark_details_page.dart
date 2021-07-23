@@ -112,15 +112,22 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            H2(benchmark.benchmarkType.display),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyText(
+                                benchmark.benchmarkType.display,
+                                size: FONTSIZE.LARGE,
+                              ),
+                            ),
                             if (Utils.textNotNull(benchmark.description))
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 4.0, horizontal: 16),
                                 child: MyText(
                                   benchmark.description!,
-                                  maxLines: 8,
+                                  maxLines: 10,
                                   textAlign: TextAlign.center,
+                                  lineHeight: 1.4,
                                 ),
                               ),
                           ],
@@ -147,7 +154,7 @@ class BenchmarkMetaDisplay extends StatelessWidget {
       children: [
         MyText(
           userBenchmark.reps!.stringMyDouble(),
-          lineHeight: 1.2,
+          lineHeight: 1.4,
           size: FONTSIZE.HUGE,
         ),
         SizedBox(
@@ -161,6 +168,7 @@ class BenchmarkMetaDisplay extends StatelessWidget {
                   ? describeEnum(userBenchmark.repType)
                   : userBenchmark.repType.displaySingular,
           size: FONTSIZE.LARGE,
+          lineHeight: 1.4,
         ),
       ],
     );
@@ -172,12 +180,13 @@ class BenchmarkMetaDisplay extends StatelessWidget {
       children: [
         MyText(
           userBenchmark.load!.stringMyDouble(),
-          lineHeight: 1.2,
+          lineHeight: 1.4,
           size: FONTSIZE.HUGE,
         ),
         MyText(
           userBenchmark.loadUnit.display,
           size: FONTSIZE.LARGE,
+          lineHeight: 1.4,
         ),
       ],
     );
@@ -189,12 +198,14 @@ class BenchmarkMetaDisplay extends StatelessWidget {
       MyText(
         userBenchmark.move.name,
         size: FONTSIZE.HUGE,
+        lineHeight: 1.4,
       ),
       if (userBenchmark.equipment != null)
         MyText(
           userBenchmark.equipment!.name,
           color: Styles.colorTwo,
           size: FONTSIZE.LARGE,
+          lineHeight: 1.4,
         ),
       if (Utils.hasReps(userBenchmark.reps)) _buildRepDisplay(),
       if (Utils.hasLoad(userBenchmark.load)) _buildLoadDisplay(),

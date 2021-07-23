@@ -189,8 +189,7 @@ class _BenchmarkCreatorPageState extends State<BenchmarkCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-          heroTag: 'BenchmarkCreatorPage',
+      navigationBar: BorderlessNavBar(
           customLeading: NavBarCancelButton(_handleCancel),
           middle: NavBarTitle(widget.userBenchmark == null
               ? 'New Benchmark'
@@ -305,7 +304,7 @@ class SelectableBenchmarkType extends StatelessWidget {
       onTap: () => selectBenchmarkType(benchmarkType),
       child: AnimatedContainer(
         width: 150,
-        padding: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
         alignment: Alignment.center,
         duration: kStandardAnimationDuration,
         decoration: BoxDecoration(
@@ -315,7 +314,6 @@ class SelectableBenchmarkType extends StatelessWidget {
           textAlign: TextAlign.center,
           size: FONTSIZE.BIG,
           color: isSelected ? Styles.white : null,
-          weight: FontWeight.bold,
         ),
       ),
     );

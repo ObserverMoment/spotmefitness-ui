@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/video_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -97,53 +96,54 @@ class BenchmarkEntryCard extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      MyText(
-                        entry.completedOn.dateString,
-                        color: Styles.infoBlue,
-                        size: FONTSIZE.SMALL,
-                      ),
-                      SizedBox(width: 6),
-                      MyText(
-                        entry.completedOn.timeString,
-                        color: Styles.infoBlue,
-                        size: FONTSIZE.SMALL,
-                      ),
-                    ],
-                  ),
-                  BenchmarkEntryScoreDisplay(
-                    benchmark: benchmark,
-                    entry: entry,
-                    fontSize: FONTSIZE.TABTITLE,
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6.0),
+                child: Row(
+                  children: [
+                    MyText(
+                      entry.completedOn.dateString,
+                      color: Styles.infoBlue,
+                      size: FONTSIZE.SMALL,
+                    ),
+                    MyText(
+                      ' | ',
+                      subtext: true,
+                    ),
+                    MyText(
+                      entry.completedOn.timeString,
+                      color: Styles.infoBlue,
+                      size: FONTSIZE.SMALL,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6.0),
+                child: BenchmarkEntryScoreDisplay(
+                  benchmark: benchmark,
+                  entry: entry,
+                  fontSize: FONTSIZE.TABTITLE,
+                ),
+              ),
               if (Utils.textNotNull(entry.note))
                 Padding(
-                  padding: const EdgeInsets.only(right: 6.0),
-                  child: NoteIconViewerButton(entry.note!),
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: MyText(
+                    entry.note!,
+                    size: FONTSIZE.SMALL,
+                    lineHeight: 1.3,
+                  ),
                 ),
-              VideoUploader(
-                videoUri: entry.videoUri,
-                videoThumbUri: entry.videoThumbUri,
-                displaySize: Size(60, 60),
-                onUploadStart: () => _showMediaUploadingAlert(context),
-                onUploadSuccess: (v, t) => _saveUploadedVideo(context, v, t),
-                removeVideo: () => _deleteUploadedVideo(context),
-              ),
             ],
+          ),
+          VideoUploader(
+            videoUri: entry.videoUri,
+            videoThumbUri: entry.videoThumbUri,
+            displaySize: Size(60, 60),
+            onUploadStart: () => _showMediaUploadingAlert(context),
+            onUploadSuccess: (v, t) => _saveUploadedVideo(context, v, t),
+            removeVideo: () => _deleteUploadedVideo(context),
           )
         ],
       ),

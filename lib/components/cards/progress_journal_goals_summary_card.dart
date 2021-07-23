@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -60,14 +61,13 @@ class _ProgressJournalGoalsSummaryCardState
             children: [
               MyText(
                 '$completed of ${widget.goals.length} goals completed',
-                weight: FontWeight.bold,
               ),
-              CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => setState(() => _minimized = !_minimized),
-                  child: Icon(
-                    _minimized ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
-                  ))
+              ShowHideDetailsButton(
+                onPressed: () => setState(() => _minimized = !_minimized),
+                showDetails: !_minimized,
+                showText: 'Show',
+                hideText: 'Hide',
+              )
             ],
           ),
           GrowInOut(

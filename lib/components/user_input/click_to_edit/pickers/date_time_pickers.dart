@@ -162,8 +162,7 @@ class DateRangePickerDisplay extends StatelessWidget {
     }
   }
 
-  Widget _text(String t) =>
-      MyText(t, size: FONTSIZE.SMALL, weight: FontWeight.bold);
+  Widget _text(String t) => MyText(t, size: FONTSIZE.SMALL);
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +173,7 @@ class DateRangePickerDisplay extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(CupertinoIcons.calendar),
-          SizedBox(width: 6),
+          SizedBox(width: 10),
           if (from == null && to == null)
             _text('All time')
           else if (from == null && to != null)

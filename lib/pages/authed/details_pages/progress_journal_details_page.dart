@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary_card.dart';
@@ -130,7 +131,7 @@ class _ProgressJournalDetailsPageState
               child: Column(
                 children: [
                   MyTabBarNav(
-                      titles: ['Entries', 'Goals'],
+                      titles: ['Summary', 'Entries', 'Goals'],
                       handleTabChange: _changeTab,
                       activeTabIndex: _activeTabIndex),
                   Expanded(
@@ -142,6 +143,9 @@ class _ProgressJournalDetailsPageState
                       controller: _pageController,
                       onPageChanged: _changeTab,
                       children: [
+                        ProgressJournalSummary(
+                          journal: journal,
+                        ),
                         ProgressJournalEntriesList(
                             parentJournalId: journal.id,
                             entries: journal.progressJournalEntries),
@@ -155,6 +159,38 @@ class _ProgressJournalDetailsPageState
                 ],
               ));
         });
+  }
+}
+
+class ProgressJournalSummary extends StatelessWidget {
+  final ProgressJournal journal;
+  const ProgressJournalSummary({Key? key, required this.journal})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          ProgressJournalGoalsSummaryCard(
+            goals: journal.progressJournalGoals,
+          ),
+          SizedBox(height: 12),
+          Card(
+              child: MyText(
+            'Fixed header which has filter option buttons to change how the graph is displaying',
+            maxLines: 5,
+          )),
+          SizedBox(height: 8),
+          Card(
+              child: MyText(
+            'Graph vertical chronological - top of the graph is now - user can scroll down to view past scores - scores over time - user can choose which scores to display and how to display them - stacked graph, individual lines, plus can add remove lines',
+            maxLines: 8,
+          )),
+        ],
+      ),
+    );
   }
 }
 
