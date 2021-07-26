@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/Benchmark/benchmark_move_display.dart';
 import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -8,7 +7,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
@@ -88,6 +86,17 @@ class BenchmarkCard extends StatelessWidget {
                           lineHeight: 1.4,
                         ),
                       ),
+                    if (Utils.textNotNull(userBenchmark.equipmentInfo))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: MyText(
+                          userBenchmark.equipmentInfo!,
+                          maxLines: 5,
+                          size: FONTSIZE.SMALL,
+                          color: Styles.colorTwo,
+                          lineHeight: 1.4,
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -116,11 +125,6 @@ class BenchmarkCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          HorizontalLine(),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: BenchmarkMoveDisplay(userBenchmark),
           ),
         ],
       ),

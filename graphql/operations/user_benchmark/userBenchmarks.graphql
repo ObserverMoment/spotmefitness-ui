@@ -1,29 +1,11 @@
-query userBenchmarks($take: Int) {
-  userBenchmarks(take: $take) {
+query userBenchmarks {
+  userBenchmarks {
     ...UserBenchmark
-    Equipment {
-      ...Equipment
-    }
-    Move {
-      ...Move
-      MoveType {
-        ...MoveType
-      }
-      BodyAreaMoveScores {
-        score
-        BodyArea {
-          ...BodyArea
-        }
-      }
-      RequiredEquipments {
-        ...Equipment
-      }
-      SelectableEquipments {
-        ...Equipment
-      }
-    }
     UserBenchmarkEntries {
       ...UserBenchmarkEntry
+    }
+    UserBenchmarkTags {
+      ...UserBenchmarkTag
     }
   }
 }

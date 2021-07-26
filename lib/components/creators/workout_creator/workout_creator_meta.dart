@@ -33,7 +33,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
     return Container(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             children: [
               EditableTextFieldRow(
@@ -53,41 +53,40 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 inputValidation: (t) => true,
                 maxDisplayLines: 2,
               ),
-              if (workoutData.workoutSections.isNotEmpty)
-                Column(
-                  children: [
-                    TappableRow(
-                      onTap: () => context.showBottomSheet(
-                          child: DurationPicker(
-                        duration: durationLengthMinutes,
-                        mode: CupertinoTimerPickerMode.hm,
-                        minuteInterval: 5,
-                        updateDuration: (d) =>
-                            _updateWorkoutMeta({'lengthMinutes': d.inMinutes}),
-                        title: 'Workout Duration',
-                      )),
-                      title: 'Duration',
-                      display: workoutData.lengthMinutes != null
-                          ? Duration(minutes: workoutData.lengthMinutes!)
-                              .display()
-                          : MyText(
-                              'Enter duration...',
-                              subtext: true,
-                            ),
+              Column(
+                children: [
+                  TappableRow(
+                    onTap: () => context.showBottomSheet(
+                        child: DurationPicker(
+                      duration: durationLengthMinutes,
+                      mode: CupertinoTimerPickerMode.hm,
+                      minuteInterval: 5,
+                      updateDuration: (d) =>
+                          _updateWorkoutMeta({'lengthMinutes': d.inMinutes}),
+                      title: 'Workout Duration',
+                    )),
+                    title: 'Duration',
+                    display: workoutData.lengthMinutes != null
+                        ? Duration(minutes: workoutData.lengthMinutes!)
+                            .display()
+                        : MyText(
+                            'Enter duration...',
+                            subtext: true,
+                          ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 12.0, right: 12.0, top: 4, bottom: 8),
+                    child: MyText(
+                      'An estimate of how long this workout could take, from start to finish.',
+                      size: FONTSIZE.SMALL,
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
+                      subtext: true,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, top: 4, bottom: 8),
-                      child: MyText(
-                        'An estimate of how long this workout could take, from start to finish.',
-                        size: FONTSIZE.SMALL,
-                        maxLines: 3,
-                        textAlign: TextAlign.center,
-                        subtext: true,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
               SizedBox(height: 6),
               WorkoutGoalsSelectorRow(
                   selectedWorkoutGoals: workoutData.workoutGoals,

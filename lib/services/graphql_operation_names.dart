@@ -17,6 +17,10 @@ class GQLOpNames {
   static String get userProgressJournalsQuery =>
       UserProgressJournalsQuery().operationName;
 
+  /// List type queries where variables are not used.
+  /// Note: In the API UserBenchmarksQuery can take vars - they are optional and not currently being used.
+  static String get userBenchmarksQuery => UserBenchmarksQuery().operationName;
+
   static String get userScheduledWorkoutsQuery =>
       UserScheduledWorkoutsQuery().operationName;
 }
@@ -24,9 +28,6 @@ class GQLOpNames {
 /// Observable queries whose operations can accept variables, but whose keys are being stored with the variables nulled.
 /// /// For example [workoutById({"id": null})]
 class GQLNullVarsKeys {
-  static String get userBenchmarksQuery => getNulledVarsQueryId(
-      UserBenchmarksQuery(variables: UserBenchmarksArguments()));
-
   static String get userLoggedWorkoutsQuery => getNulledVarsQueryId(
       UserLoggedWorkoutsQuery(variables: UserLoggedWorkoutsArguments()));
 }

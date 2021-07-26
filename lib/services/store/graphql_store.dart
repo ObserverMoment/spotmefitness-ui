@@ -495,6 +495,53 @@ class GraphQLStore {
     return result;
   }
 
+  /// Similar to [delete] but will delete a list of objects from store.
+  /// Must all be the same [typename].
+  Future<MutationResult<TData>> deleteMultiple<TData,
+          TVars extends json.JsonSerializable>(
+      {required GraphQLQuery<TData, TVars> mutation,
+      required List<String> objectIds,
+      required String typename,
+      // useful if you have deleted an object that has parent(s) which may still be referencing it.
+      bool removeAllRefsToIds = false,
+      List<String> removeRefsFromQueries = const [],
+      List<String> clearQueryDataAtKeys = const [],
+      List<String> broadcastQueryIds = const []}) async {
+    final response = await execute(mutation);
+
+    /// [result] should always be a list of deleted IDs being returned from the API.
+    final result = MutationResult<TData>(
+        data: mutation.parse(response.data ?? {}), errors: response.errors);
+
+    if (!result.hasErrors && result.data != null) {
+      for (var id in response.data?[mutation.operationName] as List) {
+        final objectStoreId = '$typename:$id';
+        await _deleteRootObject(objectStoreId);
+
+        if (removeAllRefsToIds) {
+          _removeAllRefsToId(id);
+        }
+
+        if (removeRefsFromQueries.isNotEmpty) {
+          _removeRefFromQueries(
+              data: {'id': id, '__typename': typename},
+              queryIds: removeRefsFromQueries);
+        }
+      }
+
+      if (clearQueryDataAtKeys.isNotEmpty) {
+        /// Remove a whole query key from the store.
+        /// Useful when deleting single objects that have query root data in the store.
+        /// i.e. [workoutById(id: 123)].
+        _clearQueryDataAtKeys(clearQueryDataAtKeys);
+      }
+
+      _broadcast(broadcastQueryIds);
+    }
+
+    return result;
+  }
+
   /// No action on the client side store.
   Future<MutationResult<TData>>
       networkOnlyDelete<TData, TVars extends json.JsonSerializable>({

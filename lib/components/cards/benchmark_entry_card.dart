@@ -38,7 +38,7 @@ class BenchmarkEntryCard extends StatelessWidget {
           }
         },
         broadcastQueryIds: [
-          GQLNullVarsKeys.userBenchmarksQuery,
+          GQLOpNames.userBenchmarksQuery,
           GQLVarParamKeys.userBenchmarkByIdQuery(benchmark.id)
         ]);
 
@@ -63,7 +63,7 @@ class BenchmarkEntryCard extends StatelessWidget {
           'data': {'id': entry.id, 'videoUri': null, 'videoThumbUri': null}
         },
         broadcastQueryIds: [
-          GQLNullVarsKeys.userBenchmarksQuery,
+          GQLOpNames.userBenchmarksQuery,
           GQLVarParamKeys.userBenchmarkByIdQuery(benchmark.id)
         ]);
 

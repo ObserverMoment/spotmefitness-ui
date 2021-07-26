@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_media.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_meta.dart';
@@ -65,15 +66,8 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<Workout>(
-        loadingWidget: CupertinoPageScaffold(
-          navigationBar: BasicNavBar(
-            heroTag: 'WorkoutCreatorPage',
-            automaticallyImplyLeading: false,
-            middle: NavBarTitle('Getting ready...'),
-          ),
-          child: Center(
-            child: LoadingCircle(),
-          ),
+        loadingWidget: ShimmerDetailsPage(
+          title: 'Getting ready...',
         ),
         future: _initWorkoutFn,
         builder: (initialWorkout) => ChangeNotifierProvider(
@@ -92,7 +86,7 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
                 final String name = context.select<WorkoutCreatorBloc, String>(
                     (bloc) => bloc.workout.name);
 
-                return CupertinoPageScaffold(
+                return MyPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
                     handleSave: () => _saveAndClose(context),
@@ -128,10 +122,13 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
                         )
                       else
                         FadeIn(
-                          child: MyTabBarNav(
-                              titles: ['Meta', 'Structure', 'Media'],
-                              handleTabChange: _changeTab,
-                              activeTabIndex: _activeTabIndex),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 4, bottom: 6),
+                            child: MyTabBarNav(
+                                titles: ['Meta', 'Structure', 'Media'],
+                                handleTabChange: _changeTab,
+                                activeTabIndex: _activeTabIndex),
+                          ),
                         ),
                       Expanded(
                           child: PageView(

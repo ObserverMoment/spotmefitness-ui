@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/benchmark_entry_card.dart';
 import 'package:spotmefitness_ui/components/creators/benchmark_creator/benchmark_entry_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -60,7 +61,7 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
               variables: UserBenchmarkByIdArguments(id: widget.id)))
         ],
         removeRefFromQueries: [
-          GQLNullVarsKeys.userBenchmarksQuery
+          GQLOpNames.userBenchmarksQuery
         ]);
 
     context.pop(); // Loading alert;
@@ -82,27 +83,35 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
         key: Key('BenchmarkDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         parameterizeQuery: true,
-        loadingIndicator: ShimmerDetailsPage(title: 'Benchmarks and PBs'),
+        loadingIndicator: ShimmerDetailsPage(),
         builder: (data) {
           final benchmark = data.userBenchmarkById;
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
             key: Key('BenchmarkDetailsPage - CupertinoPageScaffold'),
-            navigationBar: BasicNavBar(
-              heroTag: 'BenchmarkDetailsPage',
+            navigationBar: BorderlessNavBar(
               key: Key('BenchmarkDetailsPage - BasicNavBar'),
               middle: NavBarTitle(benchmark.name),
-              trailing: NavBarEllipsisMenu(items: [
-                ContextMenuItem(
-                    iconData: CupertinoIcons.info,
-                    text: 'Edit Benchmark',
-                    onTap: () => context.navigateTo(
-                        BenchmarkCreatorRoute(userBenchmark: benchmark))),
-                ContextMenuItem(
-                    iconData: CupertinoIcons.delete_simple,
-                    destructive: true,
-                    text: 'Delete Benchmark',
-                    onTap: _handleDeleteJournal),
-              ]),
+              trailing: NavBarTrailingRow(
+                children: [
+                  CreateIconButton(
+                    onPressed: () => context.showBottomSheet(
+                        expand: true,
+                        child: BenchmarkEntryCreator(userBenchmark: benchmark)),
+                  ),
+                  NavBarEllipsisMenu(items: [
+                    ContextMenuItem(
+                        iconData: CupertinoIcons.info,
+                        text: 'Edit Benchmark',
+                        onTap: () => context.navigateTo(
+                            BenchmarkCreatorRoute(userBenchmark: benchmark))),
+                    ContextMenuItem(
+                        iconData: CupertinoIcons.delete_simple,
+                        destructive: true,
+                        text: 'Delete Benchmark',
+                        onTap: _handleDeleteJournal),
+                  ]),
+                ],
+              ),
             ),
             child: NestedScrollView(
                 controller: _scrollController,
@@ -113,7 +122,8 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
                               child: MyText(
                                 benchmark.benchmarkType.display,
                                 size: FONTSIZE.LARGE,
@@ -121,8 +131,8 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                             ),
                             if (Utils.textNotNull(benchmark.description))
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4.0, horizontal: 16),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: MyText(
                                   benchmark.description!,
                                   maxLines: 10,
@@ -130,86 +140,24 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                                   lineHeight: 1.4,
                                 ),
                               ),
+                            if (Utils.textNotNull(benchmark.equipmentInfo))
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: MyText(
+                                  benchmark.equipmentInfo!,
+                                  maxLines: 10,
+                                  textAlign: TextAlign.center,
+                                  color: Styles.colorTwo,
+                                  lineHeight: 1.4,
+                                ),
+                              ),
                           ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: BenchmarkMetaDisplay(benchmark),
                         ),
                       ]))
                     ],
                 body: BenchmarkEntrieslist(benchmark)),
           );
         });
-  }
-}
-
-class BenchmarkMetaDisplay extends StatelessWidget {
-  final UserBenchmark userBenchmark;
-  BenchmarkMetaDisplay(this.userBenchmark);
-
-  Widget _buildRepDisplay() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        MyText(
-          userBenchmark.reps!.stringMyDouble(),
-          lineHeight: 1.4,
-          size: FONTSIZE.HUGE,
-        ),
-        SizedBox(
-          width: 6,
-        ),
-        MyText(
-          [WorkoutMoveRepType.distance, WorkoutMoveRepType.time]
-                  .contains(userBenchmark.repType)
-              ? userBenchmark.distanceUnit.shortDisplay
-              : userBenchmark.reps != 1
-                  ? describeEnum(userBenchmark.repType)
-                  : userBenchmark.repType.displaySingular,
-          size: FONTSIZE.LARGE,
-          lineHeight: 1.4,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLoadDisplay() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        MyText(
-          userBenchmark.load!.stringMyDouble(),
-          lineHeight: 1.4,
-          size: FONTSIZE.HUGE,
-        ),
-        MyText(
-          userBenchmark.loadUnit.display,
-          size: FONTSIZE.LARGE,
-          lineHeight: 1.4,
-        ),
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      MyText(
-        userBenchmark.move.name,
-        size: FONTSIZE.HUGE,
-        lineHeight: 1.4,
-      ),
-      if (userBenchmark.equipment != null)
-        MyText(
-          userBenchmark.equipment!.name,
-          color: Styles.colorTwo,
-          size: FONTSIZE.LARGE,
-          lineHeight: 1.4,
-        ),
-      if (Utils.hasReps(userBenchmark.reps)) _buildRepDisplay(),
-      if (Utils.hasLoad(userBenchmark.load)) _buildLoadDisplay(),
-    ]);
   }
 }
 
@@ -235,7 +183,7 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
         typename: kUserBenchmarkEntryTypename,
         broadcastQueryIds: [
           GQLVarParamKeys.userBenchmarkByIdQuery(widget.userBenchmark.id),
-          GQLNullVarsKeys.userBenchmarksQuery,
+          GQLOpNames.userBenchmarksQuery,
         ],
         removeAllRefsToId: true);
 
@@ -277,78 +225,62 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
   @override
   Widget build(BuildContext context) {
     final sortedEntries = _sortEntries();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: StackAndFloatingButton(
-        onPressed: () => context.showBottomSheet(
-            expand: true,
-            child: BenchmarkEntryCreator(userBenchmark: widget.userBenchmark)),
-        pageHasBottomNavBar: false,
-        buttonIconData: CupertinoIcons.add,
-        child: sortedEntries.isEmpty
-            ? Padding(
+
+    return sortedEntries.isEmpty
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyText(
+              'No entries yet',
+              textAlign: TextAlign.center,
+              subtext: true,
+            ),
+          )
+        : Column(
+            children: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: MyText(
-                  'No entries yet',
-                  textAlign: TextAlign.center,
-                  subtext: true,
-                ),
-              )
-            : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SlidingSelect<ScoreSortBy>(
-                        value: _sortBy,
-                        updateValue: (sortBy) =>
-                            setState(() => _sortBy = sortBy),
-                        children: {
-                          for (final v in ScoreSortBy.values)
-                            v: MyText(describeEnum(v).capitalize)
-                        }),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                      itemCount: sortedEntries.length + 1,
-                      itemBuilder: (c, i) {
-                        if (i == sortedEntries.length) {
-                          return SizedBox(height: kAssumedFloatingButtonHeight);
-                        } else {
-                          return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
-                              child: GestureDetector(
-                                onTap: () => context.showBottomSheet(
-                                    expand: true,
-                                    child: BenchmarkEntryCreator(
-                                      userBenchmark: widget.userBenchmark,
-                                      userBenchmarkEntry: sortedEntries[i],
-                                    )),
-                                child: AnimatedSlidable(
-                                    key: Key(
-                                        'benchmark-entry-${sortedEntries[i].id}'),
-                                    index: i,
-                                    itemType: 'Benchmark Entry',
-                                    itemName:
-                                        sortedEntries[i].completedOn.dateString,
-                                    removeItem: (_) =>
-                                        _deleteBenchmarkEntry(sortedEntries[i]),
-                                    secondaryActions: [],
-                                    child: BenchmarkEntryCard(
-                                        benchmark: widget.userBenchmark,
-                                        entry: sortedEntries[i])),
-                              ));
-                        }
-                      },
-                    ),
-                  ),
-                ],
+                child: SlidingSelect<ScoreSortBy>(
+                    value: _sortBy,
+                    updateValue: (sortBy) => setState(() => _sortBy = sortBy),
+                    children: {
+                      for (final v in ScoreSortBy.values)
+                        v: MyText(describeEnum(v).capitalize)
+                    }),
               ),
-      ),
-    );
+              Expanded(
+                child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
+                    itemCount: sortedEntries.length,
+                    itemBuilder: (c, i) {
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: GestureDetector(
+                            onTap: () => context.showBottomSheet(
+                                expand: true,
+                                child: BenchmarkEntryCreator(
+                                  userBenchmark: widget.userBenchmark,
+                                  userBenchmarkEntry: sortedEntries[i],
+                                )),
+                            child: AnimatedSlidable(
+                                key: Key(
+                                    'benchmark-entry-${sortedEntries[i].id}'),
+                                index: i,
+                                itemType: 'Benchmark Entry',
+                                itemName:
+                                    sortedEntries[i].completedOn.dateString,
+                                removeItem: (_) =>
+                                    _deleteBenchmarkEntry(sortedEntries[i]),
+                                secondaryActions: [],
+                                child: BenchmarkEntryCard(
+                                    benchmark: widget.userBenchmark,
+                                    entry: sortedEntries[i])),
+                          ));
+                    }),
+              ),
+            ],
+          );
   }
 }

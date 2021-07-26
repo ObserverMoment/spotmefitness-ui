@@ -38,7 +38,7 @@ class EditableTextFieldRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool hasText = Utils.textNotNull(text);
     return CupertinoButton(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       onPressed: () => context.push(
           child: FullScreenTextEditing(
         title: title,

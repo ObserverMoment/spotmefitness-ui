@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -37,6 +38,7 @@ Future<void> openFullScreenImageViewer(
   String? title,
 }) async {
   await context.push(
+    rootNavigator: true,
     child: FullScreenImageViewer(uri: uri, title: title),
     fullscreenDialog: true,
   );
@@ -69,6 +71,21 @@ class FullScreenImageViewer extends StatelessWidget {
           ),
         ),
         child: PhotoView(
+          loadingBuilder: (context, event) => Center(
+            child: Opacity(
+                opacity: 0.3,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      CupertinoIcons.photo,
+                      size: 40,
+                    ),
+                    SizedBox(height: 12),
+                    LoadingDots()
+                  ],
+                )),
+          ),
           heroAttributes: PhotoViewHeroAttributes(
             tag: kFullScreenImageViewerHeroTag,
           ),

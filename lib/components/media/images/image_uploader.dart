@@ -3,10 +3,10 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
+import 'package:spotmefitness_ui/components/media/images/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -38,23 +38,15 @@ class _ImageUploaderState extends State<ImageUploader> {
   bool _uploading = false;
 
   Future<void> _pickImage(ImageSource source) async {
-    XFile? pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      File? croppedFile = await ImageCropper.cropImage(
-        cropStyle: CropStyle.rectangle,
-        sourcePath: pickedFile.path,
-      );
-      if (croppedFile != null) {
-        try {
-          setState(() => _uploading = true);
-          await _uploadFile(croppedFile);
-          setState(() => _uploading = false);
-        } catch (e) {
-          await context.showErrorAlert(e.toString());
-        } finally {
-          setState(() => _uploading = false);
-        }
-      }
+    try {
+      File croppedFile = await ImageUtils.pickThenCropImage(source);
+      setState(() => _uploading = true);
+      await _uploadFile(croppedFile);
+      setState(() => _uploading = false);
+    } catch (e) {
+      await context.showErrorAlert(e.toString());
+    } finally {
+      setState(() => _uploading = false);
     }
   }
 

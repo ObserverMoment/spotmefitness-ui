@@ -108,7 +108,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
         data: parentBenchmark.toJson(),
         broadcastQueryIds: [
           GQLVarParamKeys.userBenchmarkByIdQuery(widget.userBenchmark.id),
-          GQLNullVarsKeys.userBenchmarksQuery
+          GQLOpNames.userBenchmarksQuery
         ],
       );
 
@@ -138,7 +138,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
     final result = await context.graphQLStore.mutate(
         mutation: UpdateUserBenchmarkEntryMutation(variables: variables),
         broadcastQueryIds: [
-          GQLNullVarsKeys.userBenchmarksQuery,
+          GQLOpNames.userBenchmarksQuery,
           GQLVarParamKeys.userBenchmarkByIdQuery(widget.userBenchmark.id)
         ]);
 

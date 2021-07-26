@@ -12,6 +12,8 @@ extension BenchmarkTypeExtension on BenchmarkType {
 
   String get display {
     switch (this) {
+      case BenchmarkType.amrap:
+        return 'As Many Reps as Possible';
       case BenchmarkType.maxload:
         return 'Max load';
       case BenchmarkType.unbrokenreps:

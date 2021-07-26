@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
           customLeading: NavBarLargeTitle('Profile'),
           trailing: CupertinoButton(
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               onPressed: () => context.navigateTo(SettingsRoute()))),
       child: Padding(
-        padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 12),
+        padding: const EdgeInsets.only(bottom: 12),
         child: Column(
           children: [
             QueryObserver<AuthedUser$Query, json.JsonSerializable>(
@@ -51,73 +51,84 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 builder: (data) {
                   final user = data.authedUser;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          children: [
-                            UserAvatarUploader(
-                              avatarUri: user.avatarUri,
-                              displaySize: Size(100, 100),
-                            ),
-                            SizedBox(height: 6),
-                            MyText(
-                              'Photo',
-                              size: FONTSIZE.SMALL,
-                              subtext: true,
+
+                  return Expanded(
+                    child: NestedScrollView(
+                      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                        SliverList(
+                          delegate: SliverChildListDelegate([
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      UserAvatarUploader(
+                                        avatarUri: user.avatarUri,
+                                        displaySize: Size(100, 100),
+                                      ),
+                                      SizedBox(height: 6),
+                                      MyText(
+                                        'Photo',
+                                        size: FONTSIZE.SMALL,
+                                        subtext: true,
+                                      )
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      UserIntroVideoUploader(
+                                        introVideoUri: user.introVideoUri,
+                                        introVideoThumbUri:
+                                            user.introVideoThumbUri,
+                                        displaySize: Size(100, 100),
+                                      ),
+                                      SizedBox(height: 6),
+                                      MyText(
+                                        'Video',
+                                        subtext: true,
+                                        size: FONTSIZE.SMALL,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            UserIntroVideoUploader(
-                              introVideoUri: user.introVideoUri,
-                              introVideoThumbUri: user.introVideoThumbUri,
-                              displaySize: Size(100, 100),
-                            ),
-                            SizedBox(height: 6),
-                            MyText(
-                              'Video',
-                              subtext: true,
-                              size: FONTSIZE.SMALL,
-                            )
-                          ],
-                        ),
+                          ]),
+                        )
                       ],
+                      body: AutoTabsRouter(
+                          routes: [
+                            ProfilePersonalRoute(),
+                            ProfileGymProfilesRoute(),
+                            ProfileCustomMovesRoute()
+                          ],
+                          builder: (context, child, animation) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                MyTabBarNav(
+                                    activeTabIndex: _activeTabIndex,
+                                    titles: _titles,
+                                    handleTabChange: (index) {
+                                      setState(() => _activeTabIndex = index);
+                                      context.tabsRouter.setActiveIndex(index);
+                                    }),
+                                Flexible(
+                                  child: FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                )
+                              ],
+                            );
+                          }),
                     ),
                   );
                 }),
-            SizedBox(height: 12),
-            Expanded(
-              child: AutoTabsRouter(
-                  routes: [
-                    ProfilePersonalRoute(),
-                    ProfileGymProfilesRoute(),
-                    ProfileCustomMovesRoute()
-                  ],
-                  builder: (context, child, animation) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        MyTabBarNav(
-                            activeTabIndex: _activeTabIndex,
-                            titles: _titles,
-                            handleTabChange: (index) {
-                              setState(() => _activeTabIndex = index);
-                              context.tabsRouter.setActiveIndex(index);
-                            }),
-                        Flexible(
-                          child: FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          ),
-                        )
-                      ],
-                    );
-                  }),
-            ),
           ],
         ),
       ),

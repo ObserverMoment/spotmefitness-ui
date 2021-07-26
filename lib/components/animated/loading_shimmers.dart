@@ -51,7 +51,7 @@ class ShimmerCardList extends StatelessWidget {
   ShimmerCardList(
       {required this.itemCount,
       this.cardHeight = 160,
-      this.cardPadding = const EdgeInsets.all(6.0)});
+      this.cardPadding = const EdgeInsets.symmetric(vertical: 6.0)});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -113,7 +113,7 @@ class ShimmerListPage extends StatelessWidget {
 
 class ShimmerDetailsPage extends StatelessWidget {
   final String title;
-  ShimmerDetailsPage({required this.title});
+  ShimmerDetailsPage({this.title = 'Getting ready...'});
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(

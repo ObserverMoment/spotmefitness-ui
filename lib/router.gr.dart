@@ -52,10 +52,10 @@ import 'pages/authed/profile/gym_profiles.dart' as _i43;
 import 'pages/authed/profile/personal_page.dart' as _i42;
 import 'pages/authed/profile/profile_page.dart' as _i24;
 import 'pages/authed/profile/settings.dart' as _i19;
-import 'pages/authed/progress/benchmarks_page.dart' as _i38;
 import 'pages/authed/progress/body_transformation_page.dart' as _i40;
 import 'pages/authed/progress/journals_page.dart' as _i39;
 import 'pages/authed/progress/logged_workouts_page.dart' as _i41;
+import 'pages/authed/progress/personal_bests_page.dart' as _i38;
 import 'pages/authed/progress/progress_page.dart' as _i37;
 import 'pages/authed/social/social_page.dart' as _i23;
 import 'pages/unauthed/unauthed_landing.dart' as _i3;
@@ -322,10 +322,10 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return const _i37.ProgressPage();
         }),
-    BenchmarksRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+    PersonalBestsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i38.BenchmarksPage();
+          return _i38.PersonalBestsPage();
         }),
     JournalsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -408,7 +408,7 @@ class AppRouter extends _i1.RootStackRouter {
             _i1.RouteConfig(SocialRoute.name, path: 'social'),
             _i1.RouteConfig(ProgressStack.name, path: 'progress', children: [
               _i1.RouteConfig(ProgressRoute.name, path: ''),
-              _i1.RouteConfig(BenchmarksRoute.name, path: 'benchmarks'),
+              _i1.RouteConfig(PersonalBestsRoute.name, path: 'personal-bests'),
               _i1.RouteConfig(JournalsRoute.name, path: 'journals'),
               _i1.RouteConfig(BodyTransformationRoute.name,
                   path: 'transformation'),
@@ -902,10 +902,10 @@ class ProgressRoute extends _i1.PageRouteInfo {
   static const String name = 'ProgressRoute';
 }
 
-class BenchmarksRoute extends _i1.PageRouteInfo {
-  const BenchmarksRoute() : super(name, path: 'benchmarks');
+class PersonalBestsRoute extends _i1.PageRouteInfo {
+  const PersonalBestsRoute() : super(name, path: 'personal-bests');
 
-  static const String name = 'BenchmarksRoute';
+  static const String name = 'PersonalBestsRoute';
 }
 
 class JournalsRoute extends _i1.PageRouteInfo {

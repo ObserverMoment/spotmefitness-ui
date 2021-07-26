@@ -11,8 +11,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      key: Key('HomePage-CupertinoPageScaffold'),
+    return MyPageScaffold(
+      key: Key('HomePage-MyPageScaffold'),
       navigationBar: BorderlessNavBar(
         key: Key('HomePage-BorderlessNavBar'),
         customLeading: NavBarLargeTitle('Home'),
@@ -39,14 +39,15 @@ class HomePage extends StatelessWidget {
         ),
       ),
       child: ListView(
-        padding: EdgeInsets.only(
-            left: 8.0,
-            right: 8,
-            bottom: EnvironmentConfig.bottomNavBarHeight + 12),
+        padding:
+            EdgeInsets.only(bottom: EnvironmentConfig.bottomNavBarHeight + 12),
         children: [
-          ComingUpList(),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: ComingUpList(),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Row(
               children: [
                 Icon(CupertinoIcons.news),
@@ -55,64 +56,61 @@ class HomePage extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: GridView.count(
-              padding: EdgeInsets.zero,
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              childAspectRatio: 1.2,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                GestureDetector(
-                  onTap: () => context.navigateTo(YourWorkoutsRoute()),
-                  child: _HomeScreenCard(
-                    label: 'Workouts',
-                    assetImagePath: 'home_page_workouts.jpg',
-                  ),
+          GridView.count(
+            padding: EdgeInsets.zero,
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            childAspectRatio: 1.2,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              GestureDetector(
+                onTap: () => context.navigateTo(YourWorkoutsRoute()),
+                child: _HomeScreenCard(
+                  label: 'Workouts',
+                  assetImagePath: 'home_page_workouts.jpg',
                 ),
-                GestureDetector(
-                  onTap: () => context.navigateTo(YourPlansRoute()),
-                  child: _HomeScreenCard(
-                    label: 'Plans',
-                    assetImagePath: 'home_page_plans.jpg',
-                  ),
+              ),
+              GestureDetector(
+                onTap: () => context.navigateTo(YourPlansRoute()),
+                child: _HomeScreenCard(
+                  label: 'Plans',
+                  assetImagePath: 'home_page_plans.jpg',
                 ),
-                GestureDetector(
-                  onTap: () => context.navigateTo(YourClubsRoute()),
-                  child: _HomeScreenCard(
-                    label: 'Clubs',
-                    assetImagePath: 'home_page_clubs.jpg',
-                  ),
+              ),
+              GestureDetector(
+                onTap: () => context.navigateTo(YourClubsRoute()),
+                child: _HomeScreenCard(
+                  label: 'Clubs',
+                  assetImagePath: 'home_page_clubs.jpg',
                 ),
-                GestureDetector(
-                  onTap: () => context.navigateTo(YourEventsRoute()),
-                  child: _HomeScreenCard(
-                    label: 'Events',
-                    assetImagePath: 'home_page_events.jpg',
-                  ),
+              ),
+              GestureDetector(
+                onTap: () => context.navigateTo(YourEventsRoute()),
+                child: _HomeScreenCard(
+                  label: 'Events',
+                  assetImagePath: 'home_page_events.jpg',
                 ),
-                _HomeScreenCard(
-                  label: 'Challenges',
-                  assetImagePath: 'home_page_challenges.jpg',
+              ),
+              _HomeScreenCard(
+                label: 'Challenges',
+                assetImagePath: 'home_page_challenges.jpg',
+              ),
+              GestureDetector(
+                onTap: () => context.navigateTo(YourCollectionsRoute()),
+                child: _HomeScreenCard(
+                  label: 'Collections',
+                  assetImagePath: 'home_page_collections.jpg',
                 ),
-                GestureDetector(
-                  onTap: () => context.navigateTo(YourCollectionsRoute()),
-                  child: _HomeScreenCard(
-                    label: 'Collections',
-                    assetImagePath: 'home_page_collections.jpg',
-                  ),
-                ),
-                _HomeScreenCard(
-                  label: 'Nutrition',
-                  assetImagePath: 'home_page_nutrition.jpg',
-                ),
-                _HomeScreenCard(
-                  label: 'Mind',
-                  assetImagePath: 'home_page_mind.jpg',
-                ),
-              ],
-            ),
+              ),
+              _HomeScreenCard(
+                label: 'Nutrition',
+                assetImagePath: 'home_page_nutrition.jpg',
+              ),
+              _HomeScreenCard(
+                label: 'Mind',
+                assetImagePath: 'home_page_mind.jpg',
+              ),
+            ],
           ),
         ],
       ),

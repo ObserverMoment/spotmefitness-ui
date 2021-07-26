@@ -22,6 +22,7 @@ class BenchmarkEntryScoreDisplay extends StatelessWidget {
       case BenchmarkType.fastesttime:
       case BenchmarkType.unbrokentime:
         return Duration(seconds: entry.score.round()).compactDisplay();
+      case BenchmarkType.amrap:
       case BenchmarkType.unbrokenreps:
         return '${entry.score.stringMyDouble()} reps';
       default:

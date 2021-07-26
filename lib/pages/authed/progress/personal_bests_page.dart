@@ -11,14 +11,14 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 
-class BenchmarksPage extends StatelessWidget {
+class PersonalBestsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final query = UserBenchmarksQuery(variables: UserBenchmarksArguments());
+    final query = UserBenchmarksQuery();
     return QueryObserver<UserBenchmarks$Query, json.JsonSerializable>(
-        key: Key('BenchmarksPage - ${query.operationName}'),
+        key: Key('PersonalBestsPage - ${query.operationName}'),
         query: query,
-        loadingIndicator: ShimmerCardList(itemCount: 10),
+        loadingIndicator: ShimmerListPage(),
         builder: (data) {
           final benchmarks = data.userBenchmarks
               .sortedBy<DateTime>((b) => b.lastEntryAt)
@@ -27,7 +27,7 @@ class BenchmarksPage extends StatelessWidget {
 
           return CupertinoPageScaffold(
             navigationBar: BorderlessNavBar(
-              middle: NavBarTitle('Benchmarks & PBs'),
+              middle: NavBarTitle('Personal Bests'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,

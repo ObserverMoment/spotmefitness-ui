@@ -62,8 +62,8 @@ class ProgressJournalEntryCard extends StatelessWidget {
                     backgroundColor: Styles.colorOne.withOpacity(0.35),
                     circularStrokeCap: CircularStrokeCap.round,
                     arcType: ArcType.HALF,
-                    radius: 42.0,
-                    lineWidth: 4.0,
+                    radius: 40.0,
+                    lineWidth: 3.0,
                     percent: s / kMaxScore,
                     center: MyText(
                       s.toInt().toString(),
@@ -131,8 +131,8 @@ class ProgressJournalEntryCard extends StatelessWidget {
                     startAngle: 180,
                     backgroundColor: Styles.colorOne.withOpacity(0.35),
                     circularStrokeCap: CircularStrokeCap.round,
-                    radius: 64.0,
-                    lineWidth: 10.0,
+                    radius: 60.0,
+                    lineWidth: 9.0,
                     percent: _calcOverallAverage() / kMaxScore,
                     center: MyText(
                       _calcOverallAverage().toInt().toString(),
@@ -165,7 +165,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
                 ),
               if (Utils.textNotNull(progressJournalEntry.voiceNoteUri))
                 AudioThumbnailPlayer(
-                    displaySize: Size(60, 60),
+                    displaySize: Size(56, 56),
                     iconData: CupertinoIcons.mic_fill,
                     audioUri: progressJournalEntry.voiceNoteUri!),
             ],

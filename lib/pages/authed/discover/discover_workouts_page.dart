@@ -16,7 +16,7 @@ import 'package:json_annotation/json_annotation.dart' as json;
 class DiscoverWorkoutsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         middle: NavBarTitle('Workouts'),
         trailing: CupertinoButton(
@@ -34,7 +34,7 @@ class DiscoverWorkoutsPage extends StatelessWidget {
       child: Column(
         children: [
           Container(
-              padding: const EdgeInsets.only(left: 12, bottom: 8, top: 8),
+              padding: const EdgeInsets.only(bottom: 8, top: 8),
               height: 50,
               child: ListView(
                   scrollDirection: Axis.horizontal,
@@ -63,8 +63,7 @@ class DiscoverWorkoutsPage extends StatelessWidget {
                       shrinkWrap: true,
                       itemCount: discoverWorkoutCategories.length,
                       itemBuilder: (c, i) => Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             child: DiscoverWorkoutCategoryCard(
                               discoverWorkoutCategory:
                                   discoverWorkoutCategories[i],

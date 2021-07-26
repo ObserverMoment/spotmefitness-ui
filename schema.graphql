@@ -15,6 +15,7 @@ input AddWorkoutToCollectionInput {
 
 """Enums"""
 enum BenchmarkType {
+  AMRAP
   MAXLOAD
   FASTESTTIME
   UNBROKENREPS
@@ -256,15 +257,15 @@ input CreateUserBenchmarkEntryInput {
 input CreateUserBenchmarkInput {
   name: String!
   description: String
-  reps: Float
-  repType: WorkoutMoveRepType
-  load: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  distanceUnit: DistanceUnit
+  equipmentInfo: String
   benchmarkType: BenchmarkType!
-  Equipment: ConnectRelationInput
-  Move: ConnectRelationInput!
+  loadUnit: LoadUnit
+  UserBenchmarkTags: [ConnectRelationInput!]
+}
+
+input CreateUserBenchmarkTagInput {
+  name: String!
+  description: String
 }
 
 input CreateWorkoutInput {
@@ -584,6 +585,9 @@ type Mutation {
   createUserBenchmarkEntry(data: CreateUserBenchmarkEntryInput!): UserBenchmarkEntry!
   updateUserBenchmarkEntry(data: UpdateUserBenchmarkEntryInput!): UserBenchmarkEntry!
   deleteUserBenchmarkEntryById(id: ID!): ID!
+  createUserBenchmarkTag(data: CreateUserBenchmarkTagInput!): UserBenchmarkTag!
+  updateUserBenchmarkTag(data: UpdateUserBenchmarkTagInput!): UserBenchmarkTag!
+  deleteUserBenchmarkTagById(id: ID!): ID!
   createCollection(data: CreateCollectionInput!): Collection!
   updateCollection(data: UpdateCollectionInput!): Collection!
   deleteCollectionById(id: ID!): ID!
@@ -707,6 +711,7 @@ type Query {
   userWorkoutTags: [WorkoutTag!]!
   userBenchmarks(take: Int): [UserBenchmark!]!
   userBenchmarkById(id: ID!): UserBenchmark!
+  userBenchmarkTags: [UserBenchmarkTag!]!
   userCollections: [Collection!]!
   userCollectionById(id: ID!): Collection!
   userPublicProfiles(cursor: ID, take: Int): [UserPublicProfileSummary!]!
@@ -898,15 +903,16 @@ input UpdateUserBenchmarkInput {
   id: String!
   name: String
   description: String
-  reps: Float
-  repType: WorkoutMoveRepType
-  load: Float
-  loadUnit: LoadUnit
-  timeUnit: TimeUnit
-  distanceUnit: DistanceUnit
+  equipmentInfo: String
   benchmarkType: BenchmarkType!
-  Equipment: ConnectRelationInput
-  Move: ConnectRelationInput
+  loadUnit: LoadUnit
+  UserBenchmarkTags: [ConnectRelationInput!]
+}
+
+input UpdateUserBenchmarkTagInput {
+  id: ID!
+  name: String
+  description: String
 }
 
 input UpdateUserInput {
@@ -1074,16 +1080,11 @@ type UserBenchmark {
   lastEntryAt: DateTime!
   name: String!
   description: String
-  reps: Float
-  repType: WorkoutMoveRepType!
-  load: Float
-  loadUnit: LoadUnit!
-  timeUnit: TimeUnit!
-  distanceUnit: DistanceUnit!
+  equipmentInfo: String
   benchmarkType: BenchmarkType!
-  Equipment: Equipment
-  Move: Move!
+  loadUnit: LoadUnit!
   UserBenchmarkEntries: [UserBenchmarkEntry!]!
+  UserBenchmarkTags: [UserBenchmarkTag!]!
 }
 
 type UserBenchmarkEntry {
@@ -1094,6 +1095,12 @@ type UserBenchmarkEntry {
   note: String
   videoUri: String
   videoThumbUri: String
+}
+
+type UserBenchmarkTag {
+  id: ID!
+  name: String!
+  description: String
 }
 
 enum UserProfileScope {

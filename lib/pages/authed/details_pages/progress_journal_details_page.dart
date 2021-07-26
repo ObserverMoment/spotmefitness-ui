@@ -233,7 +233,7 @@ class ProgressJournalEntriesList extends StatelessWidget {
           parentJournalId: parentJournalId,
         )),
         pageHasBottomNavBar: false,
-        buttonIconData: CupertinoIcons.add,
+        buttonText: 'Add Entry',
         child: entries.isEmpty
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -326,7 +326,7 @@ class ProgressJournalGoalsList extends StatelessWidget {
                   child: ProgressJournalGoalCreator(
                       parentJournalId: parentJournalId)),
               pageHasBottomNavBar: false,
-              buttonIconData: CupertinoIcons.add,
+              buttonText: 'Add Goal',
               child: goals.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),

@@ -14,14 +14,14 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class DiscoverPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         customLeading: NavBarLargeTitle('Discover'),
       ),
       child: Column(
         children: [
           Container(
-              padding: const EdgeInsets.only(left: 12, bottom: 8),
+              padding: const EdgeInsets.only(bottom: 8),
               height: 50,
               child: ListView(
                 scrollDirection: Axis.horizontal,
@@ -57,7 +57,8 @@ class DiscoverPage extends StatelessWidget {
                       itemCount: discoverFeatured.length,
                       itemBuilder: (c, i) => Padding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12.0),
+                              vertical: 8,
+                            ),
                             child: DiscoverFeaturedCard(
                               discoverFeatured: discoverFeatured[i],
                             ),

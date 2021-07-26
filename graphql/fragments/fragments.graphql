@@ -76,13 +76,9 @@ fragment UserBenchmark on UserBenchmark {
   lastEntryAt
   name
   description
-  reps
-  repType
-  load
-  loadUnit
-  timeUnit
-  distanceUnit
+  equipmentInfo
   benchmarkType
+  loadUnit
 }
 
 fragment UserBenchmarkEntry on UserBenchmarkEntry {
@@ -94,6 +90,13 @@ fragment UserBenchmarkEntry on UserBenchmarkEntry {
   note
   videoUri
   videoThumbUri
+}
+
+fragment UserBenchmarkTag on UserBenchmarkTag {
+  __typename
+  id
+  name
+  description
 }
 
 fragment UserPublicProfile on UserPublicProfile {

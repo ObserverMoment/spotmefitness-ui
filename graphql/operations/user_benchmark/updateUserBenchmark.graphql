@@ -1,29 +1,11 @@
 mutation updateUserBenchmark($data: UpdateUserBenchmarkInput!) {
   updateUserBenchmark(data: $data) {
     ...UserBenchmark
-    Equipment {
-      ...Equipment
-    }
-    Move {
-      ...Move
-      MoveType {
-        ...MoveType
-      }
-      BodyAreaMoveScores {
-        score
-        BodyArea {
-          ...BodyArea
-        }
-      }
-      RequiredEquipments {
-        ...Equipment
-      }
-      SelectableEquipments {
-        ...Equipment
-      }
-    }
     UserBenchmarkEntries {
       ...UserBenchmarkEntry
+    }
+    UserBenchmarkTags {
+      ...UserBenchmarkTag
     }
   }
 }

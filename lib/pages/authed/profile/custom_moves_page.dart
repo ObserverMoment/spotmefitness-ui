@@ -38,7 +38,7 @@ class ProfileCustomMovesPage extends StatelessWidget {
               .sortedBy<String>((move) => move.name);
 
           return StackAndFloatingButton(
-            buttonIconData: CupertinoIcons.add,
+            buttonText: 'Add Move',
             pageHasBottomNavBar: true,
             onPressed: () => _openCustomMoveCreator(context: context),
             child: customMoves.isNotEmpty

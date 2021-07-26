@@ -60,7 +60,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: ListView(
         children: [
           Padding(

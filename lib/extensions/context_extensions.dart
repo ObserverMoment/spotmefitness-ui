@@ -122,7 +122,10 @@ extension BuildContextExtension on BuildContext {
         context: context,
         builder: (context) => CupertinoAlertDialog(
                 title: title != null
-                    ? H3(title, textAlign: TextAlign.center)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: H3(title, textAlign: TextAlign.center),
+                      )
                     : null,
                 content: content,
                 actions: [
@@ -174,10 +177,13 @@ extension BuildContextExtension on BuildContext {
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: MyText('"$itemName"'),
                       ),
-                    MyText(
-                      message ?? 'Are you sure?',
-                      maxLines: 3,
-                      textAlign: TextAlign.center,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: MyText(
+                        message ?? 'Are you sure?',
+                        maxLines: 3,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),

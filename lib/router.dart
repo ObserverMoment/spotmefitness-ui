@@ -36,7 +36,7 @@ import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/profile_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/settings.dart';
-import 'package:spotmefitness_ui/pages/authed/progress/benchmarks_page.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/personal_bests_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/body_transformation_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/logged_workouts_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/journals_page.dart';
@@ -94,7 +94,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                 page: HeroEmptyRouterPage,
                 children: [
                   AutoRoute(path: '', page: ProgressPage),
-                  AutoRoute(path: 'benchmarks', page: BenchmarksPage),
+                  AutoRoute(path: 'personal-bests', page: PersonalBestsPage),
                   AutoRoute(path: 'journals', page: JournalsPage),
                   AutoRoute(
                       path: 'transformation', page: BodyTransformationPage),

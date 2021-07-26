@@ -64,9 +64,9 @@ class ProgressPage extends StatelessWidget {
               crossAxisCount: 2,
               children: [
                 _ProgressPageTile(
-                  label: 'Benchmarks & PBs',
-                  assetImagePath: 'progress_page_benchmarks.jpg',
-                  onTap: () => context.navigateTo(BenchmarksRoute()),
+                  label: 'Personal Best Lifts & Times',
+                  assetImagePath: 'progress_page_personal_bests.jpg',
+                  onTap: () => context.navigateTo(PersonalBestsRoute()),
                 ),
                 _ProgressPageTile(
                   label: 'Journal and Goal Tracking',

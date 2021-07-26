@@ -574,7 +574,10 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 if (workout.workoutSections.length > 1)
                                   Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 12, bottom: 8),
+                                          top: 16,
+                                          bottom: 8,
+                                          left: 8,
+                                          right: 8),
                                       child: MyTabBarNav(
                                           titles: _sectionTitles(
                                               sortedWorkoutSections),

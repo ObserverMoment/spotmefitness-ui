@@ -44,9 +44,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
     return CupertinoPageScaffold(
         navigationBar: BorderlessNavBar(
           middle: NavBarTitle('Your Workouts'),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
+          trailing: NavBarTrailingRow(
             children: [
               CreateIconButton(
                 onPressed: () => context.navigateTo(WorkoutCreatorRoute()),

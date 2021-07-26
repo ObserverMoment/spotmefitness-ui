@@ -112,26 +112,30 @@ class StackAndFloatingButton extends StatelessWidget {
   final Widget child;
   final bool pageHasBottomNavBar;
   final IconData buttonIconData;
+  final String buttonText;
   final void Function() onPressed;
   StackAndFloatingButton(
       {required this.child,
       this.pageHasBottomNavBar = true,
-      required this.buttonIconData,
-      required this.onPressed});
+      this.buttonIconData = CupertinoIcons.plus_circle,
+      required this.onPressed,
+      required this.buttonText});
   @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
+      alignment: Alignment.bottomCenter,
       clipBehavior: Clip.none,
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar
-                ? EnvironmentConfig.bottomNavBarHeight + 10
-                : 24,
-            right: 10,
-            child:
-                RoundIconButton(iconData: buttonIconData, onPressed: onPressed))
+            bottom:
+                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 20,
+            // right: 0,
+            child: ExtendedIconButton(
+                text: buttonText,
+                iconData: buttonIconData,
+                onPressed: onPressed))
       ],
     );
   }
@@ -218,7 +222,25 @@ class CreateEditPageNavBar extends CupertinoNavigationBar {
         );
 }
 
+class MyPageScaffold extends StatelessWidget {
+  final CupertinoNavigationBar? navigationBar;
+  final Widget child;
+  const MyPageScaffold({Key? key, this.navigationBar, required this.child})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+        navigationBar: navigationBar,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16),
+          child: child,
+        ));
+  }
+}
+
 /// Removes the bottom border from all nav bars.
+/// Has been replaced by [BorderlessNavBar]
 class BasicNavBar extends CupertinoNavigationBar {
   final Key? key;
   final Object heroTag;
@@ -277,6 +299,20 @@ class _BackButton extends StatelessWidget {
         CupertinoIcons.arrow_left,
         size: 22,
       ),
+    );
+  }
+}
+
+class NavBarTrailingRow extends StatelessWidget {
+  final List<Widget> children;
+  const NavBarTrailingRow({Key? key, required this.children}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: children,
     );
   }
 }

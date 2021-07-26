@@ -130,13 +130,15 @@ class ErrorMessage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: MyText(
-            message ?? 'Sorry there was a problem retrieving your info',
-            color: Styles.errorRed,
-            textAlign: TextAlign.center,
-            maxLines: 2,
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: MyText(
+              message ?? 'Sorry there was a problem retrieving your info',
+              color: Styles.errorRed,
+              textAlign: TextAlign.center,
+              maxLines: 6,
+            ),
           ),
         ),
       ],

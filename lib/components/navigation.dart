@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 // Simple animated tabs which return a new tab index when clicked.
 class MyTabBarNav extends StatefulWidget {
@@ -75,7 +76,10 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
       alignment: widget.alignment,
-      height: 38,
+      decoration: BoxDecoration(
+          color: context.theme.cardBackground.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(10)),
+      height: 42,
       child: ListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,

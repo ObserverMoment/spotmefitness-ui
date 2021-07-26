@@ -50,97 +50,91 @@ class ProfilePersonalPage extends StatelessWidget {
         ),
         builder: (data) {
           final User user = data.authedUser;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView(
-              children: [
-                _InputPadding(
-                  child: EditableTextFieldRow(
-                    title: 'Name',
-                    text: user.displayName ?? '',
-                    onSave: (newText) => updateUserFields(
-                        context, user.id, 'displayName', newText),
-                    inputValidation: (String text) =>
-                        text.length > 2 && text.length <= 30,
-                    validationMessage: 'Min 3, max 30 characters',
-                    maxChars: 30,
+          return ListView(
+            children: [
+              _InputPadding(
+                child: EditableTextFieldRow(
+                  title: 'Name',
+                  text: user.displayName ?? '',
+                  onSave: (newText) => updateUserFields(
+                      context, user.id, 'displayName', newText),
+                  inputValidation: (String text) =>
+                      text.length > 2 && text.length <= 30,
+                  validationMessage: 'Min 3, max 30 characters',
+                  maxChars: 30,
+                ),
+              ),
+              _InputPadding(
+                child: EditableTextAreaRow(
+                  title: 'Bio',
+                  text: user.bio ?? '',
+                  onSave: (newText) =>
+                      updateUserFields(context, user.id, 'bio', newText),
+                  inputValidation: (t) => true,
+                  maxDisplayLines: 2,
+                ),
+              ),
+              _InputPadding(
+                child: TappableRow(
+                    title: 'Country',
+                    display: user.countryCode != null
+                        ? SelectedCountryDisplay(user.countryCode!)
+                        : null,
+                    onTap: () => context.push(
+                        fullscreenDialog: true,
+                        child: CountrySelector(
+                          selectedCountry: user.countryCode != null
+                              ? Country.fromIsoCode(user.countryCode!)
+                              : null,
+                          selectCountry: (country) => updateUserFields(
+                              context, user.id, 'countryCode', country.isoCode),
+                        ))),
+              ),
+              _InputPadding(
+                child: TappableRow(
+                    title: 'Birthdate',
+                    display: user.birthdate != null
+                        ? MyText(user.birthdate!.dateString)
+                        : null,
+                    onTap: () => context.push(
+                        fullscreenDialog: true,
+                        child: DateSelector(
+                          selectedDate: user.birthdate,
+                          saveDate: (date) => updateUserFields(
+                              context,
+                              user.id,
+                              'birthdate',
+                              fromDartDateTimeToGraphQLDateTime(date)),
+                        ))),
+              ),
+              _InputPadding(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          MyText(
+                            'Gender',
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      SlidingSelect<Gender>(
+                          value: user.gender,
+                          children: <Gender, Widget>{
+                            for (final v in Gender.values
+                                .where((v) => v != Gender.artemisUnknown))
+                              v: MyText(v.display)
+                          },
+                          updateValue: (gender) => updateUserFields(
+                              context, user.id, 'gender', gender.apiValue)),
+                    ],
                   ),
                 ),
-                _InputPadding(
-                  child: EditableTextAreaRow(
-                    title: 'Bio',
-                    text: user.bio ?? '',
-                    onSave: (newText) =>
-                        updateUserFields(context, user.id, 'bio', newText),
-                    inputValidation: (t) => true,
-                    maxDisplayLines: 2,
-                  ),
-                ),
-                _InputPadding(
-                  child: TappableRow(
-                      title: 'Country',
-                      display: user.countryCode != null
-                          ? SelectedCountryDisplay(user.countryCode!)
-                          : null,
-                      onTap: () => context.push(
-                          fullscreenDialog: true,
-                          child: CountrySelector(
-                            selectedCountry: user.countryCode != null
-                                ? Country.fromIsoCode(user.countryCode!)
-                                : null,
-                            selectCountry: (country) => updateUserFields(
-                                context,
-                                user.id,
-                                'countryCode',
-                                country.isoCode),
-                          ))),
-                ),
-                _InputPadding(
-                  child: TappableRow(
-                      title: 'Birthdate',
-                      display: user.birthdate != null
-                          ? MyText(user.birthdate!.dateString)
-                          : null,
-                      onTap: () => context.push(
-                          fullscreenDialog: true,
-                          child: DateSelector(
-                            selectedDate: user.birthdate,
-                            saveDate: (date) => updateUserFields(
-                                context,
-                                user.id,
-                                'birthdate',
-                                fromDartDateTimeToGraphQLDateTime(date)),
-                          ))),
-                ),
-                _InputPadding(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            MyText(
-                              'Gender',
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        SlidingSelect<Gender>(
-                            value: user.gender,
-                            children: <Gender, Widget>{
-                              for (final v in Gender.values
-                                  .where((v) => v != Gender.artemisUnknown))
-                                v: MyText(v.display)
-                            },
-                            updateValue: (gender) => updateUserFields(
-                                context, user.id, 'gender', gender.apiValue)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           );
         });
   }

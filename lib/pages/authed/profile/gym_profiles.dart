@@ -28,8 +28,8 @@ class ProfileGymProfilesPage extends StatelessWidget {
         builder: (data) {
           final gymProfiles = data.gymProfiles;
           return StackAndFloatingButton(
-            buttonIconData: CupertinoIcons.add,
             pageHasBottomNavBar: true,
+            buttonText: 'Add Profile',
             onPressed: () => context.push(
                 child: GymProfileCreator(), fullscreenDialog: true),
             child: gymProfiles.isNotEmpty
@@ -54,8 +54,8 @@ class ProfileGymProfilesPage extends StatelessWidget {
                                   ),
                                   fullscreenDialog: true),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 2, vertical: 3.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5.0),
                                 child: GymProfileCard(
                                   gymProfile: gymProfiles[i],
                                 ),
