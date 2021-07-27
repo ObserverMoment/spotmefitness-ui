@@ -132,29 +132,3 @@ class _ProgressPageTile extends StatelessWidget {
     );
   }
 }
-
-// /// The main tab page 'Journal'.
-// /// Includes [Journals], [Benchmarks] and [Logs].
-// class JournalPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return CupertinoPageScaffold(
-//       key: Key('JournalPage-CupertinoPageScaffold'),
-//       navigationBar: BorderlessNavBar(
-//         key: Key('JournalPage-BasicNavBar'),
-//         customLeading: NavBarLargeTitle('Journal'),
-//       ),
-//       child: Padding(
-//         padding: const EdgeInsets.only(bottom: 8),
-//         child: ListView(
-//           shrinkWrap: true,
-//           children: [
-//             RecentBenchmarkEntries(),
-//             RecentLoggedWorkouts(),
-//             RecentJournalEntries(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

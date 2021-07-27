@@ -10,7 +10,9 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class ProgressJournalGoalsSummaryCard extends StatefulWidget {
   final List<ProgressJournalGoal> goals;
-  ProgressJournalGoalsSummaryCard({required this.goals});
+  final bool initMinimized;
+  ProgressJournalGoalsSummaryCard(
+      {required this.goals, this.initMinimized = true});
   @override
   _ProgressJournalGoalsSummaryCardState createState() =>
       _ProgressJournalGoalsSummaryCardState();
@@ -18,7 +20,13 @@ class ProgressJournalGoalsSummaryCard extends StatefulWidget {
 
 class _ProgressJournalGoalsSummaryCardState
     extends State<ProgressJournalGoalsSummaryCard> {
-  bool _minimized = true;
+  late bool _minimized = true;
+
+  @override
+  void initState() {
+    _minimized = widget.initMinimized;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,38 +61,45 @@ class _ProgressJournalGoalsSummaryCardState
     final completed = widget.goals.where((g) => g.completedDate != null).length;
 
     return Card(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyText(
-                '$completed of ${widget.goals.length} goals completed',
-              ),
-              ShowHideDetailsButton(
-                onPressed: () => setState(() => _minimized = !_minimized),
-                showDetails: !_minimized,
-                showText: 'Show',
-                hideText: 'Hide',
-              )
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText(
+                  '$completed of ${widget.goals.length} goals completed',
+                ),
+                ShowHideDetailsButton(
+                  onPressed: () => setState(() => _minimized = !_minimized),
+                  showDetails: !_minimized,
+                  showText: 'Show',
+                  hideText: 'Hide',
+                )
+              ],
+            ),
           ),
           GrowInOut(
               show: !_minimized,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 8),
-                child: Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: goalsByTag.entries
-                        .map((e) => GoalTagProgressIndicator(
-                              tag: e.key,
-                              goals: e.value,
-                            ))
-                        .toList()),
+              child: Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4, bottom: 8),
+                  child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: goalsByTag.entries
+                          .map((e) => GoalTagProgressIndicator(
+                                tag: e.key,
+                                goals: e.value,
+                              ))
+                          .toList()),
+                ),
               )),
         ],
       ),
@@ -132,12 +147,12 @@ class GoalTagProgressIndicator extends StatelessWidget {
           MyText(
             tag.tag,
             size: FONTSIZE.SMALL,
-            weight: FontWeight.bold,
+            lineHeight: 1.4,
           ),
           MyText(
             '$numComplete of ${goals.length}',
             size: FONTSIZE.SMALL,
-            weight: FontWeight.bold,
+            lineHeight: 1.4,
           ),
         ],
       ),

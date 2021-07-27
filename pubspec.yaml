@@ -71,6 +71,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   stop_watch_timer: ^1.3.0 # Controller only - no UI. Provides streams and sinks.
   substring_highlight: ^1.0.33
+  syncfusion_flutter_charts: ^19.2.49
   table_calendar: ^3.0.0
   timeline_tile: ^2.0.0
   uuid: ^3.0.4
