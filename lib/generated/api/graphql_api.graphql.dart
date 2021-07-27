@@ -384,6 +384,8 @@ mixin UserMixin {
   String? introVideoThumbUri;
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
   Gender? gender;
+  @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
+  late UserProfileScope userProfileScope;
 }
 mixin UserPublicProfileSummaryMixin {
   @JsonKey(name: '__typename')
@@ -3600,7 +3602,8 @@ class User extends JsonSerializable with EquatableMixin, UserMixin {
         displayName,
         introVideoUri,
         introVideoThumbUri,
-        gender
+        gender,
+        userProfileScope
       ];
   @override
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -6346,8 +6349,8 @@ enum Gender {
   female,
   @JsonValue('NONBINARY')
   nonbinary,
-  @JsonValue('NONE')
-  none,
+  @JsonValue('PNTS')
+  pnts,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -38479,6 +38482,12 @@ final AUTHED_USER_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'userProfileScope'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ]))
 ]);
@@ -38604,6 +38613,12 @@ final UPDATE_USER_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'gender'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'userProfileScope'),
             alias: null,
             arguments: [],
             directives: [],

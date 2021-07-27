@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -32,7 +30,7 @@ class BenchmarkTypeSelector extends StatelessWidget {
                 weight: FontWeight.bold,
               ),
               onPressed: context.pop),
-          middle: NavBarTitle('Benchmark Types'),
+          middle: NavBarTitle('Scoring Types'),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -42,29 +40,37 @@ class BenchmarkTypeSelector extends StatelessWidget {
                 .map((type) => GestureDetector(
                       onTap: () => _handleSelectMoveType(context, type),
                       child: Container(
-                        height: 50,
+                        height: 120,
                         decoration: BoxDecoration(
                             border:
                                 Border(bottom: BorderSide(color: Styles.grey))),
                         padding: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                MyText(type.display),
-                                if (benchmarkType == type)
-                                  FadeIn(
-                                      child: Padding(
-                                    padding: const EdgeInsets.only(left: 6.0),
-                                    child: ConfirmCheckIcon(),
-                                  )),
+                                Row(
+                                  children: [
+                                    MyText(
+                                      type.display,
+                                      size: FONTSIZE.BIG,
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ],
+                                ),
+                                InfoPopupButton(
+                                    infoWidget:
+                                        MyText('Info about ${type.display}'))
                               ],
                             ),
-                            InfoPopupButton(
-                                infoWidget:
-                                    MyText('Info about ${type.display}'))
+                            MyText(
+                              type.description,
+                              maxLines: 3,
+                              size: FONTSIZE.SMALL,
+                              lineHeight: 1.4,
+                            )
                           ],
                         ),
                       ),

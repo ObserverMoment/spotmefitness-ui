@@ -13,15 +13,32 @@ extension BenchmarkTypeExtension on BenchmarkType {
   String get display {
     switch (this) {
       case BenchmarkType.amrap:
-        return 'As Many Reps as Possible';
+        return 'AMRAP';
       case BenchmarkType.maxload:
-        return 'Max load';
+        return 'Max Load';
       case BenchmarkType.unbrokenreps:
         return 'Reps Unbroken';
       case BenchmarkType.unbrokentime:
         return 'Time Unbroken';
       case BenchmarkType.fastesttime:
         return 'Fastest Time';
+      default:
+        throw new Exception('This is not a valid BenchmarkType enum: $this');
+    }
+  }
+
+  String get description {
+    switch (this) {
+      case BenchmarkType.amrap:
+        return 'Complete as many reps as possible of a move or set of moves within a fixed amount of time. Score the numbetr of reps.';
+      case BenchmarkType.maxload:
+        return 'Properly complete a fixed number of reps or sets with the maximum load possible. Score the load.';
+      case BenchmarkType.unbrokenreps:
+        return 'Go unbroken for a long as possible whilst properly completing reps of a specified movement. Score the reps.';
+      case BenchmarkType.unbrokentime:
+        return 'Go unbroken for a long as possible whilst properly completing reps of a specified movement. Score the time.';
+      case BenchmarkType.fastesttime:
+        return 'Finish fixed reps or sets as fast as possible while still maintaining proper form. Score the time.';
       default:
         throw new Exception('This is not a valid BenchmarkType enum: $this');
     }
@@ -164,6 +181,11 @@ extension TimeUnitExtension on TimeUnit {
 
   String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
+}
+
+extension UserProfileScopeExtension on UserProfileScope {
+  String get apiValue => describeEnum(this).toUpperCase();
+  String get display => describeEnum(this);
 }
 
 extension WorkoutMoveRepTypeExtension on WorkoutMoveRepType {

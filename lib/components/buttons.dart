@@ -471,7 +471,7 @@ class PageLink extends StatelessWidget {
                   bottom: BorderSide(
                       color: context.theme.primary.withOpacity(0.06)))),
           width: double.infinity,
-          padding: EdgeInsets.all(12),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

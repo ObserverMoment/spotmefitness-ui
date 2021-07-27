@@ -8,9 +8,10 @@ import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/cupertino.dart' as _i47;
 import 'package:flutter/material.dart' as _i2;
 
-import 'components/creators/benchmark_creator/benchmark_creator.dart' as _i8;
 import 'components/creators/logged_workout_creator/logged_workout_creator.dart'
     as _i15;
+import 'components/creators/personal_best_creator/personal_best_creator.dart'
+    as _i8;
 import 'components/creators/progress_journal/progress_journal_creator.dart'
     as _i9;
 import 'components/creators/workout_creator/workout_creator.dart' as _i10;
@@ -25,9 +26,9 @@ import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i14;
 import 'generated/api/graphql_api.dart' as _i48;
 import 'pages/authed/app.dart' as _i5;
-import 'pages/authed/details_pages/benchmark_details_page.dart' as _i6;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i7;
 import 'pages/authed/details_pages/logged_workout_details_page.dart' as _i16;
+import 'pages/authed/details_pages/personal_best_details_page.dart' as _i6;
 import 'pages/authed/details_pages/progress_journal_details_page.dart' as _i18;
 import 'pages/authed/details_pages/user_public_profile_details_page.dart'
     as _i17;
@@ -82,14 +83,14 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return _i5.MainTabsPage();
         }),
-    BenchmarkDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+    PersonalBestDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final pathParams = data.pathParams;
-          final args = data.argsAs<BenchmarkDetailsRouteArgs>(
+          final args = data.argsAs<PersonalBestDetailsRouteArgs>(
               orElse: () =>
-                  BenchmarkDetailsRouteArgs(id: pathParams.getString('id')));
-          return _i6.BenchmarkDetailsPage(id: args.id);
+                  PersonalBestDetailsRouteArgs(id: pathParams.getString('id')));
+          return _i6.PersonalBestDetailsPage(id: args.id);
         }),
     CollectionDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -100,12 +101,12 @@ class AppRouter extends _i1.RootStackRouter {
                   CollectionDetailsRouteArgs(id: pathParams.getString('id')));
           return _i7.CollectionDetailsPage(key: args.key, id: args.id);
         }),
-    BenchmarkCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+    PersonalBestCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
-          final args = data.argsAs<BenchmarkCreatorRouteArgs>(
-              orElse: () => const BenchmarkCreatorRouteArgs());
-          return _i8.BenchmarkCreatorPage(userBenchmark: args.userBenchmark);
+          final args = data.argsAs<PersonalBestCreatorRouteArgs>(
+              orElse: () => const PersonalBestCreatorRouteArgs());
+          return _i8.PersonalBestCreatorPage(userBenchmark: args.userBenchmark);
         }),
     ProgressJournalCreatorRoute.name: (routeData) =>
         _i1.CupertinoPageX<dynamic>(
@@ -426,9 +427,11 @@ class AppRouter extends _i1.RootStackRouter {
                   path: '*', redirectTo: 'personal', fullMatch: true)
             ])
           ]),
-          _i1.RouteConfig(BenchmarkDetailsRoute.name, path: 'benchmark/:id'),
+          _i1.RouteConfig(PersonalBestDetailsRoute.name,
+              path: 'personal-best/:id'),
           _i1.RouteConfig(CollectionDetailsRoute.name, path: 'collection/:id'),
-          _i1.RouteConfig(BenchmarkCreatorRoute.name, path: 'create-benchmark'),
+          _i1.RouteConfig(PersonalBestCreatorRoute.name,
+              path: 'create-personal-best'),
           _i1.RouteConfig(ProgressJournalCreatorRoute.name,
               path: 'create-journal'),
           _i1.RouteConfig(WorkoutCreatorRoute.name, path: 'create-workout'),
@@ -483,19 +486,19 @@ class MainTabsRoute extends _i1.PageRouteInfo {
   static const String name = 'MainTabsRoute';
 }
 
-class BenchmarkDetailsRoute
-    extends _i1.PageRouteInfo<BenchmarkDetailsRouteArgs> {
-  BenchmarkDetailsRoute({required String id})
+class PersonalBestDetailsRoute
+    extends _i1.PageRouteInfo<PersonalBestDetailsRouteArgs> {
+  PersonalBestDetailsRoute({required String id})
       : super(name,
-            path: 'benchmark/:id',
-            args: BenchmarkDetailsRouteArgs(id: id),
+            path: 'personal-best/:id',
+            args: PersonalBestDetailsRouteArgs(id: id),
             rawPathParams: {'id': id});
 
-  static const String name = 'BenchmarkDetailsRoute';
+  static const String name = 'PersonalBestDetailsRoute';
 }
 
-class BenchmarkDetailsRouteArgs {
-  const BenchmarkDetailsRouteArgs({required this.id});
+class PersonalBestDetailsRouteArgs {
+  const PersonalBestDetailsRouteArgs({required this.id});
 
   final String id;
 }
@@ -519,18 +522,18 @@ class CollectionDetailsRouteArgs {
   final String id;
 }
 
-class BenchmarkCreatorRoute
-    extends _i1.PageRouteInfo<BenchmarkCreatorRouteArgs> {
-  BenchmarkCreatorRoute({_i48.UserBenchmark? userBenchmark})
+class PersonalBestCreatorRoute
+    extends _i1.PageRouteInfo<PersonalBestCreatorRouteArgs> {
+  PersonalBestCreatorRoute({_i48.UserBenchmark? userBenchmark})
       : super(name,
-            path: 'create-benchmark',
-            args: BenchmarkCreatorRouteArgs(userBenchmark: userBenchmark));
+            path: 'create-personal-best',
+            args: PersonalBestCreatorRouteArgs(userBenchmark: userBenchmark));
 
-  static const String name = 'BenchmarkCreatorRoute';
+  static const String name = 'PersonalBestCreatorRoute';
 }
 
-class BenchmarkCreatorRouteArgs {
-  const BenchmarkCreatorRouteArgs({this.userBenchmark});
+class PersonalBestCreatorRouteArgs {
+  const PersonalBestCreatorRouteArgs({this.userBenchmark});
 
   final _i48.UserBenchmark? userBenchmark;
 }

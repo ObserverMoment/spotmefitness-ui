@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -58,32 +59,35 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
       children: [
         Stack(
           children: [
-            CupertinoTextFormFieldRow(
-                controller: widget.controller,
-                initialValue: widget.initialValue,
-                onChanged: widget.onChanged,
-                textAlign: widget.textAlign,
-                padding:
-                    EdgeInsets.only(top: 12, bottom: 4, left: 12, right: 12),
-                prefix: widget.prefix,
-                autofocus: widget.autofocus,
-                placeholder: widget.placeholder,
-                keyboardType: widget.keyboardType,
-                decoration: widget.backgroundColor != null
-                    ? BoxDecoration(
-                        color: widget.backgroundColor,
-                        borderRadius: BorderRadius.circular(8))
-                    : null,
-                style: TextStyle(fontSize: 18),
-                placeholderStyle: TextStyle(
-                    fontSize: 16,
-                    color: context.theme.primary.withOpacity(0.7)),
-                autofillHints: widget.autofillHints,
-                obscureText: widget.obscureText),
+            Container(
+              margin: const EdgeInsets.all(6),
+              padding:
+                  const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
+              decoration: widget.backgroundColor != null
+                  ? BoxDecoration(
+                      color: widget.backgroundColor,
+                      borderRadius: BorderRadius.circular(8))
+                  : null,
+              child: CupertinoTextFormFieldRow(
+                  controller: widget.controller,
+                  initialValue: widget.initialValue,
+                  onChanged: widget.onChanged,
+                  textAlign: widget.textAlign,
+                  prefix: widget.prefix,
+                  autofocus: widget.autofocus,
+                  placeholder: widget.placeholder,
+                  keyboardType: widget.keyboardType,
+                  style: TextStyle(fontSize: 18),
+                  placeholderStyle: TextStyle(
+                      fontSize: 18,
+                      color: context.theme.primary.withOpacity(0.6)),
+                  autofillHints: widget.autofillHints,
+                  obscureText: widget.obscureText),
+            ),
             if (_controller.text.length > 0)
               Positioned(
                   left: widget.prefix != null ? 8 : 17,
-                  top: 5,
+                  top: 12,
                   child: FadeIn(
                     child: MyText(
                       widget.placeholder,
@@ -93,12 +97,12 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                   )),
             if (widget.validator != null && widget.validator!())
               Positioned(
-                  right: 6,
-                  bottom: 16,
+                  right: 10,
+                  top: 8,
                   child: FadeIn(
                       child: Icon(
                     CupertinoIcons.checkmark_alt,
-                    color: CupertinoColors.systemBlue,
+                    color: Styles.infoBlue,
                   ))),
           ],
         ),

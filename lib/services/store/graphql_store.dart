@@ -395,7 +395,7 @@ class GraphQLStore {
         data: response.data != null ? mutation.parse(response.data!) : null,
         errors: response.errors);
 
-    /// If has network errors then need to rollback any optimistic updates.
+    /// If has network errors then need to rollback any optimistic updates then re-broadcast.
     if (writeToStore && optimisticData != null && result.hasErrors) {
       _box.put(resolveDataId(optimisticData), backupData);
 
@@ -412,38 +412,33 @@ class GraphQLStore {
     if (writeToStore && !result.hasErrors) {
       /// Check for a top level field alias - these are needed sometimes due to the way Artemis generates return types for operations.
       final alias = extractRootFieldAliasFromOperation(mutation);
-
       final data = response.data?[alias ?? mutation.operationName] ?? {};
 
-      if (addRefToQueries.isNotEmpty) {
-        /// Handle cases where returned data is a list of objects.
-        /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
-        /// Note: Optimistic data cannot be a list...currently.
-        if (data is List) {
-          data.forEach((e) {
-            normalizeToStore(
-                data: e, write: mergeWriteNormalized, read: readNormalized);
-            _addRefToQueries(data: e, queryIds: addRefToQueries);
-          });
-        } else {
+      /// Handle cases where returned data is a list of objects.
+      /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
+      /// Note: Optimistic data cannot be a list...currently.
+      if (data is List) {
+        data.forEach((e) {
           normalizeToStore(
-              data: data, write: mergeWriteNormalized, read: readNormalized);
+              data: e, write: mergeWriteNormalized, read: readNormalized);
+          if (addRefToQueries.isNotEmpty) {
+            _addRefToQueries(data: e, queryIds: addRefToQueries);
+          }
+          if (removeRefFromQueries.isNotEmpty) {
+            _removeRefFromQueries(data: e, queryIds: removeRefFromQueries);
+          }
+        });
+      } else {
+        normalizeToStore(
+            data: data, write: mergeWriteNormalized, read: readNormalized);
+        if (addRefToQueries.isNotEmpty) {
           _addRefToQueries(data: data, queryIds: addRefToQueries);
         }
-      }
-
-      if (removeRefFromQueries.isNotEmpty) {
-        /// Handle cases where returned data is a list of objects.
-        /// E.g CreateBodyTransformPhotosMutation returns [List<BodyTransformPhoto>]
-        if (data is List) {
-          data.forEach((e) {
-            _removeRefFromQueries(data: e, queryIds: removeRefFromQueries);
-          });
-        } else {
+        if (removeRefFromQueries.isNotEmpty) {
           _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
         }
-        _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
       }
+      _broadcast(broadcastQueryIds);
     }
 
     return result;
@@ -509,7 +504,7 @@ class GraphQLStore {
       List<String> broadcastQueryIds = const []}) async {
     final response = await execute(mutation);
 
-    /// [result] should always be a list of deleted IDs being returned from the API.
+    /// [result][data][operationName] should always be a list of deleted IDs being returned from the API.
     final result = MutationResult<TData>(
         data: mutation.parse(response.data ?? {}), errors: response.errors);
 

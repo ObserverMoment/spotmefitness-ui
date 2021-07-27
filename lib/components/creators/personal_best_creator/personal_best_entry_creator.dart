@@ -16,18 +16,19 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class BenchmarkEntryCreator extends StatefulWidget {
+class PersonalBestEntryCreator extends StatefulWidget {
   final UserBenchmark userBenchmark;
   final UserBenchmarkEntry? userBenchmarkEntry;
-  BenchmarkEntryCreator({
+  PersonalBestEntryCreator({
     this.userBenchmarkEntry,
     required this.userBenchmark,
   });
   @override
-  _BenchmarkEntryCreatorState createState() => _BenchmarkEntryCreatorState();
+  _PersonalBestEntryCreatorState createState() =>
+      _PersonalBestEntryCreatorState();
 }
 
-class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
+class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
   TextEditingController _scoreController = TextEditingController();
   DateTime _completedOn = DateTime.now();
 
@@ -176,7 +177,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
         return 'Unbroken Time';
       default:
         throw Exception(
-            'BenchmarkEntryCreator._buildScoreHeaderText: No method defined for ${widget.userBenchmark.benchmarkType}.');
+            'PersonalBestEntryCreator._buildScoreHeaderText: No method defined for ${widget.userBenchmark.benchmarkType}.');
     }
   }
 
@@ -191,7 +192,7 @@ class _BenchmarkEntryCreatorState extends State<BenchmarkEntryCreator> {
         return 'REPS';
       default:
         throw Exception(
-            'BenchmarkEntryCreator._buildScoreUnit: No method defined for ${widget.userBenchmark.benchmarkType}.');
+            'PersonalBestEntryCreator._buildScoreUnit: No method defined for ${widget.userBenchmark.benchmarkType}.');
     }
   }
 

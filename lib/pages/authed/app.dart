@@ -176,6 +176,7 @@ class TabIcon extends StatelessWidget {
       required this.onTap});
 
   final kAnimationDuration = Duration(milliseconds: 400);
+  final kLabelSpacerHeight = 3.0;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +194,7 @@ class TabIcon extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       activeIcon,
-                      SizedBox(height: 1),
+                      SizedBox(height: kLabelSpacerHeight),
                       MyText(
                         label,
                         size: FONTSIZE.TINY,
@@ -205,7 +206,7 @@ class TabIcon extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       icon,
-                      SizedBox(height: 1),
+                      SizedBox(height: kLabelSpacerHeight),
                       MyText(label, size: FONTSIZE.TINY, color: inactiveColor)
                     ],
                   )),

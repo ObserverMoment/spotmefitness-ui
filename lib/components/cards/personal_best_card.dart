@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -10,9 +10,9 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class BenchmarkCard extends StatelessWidget {
+class PersonalBestCard extends StatelessWidget {
   final UserBenchmark userBenchmark;
-  BenchmarkCard(this.userBenchmark);
+  PersonalBestCard(this.userBenchmark);
 
   List<UserBenchmarkEntry> _sortEntries() {
     final entries =
@@ -95,6 +95,21 @@ class BenchmarkCard extends StatelessWidget {
                           size: FONTSIZE.SMALL,
                           color: Styles.colorTwo,
                           lineHeight: 1.4,
+                        ),
+                      ),
+                    if (userBenchmark.userBenchmarkTags.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6, bottom: 10),
+                        child: Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: userBenchmark.userBenchmarkTags
+                              .map(
+                                (tag) => Tag(
+                                  tag: tag.name,
+                                ),
+                              )
+                              .toList(),
                         ),
                       ),
                   ],

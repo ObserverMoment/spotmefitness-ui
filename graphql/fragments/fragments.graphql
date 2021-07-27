@@ -67,6 +67,7 @@ fragment User on User {
   introVideoUri
   introVideoThumbUri
   gender
+  userProfileScope
 }
 
 fragment UserBenchmark on UserBenchmark {

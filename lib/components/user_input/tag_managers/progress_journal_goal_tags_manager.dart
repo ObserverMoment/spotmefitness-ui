@@ -161,11 +161,11 @@ class _ProgressJournalGoalTagsManagerState
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         automaticallyImplyLeading: !_isLoading,
-        middle: NavBarTitle(
-            widget.allowCreateTagOnly ? 'Create Tag' : 'Manage Tags'),
+        middle:
+            NavBarTitle(widget.allowCreateTagOnly ? 'Create Tag' : 'Goal Tags'),
         trailing: _isLoading
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -189,19 +189,18 @@ class _ProgressJournalGoalTagsManagerState
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 12),
-                  CupertinoFormSection.insetGrouped(children: [
-                    MyTextFormFieldRow(
-                      keyboardType: TextInputType.text,
-                      textAlign: TextAlign.center,
-                      placeholder: 'Enter new tag',
-                      controller: _tagNameController,
-                      validationMessage: 'Min 3, max 30 characters',
-                      validator: () =>
-                          _tagNameController.text.length > 2 &&
-                          _tagNameController.text.length < 31,
-                    ),
-                  ]),
+                  SizedBox(height: 4),
+                  MyTextFormFieldRow(
+                    backgroundColor: context.theme.cardBackground,
+                    keyboardType: TextInputType.text,
+                    textAlign: TextAlign.center,
+                    placeholder: 'Enter new tag',
+                    controller: _tagNameController,
+                    validationMessage: 'Min 3, max 30 characters',
+                    validator: () =>
+                        _tagNameController.text.length > 2 &&
+                        _tagNameController.text.length < 31,
+                  ),
                   GrowInOut(
                     show: _tagNameController.text.length > 2,
                     child: Padding(
@@ -243,15 +242,18 @@ class _ProgressJournalGoalTagsManagerState
                     ),
                   ),
                   if (!widget.allowCreateTagOnly)
-                    Column(
-                      children: [
-                        HorizontalLine(),
-                        _CurrentTagsList(
-                          handleTagDelete: _handleTagDelete,
-                          updateTag: _updateTag,
-                          tags: tags,
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Column(
+                        children: [
+                          HorizontalLine(),
+                          _CurrentTagsList(
+                            handleTagDelete: _handleTagDelete,
+                            updateTag: _updateTag,
+                            tags: tags,
+                          ),
+                        ],
+                      ),
                     )
                 ],
               ),
@@ -291,49 +293,62 @@ class _CurrentTagsList extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CupertinoButton(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  onPressed: () => context.push(
-                                      child: FullScreenTextEditing(
-                                          title: 'Update Tag',
-                                          initialValue: tag.tag,
-                                          onSave: (text) {
-                                            tag.tag = text;
-                                            updateTag(tag);
-                                          },
-                                          validationMessage:
-                                              'Min 3, max 30 characters',
-                                          inputValidation: (t) =>
-                                              t.length > 2)),
-                                  child: ContentBox(
-                                      child: MyText(
-                                    tag.tag,
-                                    weight: FontWeight.bold,
-                                  ))),
-                              CupertinoButton(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                onPressed: () async {
-                                  Utils.hideKeyboard(context);
-                                  await openColorPickerDialog(
-                                      context: context,
-                                      onSave: (color) {
-                                        tag.hexColor = color.toHex();
+                          CupertinoButton(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              onPressed: () => context.push(
+                                  child: FullScreenTextEditing(
+                                      title: 'Update Tag',
+                                      initialValue: tag.tag,
+                                      onSave: (text) {
+                                        tag.tag = text;
                                         updateTag(tag);
-                                      });
-                                },
-                                child: CircularBox(
-                                    child: SizedBox(width: 28, height: 28),
-                                    color: HexColor.fromHex(tag.hexColor)),
-                              ),
-                            ],
+                                      },
+                                      validationMessage:
+                                          'Min 3, max 30 characters',
+                                      inputValidation: (t) => t.length > 2)),
+                              child: ContentBox(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 16),
+                                  child: Row(
+                                    children: [
+                                      MyText(
+                                        tag.tag,
+                                        weight: FontWeight.bold,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Icon(
+                                        CupertinoIcons.pencil,
+                                        size: 18,
+                                      )
+                                    ],
+                                  ))),
+                          CupertinoButton(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            onPressed: () async {
+                              Utils.hideKeyboard(context);
+                              await openColorPickerDialog(
+                                  context: context,
+                                  onSave: (color) {
+                                    tag.hexColor = color.toHex();
+                                    updateTag(tag);
+                                  });
+                            },
+                            child: CircularBox(
+                                child: SizedBox(
+                                  width: 28,
+                                  height: 28,
+                                  child: Icon(
+                                    CupertinoIcons.pencil,
+                                    size: 18,
+                                  ),
+                                ),
+                                color: HexColor.fromHex(tag.hexColor)),
                           ),
                           TextButton(
                             text: 'Delete',

@@ -2732,7 +2732,10 @@ User _$UserFromJson(Map<String, dynamic> json) => User()
   ..introVideoUri = json['introVideoUri'] as String?
   ..introVideoThumbUri = json['introVideoThumbUri'] as String?
   ..gender = _$enumDecodeNullable(_$GenderEnumMap, json['gender'],
-      unknownValue: Gender.artemisUnknown);
+      unknownValue: Gender.artemisUnknown)
+  ..userProfileScope = _$enumDecode(
+      _$UserProfileScopeEnumMap, json['userProfileScope'],
+      unknownValue: UserProfileScope.artemisUnknown);
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       '__typename': instance.$$typename,
@@ -2746,13 +2749,14 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'introVideoUri': instance.introVideoUri,
       'introVideoThumbUri': instance.introVideoThumbUri,
       'gender': _$GenderEnumMap[instance.gender],
+      'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
     };
 
 const _$GenderEnumMap = {
   Gender.male: 'MALE',
   Gender.female: 'FEMALE',
   Gender.nonbinary: 'NONBINARY',
-  Gender.none: 'NONE',
+  Gender.pnts: 'PNTS',
   Gender.artemisUnknown: 'ARTEMIS_UNKNOWN',
 };
 

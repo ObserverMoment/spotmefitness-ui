@@ -142,11 +142,11 @@ class WorkoutTagsManagerState extends State<WorkoutTagsManager> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         automaticallyImplyLeading: !_isLoading,
         middle: NavBarTitle(
-            widget.allowCreateTagOnly ? 'Create Tag' : 'Manage Tags'),
+            widget.allowCreateTagOnly ? 'Create Tag' : 'Workout Tags'),
         trailing: _isLoading
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -168,23 +168,22 @@ class WorkoutTagsManagerState extends State<WorkoutTagsManager> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 12),
-                CupertinoFormSection.insetGrouped(children: [
-                  MyTextFormFieldRow(
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    placeholder: 'Enter new tag',
-                    controller: _tagNameController,
-                    validationMessage: 'Min 3, max 30 characters',
-                    validator: () =>
-                        _tagNameController.text.length > 2 &&
-                        _tagNameController.text.length < 31,
-                  ),
-                ]),
+                SizedBox(height: 4),
+                MyTextFormFieldRow(
+                  backgroundColor: context.theme.cardBackground,
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.text,
+                  placeholder: 'Enter new tag',
+                  controller: _tagNameController,
+                  validationMessage: 'Min 3, max 30 characters',
+                  validator: () =>
+                      _tagNameController.text.length > 2 &&
+                      _tagNameController.text.length < 31,
+                ),
                 GrowInOut(
                   show: _canSaveNewTag,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -202,17 +201,20 @@ class WorkoutTagsManagerState extends State<WorkoutTagsManager> {
                 ),
                 if (!widget.allowCreateTagOnly)
                   Expanded(
-                    child: Column(
-                      children: [
-                        HorizontalLine(),
-                        Expanded(
-                          child: _CurrentTagsList(
-                            handleTagDelete: _handleTagDelete,
-                            tags: tags,
-                            updateTag: _updateTag,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Column(
+                        children: [
+                          HorizontalLine(),
+                          Expanded(
+                            child: _CurrentTagsList(
+                              handleTagDelete: _handleTagDelete,
+                              tags: tags,
+                              updateTag: _updateTag,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
               ],
@@ -252,34 +254,41 @@ class _CurrentTagsList extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CupertinoButton(
+                          CupertinoButton(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              onPressed: () => context.push(
+                                  child: FullScreenTextEditing(
+                                      title: 'Update Tag',
+                                      initialValue: tag.tag,
+                                      onSave: (text) {
+                                        tag.tag = text;
+                                        updateTag(tag);
+                                      },
+                                      validationMessage:
+                                          'Min 3, max 30 characters',
+                                      inputValidation: (t) => t.length > 2)),
+                              child: ContentBox(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  onPressed: () => context.push(
-                                      child: FullScreenTextEditing(
-                                          title: 'Update Tag',
-                                          initialValue: tag.tag,
-                                          onSave: (text) {
-                                            tag.tag = text;
-                                            updateTag(tag);
-                                          },
-                                          validationMessage:
-                                              'Min 3, max 30 characters',
-                                          inputValidation: (t) =>
-                                              t.length > 2)),
-                                  child: ContentBox(
-                                      child: MyText(
-                                    tag.tag,
-                                    weight: FontWeight.bold,
+                                      vertical: 10, horizontal: 16),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      MyText(
+                                        tag.tag,
+                                        weight: FontWeight.bold,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Icon(
+                                        CupertinoIcons.pencil,
+                                        size: 18,
+                                      )
+                                    ],
                                   ))),
-                            ],
-                          ),
                           TextButton(
                             text: 'Delete',
                             onPressed: () => handleTagDelete(tag),

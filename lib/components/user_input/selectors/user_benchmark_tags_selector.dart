@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/user_input/tag_managers/workout_tags_manager.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/user_input/tag_managers/user_benchmark_tags_manager.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -12,45 +12,47 @@ import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
-/// Also lets you create a new tag and then select it via [WorkoutTagsManager].
-class WorkoutTagsSelector extends StatefulWidget {
-  final List<WorkoutTag> selectedWorkoutTags;
-  final void Function(List<WorkoutTag> updated) updateSelectedWorkoutTags;
-  WorkoutTagsSelector(
-      {required this.selectedWorkoutTags,
-      required this.updateSelectedWorkoutTags});
+/// Also lets you create a new tag and then select it via tag manager.
+class UserBenchmarkTagsSelector extends StatefulWidget {
+  final List<UserBenchmarkTag> selectedUserBenchmarkTags;
+  final void Function(List<UserBenchmarkTag> updated)
+      updateSelectedUserBenchmarkTags;
+  UserBenchmarkTagsSelector(
+      {required this.selectedUserBenchmarkTags,
+      required this.updateSelectedUserBenchmarkTags});
 
   @override
-  _WorkoutTagsSelectorState createState() => _WorkoutTagsSelectorState();
+  _UserBenchmarkTagsSelectorState createState() =>
+      _UserBenchmarkTagsSelectorState();
 }
 
-class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
-  List<WorkoutTag> _activeSelectedWorkoutTags = [];
+class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
+  List<UserBenchmarkTag> _activeSelectedUserBenchmarkTags = [];
 
   @override
   void initState() {
     super.initState();
-    _activeSelectedWorkoutTags = [...widget.selectedWorkoutTags];
+    _activeSelectedUserBenchmarkTags = [...widget.selectedUserBenchmarkTags];
   }
 
-  void _updateSelected(WorkoutTag tapped) {
+  void _updateSelected(UserBenchmarkTag tapped) {
     setState(() {
-      _activeSelectedWorkoutTags =
-          _activeSelectedWorkoutTags.toggleItem<WorkoutTag>(tapped);
+      _activeSelectedUserBenchmarkTags =
+          _activeSelectedUserBenchmarkTags.toggleItem<UserBenchmarkTag>(tapped);
     });
-    widget.updateSelectedWorkoutTags(_activeSelectedWorkoutTags);
+    widget.updateSelectedUserBenchmarkTags(_activeSelectedUserBenchmarkTags);
   }
 
   void _openCreateNewTag() {
     context.push(
-        child: WorkoutTagsManager(
+        child: UserBenchmarkTagsManager(
       allowCreateTagOnly: true,
     ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return MyPageScaffold(
+    return CupertinoPageScaffold(
         navigationBar: BorderlessNavBar(
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
@@ -59,7 +61,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                 weight: FontWeight.bold,
               ),
               onPressed: () => Navigator.pop(context)),
-          middle: NavBarTitle('Workout Tags'),
+          middle: NavBarTitle('Personal Best Tags'),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -68,7 +70,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                 infoWidget: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: MyText(
-                    'Info about this workout tags.',
+                    'Info about PB tags.',
                     maxLines: 10,
                   ),
                 ),
@@ -76,10 +78,10 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
             ],
           ),
         ),
-        child: QueryObserver<UserWorkoutTags$Query, json.JsonSerializable>(
+        child: QueryObserver<UserBenchmarkTags$Query, json.JsonSerializable>(
             key: Key(
-                'WorkoutTagsSelector - ${UserWorkoutTagsQuery().operationName}'),
-            query: UserWorkoutTagsQuery(),
+                'UserBenchmarkTagsSelector - ${UserBenchmarkTagsQuery().operationName}'),
+            query: UserBenchmarkTagsQuery(),
             fetchPolicy: QueryFetchPolicy.storeFirst,
             builder: (data) {
               return Align(
@@ -100,14 +102,15 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: data.userWorkoutTags.reversed
+                          children: data.userBenchmarkTags.reversed
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(
-                                      child: _SelectableWorkoutTag(
+                                      child: _SelectableUserBenchmarkTag(
                                         tag: tag,
-                                        isSelected: _activeSelectedWorkoutTags
-                                            .contains(tag),
+                                        isSelected:
+                                            _activeSelectedUserBenchmarkTags
+                                                .contains(tag),
                                       ),
                                     ),
                                   ))
@@ -125,10 +128,10 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   }
 }
 
-class _SelectableWorkoutTag extends StatelessWidget {
-  final WorkoutTag tag;
+class _SelectableUserBenchmarkTag extends StatelessWidget {
+  final UserBenchmarkTag tag;
   final bool isSelected;
-  _SelectableWorkoutTag({required this.tag, this.isSelected = false});
+  _SelectableUserBenchmarkTag({required this.tag, this.isSelected = false});
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
@@ -143,7 +146,7 @@ class _SelectableWorkoutTag extends StatelessWidget {
                   ? Styles.colorOne
                   : context.theme.primary.withOpacity(0.65))),
       child: MyText(
-        tag.tag,
+        tag.name,
         color: isSelected ? Styles.white : null,
       ),
     );

@@ -430,7 +430,7 @@ enum Gender {
   MALE
   FEMALE
   NONBINARY
-  NONE
+  PNTS
 }
 
 type GymProfile {
@@ -709,7 +709,7 @@ type Query {
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
   userWorkoutTags: [WorkoutTag!]!
-  userBenchmarks(take: Int): [UserBenchmark!]!
+  userBenchmarks: [UserBenchmark!]!
   userBenchmarkById(id: ID!): UserBenchmark!
   userBenchmarkTags: [UserBenchmarkTag!]!
   userCollections: [Collection!]!

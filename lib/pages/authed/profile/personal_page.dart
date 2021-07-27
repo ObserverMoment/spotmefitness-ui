@@ -52,6 +52,7 @@ class ProfilePersonalPage extends StatelessWidget {
           final User user = data.authedUser;
           return ListView(
             children: [
+              SizedBox(height: 8),
               _InputPadding(
                 child: EditableTextFieldRow(
                   title: 'Name',

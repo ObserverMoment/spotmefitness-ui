@@ -10,8 +10,14 @@ class GQLOpNames {
       ProgressJournalByIdQuery(variables: ProgressJournalByIdArguments(id: ''))
           .operationName;
 
+  /// TODO: Does this key trigger all workoutById queries?
   static String get workoutByIdQuery =>
       WorkoutByIdQuery(variables: WorkoutByIdArguments(id: '')).operationName;
+
+  /// TODO: Does this key trigger all userBenchmarkByIdQuery queries?
+  static String get userBenchmarkByIdQuery =>
+      UserBenchmarkByIdQuery(variables: UserBenchmarkByIdArguments(id: ''))
+          .operationName;
 
   /// List type queries where variables are not used.
   static String get userProgressJournalsQuery =>

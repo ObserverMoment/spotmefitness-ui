@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/creators/benchmark_creator/benchmark_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
+import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';
@@ -11,7 +11,7 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.d
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
-import 'package:spotmefitness_ui/pages/authed/details_pages/benchmark_details_page.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/personal_best_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/collection_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/progress_journal_details_page.dart';
@@ -111,9 +111,10 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           // These pages are 'stand-alone'. They push on top of the underlying main tabs UI / stacks and so go into full screen.
           // They can be pushed to from anywhere and are also pages that would want to be linkable. E.g. when sharing a workout details page with a group or another user.
           // Usually the flow from these pages always ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
-          AutoRoute(path: 'benchmark/:id', page: BenchmarkDetailsPage),
+          AutoRoute(path: 'personal-best/:id', page: PersonalBestDetailsPage),
           AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
-          AutoRoute(path: 'create-benchmark', page: BenchmarkCreatorPage),
+          AutoRoute(
+              path: 'create-personal-best', page: PersonalBestCreatorPage),
           AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
           AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
           AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),

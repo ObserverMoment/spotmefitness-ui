@@ -6,8 +6,9 @@ import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/benchmark_entry_card.dart';
-import 'package:spotmefitness_ui/components/creators/benchmark_creator/benchmark_entry_creator.dart';
+import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_entry_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
@@ -24,27 +25,27 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class BenchmarkDetailsPage extends StatefulWidget {
+class PersonalBestDetailsPage extends StatefulWidget {
   final String id;
-  const BenchmarkDetailsPage({@PathParam('id') required this.id});
+  const PersonalBestDetailsPage({@PathParam('id') required this.id});
 
   @override
-  _BenchmarkDetailsPageState createState() => _BenchmarkDetailsPageState();
+  _PersonalBestDetailsPageState createState() =>
+      _PersonalBestDetailsPageState();
 }
 
-class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
+class _PersonalBestDetailsPageState extends State<PersonalBestDetailsPage> {
   ScrollController _scrollController = ScrollController();
 
   void _handleDeleteJournal() {
     context.showConfirmDeleteDialog(
-        itemType: 'Benchmark',
-        message:
-            'The benchmark and all its entries will be deleted. Are you sure?',
+        itemType: 'Personal Best',
+        message: 'The PB and all its entries will be deleted. Are you sure?',
         onConfirm: _deleteBenchmark);
   }
 
   Future<void> _deleteBenchmark() async {
-    context.showLoadingAlert('Deleting Benchmark',
+    context.showLoadingAlert('Deleting Personal Best',
         icon: Icon(
           CupertinoIcons.delete_simple,
           color: Styles.errorRed,
@@ -80,34 +81,37 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
         variables: UserBenchmarkByIdArguments(id: widget.id));
 
     return QueryObserver<UserBenchmarkById$Query, UserBenchmarkByIdArguments>(
-        key: Key('BenchmarkDetailsPage - ${query.operationName}-${widget.id}'),
+        key: Key(
+            'PersonalBestDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(),
         builder: (data) {
           final benchmark = data.userBenchmarkById;
           return MyPageScaffold(
-            key: Key('BenchmarkDetailsPage - CupertinoPageScaffold'),
+            key: Key('PersonalBestDetailsPage - CupertinoPageScaffold'),
             navigationBar: BorderlessNavBar(
-              key: Key('BenchmarkDetailsPage - BasicNavBar'),
+              key: Key('PersonalBestDetailsPage - BasicNavBar'),
               middle: NavBarTitle(benchmark.name),
               trailing: NavBarTrailingRow(
                 children: [
                   CreateIconButton(
                     onPressed: () => context.showBottomSheet(
                         expand: true,
-                        child: BenchmarkEntryCreator(userBenchmark: benchmark)),
+                        child:
+                            PersonalBestEntryCreator(userBenchmark: benchmark)),
                   ),
                   NavBarEllipsisMenu(items: [
                     ContextMenuItem(
                         iconData: CupertinoIcons.info,
-                        text: 'Edit Benchmark',
+                        text: 'Edit Personal Best',
                         onTap: () => context.navigateTo(
-                            BenchmarkCreatorRoute(userBenchmark: benchmark))),
+                            PersonalBestCreatorRoute(
+                                userBenchmark: benchmark))),
                     ContextMenuItem(
                         iconData: CupertinoIcons.delete_simple,
                         destructive: true,
-                        text: 'Delete Benchmark',
+                        text: 'Delete Personal Best',
                         onTap: _handleDeleteJournal),
                   ]),
                 ],
@@ -151,27 +155,44 @@ class _BenchmarkDetailsPageState extends State<BenchmarkDetailsPage> {
                                   lineHeight: 1.4,
                                 ),
                               ),
+                            if (benchmark.userBenchmarkTags.isNotEmpty)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 6),
+                                child: Wrap(
+                                  spacing: 4,
+                                  runSpacing: 4,
+                                  children: benchmark.userBenchmarkTags
+                                      .map(
+                                        (tag) => Tag(
+                                          tag: tag.name,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
                           ],
                         ),
                       ]))
                     ],
-                body: BenchmarkEntrieslist(benchmark)),
+                body: _PersonalBestEntrieslist(benchmark)),
           );
         });
   }
 }
 
-class BenchmarkEntrieslist extends StatefulWidget {
+class _PersonalBestEntrieslist extends StatefulWidget {
   final UserBenchmark userBenchmark;
-  BenchmarkEntrieslist(this.userBenchmark);
+  _PersonalBestEntrieslist(this.userBenchmark);
 
   @override
-  _BenchmarkEntrieslistState createState() => _BenchmarkEntrieslistState();
+  __PersonalBestEntrieslistState createState() =>
+      __PersonalBestEntrieslistState();
 }
 
 enum ScoreSortBy { best, newest, oldest, worst }
 
-class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
+class __PersonalBestEntrieslistState extends State<_PersonalBestEntrieslist> {
   ScoreSortBy _sortBy = ScoreSortBy.best;
 
   Future<void> _deleteBenchmarkEntry(UserBenchmarkEntry entry) async {
@@ -238,7 +259,7 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
         : Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: SlidingSelect<ScoreSortBy>(
                     value: _sortBy,
                     updateValue: (sortBy) => setState(() => _sortBy = sortBy),
@@ -252,7 +273,6 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
                     itemCount: sortedEntries.length,
                     itemBuilder: (c, i) {
                       return Padding(
@@ -260,15 +280,14 @@ class _BenchmarkEntrieslistState extends State<BenchmarkEntrieslist> {
                           child: GestureDetector(
                             onTap: () => context.showBottomSheet(
                                 expand: true,
-                                child: BenchmarkEntryCreator(
+                                child: PersonalBestEntryCreator(
                                   userBenchmark: widget.userBenchmark,
                                   userBenchmarkEntry: sortedEntries[i],
                                 )),
                             child: AnimatedSlidable(
-                                key: Key(
-                                    'benchmark-entry-${sortedEntries[i].id}'),
+                                key: Key('pb-entry-${sortedEntries[i].id}'),
                                 index: i,
-                                itemType: 'Benchmark Entry',
+                                itemType: 'PB Entry',
                                 itemName:
                                     sortedEntries[i].completedOn.dateString,
                                 removeItem: (_) =>
