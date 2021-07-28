@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/personal_best/personal_best_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -32,7 +32,7 @@ class PersonalBestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              BenchmarkEntryScoreDisplay(
+              PersonalBestEntryScoreDisplay(
                 benchmark: userBenchmark,
                 entry: entry,
               ),

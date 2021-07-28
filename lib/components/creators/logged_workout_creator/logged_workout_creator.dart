@@ -53,7 +53,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
     } else {
       await context.showSuccessAlert(
         'Workout Logged!',
-        'You can go to Journals > Logs to view it.',
+        'You can go to Progress > Logs to view it.',
       );
       context.pop(result: true); // Close the logged workout creator.
     }
@@ -85,9 +85,8 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
             .where((s) => includedSectionIds.contains(s.id))
             .sortedBy<num>((s) => s.sortPosition);
 
-        return CupertinoPageScaffold(
-            navigationBar: BasicNavBar(
-              heroTag: 'LoggedWorkoutCreatorPage',
+        return MyPageScaffold(
+            navigationBar: BorderlessNavBar(
               customLeading:
                   NavBarCancelButton(() => context.pop(result: false)),
               middle: NavBarTitle('Log Workout'),
@@ -117,7 +116,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
                     activeTabIndex: _activeTabIndex),
                 Expanded(
                     child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: PageView(
                     physics: NeverScrollableScrollPhysics(),
                     controller: _pageController,

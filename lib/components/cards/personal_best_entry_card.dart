@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/benchmark/benchmark_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/video_uploader.dart';
+import 'package:spotmefitness_ui/components/personal_best/personal_best_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -12,10 +12,10 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class BenchmarkEntryCard extends StatelessWidget {
+class PersonalBestEntryCard extends StatelessWidget {
   final UserBenchmarkEntry entry;
   final UserBenchmark benchmark;
-  BenchmarkEntryCard({required this.entry, required this.benchmark});
+  PersonalBestEntryCard({required this.entry, required this.benchmark});
 
   /// Video Updates: we can update the root normalized [UserBenchmarkEntry] object then rebroadcast the userBenchmarksQuery and the specific query for the parent UserBenchmark.
   /// Use [customVariablesMap] so that you can send only the media related fields (and the id) to the API.
@@ -120,7 +120,7 @@ class BenchmarkEntryCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6.0),
-                child: BenchmarkEntryScoreDisplay(
+                child: PersonalBestEntryScoreDisplay(
                   benchmark: benchmark,
                   entry: entry,
                   fontSize: FONTSIZE.TABTITLE,

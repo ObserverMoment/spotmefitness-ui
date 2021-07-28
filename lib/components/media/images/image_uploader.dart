@@ -140,7 +140,7 @@ class _ImageUploaderState extends State<ImageUploader> {
           duration: Duration(milliseconds: 400),
           child: _uploading
               ? LoadingCircle(
-                  color: background.withOpacity(0.4),
+                  color: primary.withOpacity(0.8),
                 )
               : hasImage
                   ? SizedUploadcareImage(widget.imageUri!)

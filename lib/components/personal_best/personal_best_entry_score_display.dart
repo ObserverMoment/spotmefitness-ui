@@ -4,12 +4,12 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
-class BenchmarkEntryScoreDisplay extends StatelessWidget {
+class PersonalBestEntryScoreDisplay extends StatelessWidget {
   final UserBenchmarkEntry entry;
   final UserBenchmark benchmark;
   final FONTSIZE fontSize;
   final FontWeight fontWeight;
-  BenchmarkEntryScoreDisplay(
+  PersonalBestEntryScoreDisplay(
       {required this.entry,
       required this.benchmark,
       this.fontSize = FONTSIZE.MAIN,

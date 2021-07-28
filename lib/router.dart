@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
-import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_creator.dart';
+import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';

@@ -1431,6 +1431,7 @@ ProgressJournal _$ProgressJournalFromJson(Map<String, dynamic> json) =>
       ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
       ..name = json['name'] as String
       ..description = json['description'] as String?
+      ..coverImageUri = json['coverImageUri'] as String?
       ..progressJournalEntries = (json['ProgressJournalEntries']
               as List<dynamic>)
           .map((e) => ProgressJournalEntry.fromJson(e as Map<String, dynamic>))
@@ -1446,6 +1447,7 @@ Map<String, dynamic> _$ProgressJournalToJson(ProgressJournal instance) =>
       'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
       'name': instance.name,
       'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
       'ProgressJournalEntries':
           instance.progressJournalEntries.map((e) => e.toJson()).toList(),
       'ProgressJournalGoals':
@@ -1536,6 +1538,7 @@ CreateProgressJournalInput _$CreateProgressJournalInputFromJson(
     CreateProgressJournalInput(
       name: json['name'] as String,
       description: json['description'] as String?,
+      coverImageUri: json['coverImageUri'] as String?,
     );
 
 Map<String, dynamic> _$CreateProgressJournalInputToJson(
@@ -1543,6 +1546,7 @@ Map<String, dynamic> _$CreateProgressJournalInputToJson(
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
     };
 
 UpdateProgressJournal$Mutation _$UpdateProgressJournal$MutationFromJson(
@@ -1563,6 +1567,7 @@ UpdateProgressJournalInput _$UpdateProgressJournalInputFromJson(
       id: json['id'] as String,
       name: json['name'] as String?,
       description: json['description'] as String?,
+      coverImageUri: json['coverImageUri'] as String?,
     );
 
 Map<String, dynamic> _$UpdateProgressJournalInputToJson(
@@ -1571,6 +1576,7 @@ Map<String, dynamic> _$UpdateProgressJournalInputToJson(
       'id': instance.id,
       'name': instance.name,
       'description': instance.description,
+      'coverImageUri': instance.coverImageUri,
     };
 
 DeleteProgressJournalEntryById$Mutation
@@ -3456,6 +3462,135 @@ Map<String, dynamic> _$DeleteWorkoutSetById$MutationToJson(
       'deleteWorkoutSetById': instance.deleteWorkoutSetById,
     };
 
+DeleteBodyTransformationPhotosById$Mutation
+    _$DeleteBodyTransformationPhotosById$MutationFromJson(
+            Map<String, dynamic> json) =>
+        DeleteBodyTransformationPhotosById$Mutation()
+          ..deleteBodyTransformationPhotosById =
+              (json['deleteBodyTransformationPhotosById'] as List<dynamic>)
+                  .map((e) => e as String)
+                  .toList();
+
+Map<String, dynamic> _$DeleteBodyTransformationPhotosById$MutationToJson(
+        DeleteBodyTransformationPhotosById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteBodyTransformationPhotosById':
+          instance.deleteBodyTransformationPhotosById,
+    };
+
+BodyTransformationPhoto _$BodyTransformationPhotoFromJson(
+        Map<String, dynamic> json) =>
+    BodyTransformationPhoto()
+      ..$$typename = json['__typename'] as String?
+      ..id = json['id'] as String
+      ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+      ..takenOnDate =
+          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int)
+      ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
+      ..note = json['note'] as String?
+      ..photoUri = json['photoUri'] as String;
+
+Map<String, dynamic> _$BodyTransformationPhotoToJson(
+        BodyTransformationPhoto instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+UpdateBodyTransformationPhoto$Mutation
+    _$UpdateBodyTransformationPhoto$MutationFromJson(
+            Map<String, dynamic> json) =>
+        UpdateBodyTransformationPhoto$Mutation()
+          ..updateBodyTransformationPhoto = BodyTransformationPhoto.fromJson(
+              json['updateBodyTransformationPhoto'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$UpdateBodyTransformationPhoto$MutationToJson(
+        UpdateBodyTransformationPhoto$Mutation instance) =>
+    <String, dynamic>{
+      'updateBodyTransformationPhoto':
+          instance.updateBodyTransformationPhoto.toJson(),
+    };
+
+UpdateBodyTransformationPhotoInput _$UpdateBodyTransformationPhotoInputFromJson(
+        Map<String, dynamic> json) =>
+    UpdateBodyTransformationPhotoInput(
+      id: json['id'] as String,
+      takenOnDate: fromGraphQLDateTimeToDartDateTimeNullable(
+          json['takenOnDate'] as int?),
+      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+      note: json['note'] as String?,
+      photoUri: json['photoUri'] as String?,
+    );
+
+Map<String, dynamic> _$UpdateBodyTransformationPhotoInputToJson(
+        UpdateBodyTransformationPhotoInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'takenOnDate':
+          fromDartDateTimeToGraphQLDateTimeNullable(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+CreateBodyTransformationPhotos$Mutation
+    _$CreateBodyTransformationPhotos$MutationFromJson(
+            Map<String, dynamic> json) =>
+        CreateBodyTransformationPhotos$Mutation()
+          ..createBodyTransformationPhotos =
+              (json['createBodyTransformationPhotos'] as List<dynamic>)
+                  .map((e) => BodyTransformationPhoto.fromJson(
+                      e as Map<String, dynamic>))
+                  .toList();
+
+Map<String, dynamic> _$CreateBodyTransformationPhotos$MutationToJson(
+        CreateBodyTransformationPhotos$Mutation instance) =>
+    <String, dynamic>{
+      'createBodyTransformationPhotos': instance.createBodyTransformationPhotos
+          .map((e) => e.toJson())
+          .toList(),
+    };
+
+CreateBodyTransformationPhotoInput _$CreateBodyTransformationPhotoInputFromJson(
+        Map<String, dynamic> json) =>
+    CreateBodyTransformationPhotoInput(
+      takenOnDate:
+          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int),
+      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
+      note: json['note'] as String?,
+      photoUri: json['photoUri'] as String,
+    );
+
+Map<String, dynamic> _$CreateBodyTransformationPhotoInputToJson(
+        CreateBodyTransformationPhotoInput instance) =>
+    <String, dynamic>{
+      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
+      'bodyweight': instance.bodyweight,
+      'note': instance.note,
+      'photoUri': instance.photoUri,
+    };
+
+BodyTransformationPhotos$Query _$BodyTransformationPhotos$QueryFromJson(
+        Map<String, dynamic> json) =>
+    BodyTransformationPhotos$Query()
+      ..bodyTransformationPhotos =
+          (json['bodyTransformationPhotos'] as List<dynamic>)
+              .map((e) =>
+                  BodyTransformationPhoto.fromJson(e as Map<String, dynamic>))
+              .toList();
+
+Map<String, dynamic> _$BodyTransformationPhotos$QueryToJson(
+        BodyTransformationPhotos$Query instance) =>
+    <String, dynamic>{
+      'bodyTransformationPhotos':
+          instance.bodyTransformationPhotos.map((e) => e.toJson()).toList(),
+    };
+
 MoveTypes$Query _$MoveTypes$QueryFromJson(Map<String, dynamic> json) =>
     MoveTypes$Query()
       ..moveTypes = (json['moveTypes'] as List<dynamic>)
@@ -3537,6 +3672,18 @@ Map<String, dynamic> _$Equipments$QueryToJson(Equipments$Query instance) =>
       'equipments': instance.equipments.map((e) => e.toJson()).toList(),
     };
 
+DeleteUserBenchmarkTagById$Mutation
+    _$DeleteUserBenchmarkTagById$MutationFromJson(Map<String, dynamic> json) =>
+        DeleteUserBenchmarkTagById$Mutation()
+          ..deleteUserBenchmarkTagById =
+              json['deleteUserBenchmarkTagById'] as String;
+
+Map<String, dynamic> _$DeleteUserBenchmarkTagById$MutationToJson(
+        DeleteUserBenchmarkTagById$Mutation instance) =>
+    <String, dynamic>{
+      'deleteUserBenchmarkTagById': instance.deleteUserBenchmarkTagById,
+    };
+
 UserBenchmarkEntry _$UserBenchmarkEntryFromJson(Map<String, dynamic> json) =>
     UserBenchmarkEntry()
       ..$$typename = json['__typename'] as String?
@@ -3597,6 +3744,89 @@ Map<String, dynamic> _$CreateUserBenchmarkEntryInputToJson(
       'UserBenchmark': instance.userBenchmark.toJson(),
     };
 
+UserBenchmarkTag _$UserBenchmarkTagFromJson(Map<String, dynamic> json) =>
+    UserBenchmarkTag()
+      ..$$typename = json['__typename'] as String?
+      ..id = json['id'] as String
+      ..name = json['name'] as String
+      ..description = json['description'] as String?;
+
+Map<String, dynamic> _$UserBenchmarkTagToJson(UserBenchmarkTag instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+CreateUserBenchmarkTag$Mutation _$CreateUserBenchmarkTag$MutationFromJson(
+        Map<String, dynamic> json) =>
+    CreateUserBenchmarkTag$Mutation()
+      ..createUserBenchmarkTag = UserBenchmarkTag.fromJson(
+          json['createUserBenchmarkTag'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$CreateUserBenchmarkTag$MutationToJson(
+        CreateUserBenchmarkTag$Mutation instance) =>
+    <String, dynamic>{
+      'createUserBenchmarkTag': instance.createUserBenchmarkTag.toJson(),
+    };
+
+CreateUserBenchmarkTagInput _$CreateUserBenchmarkTagInputFromJson(
+        Map<String, dynamic> json) =>
+    CreateUserBenchmarkTagInput(
+      name: json['name'] as String,
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$CreateUserBenchmarkTagInputToJson(
+        CreateUserBenchmarkTagInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+    };
+
+UserBenchmarkTags$Query _$UserBenchmarkTags$QueryFromJson(
+        Map<String, dynamic> json) =>
+    UserBenchmarkTags$Query()
+      ..userBenchmarkTags = (json['userBenchmarkTags'] as List<dynamic>)
+          .map((e) => UserBenchmarkTag.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+Map<String, dynamic> _$UserBenchmarkTags$QueryToJson(
+        UserBenchmarkTags$Query instance) =>
+    <String, dynamic>{
+      'userBenchmarkTags':
+          instance.userBenchmarkTags.map((e) => e.toJson()).toList(),
+    };
+
+UpdateUserBenchmarkTag$Mutation _$UpdateUserBenchmarkTag$MutationFromJson(
+        Map<String, dynamic> json) =>
+    UpdateUserBenchmarkTag$Mutation()
+      ..updateUserBenchmarkTag = UserBenchmarkTag.fromJson(
+          json['updateUserBenchmarkTag'] as Map<String, dynamic>);
+
+Map<String, dynamic> _$UpdateUserBenchmarkTag$MutationToJson(
+        UpdateUserBenchmarkTag$Mutation instance) =>
+    <String, dynamic>{
+      'updateUserBenchmarkTag': instance.updateUserBenchmarkTag.toJson(),
+    };
+
+UpdateUserBenchmarkTagInput _$UpdateUserBenchmarkTagInputFromJson(
+        Map<String, dynamic> json) =>
+    UpdateUserBenchmarkTagInput(
+      id: json['id'] as String,
+      name: json['name'] as String?,
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$UpdateUserBenchmarkTagInputToJson(
+        UpdateUserBenchmarkTagInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+    };
+
 UpdateUserBenchmarkEntry$Mutation _$UpdateUserBenchmarkEntry$MutationFromJson(
         Map<String, dynamic> json) =>
     UpdateUserBenchmarkEntry$Mutation()
@@ -3644,21 +3874,6 @@ Map<String, dynamic> _$DeleteUserBenchmarkEntryById$MutationToJson(
         DeleteUserBenchmarkEntryById$Mutation instance) =>
     <String, dynamic>{
       'deleteUserBenchmarkEntryById': instance.deleteUserBenchmarkEntryById,
-    };
-
-UserBenchmarkTag _$UserBenchmarkTagFromJson(Map<String, dynamic> json) =>
-    UserBenchmarkTag()
-      ..$$typename = json['__typename'] as String?
-      ..id = json['id'] as String
-      ..name = json['name'] as String
-      ..description = json['description'] as String?;
-
-Map<String, dynamic> _$UserBenchmarkTagToJson(UserBenchmarkTag instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
     };
 
 UserBenchmark _$UserBenchmarkFromJson(Map<String, dynamic> json) =>
@@ -4608,215 +4823,6 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
-DeleteBodyTransformationPhotosById$Mutation
-    _$DeleteBodyTransformationPhotosById$MutationFromJson(
-            Map<String, dynamic> json) =>
-        DeleteBodyTransformationPhotosById$Mutation()
-          ..deleteBodyTransformationPhotosById =
-              (json['deleteBodyTransformationPhotosById'] as List<dynamic>)
-                  .map((e) => e as String)
-                  .toList();
-
-Map<String, dynamic> _$DeleteBodyTransformationPhotosById$MutationToJson(
-        DeleteBodyTransformationPhotosById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteBodyTransformationPhotosById':
-          instance.deleteBodyTransformationPhotosById,
-    };
-
-BodyTransformationPhoto _$BodyTransformationPhotoFromJson(
-        Map<String, dynamic> json) =>
-    BodyTransformationPhoto()
-      ..$$typename = json['__typename'] as String?
-      ..id = json['id'] as String
-      ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
-      ..takenOnDate =
-          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int)
-      ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
-      ..note = json['note'] as String?
-      ..photoUri = json['photoUri'] as String;
-
-Map<String, dynamic> _$BodyTransformationPhotoToJson(
-        BodyTransformationPhoto instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
-      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
-      'bodyweight': instance.bodyweight,
-      'note': instance.note,
-      'photoUri': instance.photoUri,
-    };
-
-UpdateBodyTransformationPhoto$Mutation
-    _$UpdateBodyTransformationPhoto$MutationFromJson(
-            Map<String, dynamic> json) =>
-        UpdateBodyTransformationPhoto$Mutation()
-          ..updateBodyTransformationPhoto = BodyTransformationPhoto.fromJson(
-              json['updateBodyTransformationPhoto'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$UpdateBodyTransformationPhoto$MutationToJson(
-        UpdateBodyTransformationPhoto$Mutation instance) =>
-    <String, dynamic>{
-      'updateBodyTransformationPhoto':
-          instance.updateBodyTransformationPhoto.toJson(),
-    };
-
-UpdateBodyTransformationPhotoInput _$UpdateBodyTransformationPhotoInputFromJson(
-        Map<String, dynamic> json) =>
-    UpdateBodyTransformationPhotoInput(
-      id: json['id'] as String,
-      takenOnDate: fromGraphQLDateTimeToDartDateTimeNullable(
-          json['takenOnDate'] as int?),
-      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-      note: json['note'] as String?,
-      photoUri: json['photoUri'] as String?,
-    );
-
-Map<String, dynamic> _$UpdateBodyTransformationPhotoInputToJson(
-        UpdateBodyTransformationPhotoInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'takenOnDate':
-          fromDartDateTimeToGraphQLDateTimeNullable(instance.takenOnDate),
-      'bodyweight': instance.bodyweight,
-      'note': instance.note,
-      'photoUri': instance.photoUri,
-    };
-
-CreateBodyTransformationPhotos$Mutation
-    _$CreateBodyTransformationPhotos$MutationFromJson(
-            Map<String, dynamic> json) =>
-        CreateBodyTransformationPhotos$Mutation()
-          ..createBodyTransformationPhotos =
-              (json['createBodyTransformationPhotos'] as List<dynamic>)
-                  .map((e) => BodyTransformationPhoto.fromJson(
-                      e as Map<String, dynamic>))
-                  .toList();
-
-Map<String, dynamic> _$CreateBodyTransformationPhotos$MutationToJson(
-        CreateBodyTransformationPhotos$Mutation instance) =>
-    <String, dynamic>{
-      'createBodyTransformationPhotos': instance.createBodyTransformationPhotos
-          .map((e) => e.toJson())
-          .toList(),
-    };
-
-CreateBodyTransformationPhotoInput _$CreateBodyTransformationPhotoInputFromJson(
-        Map<String, dynamic> json) =>
-    CreateBodyTransformationPhotoInput(
-      takenOnDate:
-          fromGraphQLDateTimeToDartDateTime(json['takenOnDate'] as int),
-      bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-      note: json['note'] as String?,
-      photoUri: json['photoUri'] as String,
-    );
-
-Map<String, dynamic> _$CreateBodyTransformationPhotoInputToJson(
-        CreateBodyTransformationPhotoInput instance) =>
-    <String, dynamic>{
-      'takenOnDate': fromDartDateTimeToGraphQLDateTime(instance.takenOnDate),
-      'bodyweight': instance.bodyweight,
-      'note': instance.note,
-      'photoUri': instance.photoUri,
-    };
-
-BodyTransformationPhotos$Query _$BodyTransformationPhotos$QueryFromJson(
-        Map<String, dynamic> json) =>
-    BodyTransformationPhotos$Query()
-      ..bodyTransformationPhotos =
-          (json['bodyTransformationPhotos'] as List<dynamic>)
-              .map((e) =>
-                  BodyTransformationPhoto.fromJson(e as Map<String, dynamic>))
-              .toList();
-
-Map<String, dynamic> _$BodyTransformationPhotos$QueryToJson(
-        BodyTransformationPhotos$Query instance) =>
-    <String, dynamic>{
-      'bodyTransformationPhotos':
-          instance.bodyTransformationPhotos.map((e) => e.toJson()).toList(),
-    };
-
-DeleteUserBenchmarkTagById$Mutation
-    _$DeleteUserBenchmarkTagById$MutationFromJson(Map<String, dynamic> json) =>
-        DeleteUserBenchmarkTagById$Mutation()
-          ..deleteUserBenchmarkTagById =
-              json['deleteUserBenchmarkTagById'] as String;
-
-Map<String, dynamic> _$DeleteUserBenchmarkTagById$MutationToJson(
-        DeleteUserBenchmarkTagById$Mutation instance) =>
-    <String, dynamic>{
-      'deleteUserBenchmarkTagById': instance.deleteUserBenchmarkTagById,
-    };
-
-CreateUserBenchmarkTag$Mutation _$CreateUserBenchmarkTag$MutationFromJson(
-        Map<String, dynamic> json) =>
-    CreateUserBenchmarkTag$Mutation()
-      ..createUserBenchmarkTag = UserBenchmarkTag.fromJson(
-          json['createUserBenchmarkTag'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$CreateUserBenchmarkTag$MutationToJson(
-        CreateUserBenchmarkTag$Mutation instance) =>
-    <String, dynamic>{
-      'createUserBenchmarkTag': instance.createUserBenchmarkTag.toJson(),
-    };
-
-CreateUserBenchmarkTagInput _$CreateUserBenchmarkTagInputFromJson(
-        Map<String, dynamic> json) =>
-    CreateUserBenchmarkTagInput(
-      name: json['name'] as String,
-      description: json['description'] as String?,
-    );
-
-Map<String, dynamic> _$CreateUserBenchmarkTagInputToJson(
-        CreateUserBenchmarkTagInput instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'description': instance.description,
-    };
-
-UserBenchmarkTags$Query _$UserBenchmarkTags$QueryFromJson(
-        Map<String, dynamic> json) =>
-    UserBenchmarkTags$Query()
-      ..userBenchmarkTags = (json['userBenchmarkTags'] as List<dynamic>)
-          .map((e) => UserBenchmarkTag.fromJson(e as Map<String, dynamic>))
-          .toList();
-
-Map<String, dynamic> _$UserBenchmarkTags$QueryToJson(
-        UserBenchmarkTags$Query instance) =>
-    <String, dynamic>{
-      'userBenchmarkTags':
-          instance.userBenchmarkTags.map((e) => e.toJson()).toList(),
-    };
-
-UpdateUserBenchmarkTag$Mutation _$UpdateUserBenchmarkTag$MutationFromJson(
-        Map<String, dynamic> json) =>
-    UpdateUserBenchmarkTag$Mutation()
-      ..updateUserBenchmarkTag = UserBenchmarkTag.fromJson(
-          json['updateUserBenchmarkTag'] as Map<String, dynamic>);
-
-Map<String, dynamic> _$UpdateUserBenchmarkTag$MutationToJson(
-        UpdateUserBenchmarkTag$Mutation instance) =>
-    <String, dynamic>{
-      'updateUserBenchmarkTag': instance.updateUserBenchmarkTag.toJson(),
-    };
-
-UpdateUserBenchmarkTagInput _$UpdateUserBenchmarkTagInputFromJson(
-        Map<String, dynamic> json) =>
-    UpdateUserBenchmarkTagInput(
-      id: json['id'] as String,
-      name: json['name'] as String?,
-      description: json['description'] as String?,
-    );
-
-Map<String, dynamic> _$UpdateUserBenchmarkTagInputToJson(
-        UpdateUserBenchmarkTagInput instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-    };
-
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
         Map<String, dynamic> json) =>
     CreateWorkoutMoveArguments(
@@ -5760,6 +5766,49 @@ Map<String, dynamic> _$DeleteWorkoutSetByIdArgumentsToJson(
       'id': instance.id,
     };
 
+DeleteBodyTransformationPhotosByIdArguments
+    _$DeleteBodyTransformationPhotosByIdArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        DeleteBodyTransformationPhotosByIdArguments(
+          ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
+        );
+
+Map<String, dynamic> _$DeleteBodyTransformationPhotosByIdArgumentsToJson(
+        DeleteBodyTransformationPhotosByIdArguments instance) =>
+    <String, dynamic>{
+      'ids': instance.ids,
+    };
+
+UpdateBodyTransformationPhotoArguments
+    _$UpdateBodyTransformationPhotoArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        UpdateBodyTransformationPhotoArguments(
+          data: UpdateBodyTransformationPhotoInput.fromJson(
+              json['data'] as Map<String, dynamic>),
+        );
+
+Map<String, dynamic> _$UpdateBodyTransformationPhotoArgumentsToJson(
+        UpdateBodyTransformationPhotoArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateBodyTransformationPhotosArguments
+    _$CreateBodyTransformationPhotosArgumentsFromJson(
+            Map<String, dynamic> json) =>
+        CreateBodyTransformationPhotosArguments(
+          data: (json['data'] as List<dynamic>)
+              .map((e) => CreateBodyTransformationPhotoInput.fromJson(
+                  e as Map<String, dynamic>))
+              .toList(),
+        );
+
+Map<String, dynamic> _$CreateBodyTransformationPhotosArgumentsToJson(
+        CreateBodyTransformationPhotosArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.map((e) => e.toJson()).toList(),
+    };
+
 CheckUniqueDisplayNameArguments _$CheckUniqueDisplayNameArgumentsFromJson(
         Map<String, dynamic> json) =>
     CheckUniqueDisplayNameArguments(
@@ -5772,6 +5821,18 @@ Map<String, dynamic> _$CheckUniqueDisplayNameArgumentsToJson(
       'displayName': instance.displayName,
     };
 
+DeleteUserBenchmarkTagByIdArguments
+    _$DeleteUserBenchmarkTagByIdArgumentsFromJson(Map<String, dynamic> json) =>
+        DeleteUserBenchmarkTagByIdArguments(
+          id: json['id'] as String,
+        );
+
+Map<String, dynamic> _$DeleteUserBenchmarkTagByIdArgumentsToJson(
+        DeleteUserBenchmarkTagByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
 CreateUserBenchmarkEntryArguments _$CreateUserBenchmarkEntryArgumentsFromJson(
         Map<String, dynamic> json) =>
     CreateUserBenchmarkEntryArguments(
@@ -5781,6 +5842,32 @@ CreateUserBenchmarkEntryArguments _$CreateUserBenchmarkEntryArgumentsFromJson(
 
 Map<String, dynamic> _$CreateUserBenchmarkEntryArgumentsToJson(
         CreateUserBenchmarkEntryArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+CreateUserBenchmarkTagArguments _$CreateUserBenchmarkTagArgumentsFromJson(
+        Map<String, dynamic> json) =>
+    CreateUserBenchmarkTagArguments(
+      data: CreateUserBenchmarkTagInput.fromJson(
+          json['data'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$CreateUserBenchmarkTagArgumentsToJson(
+        CreateUserBenchmarkTagArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateUserBenchmarkTagArguments _$UpdateUserBenchmarkTagArgumentsFromJson(
+        Map<String, dynamic> json) =>
+    UpdateUserBenchmarkTagArguments(
+      data: UpdateUserBenchmarkTagInput.fromJson(
+          json['data'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$UpdateUserBenchmarkTagArgumentsToJson(
+        UpdateUserBenchmarkTagArguments instance) =>
     <String, dynamic>{
       'data': instance.data.toJson(),
     };
@@ -6115,85 +6202,4 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
-    };
-
-DeleteBodyTransformationPhotosByIdArguments
-    _$DeleteBodyTransformationPhotosByIdArgumentsFromJson(
-            Map<String, dynamic> json) =>
-        DeleteBodyTransformationPhotosByIdArguments(
-          ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
-        );
-
-Map<String, dynamic> _$DeleteBodyTransformationPhotosByIdArgumentsToJson(
-        DeleteBodyTransformationPhotosByIdArguments instance) =>
-    <String, dynamic>{
-      'ids': instance.ids,
-    };
-
-UpdateBodyTransformationPhotoArguments
-    _$UpdateBodyTransformationPhotoArgumentsFromJson(
-            Map<String, dynamic> json) =>
-        UpdateBodyTransformationPhotoArguments(
-          data: UpdateBodyTransformationPhotoInput.fromJson(
-              json['data'] as Map<String, dynamic>),
-        );
-
-Map<String, dynamic> _$UpdateBodyTransformationPhotoArgumentsToJson(
-        UpdateBodyTransformationPhotoArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-CreateBodyTransformationPhotosArguments
-    _$CreateBodyTransformationPhotosArgumentsFromJson(
-            Map<String, dynamic> json) =>
-        CreateBodyTransformationPhotosArguments(
-          data: (json['data'] as List<dynamic>)
-              .map((e) => CreateBodyTransformationPhotoInput.fromJson(
-                  e as Map<String, dynamic>))
-              .toList(),
-        );
-
-Map<String, dynamic> _$CreateBodyTransformationPhotosArgumentsToJson(
-        CreateBodyTransformationPhotosArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.map((e) => e.toJson()).toList(),
-    };
-
-DeleteUserBenchmarkTagByIdArguments
-    _$DeleteUserBenchmarkTagByIdArgumentsFromJson(Map<String, dynamic> json) =>
-        DeleteUserBenchmarkTagByIdArguments(
-          id: json['id'] as String,
-        );
-
-Map<String, dynamic> _$DeleteUserBenchmarkTagByIdArgumentsToJson(
-        DeleteUserBenchmarkTagByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-CreateUserBenchmarkTagArguments _$CreateUserBenchmarkTagArgumentsFromJson(
-        Map<String, dynamic> json) =>
-    CreateUserBenchmarkTagArguments(
-      data: CreateUserBenchmarkTagInput.fromJson(
-          json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$CreateUserBenchmarkTagArgumentsToJson(
-        CreateUserBenchmarkTagArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
-    };
-
-UpdateUserBenchmarkTagArguments _$UpdateUserBenchmarkTagArgumentsFromJson(
-        Map<String, dynamic> json) =>
-    UpdateUserBenchmarkTagArguments(
-      data: UpdateUserBenchmarkTagInput.fromJson(
-          json['data'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$UpdateUserBenchmarkTagArgumentsToJson(
-        UpdateUserBenchmarkTagArguments instance) =>
-    <String, dynamic>{
-      'data': instance.data.toJson(),
     };

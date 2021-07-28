@@ -12,7 +12,7 @@ import 'components/creators/logged_workout_creator/logged_workout_creator.dart'
     as _i15;
 import 'components/creators/personal_best_creator/personal_best_creator.dart'
     as _i8;
-import 'components/creators/progress_journal/progress_journal_creator.dart'
+import 'components/creators/progress_journal_creator/progress_journal_creator.dart'
     as _i9;
 import 'components/creators/workout_creator/workout_creator.dart' as _i10;
 import 'components/creators/workout_plan_creator/workout_plan_creator.dart'

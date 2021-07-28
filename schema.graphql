@@ -235,6 +235,7 @@ input CreateProgressJournalGoalTagInput {
 input CreateProgressJournalInput {
   name: String!
   description: String
+  coverImageUri: String
 }
 
 input CreateScheduledWorkoutInput {
@@ -645,6 +646,7 @@ type ProgressJournal {
   createdAt: DateTime!
   name: String!
   description: String
+  coverImageUri: String
   ProgressJournalEntries: [ProgressJournalEntry!]!
   ProgressJournalGoals: [ProgressJournalGoal!]!
 }
@@ -873,6 +875,7 @@ input UpdateProgressJournalInput {
   id: ID!
   name: String
   description: String
+  coverImageUri: String
 }
 
 input UpdateScheduledWorkoutInput {

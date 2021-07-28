@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary_card.dart';
-import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_goal_creator.dart';
+import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_goal_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';

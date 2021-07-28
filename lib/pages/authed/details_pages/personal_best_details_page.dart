@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/cards/benchmark_entry_card.dart';
+import 'package:spotmefitness_ui/components/cards/personal_best_entry_card.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_entry_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -293,7 +293,7 @@ class __PersonalBestEntrieslistState extends State<_PersonalBestEntrieslist> {
                                 removeItem: (_) =>
                                     _deleteBenchmarkEntry(sortedEntries[i]),
                                 secondaryActions: [],
-                                child: BenchmarkEntryCard(
+                                child: PersonalBestEntryCard(
                                     benchmark: widget.userBenchmark,
                                     entry: sortedEntries[i])),
                           ));

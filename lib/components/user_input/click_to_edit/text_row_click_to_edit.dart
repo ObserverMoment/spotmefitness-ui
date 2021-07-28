@@ -124,6 +124,7 @@ class EditableTextAreaRow extends StatelessWidget {
         maxInputLines: maxInputLines,
       )),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,7 +155,7 @@ class EditableTextAreaRow extends StatelessWidget {
           ),
           if (text != '')
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 10.0, left: 1),
               child: MyText(
                 text,
                 overflow: TextOverflow.ellipsis,

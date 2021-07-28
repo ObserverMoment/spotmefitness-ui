@@ -24,7 +24,7 @@ class JournalsPage extends StatelessWidget {
               .reversed
               .toList();
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
             key: Key('JournalsPage - CupertinoPageScaffold'),
             navigationBar: BorderlessNavBar(
               key: Key('JournalsPage - BorderlessNavBar'),
@@ -49,8 +49,10 @@ class JournalsPage extends StatelessWidget {
                   final ProgressJournal journal = journals[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 5),
+                        horizontal: 2.0, vertical: 5),
                     child: GestureDetector(
+                        behavior: HitTestBehavior
+                            .opaque, // As there is empty space in the [ProgressJournalCard] which otherwise would not react to taps.
                         onTap: () => context.navigateTo(
                             ProgressJournalDetailsRoute(id: journal.id)),
                         child: ProgressJournalCard(journal)),

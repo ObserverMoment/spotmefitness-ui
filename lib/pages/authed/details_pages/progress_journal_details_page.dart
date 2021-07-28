@@ -1,19 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
-import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dart';
-import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary_card.dart';
-import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_entry_creator.dart';
-import 'package:spotmefitness_ui/components/creators/progress_journal/progress_journal_goal_creator.dart';
+import 'package:spotmefitness_ui/components/journal/progress_journal_entries.dart';
+import 'package:spotmefitness_ui/components/journal/progress_journal_goals.dart';
+import 'package:spotmefitness_ui/components/journal/progress_journal_summary.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
-import 'package:spotmefitness_ui/components/progress_journal/progress_journal_entries.dart';
-import 'package:spotmefitness_ui/components/progress_journal/progress_journal_goals.dart';
-import 'package:spotmefitness_ui/components/progress_journal/progress_journal_summary.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -24,9 +17,6 @@ import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:collection/collection.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ProgressJournalDetailsPage extends StatefulWidget {
   final String id;

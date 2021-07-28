@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/components/personal_bests_summary.dart';
+import 'package:spotmefitness_ui/pages/authed/progress/components/streak_and_stats_summary.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -17,46 +19,73 @@ class ProgressPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CarouselSlider(
-              items: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ContentBox(
-                      child: Row(
-                    children: [
-                      MyText('Streak Info + Stats Summary'),
-                    ],
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ContentBox(
-                      child: Row(
-                    children: [
-                      MyText('Recent PBs'),
-                    ],
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ContentBox(
-                      child: Row(
-                    children: [
-                      MyText('Journal Entry Scores graph'),
-                    ],
-                  )),
-                ),
-              ],
-              options: CarouselOptions(
-                height: 180,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.95,
-                initialPage: 0,
-                enableInfiniteScroll: false,
-                scrollDirection: Axis.horizontal,
-              )),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(8.0),
+            child: CarouselSlider(
+                items: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: StreakAndStatsSummary(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: PersonalBestsSummary(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ContentBox(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MyText(
+                              'Recent Challenges Summary',
+                              lineHeight: 1.5,
+                            ),
+                            MyText(
+                              'Coming Soon',
+                              lineHeight: 1.5,
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ContentBox(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MyText(
+                              'Recent Event Rankings Summary',
+                              lineHeight: 1.5,
+                            ),
+                            MyText(
+                              'Coming Soon',
+                              lineHeight: 1.5,
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                  ),
+                ],
+                options: CarouselOptions(
+                  height: 200,
+                  viewportFraction: 0.95,
+                  initialPage: 0,
+                  enableInfiniteScroll: false,
+                  scrollDirection: Axis.horizontal,
+                )),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
             child: GridView.count(
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
@@ -103,7 +132,7 @@ class _ProgressPageTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.all(6),
+        margin: const EdgeInsets.all(4),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
