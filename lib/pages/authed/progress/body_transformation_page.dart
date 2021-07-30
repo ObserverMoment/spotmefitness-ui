@@ -41,7 +41,6 @@ class BodyTransformationPage extends StatefulWidget {
 }
 
 class _BodyTransformationPageState extends State<BodyTransformationPage> {
-  /// TODO!!!
   bool _processing = false;
   bool _deleteMode = false;
   List<BodyTransformationPhoto> _selectedTransformationPhotos = [];
@@ -236,7 +235,7 @@ class _BodyTransformationPageState extends State<BodyTransformationPage> {
               .map((k) => _SingleDayOfTransformPhotos(k, photosByDay[k]!))
               .toList();
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
               navigationBar: BorderlessNavBar(
                 key: Key('BodyTransformationPage - BorderlessNavBar'),
                 middle: NavBarTitle('Transformation'),
@@ -326,17 +325,41 @@ class _BodyTransformationPageState extends State<BodyTransformationPage> {
                               ),
                       ),
                     ),
-                  Expanded(
-                    child: _TimeLine(
-                      sortedData: sortedData,
-                      openImagePickerModal: _openImagePickerModal,
-                      selectedTransformationPhotos:
-                          _selectedTransformationPhotos,
-                      toggleSelectedBodyTransformationPhoto:
-                          _toggleSelectedBodyTransformationPhoto,
-                      isDeleteMode: _deleteMode,
-                    ),
-                  ),
+                  data.bodyTransformationPhotos.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  MyText('Not photos yet...'),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              ContentBox(
+                                child: BorderButton(
+                                    withBorder: false,
+                                    mini: true,
+                                    prefix:
+                                        Icon(CupertinoIcons.photo_on_rectangle),
+                                    text: 'Add Your First Photo',
+                                    onPressed: _openImagePickerModal),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Expanded(
+                          child: _TimeLine(
+                            sortedData: sortedData,
+                            openImagePickerModal: _openImagePickerModal,
+                            selectedTransformationPhotos:
+                                _selectedTransformationPhotos,
+                            toggleSelectedBodyTransformationPhoto:
+                                _toggleSelectedBodyTransformationPhoto,
+                            isDeleteMode: _deleteMode,
+                          ),
+                        ),
                 ],
               ));
         });

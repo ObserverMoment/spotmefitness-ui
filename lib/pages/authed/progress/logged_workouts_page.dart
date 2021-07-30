@@ -76,6 +76,7 @@ class _FilterableLoggedWorkoutsListState
           child: Row(
             children: [
               DateRangePickerDisplay(
+                textColor: context.theme.background,
                 from: _filterFrom,
                 to: _filterTo,
                 updateRange: (from, to) => setState(() {
@@ -107,6 +108,7 @@ class _FilterableLoggedWorkoutsListState
                         _openLoggedWorkoutDetails(context, l.id))),
             child: Icon(
               CupertinoIcons.search,
+              color: context.theme.background,
             ))
       ];
 
@@ -184,7 +186,9 @@ class _FilterableLoggedWorkoutsListState
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (c, i) => buttons[i],
-                    separatorBuilder: (c, i) => ButtonSeparator(),
+                    separatorBuilder: (c, i) => ButtonSeparator(
+                          color: context.theme.background,
+                        ),
                     itemCount: buttons.length),
               ),
             ))

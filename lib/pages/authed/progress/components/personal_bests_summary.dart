@@ -25,6 +25,7 @@ class PersonalBestsSummary extends StatelessWidget {
         loadingIndicator: ShimmerCard(),
         builder: (data) {
           final recentlySubmitted = data.userBenchmarks
+              .where((b) => b.userBenchmarkEntries.isNotEmpty)
               .sortedBy<DateTime>((b) => b.lastEntryAt)
               .reversed
               .take(3)

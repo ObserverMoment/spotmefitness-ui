@@ -43,13 +43,11 @@ class JournalsPage extends StatelessWidget {
             ),
             child: ListView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
                 itemCount: journals.length,
                 itemBuilder: (context, index) {
                   final ProgressJournal journal = journals[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 2.0, vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: GestureDetector(
                         behavior: HitTestBehavior
                             .opaque, // As there is empty space in the [ProgressJournalCard] which otherwise would not react to taps.

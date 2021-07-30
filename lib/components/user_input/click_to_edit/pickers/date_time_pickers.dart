@@ -145,9 +145,13 @@ class TimePickerDisplay extends StatelessWidget {
 class DateRangePickerDisplay extends StatelessWidget {
   final DateTime? from;
   final DateTime? to;
+  final Color? textColor;
   final void Function(DateTime? from, DateTime? to) updateRange;
   DateRangePickerDisplay(
-      {required this.from, required this.to, required this.updateRange});
+      {required this.from,
+      required this.to,
+      required this.updateRange,
+      this.textColor});
 
   Future<void> _openDateRangePicker(BuildContext context) async {
     final now = DateTime.now();
@@ -167,7 +171,11 @@ class DateRangePickerDisplay extends StatelessWidget {
     }
   }
 
-  Widget _text(String t) => MyText(t, size: FONTSIZE.SMALL);
+  Widget _text(String t) => MyText(
+        t,
+        size: FONTSIZE.SMALL,
+        color: textColor,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +185,10 @@ class DateRangePickerDisplay extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(CupertinoIcons.calendar),
+          Icon(
+            CupertinoIcons.calendar,
+            color: textColor,
+          ),
           SizedBox(width: 10),
           if (from == null && to == null)
             _text('All time')

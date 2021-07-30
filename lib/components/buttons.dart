@@ -574,7 +574,7 @@ class RaisedButtonContainer extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                       color:
-                          CupertinoColors.black.withOpacity(isDark ? 0.6 : 0.3),
+                          CupertinoColors.black.withOpacity(isDark ? 0.8 : 0.5),
                       blurRadius: 3, // soften the shadow
                       spreadRadius: 1.5, //extend the shadow
                       offset: Offset(
@@ -582,10 +582,9 @@ class RaisedButtonContainer extends StatelessWidget {
                         0.4, // Move to bottom Vertically
                       ))
                 ],
-                color:
-                    context.theme.background.withOpacity(isDark ? 0.75 : 0.9),
+                color: context.theme.primary.withOpacity(isDark ? 0.75 : 0.9),
                 border: Border.all(
-                    color: context.theme.primary
+                    color: context.theme.cardBackground
                         .withOpacity(isDark ? 0.15 : 0.1))),
             child: child),
       ),
@@ -626,6 +625,8 @@ class UnRaisedButtonContainer extends StatelessWidget {
 
 /// Vertical line used for separating buttons in a multi button widget. E.g floating button.
 class ButtonSeparator extends StatelessWidget {
+  final Color? color;
+  ButtonSeparator({this.color});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -633,7 +634,7 @@ class ButtonSeparator extends StatelessWidget {
       child: Container(
         height: 30,
         width: 1,
-        color: context.theme.primary.withOpacity(0.2),
+        color: color != null ? color : context.theme.primary.withOpacity(0.3),
       ),
     );
   }
