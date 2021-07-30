@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
+import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -62,18 +63,39 @@ class _GymProfileSelectorState extends State<GymProfileSelector> {
                 ],
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: ListView.builder(
-                    itemCount: gymProfiles.length,
-                    itemBuilder: (context, index) => GestureDetector(
-                          onTap: () => _handleSelection(gymProfiles[index]),
-                          child: SelecteGymProfileItem(gymProfiles[index],
-                              gymProfiles[index] == _activeSelectedGymProfile),
-                        )),
-              ),
-            )
+            gymProfiles.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        MyText('No gym profiles created...'),
+                        SizedBox(height: 16),
+                        BorderButton(
+                            prefix: Icon(
+                              CupertinoIcons.add_circled,
+                              size: 22,
+                            ),
+                            text: 'Create a Gym Profile',
+                            onPressed: () => context.showBottomSheet(
+                                child: GymProfileCreator()))
+                      ],
+                    ),
+                  )
+                : Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: ListView.builder(
+                          itemCount: gymProfiles.length,
+                          itemBuilder: (context, index) => GestureDetector(
+                                onTap: () =>
+                                    _handleSelection(gymProfiles[index]),
+                                child: SelectGymProfileItem(
+                                    gymProfiles[index],
+                                    gymProfiles[index] ==
+                                        _activeSelectedGymProfile),
+                              )),
+                    ),
+                  )
           ],
         );
       },
@@ -81,10 +103,10 @@ class _GymProfileSelectorState extends State<GymProfileSelector> {
   }
 }
 
-class SelecteGymProfileItem extends StatelessWidget {
+class SelectGymProfileItem extends StatelessWidget {
   final GymProfile gymProfile;
   final bool isSelected;
-  SelecteGymProfileItem(this.gymProfile, this.isSelected);
+  SelectGymProfileItem(this.gymProfile, this.isSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +117,7 @@ class SelecteGymProfileItem extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: kStandardCardBorderRadius,
             border: Border.all(
+                width: 3,
                 color: Styles.colorOne.withOpacity(isSelected ? 1.0 : 0.0))),
         child: GymProfileCard(
           gymProfile: gymProfile,

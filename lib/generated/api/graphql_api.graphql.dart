@@ -274,8 +274,6 @@ mixin ProgressJournalEntryMixin {
   String? note;
   String? voiceNoteUri;
   double? bodyweight;
-  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
-  late BodyweightUnit bodyweightUnit;
   double? moodScore;
   double? energyScore;
   double? confidenceScore;
@@ -311,6 +309,8 @@ mixin ProgressJournalMixin {
   late String name;
   String? description;
   String? coverImageUri;
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  late BodyweightUnit bodyweightUnit;
 }
 mixin GymProfileMixin {
   @JsonKey(name: '__typename')
@@ -1893,7 +1893,6 @@ class ProgressJournalEntry extends JsonSerializable
         note,
         voiceNoteUri,
         bodyweight,
-        bodyweightUnit,
         moodScore,
         energyScore,
         confidenceScore,
@@ -1951,6 +1950,7 @@ class ProgressJournal extends JsonSerializable
         name,
         description,
         coverImageUri,
+        bodyweightUnit,
         progressJournalEntries,
         progressJournalGoals
       ];
@@ -1998,7 +1998,6 @@ class CreateProgressJournalEntryInput extends JsonSerializable
       {this.note,
       this.voiceNoteUri,
       this.bodyweight,
-      this.bodyweightUnit,
       this.moodScore,
       this.energyScore,
       this.confidenceScore,
@@ -2013,9 +2012,6 @@ class CreateProgressJournalEntryInput extends JsonSerializable
   String? voiceNoteUri;
 
   double? bodyweight;
-
-  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
-  BodyweightUnit? bodyweightUnit;
 
   double? moodScore;
 
@@ -2033,7 +2029,6 @@ class CreateProgressJournalEntryInput extends JsonSerializable
         note,
         voiceNoteUri,
         bodyweight,
-        bodyweightUnit,
         moodScore,
         energyScore,
         confidenceScore,
@@ -2082,7 +2077,10 @@ class CreateProgressJournal$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class CreateProgressJournalInput extends JsonSerializable with EquatableMixin {
   CreateProgressJournalInput(
-      {required this.name, this.description, this.coverImageUri});
+      {required this.name,
+      this.description,
+      this.coverImageUri,
+      this.bodyweightUnit});
 
   factory CreateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
       _$CreateProgressJournalInputFromJson(json);
@@ -2093,8 +2091,11 @@ class CreateProgressJournalInput extends JsonSerializable with EquatableMixin {
 
   String? coverImageUri;
 
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
   @override
-  List<Object?> get props => [name, description, coverImageUri];
+  List<Object?> get props => [name, description, coverImageUri, bodyweightUnit];
   @override
   Map<String, dynamic> toJson() => _$CreateProgressJournalInputToJson(this);
 }
@@ -2118,7 +2119,11 @@ class UpdateProgressJournal$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class UpdateProgressJournalInput extends JsonSerializable with EquatableMixin {
   UpdateProgressJournalInput(
-      {required this.id, this.name, this.description, this.coverImageUri});
+      {required this.id,
+      this.name,
+      this.description,
+      this.coverImageUri,
+      this.bodyweightUnit});
 
   factory UpdateProgressJournalInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateProgressJournalInputFromJson(json);
@@ -2131,8 +2136,12 @@ class UpdateProgressJournalInput extends JsonSerializable with EquatableMixin {
 
   String? coverImageUri;
 
+  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
+  BodyweightUnit? bodyweightUnit;
+
   @override
-  List<Object?> get props => [id, name, description, coverImageUri];
+  List<Object?> get props =>
+      [id, name, description, coverImageUri, bodyweightUnit];
   @override
   Map<String, dynamic> toJson() => _$UpdateProgressJournalInputToJson(this);
 }
@@ -2181,7 +2190,6 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
       this.note,
       this.voiceNoteUri,
       this.bodyweight,
-      this.bodyweightUnit,
       this.moodScore,
       this.energyScore,
       this.confidenceScore,
@@ -2198,9 +2206,6 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
 
   double? bodyweight;
 
-  @JsonKey(unknownEnumValue: BodyweightUnit.artemisUnknown)
-  BodyweightUnit? bodyweightUnit;
-
   double? moodScore;
 
   double? energyScore;
@@ -2215,7 +2220,6 @@ class UpdateProgressJournalEntryInput extends JsonSerializable
         note,
         voiceNoteUri,
         bodyweight,
-        bodyweightUnit,
         moodScore,
         energyScore,
         confidenceScore,
@@ -25740,12 +25744,6 @@ final PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -25901,6 +25899,12 @@ final PROGRESS_JOURNAL_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ]))
 ]);
@@ -26013,12 +26017,6 @@ final CREATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26256,12 +26254,6 @@ final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -26414,6 +26406,12 @@ final CREATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26561,12 +26559,6 @@ final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -26719,6 +26711,12 @@ final UPDATE_PROGRESS_JOURNAL_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -26902,12 +26900,6 @@ final UPDATE_PROGRESS_JOURNAL_ENTRY_MUTATION_DOCUMENT =
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'bodyweight'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],
@@ -27220,12 +27212,6 @@ final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'bodyweightUnit'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
             name: NameNode(value: 'moodScore'),
             alias: null,
             arguments: [],
@@ -27378,6 +27364,12 @@ final USER_PROGRESS_JOURNALS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'bodyweightUnit'),
             alias: null,
             arguments: [],
             directives: [],

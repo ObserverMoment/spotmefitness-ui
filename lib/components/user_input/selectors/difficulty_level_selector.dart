@@ -20,44 +20,27 @@ class DifficultyLevelSelectorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TappableRow(
-              title: 'Difficulty',
-              display: Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: difficultyLevel != null
-                    ? Tag(
-                        textColor: Styles.white,
-                        tag: difficultyLevel!.display,
-                        color: difficultyLevel!.displayColor,
-                        withBorder: true,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0),
-                        child: MyText('Select difficulty...', subtext: true),
-                      ),
-              ),
-              onTap: () => context.push(
-                      child: DifficultyLevelSelector(
-                    difficultyLevel: difficultyLevel,
-                    updateDifficultyLevel: updateDifficultyLevel,
-                  ))),
-        ),
-        if (difficultyLevel != null)
-          FadeIn(
-            child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.clear_thick,
-                  color: Styles.errorRed,
-                  size: 20,
+    return TappableRow(
+        title: 'Difficulty',
+        display: Padding(
+          padding: const EdgeInsets.only(right: 12.0),
+          child: difficultyLevel != null
+              ? Tag(
+                  textColor: Styles.white,
+                  tag: difficultyLevel!.display,
+                  color: difficultyLevel!.displayColor,
+                  withBorder: difficultyLevel == DifficultyLevel.elite,
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                  child: MyText('Select difficulty...', subtext: true),
                 ),
-                onPressed: () => updateDifficultyLevel(null)),
-          )
-      ],
-    );
+        ),
+        onTap: () => context.push(
+                child: DifficultyLevelSelector(
+              difficultyLevel: difficultyLevel,
+              updateDifficultyLevel: updateDifficultyLevel,
+            )));
   }
 }
 

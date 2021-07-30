@@ -226,7 +226,6 @@ class _ProgressJournalGoalCreatorState
                   _activeProgressJournalGoal.progressJournalGoalTags.isEmpty
                       ? 'No tags selected'
                       : '${_activeProgressJournalGoal.progressJournalGoalTags.length} tags selected',
-                  subtext: true,
                 ),
               ),
               QueryObserver<ProgressJournalGoalTags$Query,

@@ -164,6 +164,7 @@ abstract class Styles {
   static const Color peachRed = const Color(0xffF28367);
   static const Color pink = const Color(0xffFF5282);
   static const Color starGold = Colors.amber;
+  static const Color yellow = Colors.yellow;
 
   // Difficulty Level Colours
   static const difficultyLevelOne = const Color(0xff226F54); // Green

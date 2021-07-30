@@ -13,10 +13,9 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class ProgressJournalEntries extends StatelessWidget {
-  final String parentJournalId;
+  final ProgressJournal parentJournal;
   final List<ProgressJournalEntry> entries;
-  ProgressJournalEntries(
-      {required this.entries, required this.parentJournalId});
+  ProgressJournalEntries({required this.entries, required this.parentJournal});
 
   Future<void> _deleteJournalEntry(BuildContext context, String id) async {
     final variables = DeleteProgressJournalEntryByIdArguments(id: id);
@@ -26,7 +25,7 @@ class ProgressJournalEntries extends StatelessWidget {
         objectId: id,
         typename: kProgressJournalEntryTypename,
         broadcastQueryIds: [
-          GQLVarParamKeys.progressJournalByIdQuery(parentJournalId),
+          GQLVarParamKeys.progressJournalByIdQuery(parentJournal.id),
           GQLOpNames.userProgressJournalsQuery,
         ],
         removeAllRefsToId: true);
@@ -46,7 +45,7 @@ class ProgressJournalEntries extends StatelessWidget {
     return StackAndFloatingButton(
       onPressed: () => context.push(
           child: ProgressJournalEntryCreator(
-        parentJournalId: parentJournalId,
+        parentJournal: parentJournal,
       )),
       pageHasBottomNavBar: false,
       buttonText: 'Add Entry',
@@ -71,7 +70,7 @@ class ProgressJournalEntries extends StatelessWidget {
                   return GestureDetector(
                       onTap: () => context.push(
                               child: ProgressJournalEntryCreator(
-                            parentJournalId: parentJournalId,
+                            parentJournal: parentJournal,
                             progressJournalEntry: sortedEntries[i],
                           )),
                       child: Padding(
@@ -85,8 +84,10 @@ class ProgressJournalEntries extends StatelessWidget {
                               removeItem: (index) => _deleteJournalEntry(
                                   context, sortedEntries[i].id),
                               secondaryActions: [],
-                              child:
-                                  ProgressJournalEntryCard(sortedEntries[i]))));
+                              child: ProgressJournalEntryCard(
+                                parentJournal: parentJournal,
+                                progressJournalEntry: sortedEntries[i],
+                              ))));
                 }
               },
             ),

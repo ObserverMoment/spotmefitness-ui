@@ -60,7 +60,7 @@ class _LoggedWorkoutSectionDetailsEditableState
         context.select<LoggedWorkoutCreatorBloc, bool>(
             (b) => b.sectionHasUnsavedChanges);
 
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: CreateEditPageNavBar(
           formIsDirty: sectionHasUnsavedChanges,
           handleClose: context.pop,
@@ -85,19 +85,10 @@ class _LoggedWorkoutSectionDetailsEditableState
                 onPageChanged: _changeTab,
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: _LoggedWorkoutSectionWrapper(widget.sectionIndex),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: LoggedWorkoutCreatorSection(widget.sectionIndex),
-                  ),
+                  _LoggedWorkoutSectionWrapper(widget.sectionIndex),
+                  LoggedWorkoutCreatorSection(widget.sectionIndex),
                   LoggedWorkoutSectionBody(widget.sectionIndex),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: LoggedWorkoutSectionTimes(widget.sectionIndex),
-                  ),
+                  LoggedWorkoutSectionTimes(widget.sectionIndex),
                 ],
               ),
             )

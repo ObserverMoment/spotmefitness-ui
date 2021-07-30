@@ -126,7 +126,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                   context.select<LoggedWorkoutCreatorBloc, DateTime>(
                       (b) => b.loggedWorkout.completedOn);
 
-              return CupertinoPageScaffold(
+              return MyPageScaffold(
                 key: Key('LoggedWorkoutDetailsPage - CupertinoPageScaffold'),
                 navigationBar: BorderlessNavBar(
                   key: Key('LoggedWorkoutDetailsPage - BasicNavBar'),
@@ -167,65 +167,62 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          DatePickerDisplay(
-                            dateTime: completedOn,
-                            updateDateTime: (d) =>
-                                _updateCompletedOnDate(bloc, d),
-                          ),
-                          SizedBox(height: 12),
-                          TimePickerDisplay(
-                            timeOfDay: TimeOfDay.fromDateTime(completedOn),
-                            updateTimeOfDay: (t) =>
-                                _updateCompletedOnTime(bloc, t),
-                          ),
-                          SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TappableRow(
-                                  onTap: () => context.showBottomSheet(
-                                      child: SafeArea(
-                                          child: GymProfileSelector(
-                                    selectedGymProfile: gymProfile,
-                                    selectGymProfile: (p) =>
-                                        bloc.updateGymProfile(p),
-                                  ))),
-                                  title: 'Gym Profile',
-                                  display: gymProfile == null
-                                      ? MyText(
-                                          'Select...',
-                                          subtext: true,
-                                        )
-                                      : MyText(gymProfile.name),
-                                ),
+                    Column(
+                      children: [
+                        DatePickerDisplay(
+                          dateTime: completedOn,
+                          updateDateTime: (d) =>
+                              _updateCompletedOnDate(bloc, d),
+                        ),
+                        SizedBox(height: 12),
+                        TimePickerDisplay(
+                          timeOfDay: TimeOfDay.fromDateTime(completedOn),
+                          updateTimeOfDay: (t) =>
+                              _updateCompletedOnTime(bloc, t),
+                        ),
+                        SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TappableRow(
+                                onTap: () => context.showBottomSheet(
+                                    child: SafeArea(
+                                        child: GymProfileSelector(
+                                  selectedGymProfile: gymProfile,
+                                  selectGymProfile: (p) =>
+                                      bloc.updateGymProfile(p),
+                                ))),
+                                title: 'Gym Profile',
+                                display: gymProfile == null
+                                    ? MyText(
+                                        'Select...',
+                                        subtext: true,
+                                      )
+                                    : MyText(gymProfile.name),
                               ),
-                              if (gymProfile != null)
-                                FadeIn(
-                                  child: CupertinoButton(
-                                      padding: EdgeInsets.zero,
-                                      child: Icon(
-                                        CupertinoIcons.clear_thick,
-                                        color: Styles.errorRed,
-                                        size: 20,
-                                      ),
-                                      onPressed: () =>
-                                          bloc.updateGymProfile(null)),
-                                )
-                            ],
-                          ),
-                          EditableTextAreaRow(
-                            title: 'Note',
-                            text: note ?? '',
-                            onSave: (t) => bloc.updateNote(t),
-                            inputValidation: (t) => true,
-                            maxDisplayLines: 6,
-                          ),
-                        ],
-                      ),
+                            ),
+                            if (gymProfile != null)
+                              FadeIn(
+                                child: CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    child: Icon(
+                                      CupertinoIcons.clear_thick,
+                                      color: Styles.errorRed,
+                                      size: 20,
+                                    ),
+                                    onPressed: () =>
+                                        bloc.updateGymProfile(null)),
+                              )
+                          ],
+                        ),
+                        EditableTextAreaRow(
+                          title: 'Note',
+                          text: note ?? '',
+                          onSave: (t) => bloc.updateNote(t),
+                          inputValidation: (t) => true,
+                          maxDisplayLines: 6,
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(6.0),
@@ -249,7 +246,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                                                 s.sortPosition)))),
                             child: AnimatedSlidable(
                                 key: Key('Index - ${s.sortPosition} - ${s.id}'),
-                                child: LoggedWorkoutSectionSummary(s),
+                                child: _LoggedWorkoutSectionSummary(s),
                                 removeItem: (index) =>
                                     _deleteLoggedWorkoutSection(bloc, index),
                                 secondaryActions: [],
@@ -267,10 +264,10 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
   }
 }
 
-class LoggedWorkoutSectionSummary extends StatelessWidget {
+class _LoggedWorkoutSectionSummary extends StatelessWidget {
   final LoggedWorkoutSection loggedWorkoutSection;
   final bool showBodyAreas;
-  LoggedWorkoutSectionSummary(this.loggedWorkoutSection,
+  _LoggedWorkoutSectionSummary(this.loggedWorkoutSection,
       {this.showBodyAreas = true});
   @override
   Widget build(BuildContext context) {
@@ -296,13 +293,21 @@ class LoggedWorkoutSectionSummary extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: LoggedWorkoutSectionSummaryTag(
                   loggedWorkoutSection,
-                  fontsize: FONTSIZE.SMALL,
                 ),
               ),
               if (Utils.textNotNull(loggedWorkoutSection.name))
-                MyText('"${loggedWorkoutSection.name!}"'),
+                MyText(
+                  '"${loggedWorkoutSection.name!}"',
+                  lineHeight: 1.5,
+                  weight: FontWeight.bold,
+                ),
               if (Utils.textNotNull(loggedWorkoutSection.note))
-                MyText(loggedWorkoutSection.note!),
+                MyText(
+                  loggedWorkoutSection.note!,
+                  lineHeight: 1.5,
+                  maxLines: 3,
+                  size: FONTSIZE.SMALL,
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Wrap(

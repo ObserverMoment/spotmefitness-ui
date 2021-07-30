@@ -4,27 +4,27 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/progress_journal_entry_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/bodyweight_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/number_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/wrappers.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class ProgressJournalEntryCreator extends StatefulWidget {
-  final String parentJournalId;
+  final ProgressJournal parentJournal;
   final ProgressJournalEntry? progressJournalEntry;
   ProgressJournalEntryCreator(
-      {this.progressJournalEntry, required this.parentJournalId});
+      {this.progressJournalEntry, required this.parentJournal});
   @override
   _ProgressJournalEntryCreatorState createState() =>
       _ProgressJournalEntryCreatorState();
@@ -41,7 +41,7 @@ class _ProgressJournalEntryCreatorState
     } else {
       _activeProgressJournalEntry =
           await ProgressJournalEntryCreatorBloc.initialize(
-              context, widget.parentJournalId, widget.progressJournalEntry);
+              context, widget.parentJournal, widget.progressJournalEntry);
       return _activeProgressJournalEntry!;
     }
   }
@@ -55,7 +55,7 @@ class _ProgressJournalEntryCreatorState
   void _saveAndClose(BuildContext context) {
     final success = context
         .read<ProgressJournalEntryCreatorBloc>()
-        .saveAllChanges(widget.parentJournalId);
+        .saveAllChanges(widget.parentJournal.id);
     if (success) {
       context.pop();
     } else {
@@ -67,18 +67,11 @@ class _ProgressJournalEntryCreatorState
   @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<ProgressJournalEntry>(
-        loadingWidget: CupertinoPageScaffold(
-          navigationBar: BorderlessNavBar(
-            automaticallyImplyLeading: false,
-            middle: NavBarTitle('Getting ready...'),
-          ),
-          child: Center(
-            child: LoadingCircle(),
-          ),
-        ),
+        loadingWidget: ShimmerDetailsPage(),
         future: _initEntry(),
         builder: (initialEntryData) => ChangeNotifierProvider(
               create: (context) => ProgressJournalEntryCreatorBloc(
+                  parentJournal: widget.parentJournal,
                   initialEntry: initialEntryData,
                   context: context,
                   isCreate: _isCreate),
@@ -91,7 +84,7 @@ class _ProgressJournalEntryCreatorState
                     context.select<ProgressJournalEntryCreatorBloc, bool>(
                         (b) => b.uploadingMedia);
 
-                return CupertinoPageScaffold(
+                return MyPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
                     handleSave: () => _saveAndClose(context),
@@ -109,7 +102,7 @@ class _ProgressJournalEntryCreatorState
                         : 'Edit Entry',
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
@@ -178,9 +171,13 @@ class ProgressJournalEntryCreatorNotes extends StatelessWidget {
 class ProgressJournalEntryCreatorScores extends StatelessWidget {
   final kMaxScore = 10.0;
 
+  void _updateBodyweight(BuildContext context, double bodyweight) {
+    context.read<ProgressJournalEntryCreatorBloc>().updateEntry({
+      'bodyweight': bodyweight,
+    });
+  }
+
   void _updateScore(BuildContext context, String key, double score) {
-    print(key);
-    print(score);
     context.read<ProgressJournalEntryCreatorBloc>().updateEntry({
       key: score,
     });
@@ -217,7 +214,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
 
     final bodyweightUnit =
         context.select<ProgressJournalEntryCreatorBloc, BodyweightUnit>(
-            (b) => b.entry.bodyweightUnit);
+            (b) => b.parentJournal.bodyweightUnit);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -227,15 +224,18 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MyText('Bodyweight'),
-              BodyweightPickerDisplay(
-                bodyweight: bodyweight,
-                unit: bodyweightUnit,
-                updateBodyweight: (bodyweight, unit) => context
-                    .read<ProgressJournalEntryCreatorBloc>()
-                    .updateEntry({
-                  'bodyweight': bodyweight,
-                  'bodyweightUnit': unit.apiValue
-                }),
+              Row(
+                children: [
+                  NumberPickerDouble(
+                    modalTitle: 'Bodyweight (${bodyweightUnit.display})',
+                    number: bodyweight,
+                    saveValue: (bw) => _updateBodyweight(context, bw),
+                  ),
+                  MyText(
+                    bodyweightUnit.display,
+                    weight: FontWeight.bold,
+                  )
+                ],
               ),
             ],
           ),
@@ -262,14 +262,14 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
                   FadeIn(
                     child: Row(
                       children: [
-                        MyText('Avg = '),
+                        MyText('Average '),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6.0),
                           child: CircularPercentIndicator(
                             startAngle: 180,
                             backgroundColor: Styles.colorOne.withOpacity(0.35),
                             circularStrokeCap: CircularStrokeCap.round,
-                            radius: 44.0,
+                            radius: 54.0,
                             lineWidth: 6.0,
                             percent: _calcOverallAverage(entry) / kMaxScore,
                             center: MyText(

@@ -34,25 +34,19 @@ class WorkoutPlanFinderPage extends StatelessWidget {
   final bool? initialOpenPublicTab;
   const WorkoutPlanFinderPage({this.initialOpenPublicTab = false});
 
-  Widget _loadingIndicator() => CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
-        middle: NavBarTitle('Getting Ready...'),
-      ),
-      child: ShimmerCardList(itemCount: 20));
-
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserWorkoutPlans$Query, json.JsonSerializable>(
         key: Key(
             'WorkoutPlanFinderPage - ${UserWorkoutPlansQuery().operationName}'),
         query: UserWorkoutPlansQuery(),
-        loadingIndicator: _loadingIndicator(),
+        loadingIndicator: ShimmerListPage(),
         builder: (createdPlansData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
                   'WorkoutPlanFinderPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
-              loadingIndicator: _loadingIndicator(),
+              loadingIndicator: ShimmerListPage(),
               builder: (collectionsData) {
                 final userPlans = createdPlansData.userWorkoutPlans;
 

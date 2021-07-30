@@ -58,10 +58,11 @@ class _ProgressJournalGoalsSummaryCardState
       return obj;
     });
 
-    final completed = widget.goals.where((g) => g.completedDate != null).length;
+    final completedGoals =
+        widget.goals.where((g) => g.completedDate != null).toList();
 
     return Card(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -71,7 +72,7 @@ class _ProgressJournalGoalsSummaryCardState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 MyText(
-                  '$completed of ${widget.goals.length} goals completed',
+                  '${completedGoals.length} of ${widget.goals.length} goals completed',
                 ),
                 ShowHideDetailsButton(
                   onPressed: () => setState(() => _minimized = !_minimized),
@@ -84,22 +85,27 @@ class _ProgressJournalGoalsSummaryCardState
           ),
           GrowInOut(
               show: !_minimized,
-              child: Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4, bottom: 8),
-                  child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: goalsByTag.entries
-                          .map((e) => GoalTagProgressIndicator(
-                                tag: e.key,
-                                goals: e.value,
-                              ))
-                          .toList()),
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 8),
+                      child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: goalsByTag.entries
+                              .map((e) => GoalTagProgressIndicator(
+                                    tag: e.key,
+                                    goals: e.value,
+                                  ))
+                              .toList()),
+                    ),
+                  ),
+                ],
               )),
         ],
       ),
@@ -151,7 +157,7 @@ class GoalTagProgressIndicator extends StatelessWidget {
           ),
           MyText(
             '$numComplete of ${goals.length}',
-            size: FONTSIZE.SMALL,
+            size: FONTSIZE.TINY,
             lineHeight: 1.4,
           ),
         ],

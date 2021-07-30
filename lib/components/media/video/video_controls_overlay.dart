@@ -194,10 +194,12 @@ class _FullVideoControlsState extends State<FullVideoControls> {
                                   ? Icon(
                                       CupertinoIcons.clear,
                                       size: 30,
+                                      color: Styles.white,
                                     )
                                   : Icon(
                                       CupertinoIcons.fullscreen,
                                       size: 26,
+                                      color: Styles.white,
                                     ),
                             )))),
         ],

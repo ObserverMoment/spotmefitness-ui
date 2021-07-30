@@ -75,6 +75,11 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                   textAlign: widget.textAlign,
                   prefix: widget.prefix,
                   autofocus: widget.autofocus,
+                  padding: EdgeInsets.only(
+                      top: 16,
+                      bottom: 4,
+                      left: widget.prefix != null ? 18 : 6,
+                      right: 12),
                   placeholder: widget.placeholder,
                   keyboardType: widget.keyboardType,
                   style: TextStyle(fontSize: 18),
@@ -87,7 +92,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
             if (_controller.text.length > 0)
               Positioned(
                   left: widget.prefix != null ? 8 : 17,
-                  top: 12,
+                  top: 14,
                   child: FadeIn(
                     child: MyText(
                       widget.placeholder,
@@ -177,6 +182,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
   final bool autofocus;
   final TextEditingController controller;
   final bool Function()? validator;
+  final Color? backgroundColor;
 
   MyTextAreaFormFieldRow(
       {this.prefix,
@@ -186,30 +192,41 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
       this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
-      this.validator});
+      this.validator,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        CupertinoTextFormFieldRow(
-            keyboardAppearance: context.theme.cupertinoThemeData.brightness,
-            controller: controller,
-            expands: true,
-            maxLines: null,
-            minLines: null,
-            padding: EdgeInsets.only(top: 20, bottom: 4, left: 18, right: 12),
-            prefix: prefix,
-            autofocus: autofocus,
-            placeholder: placeholder,
-            keyboardType: keyboardType,
-            style: TextStyle(fontSize: 18, height: 1.4),
-            autofillHints: autofillHints,
-            obscureText: obscureText),
+        Container(
+          margin: const EdgeInsets.all(6),
+          padding: const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
+          decoration: backgroundColor != null
+              ? BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(8))
+              : null,
+          child: CupertinoTextFormFieldRow(
+              keyboardAppearance: context.theme.cupertinoThemeData.brightness,
+              controller: controller,
+              expands: true,
+              maxLines: null,
+              minLines: null,
+              padding: EdgeInsets.only(
+                  top: 14, bottom: 4, left: prefix != null ? 18 : 6, right: 12),
+              prefix: prefix,
+              autofocus: autofocus,
+              placeholder: placeholder,
+              keyboardType: keyboardType,
+              style: TextStyle(fontSize: 18, height: 1.4),
+              autofillHints: autofillHints,
+              obscureText: obscureText),
+        ),
         if (controller.text.length > 0)
           Positioned(
               left: prefix != null ? 8 : 17,
-              top: 5,
+              top: 14,
               child: FadeIn(
                 child: MyText(
                   placeholder,

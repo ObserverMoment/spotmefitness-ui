@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -32,7 +33,7 @@ class LoggedWorkoutsPage extends StatelessWidget {
               .reversed
               .toList();
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
             key: Key('LoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: BorderlessNavBar(
               key: Key('LoggedWorkoutsPage - BasicNavBar'),
@@ -46,7 +47,6 @@ class LoggedWorkoutsPage extends StatelessWidget {
   }
 }
 
-/// TODO: When implementing filters - convert to stateful.
 class FilterableLoggedWorkoutsList extends StatefulWidget {
   final List<LoggedWorkout> logs;
   FilterableLoggedWorkoutsList(this.logs);
@@ -100,7 +100,7 @@ class _FilterableLoggedWorkoutsListState
         CupertinoButton(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             onPressed: () => context.push(
-                fullscreenDialog: true,
+                rootNavigator: true,
                 child: YourLoggedWorkoutsTextSearch(
                     allLoggedWorkouts: widget.logs,
                     selectLoggedWorkout: (l) =>
@@ -141,8 +141,7 @@ class _FilterableLoggedWorkoutsListState
                   if (_filterFrom != null || _filterTo != null)
                     FadeIn(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -155,25 +154,23 @@ class _FilterableLoggedWorkoutsListState
                       ),
                     ),
                   Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: filteredLogs.length + 1,
-                          itemBuilder: (c, i) {
-                            if (i == filteredLogs.length) {
-                              return SizedBox(height: 60);
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: GestureDetector(
-                                    onTap: () => _openLoggedWorkoutDetails(
-                                        context, filteredLogs[i].id),
-                                    child: LoggedWorkoutCard(filteredLogs[i])),
-                              );
-                            }
-                          }),
-                    ),
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: filteredLogs.length + 1,
+                        itemBuilder: (c, i) {
+                          if (i == filteredLogs.length) {
+                            return SizedBox(height: 60);
+                          } else {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              child: GestureDetector(
+                                  onTap: () => _openLoggedWorkoutDetails(
+                                      context, filteredLogs[i].id),
+                                  child: LoggedWorkoutCard(filteredLogs[i])),
+                            );
+                          }
+                        }),
                   ),
                 ],
               ),
@@ -225,9 +222,9 @@ class _YourLoggedWorkoutsTextSearchState
   }
 
   List<LoggedWorkout> _filterBySearchString() {
-    return Utils.textNotNull(_searchString)
-        ? widget.allLoggedWorkouts.where((m) => _filter(m)).toList()
-        : [];
+    return _searchString.length < 3
+        ? <LoggedWorkout>[]
+        : widget.allLoggedWorkouts.where((m) => _filter(m)).toList();
   }
 
   void _handleSelectLoggedWorkout(LoggedWorkout loggedWorkout) {
@@ -244,52 +241,61 @@ class _YourLoggedWorkoutsTextSearchState
   @override
   Widget build(BuildContext context) {
     final filteredLogs = _filterBySearchString();
-    return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'YourLoggedWorkoutsTextSearch',
-        middle: NavBarTitle('Search Your Logs'),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
+    return MyPageScaffold(
+      child: SafeArea(
+        child: Column(
+          children: [
+            Row(
               children: [
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3.0),
                     child: CupertinoSearchTextField(
+                      placeholder: 'Search your logs',
                       focusNode: _focusNode,
                       onChanged: (value) =>
                           setState(() => _searchString = value.toLowerCase()),
                     ),
                   ),
                 ),
+                SizedBox(width: 10),
+                NavBarCloseButton(context.pop),
               ],
             ),
-          ),
-          Expanded(
-            child: FadeIn(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: filteredLogs
-                      .sortedBy<DateTime>((log) => log.completedOn)
-                      .reversed
-                      .map((log) => GestureDetector(
-                          onTap: () => _handleSelectLoggedWorkout(log),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4.0),
-                            child: LoggedWorkoutCard(log),
-                          )))
-                      .toList(),
-                ),
-              ),
-            ),
-          ),
-        ],
+            Expanded(
+                child: AnimatedSwitcher(
+              duration: kStandardAnimationDuration,
+              child: _searchString.length < 3
+                  ? Padding(
+                      padding: const EdgeInsets.all(24),
+                      child:
+                          MyText('Type at least 3 characters', subtext: true),
+                    )
+                  : filteredLogs.isEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.all(32.0),
+                          child: MyText(
+                            'No logs found...',
+                            subtext: true,
+                          ),
+                        )
+                      : ListView(
+                          shrinkWrap: true,
+                          children: filteredLogs
+                              .sortedBy<DateTime>((log) => log.completedOn)
+                              .reversed
+                              .map((log) => GestureDetector(
+                                  onTap: () => _handleSelectLoggedWorkout(log),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 4.0),
+                                    child: LoggedWorkoutCard(log),
+                                  )))
+                              .toList(),
+                        ),
+            )),
+          ],
+        ),
       ),
     );
   }

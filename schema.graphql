@@ -211,7 +211,6 @@ input CreateProgressJournalEntryInput {
   note: String
   voiceNoteUri: String
   bodyweight: Float
-  bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
   confidenceScore: Float
@@ -236,6 +235,7 @@ input CreateProgressJournalInput {
   name: String!
   description: String
   coverImageUri: String
+  bodyweightUnit: BodyweightUnit
 }
 
 input CreateScheduledWorkoutInput {
@@ -647,6 +647,7 @@ type ProgressJournal {
   name: String!
   description: String
   coverImageUri: String
+  bodyweightUnit: BodyweightUnit!
   ProgressJournalEntries: [ProgressJournalEntry!]!
   ProgressJournalGoals: [ProgressJournalGoal!]!
 }
@@ -657,7 +658,6 @@ type ProgressJournalEntry {
   note: String
   voiceNoteUri: String
   bodyweight: Float
-  bodyweightUnit: BodyweightUnit!
   moodScore: Float
   energyScore: Float
   confidenceScore: Float
@@ -849,7 +849,6 @@ input UpdateProgressJournalEntryInput {
   note: String
   voiceNoteUri: String
   bodyweight: Float
-  bodyweightUnit: BodyweightUnit
   moodScore: Float
   energyScore: Float
   confidenceScore: Float
@@ -876,6 +875,7 @@ input UpdateProgressJournalInput {
   name: String
   description: String
   coverImageUri: String
+  bodyweightUnit: BodyweightUnit
 }
 
 input UpdateScheduledWorkoutInput {

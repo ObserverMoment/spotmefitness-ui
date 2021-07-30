@@ -139,7 +139,7 @@ class _ProgressJournalDetailsPageState
                           journal: journal,
                         ),
                         ProgressJournalEntries(
-                            parentJournalId: journal.id,
+                            parentJournal: journal,
                             entries: journal.progressJournalEntries),
                         ProgressJournalGoals(
                           goals: journal.progressJournalGoals,

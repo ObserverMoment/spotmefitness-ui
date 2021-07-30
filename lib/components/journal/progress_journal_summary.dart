@@ -18,13 +18,13 @@ class ProgressJournalSummary extends StatelessWidget {
             goals: journal.progressJournalGoals,
           ),
           HorizontalLine(
-            verticalPadding: 16,
+            verticalPadding: 24,
           ),
           ReflectiveJournalingChart(
             journal: journal,
           ),
           HorizontalLine(
-            verticalPadding: 16,
+            verticalPadding: 24,
           ),
           BodyweightTrackerChart(
             journal: journal,

@@ -7,18 +7,20 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uploadcare_flutter/uploadcare_flutter.dart';
 
 class UserAvatarUploader extends StatefulWidget {
   final String? avatarUri;
   final Size displaySize;
-  final Function(String uploadedUri)? onUploadSuccess;
+  final Function(String? uploadedUri)? onUploadSuccess;
   UserAvatarUploader(
       {this.avatarUri,
       this.displaySize = const Size(120, 120),
@@ -59,7 +61,8 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
         onFail: (e) => throw new Exception(e));
   }
 
-  Future<void> _saveUriToDB(String uri) async {
+  /// Pass [null] to delete.
+  Future<void> _saveUriToDB(String? uri) async {
     try {
       final variables =
           UpdateUserArguments(data: UpdateUserInput(avatarUri: uri));
@@ -78,6 +81,10 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
             'id': GetIt.I<AuthBloc>().authedUser!.id,
             ...varsMap
           });
+
+      if (widget.onUploadSuccess != null) {
+        widget.onUploadSuccess!(uri);
+      }
     } catch (e) {
       print(e.toString());
       await context.showErrorAlert(e.toString());
@@ -94,11 +101,21 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
   Widget build(BuildContext context) {
     final Color _primary = context.theme.primary;
     final Color _background = context.theme.background;
+    final bool hasImage = Utils.textNotNull(widget.avatarUri);
+
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,
         builder: (context) => CupertinoActionSheet(
             actions: [
+              if (hasImage)
+                CupertinoActionSheetAction(
+                  child: MyText('View image'),
+                  onPressed: () async {
+                    context.pop();
+                    await openFullScreenImageViewer(context, widget.avatarUri!);
+                  },
+                ),
               CupertinoActionSheetAction(
                 child: MyText('Take photo'),
                 onPressed: () {
@@ -113,6 +130,19 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
                   _pickImage(ImageSource.gallery);
                 },
               ),
+              if (hasImage)
+                CupertinoActionSheetAction(
+                  child: MyText(
+                    'Remove image',
+                    color: Styles.errorRed,
+                  ),
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    context.pop();
+                    context.showConfirmDeleteDialog(
+                        itemType: 'Image', onConfirm: () => _saveUriToDB(null));
+                  },
+                ),
             ],
             cancelButton: CupertinoActionSheetAction(
               child: MyText(

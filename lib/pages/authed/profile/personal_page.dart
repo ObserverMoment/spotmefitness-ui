@@ -50,6 +50,7 @@ class ProfilePersonalPage extends StatelessWidget {
         ),
         builder: (data) {
           final User user = data.authedUser;
+
           return ListView(
             children: [
               SizedBox(height: 8),

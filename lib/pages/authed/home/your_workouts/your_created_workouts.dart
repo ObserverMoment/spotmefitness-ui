@@ -72,8 +72,7 @@ class _FilterableCreatedWorkoutsState extends State<FilterableCreatedWorkouts> {
       children: [
         if (allTags.isNotEmpty)
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
+            padding: const EdgeInsets.only(top: 4, bottom: 10),
             child: SizedBox(
                 height: 35,
                 child: ListView.builder(

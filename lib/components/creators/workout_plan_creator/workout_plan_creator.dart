@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/workout_plan_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_media.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_meta.dart';
@@ -65,15 +66,7 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<WorkoutPlan>(
-        loadingWidget: CupertinoPageScaffold(
-          navigationBar: BorderlessNavBar(
-            automaticallyImplyLeading: false,
-            middle: NavBarTitle('Getting ready...'),
-          ),
-          child: Center(
-            child: LoadingCircle(),
-          ),
-        ),
+        loadingWidget: ShimmerDetailsPage(),
         future: _initWorkoutPlanFn,
         builder: (initialWorkoutPlan) => ChangeNotifierProvider(
               create: (context) => WorkoutPlanCreatorBloc(
@@ -93,7 +86,7 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
                     context.select<WorkoutPlanCreatorBloc, String>(
                         (bloc) => bloc.workoutPlan.name);
 
-                return CupertinoPageScaffold(
+                return MyPageScaffold(
                   navigationBar: CreateEditPageNavBar(
                     handleClose: context.pop,
                     handleSave: () => _saveAndClose(context),
@@ -105,9 +98,8 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
 
                     /// Disable save / done while media is uploading.
                     inputValid: !uploadingMedia && name.length >= 3,
-                    title: widget.workoutPlan == null
-                        ? 'New Workout'
-                        : 'Edit Workout',
+                    title:
+                        widget.workoutPlan == null ? 'New Plan' : 'Edit Plan',
                   ),
                   child: Column(
                     children: [
@@ -116,7 +108,7 @@ class _WorkoutPlanCreatorPageState extends State<WorkoutPlanCreatorPage> {
                           child: Container(
                               height: 30,
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                                  const EdgeInsets.symmetric(horizontal: 8),
                               alignment: Alignment.centerLeft,
                               child: Row(
                                 children: [

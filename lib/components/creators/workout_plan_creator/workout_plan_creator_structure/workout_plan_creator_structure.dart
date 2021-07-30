@@ -32,7 +32,7 @@ class WorkoutPlanCreatorStructure extends StatelessWidget {
         workoutPlanDays.groupBy<int, WorkoutPlanDay>((d) => d.dayNumber ~/ 7);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView.builder(
           itemCount: numWeeks,
           itemBuilder: (c, i) => WorkoutPlanCreatorStructureWeek(

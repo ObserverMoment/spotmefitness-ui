@@ -16,13 +16,14 @@ class GymProfileCard extends StatelessWidget {
           MyText(
             gymProfile.name,
             weight: FontWeight.bold,
+            lineHeight: 1.5,
           ),
           if (gymProfile.description != null)
             MyText(
               gymProfile.description!,
               textAlign: TextAlign.center,
               maxLines: 3,
-              lineHeight: 1.3,
+              lineHeight: 1.5,
             ),
           if (gymProfile.equipments.isNotEmpty)
             Padding(

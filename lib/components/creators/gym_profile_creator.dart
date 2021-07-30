@@ -189,7 +189,7 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: CreateEditPageNavBar(
         formIsDirty: _formIsDirty,
         handleClose: _handleClose,
@@ -242,19 +242,19 @@ class _GymProfileCreatorDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          child: CupertinoFormSection.insetGrouped(children: [
-            MyTextFormFieldRow(
-                placeholder: 'Name (Required - min 2 chars)',
-                keyboardType: TextInputType.text,
-                controller: nameController),
-            MyTextAreaFormFieldRow(
-                placeholder: 'Description',
-                keyboardType: TextInputType.text,
-                controller: descriptionController),
-          ]),
+        MyTextFormFieldRow(
+          placeholder: 'Name (Required - min 2 chars)',
+          keyboardType: TextInputType.text,
+          controller: nameController,
+          backgroundColor: context.theme.cardBackground,
+        ),
+        MyTextAreaFormFieldRow(
+          placeholder: 'Description',
+          keyboardType: TextInputType.text,
+          controller: descriptionController,
+          backgroundColor: context.theme.cardBackground,
         ),
         if (handleDelete != null)
           Row(

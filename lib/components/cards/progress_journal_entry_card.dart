@@ -12,10 +12,13 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class ProgressJournalEntryCard extends StatelessWidget {
+  final ProgressJournal parentJournal;
   final ProgressJournalEntry progressJournalEntry;
-  ProgressJournalEntryCard(this.progressJournalEntry);
+  ProgressJournalEntryCard(
+      {required this.progressJournalEntry, required this.parentJournal});
 
   final kMaxScore = 10;
 
@@ -110,7 +113,7 @@ class ProgressJournalEntryCard extends StatelessWidget {
                         ),
                         if (progressJournalEntry.bodyweight != null)
                           MyText(
-                            ' - ${progressJournalEntry.bodyweight!.stringMyDouble()} kg',
+                            ' - ${progressJournalEntry.bodyweight!.stringMyDouble()} ${parentJournal.bodyweightUnit.display}',
                           ),
                       ],
                     ),

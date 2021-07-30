@@ -21,7 +21,7 @@ class WorkoutPlanWorkoutSchedule extends StatelessWidget {
       shrinkWrap: true,
       itemCount: workoutPlan.lengthWeeks,
       itemBuilder: (c, i) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 4),
         child: WorkoutPlanWeekWorkouts(
           workoutPlanDays: daysByWeek[i] ?? [],
           weekNumber: i,
@@ -59,17 +59,14 @@ class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
     return Column(
       children: [
         // https://stackoverflow.com/questions/51587003/how-to-center-only-one-element-in-a-row-of-2-elements-in-flutter
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              Expanded(child: H3('Week ${widget.weekNumber + 1}')),
-              ShowHideDetailsButton(
-                  onPressed: () => setState(
-                      () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                  showDetails: !_minimizePlanDayCards),
-            ],
-          ),
+        Row(
+          children: [
+            Expanded(child: H3('Week ${widget.weekNumber + 1}')),
+            ShowHideDetailsButton(
+                onPressed: () => setState(
+                    () => _minimizePlanDayCards = !_minimizePlanDayCards),
+                showDetails: !_minimizePlanDayCards),
+          ],
         ),
         HorizontalLine(),
         ListView.builder(

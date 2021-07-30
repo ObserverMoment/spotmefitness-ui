@@ -221,42 +221,47 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
                       },
                     ),
                     SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TappableRow(
-                              onTap: () => context.showBottomSheet(
-                                      child: SafeArea(
-                                    child: GymProfileSelector(
-                                        selectedGymProfile:
-                                            _activeScheduledWorkout.gymProfile,
-                                        selectGymProfile: (p) => setState(() =>
-                                            _activeScheduledWorkout.gymProfile =
-                                                p)),
-                                  )),
-                              title: 'Gym Profile',
-                              display:
-                                  _activeScheduledWorkout.gymProfile == null
-                                      ? MyText(
-                                          'Select...',
-                                          subtext: true,
-                                        )
-                                      : MyText(_activeScheduledWorkout
-                                          .gymProfile!.name)),
-                        ),
-                        if (_activeScheduledWorkout.gymProfile != null)
-                          FadeIn(
-                            child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                child: Icon(
-                                  CupertinoIcons.clear_thick,
-                                  color: Styles.errorRed,
-                                  size: 20,
-                                ),
-                                onPressed: () => setState(() =>
-                                    _activeScheduledWorkout.gymProfile = null)),
-                          )
-                      ],
+                    SizedBox(
+                      height: 46,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TappableRow(
+                                onTap: () => context.showBottomSheet(
+                                        child: SafeArea(
+                                      child: GymProfileSelector(
+                                          selectedGymProfile:
+                                              _activeScheduledWorkout
+                                                  .gymProfile,
+                                          selectGymProfile: (p) => setState(
+                                              () => _activeScheduledWorkout
+                                                  .gymProfile = p)),
+                                    )),
+                                title: 'Gym Profile',
+                                display:
+                                    _activeScheduledWorkout.gymProfile == null
+                                        ? MyText(
+                                            'Select...',
+                                            subtext: true,
+                                          )
+                                        : MyText(_activeScheduledWorkout
+                                            .gymProfile!.name)),
+                          ),
+                          if (_activeScheduledWorkout.gymProfile != null)
+                            FadeIn(
+                              child: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: Icon(
+                                    CupertinoIcons.clear_thick,
+                                    color: Styles.errorRed,
+                                    size: 20,
+                                  ),
+                                  onPressed: () => setState(() =>
+                                      _activeScheduledWorkout.gymProfile =
+                                          null)),
+                            )
+                        ],
+                      ),
                     ),
                     SizedBox(height: 12),
                     EditableTextAreaRow(

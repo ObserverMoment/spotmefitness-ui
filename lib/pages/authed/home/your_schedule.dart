@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/scheduled_workout_card.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -67,6 +68,9 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
         width: 8,
         decoration: BoxDecoration(color: color, shape: BoxShape.circle));
   }
+
+  void _findWorkoutToSchedule() => context.navigateTo(
+      WorkoutFinderRoute(selectWorkout: (w) => _openScheduleWorkout(w)));
 
   Future<void> _openScheduleWorkout(Workout workout) async {
     final result = await context.showBottomSheet(
@@ -136,8 +140,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                   ),
                   CupertinoButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () => context.navigateTo(WorkoutFinderRoute(
-                        selectWorkout: (w) => _openScheduleWorkout(w))),
+                    onPressed: _findWorkoutToSchedule,
                     child: Icon(CupertinoIcons.calendar_badge_plus),
                   ),
                 ],
@@ -220,7 +223,26 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                 body: selectedDayScheduled.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.all(32),
-                        child: Center(child: MyText('Nothing planned...')),
+                        child: ListView(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MyText('Nothing planned...'),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            ContentBox(
+                              child: BorderButton(
+                                  withBorder: false,
+                                  mini: true,
+                                  prefix:
+                                      Icon(CupertinoIcons.calendar_badge_plus),
+                                  text: 'Plan Something',
+                                  onPressed: _findWorkoutToSchedule),
+                            ),
+                          ],
+                        ),
                       )
                     : ListView(
                         children: selectedDayScheduled

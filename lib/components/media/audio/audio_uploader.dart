@@ -103,9 +103,9 @@ class _AudioUploaderState extends State<AudioUploader> {
               if (hasAudio)
                 CupertinoActionSheetAction(
                   child: MyText('Listen to audio'),
-                  onPressed: () async {
-                    await _listenToAudio();
+                  onPressed: () {
                     context.pop();
+                    _listenToAudio();
                   },
                 ),
               CupertinoActionSheetAction(
@@ -120,9 +120,9 @@ class _AudioUploaderState extends State<AudioUploader> {
                 child: MyText(hasAudio
                     ? 'Choose new from library'
                     : 'Choose from library'),
-                onPressed: () async {
+                onPressed: () {
                   context.pop();
-                  await _pickAudioFromDevice();
+                  _pickAudioFromDevice();
                 },
               ),
               if (hasAudio)

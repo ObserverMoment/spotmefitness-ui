@@ -41,7 +41,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: BorderlessNavBar(
           middle: NavBarTitle('Your Workouts'),
           trailing: NavBarTrailingRow(
@@ -64,8 +64,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: SizedBox(
                 width: double.infinity,
                 child: SlidingSelect<int>(
@@ -106,22 +105,19 @@ class YourWorkoutsList extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.all(24),
             child: MyText('No workouts to display...'))
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: workouts.length,
-                itemBuilder: (c, i) => GestureDetector(
-                      key: Key(workouts[i].id),
-                      onTap: () => selectWorkout(workouts[i].id),
-                      child: SizeFadeIn(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 4.0),
-                          child: WorkoutCard(workouts[i]),
-                        ),
-                      ),
-                    )),
-          );
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: workouts.length,
+            itemBuilder: (c, i) => GestureDetector(
+                  key: Key(workouts[i].id),
+                  onTap: () => selectWorkout(workouts[i].id),
+                  child: SizeFadeIn(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 4.0),
+                      child: WorkoutCard(workouts[i]),
+                    ),
+                  ),
+                ));
   }
 }

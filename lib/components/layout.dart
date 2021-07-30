@@ -233,7 +233,7 @@ class MyPageScaffold extends StatelessWidget {
     return CupertinoPageScaffold(
         navigationBar: navigationBar,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12),
           child: child,
         ));
   }

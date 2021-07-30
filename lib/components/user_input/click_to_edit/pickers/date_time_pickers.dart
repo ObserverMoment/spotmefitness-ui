@@ -22,14 +22,14 @@ TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
 ColorScheme _buildColorScheme(BuildContext context) {
   final theme = context.theme;
   return ColorScheme(
-    primary: theme.primary,
+    primary: myTheme.Styles.colorOne,
     primaryVariant: theme.primary,
     secondary: theme.cardBackground,
     secondaryVariant: theme.primary,
     surface: theme.cardBackground,
     background: theme.cardBackground,
     error: myTheme.Styles.errorRed,
-    onPrimary: theme.background,
+    onPrimary: theme.primary,
     onSecondary: theme.primary,
     onSurface: theme.primary,
     onBackground: theme.primary,
@@ -46,17 +46,22 @@ Widget buildDateTimePickerTheme(BuildContext context, Widget child) {
   return Theme(
       data: base.copyWith(
         colorScheme: _buildColorScheme(context),
+        primaryIconTheme: _customIconTheme(context, base.iconTheme),
         appBarTheme: base.appBarTheme.copyWith(
             backgroundColor:
-                theme.cardBackground), // Header background of range picker.
+                theme.background), // Header background of range picker.
         primaryColor: theme.primary, // Head of Date Picker background
-        accentColor: theme.primary, // Selection color for date picker
+        accentColor: Colors.yellow, // Selection color for date picker
         dialogBackgroundColor: theme.cardBackground,
         scaffoldBackgroundColor:
             theme.cardBackground, // Main background of range picker.
         textTheme: _buildShrineTextTheme(context, base.textTheme),
       ),
       child: child);
+}
+
+IconThemeData _customIconTheme(BuildContext context, IconThemeData original) {
+  return original.copyWith(color: context.theme.primary);
 }
 
 class DatePickerDisplay extends StatelessWidget {

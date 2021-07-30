@@ -96,19 +96,16 @@ class ScheduledWorkoutCard extends StatelessWidget {
     }
   }
 
-  Widget _buildCardHeader(BuildContext context, bool showNoteIcon) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildCardHeader(BuildContext context, bool showNote) {
+    return Column(
       children: [
-        Column(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 MyText(
                   '${scheduledWorkout.scheduledAt.minimalDateString}, ${scheduledWorkout.scheduledAt.timeString}',
-                  lineHeight: 1.2,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 6),
@@ -116,27 +113,30 @@ class ScheduledWorkoutCard extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              children: [
-                if (scheduledWorkout.gymProfile != null)
-                  MyText(
-                    '(${scheduledWorkout.gymProfile!.name})',
-                    lineHeight: 1.8,
-                    color: Styles.colorTwo,
-                    size: FONTSIZE.SMALL,
-                  ),
-              ],
-            ),
+            if (scheduledWorkout.gymProfile != null)
+              MyText(
+                scheduledWorkout.gymProfile!.name,
+                color: Styles.infoBlue,
+                size: FONTSIZE.SMALL,
+              ),
           ],
         ),
-        if (showNoteIcon && Utils.textNotNull(scheduledWorkout.note))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: NotesIcon(),
-              onPressed: () => context.showBottomSheet(
-                  useRootNavigator: true,
-                  expand: true,
-                  child: TextViewer(scheduledWorkout.note!, 'Note'))),
+        if (showNote && Utils.textNotNull(scheduledWorkout.note))
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: MyText(
+                  scheduledWorkout.note!,
+                  size: FONTSIZE.SMALL,
+                  maxLines: 4,
+                  lineHeight: 1.4,
+                ),
+                onPressed: () => context.showBottomSheet(
+                    useRootNavigator: true,
+                    expand: true,
+                    child: TextViewer(scheduledWorkout.note!, 'Note'))),
+          ),
       ],
     );
   }
@@ -164,7 +164,10 @@ class ScheduledWorkoutCard extends StatelessWidget {
               )
             : Column(
                 children: [
-                  _buildCardHeader(context, true),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _buildCardHeader(context, true),
+                  ),
                   SizedBox(height: 4),
                   HorizontalLine(),
                   WorkoutCard(

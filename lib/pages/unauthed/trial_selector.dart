@@ -59,10 +59,18 @@ class TrialSelector extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: MyText(
-            'Free for 3 months, then billed monthly. Cancel anytime.',
+            'Free for 3 months, then billed monthly',
             size: FONTSIZE.SMALL,
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: MyText(
+            'Cancel anytime.',
+            size: FONTSIZE.SMALL,
+          ),
+        ),
+        SizedBox(height: 8),
         if (trialType != null)
           FadeIn(
             child: Padding(
@@ -108,11 +116,11 @@ class TrialSelectorBox extends StatelessWidget {
               children: [
                 H1(name),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: content,
                 ),
                 MyText('£${cost.toString()} / month',
-                    weight: FontWeight.bold, size: FONTSIZE.LARGE),
+                    weight: FontWeight.bold, size: FONTSIZE.BIG),
               ],
             )),
         if (isSelected)

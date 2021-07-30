@@ -15,6 +15,7 @@ fragment ProgressJournal on ProgressJournal {
   name
   description
   coverImageUri
+  bodyweightUnit
 }
 
 fragment ProgressJournalEntry on ProgressJournalEntry {
@@ -25,7 +26,6 @@ fragment ProgressJournalEntry on ProgressJournalEntry {
   voiceNoteUri
   # Always save in KGs
   bodyweight
-  bodyweightUnit
   moodScore
   energyScore
   confidenceScore

@@ -98,15 +98,12 @@ class ShimmerListPage extends StatelessWidget {
   ShimmerListPage({this.title = 'Getting ready...'});
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: BorderlessNavBar(
           middle: NavBarTitle(title),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ShimmerCardList(
-            itemCount: 10,
-          ),
+        child: ShimmerCardList(
+          itemCount: 10,
         ));
   }
 }
@@ -116,38 +113,35 @@ class ShimmerDetailsPage extends StatelessWidget {
   ShimmerDetailsPage({this.title = 'Getting ready...'});
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: BorderlessNavBar(
           middle: NavBarTitle(title),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ShimmerCard(),
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ShimmerCard(),
               ),
-              Flexible(
-                flex: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ShimmerCard(),
-                ),
+            ),
+            Flexible(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ShimmerCard(),
               ),
-              Flexible(
-                flex: 6,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ShimmerCard(),
-                ),
+            ),
+            Flexible(
+              flex: 6,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ShimmerCard(),
               ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
 }

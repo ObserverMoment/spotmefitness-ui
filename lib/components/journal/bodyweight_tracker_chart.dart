@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:collection/collection.dart';
 
 class BodyweightTrackerChart extends StatelessWidget {
   final ProgressJournal journal;
@@ -14,16 +14,18 @@ class BodyweightTrackerChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstRecordedBodyweight = journal.progressJournalEntries
-        .firstWhere((e) => e.bodyweight != null)
-        .bodyweight;
+    final sortedEntries =
+        journal.progressJournalEntries.sortedBy<DateTime>((e) => e.createdAt);
 
-    final minBodyweight = journal.progressJournalEntries.fold<double>(
+    final firstRecordedBodyweight =
+        sortedEntries.firstWhere((e) => e.bodyweight != null).bodyweight;
+
+    final minBodyweight = sortedEntries.fold<double>(
         firstRecordedBodyweight ?? 0.0,
         (lowest, next) =>
             next.bodyweight == null ? lowest : min(lowest, next.bodyweight!));
 
-    final maxBodyweight = journal.progressJournalEntries.fold<double>(
+    final maxBodyweight = sortedEntries.fold<double>(
         firstRecordedBodyweight ?? 0.0,
         (highest, next) =>
             next.bodyweight == null ? highest : max(highest, next.bodyweight!));
@@ -38,17 +40,12 @@ class BodyweightTrackerChart extends StatelessWidget {
               'Bodyweight Tracker',
               weight: FontWeight.bold,
             ),
-            if (firstRecordedBodyweight != null)
-              BorderButton(
-                  mini: true,
-                  prefix: Icon(CupertinoIcons.fullscreen, size: 20),
-                  onPressed: () => print('open full screen')),
           ],
         ),
       ),
       SizedBox(height: 12),
       MyText(
-        'Bodyweight in ${journal.progressJournalEntries[0].bodyweightUnit.display}',
+        'Bodyweight in ${journal.bodyweightUnit.display}',
         size: FONTSIZE.SMALL,
       ),
       firstRecordedBodyweight == null
@@ -62,10 +59,16 @@ class BodyweightTrackerChart extends StatelessWidget {
             )
           : SfCartesianChart(
               plotAreaBorderWidth: 0,
-              enableAxisAnimation: true,
+              // enableAxisAnimation: true,
+              tooltipBehavior: TooltipBehavior(
+                  enable: true,
+                  duration: 6000,
+                  header: 'Weight',
+                  format: 'point.x: point.y ${journal.bodyweightUnit.display}',
+                  textStyle:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
               primaryXAxis:
                   DateTimeAxis(majorGridLines: MajorGridLines(width: 0)),
-              legend: Legend(),
               primaryYAxis: NumericAxis(
                   minimum: max(minBodyweight - 10, 0),
                   maximum: maxBodyweight + 10,
@@ -79,9 +82,15 @@ class BodyweightTrackerChart extends StatelessWidget {
                   LineSeries<ProgressJournalEntry, DateTime>(
                     color: Styles.infoBlue,
                     width: 3,
+                    enableTooltip: true,
+                    markerSettings: MarkerSettings(
+                      isVisible: true,
+                      height: 12,
+                      width: 12,
+                    ),
                     emptyPointSettings:
                         EmptyPointSettings(mode: EmptyPointMode.average),
-                    dataSource: journal.progressJournalEntries,
+                    dataSource: sortedEntries,
                     xValueMapper: (ProgressJournalEntry e, _) => e.createdAt,
                     yValueMapper: (ProgressJournalEntry e, _) => e.bodyweight,
                   ),

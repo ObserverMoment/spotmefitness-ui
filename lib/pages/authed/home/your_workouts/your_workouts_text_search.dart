@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -52,14 +53,14 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
             'YourWorkoutsTextSearch - ${UserWorkoutsQuery().operationName}'),
         query: UserWorkoutsQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
-        loadingIndicator: ShimmerCardList(itemCount: 20),
+        loadingIndicator: ShimmerListPage(),
         builder: (createdWorkoutsData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
                   'YourWorkoutsTextSearch - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
               fetchPolicy: QueryFetchPolicy.storeFirst,
-              loadingIndicator: ShimmerCardList(itemCount: 20),
+              loadingIndicator: ShimmerListPage(),
               builder: (savedWorkoutsData) {
                 final collections = savedWorkoutsData.userCollections;
 
@@ -75,29 +76,27 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
                             allWorkouts, _searchString)
                         .sortedBy<String>((workout) => workout.name);
 
-                return CupertinoPageScaffold(
+                return MyPageScaffold(
                   child: SafeArea(
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 3.0),
-                                  child: CupertinoSearchTextField(
-                                    focusNode: _focusNode,
-                                    onChanged: (value) => setState(() =>
-                                        _searchString = value.toLowerCase()),
-                                  ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 3.0),
+                                child: CupertinoSearchTextField(
+                                  placeholder: 'Search your workouts',
+                                  focusNode: _focusNode,
+                                  onChanged: (value) => setState(() =>
+                                      _searchString = value.toLowerCase()),
                                 ),
                               ),
-                              SizedBox(width: 10),
-                              NavBarCloseButton(context.pop),
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 10),
+                            NavBarCloseButton(context.pop),
+                          ],
                         ),
                         Expanded(
                             child: AnimatedSwitcher(

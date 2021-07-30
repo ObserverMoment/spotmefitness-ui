@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/free_session/free_session_progress.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
@@ -70,18 +71,31 @@ class _DoWorkoutSectionFreeSessionState
             show: _freeSessionController
                 .loggedWorkoutSection.loggedWorkoutSets.isNotEmpty,
             child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  SecondaryButton(
-                      prefix: Icon(
-                        CupertinoIcons.doc_chart,
-                        color: Styles.white,
-                        size: 20,
-                      ),
-                      text: 'Log Your Work',
-                      onPressed: _markSectionComplete),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SecondaryButton(
+                          prefix: Icon(
+                            CupertinoIcons.doc_chart,
+                            color: Styles.white,
+                            size: 20,
+                          ),
+                          withMinWidth: false,
+                          text: 'Log this section',
+                          onPressed: _markSectionComplete),
+                    ],
+                  ),
+                  Positioned(
+                      right: 0,
+                      child: InfoPopupButton(
+                          infoWidget: MyText(
+                        'Explain that pressing this button will log the work you have done so far in this free session - you do not need to "complete" a free session',
+                        maxLines: 6,
+                      ))),
                 ],
               ),
             )),

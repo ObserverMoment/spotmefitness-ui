@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -47,7 +48,13 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
 
       await context.showDialog(
           title: 'Upload video',
-          content: MyText('This file is $_fileSize in size.'),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyText(
+              'This file is $_fileSize in size.',
+              textAlign: TextAlign.center,
+            ),
+          ),
           actions: [
             CupertinoDialogAction(
               child: MyText('Yes'),
@@ -85,7 +92,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
     }
   }
 
-  Future<void> _saveUrisToDB(String videoUri, String videoThumbUri) async {
+  Future<void> _saveUrisToDB(String? videoUri, String? videoThumbUri) async {
     try {
       final input = UpdateUserInput()
         ..introVideoUri = videoUri
@@ -127,12 +134,24 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
   Widget build(BuildContext context) {
     final Color _primary = context.theme.primary;
     final Color _background = context.theme.background;
+    final bool hasVideo = Utils.textNotNull(widget.introVideoUri);
 
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
         context: context,
         builder: (context) => CupertinoActionSheet(
             actions: [
+              if (hasVideo)
+                CupertinoActionSheetAction(
+                  child: MyText('Watch video'),
+                  onPressed: () async {
+                    await VideoSetupManager.openFullScreenVideoPlayer(
+                      context: context,
+                      videoUri: widget.introVideoUri!,
+                    );
+                    context.pop();
+                  },
+                ),
               CupertinoActionSheetAction(
                 child: MyText('Take video'),
                 onPressed: () {
@@ -147,6 +166,20 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
                   _pickVideo(ImageSource.gallery);
                 },
               ),
+              if (hasVideo)
+                CupertinoActionSheetAction(
+                  child: MyText(
+                    'Remove video',
+                    color: Styles.errorRed,
+                  ),
+                  isDestructiveAction: true,
+                  onPressed: () {
+                    context.pop();
+                    context.showConfirmDeleteDialog(
+                        itemType: 'Video',
+                        onConfirm: () => _saveUrisToDB(null, null));
+                  },
+                ),
             ],
             cancelButton: CupertinoActionSheetAction(
               child: MyText(

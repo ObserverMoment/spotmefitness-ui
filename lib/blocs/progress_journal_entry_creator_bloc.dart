@@ -11,12 +11,14 @@ import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 /// When creating i.e. [isCreate == true]: A new entry is created in the DB at the start of the session.
 /// This pattern is useful because the user can upload media to this object, and we need an object in place to enable easy media uploads to the server and avoid messy local management of temp selected media (see V1 - benchmark_me!).
 class ProgressJournalEntryCreatorBloc extends ChangeNotifier {
+  ProgressJournal parentJournal;
   final ProgressJournalEntry initialEntry;
   final BuildContext context;
   final bool isCreate;
 
   ProgressJournalEntryCreatorBloc(
-      {required this.initialEntry,
+      {required this.parentJournal,
+      required this.initialEntry,
       required this.context,
       required this.isCreate})
       : entry = initialEntry;
@@ -28,8 +30,10 @@ class ProgressJournalEntryCreatorBloc extends ChangeNotifier {
   bool formIsDirty = false;
 
   /// Run this before constructing the bloc
-  static Future<ProgressJournalEntry> initialize(BuildContext context,
-      String parentJournalId, ProgressJournalEntry? prevEntryData) async {
+  static Future<ProgressJournalEntry> initialize(
+      BuildContext context,
+      ProgressJournal parentJournal,
+      ProgressJournalEntry? prevEntryData) async {
     try {
       if (prevEntryData != null) {
         // User is editing a previous entry - return a copy.
@@ -38,7 +42,7 @@ class ProgressJournalEntryCreatorBloc extends ChangeNotifier {
         // User is creating - make an empty entry in the db and return for editing.
         final variables = CreateProgressJournalEntryArguments(
           data: CreateProgressJournalEntryInput(
-            progressJournal: ConnectRelationInput(id: parentJournalId),
+            progressJournal: ConnectRelationInput(id: parentJournal.id),
           ),
         );
 

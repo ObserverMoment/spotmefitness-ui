@@ -129,7 +129,8 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                         : Container();
                   } else {
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3.0, horizontal: 3),
                       child: LoggedWorkoutCreatorSet(
                         sectionIndex: loggedWorkoutSection.sortPosition,
                         setIndex: i,

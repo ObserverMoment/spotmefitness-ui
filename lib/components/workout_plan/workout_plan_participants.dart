@@ -11,7 +11,7 @@ class WorkoutPlanParticipants extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(4),
       child: userSummaries.isEmpty
           ? Center(
               child: MyText(
@@ -21,7 +21,7 @@ class WorkoutPlanParticipants extends StatelessWidget {
           : ListView.builder(
               itemCount: userSummaries.length,
               itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.symmetric(vertical: 3.0),
                     child: ParticipantCard(userSummary: userSummaries[i]),
                   )),
     );

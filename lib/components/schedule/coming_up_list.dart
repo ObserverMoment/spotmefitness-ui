@@ -57,12 +57,13 @@ class ComingUpList extends StatelessWidget {
                   child: noPlans
                       ? ContentBox(
                           child: BorderButton(
-                              withBorder: false,
-                              mini: true,
-                              prefix: Icon(CupertinoIcons.calendar_badge_plus),
-                              text: 'Plan Something',
-                              onPressed: () =>
-                                  print('schedule something flow')),
+                            withBorder: false,
+                            mini: true,
+                            prefix: Icon(CupertinoIcons.calendar_badge_plus),
+                            text: 'Plan Something',
+                            onPressed: () => context.navigateTo(
+                                YourScheduleRoute(openAtDate: DateTime.now())),
+                          ),
                         )
                       : ListView.builder(
                           padding: EdgeInsets.zero,

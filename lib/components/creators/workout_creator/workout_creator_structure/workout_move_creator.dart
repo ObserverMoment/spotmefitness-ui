@@ -158,10 +158,13 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     if (_activeWorkoutMove?.move == null) {
       return false;
     } else if (_activeWorkoutMove?.equipment != null) {
-      // Check for selected equipment.
-      return _activeWorkoutMove!.equipment!.loadAdjustable;
+      /// Check for selected equipment and required equipment being true for [loadAdjustable].
+      return _activeWorkoutMove!.equipment!.loadAdjustable ||
+          _activeWorkoutMove!.move.requiredEquipments
+                  .firstWhereOrNull((e) => e.loadAdjustable) !=
+              null;
     } else {
-      // Check for all possible equipment.
+      /// Check for any possible equipment being true for [loadAdjustable]..
       return [
             ..._activeWorkoutMove!.move.requiredEquipments,
             ..._activeWorkoutMove!.move.selectableEquipments
@@ -189,7 +192,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
@@ -208,8 +211,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                   ),
                   SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: _activeWorkoutMove == null
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,

@@ -38,24 +38,18 @@ class WorkoutFinderPage extends StatelessWidget {
   final bool? initialOpenPublicTab;
   const WorkoutFinderPage({this.selectWorkout, this.initialOpenPublicTab});
 
-  Widget _loadingIndicator() => CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
-        middle: NavBarTitle('Getting Ready...'),
-      ),
-      child: ShimmerCardList(itemCount: 20));
-
   @override
   Widget build(BuildContext context) {
     return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
         key: Key('WorkoutFinderPage - ${UserWorkoutsQuery().operationName}'),
         query: UserWorkoutsQuery(),
-        loadingIndicator: _loadingIndicator(),
+        loadingIndicator: ShimmerListPage(),
         builder: (createdWorkoutsData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
                   'WorkoutFinderPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
-              loadingIndicator: _loadingIndicator(),
+              loadingIndicator: ShimmerListPage(),
               builder: (collectionsData) {
                 final userWorkouts = createdWorkoutsData.userWorkouts;
 
@@ -351,7 +345,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                       initialPageIndex: _activePageIndex,
                       userWorkouts: widget.userWorkouts,
                       updateActivePageIndex: _updatePageIndex,
-                      selectWorkout: _selectWorkout)),
+                      selectWorkout: widget.selectWorkout != null
+                          ? _selectWorkout
+                          : null)),
               child: Icon(
                 CupertinoIcons.search,
                 size: 25,
@@ -382,7 +378,8 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                     YourFilteredWorkoutsList(
                       listPositionScrollController:
                           _userWorkoutsListScrollController,
-                      selectWorkout: _selectWorkout,
+                      selectWorkout:
+                          widget.selectWorkout != null ? _selectWorkout : null,
                       workouts: _filteredUserWorkouts,
                     ),
                     PagedListView<int, Workout>(
@@ -393,9 +390,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                       scrollController: _pagingScrollController,
                       builderDelegate: PagedChildBuilderDelegate<Workout>(
                         itemBuilder: (context, workout, index) => SizeFadeIn(
-                          duration: 100,
+                          duration: 50,
                           delay: index,
-                          delayBasis: 20,
+                          delayBasis: 15,
                           child: WorkoutFinderWorkoutCard(
                             workout: workout,
                             selectWorkout: widget.selectWorkout,

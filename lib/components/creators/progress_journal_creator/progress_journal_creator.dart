@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/image_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -11,6 +12,7 @@ import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 /// File cleanup on the Uploadcare server is being handled inline within this component.
 /// This is because unlike some other Creators saving does not happen immediately / incrementally. It only happens when the user hits 'save'.
@@ -54,6 +56,11 @@ class _ProgressJournalCreatorPageState
   void _updateDescription(String description) => setState(() {
         _formIsDirty = true;
         _activeProgressJournal.description = description;
+      });
+
+  void _updateBodyweightUnit(BodyweightUnit bodyweightUnit) => setState(() {
+        _formIsDirty = true;
+        _activeProgressJournal.bodyweightUnit = bodyweightUnit;
       });
 
   Future<void> _updateCoverImageUri(String coverImageUri) async {
@@ -118,7 +125,8 @@ class _ProgressJournalCreatorPageState
               id: _activeProgressJournal.id,
               name: _activeProgressJournal.name,
               description: _activeProgressJournal.description,
-              coverImageUri: _activeProgressJournal.coverImageUri));
+              coverImageUri: _activeProgressJournal.coverImageUri,
+              bodyweightUnit: _activeProgressJournal.bodyweightUnit));
 
       final result = await context.graphQLStore.mutate(
           mutation: UpdateProgressJournalMutation(variables: variables),
@@ -144,7 +152,8 @@ class _ProgressJournalCreatorPageState
           data: CreateProgressJournalInput(
               name: _activeProgressJournal.name,
               description: _activeProgressJournal.description,
-              coverImageUri: _activeProgressJournal.coverImageUri));
+              coverImageUri: _activeProgressJournal.coverImageUri,
+              bodyweightUnit: _activeProgressJournal.bodyweightUnit));
 
       final result = await context.graphQLStore.create(
           mutation: CreateProgressJournalMutation(variables: variables),
@@ -167,8 +176,9 @@ class _ProgressJournalCreatorPageState
     return MyPageScaffold(
       // Non standard nav bar (not [CreateEdit] version as the journal is not created immediately on init of this widget (as is the case for workot creator), but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
       navigationBar: BorderlessNavBar(
-        customLeading:
-            NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal'),
+        customLeading: Align(
+            alignment: Alignment.centerLeft,
+            child: NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal')),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -227,7 +237,27 @@ class _ProgressJournalCreatorPageState
                 ),
               ],
             ),
-          )
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText('Bodyweight Unit'),
+                SlidingSelect<BodyweightUnit>(
+                    value: _activeProgressJournal.bodyweightUnit,
+                    children: {
+                      for (final v in BodyweightUnit.values
+                          .where((v) => v != BodyweightUnit.artemisUnknown))
+                        v: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: MyText(v.display.toUpperCase()))
+                    },
+                    updateValue: _updateBodyweightUnit),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -137,9 +137,15 @@ class StreakDisplay extends StatelessWidget {
     final bool hasWorkedoutToday =
         logsByDay[DateTime(now.year, now.month, now.day)] != null;
 
-    final earliestLogDate = logsByDay.keys.sortedBy<DateTime>((k) => k).first;
-    final dayBeforeEarlistLogDate = DateTime(
-        earliestLogDate.year, earliestLogDate.month, earliestLogDate.day - 1);
+    /// Sometimes the user will have no logs at all...
+    final sortedLogDates = logsByDay.keys.sortedBy<DateTime>((k) => k);
+    final earliestLogDate =
+        sortedLogDates.isEmpty ? null : sortedLogDates.first;
+
+    final dayBeforeEarlistLogDate = earliestLogDate != null
+        ? DateTime(earliestLogDate.year, earliestLogDate.month,
+            earliestLogDate.day - 1)
+        : DateTime.now();
 
     _StreakCalcData streakData = _StreakCalcData();
 

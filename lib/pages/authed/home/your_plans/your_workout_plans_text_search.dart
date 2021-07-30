@@ -62,7 +62,7 @@ class _YourPlansTextSearchState extends State<YourPlansTextSearch> {
                   'YourPlansTextSearch - ${UserWorkoutPlanEnrolmentsQuery().operationName}'),
               query: UserWorkoutPlanEnrolmentsQuery(),
               fetchPolicy: QueryFetchPolicy.storeFirst,
-              loadingIndicator: ShimmerCardList(itemCount: 20),
+              loadingIndicator: ShimmerListPage(),
               builder: (enrolmentsData) {
                 /// Saved Workout Plans
                 return QueryObserver<UserCollections$Query,

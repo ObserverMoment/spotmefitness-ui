@@ -65,25 +65,12 @@ class YourCollectionsPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // child: ListView.builder(
-                      //   shrinkWrap: true,
-                      //   itemCount: collections.length,
-                      //   itemBuilder: (c, i) => GestureDetector(
-                      //     onTap: () => context.navigateTo(
-                      //         CollectionDetailsRoute(id: collections[i].id)),
-                      //     child: Padding(
-                      //       padding: const EdgeInsets.symmetric(
-                      //           horizontal: 2, vertical: 3.0),
-                      //       child: CollectionCard(
-                      //         collection: collections[i],
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                     )
-                  : MyText(
-                      'No collections yet...',
-                      textAlign: TextAlign.center,
+                  : Center(
+                      child: MyText(
+                        'No collections yet...',
+                        textAlign: TextAlign.center,
+                      ),
                     );
             }));
   }

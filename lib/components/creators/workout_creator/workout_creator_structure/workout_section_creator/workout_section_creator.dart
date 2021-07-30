@@ -244,20 +244,18 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     }
   }
 
-  Widget _buildTitle(WorkoutSection workoutSection) {
-    return SizedBox(
-      height: 28,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          WorkoutSectionTypeTag(
-              _workoutSection.workoutSectionType.name.toUpperCase()),
-          if (workoutSection.name != null)
-            Expanded(child: MyText(' - ${workoutSection.name!}')),
-        ],
-      ),
-    );
-  }
+  Widget _buildTitle() => SizedBox(
+        height: 28,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            WorkoutSectionTypeTag(
+                _workoutSection.workoutSectionType.name.toUpperCase()),
+            if (_workoutSection.name != null)
+              Expanded(child: MyText(' - ${_workoutSection.name!}')),
+          ],
+        ),
+      );
 
   @override
   void dispose() {
@@ -271,9 +269,9 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
     final bool showFullSetInfo =
         context.select<WorkoutCreatorBloc, bool>((b) => b.showFullSetInfo);
 
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
-        middle: _buildTitle(_workoutSection),
+        middle: _buildTitle(),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(
                 items: [

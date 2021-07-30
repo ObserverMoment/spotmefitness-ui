@@ -11,7 +11,7 @@ import 'package:spotmefitness_ui/services/utils.dart';
 /// If you just want to input ints within a relatively small range then consider [NumberPickerModal]
 class NumberInputModalInt extends StatefulWidget {
   final String title;
-  final int value;
+  final int? value;
   final void Function(int value) saveValue;
   NumberInputModalInt(
       {required this.value, required this.saveValue, this.title = 'Enter...'});
@@ -19,13 +19,14 @@ class NumberInputModalInt extends StatefulWidget {
   _NumberInputModalIntState createState() => _NumberInputModalIntState();
 }
 
-class _NumberInputModalIntState<T> extends State<NumberInputModalInt> {
+class _NumberInputModalIntState extends State<NumberInputModalInt> {
   late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.value.toString());
+    _controller = TextEditingController(
+        text: widget.value == null ? ' - ' : widget.value.toString());
     // Auto select the previous input.
     _controller.selection = TextSelection(
         baseOffset: 0, extentOffset: _controller.value.text.length);
@@ -36,6 +37,7 @@ class _NumberInputModalIntState<T> extends State<NumberInputModalInt> {
 
   void _saveValue() {
     if (Utils.textNotNull(_controller.text) &&
+        _controller.text != ' - ' &&
         _controller.text != widget.value.toString()) {
       widget.saveValue(int.parse(_controller.text));
     }
@@ -54,7 +56,8 @@ class _NumberInputModalIntState<T> extends State<NumberInputModalInt> {
       resizeToAvoidBottomInset: true,
       cancel: context.pop,
       save: _saveValue,
-      validToSave: Utils.textNotNull(_controller.text),
+      validToSave:
+          Utils.textNotNull(_controller.text) && _controller.text != ' - ',
       title: widget.title,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -75,7 +78,7 @@ class _NumberInputModalIntState<T> extends State<NumberInputModalInt> {
 
 class NumberInputModalDouble extends StatefulWidget {
   final String title;
-  final double value;
+  final double? value;
   final void Function(double value) saveValue;
   NumberInputModalDouble(
       {required this.value, required this.saveValue, this.title = 'Enter...'});
@@ -83,13 +86,15 @@ class NumberInputModalDouble extends StatefulWidget {
   _NumberInputModalDoubleState createState() => _NumberInputModalDoubleState();
 }
 
-class _NumberInputModalDoubleState<T> extends State<NumberInputModalDouble> {
+class _NumberInputModalDoubleState extends State<NumberInputModalDouble> {
   late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.value.toString());
+    print(widget.value == null);
+    _controller = TextEditingController(
+        text: widget.value == null ? ' - ' : widget.value.toString());
     // Auto select the previous input.
     _controller.selection = TextSelection(
         baseOffset: 0, extentOffset: _controller.value.text.length);
@@ -100,6 +105,7 @@ class _NumberInputModalDoubleState<T> extends State<NumberInputModalDouble> {
 
   void _saveValue() {
     if (Utils.textNotNull(_controller.text) &&
+        _controller.text != ' - ' &&
         _controller.text != widget.value.toString()) {
       widget.saveValue(double.parse(_controller.text));
     }
@@ -118,7 +124,8 @@ class _NumberInputModalDoubleState<T> extends State<NumberInputModalDouble> {
       resizeToAvoidBottomInset: true,
       cancel: context.pop,
       save: _saveValue,
-      validToSave: Utils.textNotNull(_controller.text),
+      validToSave:
+          Utils.textNotNull(_controller.text) && _controller.text != ' - ',
       title: widget.title,
       child: Column(
         mainAxisSize: MainAxisSize.min,

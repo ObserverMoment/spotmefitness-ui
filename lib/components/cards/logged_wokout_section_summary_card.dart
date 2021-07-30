@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_move_minimal_display.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
+import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -46,20 +47,26 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
             weight: FontWeight.bold,
           ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (addNoteToLoggedSection == null &&
-                Utils.textNotNull(loggedWorkoutSection.note))
-              NoteIconViewerButton(loggedWorkoutSection.note!),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: LoggedWorkoutSectionSummaryTag(
+                loggedWorkoutSection,
+              ),
+            ),
             if (addNoteToLoggedSection != null)
               CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: AnimatedSwitcher(
                     duration: kStandardAnimationDuration,
                     child: Utils.textNotNull(loggedWorkoutSection.note)
-                        ? Icon(CupertinoIcons.doc_plaintext)
+                        ? MyText(
+                            'Edit note',
+                            weight: FontWeight.bold,
+                          )
                         : MyText(
-                            'Add note...',
+                            'Add note',
                             weight: FontWeight.bold,
                           ),
                   ),
@@ -71,18 +78,22 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                           inputValidation: (t) => true)))
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: LoggedWorkoutSectionSummaryTag(
-                loggedWorkoutSection,
-                fontsize: FONTSIZE.MAIN,
-              ),
-            ),
-          ],
-        ),
+        if (Utils.textNotNull(loggedWorkoutSection.note))
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: MyText(
+                  loggedWorkoutSection.note!,
+                  size: FONTSIZE.SMALL,
+                  maxLines: 3,
+                  lineHeight: 1.4,
+                ),
+                onPressed: () => context.showBottomSheet(
+                    useRootNavigator: true,
+                    expand: true,
+                    child: TextViewer(loggedWorkoutSection.note!, 'Note'))),
+          ),
 
         /// Similar to [LoggedWorkout > LoggedWorkoutSectionTimes] logic.
         loggedWorkoutSection.loggedWorkoutSets.isEmpty

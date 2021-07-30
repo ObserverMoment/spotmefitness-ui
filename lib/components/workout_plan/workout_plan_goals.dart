@@ -22,7 +22,7 @@ class WorkoutPlanGoals extends StatelessWidget {
     return ListView.builder(
       itemCount: workoutPlan.lengthWeeks,
       itemBuilder: (c, i) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4),
         child: WorkoutPlanWeekGoals(
           workoutPlanDays: daysByWeek[i] ?? [],
           weekNumber: i + 1,

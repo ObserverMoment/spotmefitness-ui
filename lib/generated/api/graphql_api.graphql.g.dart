@@ -1362,9 +1362,6 @@ ProgressJournalEntry _$ProgressJournalEntryFromJson(
       ..note = json['note'] as String?
       ..voiceNoteUri = json['voiceNoteUri'] as String?
       ..bodyweight = (json['bodyweight'] as num?)?.toDouble()
-      ..bodyweightUnit = _$enumDecode(
-          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
-          unknownValue: BodyweightUnit.artemisUnknown)
       ..moodScore = (json['moodScore'] as num?)?.toDouble()
       ..energyScore = (json['energyScore'] as num?)?.toDouble()
       ..confidenceScore = (json['confidenceScore'] as num?)?.toDouble()
@@ -1379,18 +1376,11 @@ Map<String, dynamic> _$ProgressJournalEntryToJson(
       'note': instance.note,
       'voiceNoteUri': instance.voiceNoteUri,
       'bodyweight': instance.bodyweight,
-      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
       'confidenceScore': instance.confidenceScore,
       'motivationScore': instance.motivationScore,
     };
-
-const _$BodyweightUnitEnumMap = {
-  BodyweightUnit.kg: 'KG',
-  BodyweightUnit.lb: 'LB',
-  BodyweightUnit.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
 
 ProgressJournalGoal _$ProgressJournalGoalFromJson(Map<String, dynamic> json) =>
     ProgressJournalGoal()
@@ -1432,6 +1422,9 @@ ProgressJournal _$ProgressJournalFromJson(Map<String, dynamic> json) =>
       ..name = json['name'] as String
       ..description = json['description'] as String?
       ..coverImageUri = json['coverImageUri'] as String?
+      ..bodyweightUnit = _$enumDecode(
+          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
+          unknownValue: BodyweightUnit.artemisUnknown)
       ..progressJournalEntries = (json['ProgressJournalEntries']
               as List<dynamic>)
           .map((e) => ProgressJournalEntry.fromJson(e as Map<String, dynamic>))
@@ -1448,11 +1441,18 @@ Map<String, dynamic> _$ProgressJournalToJson(ProgressJournal instance) =>
       'name': instance.name,
       'description': instance.description,
       'coverImageUri': instance.coverImageUri,
+      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'ProgressJournalEntries':
           instance.progressJournalEntries.map((e) => e.toJson()).toList(),
       'ProgressJournalGoals':
           instance.progressJournalGoals.map((e) => e.toJson()).toList(),
     };
+
+const _$BodyweightUnitEnumMap = {
+  BodyweightUnit.kg: 'KG',
+  BodyweightUnit.lb: 'LB',
+  BodyweightUnit.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
 
 ProgressJournalById$Query _$ProgressJournalById$QueryFromJson(
         Map<String, dynamic> json) =>
@@ -1485,9 +1485,6 @@ CreateProgressJournalEntryInput _$CreateProgressJournalEntryInputFromJson(
       note: json['note'] as String?,
       voiceNoteUri: json['voiceNoteUri'] as String?,
       bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-      bodyweightUnit: _$enumDecodeNullable(
-          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
-          unknownValue: BodyweightUnit.artemisUnknown),
       moodScore: (json['moodScore'] as num?)?.toDouble(),
       energyScore: (json['energyScore'] as num?)?.toDouble(),
       confidenceScore: (json['confidenceScore'] as num?)?.toDouble(),
@@ -1502,7 +1499,6 @@ Map<String, dynamic> _$CreateProgressJournalEntryInputToJson(
       'note': instance.note,
       'voiceNoteUri': instance.voiceNoteUri,
       'bodyweight': instance.bodyweight,
-      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
       'confidenceScore': instance.confidenceScore,
@@ -1539,6 +1535,9 @@ CreateProgressJournalInput _$CreateProgressJournalInputFromJson(
       name: json['name'] as String,
       description: json['description'] as String?,
       coverImageUri: json['coverImageUri'] as String?,
+      bodyweightUnit: _$enumDecodeNullable(
+          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
+          unknownValue: BodyweightUnit.artemisUnknown),
     );
 
 Map<String, dynamic> _$CreateProgressJournalInputToJson(
@@ -1547,6 +1546,7 @@ Map<String, dynamic> _$CreateProgressJournalInputToJson(
       'name': instance.name,
       'description': instance.description,
       'coverImageUri': instance.coverImageUri,
+      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
     };
 
 UpdateProgressJournal$Mutation _$UpdateProgressJournal$MutationFromJson(
@@ -1568,6 +1568,9 @@ UpdateProgressJournalInput _$UpdateProgressJournalInputFromJson(
       name: json['name'] as String?,
       description: json['description'] as String?,
       coverImageUri: json['coverImageUri'] as String?,
+      bodyweightUnit: _$enumDecodeNullable(
+          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
+          unknownValue: BodyweightUnit.artemisUnknown),
     );
 
 Map<String, dynamic> _$UpdateProgressJournalInputToJson(
@@ -1577,6 +1580,7 @@ Map<String, dynamic> _$UpdateProgressJournalInputToJson(
       'name': instance.name,
       'description': instance.description,
       'coverImageUri': instance.coverImageUri,
+      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
     };
 
 DeleteProgressJournalEntryById$Mutation
@@ -1612,9 +1616,6 @@ UpdateProgressJournalEntryInput _$UpdateProgressJournalEntryInputFromJson(
       note: json['note'] as String?,
       voiceNoteUri: json['voiceNoteUri'] as String?,
       bodyweight: (json['bodyweight'] as num?)?.toDouble(),
-      bodyweightUnit: _$enumDecodeNullable(
-          _$BodyweightUnitEnumMap, json['bodyweightUnit'],
-          unknownValue: BodyweightUnit.artemisUnknown),
       moodScore: (json['moodScore'] as num?)?.toDouble(),
       energyScore: (json['energyScore'] as num?)?.toDouble(),
       confidenceScore: (json['confidenceScore'] as num?)?.toDouble(),
@@ -1628,7 +1629,6 @@ Map<String, dynamic> _$UpdateProgressJournalEntryInputToJson(
       'note': instance.note,
       'voiceNoteUri': instance.voiceNoteUri,
       'bodyweight': instance.bodyweight,
-      'bodyweightUnit': _$BodyweightUnitEnumMap[instance.bodyweightUnit],
       'moodScore': instance.moodScore,
       'energyScore': instance.energyScore,
       'confidenceScore': instance.confidenceScore,

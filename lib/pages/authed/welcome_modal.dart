@@ -61,6 +61,8 @@ class _WelcomeModalState extends State<WelcomeModal> {
       _nameIsUnique!;
 
   Future<void> _handleExit() async {
+    /// [avatarUri], if added by the user, has already been saved to the DB directly from [UserAvatarUploader].
+    /// We only need to save the name and update [hasOnboarded] here, but we write over it again anyway as it does no harm.
     if (_validateName()) {
       final variables = UpdateUserArguments(
           data: UpdateUserInput(
@@ -89,145 +91,172 @@ class _WelcomeModalState extends State<WelcomeModal> {
               child: Image.asset(
                 'assets/stock_images/limber.jpg',
                 fit: BoxFit.cover,
+                alignment: Alignment.center,
               ),
             )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
-                          children: [
-                            H1(
-                              'While you warm up...',
-                              textAlign: TextAlign.center,
-                              color: Styles.black,
-                            ),
-                            MyText(
-                              '(Completely optional!)',
-                              color: Styles.grey,
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        MyText('Add a display name?',
-                            weight: FontWeight.bold,
-                            size: FONTSIZE.LARGE,
-                            color: CupertinoColors.black),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: context.theme.primary.withOpacity(0.7),
-                        )),
-                    child: Stack(
-                      children: [
-                        CupertinoTextField(
-                          controller: _nameController,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 20),
-                          placeholder: 'Name...',
-                          cursorColor:
-                              CupertinoColors.secondarySystemGroupedBackground,
-                          style: TextStyle(
-                              color: CupertinoColors.black, fontSize: 17),
-                          placeholderStyle: TextStyle(
-                              color: CupertinoColors.inactiveGray,
-                              fontSize: 17),
-                          decoration: BoxDecoration(
-                              color: CupertinoColors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        if (_validateName())
-                          Positioned(
-                              right: 10,
-                              top: 18,
-                              child: FadeIn(
-                                child: Icon(
-                                  CupertinoIcons.checkmark_alt_circle_fill,
-                                  color: Styles.infoBlue,
-                                ),
-                              ))
-                      ],
-                    ),
-                  ),
-                  GrowInOut(
-                    show: _nameController.text.length < 3,
-                    child: Row(
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: [
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MyText('- At least 3 characters.',
-                            color: Styles.errorRed),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            children: [
+                              H3(
+                                'While you warm up...',
+                                textAlign: TextAlign.center,
+                                color: Styles.black,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MyText(
+                                  '(Completely optional!)',
+                                  color: Styles.infoBlue,
+                                ),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  if (_nameIsUnique != null && _nameController.text.length > 2)
-                    GrowIn(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          AnimatedSwitcher(
-                            duration: Duration(milliseconds: 400),
-                            child: _nameIsUnique!
-                                ? MyText(
-                                    "This name is available 🙂",
-                                    color: CupertinoColors.black,
-                                  )
-                                : MyText("Someone's already taken this one 😒",
-                                    color: Styles.errorRed),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: MyText('Choose a display name?',
+                                weight: FontWeight.bold,
+                                size: FONTSIZE.BIG,
+                                color: CupertinoColors.black),
                           ),
                         ],
                       ),
                     ),
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        MyText('Upload an avatar?',
-                            weight: FontWeight.bold,
-                            size: FONTSIZE.LARGE,
-                            color: CupertinoColors.black),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: [
+                          CupertinoTextField(
+                            controller: _nameController,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 20),
+                            placeholder: 'Name...',
+                            cursorColor: Styles.black,
+                            style: TextStyle(
+                                color: CupertinoColors.black, fontSize: 17),
+                            placeholderStyle: TextStyle(
+                                color: CupertinoColors.inactiveGray,
+                                fontSize: 17),
+                            decoration: BoxDecoration(
+                                color: CupertinoColors.white,
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          if (_validateName())
+                            Positioned(
+                                right: 10,
+                                top: 12,
+                                child: FadeIn(
+                                  child: Icon(
+                                    CupertinoIcons.checkmark_alt_circle_fill,
+                                    color: Styles.infoBlue,
+                                  ),
+                                ))
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      UserAvatarUploader(
-                        avatarUri: _avatarUri,
-                        onUploadSuccess: (uri) =>
-                            setState(() => _avatarUri = uri),
-                      )
-                    ],
-                  )
-                ],
+                    GrowInOut(
+                      show: _nameController.text.length < 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            MyText(
+                              '- At least 3 characters.',
+                              color: Styles.errorRed,
+                              size: FONTSIZE.SMALL,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (_nameIsUnique != null &&
+                        _nameController.text.length > 2)
+                      GrowIn(
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AnimatedSwitcher(
+                                duration: Duration(milliseconds: 400),
+                                child: _nameIsUnique!
+                                    ? MyText(
+                                        "This name is available 🙂",
+                                        color: CupertinoColors.black,
+                                        size: FONTSIZE.SMALL,
+                                      )
+                                    : MyText(
+                                        "Someone's already taken this one 😒",
+                                        color: Styles.errorRed,
+                                        size: FONTSIZE.SMALL,
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 24),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MyText('Upload an avatar?',
+                              weight: FontWeight.bold,
+                              size: FONTSIZE.BIG,
+                              color: CupertinoColors.black),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        UserAvatarUploader(
+                          avatarUri: _avatarUri,
+                          displaySize: Size(180, 180),
+                          onUploadSuccess: (uri) =>
+                              setState(() => _avatarUri = uri),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
             Positioned(
                 bottom: 20,
-                child: SecondaryButton(
-                    prefix: Icon(Icons.run_circle_rounded),
-                    text: "Let's go!",
-                    onPressed: _handleExit))
+                child: MyButton(
+                  prefix: Icon(
+                    Icons.run_circle_rounded,
+                    color: Styles.white,
+                  ),
+                  text: "Let's go!",
+                  onPressed: _handleExit,
+                  backgroundColor: Styles.black,
+                  contentColor: Styles.white,
+                ))
           ],
         ),
       )),

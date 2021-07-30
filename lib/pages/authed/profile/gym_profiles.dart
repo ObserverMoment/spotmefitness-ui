@@ -34,7 +34,8 @@ class ProfileGymProfilesPage extends StatelessWidget {
                 child: GymProfileCreator(), fullscreenDialog: true),
             child: gymProfiles.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
+                    padding:
+                        const EdgeInsets.only(top: 12.0, left: 4, right: 4),
                     child: ListView.builder(
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
@@ -64,9 +65,12 @@ class ProfileGymProfilesPage extends StatelessWidget {
                           }
                         }),
                   )
-                : MyText(
-                    'No gym profiles yet...',
-                    textAlign: TextAlign.center,
+                : Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: MyText(
+                      'No gym profiles yet...',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
           );
         });

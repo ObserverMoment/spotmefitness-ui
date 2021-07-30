@@ -554,41 +554,44 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                               ])),
                             ];
                           },
-                          body: Column(
-                            children: [
-                              Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 14, bottom: 2),
-                                  child: MyTabBarNav(
-                                      titles: [
-                                        'Workouts',
-                                        'Goals',
-                                        'Reviews',
-                                        'Social',
-                                      ],
-                                      handleTabChange: _handleTabChange,
-                                      activeTabIndex: _activeTabIndex)),
-                              Expanded(
-                                child: PageView(
-                                    controller: _pageController,
-                                    children: [
-                                      WorkoutPlanWorkoutSchedule(
-                                        workoutPlan: workoutPlan,
-                                      ),
-                                      WorkoutPlanGoals(
-                                        workoutPlan: workoutPlan,
-                                      ),
-                                      WorkoutPlanReviews(
-                                          reviews:
-                                              workoutPlan.workoutPlanReviews),
-                                      WorkoutPlanParticipants(
-                                        userSummaries: workoutPlan.enrolments
-                                            .map((e) => e.user)
-                                            .toList(),
-                                      )
-                                    ]),
-                              ),
-                            ],
+                          body: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 14, bottom: 2),
+                                    child: MyTabBarNav(
+                                        titles: [
+                                          'Workouts',
+                                          'Goals',
+                                          'Reviews',
+                                          'Social',
+                                        ],
+                                        handleTabChange: _handleTabChange,
+                                        activeTabIndex: _activeTabIndex)),
+                                Expanded(
+                                  child: PageView(
+                                      controller: _pageController,
+                                      children: [
+                                        WorkoutPlanWorkoutSchedule(
+                                          workoutPlan: workoutPlan,
+                                        ),
+                                        WorkoutPlanGoals(
+                                          workoutPlan: workoutPlan,
+                                        ),
+                                        WorkoutPlanReviews(
+                                            reviews:
+                                                workoutPlan.workoutPlanReviews),
+                                        WorkoutPlanParticipants(
+                                          userSummaries: workoutPlan.enrolments
+                                              .map((e) => e.user)
+                                              .toList(),
+                                        )
+                                      ]),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

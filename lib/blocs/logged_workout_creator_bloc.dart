@@ -40,13 +40,18 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     if (initialLoggedWorkout != null) {
       _isEditing = true;
       loggedWorkout = LoggedWorkout.fromJson(initialLoggedWorkout!.toJson());
-      // Make sure the list is correctly ordered - otherwise delete ops will be messed up.
-      loggedWorkout.loggedWorkoutSections.sortBy<num>((s) => s.sortPosition);
     } else {
       _isEditing = false;
       loggedWorkout = workoutToLoggedWorkout(
           workout: workout, scheduledWorkout: scheduledWorkout);
     }
+
+    // Make sure the sections and the sets are correctly ordered - otherwise delete ops and display will be messed up.
+    loggedWorkout.loggedWorkoutSections.sortBy<num>((s) => s.sortPosition);
+    loggedWorkout.loggedWorkoutSections.forEach((lws) {
+      lws.loggedWorkoutSets.sortBy<num>((s) => s.sortPosition);
+    });
+
     _backupJson = loggedWorkout.toJson();
   }
 

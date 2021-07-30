@@ -77,34 +77,38 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
           updateTimeOfDay: _updateCompletedOnTime,
         ),
         SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: TappableRow(
-                onTap: () => context.showBottomSheet(
-                    child: SafeArea(
-                        child: GymProfileSelector(
-                  selectedGymProfile: gymProfile,
-                  selectGymProfile: (p) => _bloc.updateGymProfile(p),
-                ))),
-                title: 'Gym Profile',
-                display: gymProfile == null
-                    ? MyText(
-                        'Select...',
-                        subtext: true,
-                      )
-                    : MyText(gymProfile.name),
-              ),
-            ),
-            CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.clear_thick,
-                  color: Styles.errorRed,
-                  size: 20,
+        SizedBox(
+          height: 40,
+          child: Row(
+            children: [
+              Expanded(
+                child: TappableRow(
+                  onTap: () => context.showBottomSheet(
+                      child: SafeArea(
+                          child: GymProfileSelector(
+                    selectedGymProfile: gymProfile,
+                    selectGymProfile: (p) => _bloc.updateGymProfile(p),
+                  ))),
+                  title: 'Gym Profile',
+                  display: gymProfile == null
+                      ? MyText(
+                          'Select...',
+                          subtext: true,
+                        )
+                      : MyText(gymProfile.name),
                 ),
-                onPressed: () => _bloc.updateGymProfile(null))
-          ],
+              ),
+              if (gymProfile != null)
+                CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: Icon(
+                      CupertinoIcons.clear_thick,
+                      color: Styles.errorRed,
+                      size: 20,
+                    ),
+                    onPressed: () => _bloc.updateGymProfile(null))
+            ],
+          ),
         ),
         EditableTextAreaRow(
           title: 'Note',
@@ -170,8 +174,8 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
               score: loggedWorkoutSection.repScore,
               section: loggedWorkoutSection,
               updateScore: (score) {
-                _updateScore(context, score);
                 toggleSelection();
+                _updateScore(context, score);
               },
             ));
       } else if ([kFreeSessionName, kForTimeName]

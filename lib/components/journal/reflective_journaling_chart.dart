@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -25,6 +24,14 @@ class _ReflectiveJournalingChartState extends State<ReflectiveJournalingChart> {
   bool _showConfidence = false;
   bool _showAverage = true;
 
+  final List<String> lineNames = const [
+    'Mood',
+    'Energy',
+    'Motivation',
+    'Confidence',
+    'Average'
+  ];
+
   final List<Color> legendColors = const [
     Styles.colorOne, // Mood
     Styles.colorTwo, // Energy
@@ -33,54 +40,63 @@ class _ReflectiveJournalingChartState extends State<ReflectiveJournalingChart> {
     Styles.infoBlue, // Average
   ];
 
-  LineSeries _buildLine(List<_ScorePointData> data, Color color) {
+  LineSeries _buildLine(List<_ScorePointData> data, int lineIndex) {
     return LineSeries<_ScorePointData, DateTime>(
-        color: color,
-        width: 2,
+        name: lineNames[lineIndex],
+        color: legendColors[lineIndex],
+        width: 4,
         emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.average),
         dataSource: data,
+        enableTooltip: true,
+        markerSettings: MarkerSettings(
+          isVisible: true,
+          height: 12,
+          width: 12,
+        ),
         xValueMapper: (_ScorePointData d, _) => d.dateTime,
         yValueMapper: (_ScorePointData d, _) => d.score);
   }
 
   List<ChartSeries> _buildLines() {
-    final entries = widget.journal.progressJournalEntries;
+    final sortedEntries = widget.journal.progressJournalEntries
+        .sortedBy<DateTime>((e) => e.createdAt);
+
     return <ChartSeries>[
       if (_showAverage)
         _buildLine(
-            entries
+            sortedEntries
                 .map((e) =>
                     _ScorePointData(e.createdAt, _calcEntryScoreAverage(e)))
                 .toList(),
-            legendColors[4]),
+            4),
       if (_showMood)
         _buildLine(
-            entries
+            sortedEntries
                 .map((e) => _ScorePointData(e.createdAt, e.moodScore))
                 .toList(),
-            legendColors[0]),
+            0),
       if (_showEnergy)
         _buildLine(
-            entries
+            sortedEntries
                 .map((e) => _ScorePointData(e.createdAt, e.energyScore))
                 .toList(),
-            legendColors[1]),
+            1),
       if (_showMotivation)
         _buildLine(
-            entries
+            sortedEntries
                 .map((e) => _ScorePointData(e.createdAt, e.motivationScore))
                 .toList(),
-            legendColors[2]),
+            2),
       if (_showConfidence)
         _buildLine(
-            entries
+            sortedEntries
                 .map((e) => _ScorePointData(e.createdAt, e.confidenceScore))
                 .toList(),
-            legendColors[3]),
+            3),
     ];
   }
 
-  double _calcEntryScoreAverage(ProgressJournalEntry entry) {
+  double? _calcEntryScoreAverage(ProgressJournalEntry entry) {
     final scores = [
       for (final s in [
         entry.moodScore,
@@ -90,7 +106,7 @@ class _ReflectiveJournalingChartState extends State<ReflectiveJournalingChart> {
       ])
         if (s != null) s
     ];
-    return scores.average;
+    return scores.isNotEmpty ? scores.average : null;
   }
 
   @override
@@ -105,10 +121,6 @@ class _ReflectiveJournalingChartState extends State<ReflectiveJournalingChart> {
               'Reflective Journaling Scores',
               weight: FontWeight.bold,
             ),
-            BorderButton(
-                mini: true,
-                prefix: Icon(CupertinoIcons.fullscreen, size: 20),
-                onPressed: () => print('open full screen')),
           ],
         ),
       ),
@@ -116,8 +128,13 @@ class _ReflectiveJournalingChartState extends State<ReflectiveJournalingChart> {
       SfCartesianChart(
           plotAreaBorderWidth: 0,
           enableAxisAnimation: true,
+          tooltipBehavior: TooltipBehavior(
+              enable: true,
+              duration: 6000,
+              format: 'SCORE: point.y | point.x',
+              decimalPlaces: 1,
+              textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
           primaryXAxis: DateTimeAxis(majorGridLines: MajorGridLines(width: 0)),
-          legend: Legend(),
           primaryYAxis: NumericAxis(
               minimum: 0,
               maximum: 10,

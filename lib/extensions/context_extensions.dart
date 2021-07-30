@@ -175,7 +175,10 @@ extension BuildContextExtension on BuildContext {
                     if (itemName != null)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: MyText('"$itemName"'),
+                        child: MyText(
+                          '"$itemName"',
+                          lineHeight: 1.5,
+                        ),
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -183,6 +186,7 @@ extension BuildContextExtension on BuildContext {
                         message ?? 'Are you sure?',
                         maxLines: 3,
                         textAlign: TextAlign.center,
+                        lineHeight: 1.5,
                       ),
                     ),
                   ],

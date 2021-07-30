@@ -36,7 +36,10 @@ class CustomMoveCreatorMeta extends StatelessWidget {
                       color: isSelected
                           ? Styles.colorOne
                           : context.theme.primary.withOpacity(0.65))),
-              child: MyText(repType.display),
+              child: MyText(
+                repType.display,
+                color: Styles.white,
+              ),
             ),
           ),
           onPressed: () => updateMove({

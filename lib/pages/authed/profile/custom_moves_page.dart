@@ -66,9 +66,12 @@ class ProfileCustomMovesPage extends StatelessWidget {
                           }
                         }),
                   )
-                : MyText(
-                    'No custom moves yet...',
-                    textAlign: TextAlign.center,
+                : Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: MyText(
+                      'No custom moves yet...',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
           );
         });

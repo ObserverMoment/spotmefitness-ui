@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
-import 'package:spotmefitness_ui/components/user_input/text_search_field.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/filtered_workouts_list.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/text_search_filters.dart';
@@ -123,16 +122,13 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
             child: Row(
               children: [
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: MyCupertinoSearchTextField(
-                      placeholder: _activePageIndex == 0
-                          ? 'Search your workouts'
-                          : 'Search all workouts',
-                      focusNode: _focusNode,
-                      onChanged: _handleSearchStringUpdate,
-                      onSubmitted: _handleSearchSubmit,
-                    ),
+                  child: CupertinoSearchTextField(
+                    placeholder: _activePageIndex == 0
+                        ? 'Search your workouts'
+                        : 'Search all workouts',
+                    focusNode: _focusNode,
+                    onChanged: _handleSearchStringUpdate,
+                    onSubmitted: _handleSearchSubmit,
                   ),
                 ),
                 SizedBox(width: 8),
