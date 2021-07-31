@@ -242,34 +242,41 @@ class _GymProfileCreatorDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MyTextFormFieldRow(
-          placeholder: 'Name (Required - min 2 chars)',
-          keyboardType: TextInputType.text,
-          controller: nameController,
-          backgroundColor: context.theme.cardBackground,
-        ),
-        MyTextAreaFormFieldRow(
-          placeholder: 'Description',
-          keyboardType: TextInputType.text,
-          controller: descriptionController,
-          backgroundColor: context.theme.cardBackground,
+        Column(
+          children: [
+            MyTextFormFieldRow(
+              placeholder: 'Name (Required - min 2 chars)',
+              keyboardType: TextInputType.text,
+              controller: nameController,
+              backgroundColor: context.theme.cardBackground,
+            ),
+            MyTextAreaFormFieldRow(
+              placeholder: 'Description',
+              keyboardType: TextInputType.text,
+              controller: descriptionController,
+              backgroundColor: context.theme.cardBackground,
+            ),
+          ],
         ),
         if (handleDelete != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DestructiveButton(
-                  prefix: Icon(
-                    CupertinoIcons.delete,
-                    color: Styles.white,
-                    size: 18,
-                  ),
-                  text: 'Delete',
-                  withMinWidth: false,
-                  onPressed: handleDelete!)
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DestructiveButton(
+                    prefix: Icon(
+                      CupertinoIcons.delete,
+                      color: Styles.white,
+                      size: 18,
+                    ),
+                    text: 'Delete',
+                    withMinWidth: false,
+                    onPressed: handleDelete!)
+              ],
+            ),
           )
       ],
     );
@@ -289,13 +296,12 @@ class _GymProfileCreatorEquipment extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 40,
+          height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MyText(
                 '${selectedEquipments.length} selected',
-                weight: FontWeight.bold,
               ),
               if (selectedEquipments.length > 0)
                 FadeIn(
@@ -331,6 +337,7 @@ class _GymProfileCreatorEquipment extends StatelessWidget {
                     scrollDirection: Axis.vertical,
                     handleSelection: handleSelection,
                     selectedEquipments: selectedEquipments,
+                    fontSize: FONTSIZE.TINY,
                   ),
                 );
               }),

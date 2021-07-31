@@ -70,6 +70,7 @@ class DefaultObjectfactory {
       ..id = 'temp-$kProgressJournalTypename:${Uuid().v1()}'
       ..name = 'Journal ${DateTime.now().compactDateString}'
       ..createdAt = DateTime.now()
+      ..bodyweightUnit = BodyweightUnit.kg
       ..progressJournalGoals = [];
   }
 

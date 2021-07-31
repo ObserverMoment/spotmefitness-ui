@@ -10,7 +10,6 @@ import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class PersonalBestsSummary extends StatelessWidget {
@@ -32,23 +31,24 @@ class PersonalBestsSummary extends StatelessWidget {
               .toList();
 
           return ContentBox(
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: recentlySubmitted
-                          .map((b) => Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child:
-                                    PersonalBestEntrySummary(userBenchmark: b),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ));
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (c, i) => Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: PersonalBestEntrySummary(
+                              userBenchmark: recentlySubmitted[i]),
+                        ),
+                    separatorBuilder: (_, __) => HorizontalLine(),
+                    itemCount: recentlySubmitted.length),
+              ],
+            ),
+          );
         });
   }
 }
@@ -66,9 +66,6 @@ class PersonalBestEntrySummary extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-      decoration: BoxDecoration(
-          border: Border.all(color: context.theme.primary.withOpacity(0.3)),
-          borderRadius: BorderRadius.circular(6)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -79,6 +76,7 @@ class PersonalBestEntrySummary extends StatelessWidget {
               MyText(
                 userBenchmark.name,
                 size: FONTSIZE.SMALL,
+                weight: FontWeight.bold,
               ),
               SizedBox(
                 height: 6,
@@ -88,6 +86,7 @@ class PersonalBestEntrySummary extends StatelessWidget {
                   MyText(
                     userBenchmark.benchmarkType.display,
                     size: FONTSIZE.TINY,
+                    color: Styles.colorTwo,
                   ),
                   MyText(
                     ' | ',
@@ -110,6 +109,7 @@ class PersonalBestEntrySummary extends StatelessWidget {
                 child: PersonalBestEntryScoreDisplay(
                   benchmark: userBenchmark,
                   entry: mostRecentEntry,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               if (Utils.textNotNull(userBenchmark.equipmentInfo))

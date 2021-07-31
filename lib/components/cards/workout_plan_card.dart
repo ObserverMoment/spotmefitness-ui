@@ -121,10 +121,11 @@ class WorkoutPlanCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (workoutPlan.workoutPlanDays.isNotEmpty)
+                if (workoutPlan.workoutPlanDays.isNotEmpty &&
+                    workoutPlan.calcDifficulty != null)
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: DifficultyLevelTag(workoutPlan.calcDifficulty),
+                    child: DifficultyLevelTag(workoutPlan.calcDifficulty!),
                   ),
               ],
             ),

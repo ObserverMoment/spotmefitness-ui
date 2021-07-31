@@ -205,8 +205,11 @@ extension PageControllerExtension on PageController {
 }
 
 extension WorkoutPlanExtension on WorkoutPlan {
-  DifficultyLevel get calcDifficulty {
+  DifficultyLevel? get calcDifficulty {
     final workouts = this.workoutsInPlan;
+    if (workouts.isEmpty) {
+      return null;
+    }
     final average = workouts.averageBy((w) => w.difficultyLevel.numericValue);
     return DifficultyLevelExtension.levelFromNumber(average!);
   }

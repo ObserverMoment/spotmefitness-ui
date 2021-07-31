@@ -19,11 +19,15 @@ class GymProfileCard extends StatelessWidget {
             lineHeight: 1.5,
           ),
           if (gymProfile.description != null)
-            MyText(
-              gymProfile.description!,
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              lineHeight: 1.5,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: MyText(
+                gymProfile.description!,
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                lineHeight: 1.5,
+                size: FONTSIZE.SMALL,
+              ),
             ),
           if (gymProfile.equipments.isNotEmpty)
             Padding(

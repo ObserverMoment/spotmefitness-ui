@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_move_minimal_display.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';

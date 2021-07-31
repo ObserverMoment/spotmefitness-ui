@@ -16,7 +16,6 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoggedWorkoutsPage extends StatelessWidget {
   @override

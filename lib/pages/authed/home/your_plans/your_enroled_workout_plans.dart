@@ -78,7 +78,7 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
         if (allTags.isNotEmpty)
           Padding(
             padding:
-                const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
+                const EdgeInsets.only(left: 4.0, top: 4, bottom: 10, right: 4),
             child: SizedBox(
                 height: 35,
                 child: ListView.builder(
@@ -100,45 +100,41 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
         Expanded(
             child: sortedEnrolments.isEmpty
                 ? Center(child: MyText('No enrolments to display'))
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: sortedEnrolments.length,
-                        itemBuilder: (c, i) => GestureDetector(
-                              onTap: () => widget
-                                  .selectEnrolledPlan(sortedEnrolments[i].id),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4.0, horizontal: 8),
-                                child: Card(
-                                  padding: EdgeInsets.zero,
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0, horizontal: 8),
-                                        child:
-                                            WorkoutPlanEnrolmentProgressSummary(
-                                                workoutPlanEnrolment:
-                                                    sortedEnrolments[i]),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: WorkoutPlanCard(
-                                          sortedEnrolments[i].workoutPlan,
-                                          withBoxShadow: false,
-                                          hideBackgroundImage: true,
-                                          showCreatedBy: false,
-                                          showAccessScope: false,
-                                        ),
-                                      ),
-                                    ],
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: sortedEnrolments.length,
+                    itemBuilder: (c, i) => GestureDetector(
+                          onTap: () =>
+                              widget.selectEnrolledPlan(sortedEnrolments[i].id),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 2),
+                            child: Card(
+                              padding: EdgeInsets.zero,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 8),
+                                    child: WorkoutPlanEnrolmentProgressSummary(
+                                        workoutPlanEnrolment:
+                                            sortedEnrolments[i]),
                                   ),
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: WorkoutPlanCard(
+                                      sortedEnrolments[i].workoutPlan,
+                                      withBoxShadow: false,
+                                      hideBackgroundImage: true,
+                                      showCreatedBy: false,
+                                      showAccessScope: false,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            )),
-                  )),
+                            ),
+                          ),
+                        ))),
       ],
     );
   }

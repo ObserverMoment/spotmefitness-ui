@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;

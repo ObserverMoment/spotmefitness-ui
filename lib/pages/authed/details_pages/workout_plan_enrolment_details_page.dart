@@ -304,9 +304,10 @@ class _WorkoutPlanEnrolmentDetailsPageState
                                       runSpacing: 5,
                                       children: [
                                         if (workoutPlan
-                                            .workoutPlanDays.isNotEmpty)
+                                                .workoutPlanDays.isNotEmpty &&
+                                            workoutPlan.calcDifficulty != null)
                                           DifficultyLevelTag(
-                                              workoutPlan.calcDifficulty),
+                                              workoutPlan.calcDifficulty!),
                                         Tag(
                                           tag: workoutPlan.lengthString,
                                           color: Styles.white,

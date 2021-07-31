@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_countdown_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_progress_summary.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/set_complete_button.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -51,14 +52,8 @@ class DoWorkoutSectionAMRAP extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: SliderButton(
-            text: 'Set complete',
-            sliderRotate: false,
-            innerColor: context.theme.background,
-            height: 60,
-            sliderButtonIconSize: 20,
-            outerColor: context.theme.primary,
-            onSubmit: () => context
+          child: SetCompleteButton(
+            onPressed: () => context
                 .read<DoWorkoutBloc>()
                 .markCurrentWorkoutSetAsComplete(workoutSection.sortPosition),
           ),

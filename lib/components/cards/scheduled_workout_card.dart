@@ -4,7 +4,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
-import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -122,21 +121,18 @@ class ScheduledWorkoutCard extends StatelessWidget {
           ],
         ),
         if (showNote && Utils.textNotNull(scheduledWorkout.note))
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: MyText(
-                  scheduledWorkout.note!,
-                  size: FONTSIZE.SMALL,
-                  maxLines: 4,
-                  lineHeight: 1.4,
-                ),
-                onPressed: () => context.showBottomSheet(
-                    useRootNavigator: true,
-                    expand: true,
-                    child: TextViewer(scheduledWorkout.note!, 'Note'))),
-          ),
+          CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: MyText(
+                scheduledWorkout.note!,
+                size: FONTSIZE.SMALL,
+                maxLines: 4,
+                lineHeight: 1.4,
+              ),
+              onPressed: () => context.showBottomSheet(
+                  useRootNavigator: true,
+                  expand: true,
+                  child: TextViewer(scheduledWorkout.note!, 'Note'))),
       ],
     );
   }
@@ -165,10 +161,9 @@ class ScheduledWorkoutCard extends StatelessWidget {
             : Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                     child: _buildCardHeader(context, true),
                   ),
-                  SizedBox(height: 4),
                   HorizontalLine(),
                   WorkoutCard(
                     scheduledWorkout.workout!,
@@ -184,7 +179,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
         child: Column(
           children: [
             _buildCardHeader(context, false),
-            SizedBox(height: 4),
             HorizontalLine(),
             WorkoutCard(
               scheduledWorkout.workout!,

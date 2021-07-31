@@ -189,17 +189,17 @@ class _ProgressJournalCreatorPageState
               ),
             if (!_isLoading && !_isEditing)
               Padding(
-                padding: const EdgeInsets.only(left: 6.0),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: NavBarCancelButton(_handleClose),
               ),
             if (!_isLoading && _isEditing && !_formIsDirty)
               Padding(
-                padding: const EdgeInsets.only(left: 6.0),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: NavBarCloseButton(_handleClose),
               ),
             if (!_isLoading && _formIsDirty)
               Padding(
-                padding: const EdgeInsets.only(left: 6.0),
+                padding: const EdgeInsets.only(left: 10.0),
                 child: NavBarSaveButton(_handleSave),
               ),
           ],
