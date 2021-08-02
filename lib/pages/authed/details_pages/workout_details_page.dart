@@ -1,13 +1,20 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
@@ -19,6 +26,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/collection_selector.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
@@ -45,6 +53,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   int _activeSectionTabIndex = 0;
   PageController _pageController = PageController();
   ScrollController _scrollController = ScrollController();
+  ScreenshotController screenshotController = ScreenshotController();
 
   final _kthumbDisplaySize = Size(80, 80);
 
@@ -189,6 +198,33 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           'Sorry there was a problem, the workout was not removed.');
     } else {
       context.showToast(message: 'Removed from collection: ${collection.name}');
+    }
+  }
+
+  /// Renders an image of the WorkoutCard widget for this workout
+  Future<void> _shareWorkout(Workout workout) async {
+    try {
+      context.showLoadingAlert(
+        'Loading...',
+      );
+
+      final capturedImage = await screenshotController.captureFromWidget(
+          ShareWorkoutCardImage(workout),
+          delay: Duration(seconds: 2));
+
+      // https://github.com/SachinGanesh/screenshot/issues/41
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath = await File('${directory.path}/image.png').create();
+      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
+      await imagePath.writeAsBytes(pngBytes);
+
+      context.pop(); // Loading alert modal.
+
+      await Share.shareFiles([imagePath.path],
+          text: '${kDeepLinkSchema}workout/${workout.id}',
+          subject: 'Check out this workout!');
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -394,7 +430,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                             BottomSheetMenuItem(
                                 text: 'Share',
                                 icon: Icon(CupertinoIcons.share),
-                                onPressed: () => print('share')),
+                                onPressed: () => _shareWorkout(workout)),
                             if (isOwner)
                               BottomSheetMenuItem(
                                   text: 'Edit',

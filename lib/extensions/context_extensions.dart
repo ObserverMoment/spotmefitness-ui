@@ -93,7 +93,7 @@ extension BuildContextExtension on BuildContext {
                     padding: const EdgeInsets.all(4.0),
                     child: icon,
                   ),
-                H3(message, textAlign: TextAlign.center),
+                MyText(message, textAlign: TextAlign.center),
               ],
             ),
             content: Center(

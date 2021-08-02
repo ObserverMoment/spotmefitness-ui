@@ -1,6 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 
+/// Deep Linking schema.
+/// Standard sharing format should be:
+/// [kDeepLinkSchema][route] - where the user will be routed to the named route [route]
+/// E.g. ['spotmefitness://workout/{workoutId}']
+const kDeepLinkSchema = 'spotmefitness://';
+
 const kBodyweightEquipmentId = 'b95da267-c036-4caa-9294-d1fab9b3d2e8';
 const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 

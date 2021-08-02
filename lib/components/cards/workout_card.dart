@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -258,6 +260,50 @@ class WorkoutCard extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+/// For generating an image via [screenshot] for use when sharing the workout.
+class ShareWorkoutCardImage extends StatelessWidget {
+  final Workout workout;
+
+  ShareWorkoutCardImage(this.workout);
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceThemeIsDark =
+        SchedulerBinding.instance?.window.platformBrightness == Brightness.dark;
+    final textColor = deviceThemeIsDark ? Styles.white : Styles.black;
+    final tagColor = deviceThemeIsDark ? Styles.black : Styles.white;
+    final textStyle = TextStyle(color: textColor, fontSize: 18);
+
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        if (Utils.textNotNull(workout.coverImageUri))
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedUploadcareImage(
+                workout.coverImageUri!,
+                displaySize: Size(200, 200),
+              ),
+            ),
+          ),
+        Container(
+          decoration: BoxDecoration(
+              color: tagColor,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(4), topRight: Radius.circular(4))),
+          padding: const EdgeInsets.all(12),
+          child: Text(
+            workout.name,
+            style: textStyle,
+          ),
+        )
+      ],
     );
   }
 }

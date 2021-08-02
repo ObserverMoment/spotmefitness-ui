@@ -1,15 +1,20 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:uni_links/uni_links.dart';
 
 /// Scaffold for the main top level tabs view.
 class MainTabsPage extends StatefulWidget {
@@ -18,15 +23,71 @@ class MainTabsPage extends StatefulWidget {
 }
 
 class _MainTabsPageState extends State<MainTabsPage> {
+  late StreamSubscription _linkStreamSub;
+
   @override
   void initState() {
     super.initState();
+
+    /// Setup [uni_links]
+    /// https://pub.dev/packages/uni_links
+    _handleInitialUri();
+    _handleIncomingLinks();
+
     if (!GetIt.I<AuthBloc>().authedUser!.hasOnboarded) {
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
         await showCupertinoModalPopup(
             context: context, builder: (_) => WelcomeModal());
       });
     }
+  }
+
+  /// Handle the initial Uri - the one the app was started with
+  ///
+  /// **ATTENTION**: `getInitialLink`/`getInitialUri` should be handled
+  /// ONLY ONCE in your app's lifetime, since it is not meant to change
+  /// throughout your app's life.
+  ///
+  /// We handle all exceptions, since it is called from initState.
+  Future<void> _handleInitialUri() async {
+    try {
+      final uri = await getInitialUri();
+      if (uri == null) {
+        print('Uni_links: no initial uri');
+      } else {
+        if (!mounted) return;
+        _extractRouterPathNameAndPush(uri);
+      }
+    } on PlatformException {
+      // Platform messages may fail but we ignore the exception
+      print('Uni_links: falied to get initial uri');
+    } on FormatException catch (err) {
+      if (!mounted) return;
+      print('Uni_links: malformed initial uri');
+      print(err);
+    }
+  }
+
+  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// while already started.
+  void _handleIncomingLinks() {
+    if (!kIsWeb) {
+      // It will handle app links while the app is already started - be it in
+      // the foreground or in the background.
+      _linkStreamSub = uriLinkStream.listen((Uri? uri) {
+        if (!mounted) return;
+        if (uri != null) {
+          _extractRouterPathNameAndPush(uri);
+        }
+      }, onError: (Object err) {
+        if (!mounted) return;
+        print('Uni_links._handleIncomingLinks: got err: $err');
+      });
+    }
+  }
+
+  void _extractRouterPathNameAndPush(Uri uri) {
+    context.navigateNamedTo(uri.toString().replaceFirst(kDeepLinkSchema, ''));
   }
 
   Widget _buildTabItem(
@@ -51,6 +112,12 @@ class _MainTabsPageState extends State<MainTabsPage> {
         label: label,
         isActive: activeIndex == tabIndex,
         onTap: () => tabsRouter.setActiveIndex(tabIndex));
+  }
+
+  @override
+  void dispose() {
+    _linkStreamSub.cancel();
+    super.dispose();
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -52,8 +53,8 @@ class AuthRouter extends StatefulWidget {
 }
 
 class _AuthRouterState extends State<AuthRouter> {
-  final AuthBloc _authBloc = AuthBloc();
-  final AppRouter _appRouter = AppRouter();
+  final _authBloc = AuthBloc();
+  final _appRouter = AppRouter();
   late Brightness _userDeviceBrightness;
 
   @override

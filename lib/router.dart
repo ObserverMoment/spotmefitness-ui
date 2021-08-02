@@ -53,7 +53,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
         name: 'authedRouter',
         page: HeroEmptyRouterPage,
         children: [
-          // The main tabs screen has five tabs where each is a stack. Generally these are pages that are user specific and are not likely to be shared across users or groups. Each stack maintains its own state.
+          // The main tabs screen has five tabs where each is a stack. Generally these are pages that are user specific and are not likely to be shared across users or groups. Each stack maintains its own state and navigation in iOS style.
           AutoRoute(path: '', page: MainTabsPage, children: [
             AutoRoute(
                 path: '',
@@ -110,7 +110,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           ]),
           // These pages are 'stand-alone'. They push on top of the underlying main tabs UI / stacks and so go into full screen.
           // They can be pushed to from anywhere and are also pages that would want to be linkable. E.g. when sharing a workout details page with a group or another user.
-          // Usually the flow from these pages always ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
+          // Usually the flow from these pages ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
           AutoRoute(path: 'personal-best/:id', page: PersonalBestDetailsPage),
           AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
           AutoRoute(
