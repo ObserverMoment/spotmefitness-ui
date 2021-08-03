@@ -90,25 +90,21 @@ class _MainTabsPageState extends State<MainTabsPage> {
     context.navigateNamedTo(uri.toString().replaceFirst(kDeepLinkSchema, ''));
   }
 
-  Widget _buildTabItem(
-      {required TabsRouter tabsRouter,
-      required int tabIndex,
-      required int activeIndex,
-      required String label,
-      required IconData iconData,
-      required Color inActiveColor,
-      required Color activeColor}) {
+  Widget _buildTabItem({
+    required TabsRouter tabsRouter,
+    required int tabIndex,
+    required int activeIndex,
+    required String label,
+    required IconData inactiveIconData,
+    required IconData activeIconData,
+  }) {
     return TabIcon(
-        icon: Icon(
-          iconData,
-          color: inActiveColor,
+        inactiveIcon: Icon(
+          inactiveIconData,
         ),
         activeIcon: Icon(
-          iconData,
-          color: activeColor,
+          activeIconData,
         ),
-        inactiveColor: inActiveColor,
-        activeColor: activeColor,
         label: label,
         isActive: activeIndex == tabIndex,
         onTap: () => tabsRouter.setActiveIndex(tabIndex));
@@ -135,8 +131,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
             final _mediaQuery = MediaQuery.of(context);
             final _tabsRouter = context.tabsRouter;
             final _activeIndex = _tabsRouter.activeIndex;
-            final _activeColor = context.theme.activeIcon;
-            final _inActiveColor = context.theme.primary;
 
             return Stack(
               fit: StackFit.expand,
@@ -174,45 +168,45 @@ class _MainTabsPageState extends State<MainTabsPage> {
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
                                   tabIndex: 0,
                                   label: 'Home',
-                                  iconData:
+                                  inactiveIconData:
+                                      CupertinoIcons.square_grid_2x2,
+                                  activeIconData:
                                       CupertinoIcons.square_grid_2x2_fill),
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
                                   tabIndex: 1,
                                   label: 'Discover',
-                                  iconData: CupertinoIcons.compass_fill),
+                                  inactiveIconData: CupertinoIcons.compass,
+                                  activeIconData: CupertinoIcons.compass_fill),
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
                                   tabIndex: 2,
                                   label: 'Social',
-                                  iconData:
-                                      CupertinoIcons.person_2_square_stack),
+                                  inactiveIconData:
+                                      CupertinoIcons.person_2_square_stack,
+                                  activeIconData: CupertinoIcons
+                                      .person_2_square_stack_fill),
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
                                   tabIndex: 3,
                                   label: 'Progress',
-                                  iconData: CupertinoIcons.graph_square),
+                                  inactiveIconData: CupertinoIcons.graph_square,
+                                  activeIconData:
+                                      CupertinoIcons.graph_square_fill),
                               _buildTabItem(
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
-                                  activeColor: _activeColor,
-                                  inActiveColor: _inActiveColor,
                                   tabIndex: 4,
                                   label: 'Profile',
-                                  iconData: CupertinoIcons.profile_circled),
+                                  inactiveIconData:
+                                      CupertinoIcons.profile_circled,
+                                  activeIconData:
+                                      CupertinoIcons.profile_circled),
                             ],
                           )),
                     ),
@@ -226,18 +220,14 @@ class _MainTabsPageState extends State<MainTabsPage> {
 }
 
 class TabIcon extends StatelessWidget {
-  final Widget icon;
   final Widget activeIcon;
-  final Color activeColor;
-  final Color inactiveColor;
+  final Widget inactiveIcon;
   final String label;
   final bool isActive;
   final void Function() onTap;
   TabIcon(
-      {required this.icon,
-      required this.activeIcon,
-      required this.inactiveColor,
-      required this.activeColor,
+      {required this.activeIcon,
+      required this.inactiveIcon,
       required this.label,
       required this.isActive,
       required this.onTap});
@@ -253,7 +243,7 @@ class TabIcon extends StatelessWidget {
       onPressed: onTap,
       child: AnimatedOpacity(
         duration: kAnimationDuration,
-        opacity: isActive ? 1 : 0.75,
+        opacity: isActive ? 1 : 0.6,
         child: AnimatedSwitcher(
             duration: kAnimationDuration,
             child: isActive
@@ -265,16 +255,15 @@ class TabIcon extends StatelessWidget {
                       MyText(
                         label,
                         size: FONTSIZE.TINY,
-                        color: activeColor,
                       )
                     ],
                   )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      icon,
+                      inactiveIcon,
                       SizedBox(height: kLabelSpacerHeight),
-                      MyText(label, size: FONTSIZE.TINY, color: inactiveColor)
+                      MyText(label, size: FONTSIZE.TINY)
                     ],
                   )),
       ),

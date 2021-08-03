@@ -220,8 +220,6 @@ class _CollectionWorkoutsList extends StatelessWidget {
                       ),
                       menuChild: WorkoutCard(
                         workouts[i],
-                        showEquipment: false,
-                        showMoves: false,
                       ),
                     )),
           );

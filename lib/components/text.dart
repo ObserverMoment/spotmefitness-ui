@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -70,6 +71,52 @@ class MyText extends StatelessWidget {
   }
 }
 
+class MyHeaderText extends StatelessWidget {
+  final String text;
+  final TextAlign textAlign;
+  final FONTSIZE size;
+  final FontWeight weight;
+  final TextOverflow overflow;
+  final int? maxLines;
+  final Color? color;
+  final TextDecoration? decoration;
+  final double? lineHeight;
+  final double? letterSpacing;
+  final bool subtext;
+
+  MyHeaderText(this.text,
+      {this.textAlign = TextAlign.start,
+      this.size = FONTSIZE.MAIN,
+      this.overflow = TextOverflow.ellipsis,
+      this.weight = FontWeight.bold,
+      this.maxLines = 1,
+      this.color,
+      this.decoration,
+      this.lineHeight = 1.1,
+      this.subtext = false,
+      this.letterSpacing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text,
+        textAlign: textAlign,
+        maxLines: maxLines,
+        overflow: overflow,
+        style: GoogleFonts.dmSans(
+            textStyle: TextStyle(
+                fontWeight: weight,
+                decoration: decoration,
+                height: lineHeight,
+                fontSize: _fontSizeMap[size],
+                letterSpacing: letterSpacing,
+                color: subtext
+                    ? context.theme.primary.withOpacity(0.6)
+                    : color != null
+                        ? color
+                        : context.theme.primary)));
+  }
+}
+
 class H1 extends StatelessWidget {
   final String text;
   final TextAlign textAlign;
@@ -81,7 +128,7 @@ class H1 extends StatelessWidget {
       this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
-    return MyText(text,
+    return MyHeaderText(text,
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.HUGE,
@@ -101,7 +148,7 @@ class H2 extends StatelessWidget {
       this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
-    return MyText(text,
+    return MyHeaderText(text,
         color: color,
         textAlign: textAlign,
         size: FONTSIZE.LARGE,
@@ -121,7 +168,29 @@ class H3 extends StatelessWidget {
       this.overflow = TextOverflow.ellipsis});
   @override
   Widget build(BuildContext context) {
-    return MyText(
+    return MyHeaderText(
+      text,
+      color: color,
+      textAlign: textAlign,
+      size: FONTSIZE.LARGE,
+      weight: FontWeight.bold,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+}
+
+class H4 extends StatelessWidget {
+  final String text;
+  final TextAlign textAlign;
+  final Color? color;
+  final TextOverflow overflow;
+  H4(this.text,
+      {this.textAlign = TextAlign.start,
+      this.color,
+      this.overflow = TextOverflow.ellipsis});
+  @override
+  Widget build(BuildContext context) {
+    return MyHeaderText(
       text,
       color: color,
       textAlign: textAlign,
@@ -142,7 +211,7 @@ class NavBarLargeTitle extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MyText(
+        MyHeaderText(
           title,
           textAlign: TextAlign.start,
           size: FONTSIZE.TABTITLE,
@@ -159,7 +228,7 @@ class NavBarTitle extends StatelessWidget {
   NavBarTitle(this.text);
   @override
   Widget build(BuildContext context) {
-    return MyText(
+    return MyHeaderText(
       text.toUpperCase(),
       size: FONTSIZE.SMALL,
       weight: FontWeight.bold,
@@ -220,7 +289,7 @@ class _UnderlineTitleState extends State<UnderlineTitle> {
         children: [
           Column(
             children: [
-              MyText(
+              MyHeaderText(
                 widget.text,
                 weight: FontWeight.bold,
                 lineHeight: 1.3,

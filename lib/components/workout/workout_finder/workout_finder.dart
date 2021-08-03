@@ -87,7 +87,7 @@ class WorkoutFinderPageUI extends StatefulWidget {
 }
 
 class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
-  final kPanelBorderRadius = 30.0;
+  final kPanelBorderRadius = 18.0;
   final kCollapsedpanelheight = 66.0;
 
   /// Doesn't appear to require disposing.

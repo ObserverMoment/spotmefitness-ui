@@ -93,7 +93,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryTextStyle = GoogleFonts.openSans(
+    final primaryTextStyle = GoogleFonts.sourceSansPro(
         textStyle:
             TextStyle(color: context.theme.primary, height: 1, fontSize: 15));
 

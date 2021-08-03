@@ -168,7 +168,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
                   WorkoutCard(
                     scheduledWorkout.workout!,
                     withBoxShadow: false,
-                    hideBackgroundImage: true,
                     padding:
                         const EdgeInsets.only(bottom: 8, left: 4, right: 4),
                   )
@@ -183,9 +182,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
             WorkoutCard(
               scheduledWorkout.workout!,
               withBoxShadow: false,
-              showEquipment: false,
-              showMoves: false,
-              hideBackgroundImage: true,
               padding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
             )
           ],

@@ -114,7 +114,7 @@ class YourWorkoutsList extends StatelessWidget {
                   child: SizeFadeIn(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 4.0),
+                          horizontal: 4, vertical: 12.0),
                       child: WorkoutCard(workouts[i]),
                     ),
                   ),

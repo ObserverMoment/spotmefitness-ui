@@ -91,6 +91,7 @@ extension DurationExtension on Duration {
     final int minutes = this.inMinutes;
     final int seconds = this.inSeconds.remainder(60);
     final FontWeight weight = bold ? FontWeight.bold : FontWeight.normal;
+
     List<Widget> children = [
       if (minutes != 0)
         Row(
@@ -108,7 +109,7 @@ extension DurationExtension on Duration {
               child: MyText(
                 'min',
                 weight: weight,
-                size: FONTSIZE.SMALL,
+                size: fontSize,
                 color: color,
               ),
             ),

@@ -582,10 +582,10 @@ class RaisedButtonContainer extends StatelessWidget {
                         0.4, // Move to bottom Vertically
                       ))
                 ],
-                color: context.theme.primary.withOpacity(isDark ? 0.75 : 0.9),
+                color: context.theme.primary,
                 border: Border.all(
                     color: context.theme.cardBackground
-                        .withOpacity(isDark ? 0.15 : 0.1))),
+                        .withOpacity(isDark ? 0.25 : 0.2))),
             child: child),
       ),
     );

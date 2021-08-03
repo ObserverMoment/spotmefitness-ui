@@ -77,8 +77,9 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
       alignment: widget.alignment,
       decoration: BoxDecoration(
-          color: context.theme.cardBackground.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(10)),
+        border: Border(
+            bottom: BorderSide(color: context.theme.cardBackground, width: 3)),
+      ),
       height: 42,
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -105,7 +106,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                               key: _globalTextBoxKeys[index],
                               opacity: index == widget.activeTabIndex ? 1 : 0.7,
                               duration: Duration(milliseconds: 400),
-                              child: MyText(
+                              child: MyHeaderText(
                                 title,
                                 weight: FontWeight.bold,
                               ),
@@ -114,8 +115,8 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                                 axis: Axis.horizontal,
                                 show: index == widget.activeTabIndex,
                                 child: Container(
-                                  height: 3.5,
-                                  width: _tabRenderBoxWidths?[index] ?? 60,
+                                  height: 2.5,
+                                  width: _tabRenderBoxWidths?[index] ?? 50,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: Styles.colorOne,

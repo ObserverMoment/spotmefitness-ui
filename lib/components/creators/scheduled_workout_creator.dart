@@ -189,8 +189,6 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
                       padding: const EdgeInsets.all(10.0),
                       child: WorkoutCard(
                         _activeScheduledWorkout.workout!,
-                        showEquipment: false,
-                        showMoves: false,
                       ),
                     ),
                     SizedBox(height: 10),

@@ -22,7 +22,7 @@ class DiscoverPage extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.only(bottom: 8),
-              height: 50,
+              height: 46,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [

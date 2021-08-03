@@ -29,7 +29,7 @@ class Tag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _color = color ?? context.theme.primary.withOpacity(0.85);
+    final _color = color ?? context.theme.primary.withOpacity(0.95);
     final _textColor = textColor ?? context.theme.background;
 
     return Container(
@@ -75,13 +75,12 @@ class SelectableTag extends StatelessWidget {
                 : Border.all(color: context.theme.primary.withOpacity(0.5)),
             color: isSelected ? selectedColor : context.theme.background,
             borderRadius: BorderRadius.circular(16)),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
         child: MyText(
           text,
           size: fontSize,
           color: isSelected ? Styles.white : null,
-          weight: FontWeight.bold,
-          lineHeight: 1.1,
+          lineHeight: 1,
         ),
       ),
     );
@@ -137,7 +136,7 @@ class DifficultyLevelTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: kDefaultTagPadding,
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)
@@ -147,8 +146,8 @@ class DifficultyLevelTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MyText(
-            difficultyLevel.display,
+          MyHeaderText(
+            difficultyLevel.display.toUpperCase(),
             size: FONTSIZE.TINY,
             color: Styles.white,
             weight: FontWeight.bold,
@@ -168,7 +167,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   final bool hasClassAudio;
   WorkoutSectionTypeTag(this.name,
       {this.timecap,
-      this.fontSize = FONTSIZE.SMALL,
+      this.fontSize = FONTSIZE.TINY,
       this.hasClassVideo = false,
       this.hasClassAudio = false});
 
@@ -194,6 +193,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                 size: fontSize,
                 color: _color,
                 textAlign: TextAlign.center,
+                weight: FontWeight.bold,
               ),
               if (timecap != null)
                 MyText(
@@ -202,6 +202,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   size: fontSize,
                   color: _color,
                   textAlign: TextAlign.center,
+                  weight: FontWeight.bold,
                 ),
               if (hasClassVideo)
                 Padding(

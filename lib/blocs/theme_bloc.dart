@@ -129,7 +129,7 @@ abstract class ThemeData {
       primaryContrastingColor: const Color(0xff286E6E),
       textTheme: CupertinoTextThemeData(
         primaryColor: CupertinoColors.white,
-        textStyle: GoogleFonts.openSans(
+        textStyle: GoogleFonts.sourceSansPro(
             textStyle: TextStyle(color: CupertinoColors.white)),
       ));
 
@@ -141,7 +141,7 @@ abstract class ThemeData {
       primaryContrastingColor: const Color(0xff286E6E),
       textTheme: CupertinoTextThemeData(
         primaryColor: CupertinoColors.black,
-        textStyle: GoogleFonts.openSans(
+        textStyle: GoogleFonts.sourceSansPro(
             textStyle: TextStyle(color: CupertinoColors.black)),
       ));
 }

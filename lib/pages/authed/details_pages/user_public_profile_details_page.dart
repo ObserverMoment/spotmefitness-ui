@@ -18,6 +18,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/country.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_created_workout_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_created_workouts.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -238,11 +239,15 @@ class _UserPublicProfileDetailsPageState
                             children: [
                               FilterableCreatedWorkouts(
                                 allWorkouts: userPublicProfile.workouts,
-                                selectWorkout: (String workoutId) {},
+                                selectWorkout: (workoutId) =>
+                                    context.navigateTo(
+                                        WorkoutDetailsRoute(id: workoutId)),
                               ),
                               FilterableCreatedWorkoutPlans(
                                 allWorkoutPlans: userPublicProfile.workoutPlans,
-                                selectWorkoutPlan: (String workoutPlanId) {},
+                                selectWorkoutPlan: (workoutPlanId) =>
+                                    context.navigateTo(WorkoutPlanDetailsRoute(
+                                        id: workoutPlanId)),
                               ),
                             ],
                           ),

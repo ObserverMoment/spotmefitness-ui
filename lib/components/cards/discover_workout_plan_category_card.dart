@@ -24,21 +24,22 @@ class DiscoverWorkoutPlanCategoryCard extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: ContentBox(
               borderRadius: 100,
-              child: MyText(
+              child: H2(
                 discoverWorkoutPlanCategory.name,
-                weight: FontWeight.bold,
               ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(4.0),
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: MyText(
                   discoverWorkoutPlanCategory.tagline,
+                  textAlign: TextAlign.left,
                   color: context.theme.brightness == Brightness.dark
                       ? Styles.colorFour
                       : Styles.colorThree,
@@ -48,8 +49,9 @@ class DiscoverWorkoutPlanCategoryCard extends StatelessWidget {
               MyText(
                 discoverWorkoutPlanCategory.description,
                 maxLines: 3,
-                textAlign: TextAlign.center,
-                lineHeight: 1.1,
+                textAlign: TextAlign.left,
+                lineHeight: 1.4,
+                size: FONTSIZE.SMALL,
               ),
             ],
           ),

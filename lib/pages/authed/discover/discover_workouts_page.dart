@@ -24,8 +24,8 @@ class DiscoverWorkoutsPage extends StatelessWidget {
             child: Transform.rotate(
               angle: pi / 2,
               child: Icon(
-                CupertinoIcons.slider_horizontal_3,
-                size: 30,
+                CupertinoIcons.compass_fill,
+                size: 28,
               ),
             ),
             onPressed: () => context

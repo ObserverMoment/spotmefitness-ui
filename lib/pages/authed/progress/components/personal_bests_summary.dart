@@ -31,20 +31,24 @@ class PersonalBestsSummary extends StatelessWidget {
               .toList();
 
           return ContentBox(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                MyHeaderText(
+                  'PERSONAL BESTS',
+                  size: FONTSIZE.TINY,
+                ),
                 ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
-                    itemBuilder: (c, i) => Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: PersonalBestEntrySummary(
-                              userBenchmark: recentlySubmitted[i]),
+                    itemBuilder: (c, i) => PersonalBestEntrySummary(
+                        userBenchmark: recentlySubmitted[i]),
+                    separatorBuilder: (_, __) => HorizontalLine(
+                          verticalPadding: 0,
                         ),
-                    separatorBuilder: (_, __) => HorizontalLine(),
                     itemCount: recentlySubmitted.length),
               ],
             ),
@@ -73,13 +77,12 @@ class PersonalBestEntrySummary extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MyText(
+              MyHeaderText(
                 userBenchmark.name,
                 size: FONTSIZE.SMALL,
-                weight: FontWeight.bold,
               ),
               SizedBox(
-                height: 6,
+                height: 4,
               ),
               Row(
                 children: [
@@ -105,7 +108,7 @@ class PersonalBestEntrySummary extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6.0),
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: PersonalBestEntryScoreDisplay(
                   benchmark: userBenchmark,
                   entry: mostRecentEntry,

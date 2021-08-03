@@ -13,7 +13,7 @@ class DiscoverFeaturedCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = const EdgeInsets.symmetric(vertical: 3, horizontal: 6);
+    final padding = const EdgeInsets.symmetric(vertical: 5, horizontal: 10);
     return Column(
       children: [
         Card(
@@ -27,7 +27,7 @@ class DiscoverFeaturedCard extends StatelessWidget {
                 children: [
                   ContentBox(
                     padding: padding,
-                    borderRadius: 0,
+                    borderRadius: 4,
                     child: MyText(
                       discoverFeatured.tag,
                       color: context.theme.brightness == Brightness.dark
@@ -38,25 +38,19 @@ class DiscoverFeaturedCard extends StatelessWidget {
                   ),
                 ],
               ),
+              SizedBox(height: 6),
               ContentBox(
                 padding: padding,
-                borderRadius: 0,
+                borderRadius: 4,
                 child: MyText(
                   discoverFeatured.name,
+                  maxLines: 2,
+                  lineHeight: 1.3,
                   size: FONTSIZE.LARGE,
                   weight: FontWeight.bold,
                 ),
               ),
             ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-          child: MyText(
-            discoverFeatured.description,
-            maxLines: 4,
-            textAlign: TextAlign.center,
-            lineHeight: 1.1,
           ),
         ),
       ],

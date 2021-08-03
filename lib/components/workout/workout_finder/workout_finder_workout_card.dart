@@ -8,6 +8,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
+/// Wrapper around the [WorkoutCard] widget which adds some user interactivity.
 class WorkoutFinderWorkoutCard extends StatelessWidget {
   final Workout workout;
   final void Function(Workout workout)? selectWorkout;
@@ -55,14 +56,12 @@ class WorkoutFinderWorkoutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
       child: ContextMenu(
         key: Key('WorkoutFinderWorkoutCard ${workout.id}'),
         child: WorkoutCard(workout),
         menuChild: WorkoutCard(
           workout,
-          showEquipment: false,
-          showMoves: false,
         ),
         actions: [
           if (selectWorkout != null)

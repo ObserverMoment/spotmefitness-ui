@@ -331,13 +331,6 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                               dayWorkout.workout,
                               withBoxShadow: false,
                               backgroundColor: context.theme.background,
-                              hideBackgroundImage: true,
-                              showCreatedBy: false,
-                              showAccessScope: false,
-                              showEquipment: !minimize,
-                              showMoves: !minimize,
-                              showTags: !minimize,
-                              showDescription: !minimize,
                             ),
                             if (completedIds.contains(dayWorkout.id))
                               FadeIn(

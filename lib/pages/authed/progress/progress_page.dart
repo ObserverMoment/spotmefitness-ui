@@ -149,9 +149,8 @@ class _ProgressPageTile extends StatelessWidget {
               ),
               padding:
                   const EdgeInsets.only(bottom: 8, right: 20, left: 20, top: 8),
-              child: MyText(
+              child: MyHeaderText(
                 label,
-                weight: FontWeight.bold,
                 maxLines: 2,
                 lineHeight: 1.3,
                 textAlign: TextAlign.center,
