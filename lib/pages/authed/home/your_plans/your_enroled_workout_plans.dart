@@ -80,7 +80,7 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
             padding:
                 const EdgeInsets.only(left: 4.0, top: 4, bottom: 10, right: 4),
             child: SizedBox(
-                height: 35,
+                height: 30,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: allTags.length,
@@ -108,27 +108,21 @@ class __FilterableEnroledPlansState extends State<_FilterableEnroledPlans> {
                               widget.selectEnrolledPlan(sortedEnrolments[i].id),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 4.0, horizontal: 2),
+                                vertical: 10.0, horizontal: 4),
                             child: Card(
-                              padding: EdgeInsets.zero,
+                              padding: const EdgeInsets.all(1),
                               child: Column(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 8),
+                                        vertical: 12.0, horizontal: 9),
                                     child: WorkoutPlanEnrolmentProgressSummary(
                                         workoutPlanEnrolment:
                                             sortedEnrolments[i]),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: WorkoutPlanCard(
-                                      sortedEnrolments[i].workoutPlan,
-                                      withBoxShadow: false,
-                                      hideBackgroundImage: true,
-                                      showCreatedBy: false,
-                                      showAccessScope: false,
-                                    ),
+                                  WorkoutPlanCard(
+                                    sortedEnrolments[i].workoutPlan,
+                                    withBoxShadow: false,
                                   ),
                                 ],
                               ),

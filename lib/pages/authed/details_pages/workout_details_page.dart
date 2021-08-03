@@ -18,6 +18,7 @@ import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -201,16 +202,27 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     }
   }
 
-  /// Renders an image of the WorkoutCard widget for this workout
   Future<void> _shareWorkout(Workout workout) async {
     try {
       context.showLoadingAlert(
         'Loading...',
       );
 
+      /// Renders an image of the workout.coverImageUri or a placeholder image.
       final capturedImage = await screenshotController.captureFromWidget(
-          ShareWorkoutCardImage(workout),
-          delay: Duration(seconds: 2));
+        SizedBox(
+          height: 100,
+          width: 100,
+          child: workout.coverImageUri != null
+              ? SizedUploadcareImage(
+                  workout.coverImageUri!,
+                )
+              : Image.asset(
+                  'assets/home_page_images/home_page_workouts.jpg',
+                  fit: BoxFit.cover,
+                ),
+        ),
+      );
 
       // https://github.com/SachinGanesh/screenshot/issues/41
       final directory = await getApplicationDocumentsDirectory();
@@ -427,10 +439,12 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 onPressed: () => context.navigateTo(
                                     LoggedWorkoutCreatorRoute(
                                         workout: workout))),
-                            BottomSheetMenuItem(
-                                text: 'Share',
-                                icon: Icon(CupertinoIcons.share),
-                                onPressed: () => _shareWorkout(workout)),
+                            if (workout.contentAccessScope ==
+                                ContentAccessScope.public)
+                              BottomSheetMenuItem(
+                                  text: 'Share',
+                                  icon: Icon(CupertinoIcons.share),
+                                  onPressed: () => _shareWorkout(workout)),
                             if (isOwner)
                               BottomSheetMenuItem(
                                   text: 'Edit',

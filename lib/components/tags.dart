@@ -151,7 +151,7 @@ class DifficultyLevelTag extends StatelessWidget {
             size: FONTSIZE.TINY,
             color: Styles.white,
             weight: FontWeight.bold,
-            lineHeight: 1.1,
+            lineHeight: 1.2,
           ),
         ],
       ),
@@ -167,21 +167,20 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   final bool hasClassAudio;
   WorkoutSectionTypeTag(this.name,
       {this.timecap,
-      this.fontSize = FONTSIZE.TINY,
+      this.fontSize = FONTSIZE.SMALL,
       this.hasClassVideo = false,
       this.hasClassAudio = false});
 
   @override
   Widget build(BuildContext context) {
-    final Color _color = Styles.white;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Styles.colorOne,
+            border: Border.all(color: context.theme.primary.withOpacity(0.3)),
             borderRadius: BorderRadius.circular(60),
           ),
           child: Row(
@@ -189,18 +188,16 @@ class WorkoutSectionTypeTag extends StatelessWidget {
             children: [
               MyText(
                 name,
-                lineHeight: 1.3,
+                lineHeight: 1.2,
                 size: fontSize,
-                color: _color,
                 textAlign: TextAlign.center,
                 weight: FontWeight.bold,
               ),
               if (timecap != null)
                 MyText(
                   ' - ${(timecap! / 60).round()} mins',
-                  lineHeight: 1.15,
+                  lineHeight: 1.2,
                   size: fontSize,
-                  color: _color,
                   textAlign: TextAlign.center,
                   weight: FontWeight.bold,
                 ),
@@ -209,8 +206,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
                     CupertinoIcons.film_fill,
-                    size: 18,
-                    color: _color,
+                    size: 16,
                   ),
                 ),
               if (hasClassAudio)
@@ -218,8 +214,7 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
                     CupertinoIcons.volume_up,
-                    size: 18,
-                    color: _color,
+                    size: 16,
                   ),
                 ),
             ],

@@ -45,8 +45,6 @@ class WorkoutPlanWeekWorkouts extends StatefulWidget {
 }
 
 class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
-  bool _minimizePlanDayCards = true;
-
   @override
   Widget build(BuildContext context) {
     /// Must % 7 so that workouts in weeks higher than week 1 will get assigned to the correct day of that week.
@@ -59,35 +57,36 @@ class _WorkoutPlanWeekWorkoutsState extends State<WorkoutPlanWeekWorkouts> {
     return Column(
       children: [
         // https://stackoverflow.com/questions/51587003/how-to-center-only-one-element-in-a-row-of-2-elements-in-flutter
-        Row(
-          children: [
-            Expanded(child: H3('Week ${widget.weekNumber + 1}')),
-            ShowHideDetailsButton(
-                onPressed: () => setState(
-                    () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                showDetails: !_minimizePlanDayCards),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(child: H3('Week ${widget.weekNumber + 1}')),
+            ],
+          ),
         ),
         HorizontalLine(),
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemCount: 7,
-          itemBuilder: (c, i) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 3.0),
-            child: byDayNumberInWeek[i] != null
-                ? WorkoutPlanDayCard(
+          itemBuilder: (c, i) => byDayNumberInWeek[i] != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: WorkoutPlanDayCard(
                     workoutPlanDay: byDayNumberInWeek[i]!,
                     displayDayNumber: i,
-                    minimize: _minimizePlanDayCards,
-                  )
-                : Opacity(
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3.0),
+                  child: Opacity(
                     opacity: 0.35,
                     child: WorkoutPlanRestDayCard(
                       dayNumber: i,
                     ),
                   ),
-          ),
+                ),
         ),
       ],
     );

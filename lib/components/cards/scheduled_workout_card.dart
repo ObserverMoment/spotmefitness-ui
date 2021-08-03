@@ -122,7 +122,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
         ),
         if (showNote && Utils.textNotNull(scheduledWorkout.note))
           CupertinoButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.only(top: 5),
               child: MyText(
                 scheduledWorkout.note!,
                 size: FONTSIZE.SMALL,
@@ -145,44 +145,64 @@ class ScheduledWorkoutCard extends StatelessWidget {
     return ContextMenu(
       key: Key('ScheduledWorkoutCard ${scheduledWorkout.id}'),
       child: Card(
+        padding: EdgeInsets.zero,
         child: scheduledWorkout.workout == null
-            ? Column(
-                children: [
-                  MyText(
-                    'No workout specified!',
-                    maxLines: 4,
-                  ),
-                  MyText(
-                    '(The workout may have been deleted)',
-                    maxLines: 4,
-                  ),
-                ],
+            ? Center(
+                child: Column(
+                  children: [
+                    MyText(
+                      'No workout specified!',
+                      maxLines: 4,
+                    ),
+                    MyText(
+                      '(The workout may have been deleted)',
+                      maxLines: 4,
+                    ),
+                  ],
+                ),
               )
             : Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                    padding: const EdgeInsets.only(
+                        top: 12.0, bottom: 8, left: 12, right: 12),
                     child: _buildCardHeader(context, true),
                   ),
-                  HorizontalLine(),
-                  WorkoutCard(
-                    scheduledWorkout.workout!,
-                    withBoxShadow: false,
-                    padding:
-                        const EdgeInsets.only(bottom: 8, left: 4, right: 4),
+                  HorizontalLine(
+                    verticalPadding: 0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 8.0, bottom: 6, left: 10, right: 10),
+                    child: WorkoutCard(
+                      scheduledWorkout.workout!,
+                      withBoxShadow: false,
+                      padding: const EdgeInsets.only(
+                          bottom: 0, top: 12, right: 12, left: 12),
+                    ),
                   )
                 ],
               ),
       ),
       menuChild: Card(
+        padding: EdgeInsets.zero,
         child: Column(
           children: [
-            _buildCardHeader(context, false),
-            HorizontalLine(),
-            WorkoutCard(
-              scheduledWorkout.workout!,
-              withBoxShadow: false,
-              padding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+              child: _buildCardHeader(context, false),
+            ),
+            HorizontalLine(
+              verticalPadding: 0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: WorkoutCard(
+                scheduledWorkout.workout!,
+                withBoxShadow: false,
+                padding: const EdgeInsets.only(left: 4, right: 4),
+              ),
             )
           ],
         ),

@@ -127,7 +127,7 @@ class YourWorkoutPlansList extends StatelessWidget {
                   child: SizeFadeIn(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 2, vertical: 4.0),
+                          horizontal: 6, vertical: 10.0),
                       child: WorkoutPlanCard(workoutPlans[i]),
                     ),
                   ),

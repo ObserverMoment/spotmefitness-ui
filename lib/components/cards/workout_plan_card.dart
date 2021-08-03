@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/data_vis/percentage_bar_chart.dart';
 import 'package:spotmefitness_ui/components/data_vis/waffle_chart.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_enrolments_summary.dart';
@@ -9,30 +9,19 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews_su
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutPlanCard extends StatelessWidget {
   final WorkoutPlan workoutPlan;
-  final bool hideBackgroundImage;
-  final EdgeInsets padding;
   final Color? backgroundColor;
   final bool withBoxShadow;
-  final bool showEnrolledAndReviews;
-  final bool showGoalsBarDisplay;
-  final bool showCreatedBy;
-  final bool showAccessScope;
 
-  const WorkoutPlanCard(this.workoutPlan,
-      {this.hideBackgroundImage = false,
-      this.backgroundColor,
-      this.withBoxShadow = true,
-      this.showEnrolledAndReviews = true,
-      this.showGoalsBarDisplay = true,
-      this.showCreatedBy = true,
-      this.showAccessScope = true,
-      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12)});
+  const WorkoutPlanCard(
+    this.workoutPlan, {
+    this.backgroundColor,
+    this.withBoxShadow = true,
+  });
 
   List<WaffleChartInput> calcInputs() {
     final goals = workoutPlan.workoutGoalsInPlan;
@@ -56,169 +45,154 @@ class WorkoutPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      backgroundImageUri:
-          hideBackgroundImage ? null : workoutPlan.coverImageUri,
-      backgroundColor: backgroundColor,
-      withBoxShadow: withBoxShadow,
-      padding: padding,
-      child: Column(
-        children: [
-          if (showCreatedBy || showAccessScope)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+        backgroundColor: backgroundColor,
+        withBoxShadow: withBoxShadow,
+        padding: EdgeInsets.zero,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+              child: SizedBox(
+                height: 150,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    workoutPlan.coverImageUri != null
+                        ? SizedUploadcareImage(workoutPlan.coverImageUri!)
+                        : Image.asset(
+                            'assets/home_page_images/home_page_plans.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.background.withOpacity(0.1),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (workoutPlan.workoutPlanDays.isNotEmpty &&
+                                  workoutPlan.calcDifficulty != null)
+                                DifficultyLevelTag(workoutPlan.calcDifficulty!),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6.0),
+                                child: Row(
+                                  children: [
+                                    Card(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 3),
+                                      child: MyText(
+                                        workoutPlan.lengthString,
+                                        size: FONTSIZE.SMALL,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 6.0),
+                                      child: Card(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 3),
+                                        child: MyText(
+                                          '${workoutPlan.daysPerWeek} days / week',
+                                          size: FONTSIZE.SMALL,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )),
+                    ),
+                    Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Card(
+                            child: WorkoutPlanReviewsSummary(
+                                reviews: workoutPlan.workoutPlanReviews),
+                          ),
+                        )),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          alignment: WrapAlignment.center,
+                          spacing: 5,
+                          runSpacing: 5,
+                          children: workoutPlan.workoutTags
+                              .map(
+                                (workoutTag) => Tag(
+                                  tag: workoutTag.tag,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          Container(
+              decoration:
+                  BoxDecoration(color: context.theme.primary.withOpacity(0.75)),
+              height: 5),
+          Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
                 children: [
-                  if (showCreatedBy)
-                    MyText(
-                      'By ${workoutPlan.user.displayName}',
-                      textAlign: TextAlign.left,
-                      size: FONTSIZE.TINY,
-                      lineHeight: 1.3,
-                    ),
-                  if (showCreatedBy && showAccessScope)
-                    MyText(
-                      ' | ',
-                      size: FONTSIZE.TINY,
-                      lineHeight: 1.3,
-                    ),
-                  if (showAccessScope)
-                    MyText(
-                      workoutPlan.contentAccessScope.display,
-                      textAlign: TextAlign.left,
-                      size: FONTSIZE.TINY,
-                      lineHeight: 1.3,
-                      color: Styles.colorTwo,
-                    ),
-                ],
-              ),
-            ),
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 6.0, bottom: 0, left: 3, right: 3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Row(
+                  Row(
                     children: [
                       if (workoutPlan.user.avatarUri != null)
-                        UserAvatar(
-                          avatarUri: workoutPlan.user.avatarUri!,
-                          size: 34,
-                          border: true,
-                          borderWidth: 1,
-                        ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 6.0),
-                          child: MyText(
-                            workoutPlan.name,
-                            maxLines: 2,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: UserAvatar(
+                            avatarUri: workoutPlan.user.avatarUri!,
+                            size: 34,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (workoutPlan.workoutPlanDays.isNotEmpty &&
-                    workoutPlan.calcDifficulty != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: DifficultyLevelTag(workoutPlan.calcDifficulty!),
-                  ),
-              ],
-            ),
-          ),
-          workoutPlan.workoutPlanDays.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Tag(
-                              tag: workoutPlan.lengthString,
-                              fontSize: FONTSIZE.SMALL,
-                              textColor: Styles.white,
-                              color: Styles.colorOne,
-                            ),
-                            Tag(
-                              tag: '${workoutPlan.daysPerWeek} days / week',
-                              fontSize: FONTSIZE.SMALL,
-                              color: Styles.colorOne,
-                              textColor: Styles.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (Utils.textNotNull(workoutPlan.description))
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: MyText(
-                            workoutPlan.description!,
-                            maxLines: 4,
-                            textAlign: TextAlign.center,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyHeaderText(
+                            workoutPlan.name,
+                          ),
+                          MyText(
+                            'By ${workoutPlan.user.displayName}',
+                            size: FONTSIZE.TINY,
                             lineHeight: 1.3,
                           ),
-                        ),
+                        ],
+                      ),
                     ],
                   ),
-                )
-              : Center(
-                  child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: MyText(
-                    'Nothing here...',
-                    subtext: true,
-                  ),
-                )),
-          if (showEnrolledAndReviews)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  WorkoutPlanEnrolmentsSummary(
-                    enrolments: workoutPlan.enrolments,
-                    subtitle:
-                        '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
-                  ),
-                  WorkoutPlanReviewsSummary(
-                      reviews: workoutPlan.workoutPlanReviews),
-                ],
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              alignment: WrapAlignment.center,
-              spacing: 5,
-              runSpacing: 5,
-              children: workoutPlan.workoutTags
-                  .map(
-                    (workoutTag) => Tag(
-                      tag: workoutTag.tag,
+                  if (workoutPlan.workoutPlanDays.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 14.0),
+                      child: PercentageBarChartSingle(
+                        inputs: calcInputs(),
+                        barHeight: 16,
+                      ),
                     ),
-                  )
-                  .toList(),
-            ),
-          ),
-          if (showGoalsBarDisplay && workoutPlan.workoutGoalsInPlan.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PercentageBarChartSingle(
-                inputs: calcInputs(),
-                barHeight: 12,
-              ),
-            ),
-        ],
-      ),
-    );
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: WorkoutPlanEnrolmentsSummary(
+                      enrolments: workoutPlan.enrolments,
+                      subtitle:
+                          '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
+                    ),
+                  ),
+                ],
+              ))
+        ]));
   }
 }

@@ -92,7 +92,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                   clipBehavior: Clip.none,
                   children: [
                     CupertinoButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       pressedOpacity: 0.9,
                       alignment: Alignment.centerLeft,
                       onPressed: () => widget.handleTabChange(index),

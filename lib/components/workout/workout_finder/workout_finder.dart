@@ -88,7 +88,7 @@ class WorkoutFinderPageUI extends StatefulWidget {
 
 class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   final kPanelBorderRadius = 18.0;
-  final kCollapsedpanelheight = 66.0;
+  final kCollapsedpanelheight = 60.0;
 
   /// Doesn't appear to require disposing.
   final PanelController _panelController = PanelController();
@@ -299,21 +299,17 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                MyText('Filters', weight: FontWeight.bold),
-                                SizedBox(width: 8),
-                                Transform.rotate(
-                                  angle: -pi / 2,
-                                  child: Icon(
-                                    CupertinoIcons.slider_horizontal_3,
-                                  ),
+                                Icon(
+                                  CupertinoIcons.slider_horizontal_3,
+                                  size: 30,
                                 ),
                                 SizedBox(width: 8),
                               ],
                             ),
                             if (numActiveFilters > 0)
                               Positioned(
-                                  top: -14,
-                                  right: 8,
+                                  top: -16,
+                                  right: 0,
                                   child: FadeIn(
                                       child: CircularBox(
                                           padding: const EdgeInsets.all(6),

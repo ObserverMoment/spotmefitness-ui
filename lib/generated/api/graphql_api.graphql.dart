@@ -290,12 +290,12 @@ mixin ProgressJournalGoalMixin {
   late String name;
   String? description;
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? deadline;
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? completedDate;
 }
 mixin ProgressJournalMixin {
@@ -376,15 +376,15 @@ mixin UserMixin {
   String? avatarUri;
   String? bio;
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? birthdate;
   String? countryCode;
   String? displayName;
   String? introVideoUri;
   String? introVideoThumbUri;
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
-  Gender? gender;
+  late Gender gender;
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope userProfileScope;
 }
@@ -633,21 +633,6 @@ class CreateWorkoutMove$Mutation extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class ConnectRelationInput extends JsonSerializable with EquatableMixin {
-  ConnectRelationInput({required this.id});
-
-  factory ConnectRelationInput.fromJson(Map<String, dynamic> json) =>
-      _$ConnectRelationInputFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() => _$ConnectRelationInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class CreateWorkoutMoveInput extends JsonSerializable with EquatableMixin {
   CreateWorkoutMoveInput(
       {required this.sortPosition,
@@ -706,6 +691,21 @@ class CreateWorkoutMoveInput extends JsonSerializable with EquatableMixin {
       ];
   @override
   Map<String, dynamic> toJson() => _$CreateWorkoutMoveInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ConnectRelationInput extends JsonSerializable with EquatableMixin {
+  ConnectRelationInput({required this.id});
+
+  factory ConnectRelationInput.fromJson(Map<String, dynamic> json) =>
+      _$ConnectRelationInputFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$ConnectRelationInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -1738,8 +1738,8 @@ class UpdateWorkoutPlanEnrolmentInput extends JsonSerializable
   late String id;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? startDate;
 
   List<String>? completedPlanDayWorkoutIds;
@@ -2266,8 +2266,8 @@ class CreateProgressJournalGoalInput extends JsonSerializable
   String? description;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? deadline;
 
   @JsonKey(name: 'ProgressJournal')
@@ -2337,13 +2337,13 @@ class UpdateProgressJournalGoalInput extends JsonSerializable
   String? description;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? completedDate;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? deadline;
 
   @JsonKey(name: 'ProgressJournalGoalTags')
@@ -2850,8 +2850,8 @@ class UpdateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
   late String id;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? completedOn;
 
   String? name;
@@ -2934,65 +2934,6 @@ class CreateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
-    with EquatableMixin {
-  CreateLoggedWorkoutMoveInLoggedSetInput(
-      {required this.sortPosition,
-      required this.repType,
-      required this.reps,
-      this.distanceUnit,
-      this.loadAmount,
-      this.loadUnit,
-      this.timeUnit,
-      required this.move,
-      this.equipment});
-
-  factory CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
-          Map<String, dynamic> json) =>
-      _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
-
-  late int sortPosition;
-
-  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
-  late WorkoutMoveRepType repType;
-
-  late double reps;
-
-  @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
-  DistanceUnit? distanceUnit;
-
-  double? loadAmount;
-
-  @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
-  LoadUnit? loadUnit;
-
-  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
-  TimeUnit? timeUnit;
-
-  @JsonKey(name: 'Move')
-  late ConnectRelationInput move;
-
-  @JsonKey(name: 'Equipment')
-  ConnectRelationInput? equipment;
-
-  @override
-  List<Object?> get props => [
-        sortPosition,
-        repType,
-        reps,
-        distanceUnit,
-        loadAmount,
-        loadUnit,
-        timeUnit,
-        move,
-        equipment
-      ];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
     with EquatableMixin {
   CreateLoggedWorkoutSectionInLoggedWorkoutInput(
@@ -3019,8 +2960,8 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
   int? timeTakenMs;
 
   @JsonKey(
-      fromJson: fromGraphQLJsonToDartMapNullable,
-      toJson: fromDartMapToGraphQLJsonNullable)
+      fromJson: fromGraphQLJsonNullableToDartMapNullable,
+      toJson: fromDartMapNullableToGraphQLJsonNullable)
   Map? lapTimesMs;
 
   int? repScore;
@@ -3090,6 +3031,65 @@ class CreateLoggedWorkoutSetInLoggedSectionInput extends JsonSerializable
   @override
   Map<String, dynamic> toJson() =>
       _$CreateLoggedWorkoutSetInLoggedSectionInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateLoggedWorkoutMoveInLoggedSetInput extends JsonSerializable
+    with EquatableMixin {
+  CreateLoggedWorkoutMoveInLoggedSetInput(
+      {required this.sortPosition,
+      required this.repType,
+      required this.reps,
+      this.distanceUnit,
+      this.loadAmount,
+      this.loadUnit,
+      this.timeUnit,
+      required this.move,
+      this.equipment});
+
+  factory CreateLoggedWorkoutMoveInLoggedSetInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputFromJson(json);
+
+  late int sortPosition;
+
+  @JsonKey(unknownEnumValue: WorkoutMoveRepType.artemisUnknown)
+  late WorkoutMoveRepType repType;
+
+  late double reps;
+
+  @JsonKey(unknownEnumValue: DistanceUnit.artemisUnknown)
+  DistanceUnit? distanceUnit;
+
+  double? loadAmount;
+
+  @JsonKey(unknownEnumValue: LoadUnit.artemisUnknown)
+  LoadUnit? loadUnit;
+
+  @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
+  TimeUnit? timeUnit;
+
+  @JsonKey(name: 'Move')
+  late ConnectRelationInput move;
+
+  @JsonKey(name: 'Equipment')
+  ConnectRelationInput? equipment;
+
+  @override
+  List<Object?> get props => [
+        sortPosition,
+        repType,
+        reps,
+        distanceUnit,
+        loadAmount,
+        loadUnit,
+        timeUnit,
+        move,
+        equipment
+      ];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateLoggedWorkoutMoveInLoggedSetInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -3691,8 +3691,8 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
   String? tagline;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? birthdate;
 
   String? townCity;
@@ -3762,24 +3762,6 @@ class CreateMove$Mutation extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class BodyAreaMoveScoreInput extends JsonSerializable with EquatableMixin {
-  BodyAreaMoveScoreInput({required this.bodyArea, required this.score});
-
-  factory BodyAreaMoveScoreInput.fromJson(Map<String, dynamic> json) =>
-      _$BodyAreaMoveScoreInputFromJson(json);
-
-  @JsonKey(name: 'BodyArea')
-  late ConnectRelationInput bodyArea;
-
-  late double score;
-
-  @override
-  List<Object?> get props => [bodyArea, score];
-  @override
-  Map<String, dynamic> toJson() => _$BodyAreaMoveScoreInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
 class CreateMoveInput extends JsonSerializable with EquatableMixin {
   CreateMoveInput(
       {required this.name,
@@ -3841,6 +3823,24 @@ class CreateMoveInput extends JsonSerializable with EquatableMixin {
       ];
   @override
   Map<String, dynamic> toJson() => _$CreateMoveInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class BodyAreaMoveScoreInput extends JsonSerializable with EquatableMixin {
+  BodyAreaMoveScoreInput({required this.bodyArea, required this.score});
+
+  factory BodyAreaMoveScoreInput.fromJson(Map<String, dynamic> json) =>
+      _$BodyAreaMoveScoreInputFromJson(json);
+
+  @JsonKey(name: 'BodyArea')
+  late ConnectRelationInput bodyArea;
+
+  late double score;
+
+  @override
+  List<Object?> get props => [bodyArea, score];
+  @override
+  Map<String, dynamic> toJson() => _$BodyAreaMoveScoreInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -4332,8 +4332,8 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
   int? timeTakenMs;
 
   @JsonKey(
-      fromJson: fromGraphQLJsonToDartMapNullable,
-      toJson: fromDartMapToGraphQLJsonNullable)
+      fromJson: fromGraphQLJsonNullableToDartMapNullable,
+      toJson: fromDartMapNullableToGraphQLJsonNullable)
   Map? lapTimesMs;
 
   int? timecap;
@@ -4570,8 +4570,8 @@ class UpdateBodyTransformationPhotoInput extends JsonSerializable
   late String id;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? takenOnDate;
 
   double? bodyweight;
@@ -4988,8 +4988,8 @@ class UpdateUserBenchmarkEntryInput extends JsonSerializable
   late String id;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? completedOn;
 
   double? score;
@@ -5752,8 +5752,7 @@ class ScheduledWorkout extends JsonSerializable
         workoutPlanEnrolmentId,
         workout,
         gymProfile,
-        loggedWorkoutId,
-        workoutPlanEnrolmentId
+        loggedWorkoutId
       ];
   @override
   Map<String, dynamic> toJson() => _$ScheduledWorkoutToJson(this);
@@ -5793,8 +5792,8 @@ class UpdateScheduledWorkoutInput extends JsonSerializable with EquatableMixin {
   late String id;
 
   @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTimeNullable,
-      toJson: fromDartDateTimeToGraphQLDateTimeNullable)
+      fromJson: fromGraphQLDateTimeNullableToDartDateTimeNullable,
+      toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? scheduledAt;
 
   String? note;
@@ -6240,23 +6239,15 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
-enum BodyAreaFrontBack {
-  @JsonValue('BACK')
-  back,
-  @JsonValue('FRONT')
-  front,
-  @JsonValue('BOTH')
-  both,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
-enum BodyAreaUpperLower {
-  @JsonValue('CORE')
-  core,
-  @JsonValue('LOWER')
-  lower,
-  @JsonValue('UPPER')
-  upper,
+enum WorkoutMoveRepType {
+  @JsonValue('REPS')
+  reps,
+  @JsonValue('CALORIES')
+  calories,
+  @JsonValue('DISTANCE')
+  distance,
+  @JsonValue('TIME')
+  time,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -6284,14 +6275,6 @@ enum LoadUnit {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum MoveScope {
-  @JsonValue('STANDARD')
-  standard,
-  @JsonValue('CUSTOM')
-  custom,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
 enum TimeUnit {
   @JsonValue('HOURS')
   hours,
@@ -6302,25 +6285,39 @@ enum TimeUnit {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum WorkoutMoveRepType {
-  @JsonValue('REPS')
-  reps,
-  @JsonValue('CALORIES')
-  calories,
-  @JsonValue('DISTANCE')
-  distance,
-  @JsonValue('TIME')
-  time,
+enum MoveScope {
+  @JsonValue('STANDARD')
+  standard,
+  @JsonValue('CUSTOM')
+  custom,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum ContentAccessScope {
+enum BodyAreaFrontBack {
+  @JsonValue('BACK')
+  back,
+  @JsonValue('FRONT')
+  front,
+  @JsonValue('BOTH')
+  both,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum BodyAreaUpperLower {
+  @JsonValue('CORE')
+  core,
+  @JsonValue('LOWER')
+  lower,
+  @JsonValue('UPPER')
+  upper,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum UserProfileScope {
   @JsonValue('PRIVATE')
   private,
   @JsonValue('PUBLIC')
   public,
-  @JsonValue('GROUP')
-  group,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -6338,7 +6335,7 @@ enum DifficultyLevel {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum UserProfileScope {
+enum ContentAccessScope {
   @JsonValue('PRIVATE')
   private,
   @JsonValue('PUBLIC')

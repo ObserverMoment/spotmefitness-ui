@@ -142,7 +142,7 @@ class _FilterableCollectionWorkoutPlansState
             padding:
                 const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
             child: SizedBox(
-                height: 35,
+                height: 30,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: allTags.length,
@@ -187,7 +187,7 @@ class _CollectionWorkoutPlansList extends StatelessWidget {
     return workoutPlans.isEmpty
         ? Padding(padding: const EdgeInsets.all(24), child: MyText('No plans'))
         : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: workoutPlans.length,
@@ -216,13 +216,11 @@ class _CollectionWorkoutPlansList extends StatelessWidget {
                       ],
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 4.0),
+                            horizontal: 8, vertical: 10.0),
                         child: WorkoutPlanCard(workoutPlans[i]),
                       ),
                       menuChild: WorkoutPlanCard(
                         workoutPlans[i],
-                        showEnrolledAndReviews: false,
-                        showGoalsBarDisplay: false,
                       ),
                     )),
           );

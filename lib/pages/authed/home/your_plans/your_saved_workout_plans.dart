@@ -71,7 +71,7 @@ class __FilterableSavedPlansState extends State<_FilterableSavedPlans> {
           padding:
               const EdgeInsets.only(left: 4.0, top: 4, bottom: 10, right: 4),
           child: SizedBox(
-              height: 35,
+              height: 30,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: collectionsWithPlans.length,

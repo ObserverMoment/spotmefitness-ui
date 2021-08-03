@@ -137,10 +137,6 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                                 expand: true,
                                 child:
                                     CollectionCreator(collection: collection))),
-                      BottomSheetMenuItem(
-                          text: 'Share',
-                          icon: Icon(CupertinoIcons.share),
-                          onPressed: () => print('share')),
                       if (isOwner)
                         BottomSheetMenuItem(
                             text: 'Delete',

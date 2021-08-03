@@ -133,9 +133,10 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                   CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: () => context.push(
+                        rootNavigator: true,
                         child: YourScheduleTextSearch(
-                      allScheduledWorkouts: allScheduled,
-                    )),
+                          allScheduledWorkouts: allScheduled,
+                        )),
                     child: Icon(CupertinoIcons.search),
                   ),
                   CupertinoButton(
@@ -248,7 +249,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                         children: selectedDayScheduled
                             .map((s) => Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 4),
+                                      horizontal: 12, vertical: 10),
                                   child: ScheduledWorkoutCard(s),
                                 ))
                             .toList(),
@@ -339,7 +340,7 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
                           scheduledWorkout.scheduledAt.millisecondsSinceEpoch)
                       .map((scheduledWorkout) => Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 4.0),
+                                horizontal: 12, vertical: 10.0),
                             child: ScheduledWorkoutCard(scheduledWorkout),
                           ))
                       .toList(),

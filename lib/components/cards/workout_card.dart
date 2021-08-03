@@ -141,7 +141,8 @@ class WorkoutCard extends StatelessWidget {
                 )),
           ),
           Container(
-              decoration: BoxDecoration(color: context.theme.primary),
+              decoration:
+                  BoxDecoration(color: context.theme.primary.withOpacity(0.75)),
               height: 3),
           Container(
             padding: const EdgeInsets.all(12),
@@ -167,7 +168,7 @@ class WorkoutCard extends StatelessWidget {
                         MyText(
                           'By ${workout.user.displayName}',
                           size: FONTSIZE.TINY,
-                          lineHeight: 1.4,
+                          lineHeight: 1.3,
                         ),
                       ],
                     ),
@@ -179,7 +180,7 @@ class WorkoutCard extends StatelessWidget {
                     children: [
                       SizedBox(height: 12),
                       Wrap(
-                        spacing: 8,
+                        spacing: 5,
                         runSpacing: 8,
                         children: workout.workoutSections
                             .sortedBy<num>((section) => section.sortPosition)
@@ -204,12 +205,11 @@ class WorkoutCard extends StatelessWidget {
                                 (e) => Container(
                                     padding: const EdgeInsets.all(6),
                                     decoration: BoxDecoration(
-                                        color: context.theme.background
-                                            .withOpacity(0.4),
+                                        color: context.theme.background,
                                         borderRadius:
                                             BorderRadius.circular(30)),
-                                    width: 32,
-                                    height: 32,
+                                    width: 30,
+                                    height: 30,
                                     child: Utils.getEquipmentIcon(context, e,
                                         color: context.theme.primary)),
                               )
@@ -223,50 +223,6 @@ class WorkoutCard extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-/// For generating an image via [screenshot] for use when sharing the workout.
-class ShareWorkoutCardImage extends StatelessWidget {
-  final Workout workout;
-
-  ShareWorkoutCardImage(this.workout);
-
-  @override
-  Widget build(BuildContext context) {
-    final deviceThemeIsDark =
-        SchedulerBinding.instance?.window.platformBrightness == Brightness.dark;
-    final textColor = deviceThemeIsDark ? Styles.white : Styles.black;
-    final tagColor = deviceThemeIsDark ? Styles.black : Styles.white;
-    final textStyle = TextStyle(color: textColor, fontSize: 18);
-
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        if (Utils.textNotNull(workout.coverImageUri))
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: SizedUploadcareImage(
-                workout.coverImageUri!,
-                displaySize: Size(200, 200),
-              ),
-            ),
-          ),
-        Container(
-          decoration: BoxDecoration(
-              color: tagColor,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(4), topRight: Radius.circular(4))),
-          padding: const EdgeInsets.all(12),
-          child: Text(
-            workout.name,
-            style: textStyle,
-          ),
-        )
-      ],
     );
   }
 }

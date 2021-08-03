@@ -14,21 +14,22 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
       : super(key: key);
 
   /// Less than one means an overlap.
-  final kAvatarWidthFactor = 0.8;
-  final kAvatarSize = 34.0;
+  final kAvatarWidthFactor = 0.7;
+  final kAvatarSize = 22.0;
 
   @override
   Widget build(BuildContext context) {
     return enrolments.isEmpty
         ? MyText(
             'No participants yet',
-            size: FONTSIZE.SMALL,
+            size: FONTSIZE.TINY,
+            weight: FontWeight.bold,
             subtext: true,
           )
         : Column(
             children: [
               Container(
-                height: 40,
+                height: 30,
                 child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -39,8 +40,6 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                           .mapIndexed((i, e) => Align(
                                 widthFactor: kAvatarWidthFactor,
                                 child: UserAvatar(
-                                  border: true,
-                                  borderWidth: 1,
                                   avatarUri: e.user.avatarUri,
                                   size: kAvatarSize,
                                 ),
@@ -60,6 +59,8 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                 MyText(
                   subtitle!,
                   size: FONTSIZE.TINY,
+                  weight: FontWeight.bold,
+                  subtext: true,
                 ),
             ],
           );

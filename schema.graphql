@@ -84,7 +84,6 @@ input ConnectRelationInput {
 enum ContentAccessScope {
   PRIVATE
   PUBLIC
-  GROUP
 }
 
 input CopyWorkoutPlanDayToAnotherDayInput {
@@ -1071,7 +1070,7 @@ type User {
   linkedinUrl: String
   firstname: String
   lastname: String
-  gender: Gender
+  gender: Gender!
   hasOnboarded: Boolean!
   GymProfiles: [GymProfile!]
   ProgressJournalGoalTags: [ProgressJournalGoalTag!]

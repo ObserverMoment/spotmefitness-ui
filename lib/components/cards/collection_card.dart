@@ -34,27 +34,42 @@ class CollectionCard extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          MyText(
-            collection.name,
-            maxLines: 2,
-            weight: FontWeight.bold,
-            size: FONTSIZE.BIG,
-            textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: MyHeaderText(
+              collection.name,
+              maxLines: 2,
+              size: FONTSIZE.BIG,
+              textAlign: TextAlign.center,
+            ),
           ),
           if (Utils.textNotNull(
             collection.description,
           ))
-            MyText(
-              collection.description!,
-              maxLines: 2,
-              textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: MyText(
+                collection.description!,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
             ),
-          MyText(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: MyText(
               '${collection.workouts.length} ${collection.workouts.length == 1 ? "workout" : "workouts"}',
-              color: Styles.colorTwo),
-          MyText(
+              color: Styles.colorTwo,
+              weight: FontWeight.bold,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: MyText(
               '${collection.workoutPlans.length} ${collection.workoutPlans.length == 1 ? "plan" : "plans"}',
-              color: Styles.colorTwo),
+              color: Styles.colorTwo,
+              weight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

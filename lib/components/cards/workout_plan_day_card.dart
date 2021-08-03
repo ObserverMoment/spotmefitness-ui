@@ -19,13 +19,11 @@ class WorkoutPlanDayCard extends StatelessWidget {
   /// Zero indexed.
   final int displayDayNumber;
   final WorkoutPlanDay workoutPlanDay;
-  final bool minimize;
   final bool openWorkoutDetailsOnTap;
   const WorkoutPlanDayCard(
       {Key? key,
       required this.workoutPlanDay,
       required this.displayDayNumber,
-      this.minimize = false,
       this.openWorkoutDetailsOnTap = true})
       : super(key: key);
 
@@ -36,36 +34,45 @@ class WorkoutPlanDayCard extends StatelessWidget {
         .toList();
 
     return Card(
+      padding: const EdgeInsets.only(top: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MyText('Day ${displayDayNumber + 1}'),
+          SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: MyHeaderText(
+              'Day ${displayDayNumber + 1}',
+              weight: FontWeight.bold,
+            ),
+          ),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.only(top: 6),
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
               child: MyText(
                 workoutPlanDay.note!,
-                subtext: true,
+                size: FONTSIZE.SMALL,
               ),
             ),
-          SizedBox(height: 3),
           ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: sortedWorkoutPlanDayWorkouts.length,
               separatorBuilder: (c, i) => HorizontalLine(),
               itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (Utils.textNotNull(
                             sortedWorkoutPlanDayWorkouts[i].note))
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: MyText(
+                            padding: const EdgeInsets.only(
+                                bottom: 10, left: 8, right: 8),
+                            child: MyHeaderText(
                               sortedWorkoutPlanDayWorkouts[i].note!,
                               color: Styles.infoBlue,
+                              size: FONTSIZE.SMALL,
                             ),
                           ),
                         GestureDetector(

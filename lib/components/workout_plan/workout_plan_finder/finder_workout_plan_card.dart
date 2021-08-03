@@ -60,8 +60,6 @@ class WorkoutFinderWorkoutPlanCard extends StatelessWidget {
         child: WorkoutPlanCard(workoutPlan),
         menuChild: WorkoutPlanCard(
           workoutPlan,
-          showAccessScope: false,
-          showEnrolledAndReviews: false,
         ),
         actions: [
           ContextMenuAction(

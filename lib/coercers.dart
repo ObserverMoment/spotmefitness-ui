@@ -6,10 +6,10 @@ DateTime fromGraphQLDateTimeToDartDateTime(int date) =>
 int fromDartDateTimeToGraphQLDateTime(DateTime date) =>
     date.millisecondsSinceEpoch;
 
-DateTime? fromGraphQLDateTimeToDartDateTimeNullable(int? date) =>
+DateTime? fromGraphQLDateTimeNullableToDartDateTimeNullable(int? date) =>
     date != null ? DateTime.fromMillisecondsSinceEpoch(date) : null;
 
-int? fromDartDateTimeToGraphQLDateTimeNullable(DateTime? date) =>
+int? fromDartDateTimeNullableToGraphQLDateTimeNullable(DateTime? date) =>
     date != null ? date.millisecondsSinceEpoch : null;
 
 /// JSON
@@ -19,11 +19,11 @@ Map fromGraphQLJsonToDartMap(dynamic data) {
 
 dynamic fromDartMapToGraphQLJson(Map data) => data;
 
-Map? fromGraphQLJsonToDartMapNullable(dynamic data) {
+Map? fromGraphQLJsonNullableToDartMapNullable(dynamic data) {
   return data != null
       ? Map<String, dynamic>.from(data as Map<dynamic, dynamic>)
       : null;
 }
 
-dynamic fromDartMapToGraphQLJsonNullable(Map? data) =>
+dynamic fromDartMapNullableToGraphQLJsonNullable(Map? data) =>
     data != null ? data : null;

@@ -232,17 +232,13 @@ class _WorkoutPlanEnrolmentDetailsPageState
                           items: [
                         BottomSheetMenuItem(
                           text: 'Leave review',
-                          icon: Icon(CupertinoIcons.star_fill),
+                          icon: Icon(CupertinoIcons.star),
                           onPressed: () => context.showBottomSheet(
                               child: WorkoutPlanReviewCreator(
                             parentWorkoutPlanEnrolmentId: enrolment.id,
                             parentWorkoutPlanId: workoutPlan.id,
                           )),
                         ),
-                        BottomSheetMenuItem(
-                            text: 'Share progress',
-                            icon: Icon(CupertinoIcons.share),
-                            onPressed: () => print('share progress')),
                         BottomSheetMenuItem(
                             text: 'Reset progress',
                             icon: Icon(CupertinoIcons.refresh_bold),

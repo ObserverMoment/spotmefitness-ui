@@ -141,7 +141,7 @@ class _FilterableCollectionWorkoutsState
             padding:
                 const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
             child: SizedBox(
-                height: 35,
+                height: 30,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: allTags.length,
@@ -187,7 +187,7 @@ class _CollectionWorkoutsList extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.all(24), child: MyText('No workouts'))
         : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: workouts.length,
@@ -215,7 +215,7 @@ class _CollectionWorkoutsList extends StatelessWidget {
                       ],
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 4.0),
+                            horizontal: 8, vertical: 10.0),
                         child: WorkoutCard(workouts[i]),
                       ),
                       menuChild: WorkoutCard(

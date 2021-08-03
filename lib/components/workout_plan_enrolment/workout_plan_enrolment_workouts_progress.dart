@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
@@ -67,8 +66,6 @@ class WorkoutPlanEnrolmentWorkoutsWeek extends StatefulWidget {
 
 class _WorkoutPlanEnrolmentWorkoutsWeekState
     extends State<WorkoutPlanEnrolmentWorkoutsWeek> {
-  bool _minimizePlanDayCards = true;
-
   @override
   Widget build(BuildContext context) {
     /// Must % 7 so that workouts in weeks higher than week 1 will get assigned to the correct day of that week.
@@ -87,11 +84,6 @@ class _WorkoutPlanEnrolmentWorkoutsWeekState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               H3('Week ${widget.weekNumber + 1}'),
-              ShowHideDetailsButton(
-                onPressed: () => setState(
-                    () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                showDetails: !_minimizePlanDayCards,
-              ),
             ],
           ),
         ),
@@ -106,7 +98,6 @@ class _WorkoutPlanEnrolmentWorkoutsWeekState
                 ? _WorkoutPlanEnrolmentDayCard(
                     workoutPlanDay: byDayNumberInWeek[i]!,
                     displayDayNumber: i,
-                    minimize: _minimizePlanDayCards,
                     workoutPlanEnrolment: widget.workoutPlanEnrolment,
                   )
                 : Opacity(
@@ -126,13 +117,11 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
   /// Zero indexed.
   final int displayDayNumber;
   final WorkoutPlanDay workoutPlanDay;
-  final bool minimize;
   final WorkoutPlanEnrolment workoutPlanEnrolment;
   const _WorkoutPlanEnrolmentDayCard(
       {Key? key,
       required this.workoutPlanDay,
       required this.displayDayNumber,
-      this.minimize = false,
       required this.workoutPlanEnrolment})
       : super(key: key);
 
@@ -226,14 +215,19 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                MyText('Day ${displayDayNumber + 1}'),
+                MyHeaderText('Day ${displayDayNumber + 1}'),
                 if (dayComplete)
                   FadeIn(
                       child: Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: Row(
                       children: [
-                        MyText('Day Complete', size: FONTSIZE.SMALL),
+                        MyText(
+                          'Day Complete',
+                          size: FONTSIZE.TINY,
+                          color: Styles.peachRed,
+                          weight: FontWeight.bold,
+                        ),
                         SizedBox(width: 6),
                         Icon(
                           CupertinoIcons.checkmark_alt_circle,
@@ -247,10 +241,10 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
           ),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 6),
               child: MyText(
                 workoutPlanDay.note!,
-                subtext: true,
+                size: FONTSIZE.SMALL,
               ),
             ),
           SizedBox(height: 3),
@@ -312,16 +306,18 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                                     id: dayWorkout.workout.id))),
                       ])),
                   child: Padding(
-                    padding: const EdgeInsets.all(2.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (Utils.textNotNull(dayWorkout.note))
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: MyText(
+                            padding: const EdgeInsets.only(
+                                bottom: 10, left: 16, right: 16),
+                            child: MyHeaderText(
                               dayWorkout.note!,
                               color: Styles.infoBlue,
+                              size: FONTSIZE.SMALL,
                             ),
                           ),
                         Stack(

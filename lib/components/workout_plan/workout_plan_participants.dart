@@ -21,7 +21,8 @@ class WorkoutPlanParticipants extends StatelessWidget {
           : ListView.builder(
               itemCount: userSummaries.length,
               itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 4),
                     child: ParticipantCard(userSummary: userSummaries[i]),
                   )),
     );

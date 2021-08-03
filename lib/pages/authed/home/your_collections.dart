@@ -49,7 +49,7 @@ class YourCollectionsPage extends StatelessWidget {
               return collections.isNotEmpty
                   ? Padding(
                       padding:
-                          const EdgeInsets.only(top: 16.0, left: 12, right: 12),
+                          const EdgeInsets.only(top: 16.0, left: 16, right: 16),
                       child: GridView.builder(
                         shrinkWrap: true,
                         itemCount: collections.length,

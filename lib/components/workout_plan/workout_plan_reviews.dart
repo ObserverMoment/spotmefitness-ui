@@ -29,7 +29,7 @@ class WorkoutPlanReviews extends StatelessWidget {
         dateSortedReviews.isEmpty
             ? Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: MyText(
                     'No reviews yet',
                     subtext: true,
@@ -39,21 +39,24 @@ class WorkoutPlanReviews extends StatelessWidget {
             : Expanded(
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        MyText(
-                          '${average.stringMyDouble()}',
-                          size: FONTSIZE.BIG,
-                        ),
-                        MyText(
-                          ' out of $itemCount',
-                          size: FONTSIZE.BIG,
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          MyText(
+                            '${average.stringMyDouble()}',
+                            size: FONTSIZE.BIG,
+                          ),
+                          MyText(
+                            ' out of $itemCount',
+                            size: FONTSIZE.BIG,
+                          ),
+                        ],
+                      ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(6.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: RatingBarIndicator(
                         rating: average,
                         itemBuilder: (context, index) => Icon(
@@ -75,7 +78,7 @@ class WorkoutPlanReviews extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: dateSortedReviews.length,
                           itemBuilder: (c, i) => Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(6.0),
                                 child: WorkoutPlanReviewCard(
                                   review: dateSortedReviews[i],
                                 ),
