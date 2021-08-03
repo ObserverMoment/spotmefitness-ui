@@ -145,7 +145,8 @@ class WorkoutCard extends StatelessWidget {
                   BoxDecoration(color: context.theme.primary.withOpacity(0.75)),
               height: 3),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding:
+                const EdgeInsets.only(top: 16, left: 12, right: 12, bottom: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

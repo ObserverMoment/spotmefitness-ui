@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
@@ -12,6 +17,7 @@ import 'package:spotmefitness_ui/components/cards/review_card.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -46,6 +52,7 @@ class WorkoutPlanEnrolmentDetailsPage extends StatefulWidget {
 class _WorkoutPlanEnrolmentDetailsPageState
     extends State<WorkoutPlanEnrolmentDetailsPage> {
   ScrollController _scrollController = ScrollController();
+  ScreenshotController screenshotController = ScreenshotController();
 
   /// 0 = Schedule List. 1 = Goals HeatMap / Calendar. 2 = Participants. 3 = reviews.
   int _activeTabIndex = 0;
@@ -142,6 +149,48 @@ class _WorkoutPlanEnrolmentDetailsPageState
       context.showErrorAlert('Something went wrong, the update did not work.');
     } else {
       context.showToast(message: 'Plan progress reset');
+    }
+  }
+
+  /// This code is duplicated in [WorkoutPlanDetails].
+  /// Not abtracted as [WorkoutPlanDetails] share may end up being different.
+  Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
+    try {
+      context.showLoadingAlert(
+        'Loading...',
+      );
+
+      /// Renders an image of the workoutPlan.coverImageUri or a placeholder image.
+      final capturedImage = await screenshotController.captureFromWidget(
+        SizedBox(
+          height: 100,
+          width: 100,
+          child: workoutPlan.coverImageUri != null
+              ? SizedUploadcareImage(
+                  workoutPlan.coverImageUri!,
+                  displaySize: Size(300, 300),
+                )
+              : Image.asset(
+                  'assets/home_page_images/home_page_plans.jpg',
+                  fit: BoxFit.cover,
+                ),
+        ),
+      );
+
+      // https://github.com/SachinGanesh/screenshot/issues/41
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath =
+          await File('${directory.path}/${kTempShareImageFileName}').create();
+      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
+      await imagePath.writeAsBytes(pngBytes);
+
+      context.pop(); // Loading alert modal.
+
+      await Share.shareFiles([imagePath.path],
+          text: '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
+          subject: 'Check out this workout plan!');
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -250,7 +299,8 @@ class _WorkoutPlanEnrolmentDetailsPageState
                         BottomSheetMenuItem(
                             text: 'Share plan',
                             icon: Icon(CupertinoIcons.share),
-                            onPressed: () => print('share plan')),
+                            onPressed: () =>
+                                _shareWorkoutPlan(enrolment.workoutPlan)),
                         BottomSheetMenuItem(
                             text: 'Leave plan',
                             isDestructive: true,

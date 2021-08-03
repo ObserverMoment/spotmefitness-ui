@@ -1,11 +1,19 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
@@ -39,6 +47,7 @@ class _UserPublicProfileDetailsPageState
   int _activeTabIndex = 0;
   late PageController _pageController;
   late ScrollController _scrollController;
+  ScreenshotController screenshotController = ScreenshotController();
 
   final kAvatarSize = 120.0;
 
@@ -54,6 +63,46 @@ class _UserPublicProfileDetailsPageState
       index,
     );
     setState(() => _activeTabIndex = index);
+  }
+
+  Future<void> _shareUserProfile(UserPublicProfile userPublicProfile) async {
+    try {
+      context.showLoadingAlert(
+        'Loading...',
+      );
+
+      /// Renders an image of the workoutPlan.coverImageUri or a placeholder image.
+      final capturedImage = await screenshotController.captureFromWidget(
+        SizedBox(
+          height: 100,
+          width: 100,
+          child: userPublicProfile.avatarUri != null
+              ? SizedUploadcareImage(
+                  userPublicProfile.avatarUri!,
+                  displaySize: Size(300, 300),
+                )
+              : SvgPicture.asset(
+                  'assets/logos/spotme_logo.svg',
+                  fit: BoxFit.cover,
+                ),
+        ),
+      );
+
+      // https://github.com/SachinGanesh/screenshot/issues/41
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath =
+          await File('${directory.path}/${kTempShareImageFileName}').create();
+      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
+      await imagePath.writeAsBytes(pngBytes);
+
+      context.pop(); // Loading alert modal.
+
+      await Share.shareFiles([imagePath.path],
+          text: '${kDeepLinkSchema}profile/${userPublicProfile.id}',
+          subject: 'Check out this profile!');
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 
   /// Top right of tabs to indicate how many of each type are in the list.
@@ -123,7 +172,8 @@ class _UserPublicProfileDetailsPageState
                         BottomSheetMenuItem(
                             text: 'Share',
                             icon: Icon(CupertinoIcons.share),
-                            onPressed: () => print('share')),
+                            onPressed: () =>
+                                _shareUserProfile(userPublicProfile)),
                         BottomSheetMenuItem(
                             text: 'Block',
                             icon: Icon(CupertinoIcons.nosign),

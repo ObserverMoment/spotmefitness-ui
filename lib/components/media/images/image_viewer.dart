@@ -61,14 +61,6 @@ class FullScreenImageViewer extends StatelessWidget {
     return CupertinoPageScaffold(
         navigationBar: BorderlessNavBar(
           middle: title != null ? NavBarTitle(title!) : null,
-          trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: () => print('share flow'),
-            child: Icon(
-              CupertinoIcons.share_up,
-              size: 24,
-            ),
-          ),
         ),
         child: PhotoView(
           loadingBuilder: (context, event) => Center(

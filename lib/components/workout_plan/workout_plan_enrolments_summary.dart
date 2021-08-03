@@ -15,7 +15,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
 
   /// Less than one means an overlap.
   final kAvatarWidthFactor = 0.7;
-  final kAvatarSize = 22.0;
+  final kAvatarSize = 30.0;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
         : Column(
             children: [
               Container(
-                height: 30,
+                height: 36,
                 child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -42,6 +42,8 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                                 child: UserAvatar(
                                   avatarUri: e.user.avatarUri,
                                   size: kAvatarSize,
+                                  border: true,
+                                  borderWidth: 1,
                                 ),
                               ))
                           .toList(),
@@ -56,11 +58,14 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                     ]),
               ),
               if (Utils.textNotNull(subtitle))
-                MyText(
-                  subtitle!,
-                  size: FONTSIZE.TINY,
-                  weight: FontWeight.bold,
-                  subtext: true,
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0, bottom: 1),
+                  child: MyText(
+                    subtitle!,
+                    size: FONTSIZE.TINY,
+                    weight: FontWeight.bold,
+                    subtext: true,
+                  ),
                 ),
             ],
           );

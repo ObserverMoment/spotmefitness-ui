@@ -7,6 +7,9 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 /// E.g. ['spotmefitness://workout/{workoutId}']
 const kDeepLinkSchema = 'spotmefitness://';
 
+/// When generating an image to share with a link or other content, this is the temp location where it should be stored.
+const kTempShareImageFileName = 'temp-share-image.png';
+
 const kBodyweightEquipmentId = 'b95da267-c036-4caa-9294-d1fab9b3d2e8';
 const kRestMoveId = '975a5da2-12c7-40d6-b666-eed713f0dadd';
 

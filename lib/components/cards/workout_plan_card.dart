@@ -147,7 +147,8 @@ class WorkoutPlanCard extends StatelessWidget {
                   BoxDecoration(color: context.theme.primary.withOpacity(0.75)),
               height: 5),
           Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.only(
+                  top: 16, left: 12, right: 12, bottom: 8),
               child: Column(
                 children: [
                   Row(
@@ -184,7 +185,7 @@ class WorkoutPlanCard extends StatelessWidget {
                       ),
                     ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
+                    padding: const EdgeInsets.only(top: 8.0),
                     child: WorkoutPlanEnrolmentsSummary(
                       enrolments: workoutPlan.enrolments,
                       subtitle:

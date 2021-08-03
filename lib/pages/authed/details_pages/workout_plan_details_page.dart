@@ -1,7 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
@@ -11,6 +17,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -22,6 +29,7 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -46,6 +54,7 @@ class WorkoutPlanDetailsPage extends StatefulWidget {
 
 class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
   ScrollController _scrollController = ScrollController();
+  ScreenshotController screenshotController = ScreenshotController();
 
   /// 0 = Schedule List. 1 = Goals HeatMap / Calendar. 2 = Participants. 3 = reviews.
   int _activeTabIndex = 0;
@@ -182,6 +191,48 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
           'Sorry there was a problem, the workout plan was not removed');
     } else {
       context.showToast(message: 'Removed from collection: ${collection.name}');
+    }
+  }
+
+  /// This code is duplicated in [WorkoutPlanEnrolmentDetails].
+  /// Not abtracted as [WorkoutPlanEnrolmentDetails] share may end up being different.
+  Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
+    try {
+      context.showLoadingAlert(
+        'Loading...',
+      );
+
+      /// Renders an image of the workoutPlan.coverImageUri or a placeholder image.
+      final capturedImage = await screenshotController.captureFromWidget(
+        SizedBox(
+          height: 100,
+          width: 100,
+          child: workoutPlan.coverImageUri != null
+              ? SizedUploadcareImage(
+                  workoutPlan.coverImageUri!,
+                  displaySize: Size(300, 300),
+                )
+              : Image.asset(
+                  'assets/home_page_images/home_page_plans.jpg',
+                  fit: BoxFit.cover,
+                ),
+        ),
+      );
+
+      // https://github.com/SachinGanesh/screenshot/issues/41
+      final directory = await getApplicationDocumentsDirectory();
+      final imagePath =
+          await File('${directory.path}/${kTempShareImageFileName}').create();
+      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
+      await imagePath.writeAsBytes(pngBytes);
+
+      context.pop(); // Loading alert modal.
+
+      await Share.shareFiles([imagePath.path],
+          text: '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
+          subject: 'Check out this workout plan!');
+    } catch (e) {
+      throw Exception(e);
     }
   }
 
@@ -365,7 +416,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                             BottomSheetMenuItem(
                                 text: 'Share',
                                 icon: Icon(CupertinoIcons.share),
-                                onPressed: () => print('share')),
+                                onPressed: () =>
+                                    _shareWorkoutPlan(workoutPlan)),
                             if (isOwner)
                               BottomSheetMenuItem(
                                   text: 'Edit',

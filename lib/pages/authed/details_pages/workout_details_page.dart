@@ -14,7 +14,6 @@ import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
@@ -216,6 +215,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           child: workout.coverImageUri != null
               ? SizedUploadcareImage(
                   workout.coverImageUri!,
+                  displaySize: Size(100, 100),
                 )
               : Image.asset(
                   'assets/home_page_images/home_page_workouts.jpg',
@@ -226,7 +226,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
       // https://github.com/SachinGanesh/screenshot/issues/41
       final directory = await getApplicationDocumentsDirectory();
-      final imagePath = await File('${directory.path}/image.png').create();
+      final imagePath =
+          await File('${directory.path}/${kTempShareImageFileName}').create();
       final Uint8List pngBytes = capturedImage.buffer.asUint8List();
       await imagePath.writeAsBytes(pngBytes);
 
