@@ -68,6 +68,7 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -78,18 +79,21 @@ class WorkoutMoveMinimalDisplay extends StatelessWidget {
           ],
         ),
         if (workoutMove.loadAmount != 0 || workoutMove.equipment != null)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (workoutMove.loadAmount != 0) _buildLoadDisplay(),
-              if (workoutMove.equipment != null)
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: workoutMove.loadAmount != 0 ? 6.0 : 0.0),
-                  child: MyText(workoutMove.equipment!.name,
-                      size: fontSize, color: Styles.colorTwo),
-                )
-            ],
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (workoutMove.loadAmount != 0) _buildLoadDisplay(),
+                if (workoutMove.equipment != null)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: workoutMove.loadAmount != 0 ? 8.0 : 0.0),
+                    child: MyText(workoutMove.equipment!.name,
+                        size: fontSize, color: Styles.colorTwo),
+                  )
+              ],
+            ),
           ),
       ],
     );

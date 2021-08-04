@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
@@ -20,6 +21,7 @@ import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_sel
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
@@ -42,6 +44,36 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
     final prev = bloc.loggedWorkout.completedOn;
     bloc.updateCompletedOn(
         DateTime(prev.year, prev.month, prev.day, time.hour, time.minute));
+  }
+
+  Widget _buildLoggedWorkoutSummaryForSharing(
+      List<LoggedWorkoutSection> sortedSections) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: sortedSections
+          .map((s) => Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText(
+                        Utils.textNotNull(s.name)
+                            ? s.name!
+                            : 'Section ${(s.sortPosition + 1).toString()}',
+                        weight: FontWeight.bold,
+                      ),
+                    ),
+                    Flexible(
+                      child: LoggedWorkoutSectionSummaryCard(
+                        loggedWorkoutSection: s,
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
+    );
   }
 
   Future<void> _deleteLoggedWorkout(BuildContext context) async {
@@ -144,11 +176,15 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                           BottomSheetMenuItem(
                               text: 'Share',
                               icon: Icon(CupertinoIcons.share),
-                              onPressed: () => print('share flow')),
-                          BottomSheetMenuItem(
-                              text: 'Do again',
-                              icon: Icon(CupertinoIcons.repeat),
-                              onPressed: () => print('go to original workout')),
+                              onPressed: () =>
+                                  SharingAndLinking.shareImageRenderOfWidget(
+                                      padding: const EdgeInsets.all(16),
+                                      context: context,
+                                      text: 'Just nailed this workout!',
+                                      subject: 'Just nailed this workout!',
+                                      widgetForImageCapture:
+                                          _buildLoggedWorkoutSummaryForSharing(
+                                              sortedSections))),
                           BottomSheetMenuItem(
                               text: 'Export',
                               icon: Icon(CupertinoIcons.download_circle),

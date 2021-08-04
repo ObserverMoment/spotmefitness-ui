@@ -27,6 +27,7 @@ import 'package:spotmefitness_ui/model/country.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_created_workout_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_created_workouts.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -66,14 +67,11 @@ class _UserPublicProfileDetailsPageState
   }
 
   Future<void> _shareUserProfile(UserPublicProfile userPublicProfile) async {
-    try {
-      context.showLoadingAlert(
-        'Loading...',
-      );
-
-      /// Renders an image of the workoutPlan.coverImageUri or a placeholder image.
-      final capturedImage = await screenshotController.captureFromWidget(
-        SizedBox(
+    SharingAndLinking.shareImageRenderOfWidget(
+        context: context,
+        text: '${kDeepLinkSchema}profile/${userPublicProfile.id}',
+        subject: 'Check out this profile!',
+        widgetForImageCapture: SizedBox(
           height: 100,
           width: 100,
           child: userPublicProfile.avatarUri != null
@@ -85,24 +83,7 @@ class _UserPublicProfileDetailsPageState
                   'assets/logos/spotme_logo.svg',
                   fit: BoxFit.cover,
                 ),
-        ),
-      );
-
-      // https://github.com/SachinGanesh/screenshot/issues/41
-      final directory = await getApplicationDocumentsDirectory();
-      final imagePath =
-          await File('${directory.path}/${kTempShareImageFileName}').create();
-      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
-      await imagePath.writeAsBytes(pngBytes);
-
-      context.pop(); // Loading alert modal.
-
-      await Share.shareFiles([imagePath.path],
-          text: '${kDeepLinkSchema}profile/${userPublicProfile.id}',
-          subject: 'Check out this profile!');
-    } catch (e) {
-      throw Exception(e);
-    }
+        ));
   }
 
   /// Top right of tabs to indicate how many of each type are in the list.

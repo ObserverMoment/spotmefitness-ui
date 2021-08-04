@@ -60,7 +60,7 @@ class HomePage extends StatelessWidget {
             padding: EdgeInsets.zero,
             crossAxisCount: 2,
             shrinkWrap: true,
-            childAspectRatio: 1.2,
+            childAspectRatio: 1.5,
             physics: NeverScrollableScrollPhysics(),
             children: [
               GestureDetector(
@@ -126,7 +126,7 @@ class _HomeScreenCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(6),
+      margin: const EdgeInsets.all(8),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       decoration: BoxDecoration(
           image: DecorationImage(

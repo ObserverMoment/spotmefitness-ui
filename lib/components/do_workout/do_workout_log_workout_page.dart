@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -14,9 +19,11 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DoWorkoutLogWorkoutPage extends StatefulWidget {
   final String? scheduledWorkoutId;
@@ -85,6 +92,31 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
             ),
           ]);
     }
+  }
+
+  Widget _buildLoggedWorkoutSummaryForSharing(
+      List<LoggedWorkoutSection> sortedSections) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: sortedSections
+          .map((s) => Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText('these are titles'),
+                    ),
+                    Flexible(
+                      child: LoggedWorkoutSectionSummaryCard(
+                        loggedWorkoutSection: s,
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
+    );
   }
 
   @override
@@ -181,7 +213,13 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                 withMinWidth: false,
                 loading: _savingToDB,
                 text: 'Share Summary',
-                onPressed: () => print('share')),
+                onPressed: () => SharingAndLinking.shareImageRenderOfWidget(
+                    padding: const EdgeInsets.all(16),
+                    context: context,
+                    text: 'Just nailed this workout!',
+                    subject: 'Just nailed this workout!',
+                    widgetForImageCapture:
+                        _buildLoggedWorkoutSummaryForSharing(sortedSections))),
           ],
         ),
         SizedBox(height: 20),

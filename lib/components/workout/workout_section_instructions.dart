@@ -30,7 +30,7 @@ class WorkoutSectionInstructions extends StatelessWidget {
       case kForTimeName:
         return 'Complete all sets ${_getRoundsText()}, as fast as possible.';
       case kAMRAPName:
-        return 'Complete all sets as many times as possible in ${timecap!.secondsToTimeDisplay()}.';
+        return 'Complete as many reps as possible in ${timecap!.secondsToTimeDisplay()}.';
       case kLastStandingName:
         return timecap != null
             ? 'Complete sets within the timecaps for ${timecap!.secondsToTimeDisplay()}...if you can!'

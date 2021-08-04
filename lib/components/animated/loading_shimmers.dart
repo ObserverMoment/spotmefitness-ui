@@ -108,6 +108,21 @@ class ShimmerListPage extends StatelessWidget {
   }
 }
 
+class ShimmerGridPage extends StatelessWidget {
+  final String title;
+  ShimmerGridPage({this.title = 'Getting ready...'});
+  @override
+  Widget build(BuildContext context) {
+    return MyPageScaffold(
+        navigationBar: BorderlessNavBar(
+          middle: NavBarTitle(title),
+        ),
+        child: ShimmerCardGrid(
+          itemCount: 10,
+        ));
+  }
+}
+
 class ShimmerDetailsPage extends StatelessWidget {
   final String title;
   ShimmerDetailsPage({this.title = 'Getting ready...'});

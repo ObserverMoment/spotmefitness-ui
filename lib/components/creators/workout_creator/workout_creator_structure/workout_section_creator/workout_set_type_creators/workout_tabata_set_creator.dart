@@ -119,7 +119,6 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
   }
 
   void _openEditWorkoutMove(WorkoutMove workoutMove) {
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
       context,
       CupertinoPageRoute(
@@ -134,20 +133,6 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
       ),
     );
   }
-
-  // void _deleteWorkoutMove(int workoutMoveIndex) {
-  //   _bloc.deleteWorkoutMove(
-  //       widget.sectionIndex, widget.setIndex, workoutMoveIndex);
-  // }
-
-  // void _duplicateWorkoutMove(int workoutMoveIndex) {
-  //   _bloc.duplicateWorkoutMove(
-  //       widget.sectionIndex, widget.setIndex, workoutMoveIndex);
-  // }
-
-  // void _reorderWorkoutMoves(int from, int to) {
-  //   _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
-  // }
 
   String _buildStationTimeText() {
     if (_workoutSet.duration == null) {

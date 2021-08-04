@@ -101,10 +101,13 @@ class AMRAPCountdownTimer extends StatelessWidget {
                                     _buildWorkoutSetDisplay(nextSet),
                                   ],
                                 ),
-                                MyText(
-                                  'Tap screen to start / pause',
-                                  size: FONTSIZE.SMALL,
-                                  subtext: true,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: MyText(
+                                    'Tap screen to start / pause',
+                                    size: FONTSIZE.SMALL,
+                                    subtext: true,
+                                  ),
                                 )
                               ],
                             ),

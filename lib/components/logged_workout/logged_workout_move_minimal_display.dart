@@ -15,6 +15,8 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       {Key? key, required this.loggedWorkoutMove, this.showReps = true})
       : super(key: key);
 
+  final lineHeight = 1.3;
+
   Widget _buildMoveRepDisplay() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -22,6 +24,7 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       children: [
         MyText(
           ' - ${loggedWorkoutMove.reps.stringMyDouble()}',
+          lineHeight: lineHeight,
         ),
         SizedBox(
           width: 4,
@@ -32,6 +35,7 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
               : loggedWorkoutMove.repType == WorkoutMoveRepType.time
                   ? loggedWorkoutMove.timeUnit.shortDisplay
                   : describeEnum(loggedWorkoutMove.repType),
+          lineHeight: lineHeight,
         ),
       ],
     );
@@ -43,12 +47,14 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       children: [
         MyText(
           ' - ${loggedWorkoutMove.loadAmount!.stringMyDouble()}',
+          lineHeight: lineHeight,
         ),
         SizedBox(
           width: 4,
         ),
         MyText(
           loggedWorkoutMove.loadUnit.display,
+          lineHeight: lineHeight,
         ),
       ],
     );
@@ -61,7 +67,10 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
       children: [
         Row(
           children: [
-            MyText(loggedWorkoutMove.move.name),
+            MyText(
+              loggedWorkoutMove.move.name,
+              lineHeight: lineHeight,
+            ),
             if (showReps) _buildMoveRepDisplay(),
             if (loggedWorkoutMove.loadAmount != null &&
                 loggedWorkoutMove.loadAmount != 0)
@@ -73,7 +82,7 @@ class LoggedWorkoutMoveMinimalDisplay extends StatelessWidget {
             '${loggedWorkoutMove.equipment!.name}',
             size: FONTSIZE.SMALL,
             color: Styles.colorTwo,
-            lineHeight: 1.4,
+            lineHeight: lineHeight,
           )
       ],
     );

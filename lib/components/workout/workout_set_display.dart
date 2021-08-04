@@ -21,8 +21,11 @@ class WorkoutSetDisplay extends StatelessWidget {
     final List<WorkoutMove> sortedMoves =
         workoutSet.workoutMoves.sortedBy<num>((wm) => wm.sortPosition);
 
-    final showReps =
-        ![kTabataName, kHIITCircuitName].contains(workoutSectionType.name);
+    /// Don't show reps if it is a tabata, or if it is a HIIT Circuit with only one move in the set ('station')
+    /// If HIIT Circuit has more than one move in the station then we need to show reps as as the user will loop around these moves for the time specified.
+    final showReps = !((workoutSectionType.name == kTabataName) ||
+        (workoutSectionType.name == kHIITCircuitName &&
+            workoutSet.workoutMoves.length == 1));
 
     return Card(
       child: Column(

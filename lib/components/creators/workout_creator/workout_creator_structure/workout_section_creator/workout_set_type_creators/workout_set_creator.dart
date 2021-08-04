@@ -128,7 +128,6 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   }
 
   void _openAddWorkoutMoveToSet() {
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
       context,
       CupertinoPageRoute(
@@ -143,7 +142,6 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   }
 
   void _openEditWorkoutMove(WorkoutMove workoutMove) {
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
     Navigator.push(
       context,
       CupertinoPageRoute(

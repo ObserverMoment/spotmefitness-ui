@@ -110,7 +110,7 @@ class _LoggedWorkoutSectionWrapper extends StatelessWidget {
             (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex]);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 6),
       child: LoggedWorkoutSectionSummaryCard(
           loggedWorkoutSection: loggedWorkoutSection,
           addNoteToLoggedSection: (note) => context

@@ -17,36 +17,37 @@ import 'package:collection/collection.dart';
 class YourCollectionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: BorderlessNavBar(
-          middle: NavBarTitle('Your Collections'),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CreateIconButton(
-                onPressed: () => context.showBottomSheet(
-                    useRootNavigator: true,
-                    expand: true,
-                    child: CollectionCreator()),
-              ),
-              InfoPopupButton(infoWidget: MyText('Info about collections'))
-            ],
-          ),
-        ),
-        child: QueryObserver<UserCollections$Query, json.JsonSerializable>(
-            key: Key(
-                'YourCollectionsPage - ${UserCollectionsQuery().operationName}'),
-            query: UserCollectionsQuery(),
-            fetchPolicy: QueryFetchPolicy.storeFirst,
-            loadingIndicator: ShimmerCardList(itemCount: 20),
-            builder: (data) {
-              final collections = data.userCollections
-                  .sortedBy<DateTime>((c) => c.createdAt)
-                  .reversed
-                  .toList();
+    return QueryObserver<UserCollections$Query, json.JsonSerializable>(
+        key: Key(
+            'YourCollectionsPage - ${UserCollectionsQuery().operationName}'),
+        query: UserCollectionsQuery(),
+        fetchPolicy: QueryFetchPolicy.storeFirst,
+        loadingIndicator: ShimmerGridPage(),
+        builder: (data) {
+          final collections = data.userCollections
+              .sortedBy<DateTime>((c) => c.createdAt)
+              .reversed
+              .toList();
 
-              return collections.isNotEmpty
+          return CupertinoPageScaffold(
+              navigationBar: BorderlessNavBar(
+                middle: NavBarTitle('Your Collections'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CreateIconButton(
+                      onPressed: () => context.showBottomSheet(
+                          useRootNavigator: true,
+                          expand: true,
+                          child: CollectionCreator()),
+                    ),
+                    InfoPopupButton(
+                        infoWidget: MyText('Info about collections'))
+                  ],
+                ),
+              ),
+              child: collections.isNotEmpty
                   ? Padding(
                       padding:
                           const EdgeInsets.only(top: 16.0, left: 16, right: 16),
@@ -71,7 +72,64 @@ class YourCollectionsPage extends StatelessWidget {
                         'No collections yet...',
                         textAlign: TextAlign.center,
                       ),
-                    );
-            }));
+                    ));
+        });
+
+    // return CupertinoPageScaffold(
+    //     navigationBar: BorderlessNavBar(
+    //       middle: NavBarTitle('Your Collections'),
+    //       trailing: Row(
+    //         mainAxisSize: MainAxisSize.min,
+    //         mainAxisAlignment: MainAxisAlignment.end,
+    //         children: [
+    //           CreateIconButton(
+    //             onPressed: () => context.showBottomSheet(
+    //                 useRootNavigator: true,
+    //                 expand: true,
+    //                 child: CollectionCreator()),
+    //           ),
+    //           InfoPopupButton(infoWidget: MyText('Info about collections'))
+    //         ],
+    //       ),
+    //     ),
+    //     child: QueryObserver<UserCollections$Query, json.JsonSerializable>(
+    //         key: Key(
+    //             'YourCollectionsPage - ${UserCollectionsQuery().operationName}'),
+    //         query: UserCollectionsQuery(),
+    //         fetchPolicy: QueryFetchPolicy.storeFirst,
+    //         loadingIndicator: ShimmerCardList(itemCount: 20),
+    //         builder: (data) {
+    //           final collections = data.userCollections
+    //               .sortedBy<DateTime>((c) => c.createdAt)
+    //               .reversed
+    //               .toList();
+
+    //           return collections.isNotEmpty
+    //               ? Padding(
+    //                   padding:
+    //                       const EdgeInsets.only(top: 16.0, left: 16, right: 16),
+    //                   child: GridView.builder(
+    //                     shrinkWrap: true,
+    //                     itemCount: collections.length,
+    //                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+    //                         maxCrossAxisExtent: 200,
+    //                         crossAxisSpacing: 16,
+    //                         mainAxisSpacing: 16),
+    //                     itemBuilder: (c, i) => GestureDetector(
+    //                       onTap: () => context.navigateTo(
+    //                           CollectionDetailsRoute(id: collections[i].id)),
+    //                       child: CollectionCard(
+    //                         collection: collections[i],
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 )
+    //               : Center(
+    //                   child: MyText(
+    //                     'No collections yet...',
+    //                     textAlign: TextAlign.center,
+    //                   ),
+    //                 );
+    //         }));
   }
 }

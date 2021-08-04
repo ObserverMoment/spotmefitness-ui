@@ -32,6 +32,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -202,14 +203,11 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   }
 
   Future<void> _shareWorkout(Workout workout) async {
-    try {
-      context.showLoadingAlert(
-        'Loading...',
-      );
-
-      /// Renders an image of the workout.coverImageUri or a placeholder image.
-      final capturedImage = await screenshotController.captureFromWidget(
-        SizedBox(
+    SharingAndLinking.shareImageRenderOfWidget(
+        context: context,
+        text: '${kDeepLinkSchema}workout/${workout.id}',
+        subject: 'Check out this workout!',
+        widgetForImageCapture: SizedBox(
           height: 100,
           width: 100,
           child: workout.coverImageUri != null
@@ -221,24 +219,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                   'assets/home_page_images/home_page_workouts.jpg',
                   fit: BoxFit.cover,
                 ),
-        ),
-      );
-
-      // https://github.com/SachinGanesh/screenshot/issues/41
-      final directory = await getApplicationDocumentsDirectory();
-      final imagePath =
-          await File('${directory.path}/${kTempShareImageFileName}').create();
-      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
-      await imagePath.writeAsBytes(pngBytes);
-
-      context.pop(); // Loading alert modal.
-
-      await Share.shareFiles([imagePath.path],
-          text: '${kDeepLinkSchema}workout/${workout.id}',
-          subject: 'Check out this workout!');
-    } catch (e) {
-      throw Exception(e);
-    }
+        ));
   }
 
   Future<void> _archiveWorkout(String id) async {

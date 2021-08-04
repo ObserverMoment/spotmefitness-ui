@@ -35,26 +35,30 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 BottomNavbarItem(
-                  iconData: CupertinoIcons.list_number,
+                  inactiveIconData: CupertinoIcons.layers_alt,
+                  activeIconData: CupertinoIcons.layers_alt_fill,
                   label: 'Moves',
                   onTap: () => goToPage(0),
                   isActive: activePageIndex == 0,
                 ),
                 BottomNavbarItem(
-                  iconData: CupertinoIcons.chart_bar_fill,
+                  inactiveIconData: CupertinoIcons.chart_bar,
+                  activeIconData: CupertinoIcons.chart_bar_fill,
                   label: 'Progress',
                   onTap: () => goToPage(1),
                   isActive: activePageIndex == 1,
                 ),
                 BottomNavbarItem(
-                  iconData: CupertinoIcons.timer_fill,
+                  inactiveIconData: CupertinoIcons.timer,
+                  activeIconData: CupertinoIcons.timer_fill,
                   label: 'Timer',
                   onTap: () => goToPage(2),
                   isActive: activePageIndex == 2,
                 ),
                 if (showAudioTab)
                   BottomNavbarItem(
-                    iconData: CupertinoIcons.volume_up,
+                    inactiveIconData: CupertinoIcons.volume_up,
+                    activeIconData: CupertinoIcons.volume_mute,
                     label: 'Audio',
                     onTap: toggleMuteAudio,
                     isActive: !muteAudio,
@@ -67,13 +71,15 @@ class DoWorkoutBottomNavBar extends StatelessWidget {
 }
 
 class BottomNavbarItem extends StatelessWidget {
-  final IconData iconData;
+  final IconData activeIconData;
+  final IconData inactiveIconData;
   final String label;
   final bool isActive;
   final void Function() onTap;
   const BottomNavbarItem(
       {Key? key,
-      required this.iconData,
+      required this.activeIconData,
+      required this.inactiveIconData,
       required this.label,
       required this.isActive,
       required this.onTap})
@@ -87,7 +93,7 @@ class BottomNavbarItem extends StatelessWidget {
       onPressed: onTap,
       child: AnimatedOpacity(
         duration: kStandardAnimationDuration,
-        opacity: isActive ? 1 : 0.75,
+        opacity: isActive ? 1 : 0.6,
         child: AnimatedSwitcher(
             duration: kStandardAnimationDuration,
             child: isActive
@@ -95,14 +101,12 @@ class BottomNavbarItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        iconData,
-                        color: context.theme.activeIcon,
+                        activeIconData,
                       ),
                       SizedBox(height: 1),
                       MyText(
                         label,
                         size: FONTSIZE.TINY,
-                        color: context.theme.activeIcon,
                       )
                     ],
                   )
@@ -110,69 +114,13 @@ class BottomNavbarItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        iconData,
-                        color: context.theme.primary.withOpacity(0.7),
+                        inactiveIconData,
                       ),
-                      SizedBox(height: 1),
-                      MyText(label,
-                          size: FONTSIZE.TINY,
-                          color: context.theme.primary.withOpacity(0.7))
-                    ],
-                  )),
-      ),
-    );
-  }
-}
-
-class TabIcon extends StatelessWidget {
-  final Widget icon;
-  final Widget activeIcon;
-  final Color activeColor;
-  final Color inActiveColor;
-  final String label;
-  final bool isActive;
-  final void Function() onTap;
-  TabIcon(
-      {required this.icon,
-      required this.activeIcon,
-      required this.inActiveColor,
-      required this.activeColor,
-      required this.label,
-      required this.isActive,
-      required this.onTap});
-
-  final kAnimationDuration = Duration(milliseconds: 400);
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: const EdgeInsets.all(0),
-      pressedOpacity: 0.9,
-      onPressed: onTap,
-      child: AnimatedOpacity(
-        duration: kAnimationDuration,
-        opacity: isActive ? 1 : 0.75,
-        child: AnimatedSwitcher(
-            duration: kAnimationDuration,
-            child: isActive
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      activeIcon,
                       SizedBox(height: 1),
                       MyText(
                         label,
                         size: FONTSIZE.TINY,
-                        color: activeColor,
                       )
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      icon,
-                      SizedBox(height: 1),
-                      MyText(label, size: FONTSIZE.TINY, color: inActiveColor)
                     ],
                   )),
       ),

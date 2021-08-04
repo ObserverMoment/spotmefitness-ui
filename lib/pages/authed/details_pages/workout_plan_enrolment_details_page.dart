@@ -31,6 +31,7 @@ import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -155,14 +156,11 @@ class _WorkoutPlanEnrolmentDetailsPageState
   /// This code is duplicated in [WorkoutPlanDetails].
   /// Not abtracted as [WorkoutPlanDetails] share may end up being different.
   Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
-    try {
-      context.showLoadingAlert(
-        'Loading...',
-      );
-
-      /// Renders an image of the workoutPlan.coverImageUri or a placeholder image.
-      final capturedImage = await screenshotController.captureFromWidget(
-        SizedBox(
+    SharingAndLinking.shareImageRenderOfWidget(
+        context: context,
+        text: '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
+        subject: 'Check out this workout plan!',
+        widgetForImageCapture: SizedBox(
           height: 100,
           width: 100,
           child: workoutPlan.coverImageUri != null
@@ -174,24 +172,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                   'assets/home_page_images/home_page_plans.jpg',
                   fit: BoxFit.cover,
                 ),
-        ),
-      );
-
-      // https://github.com/SachinGanesh/screenshot/issues/41
-      final directory = await getApplicationDocumentsDirectory();
-      final imagePath =
-          await File('${directory.path}/${kTempShareImageFileName}').create();
-      final Uint8List pngBytes = capturedImage.buffer.asUint8List();
-      await imagePath.writeAsBytes(pngBytes);
-
-      context.pop(); // Loading alert modal.
-
-      await Share.shareFiles([imagePath.path],
-          text: '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
-          subject: 'Check out this workout plan!');
-    } catch (e) {
-      throw Exception(e);
-    }
+        ));
   }
 
   void _confirmLeavePlan() {

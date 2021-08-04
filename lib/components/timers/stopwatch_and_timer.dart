@@ -104,13 +104,15 @@ class TimersBottomNavBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 BottomNavbarItem(
-                  iconData: CupertinoIcons.stopwatch,
+                  activeIconData: CupertinoIcons.stopwatch_fill,
+                  inactiveIconData: CupertinoIcons.stopwatch,
                   label: 'Stopwatch',
                   onTap: () => goToPage(0),
                   isActive: activePageIndex == 0,
                 ),
                 BottomNavbarItem(
-                  iconData: CupertinoIcons.timer,
+                  activeIconData: CupertinoIcons.timer_fill,
+                  inactiveIconData: CupertinoIcons.timer,
                   label: 'Timer',
                   onTap: () => goToPage(1),
                   isActive: activePageIndex == 1,

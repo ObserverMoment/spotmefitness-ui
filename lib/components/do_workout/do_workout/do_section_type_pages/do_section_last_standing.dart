@@ -3,13 +3,12 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_submit_button.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/animated/slider_button.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/last_standing/last_standing_countdown_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/last_standing/last_standing_moves_list.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/set_complete_button.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -68,7 +67,7 @@ class DoWorkoutSectionLastStanding extends StatelessWidget {
                         MyText(
                           'Finsh after ${Duration(seconds: workoutSection.timecap!).compactDisplay()}',
                           color: Styles.infoBlue,
-                          lineHeight: 1,
+                          lineHeight: 1.3,
                         ),
                     ],
                   ),
@@ -89,8 +88,9 @@ class DoWorkoutSectionLastStanding extends StatelessWidget {
               child: AnimatedSwitcher(
                 duration: kStandardAnimationDuration,
                 child: !progressState.userShouldBeResting
-                    ? SetCompleteButton(
-                        onPressed: () => context
+                    ? AnimatedSubmitButton(
+                        text: 'set Complete',
+                        onSubmit: () => context
                             .read<DoWorkoutBloc>()
                             .markCurrentWorkoutSetAsComplete(
                                 workoutSection.sortPosition),

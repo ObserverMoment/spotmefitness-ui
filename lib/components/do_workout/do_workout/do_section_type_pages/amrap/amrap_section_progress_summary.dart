@@ -60,7 +60,11 @@ class AMRAPSectionProgressSummary extends StatelessWidget {
                       .map<Widget>((i) => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              H3('Round ${int.parse(i) + 1}'),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: H3('Round ${int.parse(i) + 1}'),
+                              ),
                               Column(
                                 children: (state.lapTimesMs[i]!['setLapTimesMs']
                                         as Map)
@@ -83,7 +87,8 @@ class AMRAPSectionProgressSummary extends StatelessWidget {
                                           ),
                                         ))
                                     .toList(),
-                              )
+                              ),
+                              HorizontalLine(),
                             ],
                           ))
                       .toList(),
