@@ -3,8 +3,8 @@ import 'package:spotmefitness_ui/components/data_vis/percentage_bar_chart.dart';
 import 'package:spotmefitness_ui/components/data_vis/waffle_chart.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
+import 'package:spotmefitness_ui/components/social_components.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
-import 'package:spotmefitness_ui/components/workout_plan/workout_plan_enrolments_summary.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews_summary.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -186,8 +186,8 @@ class WorkoutPlanCard extends StatelessWidget {
                     ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: WorkoutPlanEnrolmentsSummary(
-                      enrolments: workoutPlan.enrolments,
+                    child: UsersGroupSummary(
+                      users: workoutPlan.enrolments.map((e) => e.user).toList(),
                       subtitle:
                           '${workoutPlan.enrolments.length} ${workoutPlan.enrolments.length == 1 ? "participant" : "participants"}',
                     ),

@@ -108,7 +108,6 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                               duration: Duration(milliseconds: 400),
                               child: MyHeaderText(
                                 title,
-                                weight: FontWeight.bold,
                               ),
                             ),
                             GrowInOut(

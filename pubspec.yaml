@@ -122,6 +122,7 @@ flutter:
     - assets/other_app_icons/
     - assets/progress_page_images/
     - assets/stock_images/
+    - assets/social_images/
     - assets/workout_filters_icons/
 
   uses-material-design: true

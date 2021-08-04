@@ -13,14 +13,14 @@ class ProgressPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         customLeading: NavBarLargeTitle('Progress'),
       ),
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: CarouselSlider(
                 items: [
                   Padding(
@@ -84,35 +84,38 @@ class ProgressPage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                 )),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16),
-            child: GridView.count(
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: [
-                _ProgressPageTile(
-                  label: 'Personal Best Lifts & Times',
-                  assetImagePath: 'progress_page_personal_bests.jpg',
-                  onTap: () => context.navigateTo(PersonalBestsRoute()),
-                ),
-                _ProgressPageTile(
-                  label: 'Journal and Goal Tracking',
-                  assetImagePath: 'progress_page_journal.jpg',
-                  onTap: () => context.navigateTo(JournalsRoute()),
-                ),
-                _ProgressPageTile(
-                  label: 'Body Transformation',
-                  assetImagePath: 'progress_page_body.jpg',
-                  onTap: () => context.navigateTo(BodyTransformationRoute()),
-                ),
-                _ProgressPageTile(
-                  label: 'Workout Logs & History',
-                  assetImagePath: 'progress_page_logs.jpg',
-                  onTap: () => context.navigateTo(LoggedWorkoutsRoute()),
-                ),
-              ],
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 4),
+              child: GridView.count(
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                shrinkWrap: true,
+                crossAxisCount: 2,
+                children: [
+                  _ProgressPageTile(
+                    label: 'Personal Best Lifts & Times',
+                    assetImagePath: 'progress_page_personal_bests.jpg',
+                    onTap: () => context.navigateTo(PersonalBestsRoute()),
+                  ),
+                  _ProgressPageTile(
+                    label: 'Journal and Goal Tracking',
+                    assetImagePath: 'progress_page_journal.jpg',
+                    onTap: () => context.navigateTo(JournalsRoute()),
+                  ),
+                  _ProgressPageTile(
+                    label: 'Body Transformation',
+                    assetImagePath: 'progress_page_body.jpg',
+                    onTap: () => context.navigateTo(BodyTransformationRoute()),
+                  ),
+                  _ProgressPageTile(
+                    label: 'Workout Logs & History',
+                    assetImagePath: 'progress_page_logs.jpg',
+                    onTap: () => context.navigateTo(LoggedWorkoutsRoute()),
+                  ),
+                ],
+              ),
             ),
           )
         ],

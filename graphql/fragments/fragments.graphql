@@ -6,6 +6,19 @@ fragment BodyArea on BodyArea {
   upperLower
 }
 
+fragment Club on Club {
+  __typename
+  id
+  createdAt
+  name
+  description
+  location
+  coverImageUri
+  introVideoUri
+  introVideoThumbUri
+  introAudioUri
+}
+
 fragment Collection on Collection {
   __typename
   id

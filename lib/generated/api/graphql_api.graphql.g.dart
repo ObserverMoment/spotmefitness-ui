@@ -5057,6 +5057,51 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+Club _$ClubFromJson(Map<String, dynamic> json) {
+  return Club()
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..location = json['location'] as String?
+    ..coverImageUri = json['coverImageUri'] as String?
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
+    ..introAudioUri = json['introAudioUri'] as String?
+    ..owner = UserSummary.fromJson(json['Owner'] as Map<String, dynamic>)
+    ..admins = (json['Admins'] as List<dynamic>)
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..members = (json['Members'] as List<dynamic>)
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ClubToJson(Club instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'location': instance.location,
+      'coverImageUri': instance.coverImageUri,
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+      'introAudioUri': instance.introAudioUri,
+      'Owner': instance.owner.toJson(),
+      'Admins': instance.admins.map((e) => e.toJson()).toList(),
+      'Members': instance.members.map((e) => e.toJson()).toList(),
+    };
+
+UserClubs$Query _$UserClubs$QueryFromJson(Map<String, dynamic> json) {
+  return UserClubs$Query()
+    ..userClubs = (json['userClubs'] as List<dynamic>)
+        .map((e) => Club.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserClubs$QueryToJson(UserClubs$Query instance) =>
+    <String, dynamic>{
+      'userClubs': instance.userClubs.map((e) => e.toJson()).toList(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(

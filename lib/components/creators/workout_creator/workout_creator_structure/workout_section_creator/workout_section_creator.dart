@@ -252,7 +252,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
             WorkoutSectionTypeTag(
                 _workoutSection.workoutSectionType.name.toUpperCase()),
             if (_workoutSection.name != null)
-              Expanded(child: MyText(' - ${_workoutSection.name!}')),
+              MyText(' - ${_workoutSection.name!}'),
           ],
         ),
       );

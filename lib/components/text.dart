@@ -102,7 +102,7 @@ class MyHeaderText extends StatelessWidget {
         textAlign: textAlign,
         maxLines: maxLines,
         overflow: overflow,
-        style: GoogleFonts.dmSans(
+        style: GoogleFonts.archivo(
             textStyle: TextStyle(
                 fontWeight: weight,
                 decoration: decoration,

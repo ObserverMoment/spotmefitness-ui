@@ -23,8 +23,8 @@ class UserAvatar extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
           shape: BoxShape.circle, color: Styles.black.withOpacity(0.7)),
-      width: border ? size - 10 : size,
-      height: border ? size - 10 : size,
+      width: border ? size - (borderWidth * 2) : size,
+      height: border ? size - (borderWidth * 2) : size,
       child: avatarUri == null
           ? Center(
               child: Icon(
@@ -76,15 +76,16 @@ class PlusOthersIcon extends StatelessWidget {
 
   Widget _buildAvatar(BuildContext context) => Container(
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle, color: Styles.black.withOpacity(0.9)),
+      decoration:
+          BoxDecoration(shape: BoxShape.circle, color: context.theme.primary),
       width: border ? size - 10 : size,
       height: border ? size - 10 : size,
       child: Center(
           child: MyText(
-        '+ 3',
+        '+$overflow',
+        color: context.theme.background,
         weight: FontWeight.bold,
-        size: FONTSIZE.BIG,
+        size: FONTSIZE.SMALL,
         lineHeight: 1,
       )));
 
@@ -95,7 +96,7 @@ class PlusOthersIcon extends StatelessWidget {
           boxShadow: [Styles.avatarBoxShadow], shape: BoxShape.circle),
       child: border
           ? Container(
-              padding: EdgeInsets.all(borderWidth),
+              padding: EdgeInsets.all(borderWidth / 2),
               decoration: BoxDecoration(
                   shape: BoxShape.circle, color: context.theme.primary),
               child: Container(

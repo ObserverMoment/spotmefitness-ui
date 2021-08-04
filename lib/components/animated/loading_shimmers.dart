@@ -36,7 +36,7 @@ class ShimmerCard extends StatelessWidget {
       child: Shimmer.fromColors(
           child: Card(
             height: height,
-            child: Container(),
+            child: Container(width: width),
           ),
           baseColor: context.theme.cardBackground,
           highlightColor: context.theme.primary),
@@ -62,6 +62,61 @@ class ShimmerCardList extends StatelessWidget {
           padding: cardPadding,
           child: ShimmerCard(
             height: cardHeight,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerHorizontalCardList extends StatelessWidget {
+  final int itemCount;
+  final double cardHeight;
+  final double cardWidth;
+
+  ShimmerHorizontalCardList(
+      {this.itemCount = 10, this.cardHeight = 120, this.cardWidth = 170});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: cardHeight + 8,
+      padding: const EdgeInsets.all(6.0),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: itemCount,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: ShimmerCard(
+            height: cardHeight,
+            width: cardWidth,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerFriendsList extends StatelessWidget {
+  final int itemCount;
+  final double avatarSize;
+  final Axis scrollDirection;
+  const ShimmerFriendsList(
+      {this.itemCount = 10,
+      this.avatarSize = 76,
+      this.scrollDirection = Axis.horizontal});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: avatarSize + 10,
+      padding: const EdgeInsets.all(4.0),
+      child: ListView.builder(
+        itemCount: itemCount,
+        scrollDirection: scrollDirection,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: ShimmerCircle(
+            diameter: avatarSize,
           ),
         ),
       ),

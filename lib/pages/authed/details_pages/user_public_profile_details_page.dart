@@ -123,7 +123,7 @@ class _UserPublicProfileDetailsPageState
         builder: (data) {
           final userPublicProfile = data.userPublicProfileById;
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
               navigationBar: BorderlessNavBar(
                 middle: NavBarTitle('Profile'),
                 trailing: CupertinoButton(
@@ -147,9 +147,9 @@ class _UserPublicProfileDetailsPageState
                             icon: Icon(CupertinoIcons.mail),
                             onPressed: () => print('message')),
                         BottomSheetMenuItem(
-                            text: 'Save',
+                            text: 'Like',
                             icon: Icon(CupertinoIcons.heart_circle),
-                            onPressed: () => print('save')),
+                            onPressed: () => print('like')),
                         BottomSheetMenuItem(
                             text: 'Share',
                             icon: Icon(CupertinoIcons.share),
@@ -172,7 +172,7 @@ class _UserPublicProfileDetailsPageState
                       SliverList(
                         delegate: SliverChildListDelegate([
                           Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(8),
                             child: Stack(
                               clipBehavior: Clip.none,
                               alignment: Alignment.topCenter,
@@ -240,7 +240,7 @@ class _UserPublicProfileDetailsPageState
                     ];
                   },
                   body: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, right: 8, left: 8),
+                    padding: const EdgeInsets.only(top: 12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -327,12 +327,12 @@ class _HeaderContent extends StatelessWidget {
                   children: [
                     MyText(
                       userPublicProfile.displayName,
-                      size: FONTSIZE.BIG,
+                      size: FONTSIZE.HUGE,
                     ),
                     if (userPublicProfile.countryCode != null)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CountryFlag(userPublicProfile.countryCode!, 34),
+                        child: CountryFlag(userPublicProfile.countryCode!, 30),
                       ),
                   ],
                 ),
@@ -354,6 +354,10 @@ class _HeaderContent extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Icon(
+                        CupertinoIcons.location,
+                        size: 20,
+                      ),
                       if (Utils.textNotNull(userPublicProfile.countryCode))
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),

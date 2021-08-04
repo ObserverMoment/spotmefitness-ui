@@ -1,0 +1,21 @@
+query userClubs {
+  userClubs {
+    id
+    name
+    description
+    location
+    coverImageUri
+    introVideoUri
+    introVideoThumbUri
+    introAudioUri
+    Owner {
+      ...UserSummary
+    }
+    Admins {
+      ...UserSummary
+    }
+    Members {
+      ...UserSummary
+    }
+  }
+}

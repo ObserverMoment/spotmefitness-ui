@@ -2,26 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
-  final List<WorkoutPlanEnrolmentSummary> enrolments;
+/// Displays a horizontal list of small user avatars, up to a maximum, then + more indicator.
+/// Standard for showing members of a group / enrolments etc.
+class UsersGroupSummary extends StatelessWidget {
+  final List<UserSummary> users;
   final int showMax;
   final String? subtitle;
-  const WorkoutPlanEnrolmentsSummary(
-      {Key? key, required this.enrolments, this.showMax = 5, this.subtitle})
+  final double avatarSize;
+  const UsersGroupSummary(
+      {Key? key,
+      required this.users,
+      this.showMax = 5,
+      this.subtitle,
+      this.avatarSize = 30.0})
       : super(key: key);
 
   /// Less than one means an overlap.
   final kAvatarWidthFactor = 0.7;
-  final kAvatarSize = 30.0;
 
   @override
   Widget build(BuildContext context) {
-    return enrolments.isEmpty
+    return users.isEmpty
         ? MyText(
-            'No participants yet',
+            'None yet',
             size: FONTSIZE.TINY,
             weight: FontWeight.bold,
             subtext: true,
@@ -33,26 +38,25 @@ class WorkoutPlanEnrolmentsSummary extends StatelessWidget {
                 child: ListView(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    reverse: true,
                     children: [
-                      ...enrolments
+                      ...users
                           .take(showMax)
-                          .mapIndexed((i, e) => Align(
+                          .map((u) => Align(
                                 widthFactor: kAvatarWidthFactor,
                                 child: UserAvatar(
-                                  avatarUri: e.user.avatarUri,
-                                  size: kAvatarSize,
-                                  border: true,
+                                  avatarUri: u.avatarUri,
+                                  size: avatarSize,
                                   borderWidth: 1,
+                                  border: true,
                                 ),
                               ))
                           .toList(),
-                      if (enrolments.length > showMax)
+                      if (users.length > showMax)
                         Align(
                           widthFactor: kAvatarWidthFactor,
                           child: PlusOthersIcon(
-                            overflow: enrolments.length - showMax,
-                            size: kAvatarSize,
+                            overflow: users.length - showMax,
+                            size: avatarSize,
                           ),
                         )
                     ]),
