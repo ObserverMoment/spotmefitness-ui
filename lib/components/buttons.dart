@@ -182,7 +182,7 @@ class BorderButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(2),
               border:
                   withBorder ? Border.all(color: context.theme.primary) : null),
           child: Stack(

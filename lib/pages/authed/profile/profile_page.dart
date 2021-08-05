@@ -28,10 +28,9 @@ class _ProfilePageState extends State<ProfilePage> {
       navigationBar: BorderlessNavBar(
           customLeading: NavBarLargeTitle('Profile'),
           trailing: CupertinoButton(
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Icon(
                 CupertinoIcons.gear_solid,
-                size: 28,
               ),
               onPressed: () => context.navigateTo(SettingsRoute()))),
       child: Padding(

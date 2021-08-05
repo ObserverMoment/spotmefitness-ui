@@ -11,14 +11,18 @@ enum AuthState { UNAUTHED, AUTHED, REGISTERING, VALIDATING, ERROR }
 class AuthedUser {
   String id;
   bool hasOnboarded;
+  String streamChatToken;
 
-  AuthedUser({
-    required this.id,
-    required this.hasOnboarded,
-  });
+  AuthedUser(
+      {required this.id,
+      required this.hasOnboarded,
+      required this.streamChatToken});
 
   factory AuthedUser.fromJson(Map<String, dynamic> json) {
-    return AuthedUser(id: json['id'], hasOnboarded: json['hasOnboarded']);
+    return AuthedUser(
+        id: json['id'],
+        hasOnboarded: json['hasOnboarded'],
+        streamChatToken: json['streamChatToken']);
   }
 }
 
@@ -168,8 +172,7 @@ class AuthBloc {
     if (json['id'] != null) {
       _authedUser = AuthedUser.fromJson(json);
     } else {
-      print(
-          'No valid user ID was returned when trying to register a new user.');
+      print('No valid user ID was returned when trying to validate user.');
       _authedUser = null;
     }
     await _checkAuthStatus();

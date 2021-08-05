@@ -22,7 +22,7 @@ TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
 ColorScheme _buildColorScheme(BuildContext context) {
   final theme = context.theme;
   return ColorScheme(
-    primary: myTheme.Styles.colorOne,
+    primary: myTheme.Styles.colorTwo,
     primaryVariant: theme.primary,
     secondary: theme.cardBackground,
     secondaryVariant: theme.primary,

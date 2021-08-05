@@ -22,7 +22,7 @@ class DiscoverPage extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.only(bottom: 10),
-              height: 46,
+              height: 54,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
@@ -38,6 +38,10 @@ class DiscoverPage extends StatelessWidget {
                       text: 'Challenges',
                       onPressed: () =>
                           context.navigateTo(DiscoverChallengesRoute())),
+                  DiscoverPageButton(
+                      text: 'Clubs',
+                      onPressed: () =>
+                          context.navigateTo(DiscoverClubsRoute())),
                   DiscoverPageButton(
                       text: 'Events',
                       onPressed: () =>
@@ -84,7 +88,7 @@ class DiscoverPageButton extends StatelessWidget {
       margin: EdgeInsets.only(right: 6),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(2),
           border: Border.all(color: context.theme.primary)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 12),

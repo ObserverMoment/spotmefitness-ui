@@ -42,6 +42,9 @@ class EnvironmentConfig {
   static String get uploadCarePrivateKey =>
       const String.fromEnvironment('UPLOADCARE_PRIVATE_KEY');
 
+  static String get getStreamPublicKey =>
+      const String.fromEnvironment('GETSTREAM_PUBLIC_KEY');
+
   /// Platform specific layout
   static double get bottomNavBarHeight => Platform.isAndroid ? 62.0 : 82.0;
 }

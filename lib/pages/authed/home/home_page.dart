@@ -9,6 +9,11 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class HomePage extends StatelessWidget {
+  Widget _buildNavBarButton(IconData iconData, onPressed) => CupertinoButton(
+      padding: const EdgeInsets.symmetric(horizontal: 13),
+      onPressed: onPressed,
+      child: Icon(iconData));
+
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
@@ -16,27 +21,18 @@ class HomePage extends StatelessWidget {
       navigationBar: BorderlessNavBar(
         key: Key('HomePage-BorderlessNavBar'),
         customLeading: NavBarLargeTitle('Home'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.timer_fill,
-                  size: 30,
-                ),
-                onPressed: () => context.push(
-                    child: StopwatchAndTimer(), rootNavigator: true)),
-            CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.calendar,
-                  size: 30,
-                ),
-                onPressed: () => context.navigateTo(YourScheduleRoute())),
-          ],
-        ),
+        trailing: NavBarTrailingRow(children: [
+          _buildNavBarButton(CupertinoIcons.chat_bubble_text_fill,
+              () => context.pushRoute(ChatsOverviewRoute())),
+          _buildNavBarButton(
+              CupertinoIcons.timer_fill,
+              () => context.push(
+                  child: StopwatchAndTimer(), rootNavigator: true)),
+          _buildNavBarButton(
+            CupertinoIcons.calendar,
+            () => context.navigateTo(YourScheduleRoute()),
+          )
+        ]),
       ),
       child: ListView(
         padding:

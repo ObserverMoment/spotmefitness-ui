@@ -50,7 +50,7 @@ class _UserPublicProfileDetailsPageState
   late ScrollController _scrollController;
   ScreenshotController screenshotController = ScreenshotController();
 
-  final kAvatarSize = 120.0;
+  final kAvatarSize = 100.0;
 
   @override
   void initState() {
@@ -125,7 +125,19 @@ class _UserPublicProfileDetailsPageState
 
           return MyPageScaffold(
               navigationBar: BorderlessNavBar(
-                middle: NavBarTitle('Profile'),
+                middle: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyHeaderText(
+                      userPublicProfile.displayName,
+                    ),
+                    if (userPublicProfile.countryCode != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child: CountryFlag(userPublicProfile.countryCode!, 24),
+                      ),
+                  ],
+                ),
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Icon(CupertinoIcons.ellipsis_circle),
@@ -143,13 +155,9 @@ class _UserPublicProfileDetailsPageState
                                 CupertinoIcons.person_crop_circle_badge_plus),
                             onPressed: () => print('Connect')),
                         BottomSheetMenuItem(
-                            text: 'Message',
-                            icon: Icon(CupertinoIcons.mail),
-                            onPressed: () => print('message')),
-                        BottomSheetMenuItem(
-                            text: 'Like',
-                            icon: Icon(CupertinoIcons.heart_circle),
-                            onPressed: () => print('like')),
+                            text: 'Chat',
+                            icon: Icon(CupertinoIcons.chat_bubble),
+                            onPressed: () => print('open chat')),
                         BottomSheetMenuItem(
                             text: 'Share',
                             icon: Icon(CupertinoIcons.share),
@@ -172,7 +180,8 @@ class _UserPublicProfileDetailsPageState
                       SliverList(
                         delegate: SliverChildListDelegate([
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.only(
+                                left: 4, right: 4, bottom: 6),
                             child: Stack(
                               clipBehavior: Clip.none,
                               alignment: Alignment.topCenter,
@@ -297,7 +306,6 @@ class _HeaderContent extends StatelessWidget {
       {Key? key, required this.userPublicProfile, this.avatarSize = 100})
       : super(key: key);
 
-  final kButtonIconSize = 14.0;
   final verticalPadding = const EdgeInsets.symmetric(vertical: 6.0);
 
   @override
@@ -310,43 +318,21 @@ class _HeaderContent extends StatelessWidget {
       userPublicProfile.snapUrl,
     ].any((l) => l != null);
 
+    final hasAvatar = Utils.textNotNull(userPublicProfile.avatarUri);
+
     return Padding(
-      padding: EdgeInsets.only(top: avatarSize / 2),
+      padding: EdgeInsets.only(top: hasAvatar ? avatarSize / 2 : 0),
       child: Card(
           padding: EdgeInsets.only(
-              top: avatarSize / 2, left: 10, right: 10, bottom: 10),
+              top: hasAvatar ? avatarSize / 2 : 8,
+              left: 10,
+              right: 10,
+              bottom: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               SizedBox(height: 8),
-              Padding(
-                padding: verticalPadding,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MyText(
-                      userPublicProfile.displayName,
-                      size: FONTSIZE.HUGE,
-                    ),
-                    if (userPublicProfile.countryCode != null)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CountryFlag(userPublicProfile.countryCode!, 30),
-                      ),
-                  ],
-                ),
-              ),
-              if (Utils.textNotNull(userPublicProfile.tagline))
-                Padding(
-                  padding: verticalPadding,
-                  child: MyText(
-                    userPublicProfile.tagline!,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    color: Styles.infoBlue,
-                  ),
-                ),
               if (Utils.textNotNull(userPublicProfile.countryCode) ||
                   Utils.textNotNull(userPublicProfile.townCity))
                 Padding(
@@ -387,66 +373,62 @@ class _HeaderContent extends StatelessWidget {
               Padding(
                 padding: verticalPadding,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     BorderButton(
-                      mini: true,
                       text: 'Connect',
                       prefix: Icon(
                         CupertinoIcons.person_crop_circle_badge_plus,
-                        size: kButtonIconSize,
+                        size: 17,
                       ),
                       onPressed: () => print('connect'),
                     ),
                     BorderButton(
-                      mini: true,
-                      text: 'Message',
+                      text: 'Chat',
                       prefix: Icon(
-                        CupertinoIcons.mail,
-                        size: kButtonIconSize,
+                        CupertinoIcons.chat_bubble_2,
+                        size: 19,
                       ),
-                      onPressed: () => print('message'),
-                    ),
-                    BorderButton(
-                      mini: true,
-                      text: 'Save',
-                      prefix: Icon(
-                        CupertinoIcons.heart_circle,
-                        size: kButtonIconSize,
-                      ),
-                      onPressed: () => print('save'),
+                      onPressed: () => print('chat'),
                     ),
                   ],
                 ),
               ),
-              if (hasSocialLinks)
+              if (Utils.textNotNull(userPublicProfile.tagline))
                 Padding(
                   padding: verticalPadding,
-                  child: _SocialMediaIcons(
-                    userPublicProfile: userPublicProfile,
+                  child: MyText(
+                    userPublicProfile.tagline!,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    weight: FontWeight.bold,
                   ),
                 ),
               if (Utils.textNotNull(userPublicProfile.bio))
+                GestureDetector(
+                  onTap: () => context.showBottomSheet(
+                      useRootNavigator: true,
+                      expand: true,
+                      child: TextViewer(userPublicProfile.bio!, 'Bio')),
+                  child: Padding(
+                    padding: verticalPadding,
+                    child: Column(
+                      children: [
+                        MyText(
+                          '${userPublicProfile.bio!}...',
+                          maxLines: 4,
+                          textAlign: TextAlign.center,
+                          lineHeight: 1.1,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (hasSocialLinks)
                 Padding(
                   padding: verticalPadding,
-                  child: Column(
-                    children: [
-                      MyText(
-                        userPublicProfile.bio!,
-                        maxLines: 4,
-                        textAlign: TextAlign.center,
-                        lineHeight: 1.1,
-                      ),
-
-                      /// TODO: Only show [read more] if the content has overflowed.
-                      TextButton(
-                          text: 'More...',
-                          underline: false,
-                          onPressed: () => context.showBottomSheet(
-                              useRootNavigator: true,
-                              expand: true,
-                              child: TextViewer(userPublicProfile.bio!, 'Bio')))
-                    ],
+                  child: _SocialMediaLinks(
+                    userPublicProfile: userPublicProfile,
                   ),
                 ),
             ],
@@ -455,9 +437,9 @@ class _HeaderContent extends StatelessWidget {
   }
 }
 
-class _SocialMediaIcons extends StatelessWidget {
+class _SocialMediaLinks extends StatelessWidget {
   final UserPublicProfile userPublicProfile;
-  const _SocialMediaIcons({Key? key, required this.userPublicProfile})
+  const _SocialMediaLinks({Key? key, required this.userPublicProfile})
       : super(key: key);
 
   void _handleOpenSocialUrl(String url) async {
@@ -470,40 +452,63 @@ class _SocialMediaIcons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      alignment: WrapAlignment.center,
       children: [
         if (Utils.textNotNull(userPublicProfile.instagramUrl))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: InstagramIcon(),
+          _SocialLink(
+              url: userPublicProfile.instagramUrl!,
               onPressed: () =>
                   _handleOpenSocialUrl(userPublicProfile.instagramUrl!)),
         if (Utils.textNotNull(userPublicProfile.tiktokUrl))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: TikTokIcon(),
+          _SocialLink(
+              url: userPublicProfile.tiktokUrl!,
               onPressed: () =>
                   _handleOpenSocialUrl(userPublicProfile.tiktokUrl!)),
         if (Utils.textNotNull(userPublicProfile.snapUrl))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: SnapIcon(),
+          _SocialLink(
+              url: userPublicProfile.snapUrl!,
               onPressed: () =>
                   _handleOpenSocialUrl(userPublicProfile.snapUrl!)),
         if (Utils.textNotNull(userPublicProfile.linkedinUrl))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: LinkedInIcon(),
+          _SocialLink(
+              url: userPublicProfile.linkedinUrl!,
               onPressed: () =>
                   _handleOpenSocialUrl(userPublicProfile.linkedinUrl!)),
         if (Utils.textNotNull(userPublicProfile.youtubeUrl))
-          CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: YouTubeIcon(),
+          _SocialLink(
+              url: userPublicProfile.youtubeUrl!,
               onPressed: () =>
                   _handleOpenSocialUrl(userPublicProfile.youtubeUrl!)),
       ],
+    );
+  }
+}
+
+class _SocialLink extends StatelessWidget {
+  final String url;
+  final VoidCallback onPressed;
+  const _SocialLink({Key? key, required this.url, required this.onPressed})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(CupertinoIcons.link, size: 16),
+          SizedBox(width: 6),
+          MyText(
+            url,
+            size: FONTSIZE.SMALL,
+            weight: FontWeight.bold,
+          )
+        ],
+      ),
     );
   }
 }

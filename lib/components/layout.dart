@@ -260,7 +260,7 @@ class BasicNavBar extends CupertinoNavigationBar {
       : super(
             key: key,
             automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: customLeading ?? const _BackButton(),
+            leading: customLeading ?? const NavBarBackButton(),
             border: null);
 }
 
@@ -281,12 +281,12 @@ class BorderlessNavBar extends CupertinoNavigationBar {
       : super(
             key: key,
             automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: customLeading ?? const _BackButton(),
+            leading: customLeading ?? const NavBarBackButton(),
             border: null);
 }
 
-class _BackButton extends StatelessWidget {
-  const _BackButton({Key? key}) : super(key: key);
+class NavBarBackButton extends StatelessWidget {
+  const NavBarBackButton({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -298,6 +298,7 @@ class _BackButton extends StatelessWidget {
       child: Icon(
         CupertinoIcons.arrow_left,
         size: 22,
+        color: context.theme.primary,
       ),
     );
   }

@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:uni_links/uni_links.dart';
 
 /// Scaffold for the main top level tabs view.
@@ -24,6 +25,7 @@ class MainTabsPage extends StatefulWidget {
 
 class _MainTabsPageState extends State<MainTabsPage> {
   late StreamSubscription _linkStreamSub;
+  late StreamChatClient _getStreamChatClient;
 
   @override
   void initState() {
@@ -34,6 +36,13 @@ class _MainTabsPageState extends State<MainTabsPage> {
     _handleInitialUri();
     _handleIncomingLinks();
 
+    /// Setup GetStreamChatClient as a global singleton.
+    _getStreamChatClient = StreamChatClient(
+      EnvironmentConfig.getStreamPublicKey,
+    );
+    GetIt.I.registerSingleton<StreamChatClient>(_getStreamChatClient);
+
+    /// If user has not yet onboarded then show them the welcome flow.
     if (!GetIt.I<AuthBloc>().authedUser!.hasOnboarded) {
       WidgetsBinding.instance!.addPostFrameCallback((_) async {
         await showCupertinoModalPopup(
@@ -90,6 +99,18 @@ class _MainTabsPageState extends State<MainTabsPage> {
     context.navigateNamedTo(uri.toString().replaceFirst(kDeepLinkSchema, ''));
   }
 
+  @override
+  void dispose() {
+    // Cancel listening to incoming links.
+    _linkStreamSub.cancel();
+    // Close and dispose GetStreamChatClient.
+    GetIt.I.unregister<StreamChatClient>(
+      instance: _getStreamChatClient,
+      disposingFunction: (client) => client.dispose(),
+    );
+    super.dispose();
+  }
+
   Widget _buildTabItem({
     required TabsRouter tabsRouter,
     required int tabIndex,
@@ -108,12 +129,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
         label: label,
         isActive: activeIndex == tabIndex,
         onTap: () => tabsRouter.setActiveIndex(tabIndex));
-  }
-
-  @override
-  void dispose() {
-    _linkStreamSub.cancel();
-    super.dispose();
   }
 
   @override

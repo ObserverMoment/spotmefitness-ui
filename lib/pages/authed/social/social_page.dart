@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/club_card.dart';
-import 'package:spotmefitness_ui/components/cards/user_profile_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -14,7 +14,9 @@ import 'package:json_annotation/json_annotation.dart' as json;
 
 class SocialPage extends StatelessWidget {
   Widget _buildNavBarButton(IconData iconData, onPressed) => CupertinoButton(
-      padding: EdgeInsets.zero, onPressed: onPressed, child: Icon(iconData));
+      padding: const EdgeInsets.symmetric(horizontal: 13),
+      onPressed: onPressed,
+      child: Icon(iconData));
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,8 @@ class SocialPage extends StatelessWidget {
       navigationBar: BorderlessNavBar(
         customLeading: NavBarLargeTitle('Social'),
         trailing: NavBarTrailingRow(children: [
+          _buildNavBarButton(CupertinoIcons.chat_bubble_text_fill,
+              () => context.pushRoute(ChatsOverviewRoute())),
           _buildNavBarButton(CupertinoIcons.person_add_solid, () => {}),
           _buildNavBarButton(CupertinoIcons.compass_fill, () => {}),
         ]),
@@ -31,17 +35,21 @@ class SocialPage extends StatelessWidget {
                 SliverList(
                     delegate: SliverChildListDelegate([
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
+                    padding: const EdgeInsets.only(bottom: 16.0),
                     child: HorizontalFriendsList(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
+                    padding: const EdgeInsets.only(bottom: 16.0),
                     child: HorizontalClubsList(),
                   )
                 ]))
               ],
           body: Container(
-            child: MyText('Feed vertical timeline'),
+            child: Center(
+                child: MyHeaderText(
+              'Feed coming soon',
+              size: FONTSIZE.HUGE,
+            )),
           )),
     );
   }
@@ -52,6 +60,9 @@ class HorizontalFriendsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final query =
+        UserPublicProfilesQuery(variables: UserPublicProfilesArguments());
+
     return Column(
       children: [
         Row(
@@ -70,19 +81,40 @@ class HorizontalFriendsList extends StatelessWidget {
                 onPressed: () => print('all friends view'))
           ],
         ),
-        Container(
-          height: 70,
-          alignment: Alignment.centerLeft,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: 8,
-            itemBuilder: (c, i) => Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: UserAvatar(size: 70),
+        QueryObserver<UserPublicProfiles$Query, json.JsonSerializable>(
+            key: Key('SocialPage - ${query.operationName}'),
+            query: query,
+            loadingIndicator: ShimmerFriendsList(
+              avatarSize: 70,
             ),
-          ),
-        ),
+            builder: (data) {
+              final authedUser = GetIt.I<AuthBloc>().authedUser;
+              final publicUsers = data.userPublicProfiles
+                  .where((u) => u.id != authedUser?.id)
+                  .toList();
+
+              return Container(
+                height: 70,
+                alignment: Alignment.centerLeft,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: publicUsers.length,
+                  itemBuilder: (c, i) => GestureDetector(
+                    onTap: () => context.navigateTo(
+                        UserPublicProfileDetailsRoute(
+                            userId: publicUsers[i].id)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: UserAvatar(
+                        size: 70,
+                        avatarUri: publicUsers[i].avatarUri,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            })
       ],
     );
   }
@@ -116,7 +148,7 @@ class HorizontalClubsList extends StatelessWidget {
             key: Key('SocialPage.HorizontalClubsList - ${query.operationName}'),
             query: query,
             loadingIndicator: ShimmerHorizontalCardList(
-              cardHeight: 132,
+              cardHeight: 130,
             ),
             builder: (data) {
               final clubs = data.userClubs;
@@ -139,46 +171,5 @@ class HorizontalClubsList extends StatelessWidget {
             })
       ],
     );
-  }
-}
-
-class PublicProfilesGrid extends StatelessWidget {
-  const PublicProfilesGrid({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final query =
-        UserPublicProfilesQuery(variables: UserPublicProfilesArguments());
-
-    return QueryObserver<UserPublicProfiles$Query, json.JsonSerializable>(
-        key: Key('SocialPage - ${query.operationName}'),
-        query: query,
-        loadingIndicator: ShimmerCardGrid(
-          itemCount: 12,
-          maxCardWidth: 200,
-        ),
-        builder: (data) {
-          final profileSummaries = data.userPublicProfiles;
-
-          return Padding(
-            padding: const EdgeInsets.only(top: 16.0, left: 16, right: 16),
-            child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: profileSummaries.length,
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    childAspectRatio: 0.8,
-                    maxCrossAxisExtent: 200,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16),
-                itemBuilder: (c, i) => GestureDetector(
-                      onTap: () => context.navigateTo(
-                          UserPublicProfileDetailsRoute(
-                              userId: profileSummaries[i].id)),
-                      child: UserProfileCard(
-                        profileSummary: profileSummaries[i],
-                      ),
-                    )),
-          );
-        });
   }
 }

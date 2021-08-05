@@ -8,6 +8,18 @@ import 'package:gql/ast.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 part 'graphql_api.graphql.g.dart';
 
+mixin UserSummaryMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  String? avatarUri;
+  late String displayName;
+  @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
+  late UserProfileScope userProfileScope;
+  String? tagline;
+  String? countryCode;
+  String? townCity;
+}
 mixin EquipmentMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -62,18 +74,6 @@ mixin WorkoutMoveMixin {
   late LoadUnit loadUnit;
   @JsonKey(unknownEnumValue: TimeUnit.artemisUnknown)
   late TimeUnit timeUnit;
-}
-mixin UserSummaryMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  String? avatarUri;
-  late String displayName;
-  @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
-  late UserProfileScope userProfileScope;
-  String? tagline;
-  String? countryCode;
-  String? townCity;
 }
 mixin WorkoutGoalMixin {
   @JsonKey(name: '__typename')
@@ -491,6 +491,93 @@ mixin ScheduledWorkoutMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class UserSummary extends JsonSerializable
+    with EquatableMixin, UserSummaryMixin {
+  UserSummary();
+
+  factory UserSummary.fromJson(Map<String, dynamic> json) =>
+      _$UserSummaryFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        avatarUri,
+        displayName,
+        userProfileScope,
+        tagline,
+        countryCode,
+        townCity
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$UserSummaryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class Club extends JsonSerializable with EquatableMixin {
+  Club();
+
+  factory Club.fromJson(Map<String, dynamic> json) => _$ClubFromJson(json);
+
+  late String id;
+
+  late String name;
+
+  String? description;
+
+  String? location;
+
+  String? coverImageUri;
+
+  String? introVideoUri;
+
+  String? introVideoThumbUri;
+
+  String? introAudioUri;
+
+  @JsonKey(name: 'Owner')
+  late UserSummary owner;
+
+  @JsonKey(name: 'Admins')
+  late List<UserSummary> admins;
+
+  @JsonKey(name: 'Members')
+  late List<UserSummary> members;
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        location,
+        coverImageUri,
+        introVideoUri,
+        introVideoThumbUri,
+        introAudioUri,
+        owner,
+        admins,
+        members
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$ClubToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserClubs$Query extends JsonSerializable with EquatableMixin {
+  UserClubs$Query();
+
+  factory UserClubs$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserClubs$QueryFromJson(json);
+
+  late List<Club> userClubs;
+
+  @override
+  List<Object?> get props => [userClubs];
+  @override
+  Map<String, dynamic> toJson() => _$UserClubs$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class Equipment extends JsonSerializable with EquatableMixin, EquipmentMixin {
   Equipment();
 
@@ -877,29 +964,6 @@ class DeleteCollectionById$Mutation extends JsonSerializable
   List<Object?> get props => [deleteCollectionById];
   @override
   Map<String, dynamic> toJson() => _$DeleteCollectionById$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UserSummary extends JsonSerializable
-    with EquatableMixin, UserSummaryMixin {
-  UserSummary();
-
-  factory UserSummary.fromJson(Map<String, dynamic> json) =>
-      _$UserSummaryFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        avatarUri,
-        displayName,
-        userProfileScope,
-        tagline,
-        countryCode,
-        townCity
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$UserSummaryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -6239,70 +6303,14 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
 }
 
-@JsonSerializable(explicitToJson: true)
-class Club extends JsonSerializable with EquatableMixin {
-  Club();
-
-  factory Club.fromJson(Map<String, dynamic> json) => _$ClubFromJson(json);
-
-  late String id;
-
-  late String name;
-
-  String? description;
-
-  String? location;
-
-  String? coverImageUri;
-
-  String? introVideoUri;
-
-  String? introVideoThumbUri;
-
-  String? introAudioUri;
-
-  @JsonKey(name: 'Owner')
-  late UserSummary owner;
-
-  @JsonKey(name: 'Admins')
-  late List<UserSummary> admins;
-
-  @JsonKey(name: 'Members')
-  late List<UserSummary> members;
-
-  @override
-  List<Object?> get props => [
-        id,
-        name,
-        description,
-        location,
-        coverImageUri,
-        introVideoUri,
-        introVideoThumbUri,
-        introAudioUri,
-        owner,
-        admins,
-        members
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$ClubToJson(this);
+enum UserProfileScope {
+  @JsonValue('PRIVATE')
+  private,
+  @JsonValue('PUBLIC')
+  public,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
 }
-
-@JsonSerializable(explicitToJson: true)
-class UserClubs$Query extends JsonSerializable with EquatableMixin {
-  UserClubs$Query();
-
-  factory UserClubs$Query.fromJson(Map<String, dynamic> json) =>
-      _$UserClubs$QueryFromJson(json);
-
-  late List<Club> userClubs;
-
-  @override
-  List<Object?> get props => [userClubs];
-  @override
-  Map<String, dynamic> toJson() => _$UserClubs$QueryToJson(this);
-}
-
 enum WorkoutMoveRepType {
   @JsonValue('REPS')
   reps,
@@ -6377,14 +6385,6 @@ enum BodyAreaUpperLower {
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
-enum UserProfileScope {
-  @JsonValue('PRIVATE')
-  private,
-  @JsonValue('PUBLIC')
-  public,
-  @JsonValue('ARTEMIS_UNKNOWN')
-  artemisUnknown,
-}
 enum DifficultyLevel {
   @JsonValue('LIGHT')
   light,
@@ -6440,6 +6440,169 @@ enum BenchmarkType {
   unbrokentime,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
+}
+final USER_CLUBS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userClubs'),
+      variableDefinitions: [],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userClubs'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FieldNode(
+                  name: NameNode(value: 'id'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'name'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'description'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'location'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'coverImageUri'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'introVideoUri'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'introVideoThumbUri'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'introAudioUri'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'Owner'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'Admins'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'Members'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserSummary'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserSummary'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'userProfileScope'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'countryCode'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'townCity'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserClubsQuery extends GraphQLQuery<UserClubs$Query, JsonSerializable> {
+  UserClubsQuery();
+
+  @override
+  final DocumentNode document = USER_CLUBS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userClubs';
+
+  @override
+  List<Object?> get props => [document, operationName];
+  @override
+  UserClubs$Query parse(Map<String, dynamic> json) =>
+      UserClubs$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -56297,168 +56460,4 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
-}
-
-final USER_CLUBS_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'userClubs'),
-      variableDefinitions: [],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'userClubs'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                  name: NameNode(value: 'id'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'name'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'description'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'location'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'coverImageUri'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'introVideoUri'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'introVideoThumbUri'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'introAudioUri'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'Owner'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'UserSummary'), directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'Admins'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'UserSummary'), directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'Members'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'UserSummary'), directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'UserSummary'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'UserSummary'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'avatarUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'displayName'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'userProfileScope'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'tagline'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'countryCode'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'townCity'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UserClubsQuery extends GraphQLQuery<UserClubs$Query, JsonSerializable> {
-  UserClubsQuery();
-
-  @override
-  final DocumentNode document = USER_CLUBS_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'userClubs';
-
-  @override
-  List<Object?> get props => [document, operationName];
-  @override
-  UserClubs$Query parse(Map<String, dynamic> json) =>
-      UserClubs$Query.fromJson(json);
 }

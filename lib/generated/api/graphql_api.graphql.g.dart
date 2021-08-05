@@ -7,6 +7,109 @@ part of 'graphql_api.graphql.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
+  return UserSummary()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..displayName = json['displayName'] as String
+    ..userProfileScope = _$enumDecode(
+        _$UserProfileScopeEnumMap, json['userProfileScope'],
+        unknownValue: UserProfileScope.artemisUnknown)
+    ..tagline = json['tagline'] as String?
+    ..countryCode = json['countryCode'] as String?
+    ..townCity = json['townCity'] as String?;
+}
+
+Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'displayName': instance.displayName,
+      'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
+      'tagline': instance.tagline,
+      'countryCode': instance.countryCode,
+      'townCity': instance.townCity,
+    };
+
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
+  }
+
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
+
+const _$UserProfileScopeEnumMap = {
+  UserProfileScope.private: 'PRIVATE',
+  UserProfileScope.public: 'PUBLIC',
+  UserProfileScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+Club _$ClubFromJson(Map<String, dynamic> json) {
+  return Club()
+    ..id = json['id'] as String
+    ..name = json['name'] as String
+    ..description = json['description'] as String?
+    ..location = json['location'] as String?
+    ..coverImageUri = json['coverImageUri'] as String?
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
+    ..introAudioUri = json['introAudioUri'] as String?
+    ..owner = UserSummary.fromJson(json['Owner'] as Map<String, dynamic>)
+    ..admins = (json['Admins'] as List<dynamic>)
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList()
+    ..members = (json['Members'] as List<dynamic>)
+        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$ClubToJson(Club instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'location': instance.location,
+      'coverImageUri': instance.coverImageUri,
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+      'introAudioUri': instance.introAudioUri,
+      'Owner': instance.owner.toJson(),
+      'Admins': instance.admins.map((e) => e.toJson()).toList(),
+      'Members': instance.members.map((e) => e.toJson()).toList(),
+    };
+
+UserClubs$Query _$UserClubs$QueryFromJson(Map<String, dynamic> json) {
+  return UserClubs$Query()
+    ..userClubs = (json['userClubs'] as List<dynamic>)
+        .map((e) => Club.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserClubs$QueryToJson(UserClubs$Query instance) =>
+    <String, dynamic>{
+      'userClubs': instance.userClubs.map((e) => e.toJson()).toList(),
+    };
+
 Equipment _$EquipmentFromJson(Map<String, dynamic> json) {
   return Equipment()
     ..$$typename = json['__typename'] as String?
@@ -57,32 +160,6 @@ Map<String, dynamic> _$BodyAreaToJson(BodyArea instance) => <String, dynamic>{
       'frontBack': _$BodyAreaFrontBackEnumMap[instance.frontBack],
       'upperLower': _$BodyAreaUpperLowerEnumMap[instance.upperLower],
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
 
 const _$BodyAreaFrontBackEnumMap = {
   BodyAreaFrontBack.back: 'BACK',
@@ -438,38 +515,6 @@ Map<String, dynamic> _$DeleteCollectionById$MutationToJson(
     <String, dynamic>{
       'deleteCollectionById': instance.deleteCollectionById,
     };
-
-UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
-  return UserSummary()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String
-    ..userProfileScope = _$enumDecode(
-        _$UserProfileScopeEnumMap, json['userProfileScope'],
-        unknownValue: UserProfileScope.artemisUnknown)
-    ..tagline = json['tagline'] as String?
-    ..countryCode = json['countryCode'] as String?
-    ..townCity = json['townCity'] as String?;
-}
-
-Map<String, dynamic> _$UserSummaryToJson(UserSummary instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'avatarUri': instance.avatarUri,
-      'displayName': instance.displayName,
-      'userProfileScope': _$UserProfileScopeEnumMap[instance.userProfileScope],
-      'tagline': instance.tagline,
-      'countryCode': instance.countryCode,
-      'townCity': instance.townCity,
-    };
-
-const _$UserProfileScopeEnumMap = {
-  UserProfileScope.private: 'PRIVATE',
-  UserProfileScope.public: 'PUBLIC',
-  UserProfileScope.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
 
 WorkoutGoal _$WorkoutGoalFromJson(Map<String, dynamic> json) {
   return WorkoutGoal()
@@ -5055,51 +5100,6 @@ WorkoutById$Query _$WorkoutById$QueryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
     <String, dynamic>{
       'workoutById': instance.workoutById.toJson(),
-    };
-
-Club _$ClubFromJson(Map<String, dynamic> json) {
-  return Club()
-    ..id = json['id'] as String
-    ..name = json['name'] as String
-    ..description = json['description'] as String?
-    ..location = json['location'] as String?
-    ..coverImageUri = json['coverImageUri'] as String?
-    ..introVideoUri = json['introVideoUri'] as String?
-    ..introVideoThumbUri = json['introVideoThumbUri'] as String?
-    ..introAudioUri = json['introAudioUri'] as String?
-    ..owner = UserSummary.fromJson(json['Owner'] as Map<String, dynamic>)
-    ..admins = (json['Admins'] as List<dynamic>)
-        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
-        .toList()
-    ..members = (json['Members'] as List<dynamic>)
-        .map((e) => UserSummary.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$ClubToJson(Club instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'location': instance.location,
-      'coverImageUri': instance.coverImageUri,
-      'introVideoUri': instance.introVideoUri,
-      'introVideoThumbUri': instance.introVideoThumbUri,
-      'introAudioUri': instance.introAudioUri,
-      'Owner': instance.owner.toJson(),
-      'Admins': instance.admins.map((e) => e.toJson()).toList(),
-      'Members': instance.members.map((e) => e.toJson()).toList(),
-    };
-
-UserClubs$Query _$UserClubs$QueryFromJson(Map<String, dynamic> json) {
-  return UserClubs$Query()
-    ..userClubs = (json['userClubs'] as List<dynamic>)
-        .map((e) => Club.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$UserClubs$QueryToJson(UserClubs$Query instance) =>
-    <String, dynamic>{
-      'userClubs': instance.userClubs.map((e) => e.toJson()).toList(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(

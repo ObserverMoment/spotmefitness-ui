@@ -16,10 +16,12 @@ import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filter
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +63,7 @@ class _AuthRouterState extends State<AuthRouter> {
   void initState() {
     super.initState();
     GetIt.I.registerSingleton<AuthBloc>(_authBloc);
+
     _userDeviceBrightness =
         SchedulerBinding.instance?.window.platformBrightness ?? Brightness.dark;
   }

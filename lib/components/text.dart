@@ -208,16 +208,19 @@ class NavBarLargeTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MyHeaderText(
-          title,
-          textAlign: TextAlign.start,
-          size: FONTSIZE.TABTITLE,
-          weight: FontWeight.bold,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MyHeaderText(
+            title,
+            textAlign: TextAlign.start,
+            size: FONTSIZE.TABTITLE,
+            weight: FontWeight.bold,
+          ),
+        ],
+      ),
     );
   }
 }

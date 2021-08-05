@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_modal_container.dart';
@@ -49,7 +50,7 @@ class SectionCompleteModal extends StatelessWidget {
             onPressed: () => _handleResetSection(context),
             prefix: Icon(
               CupertinoIcons.refresh_bold,
-              color: context.theme.background,
+              color: Styles.white,
             ),
             text: 'Redo Section',
           ),
