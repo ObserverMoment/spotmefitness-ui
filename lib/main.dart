@@ -30,7 +30,8 @@ void main() async {
   await Hive.openBox(kSettingsHiveBoxName);
   await Hive.openBox(GraphQLStore.boxName);
 
-  /// TODO: Remove this before pushing anything to production. Once we have ensured that clean up and garbage collection is working well.
+  /// Once we have ensured that clean up and garbage collection is working well.
+  /// TODO: Remove this before pushing anything to production.
   Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();
@@ -59,6 +60,8 @@ class _AuthRouterState extends State<AuthRouter> {
   final _appRouter = AppRouter();
   late Brightness _userDeviceBrightness;
 
+  late StreamChatClient _getStreamChatClient;
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +69,14 @@ class _AuthRouterState extends State<AuthRouter> {
 
     _userDeviceBrightness =
         SchedulerBinding.instance?.window.platformBrightness ?? Brightness.dark;
+
+    /// Setup GetStreamChatClient as a global singleton.
+    _getStreamChatClient = StreamChatClient(
+      EnvironmentConfig.getStreamPublicKey,
+      // https://getstream.io/chat/docs/react/multi_region/?language=dart
+      location: Location.euWest,
+    );
+    GetIt.I.registerSingleton<StreamChatClient>(_getStreamChatClient);
   }
 
   @override
@@ -73,6 +84,11 @@ class _AuthRouterState extends State<AuthRouter> {
     GetIt.I.unregister<AuthBloc>(
       instance: _authBloc,
       disposingFunction: (bloc) => bloc.dispose(),
+    );
+    // Close and dispose GetStreamChatClient.
+    GetIt.I.unregister<StreamChatClient>(
+      instance: _getStreamChatClient,
+      disposingFunction: (client) => client.dispose(),
     );
     _appRouter.dispose();
     super.dispose();

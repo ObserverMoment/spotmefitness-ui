@@ -105,6 +105,7 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
 
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
+        useRootNavigator: true,
         context: context,
         builder: (context) => CupertinoActionSheet(
             actions: [

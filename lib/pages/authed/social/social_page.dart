@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/club_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
@@ -96,23 +97,38 @@ class HorizontalFriendsList extends StatelessWidget {
               return Container(
                 height: 70,
                 alignment: Alignment.centerLeft,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: publicUsers.length,
-                  itemBuilder: (c, i) => GestureDetector(
-                    onTap: () => context.navigateTo(
-                        UserPublicProfileDetailsRoute(
-                            userId: publicUsers[i].id)),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: UserAvatar(
-                        size: 70,
-                        avatarUri: publicUsers[i].avatarUri,
+                child: publicUsers.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: publicUsers.length,
+                        itemBuilder: (c, i) => GestureDetector(
+                          onTap: () => context.navigateTo(
+                              UserPublicProfileDetailsRoute(
+                                  userId: publicUsers[i].id)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: UserAvatar(
+                              size: 70,
+                              avatarUri: publicUsers[i].avatarUri,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Center(
+                            child: ContentBox(
+                              child: BorderButton(
+                                  withBorder: false,
+                                  mini: true,
+                                  prefix: Icon(CupertinoIcons.search_circle),
+                                  text: 'Find friends',
+                                  onPressed: () => print('find friends flow')),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
               );
             })
       ],
@@ -148,7 +164,7 @@ class HorizontalClubsList extends StatelessWidget {
             key: Key('SocialPage.HorizontalClubsList - ${query.operationName}'),
             query: query,
             loadingIndicator: ShimmerHorizontalCardList(
-              cardHeight: 130,
+              listHeight: 140,
             ),
             builder: (data) {
               final clubs = data.userClubs;
@@ -156,17 +172,35 @@ class HorizontalClubsList extends StatelessWidget {
               return Container(
                 height: 140,
                 alignment: Alignment.centerLeft,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: clubs.length,
-                  itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ClubCard(
-                      club: clubs[i],
-                    ),
-                  ),
-                ),
+                child: data.userClubs.isNotEmpty
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: clubs.length,
+                        itemBuilder: (c, i) => Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ClubCard(
+                            club: clubs[i],
+                          ),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: ContentBox(
+                                child: BorderButton(
+                                    withBorder: false,
+                                    mini: true,
+                                    prefix: Icon(CupertinoIcons.search_circle),
+                                    text: 'Find clubs',
+                                    onPressed: () => print('find clubs flow')),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
               );
             })
       ],

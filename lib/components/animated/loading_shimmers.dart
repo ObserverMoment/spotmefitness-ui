@@ -71,24 +71,22 @@ class ShimmerCardList extends StatelessWidget {
 
 class ShimmerHorizontalCardList extends StatelessWidget {
   final int itemCount;
-  final double cardHeight;
+  final double listHeight;
   final double cardWidth;
 
   ShimmerHorizontalCardList(
-      {this.itemCount = 10, this.cardHeight = 120, this.cardWidth = 170});
+      {this.itemCount = 10, this.listHeight = 120, this.cardWidth = 170});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: cardHeight + 8,
-      padding: const EdgeInsets.all(6.0),
+      height: listHeight,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
         itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.all(4.0),
           child: ShimmerCard(
-            height: cardHeight,
             width: cardWidth,
           ),
         ),
@@ -108,8 +106,7 @@ class ShimmerFriendsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: avatarSize + 10,
-      padding: const EdgeInsets.all(4.0),
+      height: avatarSize,
       child: ListView.builder(
         itemCount: itemCount,
         scrollDirection: scrollDirection,

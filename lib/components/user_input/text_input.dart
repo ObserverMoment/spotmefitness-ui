@@ -103,7 +103,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
             if (widget.validator != null && widget.validator!())
               Positioned(
                   right: 10,
-                  top: 8,
+                  top: 28,
                   child: FadeIn(
                       child: Icon(
                     CupertinoIcons.checkmark_alt,

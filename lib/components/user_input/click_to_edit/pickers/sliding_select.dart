@@ -10,7 +10,7 @@ class SlidingSelect<T> extends StatelessWidget {
       {required this.value,
       required this.updateValue,
       required this.children,
-      this.itemPadding = const EdgeInsets.symmetric(vertical: 10)});
+      this.itemPadding = const EdgeInsets.symmetric(vertical: 12)});
   @override
   Widget build(BuildContext context) {
     final formattedChildren =
@@ -25,6 +25,7 @@ class SlidingSelect<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: CupertinoSlidingSegmentedControl<T>(
+          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
           thumbColor: context.theme.background,
           groupValue: value,
           children: formattedChildren,

@@ -11,10 +11,8 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
-import 'package:spotmefitness_ui/pages/authed/welcome_modal.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:uni_links/uni_links.dart';
 
 /// Scaffold for the main top level tabs view.
@@ -25,7 +23,6 @@ class MainTabsPage extends StatefulWidget {
 
 class _MainTabsPageState extends State<MainTabsPage> {
   late StreamSubscription _linkStreamSub;
-  late StreamChatClient _getStreamChatClient;
 
   @override
   void initState() {
@@ -35,20 +32,6 @@ class _MainTabsPageState extends State<MainTabsPage> {
     /// https://pub.dev/packages/uni_links
     _handleInitialUri();
     _handleIncomingLinks();
-
-    /// Setup GetStreamChatClient as a global singleton.
-    _getStreamChatClient = StreamChatClient(
-      EnvironmentConfig.getStreamPublicKey,
-    );
-    GetIt.I.registerSingleton<StreamChatClient>(_getStreamChatClient);
-
-    /// If user has not yet onboarded then show them the welcome flow.
-    if (!GetIt.I<AuthBloc>().authedUser!.hasOnboarded) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) async {
-        await showCupertinoModalPopup(
-            context: context, builder: (_) => WelcomeModal());
-      });
-    }
   }
 
   /// Handle the initial Uri - the one the app was started with
@@ -103,11 +86,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
   void dispose() {
     // Cancel listening to incoming links.
     _linkStreamSub.cancel();
-    // Close and dispose GetStreamChatClient.
-    GetIt.I.unregister<StreamChatClient>(
-      instance: _getStreamChatClient,
-      disposingFunction: (client) => client.dispose(),
-    );
+
     super.dispose();
   }
 

@@ -1,15 +1,10 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
@@ -18,7 +13,6 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
-import 'package:spotmefitness_ui/components/other_app_icons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -149,15 +143,6 @@ class _UserPublicProfileDetailsPageState
                             imageUri: userPublicProfile.avatarUri,
                           ),
                           items: [
-                        BottomSheetMenuItem(
-                            text: 'Connect / Disconnect',
-                            icon: Icon(
-                                CupertinoIcons.person_crop_circle_badge_plus),
-                            onPressed: () => print('Connect')),
-                        BottomSheetMenuItem(
-                            text: 'Chat',
-                            icon: Icon(CupertinoIcons.chat_bubble),
-                            onPressed: () => print('open chat')),
                         BottomSheetMenuItem(
                             text: 'Share',
                             icon: Icon(CupertinoIcons.share),
@@ -381,7 +366,8 @@ class _HeaderContent extends StatelessWidget {
                         CupertinoIcons.person_crop_circle_badge_plus,
                         size: 17,
                       ),
-                      onPressed: () => print('connect'),
+                      onPressed: () =>
+                          print('connect = subscribe to that users feed.'),
                     ),
                     BorderButton(
                       text: 'Chat',
@@ -389,7 +375,9 @@ class _HeaderContent extends StatelessWidget {
                         CupertinoIcons.chat_bubble_2,
                         size: 19,
                       ),
-                      onPressed: () => print('chat'),
+                      onPressed: () => context.navigateTo(OneToOneChatRoute(
+                        otherUserId: userPublicProfile.id,
+                      )),
                     ),
                   ],
                 ),
