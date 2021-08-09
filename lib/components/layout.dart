@@ -132,7 +132,7 @@ class StackAndFloatingButton extends StatelessWidget {
             bottom:
                 pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 20,
             // right: 0,
-            child: ExtendedIconButton(
+            child: FloatingIconButton(
                 text: buttonText,
                 iconData: buttonIconData,
                 onPressed: onPressed))
@@ -286,12 +286,16 @@ class BorderlessNavBar extends CupertinoNavigationBar {
 }
 
 class NavBarBackButton extends StatelessWidget {
-  const NavBarBackButton({Key? key}) : super(key: key);
+  final Alignment alignment;
+  const NavBarBackButton({
+    Key? key,
+    this.alignment = Alignment.centerLeft,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      alignment: Alignment.centerLeft,
+      alignment: alignment,
       onPressed: () {
         Navigator.maybePop(context);
       },

@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
@@ -160,18 +158,22 @@ class WorkoutCard extends StatelessWidget {
                           size: 34,
                         ),
                       ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        MyHeaderText(
-                          workout.name,
-                        ),
-                        MyText(
-                          'By ${workout.user.displayName}',
-                          size: FONTSIZE.TINY,
-                          lineHeight: 1.3,
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyHeaderText(
+                            workout.name,
+                            maxLines: 2,
+                            lineHeight: 1.3,
+                          ),
+                          MyText(
+                            'By ${workout.user.displayName}',
+                            size: FONTSIZE.TINY,
+                            lineHeight: 1.4,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

@@ -67,7 +67,9 @@ const _$UserProfileScopeEnumMap = {
 
 Club _$ClubFromJson(Map<String, dynamic> json) {
   return Club()
+    ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
+    ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
     ..name = json['name'] as String
     ..description = json['description'] as String?
     ..location = json['location'] as String?
@@ -85,7 +87,9 @@ Club _$ClubFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ClubToJson(Club instance) => <String, dynamic>{
+      '__typename': instance.$$typename,
       'id': instance.id,
+      'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
       'name': instance.name,
       'description': instance.description,
       'location': instance.location,
@@ -5102,6 +5106,16 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+ClubById$Query _$ClubById$QueryFromJson(Map<String, dynamic> json) {
+  return ClubById$Query()
+    ..clubById = Club.fromJson(json['clubById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$ClubById$QueryToJson(ClubById$Query instance) =>
+    <String, dynamic>{
+      'clubById': instance.clubById.toJson(),
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -6564,6 +6578,17 @@ WorkoutByIdArguments _$WorkoutByIdArgumentsFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+ClubByIdArguments _$ClubByIdArgumentsFromJson(Map<String, dynamic> json) {
+  return ClubByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$ClubByIdArgumentsToJson(ClubByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };

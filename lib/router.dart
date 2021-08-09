@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/creators/club_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
@@ -11,6 +12,7 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.d
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/app.dart';
+import 'package:spotmefitness_ui/pages/authed/details_pages/club_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/personal_best_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/collection_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/logged_workout_details_page.dart';
@@ -20,12 +22,12 @@ import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_enrolment_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_challenges_page.dart';
-import 'package:spotmefitness_ui/pages/authed/discover/discover_clubs_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_events_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_plans_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_workouts_page.dart';
 import 'package:spotmefitness_ui/pages/authed/home/home_page.dart';
+import 'package:spotmefitness_ui/pages/authed/home/your_challenges.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_clubs.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_collections.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
@@ -43,6 +45,8 @@ import 'package:spotmefitness_ui/pages/authed/progress/logged_workouts_page.dart
 import 'package:spotmefitness_ui/pages/authed/progress/journals_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/progress_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/chats_overview_page.dart';
+import 'package:spotmefitness_ui/pages/authed/social/discover_clubs_page.dart';
+import 'package:spotmefitness_ui/pages/authed/social/discover_people_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/one_to_one_chat_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
@@ -66,13 +70,12 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   AutoRoute(path: '', page: HomePage),
                   AutoRoute(
                       path: 'your-collections', page: YourCollectionsPage),
-                  AutoRoute(path: 'your-workouts', page: YourWorkoutsPage),
-                  AutoRoute(path: 'your-plans', page: YourPlansPage),
-                  AutoRoute(path: 'your-events', page: YourEventsPage),
+                  AutoRoute(path: 'your-challenges', page: YourChallengesPage),
                   AutoRoute(path: 'your-clubs', page: YourClubsPage),
-                  AutoRoute(
-                      path: 'your-collections', page: YourCollectionsPage),
+                  AutoRoute(path: 'your-events', page: YourEventsPage),
+                  AutoRoute(path: 'your-plans', page: YourPlansPage),
                   AutoRoute(path: 'your-schedule', page: YourSchedulePage),
+                  AutoRoute(path: 'your-workouts', page: YourWorkoutsPage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
             AutoRoute(
@@ -87,11 +90,19 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   AutoRoute(
                       path: 'discover-challenges',
                       page: DiscoverChallengesPage),
-                  AutoRoute(path: 'discover-clubs', page: DiscoverClubsPage),
                   AutoRoute(path: 'discover-events', page: DiscoverEventsPage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
-            AutoRoute(path: 'social', page: SocialPage),
+            AutoRoute(
+                path: 'social',
+                name: 'socialStack',
+                page: HeroEmptyRouterPage,
+                children: [
+                  AutoRoute(path: '', page: SocialPage),
+                  AutoRoute(path: 'discover-clubs', page: DiscoverClubsPage),
+                  AutoRoute(path: 'discover-people', page: DiscoverPeoplePage),
+                  RedirectRoute(path: '*', redirectTo: '')
+                ]),
             AutoRoute(
                 path: 'progress',
                 name: 'progressStack',
@@ -118,11 +129,6 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           AutoRoute(path: 'chats', page: ChatsOverviewPage),
           AutoRoute(path: 'chat', page: OneToOneChatPage),
           AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
-          AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
-          AutoRoute(
-              path: 'create-personal-best', page: PersonalBestCreatorPage),
-          AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
-          AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
           AutoRoute(
               path: "do-workout/:id",
               page: DoWorkoutWrapperPage,
@@ -130,22 +136,34 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                 AutoRoute(page: DoWorkoutDoWorkoutPage),
                 AutoRoute(page: DoWorkoutLogWorkoutPage),
               ]),
+          AutoRoute(path: 'settings', page: SettingsPage),
+
+          /// Finders.
           AutoRoute(path: 'find-workout', page: WorkoutFinderPage),
           AutoRoute(path: 'find-plan', page: WorkoutPlanFinderPage),
-          AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),
+
+          /// Details pages - for certain object types.
+          AutoRoute(path: 'club/:id', page: ClubDetailsPage),
           AutoRoute(path: 'logged-workout/:id', page: LoggedWorkoutDetailsPage),
           AutoRoute(path: 'personal-best/:id', page: PersonalBestDetailsPage),
           AutoRoute(
               path: 'profile/:userId', page: UserPublicProfileDetailsPage),
           AutoRoute(
               path: 'progress-journal/:id', page: ProgressJournalDetailsPage),
-          AutoRoute(path: 'settings', page: SettingsPage),
-
           AutoRoute(path: 'workout/:id', page: WorkoutDetailsPage),
           AutoRoute(path: 'workout-plan/:id', page: WorkoutPlanDetailsPage),
           AutoRoute(
               path: 'workout-plan-progress/:id',
               page: WorkoutPlanEnrolmentDetailsPage),
+
+          /// Creator pages. CRUD pages for database models.
+          AutoRoute(path: 'create-club', page: ClubCreatorPage),
+          AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
+          AutoRoute(
+              path: 'create-personal-best', page: PersonalBestCreatorPage),
+          AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
+          AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
+          AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),
           RedirectRoute(path: '*', redirectTo: '/')
         ]),
   ],

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -279,11 +278,8 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Transform.rotate(
-                                  angle: -pi / 2,
-                                  child: Icon(
-                                    CupertinoIcons.slider_horizontal_3,
-                                  ),
+                                Icon(
+                                  CupertinoIcons.slider_horizontal_3,
                                 ),
                                 SizedBox(width: 8),
                               ],

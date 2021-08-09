@@ -6,8 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
@@ -117,7 +115,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
           routes: [
             HomeStack(),
             DiscoverStack(),
-            SocialRoute(),
+            SocialStack(),
             ProgressStack(),
             ProfileRoute(),
           ],

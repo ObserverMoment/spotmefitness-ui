@@ -10,7 +10,6 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
-import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -241,7 +240,8 @@ class _UserPublicProfileDetailsPageState
                         MyTabBarNav(
                             titles: [
                               'Workouts',
-                              'Plans'
+                              'Plans',
+                              'Posts',
                             ],
                             superscriptIcons: [
                               userPublicProfile.workouts.isEmpty
@@ -252,6 +252,7 @@ class _UserPublicProfileDetailsPageState
                                   ? null
                                   : _buildNumberDisplay(
                                       userPublicProfile.workoutPlans.length),
+                              null,
                             ],
                             handleTabChange: _changeTab,
                             activeTabIndex: _activeTabIndex),
@@ -274,6 +275,7 @@ class _UserPublicProfileDetailsPageState
                                     context.navigateTo(WorkoutPlanDetailsRoute(
                                         id: workoutPlanId)),
                               ),
+                              Center(child: MyHeaderText('Coming soon!')),
                             ],
                           ),
                         )

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -301,7 +300,6 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                               children: [
                                 Icon(
                                   CupertinoIcons.slider_horizontal_3,
-                                  size: 30,
                                 ),
                                 SizedBox(width: 8),
                               ],

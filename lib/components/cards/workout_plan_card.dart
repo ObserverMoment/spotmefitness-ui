@@ -3,7 +3,7 @@ import 'package:spotmefitness_ui/components/data_vis/percentage_bar_chart.dart';
 import 'package:spotmefitness_ui/components/data_vis/waffle_chart.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
-import 'package:spotmefitness_ui/components/social_components.dart';
+import 'package:spotmefitness_ui/components/social/users_group_summary.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews_summary.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';

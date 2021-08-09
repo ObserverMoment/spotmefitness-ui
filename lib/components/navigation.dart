@@ -22,7 +22,8 @@ class MyTabBarNav extends StatefulWidget {
     required this.activeTabIndex,
     this.superscriptIcons,
     this.alignment = Alignment.centerLeft,
-  });
+  }) : assert(superscriptIcons == null ||
+            superscriptIcons.length == titles.length);
 
   @override
   _MyTabBarNavState createState() => _MyTabBarNavState();

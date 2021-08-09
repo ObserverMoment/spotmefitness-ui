@@ -312,3 +312,58 @@ class _UnderlineTitleState extends State<UnderlineTitle> {
     );
   }
 }
+
+/// Block of text that, on tap, will open a full screen text viewer modal.
+class ViewMoreFullScreenTextBlock extends StatelessWidget {
+  final String text;
+  final String title;
+  final int maxLines;
+  final TextAlign textAlign;
+  final double lineHeight;
+  const ViewMoreFullScreenTextBlock(
+      {Key? key,
+      required this.text,
+      required this.title,
+      this.maxLines = 4,
+      this.textAlign = TextAlign.start,
+      this.lineHeight = 1.3})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => context.showBottomSheet(
+          expand: true, useRootNavigator: true, child: TextViewer(text, title)),
+      child: MyText(
+        text,
+        maxLines: maxLines,
+        textAlign: textAlign,
+        lineHeight: lineHeight,
+      ),
+    );
+  }
+}
+
+class TextViewer extends StatelessWidget {
+  final String text;
+  final String title;
+  TextViewer(this.text, this.title);
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            H2(title),
+            SizedBox(height: 16),
+            MyText(
+              text,
+              maxLines: 999,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

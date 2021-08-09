@@ -88,9 +88,12 @@ class HomePage extends StatelessWidget {
                   assetImagePath: 'home_page_events.jpg',
                 ),
               ),
-              _HomeScreenCard(
-                label: 'Challenges',
-                assetImagePath: 'home_page_challenges.jpg',
+              GestureDetector(
+                onTap: () => () => context.navigateTo(YourChallengesRoute()),
+                child: _HomeScreenCard(
+                  label: 'Challenges',
+                  assetImagePath: 'home_page_challenges.jpg',
+                ),
               ),
               GestureDetector(
                 onTap: () => context.navigateTo(YourCollectionsRoute()),

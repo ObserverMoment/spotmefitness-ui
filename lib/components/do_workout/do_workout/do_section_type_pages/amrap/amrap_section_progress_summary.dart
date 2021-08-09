@@ -44,7 +44,10 @@ class AMRAPSectionProgressSummary extends StatelessWidget {
                 child: Column(
                   children: [
                     MyText('No sets completed yet...', subtext: true),
-                    H1("Let's go!"),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: H1("Let's go!"),
+                    ),
                   ],
                 ),
               )

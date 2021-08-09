@@ -1,10 +1,5 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -23,7 +18,6 @@ import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DoWorkoutLogWorkoutPage extends StatefulWidget {
   final String? scheduledWorkoutId;

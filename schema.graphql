@@ -459,6 +459,21 @@ type GymProfile {
 
 scalar JSON
 
+type JoinClubRequest {
+  id: ID!
+  createdAt: DateTime!
+  RequestBy: UserSummary!
+  status: JoinClubRequestStatus!
+  respondedAt: DateTime
+  ResponseBy: UserSummary
+}
+
+enum JoinClubRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
 enum LoadUnit {
   KG
   LB
@@ -706,6 +721,7 @@ type Query {
   workoutGoals: [WorkoutGoal!]!
   workoutSectionTypes: [WorkoutSectionType!]!
   userClubs: [Club!]!
+  clubById(id: ID!): Club!
   discoverFeatured: [DiscoverFeatured!]!
   discoverWorkoutCategories: [DiscoverWorkoutCategory!]!
   discoverWorkoutPlanCategories: [DiscoverWorkoutPlanCategory!]!

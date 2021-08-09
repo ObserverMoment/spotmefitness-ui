@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -314,14 +313,14 @@ class RoundIconButton extends StatelessWidget {
   }
 }
 
-class ExtendedIconButton extends StatelessWidget {
+class FloatingIconButton extends StatelessWidget {
   final IconData iconData;
   final String text;
   final void Function() onPressed;
   final bool disabled;
   final bool loading;
 
-  ExtendedIconButton(
+  FloatingIconButton(
       {required this.iconData,
       required this.onPressed,
       this.disabled = false,
@@ -365,11 +364,12 @@ class ExtendedIconButton extends StatelessWidget {
                     child: loading
                         ? LoadingCircle(color: context.theme.primary, size: 12)
                         : Icon(iconData,
-                            size: 26, color: context.theme.background)),
+                            size: 24, color: context.theme.background)),
               ),
-              H3(
+              MyText(
                 text,
                 color: context.theme.background,
+                size: FONTSIZE.BIG,
               ),
             ],
           ),

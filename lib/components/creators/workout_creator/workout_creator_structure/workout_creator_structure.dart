@@ -8,7 +8,6 @@ import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';

@@ -1,13 +1,8 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:get_it/get_it.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
@@ -368,7 +363,6 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     return QueryObserver<WorkoutById$Query, WorkoutByIdArguments>(
         key: Key('WorkoutDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
-        fetchPolicy: QueryFetchPolicy.storeAndNetwork,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
         builder: (workoutData) {

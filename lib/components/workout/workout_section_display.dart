@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
-import 'package:spotmefitness_ui/components/media/text_viewer.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -85,7 +84,15 @@ class WorkoutDetailsSection extends StatelessWidget {
                   ),
                 if ([kHIITCircuitName, kTabataName, kEMOMName]
                     .contains(workoutSection.workoutSectionType.name))
-                  ContentBox(
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: context.theme.primary.withOpacity(0.3)),
+                      borderRadius: BorderRadius.circular(60),
+                    ),
                     child: MyText(
                         'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}'),
                   ),

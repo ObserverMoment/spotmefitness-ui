@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/stream.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as s;
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// A standalone page that can open up a one to one chat conversation.
 /// [otherUserSummary] - The UserSummary of the other user. The first user is the authed user.
@@ -91,12 +95,34 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
               channel: _channel,
               child: CupertinoPageScaffold(
                 navigationBar: BorderlessNavBar(
-                  middle: MyHeaderText(_displayName ?? 'Unnamed'),
+                  middle: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () => context.showBottomSheet(
+                              child: BottomSheetMenu(
+                                  header: BottomSheetMenuHeader(
+                                    name: _displayName ?? 'Unnamed',
+                                    subtitle: 'Profile',
+                                    imageUri: _avatarUri,
+                                  ),
+                                  items: [
+                                BottomSheetMenuItem(
+                                    text: 'Block',
+                                    icon: Icon(CupertinoIcons.nosign),
+                                    onPressed: () => print('block')),
+                                BottomSheetMenuItem(
+                                    text: 'Report',
+                                    icon: Icon(
+                                        CupertinoIcons.exclamationmark_circle),
+                                    onPressed: () => print('report')),
+                              ])),
+                      child: MyHeaderText(_displayName ?? 'Unnamed')),
                   trailing: CupertinoButton(
-                    onPressed: () => print('open user actions'),
+                    onPressed: _avatarUri != null
+                        ? () => openFullScreenImageViewer(context, _avatarUri!)
+                        : null,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: UserAvatar(
-                      size: 38,
+                      size: 36,
                       avatarUri: _avatarUri,
                     ),
                   ),
@@ -107,7 +133,31 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                   child: Column(
                     children: <Widget>[
                       Expanded(
-                        child: s.MessageListView(),
+                        child: s.MessageListView(
+                          onMessageTap: (message) => print(message),
+                          messageBuilder: (context, message, messages,
+                              defaultMessageWidget) {
+                            return defaultMessageWidget.copyWith(
+                              onLinkTap: (link) => print(link),
+                              onMessageActions: (context, message) =>
+                                  print(message),
+                              onAttachmentTap: (message, attachment) =>
+                                  print('View, share, save options'),
+                              showUserAvatar: s.DisplayWidget.gone,
+                              usernameBuilder: (context, message) => Padding(
+                                padding: const EdgeInsets.only(left: 4.0),
+                                child: MyText(
+                                  message.user?.extraData['displayName']
+                                          as String? ??
+                                      'Unnamed',
+                                  color: Styles.colorOne,
+                                  size: FONTSIZE.SMALL,
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                       s.MessageInput(),
                     ],

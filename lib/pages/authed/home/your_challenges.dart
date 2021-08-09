@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
-class YourEventsPage extends StatelessWidget {
+class YourChallengesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: BorderlessNavBar(
-        middle: NavBarTitle('Events'),
+        middle: NavBarTitle('Challenges'),
       ),
       child: Center(
         child: MyHeaderText(
