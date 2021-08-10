@@ -52,28 +52,34 @@ class MyButton extends StatelessWidget {
               border: border ? Border.all(color: contentColor) : null,
               color: backgroundColor,
               borderRadius: BorderRadius.circular(12)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (prefix != null) prefix!,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 300),
-                  child: loading
-                      ? LoadingDots(
-                          color: contentColor,
-                        )
-                      : MyText(
+          child: AnimatedSwitcher(
+            duration: kStandardAnimationDuration,
+            child: loading
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingDots(
+                        color: contentColor,
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (prefix != null) prefix!,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child: MyText(
                           text,
                           weight: FontWeight.bold,
                           color: contentColor,
                         ),
-                ),
-              ),
-              if (suffix != null) suffix!
-            ],
+                      ),
+                      if (suffix != null) suffix!
+                    ],
+                  ),
           ),
         ),
       ),
@@ -342,12 +348,12 @@ class FloatingIconButton extends StatelessWidget {
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                    color: CupertinoColors.black.withOpacity(0.5),
-                    blurRadius: 3, // soften the shadow
+                    color: CupertinoColors.black.withOpacity(0.25),
+                    blurRadius: 4, // soften the shadow
                     spreadRadius: 1.5, //extend the shadow
                     offset: Offset(
-                      0.4, // Move to right horizontally
-                      0.4, // Move to bottom Vertically
+                      0.3, // Move to right horizontally
+                      0.3, // Move to bottom Vertically
                     ))
               ],
               color: context.theme.primary,
@@ -452,6 +458,7 @@ class PageLink extends StatelessWidget {
   final bool infoHighlight;
   final bool destructiveHighlight;
   final bool loading;
+  final bool bold;
 
   PageLink(
       {required this.linkText,
@@ -459,7 +466,8 @@ class PageLink extends StatelessWidget {
       this.icon,
       this.infoHighlight = false,
       this.destructiveHighlight = false,
-      this.loading = false});
+      this.loading = false,
+      this.bold = false});
 
   @override
   Widget build(BuildContext context) {
@@ -490,6 +498,7 @@ class PageLink extends StatelessWidget {
                         : destructiveHighlight
                             ? Styles.errorRed
                             : null,
+                    weight: bold ? FontWeight.bold : FontWeight.normal,
                   ),
                   if (loading)
                     FadeIn(
@@ -822,17 +831,20 @@ class NavBarCancelButton extends StatelessWidget {
 }
 
 /// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
-class NavBarCloseButton extends StatelessWidget {
+class NavBarTextButton extends StatelessWidget {
   final void Function() onPressed;
-  NavBarCloseButton(this.onPressed);
+  final String text;
+  final FontWeight fontWeight;
+  NavBarTextButton(this.onPressed, this.text,
+      {this.fontWeight = FontWeight.bold});
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: onPressed,
         child: MyText(
-          'Close',
-          weight: FontWeight.bold,
+          text,
+          weight: fontWeight,
         ));
   }
 }
@@ -863,22 +875,6 @@ class NavBarSaveButton extends StatelessWidget {
                   )),
       ],
     );
-  }
-}
-
-/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
-class NavBarTextButton extends StatelessWidget {
-  final String text;
-  final void Function() onPressed;
-  NavBarTextButton({required this.text, required this.onPressed});
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
-        child: MyText(
-          text,
-        ));
   }
 }
 

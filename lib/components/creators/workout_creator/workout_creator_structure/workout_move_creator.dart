@@ -141,10 +141,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     if (!_pageController.hasClients) {
       return null;
     } else if (_pageController.page == 0 && _activeWorkoutMove?.move != null) {
-      return NavBarTextButton(
-        text: 'Edit >',
-        onPressed: () => _pageController.toPage(1),
-      );
+      return NavBarTextButton(() => _pageController.toPage(1), 'Edit >');
     } else if (_validToSave()) {
       return FadeIn(
         child: NavBarSaveButton(

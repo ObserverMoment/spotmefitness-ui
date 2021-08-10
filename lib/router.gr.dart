@@ -8,7 +8,7 @@ import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/cupertino.dart' as _i54;
 import 'package:flutter/material.dart' as _i2;
 
-import 'components/creators/club_creator.dart' as _i21;
+import 'components/creators/club_creator/club_creator.dart' as _i21;
 import 'components/creators/logged_workout_creator/logged_workout_creator.dart'
     as _i26;
 import 'components/creators/personal_best_creator/personal_best_creator.dart'
@@ -226,8 +226,7 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (data) {
           final args = data.argsAs<ClubCreatorRouteArgs>(
               orElse: () => const ClubCreatorRouteArgs());
-          return _i21.ClubCreatorPage(
-              key: args.key, club: args.club, onComplete: args.onComplete);
+          return _i21.ClubCreatorPage(key: args.key, club: args.club);
         }),
     ProgressJournalCreatorRoute.name: (routeData) =>
         _i1.CupertinoPageX<dynamic>(
@@ -804,24 +803,20 @@ class WorkoutPlanEnrolmentDetailsRouteArgs {
 }
 
 class ClubCreatorRoute extends _i1.PageRouteInfo<ClubCreatorRouteArgs> {
-  ClubCreatorRoute(
-      {_i54.Key? key, _i55.Club? club, void Function(_i55.Club)? onComplete})
+  ClubCreatorRoute({_i54.Key? key, _i55.Club? club})
       : super(name,
             path: 'create-club',
-            args: ClubCreatorRouteArgs(
-                key: key, club: club, onComplete: onComplete));
+            args: ClubCreatorRouteArgs(key: key, club: club));
 
   static const String name = 'ClubCreatorRoute';
 }
 
 class ClubCreatorRouteArgs {
-  const ClubCreatorRouteArgs({this.key, this.club, this.onComplete});
+  const ClubCreatorRouteArgs({this.key, this.club});
 
   final _i54.Key? key;
 
   final _i55.Club? club;
-
-  final void Function(_i55.Club)? onComplete;
 }
 
 class ProgressJournalCreatorRoute

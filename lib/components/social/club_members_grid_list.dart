@@ -11,12 +11,11 @@ class ClubMembersGridList extends StatelessWidget {
   final UserSummary owner;
   final List<UserSummary> admins;
   final List<UserSummary> members;
-  final double avatarSize;
   final ScrollPhysics? scrollPhysics;
   const ClubMembersGridList(
       {Key? key,
       required this.members,
-      required this.avatarSize,
+      // required this.avatarSize,
       required this.owner,
       required this.admins,
       this.scrollPhysics})
@@ -42,7 +41,7 @@ class ClubMembersGridList extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       physics: scrollPhysics,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       childAspectRatio: 0.6,
       shrinkWrap: true,
       crossAxisCount: 4,

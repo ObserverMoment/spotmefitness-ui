@@ -132,7 +132,7 @@ class _WorkoutPlanFinderTextSearchState
                   ),
                 ),
                 SizedBox(width: 8),
-                NavBarCloseButton(context.pop),
+                NavBarTextButton(context.pop, 'Close'),
               ],
             ),
           ),

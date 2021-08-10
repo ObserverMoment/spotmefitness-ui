@@ -1,0 +1,14 @@
+mutation updateClub($data: UpdateClubInput!) {
+  updateClub(data: $data) {
+    ...Club
+    Owner {
+      ...UserSummary
+    }
+    Admins {
+      ...UserSummary
+    }
+    Members {
+      ...UserSummary
+    }
+  }
+}

@@ -271,17 +271,21 @@ class BorderlessNavBar extends CupertinoNavigationBar {
   final Widget? middle;
   final Widget? trailing;
   final Color? backgroundColor;
-  BorderlessNavBar(
-      {this.key,
-      this.automaticallyImplyLeading = false,
-      this.customLeading,
-      this.middle,
-      this.trailing,
-      this.backgroundColor})
-      : super(
+  final bool withoutLeading;
+  BorderlessNavBar({
+    this.key,
+    this.automaticallyImplyLeading = false,
+    this.customLeading,
+    this.middle,
+    this.trailing,
+    this.backgroundColor,
+    this.withoutLeading = false,
+  }) : super(
             key: key,
             automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: customLeading ?? const NavBarBackButton(),
+            leading: withoutLeading
+                ? null
+                : customLeading ?? const NavBarBackButton(),
             border: null);
 }
 

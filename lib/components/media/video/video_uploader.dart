@@ -51,7 +51,10 @@ class _VideoUploaderState extends State<VideoUploader> {
 
       await context.showDialog(
           title: 'Upload video',
-          content: MyText('This file is $fileSize in size.'),
+          content: MyText(
+            'This file is $fileSize in size.',
+            textAlign: TextAlign.center,
+          ),
           actions: [
             CupertinoDialogAction(
               child: MyText('Yes'),
@@ -102,8 +105,8 @@ class _VideoUploaderState extends State<VideoUploader> {
 
   @override
   Widget build(BuildContext context) {
-    final Color _primary = context.theme.primary;
-    final Color _background = context.theme.background;
+    final Color primary = context.theme.primary;
+    final Color cardBackground = context.theme.cardBackground;
     final bool hasVideo = Utils.textNotNull(widget.videoUri);
 
     return GestureDetector(
@@ -166,7 +169,7 @@ class _VideoUploaderState extends State<VideoUploader> {
         height: widget.displaySize.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: _primary.withOpacity(0.2),
+          color: cardBackground,
           boxShadow: [Styles.avatarBoxShadow],
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -180,14 +183,14 @@ class _VideoUploaderState extends State<VideoUploader> {
                 )
               : _processing
                   ? LoadingCircle(
-                      color: _background.withOpacity(0.4),
+                      color: primary,
                     )
                   : hasVideo
                       ? SizedUploadcareImage(widget.videoThumbUri!)
                       : Icon(
                           CupertinoIcons.film,
                           size: widget.displaySize.width / 2.5,
-                          color: _background.withOpacity(0.4),
+                          color: primary.withOpacity(0.3),
                         ),
         ),
       ),

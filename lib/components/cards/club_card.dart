@@ -12,11 +12,13 @@ class ClubCard extends StatelessWidget {
   final Club club;
   const ClubCard({Key? key, required this.club}) : super(key: key);
 
+  final kCardHeight = 240.0;
+
   @override
   Widget build(BuildContext context) {
     final List<UserSummary> allMembers = [...club.admins, ...club.members];
     return Card(
-      height: 240,
+      height: kCardHeight,
       padding: EdgeInsets.zero,
       child: Row(
         children: [
@@ -24,6 +26,7 @@ class ClubCard extends StatelessWidget {
             borderRadius: kStandardCardBorderRadius,
             child: SizedBox(
               width: 100,
+              height: kCardHeight,
               child: Utils.textNotNull(club.coverImageUri)
                   ? SizedUploadcareImage(club.coverImageUri!)
                   : Image.asset(
@@ -47,26 +50,25 @@ class ClubCard extends StatelessWidget {
                         weight: FontWeight.bold,
                         size: FONTSIZE.BIG,
                       ),
-                      if (club.admins.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Wrap(spacing: 8, runSpacing: 8, children: [
-                            MyText(
-                              '${club.owner.displayName} (owner)',
-                              size: FONTSIZE.SMALL,
-                              weight: FontWeight.bold,
-                            ),
-                            ...club.admins
-                                .map(
-                                  (a) => MyText(
-                                    '${a.displayName} (admin)',
-                                    size: FONTSIZE.SMALL,
-                                    subtext: true,
-                                  ),
-                                )
-                                .toList(),
-                          ]),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Wrap(spacing: 8, runSpacing: 8, children: [
+                          MyText(
+                            '${club.owner.displayName} (owner)',
+                            size: FONTSIZE.SMALL,
+                            weight: FontWeight.bold,
+                          ),
+                          ...club.admins
+                              .map(
+                                (a) => MyText(
+                                  '${a.displayName} (admin)',
+                                  size: FONTSIZE.SMALL,
+                                  subtext: true,
+                                ),
+                              )
+                              .toList(),
+                        ]),
+                      ),
                     ],
                   ),
                   if (Utils.textNotNull(club.description))

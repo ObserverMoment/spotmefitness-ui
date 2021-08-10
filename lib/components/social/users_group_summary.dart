@@ -26,7 +26,7 @@ class UsersGroupSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     return users.isEmpty
         ? MyText(
-            'None yet',
+            'No members yet',
             size: FONTSIZE.TINY,
             weight: FontWeight.bold,
             subtext: true,

@@ -99,8 +99,8 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
 
   @override
   Widget build(BuildContext context) {
-    final Color _primary = context.theme.primary;
-    final Color _background = context.theme.background;
+    final Color primary = context.theme.primary;
+    final Color cardBackground = context.theme.cardBackground;
     final bool hasImage = Utils.textNotNull(widget.avatarUri);
 
     return GestureDetector(
@@ -159,22 +159,20 @@ class _UserAvatarUploaderState extends State<UserAvatarUploader> {
         height: widget.displaySize.height,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: _primary.withOpacity(0.7),
+          color: cardBackground,
           boxShadow: [Styles.avatarBoxShadow],
         ),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 400),
           child: _uploading
-              ? LoadingCircle(
-                  color: _background.withOpacity(0.4),
-                )
+              ? LoadingCircle(color: primary)
               : widget.avatarUri != null
                   ? SizedUploadcareImage(widget.avatarUri!)
                   : Icon(
                       CupertinoIcons.photo,
                       size: widget.displaySize.width / 2.5,
-                      color: _background.withOpacity(0.4),
+                      color: primary.withOpacity(0.3),
                     ),
         ),
       ),

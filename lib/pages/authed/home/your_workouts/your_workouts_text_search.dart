@@ -95,7 +95,7 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
                               ),
                             ),
                             SizedBox(width: 10),
-                            NavBarCloseButton(context.pop),
+                            NavBarTextButton(context.pop, 'Close'),
                           ],
                         ),
                         Expanded(

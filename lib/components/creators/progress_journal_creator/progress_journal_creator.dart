@@ -195,7 +195,7 @@ class _ProgressJournalCreatorPageState
             if (!_isLoading && _isEditing && !_formIsDirty)
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
-                child: NavBarCloseButton(_handleClose),
+                child: NavBarTextButton(_handleClose, 'Close'),
               ),
             if (!_isLoading && _formIsDirty)
               Padding(

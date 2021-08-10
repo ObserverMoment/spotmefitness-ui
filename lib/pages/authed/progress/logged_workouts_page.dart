@@ -262,7 +262,7 @@ class _YourLoggedWorkoutsTextSearchState
                   ),
                 ),
                 SizedBox(width: 10),
-                NavBarCloseButton(context.pop),
+                NavBarTextButton(context.pop, 'Close'),
               ],
             ),
             Expanded(

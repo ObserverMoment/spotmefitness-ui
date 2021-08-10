@@ -69,8 +69,12 @@ extension BuildContextExtension on BuildContext {
         barrierDismissible: barrierDismissible,
         context: context,
         builder: (context) => CupertinoAlertDialog(
-            title:
-                title != null ? H3(title, textAlign: TextAlign.center) : null,
+            title: title != null
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: H3(title, textAlign: TextAlign.center),
+                  )
+                : null,
             content: content,
             actions: actions));
     return res;
@@ -282,12 +286,19 @@ extension BuildContextExtension on BuildContext {
     await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: H3('Oops, it went wrong...'),
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: H3(
+                    'Oops, it went wrong!',
+                    color: Styles.errorRed,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 content: MyText(
                   message,
-                  color: Styles.errorRed,
                   maxLines: 8,
                   textAlign: TextAlign.center,
+                  lineHeight: 1.3,
                 ),
                 actions: [
                   CupertinoDialogAction(

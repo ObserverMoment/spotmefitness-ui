@@ -57,7 +57,7 @@ class _FullScreenImageGalleryState extends State<FullScreenImageGallery> {
     return CupertinoPageScaffold(
         navigationBar: widget.withTopNavBar
             ? BorderlessNavBar(
-                customLeading: NavBarCloseButton(context.pop),
+                customLeading: NavBarTextButton(context.pop, 'Close'),
                 middle: NavBarTitle(widget.pageTitle),
               )
             : null,

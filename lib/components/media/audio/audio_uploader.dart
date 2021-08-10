@@ -93,7 +93,7 @@ class _AudioUploaderState extends State<AudioUploader> {
   @override
   Widget build(BuildContext context) {
     final Color primary = context.theme.primary;
-    final Color background = context.theme.background;
+    final Color cardBackground = context.theme.cardBackground;
     final bool hasAudio = Utils.textNotNull(widget.audioUri);
     return GestureDetector(
       onTap: () => showCupertinoModalPopup(
@@ -155,20 +155,17 @@ class _AudioUploaderState extends State<AudioUploader> {
             height: widget.displaySize.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: hasAudio ? Styles.colorOne : primary.withOpacity(0.2),
+              color: hasAudio ? Styles.colorOne : cardBackground,
               boxShadow: [Styles.avatarBoxShadow],
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 400),
               child: _uploading
-                  ? LoadingCircle(
-                      color: background.withOpacity(0.4),
-                    )
+                  ? LoadingCircle(color: primary)
                   : Icon(
                       widget.iconData,
-                      color:
-                          hasAudio ? Styles.white : background.withOpacity(0.4),
+                      color: hasAudio ? Styles.white : primary.withOpacity(0.3),
                       size: widget.displaySize.width / 1.5,
                     ),
             ),

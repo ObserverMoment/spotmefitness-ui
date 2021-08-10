@@ -115,6 +115,12 @@ input CreateBodyTransformationPhotoInput {
   photoUri: String!
 }
 
+input CreateClubInput {
+  name: String!
+  description: String
+  location: String
+}
+
 input CreateCollectionInput {
   name: String!
   description: String
@@ -566,6 +572,8 @@ input MoveWorkoutPlanDayToAnotherDayInput {
 }
 
 type Mutation {
+  createClub(data: CreateClubInput!): Club!
+  updateClub(data: UpdateClubInput!): Club!
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
   createGymProfile(data: CreateGymProfileInput!): GymProfile!
@@ -804,6 +812,17 @@ input UpdateBodyTransformationPhotoInput {
   bodyweight: Float
   note: String
   photoUri: String
+}
+
+input UpdateClubInput {
+  id: ID!
+  name: String
+  description: String
+  location: String
+  coverImageUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
+  introAudioUri: String
 }
 
 input UpdateCollectionInput {

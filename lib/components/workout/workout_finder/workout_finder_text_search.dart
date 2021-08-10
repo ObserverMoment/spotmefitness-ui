@@ -132,7 +132,7 @@ class _WorkoutFinderTextSearchState extends State<WorkoutFinderTextSearch> {
                   ),
                 ),
                 SizedBox(width: 8),
-                NavBarCloseButton(context.pop),
+                NavBarTextButton(context.pop, 'Close'),
               ],
             ),
           ),

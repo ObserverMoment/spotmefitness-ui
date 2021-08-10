@@ -330,7 +330,7 @@ class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
                     ),
                   ),
                   SizedBox(width: 8),
-                  NavBarCloseButton(context.pop),
+                  NavBarTextButton(context.pop, 'Close'),
                 ],
               ),
             ),

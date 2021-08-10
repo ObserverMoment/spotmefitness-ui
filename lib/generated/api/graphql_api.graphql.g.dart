@@ -5116,6 +5116,68 @@ Map<String, dynamic> _$ClubById$QueryToJson(ClubById$Query instance) =>
       'clubById': instance.clubById.toJson(),
     };
 
+CreateClub$Mutation _$CreateClub$MutationFromJson(Map<String, dynamic> json) {
+  return CreateClub$Mutation()
+    ..createClub = Club.fromJson(json['createClub'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateClub$MutationToJson(
+        CreateClub$Mutation instance) =>
+    <String, dynamic>{
+      'createClub': instance.createClub.toJson(),
+    };
+
+CreateClubInput _$CreateClubInputFromJson(Map<String, dynamic> json) {
+  return CreateClubInput(
+    name: json['name'] as String,
+    description: json['description'] as String?,
+    location: json['location'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CreateClubInputToJson(CreateClubInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'location': instance.location,
+    };
+
+UpdateClub$Mutation _$UpdateClub$MutationFromJson(Map<String, dynamic> json) {
+  return UpdateClub$Mutation()
+    ..updateClub = Club.fromJson(json['updateClub'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UpdateClub$MutationToJson(
+        UpdateClub$Mutation instance) =>
+    <String, dynamic>{
+      'updateClub': instance.updateClub.toJson(),
+    };
+
+UpdateClubInput _$UpdateClubInputFromJson(Map<String, dynamic> json) {
+  return UpdateClubInput(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
+    location: json['location'] as String?,
+    coverImageUri: json['coverImageUri'] as String?,
+    introVideoUri: json['introVideoUri'] as String?,
+    introVideoThumbUri: json['introVideoThumbUri'] as String?,
+    introAudioUri: json['introAudioUri'] as String?,
+  );
+}
+
+Map<String, dynamic> _$UpdateClubInputToJson(UpdateClubInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'description': instance.description,
+      'location': instance.location,
+      'coverImageUri': instance.coverImageUri,
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+      'introAudioUri': instance.introAudioUri,
+    };
+
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
     Map<String, dynamic> json) {
   return CreateWorkoutMoveArguments(
@@ -6591,4 +6653,28 @@ ClubByIdArguments _$ClubByIdArgumentsFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ClubByIdArgumentsToJson(ClubByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
+  return CreateClubArguments(
+    data: CreateClubInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateClubArgumentsToJson(
+        CreateClubArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+UpdateClubArguments _$UpdateClubArgumentsFromJson(Map<String, dynamic> json) {
+  return UpdateClubArguments(
+    data: UpdateClubInput.fromJson(json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateClubArgumentsToJson(
+        UpdateClubArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
     };

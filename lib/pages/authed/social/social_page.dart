@@ -22,7 +22,7 @@ class SocialPage extends StatelessWidget {
       navigationBar: BorderlessNavBar(
         customLeading: NavBarLargeTitle('Social'),
         trailing: NavBarTrailingRow(children: [
-          _buildIconButton(CupertinoIcons.chat_bubble_text_fill,
+          _buildIconButton(CupertinoIcons.chat_bubble_text,
               () => context.pushRoute(ChatsOverviewRoute())),
         ]),
       ),
@@ -45,7 +45,7 @@ class SocialPage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10.0),
                     child: MyHeaderText('Feed'),
                   ),
-                  _buildIconButton(CupertinoIcons.person_add_solid,
+                  _buildIconButton(CupertinoIcons.person_add,
                       () => context.navigateTo(DiscoverPeopleRoute()))
                 ],
               ),
@@ -81,7 +81,7 @@ class _HorizontalClubsList extends StatelessWidget {
               CupertinoButton(
                   padding: const EdgeInsets.only(right: 12.0),
                   child: Icon(
-                    CupertinoIcons.compass_fill,
+                    CupertinoIcons.compass,
                   ),
                   onPressed: () => context.navigateTo(DiscoverClubsRoute()))
             ],

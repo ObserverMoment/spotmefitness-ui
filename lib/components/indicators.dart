@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:collection/collection.dart';
 
 class StageProgressIndicator extends StatelessWidget {
   final int numStages;
@@ -139,6 +140,16 @@ class LoadingDots extends StatelessWidget {
     return SpinKitThreeBounce(
         color: color ?? CupertinoTheme.of(context).primaryColor,
         size: size ?? 20);
+  }
+}
+
+class NavBarLoadingDots extends StatelessWidget {
+  final Color? color;
+  NavBarLoadingDots({this.color});
+  @override
+  Widget build(BuildContext context) {
+    return SpinKitThreeBounce(
+        color: color ?? CupertinoTheme.of(context).primaryColor, size: 14);
   }
 }
 

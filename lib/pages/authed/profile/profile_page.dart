@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
           trailing: CupertinoButton(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Icon(
-                CupertinoIcons.gear_solid,
+                CupertinoIcons.gear,
               ),
               onPressed: () => context.navigateTo(SettingsRoute()))),
       child: Padding(
@@ -40,7 +40,6 @@ class _ProfilePageState extends State<ProfilePage> {
             QueryObserver<AuthedUser$Query, json.JsonSerializable>(
                 key: Key('ProfilePage - ${AuthedUserQuery().operationName}'),
                 query: AuthedUserQuery(),
-                fetchPolicy: QueryFetchPolicy.storeAndNetwork,
                 loadingIndicator: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

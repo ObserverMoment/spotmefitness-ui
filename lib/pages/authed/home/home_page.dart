@@ -22,10 +22,10 @@ class HomePage extends StatelessWidget {
         key: Key('HomePage-BorderlessNavBar'),
         customLeading: NavBarLargeTitle('Home'),
         trailing: NavBarTrailingRow(children: [
-          _buildNavBarButton(CupertinoIcons.chat_bubble_text_fill,
+          _buildNavBarButton(CupertinoIcons.chat_bubble_text,
               () => context.pushRoute(ChatsOverviewRoute())),
           _buildNavBarButton(
-              CupertinoIcons.timer_fill,
+              CupertinoIcons.timer,
               () => context.push(
                   child: StopwatchAndTimer(), rootNavigator: true)),
           _buildNavBarButton(

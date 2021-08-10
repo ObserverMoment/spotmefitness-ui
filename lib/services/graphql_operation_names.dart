@@ -27,6 +27,8 @@ class GQLOpNames {
   /// Note: In the API UserBenchmarksQuery can take vars - they are optional and not currently being used.
   static String get userBenchmarksQuery => UserBenchmarksQuery().operationName;
 
+  static String get userClubsQuery => UserClubsQuery().operationName;
+
   static String get userScheduledWorkoutsQuery =>
       UserScheduledWorkoutsQuery().operationName;
 }
@@ -41,6 +43,9 @@ class GQLNullVarsKeys {
 /// Observable queries whose operations accept variables and whose keys are being generated based on the variables being passed.
 /// /// For example [workoutById({"id": 1234})]
 class GQLVarParamKeys {
+  static String clubByIdQuery(String id) => getParameterizedQueryId(
+      ClubByIdQuery(variables: ClubByIdArguments(id: id)));
+
   static String progressJournalByIdQuery(String id) =>
       getParameterizedQueryId(ProgressJournalByIdQuery(
           variables: ProgressJournalByIdArguments(id: id)));

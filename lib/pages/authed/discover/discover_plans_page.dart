@@ -18,13 +18,13 @@ class DiscoverPlansPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: BorderlessNavBar(
-        middle: NavBarTitle('Plans'),
+        middle: NavBarTitle('Discover Plans'),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,
             child: Transform.rotate(
               angle: pi / 2,
               child: Icon(
-                CupertinoIcons.compass_fill,
+                CupertinoIcons.compass,
                 size: 28,
               ),
             ),
