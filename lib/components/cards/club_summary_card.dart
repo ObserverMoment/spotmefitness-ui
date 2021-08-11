@@ -12,6 +12,8 @@ class ClubSummaryCard extends StatelessWidget {
   final Club club;
   const ClubSummaryCard({Key? key, required this.club}) : super(key: key);
 
+  final kCardHeight = 140.0;
+
   @override
   Widget build(BuildContext context) {
     final List<UserSummary> allMembers = [...club.admins, ...club.members];
@@ -19,12 +21,14 @@ class ClubSummaryCard extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: SizedBox(
         width: 260,
+        height: kCardHeight,
         child: Row(
           children: [
             ClipRRect(
               borderRadius: kStandardCardBorderRadius,
               child: SizedBox(
                 width: 90,
+                height: kCardHeight,
                 child: Utils.textNotNull(club.coverImageUri)
                     ? SizedUploadcareImage(club.coverImageUri!)
                     : Image.asset(

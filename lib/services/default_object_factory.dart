@@ -5,6 +5,18 @@ import 'package:uuid/uuid.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DefaultObjectfactory {
+  static ClubInviteToken defaultClubInviteToken() {
+    return ClubInviteToken()
+      ..$$typename = kClubInviteTokenTypeName
+      ..id = Uuid().v1()
+      ..createdAt = DateTime.now()
+      ..active = true
+      ..inviteLimit = 0
+      ..invitesUsed = 0
+      ..token = Uuid().v1()
+      ..joinedUserIds = [];
+  }
+
   /// [Free Session].
   static WorkoutSectionType defaultWorkoutSectionType() {
     return WorkoutSectionType()

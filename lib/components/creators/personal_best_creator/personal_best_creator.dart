@@ -36,7 +36,7 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
   String? _name;
   String? _description;
   String? _equipmentInfo;
-  LoadUnit? _loadUnit;
+  LoadUnit _loadUnit = LoadUnit.kg;
   List<UserBenchmarkTag> _tags = [];
 
   @override
@@ -174,35 +174,27 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
                   InfoPopupButton(infoWidget: MyText('Info about the PB types'))
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: GestureDetector(
-                    onTap: () => context.push(
-                            child: BenchmarkTypeSelector(
-                          updateBenchmarkType: (t) =>
-                              _setStateWrapper(() => _benchmarkType = t),
-                        )),
-                    child: Container(
-                      width: 200,
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: AnimatedSwitcher(
-                        duration: kStandardAnimationDuration,
-                        child: _benchmarkType == null
-                            ? ContentBox(
-                                child: Column(
-                                children: [
-                                  Icon(CupertinoIcons.plus, size: 58),
-                                ],
-                              ))
-                            : Tag(
-                                tag: _benchmarkType!.display,
-                                fontSize: FONTSIZE.BIG,
+              Container(
+                padding: const EdgeInsets.only(left: 4),
+                height: 60,
+                child: ListView(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  children: BenchmarkType.values
+                      .where((v) => v != BenchmarkType.artemisUnknown)
+                      .map((type) => Padding(
+                            padding: const EdgeInsets.only(right: 6.0),
+                            child: SelectableTag(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 10),
-                              ),
-                      ),
-                    )),
+                                    horizontal: 12, vertical: 9),
+                                fontSize: FONTSIZE.BIG,
+                                isSelected: type == _benchmarkType,
+                                onPressed: () =>
+                                    setState(() => _benchmarkType = type),
+                                text: type.display),
+                          ))
+                      .toList(),
+                ),
               ),
               SizedBox(height: 16),
               GrowInOut(
@@ -232,64 +224,72 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
                   ],
                 ),
               ),
-              if (_benchmarkType == BenchmarkType.maxload)
-                GrowIn(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      children: [
-                        H3('Max Load PB'),
-                        SizedBox(height: 8),
-                        MyText('Submit your score in:'),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SlidingSelect<LoadUnit>(
-                                value: _loadUnit,
-                                children: {
-                                  for (final v in LoadUnit.values.where((v) =>
-                                      v != LoadUnit.artemisUnknown &&
-                                      v != LoadUnit.percentmax))
-                                    v: MyText(v.display)
-                                },
-                                updateValue: (loadUnit) => _setStateWrapper(
-                                    () => _loadUnit = loadUnit)),
-                          ],
-                        ),
-                      ],
-                    ),
+              GrowInOut(
+                show: _benchmarkType == BenchmarkType.maxload,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Column(
+                    children: [
+                      H3('Max Load PB'),
+                      SizedBox(height: 8),
+                      MyText('Submit your score in:'),
+                      SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SlidingSelect<LoadUnit>(
+                              value: _loadUnit,
+                              children: {
+                                for (final v in LoadUnit.values.where((v) =>
+                                    v != LoadUnit.artemisUnknown &&
+                                    v != LoadUnit.percentmax))
+                                  v: MyText(v.display)
+                              },
+                              updateValue: (loadUnit) =>
+                                  _setStateWrapper(() => _loadUnit = loadUnit)),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              TappableRow(
-                  title: 'Tags',
-                  display: _tags.isEmpty
-                      ? MyText(
-                          'Add some tags...',
-                          subtext: true,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Wrap(
-                                alignment: WrapAlignment.end,
-                                spacing: 4,
-                                runSpacing: 4,
-                                children: _tags
-                                    .map((t) => Tag(
-                                          tag: t.name,
-                                          color: Styles.colorOne,
-                                          textColor: Styles.white,
-                                        ))
-                                    .toList(),
-                              )),
-                        ),
-                  onTap: () => context.push(
-                      child: UserBenchmarkTagsSelector(
-                          selectedUserBenchmarkTags: _tags,
-                          updateSelectedUserBenchmarkTags: (tags) =>
-                              _setStateWrapper(() => _tags = tags)))),
+              ),
+              GrowInOut(
+                show: _benchmarkType != null,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: TappableRow(
+                      title: 'Tags',
+                      display: _tags.isEmpty
+                          ? MyText(
+                              'Add some tags...',
+                              subtext: true,
+                            )
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  child: Wrap(
+                                    alignment: WrapAlignment.end,
+                                    spacing: 4,
+                                    runSpacing: 4,
+                                    children: _tags
+                                        .map((t) => Tag(
+                                              tag: t.name,
+                                              color: Styles.colorOne,
+                                              textColor: Styles.white,
+                                            ))
+                                        .toList(),
+                                  )),
+                            ),
+                      onTap: () => context.push(
+                          child: UserBenchmarkTagsSelector(
+                              selectedUserBenchmarkTags: _tags,
+                              updateSelectedUserBenchmarkTags: (tags) =>
+                                  _setStateWrapper(() => _tags = tags)))),
+                ),
+              ),
             ],
           ),
         ),

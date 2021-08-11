@@ -10,5 +10,20 @@ mutation createClub($data: CreateClubInput!) {
     Members {
       ...UserSummary
     }
+    ClubInviteTokens {
+      ...ClubInviteToken
+    }
+    JoinClubInvites {
+      ...JoinClubInvite
+      Invited {
+        ...UserSummary
+      }
+    }
+    JoinClubRequests {
+      ...JoinClubRequest
+      Applicant {
+        ...UserSummary
+      }
+    }
   }
 }

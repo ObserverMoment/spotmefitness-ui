@@ -37,7 +37,11 @@ class ClubCreatorMedia extends StatelessWidget {
     return ListView(
       shrinkWrap: true,
       children: [
-        SizedBox(height: 12),
+        SizedBox(height: 6),
+        MyText(
+          'Cover Image',
+        ),
+        SizedBox(height: 10),
         CoverImageUploader(
           imageUri: coverImageUri,
           onUploadSuccess: onImageUploaded,
@@ -50,6 +54,10 @@ class ClubCreatorMedia extends StatelessWidget {
           children: [
             Column(
               children: [
+                MyText(
+                  'Intro Video',
+                ),
+                SizedBox(height: 10),
                 VideoUploader(
                   videoUri: introVideoUri,
                   videoThumbUri: introVideoThumbUri,
@@ -57,26 +65,20 @@ class ClubCreatorMedia extends StatelessWidget {
                   removeVideo: removeVideo,
                   onUploadStart: onMediaUploadStart,
                 ),
-                SizedBox(height: 10),
-                MyText(
-                  'Intro Video',
-                  size: FONTSIZE.SMALL,
-                )
               ],
             ),
             Column(
               children: [
+                MyText(
+                  'Intro Audio',
+                ),
+                SizedBox(height: 10),
                 AudioUploader(
                   audioUri: introAudioUri,
                   onUploadSuccess: onAudioUploaded,
                   removeAudio: removeAudio,
                   onUploadStart: onMediaUploadStart,
                 ),
-                SizedBox(height: 10),
-                MyText(
-                  'Intro Audio',
-                  size: FONTSIZE.SMALL,
-                )
               ],
             ),
           ],

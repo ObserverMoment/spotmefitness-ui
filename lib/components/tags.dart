@@ -55,12 +55,14 @@ class SelectableTag extends StatelessWidget {
   final String text;
   final Color selectedColor;
   final FONTSIZE fontSize;
+  final EdgeInsets padding;
   SelectableTag(
       {required this.isSelected,
       required this.onPressed,
       required this.text,
       this.fontSize = FONTSIZE.SMALL,
-      this.selectedColor = Styles.colorOne});
+      this.selectedColor = Styles.colorOne,
+      this.padding = const EdgeInsets.symmetric(horizontal: 9, vertical: 7)});
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
@@ -74,8 +76,8 @@ class SelectableTag extends StatelessWidget {
                 ? Border.all(color: selectedColor)
                 : Border.all(color: context.theme.primary.withOpacity(0.5)),
             color: isSelected ? selectedColor : context.theme.background,
-            borderRadius: BorderRadius.circular(16)),
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+            borderRadius: BorderRadius.circular(30)),
+        padding: padding,
         child: MyText(
           text,
           size: fontSize,

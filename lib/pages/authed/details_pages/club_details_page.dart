@@ -137,7 +137,17 @@ class ClubDetailsPage extends StatelessWidget {
                         onPress: () => {}),
                     PageLink(
                         linkText: 'Events (x)', bold: true, onPress: () => {}),
-                    SizedBox(height: 10),
+                    SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.person_2),
+                          SizedBox(width: 8),
+                          H3('Members ($totalMembers)')
+                        ],
+                      ),
+                    ),
                     ClubMembersGridList(
                       scrollPhysics: NeverScrollableScrollPhysics(),
                       admins: club.admins,
@@ -283,6 +293,18 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                 imageUri: club.coverImageUri,
                               ),
                               items: [
+                            if (userIsOwner)
+                              BottomSheetMenuItem(
+                                  text: 'Join Requests',
+                                  icon: Icon(CupertinoIcons.person_badge_plus),
+                                  onPressed: () =>
+                                      print('view / manage join requests')),
+                            if (userIsOwner)
+                              BottomSheetMenuItem(
+                                  text: 'Sent Invites',
+                                  icon: Icon(CupertinoIcons.mail),
+                                  onPressed: () =>
+                                      print('view / manage sent invites')),
                             if (userIsOwner)
                               BottomSheetMenuItem(
                                   text: 'Edit',

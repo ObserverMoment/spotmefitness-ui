@@ -2,13 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_creator_info.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_creator_media.dart';
+import 'package:spotmefitness_ui/components/creators/club_creator/club_creator_members.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/media/audio/audio_uploader.dart';
-import 'package:spotmefitness_ui/components/media/images/cover_image_uploader.dart';
-import 'package:spotmefitness_ui/components/media/images/image_uploader.dart';
-import 'package:spotmefitness_ui/components/media/images/user_avatar_uploader.dart';
-import 'package:spotmefitness_ui/components/media/video/video_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
@@ -16,9 +12,9 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class ClubCreatorPage extends StatefulWidget {
   final Club? club;
@@ -32,81 +28,63 @@ class ClubCreatorPage extends StatefulWidget {
 }
 
 class _ClubCreatorPageState extends State<ClubCreatorPage> {
-  /// Page 1 data fields.
-  late TextEditingController _nameController;
-  late TextEditingController _descriptionController;
-  late TextEditingController _locationController;
+  /// Pre-create data fields.
+  /// User must add these (only name is required) and then save.
+  /// This creates a new club in the DB and returns it.
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _locationController = TextEditingController();
 
-  /// Page 2 Data Fields.
-  late String? _coverImageUri;
-  late String? _introVideoUri;
-  late String? _introVideoThumbUri;
-  late String? _introAudioUri;
+  /// Post-create data. We go straight here in the case of editing a club.
+  Club? _activeClub;
+  Map<String, dynamic> _activeClubBackup = {};
 
   PageController _pageController = PageController();
   int _activePageIndex = 0;
 
   /// Doing something over the network - replaces tab sliding select and 'done' buttons with loading indicators.
-  bool _loading = false;
+  bool _savingToDB = false;
+  bool _uploadingMedia = false;
   late bool _isCreate;
-
-  /// When creating the user must enter the first page details and hit save.
-  /// This will create the club in the DB and they will then be able to access all pages of the create / edit UI.
-  late bool _clubCreated;
-  String? _activeClubId;
 
   @override
   void initState() {
-    _isCreate = widget.club == null;
-    _clubCreated = !_isCreate;
-    _activeClubId = widget.club?.id;
-    _initPageOneDataFields();
-    _initPageTwoDataFields();
     super.initState();
+
+    _isCreate = widget.club == null;
+
+    if (!_isCreate) {
+      _activeClub = Club.fromJson(widget.club!.toJson());
+    }
+
+    if (_activeClub == null) {
+      _initPreCreateDataFields();
+    } else {
+      /// Create initial backup data.
+      _activeClubBackup = _activeClub!.toJson();
+    }
   }
 
-  void _initPageOneDataFields() {
-    _coverImageUri = widget.club?.coverImageUri;
-    _nameController = TextEditingController(text: widget.club?.name);
-    _descriptionController =
-        TextEditingController(text: widget.club?.description);
-    _locationController = TextEditingController(text: widget.club?.location);
-
+  void _initPreCreateDataFields() {
     _nameController.addListener(() {
       setState(() {});
-      if (_clubCreated) {
-        _updateClub({'name': _nameController.text});
-      }
     });
     _descriptionController.addListener(() {
       setState(() {});
-      if (_clubCreated) {
-        _updateClub({'description': _descriptionController.text});
-      }
     });
     _locationController.addListener(() {
       setState(() {});
-      if (_clubCreated) {
-        _updateClub({'location': _locationController.text});
-      }
     });
-  }
-
-  void _initPageTwoDataFields() {
-    _coverImageUri = widget.club?.coverImageUri;
-    _introVideoUri = widget.club?.introVideoUri;
-    _introVideoThumbUri = widget.club?.introVideoThumbUri;
-    _introAudioUri = widget.club?.introAudioUri;
   }
 
   void _updatePageIndex(int i) {
     Utils.hideKeyboard(context);
-    _pageController.toPage(i);
+    _pageController.jumpToPage(i);
     setState(() => _activePageIndex = i);
   }
 
   Future<void> _createClub() async {
-    setState(() => _loading = true);
+    setState(() => _savingToDB = true);
 
     final variables = CreateClubArguments(
         data: CreateClubInput(
@@ -119,74 +97,130 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
             mutation: CreateClubMutation(variables: variables),
             addRefToQueries: [GQLOpNames.userClubsQuery]);
 
-    setState(() => _loading = false);
+    setState(() => _savingToDB = false);
 
     if (result.hasErrors || result.data == null) {
       context.showErrorAlert(
           'Sorry there was a problem, the Club was not created.');
     } else {
       setState(() {
-        _activeClubId = result.data!.createClub.id;
-        _clubCreated = true;
+        _activeClub = result.data!.createClub;
       });
+
       context.showToast(message: 'Club created!', toastType: ToastType.success);
+
+      _activeClubBackup = _activeClub!.toJson();
     }
   }
 
-  void _handleImageUpdate(String? coverImageUri) {
+  void _onMediaUploadComplete(Map<String, dynamic> data) {
     setState(() {
-      _coverImageUri = coverImageUri;
+      _uploadingMedia = false;
     });
-    _updateClub({'coverImageUri': _coverImageUri});
+
+    _updateClub(data);
   }
 
-  void _handleVideoUpdate(String? videoUri, String? thumbUri) {
+  void _updateClub(Map<String, dynamic> data) {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._updateClub: [_activeClub] has not been initialized.');
+    }
+
     setState(() {
-      _introVideoUri = videoUri;
-      _introVideoThumbUri = thumbUri;
+      _activeClub = Club.fromJson({
+        ..._activeClub!.toJson(),
+        ...data,
+      });
     });
-    _updateClub({
-      'introVideoUri': _introVideoUri,
-      'introVideoThumbUri': _introVideoThumbUri
-    });
+
+    /// Send new data to DB. Pass just the updated data via [customVariablesMap]
+    _saveUpdateToDB(data);
   }
 
-  void _handleAudioUpdate(String? uri) {
-    setState(() {
-      _introAudioUri = uri;
-    });
-    _updateClub({'introAudioUri': _introAudioUri});
-  }
+  Future<void> _saveUpdateToDB(Map<String, dynamic> data) async {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._saveUpdateToDB: [_activeClub] has not been initialized.');
+    }
 
-  Future<void> _updateClub(Map<String, dynamic> data) async {
-    setState(() => _loading = true);
+    setState(() => _savingToDB = true);
 
     final variables = UpdateClubArguments(
         data: UpdateClubInput(
-      id: widget.club!.id,
+      id: _activeClub!.id,
     ));
 
     final result = await context.graphQLStore
         .mutate<UpdateClub$Mutation, UpdateClubArguments>(
       mutation: UpdateClubMutation(variables: variables),
       customVariablesMap: {
-        'data': {'id': _activeClubId, ...data}
+        'data': {'id': _activeClub!.id, ...data}
       },
       broadcastQueryIds: [
         UserClubsQuery().operationName,
-        GQLVarParamKeys.clubByIdQuery(widget.club!.id)
+        GQLVarParamKeys.clubByIdQuery(_activeClub!.id)
       ],
     );
 
-    setState(() => _loading = false);
+    setState(() => _savingToDB = false);
 
     if (result.hasErrors || result.data == null) {
       context.showErrorAlert(
           'Sorry there was a problem, the Club was not updated.');
+
+      /// Roll back the changes.
+      setState(() {
+        _activeClub = Club.fromJson(_activeClubBackup);
+      });
+    } else {
+      setState(() {
+        _activeClub = result.data!.updateClub;
+      });
+
+      /// Update the backup data.
+      _activeClubBackup = _activeClub!.toJson();
     }
   }
 
-  /// Will not save anything is [showPreCreateUI] is true.
+  Future<void> _deleteClubInviteToken(ClubInviteToken token) async {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._saveUpdateToDB: [_activeClub] has not been initialized.');
+    }
+
+    setState(() => _savingToDB = true);
+
+    final variables = DeleteClubInviteTokenByIdArguments(id: token.id);
+
+    final result = await context.graphQLStore.delete<
+            DeleteClubInviteTokenById$Mutation,
+            DeleteClubInviteTokenByIdArguments>(
+        mutation: DeleteClubInviteTokenByIdMutation(variables: variables),
+        objectId: token.id,
+        typename: kClubInviteTokenTypeName,
+
+        /// TODO: Assumes that we want to normalize these ClubInviteToken objects. Need to asses.
+        removeAllRefsToId: true);
+
+    setState(() => _savingToDB = false);
+
+    if (result.hasErrors ||
+        result.data?.deleteClubInviteTokenById != token.id) {
+      context.showErrorAlert(
+          'Sorry there was a problem, the invite link was not deleted.');
+    } else {
+      setState(() {
+        _activeClub!.clubInviteTokens =
+            _activeClub!.clubInviteTokens.toggleItem(token);
+      });
+
+      /// Update the backup data.
+      _activeClubBackup = _activeClub!.toJson();
+    }
+  }
+
+  /// Will not save anything.
   void _close() {
     context.pop();
   }
@@ -195,14 +229,13 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _locationController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    /// Before anything has been saved to the DB the user should enter at least a name (optional description and location) and then save it. Once this is done the UI changes to display an 'editing' UI which also opens up the media and members tabs to them.
-    final showPreCreateUI = _isCreate && !_clubCreated;
-
     return MyPageScaffold(
       navigationBar: BorderlessNavBar(
         withoutLeading: true,
@@ -211,7 +244,7 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
             NavBarLargeTitle(_isCreate ? 'Create Club' : 'Edit Club'),
           ],
         ),
-        trailing: _loading
+        trailing: _savingToDB
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
@@ -219,7 +252,7 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
                   NavBarLoadingDots(),
                 ],
               )
-            : showPreCreateUI
+            : _activeClub == null
                 ? NavBarCancelButton(_close)
                 : NavBarTextButton(_close, 'Done'),
       ),
@@ -229,63 +262,137 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
             height: 80,
             child: AnimatedSwitcher(
               duration: kStandardAnimationDuration,
-              child: showPreCreateUI
-                  ? PrimaryButton(
-                      text: 'Create Club',
-                      onPressed: _createClub,
-                      prefix: Icon(
-                        CupertinoIcons.add_circled,
-                        color: context.theme.background,
-                      ),
-                      disabled: _nameController.text.length < 3,
-                      loading: _loading,
+              child: _uploadingMedia
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        MyText('Uploading media'),
+                        SizedBox(width: 6),
+                        NavBarLoadingDots()
+                      ],
                     )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: SlidingSelect<int>(
-                            value: _activePageIndex,
-                            updateValue: _updatePageIndex,
-                            children: {
-                              0: MyText('Info'),
-                              1: MyText('Media'),
-                              2: MyText('Members'),
-                            }),
-                      ),
-                    ),
+                  : _activeClub == null
+                      ? PrimaryButton(
+                          text: 'Create Club',
+                          onPressed: _createClub,
+                          prefix: Icon(
+                            CupertinoIcons.add_circled,
+                            color: context.theme.background,
+                          ),
+                          disabled: _nameController.text.length < 3,
+                          loading: _savingToDB,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: SlidingSelect<int>(
+                                value: _activePageIndex,
+                                updateValue: _updatePageIndex,
+                                children: {
+                                  0: MyText('Info'),
+                                  1: MyText('Media'),
+                                  2: MyText('Members'),
+                                }),
+                          ),
+                        ),
             ),
           ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                ClubCreatorInfo(
+          _activeClub == null
+              ? _PreCreateInputUI(
                   descriptionController: _descriptionController,
                   locationController: _locationController,
                   nameController: _nameController,
-                  showPreCreateUI: showPreCreateUI,
+                )
+              : Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      ClubCreatorInfo(
+                        club: _activeClub!,
+                        updateClub: _updateClub,
+                      ),
+                      ClubCreatorMedia(
+                        coverImageUri: _activeClub?.coverImageUri,
+                        onImageUploaded: (imageUri) =>
+                            _onMediaUploadComplete({'coverImageUri': imageUri}),
+                        removeImage: (_) =>
+                            _onMediaUploadComplete({'coverImageUri': null}),
+                        introVideoUri: _activeClub?.introVideoUri,
+                        introVideoThumbUri: _activeClub?.introVideoThumbUri,
+                        onVideoUploaded: (videoUri, thumbUri) =>
+                            _onMediaUploadComplete({
+                          'introVideoUri': videoUri,
+                          'introVideoThumbUri': thumbUri
+                        }),
+                        removeVideo: () => _onMediaUploadComplete({
+                          'introVideoUri': null,
+                          'introVideoThumbUri': null
+                        }),
+                        introAudioUri: _activeClub?.introAudioUri,
+                        onAudioUploaded: (audioUri) =>
+                            _onMediaUploadComplete({'introAudioUri': audioUri}),
+                        removeAudio: () =>
+                            _onMediaUploadComplete({'introAudioUri': null}),
+                        onMediaUploadStart: () =>
+                            setState(() => _uploadingMedia = true),
+                      ),
+                      ClubCreatorMembers(
+                        club: _activeClub!,
+                        deleteClubInviteToken: (token) =>
+                            _deleteClubInviteToken(token),
+                      ),
+                    ],
+                  ),
                 ),
-                ClubCreatorMedia(
-                  coverImageUri: _coverImageUri,
-                  onImageUploaded: _handleImageUpdate,
-                  removeImage: (_) => _handleImageUpdate(null),
-                  introVideoUri: _introVideoUri,
-                  introVideoThumbUri: _introVideoThumbUri,
-                  onVideoUploaded: _handleVideoUpdate,
-                  removeVideo: () => _handleVideoUpdate(null, null),
-                  introAudioUri: _introAudioUri,
-                  onAudioUploaded: _handleAudioUpdate,
-                  removeAudio: () => _handleAudioUpdate(null),
-                  onMediaUploadStart: () => setState(() => _loading = true),
-                ),
-                _InvitesPage(),
-              ],
-            ),
-          ),
         ],
       ),
+    );
+  }
+}
+
+/// Displays in the case the a user is creating a brand new club.
+/// They enter some basic info about it and then click save.
+/// Once saved and data is back from the DB then UI reverts to the standard UI.
+class _PreCreateInputUI extends StatelessWidget {
+  final TextEditingController nameController;
+  final TextEditingController descriptionController;
+  final TextEditingController locationController;
+
+  const _PreCreateInputUI({
+    Key? key,
+    required this.nameController,
+    required this.descriptionController,
+    required this.locationController,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        MyTextFormFieldRow(
+          autofocus: true,
+          backgroundColor: context.theme.cardBackground,
+          controller: nameController,
+          placeholder: 'Name (required)',
+          keyboardType: TextInputType.text,
+          validator: () =>
+              nameController.text.length > 2 && nameController.text.length < 21,
+          validationMessage: 'Min 3, max 20 characters',
+        ),
+        MyTextAreaFormFieldRow(
+            placeholder: 'Description (optional)',
+            backgroundColor: context.theme.cardBackground,
+            keyboardType: TextInputType.text,
+            controller: descriptionController),
+        MyTextAreaFormFieldRow(
+            placeholder: 'Location (optional)',
+            backgroundColor: context.theme.cardBackground,
+            keyboardType: TextInputType.text,
+            controller: locationController),
+      ],
     );
   }
 }

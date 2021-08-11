@@ -11,7 +11,7 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
 class SocialPage extends StatelessWidget {
-  Widget _buildIconButton(IconData iconData, onPressed) => CupertinoButton(
+  Widget _buildNavBarButton(IconData iconData, onPressed) => CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 13),
       onPressed: onPressed,
       child: Icon(iconData));
@@ -22,7 +22,9 @@ class SocialPage extends StatelessWidget {
       navigationBar: BorderlessNavBar(
         customLeading: NavBarLargeTitle('Social'),
         trailing: NavBarTrailingRow(children: [
-          _buildIconButton(CupertinoIcons.chat_bubble_text,
+          _buildNavBarButton(CupertinoIcons.bell,
+              () => print('navigate to notifications page')),
+          _buildNavBarButton(CupertinoIcons.chat_bubble_text,
               () => context.pushRoute(ChatsOverviewRoute())),
         ]),
       ),
@@ -45,7 +47,7 @@ class SocialPage extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 10.0),
                     child: MyHeaderText('Feed'),
                   ),
-                  _buildIconButton(CupertinoIcons.person_add,
+                  _buildNavBarButton(CupertinoIcons.person_add,
                       () => context.navigateTo(DiscoverPeopleRoute()))
                 ],
               ),
@@ -97,6 +99,7 @@ class _HorizontalClubsList extends StatelessWidget {
             builder: (data) {
               final clubs = data.userClubs;
 
+              /// Height of this container must match [ClubSummaryCard] height.
               return Container(
                 height: 140,
                 alignment: Alignment.centerLeft,

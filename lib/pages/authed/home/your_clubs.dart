@@ -18,7 +18,7 @@ class YourClubsPage extends StatelessWidget {
     return QueryObserver<UserClubs$Query, json.JsonSerializable>(
         key: Key('YourClubsPage- ${query.operationName}'),
         query: query,
-        loadingIndicator: ShimmerDetailsPage(),
+        loadingIndicator: ShimmerListPage(),
         builder: (data) {
           final clubs = data.userClubs;
 

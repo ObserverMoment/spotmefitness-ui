@@ -3,9 +3,19 @@ schema {
   mutation: Mutation
 }
 
+input AddWorkoutPlanToClubInput {
+  id: ID!
+  WorkoutPlan: ConnectRelationInput!
+}
+
 input AddWorkoutPlanToCollectionInput {
   collectionId: ID!
   WorkoutPlan: ConnectRelationInput!
+}
+
+input AddWorkoutToClubInput {
+  id: ID!
+  Workout: ConnectRelationInput!
 }
 
 input AddWorkoutToCollectionInput {
@@ -82,6 +92,20 @@ type Club {
   introAudioUri: String
   Workouts: [Workout!]!
   WorkoutPlans: [WorkoutPlan!]!
+  ClubInviteTokens: [ClubInviteToken!]!
+  JoinClubInvites: [JoinClubInvite!]!
+  JoinClubRequests: [JoinClubRequest!]!
+}
+
+type ClubInviteToken {
+  id: ID!
+  createdAt: DateTime!
+  active: Boolean!
+  inviteLimit: Int!
+  invitesUsed: Int!
+  token: String!
+  Creator: UserSummary!
+  joinedUserIds: [String!]!
 }
 
 type Collection {
@@ -121,6 +145,12 @@ input CreateClubInput {
   location: String
 }
 
+input CreateClubInviteTokenInput {
+  inviteLimit: Int!
+  Creator: ConnectRelationInput!
+  Club: ConnectRelationInput!
+}
+
 input CreateCollectionInput {
   name: String!
   description: String
@@ -136,6 +166,17 @@ input CreateGymProfileInput {
   name: String!
   description: String
   Equipments: [ConnectRelationInput!]
+}
+
+input CreateJoinClubInviteInput {
+  Club: ConnectRelationInput!
+  Sender: ConnectRelationInput!
+  Invited: ConnectRelationInput!
+}
+
+input CreateJoinClubRequestInput {
+  Club: ConnectRelationInput!
+  Applicant: ConnectRelationInput!
 }
 
 input CreateLoggedWorkoutInput {
@@ -465,13 +506,23 @@ type GymProfile {
 
 scalar JSON
 
+type JoinClubInvite {
+  id: ID!
+  createdAt: DateTime!
+  Sender: UserSummary!
+  Invited: UserSummary!
+  Responder: UserSummary!
+  status: JoinClubRequestStatus!
+  respondedAt: DateTime
+}
+
 type JoinClubRequest {
   id: ID!
   createdAt: DateTime!
-  RequestBy: UserSummary!
+  Applicant: UserSummary!
   status: JoinClubRequestStatus!
+  Responder: UserSummary
   respondedAt: DateTime
-  ResponseBy: UserSummary
 }
 
 enum JoinClubRequestStatus {
@@ -574,6 +625,10 @@ input MoveWorkoutPlanDayToAnotherDayInput {
 type Mutation {
   createClub(data: CreateClubInput!): Club!
   updateClub(data: UpdateClubInput!): Club!
+  deleteClubById(id: ID!): ID!
+  createClubInviteToken(data: CreateClubInviteTokenInput!): ClubInviteToken!
+  updateClubInviteToken(data: UpdateClubInviteTokenInput!): ClubInviteToken!
+  deleteClubInviteTokenById(id: ID!): ID!
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
   createGymProfile(data: CreateGymProfileInput!): GymProfile!
@@ -769,9 +824,19 @@ type Query {
   userWorkoutPlanEnrolmentById(id: ID!): WorkoutPlanEnrolment!
 }
 
+input RemoveWorkoutFromClubInput {
+  id: ID!
+  Workout: ConnectRelationInput!
+}
+
 input RemoveWorkoutFromCollectionInput {
   collectionId: ID!
   Workout: ConnectRelationInput!
+}
+
+input RemoveWorkoutPlanFromClubInput {
+  id: ID!
+  WorkoutPlan: ConnectRelationInput!
 }
 
 input RemoveWorkoutPlanFromCollectionInput {
@@ -825,6 +890,12 @@ input UpdateClubInput {
   introAudioUri: String
 }
 
+input UpdateClubInviteTokenInput {
+  id: ID!
+  inviteLimit: Int
+  active: Boolean
+}
+
 input UpdateCollectionInput {
   id: ID!
   name: String
@@ -843,6 +914,18 @@ input UpdateGymProfileInput {
   name: String
   description: String
   Equipments: [ConnectRelationInput!]
+}
+
+input UpdateJoinClubInviteInput {
+  id: ID!
+  Responder: ConnectRelationInput!
+  status: JoinClubRequestStatus!
+}
+
+input UpdateJoinClubRequestInput {
+  id: ID!
+  Responder: ConnectRelationInput!
+  status: JoinClubRequestStatus!
 }
 
 input UpdateLoggedWorkoutInput {

@@ -8,11 +8,13 @@ class MyNumberInput extends StatelessWidget {
   final bool allowDouble;
   final double textSize;
   final bool autoFocus;
+  final Color? backgroundColor;
   MyNumberInput(
     this.controller, {
     this.allowDouble = false,
     this.textSize = 50,
     this.autoFocus = false,
+    this.backgroundColor,
   });
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class MyNumberInput extends StatelessWidget {
             : FilteringTextInputFormatter.digitsOnly
       ],
       decoration: BoxDecoration(
-          color: Styles.grey.withOpacity(0.01),
+          color: backgroundColor ?? context.theme.cardBackground,
           borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       style: TextStyle(fontSize: textSize, height: 1),
