@@ -12,7 +12,7 @@ import 'package:spotmefitness_ui/components/media/audio/audio_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/number_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
+import 'package:spotmefitness_ui/components/future_builder_handler.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -35,6 +35,9 @@ class _ProgressJournalEntryCreatorState
   ProgressJournalEntry? _activeProgressJournalEntry;
   late bool _isCreate;
 
+  /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
+  late Future<ProgressJournalEntry> _initEntryFuture;
+
   Future<ProgressJournalEntry> _initEntry() async {
     if (_activeProgressJournalEntry != null) {
       return _activeProgressJournalEntry!;
@@ -48,8 +51,9 @@ class _ProgressJournalEntryCreatorState
 
   @override
   void initState() {
-    _isCreate = widget.progressJournalEntry == null;
     super.initState();
+    _isCreate = widget.progressJournalEntry == null;
+    _initEntryFuture = _initEntry();
   }
 
   void _saveAndClose(BuildContext context) {
@@ -68,7 +72,7 @@ class _ProgressJournalEntryCreatorState
   Widget build(BuildContext context) {
     return FutureBuilderHandler<ProgressJournalEntry>(
         loadingWidget: ShimmerDetailsPage(),
-        future: _initEntry(),
+        future: _initEntryFuture,
         builder: (initialEntryData) => ChangeNotifierProvider(
               create: (context) => ProgressJournalEntryCreatorBloc(
                   parentJournal: widget.parentJournal,

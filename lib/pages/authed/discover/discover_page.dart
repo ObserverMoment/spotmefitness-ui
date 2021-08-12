@@ -38,10 +38,6 @@ class DiscoverPage extends StatelessWidget {
                       text: 'Challenges',
                       onPressed: () =>
                           context.navigateTo(DiscoverChallengesRoute())),
-                  DiscoverPageButton(
-                      text: 'Events',
-                      onPressed: () =>
-                          context.navigateTo(DiscoverEventsRoute())),
                 ],
               )),
           Expanded(

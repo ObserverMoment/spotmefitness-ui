@@ -537,11 +537,24 @@ class GraphQLStore {
     return result;
   }
 
-  /// No action on the client side store.
+  /////// Network only operations /////////////////////
+  /////// No data saved to client side store //////////
+  /////// Light wrappers around [execute] function ////
+  Future<MutationResult<TData>>
+      networkOnlyOperation<TData, TVars extends json.JsonSerializable>({
+    required GraphQLQuery<TData, TVars> operation,
+  }) async {
+    final response = await execute(operation);
+
+    final result = MutationResult<TData>(
+        data: operation.parse(response.data ?? {}), errors: response.errors);
+
+    return result;
+  }
+
   Future<MutationResult<TData>>
       networkOnlyDelete<TData, TVars extends json.JsonSerializable>({
     required GraphQLQuery<TData, TVars> mutation,
-    List<String> removeRefFromQueries = const [],
   }) async {
     final response = await execute(mutation);
 

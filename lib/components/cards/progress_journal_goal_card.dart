@@ -144,6 +144,7 @@ class ProgressJournalGoalCard extends StatelessWidget {
                               .map((tag) => Tag(
                                     tag: tag.tag,
                                     color: HexColor.fromHex(tag.hexColor),
+                                    textColor: Styles.white,
                                     fontSize: FONTSIZE.TINY,
                                   ))
                               .toList(),

@@ -10,7 +10,7 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/wrappers.dart';
+import 'package:spotmefitness_ui/components/future_builder_handler.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -30,13 +30,13 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
   late bool _isCreate;
 
   /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
-  late Future<Workout> _initWorkoutFn;
+  late Future<Workout> _initWorkoutFuture;
 
   @override
   void initState() {
     super.initState();
     _isCreate = widget.workout == null;
-    _initWorkoutFn = WorkoutCreatorBloc.initialize(context, widget.workout);
+    _initWorkoutFuture = WorkoutCreatorBloc.initialize(context, widget.workout);
   }
 
   void _changeTab(int index) {
@@ -69,7 +69,7 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
         loadingWidget: ShimmerDetailsPage(
           title: 'Getting ready...',
         ),
-        future: _initWorkoutFn,
+        future: _initWorkoutFuture,
         builder: (initialWorkout) => ChangeNotifierProvider(
               create: (context) => WorkoutCreatorBloc(
                   initialWorkout: initialWorkout,

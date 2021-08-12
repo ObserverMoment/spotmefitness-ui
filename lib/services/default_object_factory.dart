@@ -11,9 +11,9 @@ class DefaultObjectfactory {
       ..id = Uuid().v1()
       ..createdAt = DateTime.now()
       ..active = true
+      ..name = ''
       ..inviteLimit = 0
       ..invitesUsed = 0
-      ..token = Uuid().v1()
       ..joinedUserIds = [];
   }
 

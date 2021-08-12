@@ -48,4 +48,15 @@ class SharingAndLinking {
       throw Exception(e);
     }
   }
+
+  static Future<void> shareClubInviteLink(
+    String token,
+  ) async {
+    try {
+      final String link = '${kDeepLinkSchema}club-invite/$token';
+      await Share.share(link, subject: 'You have been invited to join a Club!');
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

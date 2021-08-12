@@ -56,11 +56,11 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
           children: [
             Container(
-              margin: const EdgeInsets.all(6),
               padding:
                   const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
               decoration: widget.backgroundColor != null
@@ -112,9 +112,13 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
           ],
         ),
         if (widget.validationMessage != null)
-          MyText(
-            '(${widget.validationMessage!})',
-            size: FONTSIZE.SMALL,
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0, left: 6),
+            child: MyText(
+              '(${widget.validationMessage!})',
+              size: FONTSIZE.SMALL,
+              textAlign: TextAlign.start,
+            ),
           ),
       ],
     );

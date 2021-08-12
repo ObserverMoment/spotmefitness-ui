@@ -77,6 +77,8 @@ enum BodyweightUnit {
   LB
 }
 
+union CheckClubInviteTokenResult = ClubInviteTokenData | InviteTokenError
+
 type Club {
   id: ID!
   createdAt: DateTime!
@@ -101,11 +103,16 @@ type ClubInviteToken {
   id: ID!
   createdAt: DateTime!
   active: Boolean!
+  name: String!
   inviteLimit: Int!
   invitesUsed: Int!
-  token: String!
-  Creator: UserSummary!
+  User: UserSummary!
   joinedUserIds: [String!]!
+}
+
+type ClubInviteTokenData {
+  token: String!
+  Club: Club!
 }
 
 type Collection {
@@ -146,8 +153,8 @@ input CreateClubInput {
 }
 
 input CreateClubInviteTokenInput {
+  name: String!
   inviteLimit: Int!
-  Creator: ConnectRelationInput!
   Club: ConnectRelationInput!
 }
 
@@ -504,6 +511,10 @@ type GymProfile {
   Equipments: [Equipment!]!
 }
 
+type InviteTokenError {
+  message: String!
+}
+
 scalar JSON
 
 type JoinClubInvite {
@@ -788,6 +799,7 @@ type Query {
   discoverFeatured: [DiscoverFeatured!]!
   discoverWorkoutCategories: [DiscoverWorkoutCategory!]!
   discoverWorkoutPlanCategories: [DiscoverWorkoutPlanCategory!]!
+  checkClubInviteToken(id: ID!): CheckClubInviteTokenResult!
   userLoggedWorkouts(take: Int): [LoggedWorkout!]!
   loggedWorkoutById(id: ID!): LoggedWorkout!
   standardMoves: [Move!]!
@@ -892,6 +904,7 @@ input UpdateClubInput {
 
 input UpdateClubInviteTokenInput {
   id: ID!
+  name: String
   inviteLimit: Int
   active: Boolean
 }

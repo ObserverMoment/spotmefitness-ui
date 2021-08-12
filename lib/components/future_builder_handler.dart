@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 
-/// Wrapper around [FutureBuilder] which handles loading an error states in a consistent way across the application.
+/// Wrapper around [FutureBuilder] which handles loading and error states in a consistent way across the application.
 class FutureBuilderHandler<T> extends StatelessWidget {
   final Widget? loadingWidget;
   final Future<T> future;
@@ -18,24 +18,18 @@ class FutureBuilderHandler<T> extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           print(snapshot.error);
-          return CupertinoPageScaffold(
-            navigationBar: BasicNavBar(
-              heroTag: 'FutureBuilderHandler-error screen',
+          return MyPageScaffold(
+            navigationBar: BorderlessNavBar(
               middle: NavBarTitle('Oops...'),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: MyText(
-                    'Sorry there was a problem setting up this screen',
-                    color: Styles.errorRed,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                  ),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: MyText(
+                'Sorry there was a problem setting up this screen',
+                color: Styles.errorRed,
+                textAlign: TextAlign.center,
+                maxLines: 3,
+              ),
             ),
           );
         } else if (!snapshot.hasData) {

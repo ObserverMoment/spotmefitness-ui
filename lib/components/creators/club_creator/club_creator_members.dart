@@ -7,17 +7,27 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 
 class ClubCreatorMembers extends StatelessWidget {
   final Club club;
+  final void Function(ClubInviteToken token) onCreateInviteToken;
+  final void Function(ClubInviteToken token) onUpdateInviteToken;
   final void Function(ClubInviteToken token) deleteClubInviteToken;
   const ClubCreatorMembers(
-      {Key? key, required this.club, required this.deleteClubInviteToken})
+      {Key? key,
+      required this.club,
+      required this.deleteClubInviteToken,
+      required this.onCreateInviteToken,
+      required this.onUpdateInviteToken})
       : super(key: key);
 
   void _confirmDeleteToken(BuildContext context, ClubInviteToken token) {
     context.showConfirmDeleteDialog(
-        itemType: 'Invite Link', onConfirm: () => deleteClubInviteToken(token));
+        itemType: 'Invite Link',
+        message: 'This cannot be un-done and the link will become inactive.',
+        onConfirm: () => deleteClubInviteToken(token));
   }
 
   Widget _buildTokenRowButton(IconData iconData, onPressed) => CupertinoButton(
@@ -28,8 +38,13 @@ class ClubCreatorMembers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final totalMembers = 1 + club.admins.length + club.members.length;
+    final sortedInviteTokens = club.clubInviteTokens
+        .sortedBy<DateTime>((t) => t.createdAt)
+        .reversed
+        .toList();
 
-    return Column(
+    return ListView(
+      shrinkWrap: true,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -44,7 +59,7 @@ class ClubCreatorMembers extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   MyHeaderText(
-                    'Invite Links (${club.clubInviteTokens.length})',
+                    'Invite Links (${sortedInviteTokens.length})',
                     size: FONTSIZE.BIG,
                   )
                 ],
@@ -55,55 +70,84 @@ class ClubCreatorMembers extends StatelessWidget {
                     size: 14,
                   ),
                   text: 'Invite Link',
-                  onPressed: () =>
-                      context.push(child: ClubInviteTokenCreator()))
+                  onPressed: () => context.push(
+                          child: ClubInviteTokenCreator(
+                        club: club,
+                        onUpdateComplete: (token) => onCreateInviteToken(token),
+                      )))
             ],
           ),
         ),
         Container(
-            margin: const EdgeInsets.symmetric(vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 6),
             padding: const EdgeInsets.only(left: 8),
-            child: club.clubInviteTokens.isEmpty
+            child: sortedInviteTokens.isEmpty
                 ? Center(child: MyText('No invite links'))
                 : ListView.builder(
                     shrinkWrap: true,
-                    itemCount: club.clubInviteTokens.length,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: sortedInviteTokens.length,
                     itemBuilder: (c, i) {
-                      final token = club.clubInviteTokens[i];
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      final token = sortedInviteTokens[i];
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                                color: context.theme.primary.withOpacity(0.2))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  MyText(
+                                    token.name,
+                                    lineHeight: 1.3,
+                                  ),
+                                  MyText(
+                                    token.inviteLimit == 0
+                                        ? '${token.joinedUserIds.length} of unlimited used'
+                                        : '${token.joinedUserIds.length} of ${token.inviteLimit} used',
+                                    color: token.inviteLimit != 0 &&
+                                            token.joinedUserIds.length >=
+                                                token.inviteLimit
+                                        ? Styles.errorRed
+                                        : Styles.infoBlue,
+                                    lineHeight: 1.3,
+                                  ),
+                                  MyText(
+                                    'Created ${token.createdAt.minimalDateString}',
+                                    size: FONTSIZE.TINY,
+                                    subtext: true,
+                                    lineHeight: 1.4,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
                               children: [
-                                MyText(
-                                    'Created on ${token.createdAt.minimalDateString}'),
-                                MyText(
-                                  token.inviteLimit == 0
-                                      ? '${token.joinedUserIds.length} of unlimited used'
-                                      : '${token.joinedUserIds.length} of ${token.inviteLimit} used',
-                                  color: Styles.infoBlue,
-                                  lineHeight: 1.4,
-                                )
+                                _buildTokenRowButton(
+                                    CupertinoIcons.share,
+                                    () => SharingAndLinking.shareClubInviteLink(
+                                        token.id)),
+                                _buildTokenRowButton(
+                                    CupertinoIcons.pencil,
+                                    () => context.push(
+                                            child: ClubInviteTokenCreator(
+                                          token: token,
+                                          onUpdateComplete: (token) =>
+                                              onUpdateInviteToken(token),
+                                        ))),
+                                _buildTokenRowButton(CupertinoIcons.trash,
+                                    () => _confirmDeleteToken(context, token)),
                               ],
                             ),
-                          ),
-                          Row(
-                            children: [
-                              _buildTokenRowButton(CupertinoIcons.share,
-                                  () => print('share token ${token.token}')),
-                              _buildTokenRowButton(
-                                  CupertinoIcons.pencil,
-                                  () => context.push(
-                                          child: ClubInviteTokenCreator(
-                                        token: token,
-                                      ))),
-                              _buildTokenRowButton(CupertinoIcons.trash,
-                                  () => _confirmDeleteToken(context, token)),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       );
                     })),
         SizedBox(height: 20),
@@ -124,6 +168,7 @@ class ClubCreatorMembers extends StatelessWidget {
           admins: club.admins,
           members: club.members,
           owner: club.owner,
+          scrollPhysics: NeverScrollableScrollPhysics(),
         ),
       ],
     );

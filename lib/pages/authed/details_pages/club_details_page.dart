@@ -43,8 +43,10 @@ class ClubDetailsPage extends StatelessWidget {
 
           final authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
           final userIsOwner = authedUserId == club.owner.id;
+          final userIsAdmin = club.admins.any((a) => a.id == authedUserId);
+
           final userIsMember = userIsOwner ||
-              club.admins.any((a) => a.id == authedUserId) ||
+              userIsAdmin ||
               club.members.any((m) => m.id == authedUserId);
 
           return CupertinoPageScaffold(
@@ -54,6 +56,7 @@ class ClubDetailsPage extends StatelessWidget {
                   delegate: _ClubDetailsSliverAppBarDelegate(
                     club: club,
                     userIsMember: userIsOwner,
+                    userIsAdmin: userIsAdmin,
                     userIsOwner: userIsMember,
                     expandedHeight: 210,
                     safeAreaSize: MediaQuery.of(context).padding.top,
@@ -81,12 +84,19 @@ class ClubDetailsPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(CupertinoIcons.location,
-                                    size: 20, color: Styles.infoBlue),
+                                    size: 18, color: Styles.infoBlue),
                                 SizedBox(width: 2),
                                 MyText(club.location!, color: Styles.infoBlue)
                               ],
                             ),
-                          MyText('$totalMembers members')
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(CupertinoIcons.person_2, size: 20),
+                              SizedBox(width: 8),
+                              MyText('$totalMembers')
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -128,15 +138,11 @@ class ClubDetailsPage extends StatelessWidget {
                         bold: true,
                         onPress: () => {}),
                     PageLink(
-                        linkText: 'Workout Plans (x)',
-                        bold: true,
-                        onPress: () => {}),
+                        linkText: 'Plans (x)', bold: true, onPress: () => {}),
                     PageLink(
                         linkText: 'Challenges (x)',
                         bold: true,
                         onPress: () => {}),
-                    PageLink(
-                        linkText: 'Events (x)', bold: true, onPress: () => {}),
                     SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -169,6 +175,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final double appBarSize;
   final Club club;
   final bool userIsOwner;
+  final bool userIsAdmin;
   final bool userIsMember;
 
   const _ClubDetailsSliverAppBarDelegate(
@@ -177,6 +184,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       required this.expandedHeight,
       required this.club,
       required this.userIsMember,
+      required this.userIsAdmin,
       required this.userIsOwner});
 
   @override
@@ -228,18 +236,12 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         opacity: disappear(shrinkOffset),
         child: SizedBox(
             height: expandedHeight,
-            child: Stack(
-              alignment: Alignment.topCenter,
-              fit: StackFit.expand,
-              children: [
-                Utils.textNotNull(club.coverImageUri)
-                    ? SizedUploadcareImage(club.coverImageUri!)
-                    : Image.asset(
-                        'assets/social_images/group_placeholder.jpg',
-                        fit: BoxFit.cover,
-                      ),
-              ],
-            )),
+            child: Utils.textNotNull(club.coverImageUri)
+                ? SizedUploadcareImage(club.coverImageUri!)
+                : Image.asset(
+                    'assets/social_images/group_placeholder.jpg',
+                    fit: BoxFit.cover,
+                  )),
       );
 
   Widget buildInviteButton() => Row(
@@ -293,24 +295,18 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                 imageUri: club.coverImageUri,
                               ),
                               items: [
-                            if (userIsOwner)
+                            if (userIsOwner || userIsAdmin)
                               BottomSheetMenuItem(
-                                  text: 'Join Requests',
-                                  icon: Icon(CupertinoIcons.person_badge_plus),
-                                  onPressed: () =>
-                                      print('view / manage join requests')),
-                            if (userIsOwner)
-                              BottomSheetMenuItem(
-                                  text: 'Sent Invites',
-                                  icon: Icon(CupertinoIcons.mail),
-                                  onPressed: () =>
-                                      print('view / manage sent invites')),
-                            if (userIsOwner)
-                              BottomSheetMenuItem(
-                                  text: 'Edit',
+                                  text: 'Manage',
                                   icon: Icon(CupertinoIcons.pencil),
                                   onPressed: () => context.navigateTo(
                                       ClubCreatorRoute(club: club))),
+                            if (userIsOwner || userIsAdmin)
+                              BottomSheetMenuItem(
+                                  text: 'Invites',
+                                  icon: Icon(CupertinoIcons.person_badge_plus),
+                                  onPressed: () => print(
+                                      'view / manage join requests and invites')),
                             if (!userIsMember)
                               BottomSheetMenuItem(
                                   text: 'Request invite',

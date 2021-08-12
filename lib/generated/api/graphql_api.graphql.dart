@@ -28,10 +28,10 @@ mixin ClubInviteTokenMixin {
       fromJson: fromGraphQLDateTimeToDartDateTime,
       toJson: fromDartDateTimeToGraphQLDateTime)
   late DateTime createdAt;
+  late String name;
   late bool active;
   late int inviteLimit;
   late int invitesUsed;
-  late String token;
   late List<String> joinedUserIds;
 }
 mixin JoinClubInviteMixin {
@@ -549,6 +549,16 @@ mixin ScheduledWorkoutMixin {
   String? note;
   String? workoutPlanEnrolmentId;
 }
+mixin ClubInviteTokenDataMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String token;
+}
+mixin InviteTokenErrorMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String message;
+}
 
 @JsonSerializable(explicitToJson: true)
 class UserSummary extends JsonSerializable
@@ -586,10 +596,10 @@ class ClubInviteToken extends JsonSerializable
         $$typename,
         id,
         createdAt,
+        name,
         active,
         inviteLimit,
         invitesUsed,
-        token,
         joinedUserIds
       ];
   @override
@@ -6563,19 +6573,22 @@ class UpdateClubInviteToken$Mutation extends JsonSerializable
 
 @JsonSerializable(explicitToJson: true)
 class UpdateClubInviteTokenInput extends JsonSerializable with EquatableMixin {
-  UpdateClubInviteTokenInput({required this.id, this.inviteLimit, this.active});
+  UpdateClubInviteTokenInput(
+      {required this.id, this.name, this.inviteLimit, this.active});
 
   factory UpdateClubInviteTokenInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateClubInviteTokenInputFromJson(json);
 
   late String id;
 
+  String? name;
+
   int? inviteLimit;
 
   bool? active;
 
   @override
-  List<Object?> get props => [id, inviteLimit, active];
+  List<Object?> get props => [id, name, inviteLimit, active];
   @override
   Map<String, dynamic> toJson() => _$UpdateClubInviteTokenInputToJson(this);
 }
@@ -6599,21 +6612,20 @@ class CreateClubInviteToken$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class CreateClubInviteTokenInput extends JsonSerializable with EquatableMixin {
   CreateClubInviteTokenInput(
-      {required this.inviteLimit, required this.creator, required this.club});
+      {required this.name, required this.inviteLimit, required this.club});
 
   factory CreateClubInviteTokenInput.fromJson(Map<String, dynamic> json) =>
       _$CreateClubInviteTokenInputFromJson(json);
 
-  late int inviteLimit;
+  late String name;
 
-  @JsonKey(name: 'Creator')
-  late ConnectRelationInput creator;
+  late int inviteLimit;
 
   @JsonKey(name: 'Club')
   late ConnectRelationInput club;
 
   @override
-  List<Object?> get props => [inviteLimit, creator, club];
+  List<Object?> get props => [name, inviteLimit, club];
   @override
   Map<String, dynamic> toJson() => _$CreateClubInviteTokenInputToJson(this);
 }
@@ -6634,6 +6646,85 @@ class DeleteClubInviteTokenById$Mutation extends JsonSerializable
   @override
   Map<String, dynamic> toJson() =>
       _$DeleteClubInviteTokenById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubInviteTokenData extends CheckClubInviteTokenResult
+    with EquatableMixin, ClubInviteTokenDataMixin {
+  ClubInviteTokenData();
+
+  factory ClubInviteTokenData.fromJson(Map<String, dynamic> json) =>
+      _$ClubInviteTokenDataFromJson(json);
+
+  @JsonKey(name: 'Club')
+  late Club club;
+
+  @override
+  List<Object?> get props => [$$typename, token, club];
+  @override
+  Map<String, dynamic> toJson() => _$ClubInviteTokenDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class InviteTokenError extends CheckClubInviteTokenResult
+    with EquatableMixin, InviteTokenErrorMixin {
+  InviteTokenError();
+
+  factory InviteTokenError.fromJson(Map<String, dynamic> json) =>
+      _$InviteTokenErrorFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, message];
+  @override
+  Map<String, dynamic> toJson() => _$InviteTokenErrorToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CheckClubInviteTokenResult extends JsonSerializable with EquatableMixin {
+  CheckClubInviteTokenResult();
+
+  factory CheckClubInviteTokenResult.fromJson(Map<String, dynamic> json) {
+    switch (json['__typename'].toString()) {
+      case r'ClubInviteTokenData':
+        return ClubInviteTokenData.fromJson(json);
+      case r'InviteTokenError':
+        return InviteTokenError.fromJson(json);
+      default:
+    }
+    return _$CheckClubInviteTokenResultFromJson(json);
+  }
+
+  @JsonKey(name: '__typename')
+  String? $$typename;
+
+  @override
+  List<Object?> get props => [$$typename];
+  @override
+  Map<String, dynamic> toJson() {
+    switch ($$typename) {
+      case r'ClubInviteTokenData':
+        return (this as ClubInviteTokenData).toJson();
+      case r'InviteTokenError':
+        return (this as InviteTokenError).toJson();
+      default:
+    }
+    return _$CheckClubInviteTokenResultToJson(this);
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class CheckClubInviteToken$Query extends JsonSerializable with EquatableMixin {
+  CheckClubInviteToken$Query();
+
+  factory CheckClubInviteToken$Query.fromJson(Map<String, dynamic> json) =>
+      _$CheckClubInviteToken$QueryFromJson(json);
+
+  late CheckClubInviteTokenResult checkClubInviteToken;
+
+  @override
+  List<Object?> get props => [checkClubInviteToken];
+  @override
+  Map<String, dynamic> toJson() => _$CheckClubInviteToken$QueryToJson(this);
 }
 
 enum UserProfileScope {
@@ -6959,6 +7050,12 @@ final USER_CLUBS_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -6972,12 +7069,6 @@ final USER_CLUBS_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -57208,6 +57299,12 @@ final CLUB_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -57221,12 +57318,6 @@ final CLUB_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -57604,6 +57695,12 @@ final CREATE_CLUB_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -57617,12 +57714,6 @@ final CREATE_CLUB_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -58001,6 +58092,12 @@ final UPDATE_CLUB_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -58014,12 +58111,6 @@ final UPDATE_CLUB_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -58330,6 +58421,12 @@ final UPDATE_CLUB_INVITE_TOKEN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -58343,12 +58440,6 @@ final UPDATE_CLUB_INVITE_TOKEN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -58454,6 +58545,12 @@ final CREATE_CLUB_INVITE_TOKEN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
             name: NameNode(value: 'active'),
             alias: null,
             arguments: [],
@@ -58467,12 +58564,6 @@ final CREATE_CLUB_INVITE_TOKEN_MUTATION_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'invitesUsed'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'token'),
             alias: null,
             arguments: [],
             directives: [],
@@ -58571,4 +58662,480 @@ class DeleteClubInviteTokenByIdMutation extends GraphQLQuery<
   @override
   DeleteClubInviteTokenById$Mutation parse(Map<String, dynamic> json) =>
       DeleteClubInviteTokenById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CheckClubInviteTokenArguments extends JsonSerializable
+    with EquatableMixin {
+  CheckClubInviteTokenArguments({required this.id});
+
+  @override
+  factory CheckClubInviteTokenArguments.fromJson(Map<String, dynamic> json) =>
+      _$CheckClubInviteTokenArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$CheckClubInviteTokenArgumentsToJson(this);
+}
+
+final CHECK_CLUB_INVITE_TOKEN_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'checkClubInviteToken'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'checkClubInviteToken'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FieldNode(
+                  name: NameNode(value: '__typename'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              InlineFragmentNode(
+                  typeCondition: TypeConditionNode(
+                      on: NamedTypeNode(
+                          name: NameNode(value: 'ClubInviteTokenData'),
+                          isNonNull: false)),
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ClubInviteTokenData'),
+                        directives: []),
+                    FieldNode(
+                        name: NameNode(value: 'Club'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'Club'), directives: []),
+                          FieldNode(
+                              name: NameNode(value: 'Owner'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'UserSummary'),
+                                    directives: [])
+                              ])),
+                          FieldNode(
+                              name: NameNode(value: 'Admins'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'UserSummary'),
+                                    directives: [])
+                              ])),
+                          FieldNode(
+                              name: NameNode(value: 'Members'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'UserSummary'),
+                                    directives: [])
+                              ])),
+                          FieldNode(
+                              name: NameNode(value: 'ClubInviteTokens'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'ClubInviteToken'),
+                                    directives: [])
+                              ])),
+                          FieldNode(
+                              name: NameNode(value: 'JoinClubInvites'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'JoinClubInvite'),
+                                    directives: []),
+                                FieldNode(
+                                    name: NameNode(value: 'Invited'),
+                                    alias: null,
+                                    arguments: [],
+                                    directives: [],
+                                    selectionSet: SelectionSetNode(selections: [
+                                      FragmentSpreadNode(
+                                          name: NameNode(value: 'UserSummary'),
+                                          directives: [])
+                                    ]))
+                              ])),
+                          FieldNode(
+                              name: NameNode(value: 'JoinClubRequests'),
+                              alias: null,
+                              arguments: [],
+                              directives: [],
+                              selectionSet: SelectionSetNode(selections: [
+                                FragmentSpreadNode(
+                                    name: NameNode(value: 'JoinClubRequest'),
+                                    directives: []),
+                                FieldNode(
+                                    name: NameNode(value: 'Applicant'),
+                                    alias: null,
+                                    arguments: [],
+                                    directives: [],
+                                    selectionSet: SelectionSetNode(selections: [
+                                      FragmentSpreadNode(
+                                          name: NameNode(value: 'UserSummary'),
+                                          directives: [])
+                                    ]))
+                              ]))
+                        ]))
+                  ])),
+              InlineFragmentNode(
+                  typeCondition: TypeConditionNode(
+                      on: NamedTypeNode(
+                          name: NameNode(value: 'InviteTokenError'),
+                          isNonNull: false)),
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'InviteTokenError'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserSummary'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserSummary'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'userProfileScope'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'countryCode'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'townCity'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ClubInviteToken'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ClubInviteToken'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'active'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'inviteLimit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'invitesUsed'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'joinedUserIds'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'JoinClubInvite'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'JoinClubInvite'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'respondedAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'status'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'JoinClubRequest'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'JoinClubRequest'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'respondedAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'status'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'Club'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(name: NameNode(value: 'Club'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'location'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ClubInviteTokenData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ClubInviteTokenData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'token'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'InviteTokenError'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'InviteTokenError'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'message'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CheckClubInviteTokenQuery extends GraphQLQuery<CheckClubInviteToken$Query,
+    CheckClubInviteTokenArguments> {
+  CheckClubInviteTokenQuery({required this.variables});
+
+  @override
+  final DocumentNode document = CHECK_CLUB_INVITE_TOKEN_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'checkClubInviteToken';
+
+  @override
+  final CheckClubInviteTokenArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CheckClubInviteToken$Query parse(Map<String, dynamic> json) =>
+      CheckClubInviteToken$Query.fromJson(json);
 }

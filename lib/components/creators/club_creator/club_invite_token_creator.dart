@@ -4,23 +4,28 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/cupertino_switch_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
-import 'package:spotmefitness_ui/components/user_input/number_picker_modal.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
+/// Creates the invite token and then passes it back up to parent so that it can be added to the club and the store + UI (for the club) can be updated.
 class ClubInviteTokenCreator extends StatefulWidget {
+  /// When creating [token] should be null but the parent [club] is required.
+  /// When editing just the [token] is required. (updates just require the object ID)
   final ClubInviteToken? token;
+  final Club? club;
+  final void Function(ClubInviteToken token)? onUpdateComplete;
   const ClubInviteTokenCreator({
     Key? key,
     this.token,
-  }) : super(key: key);
+    this.club,
+    this.onUpdateComplete,
+  })  : assert(token != null || club != null),
+        super(key: key);
 
   @override
   _ClubInviteTokenCreatorState createState() => _ClubInviteTokenCreatorState();
@@ -31,6 +36,7 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
   bool _savingToDB = false;
   late ClubInviteToken _activeToken;
   late bool _enableInviteLimit;
+  final _nameController = TextEditingController();
   final _inviteLimitController = TextEditingController();
 
   @override
@@ -41,12 +47,20 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
 
     if (!_isCreate) {
       _activeToken = ClubInviteToken.fromJson(widget.token!.toJson());
+      _nameController.text = _activeToken.name;
+      _inviteLimitController.text = _activeToken.inviteLimit.toString();
     } else {
       _activeToken = DefaultObjectfactory.defaultClubInviteToken();
     }
 
     _inviteLimitController.text = _activeToken.inviteLimit.toString();
     _enableInviteLimit = _activeToken.inviteLimit != 0;
+
+    _nameController.addListener(() {
+      setState(() {
+        _activeToken.name = _nameController.text;
+      });
+    });
 
     _inviteLimitController.addListener(() {
       if (Utils.textNotNull(_inviteLimitController.text)) {
@@ -60,48 +74,64 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
   }
 
   Future<void> _handleCreate() async {
+    if (widget.club == null) {
+      throw Exception(
+          'ClubInviteTokenCreator._handleCreate: Cannot create a ClubInviteToken without the parent Club');
+    }
     setState(() => _savingToDB = true);
 
-    /// TODO: What do we need to update here? Queries? Local ClubCreator state?
     final variables = CreateClubInviteTokenArguments(
         data: CreateClubInviteTokenInput(
-            club: ConnectRelationInput(id: 'NOT DONE'),
-            creator: ConnectRelationInput(id: 'NOT DONE'),
-            inviteLimit: _activeToken.inviteLimit));
+            name: _activeToken.name,
+            club: ConnectRelationInput(id: widget.club!.id),
+            inviteLimit: _enableInviteLimit ? _activeToken.inviteLimit : 0));
 
     final result = await context.graphQLStore
         .create<CreateClubInviteToken$Mutation, CreateClubInviteTokenArguments>(
             mutation: CreateClubInviteTokenMutation(variables: variables));
 
+    setState(() => _savingToDB = false);
+
     if (result.hasErrors || result.data == null) {
       context.showErrorAlert(
           'Sorry there was a problem, the invite link was not created.');
-    }
+    } else {
+      if (widget.onUpdateComplete != null) {
+        widget.onUpdateComplete!(result.data!.createClubInviteToken);
+      }
 
-    setState(() => _savingToDB = false);
-    print('save and then close');
+      context.pop();
+    }
   }
 
   Future<void> _handleUpdate() async {
     setState(() => _savingToDB = true);
 
-    /// TODO: What do we need to update here? Queries? Local ClubCreator state?
     final variables = UpdateClubInviteTokenArguments(
         data: UpdateClubInviteTokenInput(
-            inviteLimit: _activeToken.inviteLimit, id: _activeToken.id));
+            name: _activeToken.name,
+            inviteLimit: _enableInviteLimit ? _activeToken.inviteLimit : 0,
+            id: _activeToken.id));
 
     final result = await context.graphQLStore
-        .create<UpdateClubInviteToken$Mutation, UpdateClubInviteTokenArguments>(
+        .mutate<UpdateClubInviteToken$Mutation, UpdateClubInviteTokenArguments>(
             mutation: UpdateClubInviteTokenMutation(variables: variables));
+
+    setState(() => _savingToDB = false);
 
     if (result.hasErrors || result.data == null) {
       context.showErrorAlert(
           'Sorry there was a problem, the invite link was not updated.');
+    } else {
+      if (widget.onUpdateComplete != null) {
+        widget.onUpdateComplete!(result.data!.updateClubInviteToken);
+      }
+      context.pop();
     }
-
-    setState(() => _savingToDB = false);
-    print('save and then close');
   }
+
+  bool get _validToSubmit =>
+      _activeToken.name.length > 2 && _activeToken.name.length < 21;
 
   void _handleCancel() {
     context.showConfirmDialog(
@@ -126,7 +156,7 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
             ],
           ),
           trailing: _savingToDB
-              ? NavBarLoadingDots()
+              ? NavBarTrailingRow(children: [NavBarLoadingDots()])
               : NavBarCancelButton(_handleCancel)),
       child: ListView(
         shrinkWrap: true,
@@ -144,7 +174,19 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: MyTextFormFieldRow(
+              autofocus: _isCreate,
+              backgroundColor: context.theme.cardBackground,
+              controller: _nameController,
+              placeholder: 'Label (required)',
+              keyboardType: TextInputType.text,
+              validator: () => _validToSubmit,
+              validationMessage: 'Min 3, max 20 characters',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -161,7 +203,7 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
               ],
             ),
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8),
           GrowInOut(
             show: _enableInviteLimit,
             child: Padding(
@@ -176,16 +218,21 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
               ),
             ),
           ),
-          SizedBox(height: 24),
-          PrimaryButton(
-              prefix: Icon(
-                _isCreate ? CupertinoIcons.add : CupertinoIcons.pencil,
-                size: 20,
-                color: context.theme.background,
-              ),
-              text: _isCreate ? 'Create Invite Link' : 'Update Invite Link',
-              onPressed:
-                  _isCreate ? () => _handleCreate() : () => _handleUpdate())
+          SizedBox(height: 30),
+          if (_validToSubmit)
+            FadeInUp(
+              child: PrimaryButton(
+                  loading: _savingToDB,
+                  prefix: Icon(
+                    _isCreate ? CupertinoIcons.add : CupertinoIcons.pencil,
+                    size: 20,
+                    color: context.theme.background,
+                  ),
+                  text: _isCreate ? 'Create Invite Link' : 'Update Invite Link',
+                  onPressed: _isCreate
+                      ? () => _handleCreate()
+                      : () => _handleUpdate()),
+            )
         ],
       ),
     );

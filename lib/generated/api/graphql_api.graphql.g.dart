@@ -70,10 +70,10 @@ ClubInviteToken _$ClubInviteTokenFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..createdAt = fromGraphQLDateTimeToDartDateTime(json['createdAt'] as int)
+    ..name = json['name'] as String
     ..active = json['active'] as bool
     ..inviteLimit = json['inviteLimit'] as int
     ..invitesUsed = json['invitesUsed'] as int
-    ..token = json['token'] as String
     ..joinedUserIds = (json['joinedUserIds'] as List<dynamic>)
         .map((e) => e as String)
         .toList();
@@ -84,10 +84,10 @@ Map<String, dynamic> _$ClubInviteTokenToJson(ClubInviteToken instance) =>
       '__typename': instance.$$typename,
       'id': instance.id,
       'createdAt': fromDartDateTimeToGraphQLDateTime(instance.createdAt),
+      'name': instance.name,
       'active': instance.active,
       'inviteLimit': instance.inviteLimit,
       'invitesUsed': instance.invitesUsed,
-      'token': instance.token,
       'joinedUserIds': instance.joinedUserIds,
     };
 
@@ -5302,6 +5302,7 @@ UpdateClubInviteTokenInput _$UpdateClubInviteTokenInputFromJson(
     Map<String, dynamic> json) {
   return UpdateClubInviteTokenInput(
     id: json['id'] as String,
+    name: json['name'] as String?,
     inviteLimit: json['inviteLimit'] as int?,
     active: json['active'] as bool?,
   );
@@ -5311,6 +5312,7 @@ Map<String, dynamic> _$UpdateClubInviteTokenInputToJson(
         UpdateClubInviteTokenInput instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'name': instance.name,
       'inviteLimit': instance.inviteLimit,
       'active': instance.active,
     };
@@ -5331,9 +5333,8 @@ Map<String, dynamic> _$CreateClubInviteToken$MutationToJson(
 CreateClubInviteTokenInput _$CreateClubInviteTokenInputFromJson(
     Map<String, dynamic> json) {
   return CreateClubInviteTokenInput(
+    name: json['name'] as String,
     inviteLimit: json['inviteLimit'] as int,
-    creator:
-        ConnectRelationInput.fromJson(json['Creator'] as Map<String, dynamic>),
     club: ConnectRelationInput.fromJson(json['Club'] as Map<String, dynamic>),
   );
 }
@@ -5341,8 +5342,8 @@ CreateClubInviteTokenInput _$CreateClubInviteTokenInputFromJson(
 Map<String, dynamic> _$CreateClubInviteTokenInputToJson(
         CreateClubInviteTokenInput instance) =>
     <String, dynamic>{
+      'name': instance.name,
       'inviteLimit': instance.inviteLimit,
-      'Creator': instance.creator.toJson(),
       'Club': instance.club.toJson(),
     };
 
@@ -5356,6 +5357,58 @@ Map<String, dynamic> _$DeleteClubInviteTokenById$MutationToJson(
         DeleteClubInviteTokenById$Mutation instance) =>
     <String, dynamic>{
       'deleteClubInviteTokenById': instance.deleteClubInviteTokenById,
+    };
+
+ClubInviteTokenData _$ClubInviteTokenDataFromJson(Map<String, dynamic> json) {
+  return ClubInviteTokenData()
+    ..$$typename = json['__typename'] as String?
+    ..token = json['token'] as String
+    ..club = Club.fromJson(json['Club'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$ClubInviteTokenDataToJson(
+        ClubInviteTokenData instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'token': instance.token,
+      'Club': instance.club.toJson(),
+    };
+
+InviteTokenError _$InviteTokenErrorFromJson(Map<String, dynamic> json) {
+  return InviteTokenError()
+    ..$$typename = json['__typename'] as String?
+    ..message = json['message'] as String;
+}
+
+Map<String, dynamic> _$InviteTokenErrorToJson(InviteTokenError instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'message': instance.message,
+    };
+
+CheckClubInviteTokenResult _$CheckClubInviteTokenResultFromJson(
+    Map<String, dynamic> json) {
+  return CheckClubInviteTokenResult()
+    ..$$typename = json['__typename'] as String?;
+}
+
+Map<String, dynamic> _$CheckClubInviteTokenResultToJson(
+        CheckClubInviteTokenResult instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+    };
+
+CheckClubInviteToken$Query _$CheckClubInviteToken$QueryFromJson(
+    Map<String, dynamic> json) {
+  return CheckClubInviteToken$Query()
+    ..checkClubInviteToken = CheckClubInviteTokenResult.fromJson(
+        json['checkClubInviteToken'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CheckClubInviteToken$QueryToJson(
+        CheckClubInviteToken$Query instance) =>
+    <String, dynamic>{
+      'checkClubInviteToken': instance.checkClubInviteToken.toJson(),
     };
 
 CreateWorkoutMoveArguments _$CreateWorkoutMoveArgumentsFromJson(
@@ -6909,6 +6962,19 @@ DeleteClubInviteTokenByIdArguments _$DeleteClubInviteTokenByIdArgumentsFromJson(
 
 Map<String, dynamic> _$DeleteClubInviteTokenByIdArgumentsToJson(
         DeleteClubInviteTokenByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+CheckClubInviteTokenArguments _$CheckClubInviteTokenArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CheckClubInviteTokenArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$CheckClubInviteTokenArgumentsToJson(
+        CheckClubInviteTokenArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };

@@ -183,6 +183,56 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
     }
   }
 
+  /// Methods to handle ClubInviteToken CRUD. ClubInviteTokens are nested within Clubs so a manual store write is required to ensure that all the UI updates correctly.
+  /// Adds the new or updated token (which was created in [ClubInviteTokenCreator]) to local state - _activeClub.
+  /// Then write the updated club to global GraphQLStore and re-broadcast as necessary.
+  void _addNewInviteTokenToState(ClubInviteToken token) {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._addNewInviteTokenToState: [_activeClub] has not been initialized.');
+    }
+    setState(() {
+      _activeClub!.clubInviteTokens.add(token);
+    });
+
+    _writeClubToGraphQLStore();
+  }
+
+  void _addUpdatedInviteTokenToState(ClubInviteToken token) {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._addUpdatedInviteTokenToState: [_activeClub] has not been initialized.');
+    }
+
+    setState(() {
+      _activeClub!.clubInviteTokens = _activeClub!.clubInviteTokens
+          .map((original) => token.id == original.id ? token : original)
+          .toList();
+    });
+
+    _writeClubToGraphQLStore();
+  }
+
+  void _writeClubToGraphQLStore() {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._writeClubToGraphQLStore: [_activeClub] has not been initialized.');
+    }
+
+    final success = context.graphQLStore.writeDataToStore(
+      data: _activeClub!.toJson(),
+      broadcastQueryIds: [
+        GQLVarParamKeys.clubByIdQuery(_activeClub!.id),
+        UserClubsQuery().operationName
+      ],
+    );
+
+    if (!success) {
+      context.showErrorAlert(
+          'Sorry there was a problem. The changes were not updated correctly!');
+    }
+  }
+
   Future<void> _deleteClubInviteToken(ClubInviteToken token) async {
     if (_activeClub == null) {
       throw Exception(
@@ -199,8 +249,6 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
         mutation: DeleteClubInviteTokenByIdMutation(variables: variables),
         objectId: token.id,
         typename: kClubInviteTokenTypeName,
-
-        /// TODO: Assumes that we want to normalize these ClubInviteToken objects. Need to asses.
         removeAllRefsToId: true);
 
     setState(() => _savingToDB = false);
@@ -340,6 +388,8 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
                       ),
                       ClubCreatorMembers(
                         club: _activeClub!,
+                        onCreateInviteToken: _addNewInviteTokenToState,
+                        onUpdateInviteToken: _addUpdatedInviteTokenToState,
                         deleteClubInviteToken: (token) =>
                             _deleteClubInviteToken(token),
                       ),
@@ -394,14 +444,5 @@ class _PreCreateInputUI extends StatelessWidget {
             controller: locationController),
       ],
     );
-  }
-}
-
-class _InvitesPage extends StatelessWidget {
-  const _InvitesPage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

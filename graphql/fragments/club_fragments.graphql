@@ -15,13 +15,13 @@ fragment ClubInviteToken on ClubInviteToken {
   __typename
   id
   createdAt
+  name
   active
   # How many times can this token be used.
   # 0 means unlimited.
   inviteLimit
   # Only updated by the sever when user joins via this token.
   invitesUsed
-  token
   # Only updated by the sever when user joins via this token.
   joinedUserIds
 }

@@ -22,7 +22,6 @@ import 'package:spotmefitness_ui/pages/authed/details_pages/workout_details_page
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/workout_plan_enrolment_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_challenges_page.dart';
-import 'package:spotmefitness_ui/pages/authed/discover/discover_events_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_plans_page.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_workouts_page.dart';
@@ -34,6 +33,7 @@ import 'package:spotmefitness_ui/pages/authed/home/your_events.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_plans/your_plans.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_schedule.dart';
 import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_workouts.dart';
+import 'package:spotmefitness_ui/pages/authed/landing_pages/club_invite_landing_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/custom_moves_page.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/gym_profiles.dart';
 import 'package:spotmefitness_ui/pages/authed/profile/personal_page.dart';
@@ -90,7 +90,6 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   AutoRoute(
                       path: 'discover-challenges',
                       page: DiscoverChallengesPage),
-                  AutoRoute(path: 'discover-events', page: DiscoverEventsPage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
             AutoRoute(
@@ -128,6 +127,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           // Usually the flow from these pages ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
           AutoRoute(path: 'chats', page: ChatsOverviewPage),
           AutoRoute(path: 'chat', page: OneToOneChatPage),
+          AutoRoute(path: 'club-invite/:id', page: ClubInviteLandingPage),
           AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
           AutoRoute(
               path: "do-workout/:id",

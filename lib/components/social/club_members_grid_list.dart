@@ -15,7 +15,6 @@ class ClubMembersGridList extends StatelessWidget {
   const ClubMembersGridList(
       {Key? key,
       required this.members,
-      // required this.avatarSize,
       required this.owner,
       required this.admins,
       this.scrollPhysics})
