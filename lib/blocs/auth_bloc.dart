@@ -12,17 +12,20 @@ class AuthedUser {
   String id;
   bool hasOnboarded;
   String streamChatToken;
+  String streamFeedToken;
 
   AuthedUser(
       {required this.id,
       required this.hasOnboarded,
-      required this.streamChatToken});
+      required this.streamChatToken,
+      required this.streamFeedToken});
 
   factory AuthedUser.fromJson(Map<String, dynamic> json) {
     return AuthedUser(
         id: json['id'],
         hasOnboarded: json['hasOnboarded'],
-        streamChatToken: json['streamChatToken']);
+        streamChatToken: json['streamChatToken'],
+        streamFeedToken: json['streamFeedToken']);
   }
 }
 

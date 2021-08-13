@@ -22,6 +22,7 @@ import 'package:spotmefitness_ui/pages/authed/home/your_workouts/your_created_wo
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
+import 'package:spotmefitness_ui/services/stream.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -362,20 +363,15 @@ class _HeaderContent extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    BorderButton(
-                      text: 'Connect',
-                      prefix: Icon(
-                        CupertinoIcons.person_crop_circle_badge_plus,
-                        size: 17,
-                      ),
-                      onPressed: () =>
-                          print('connect = subscribe to that users feed.'),
+                    UserFeedConnectionButton(
+                      otherUserId: userPublicProfile.id,
                     ),
+                    SizedBox(width: 8),
                     BorderButton(
-                      text: 'Chat',
+                      text: 'Message',
                       prefix: Icon(
                         CupertinoIcons.chat_bubble_2,
-                        size: 19,
+                        size: 15,
                       ),
                       onPressed: () => context.navigateTo(OneToOneChatRoute(
                         otherUserId: userPublicProfile.id,

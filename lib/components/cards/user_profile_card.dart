@@ -29,17 +29,20 @@ class UserProfileCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    MyText(
-                      profileSummary.displayName,
-                      weight: FontWeight.bold,
-                      size: FONTSIZE.BIG,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: MyText(
+                        profileSummary.displayName,
+                        weight: FontWeight.bold,
+                      ),
                     ),
                     if (Utils.textNotNull(profileSummary.tagline))
                       MyText(
                         profileSummary.tagline!,
                         maxLines: 2,
                         textAlign: TextAlign.center,
-                        lineHeight: 1.1,
+                        lineHeight: 1.3,
+                        size: FONTSIZE.SMALL,
                       ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,9 +51,7 @@ class UserProfileCard extends StatelessWidget {
                           children: [
                             MyText(
                               'Workouts',
-                              subtext: true,
                               lineHeight: 1,
-                              weight: FontWeight.bold,
                             ),
                             MyText(
                               profileSummary.numberPublicWorkouts.toString(),
@@ -64,9 +65,7 @@ class UserProfileCard extends StatelessWidget {
                           children: [
                             MyText(
                               'Plans',
-                              subtext: true,
                               lineHeight: 1,
-                              weight: FontWeight.bold,
                             ),
                             MyText(
                               profileSummary.numberPublicPlans.toString(),
@@ -85,7 +84,7 @@ class UserProfileCard extends StatelessWidget {
             avatarUri: profileSummary.avatarUri,
             size: kAvatarSize,
             border: true,
-            borderWidth: 2,
+            borderWidth: 1,
           ),
         ],
       ),

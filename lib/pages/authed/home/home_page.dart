@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
               children: [
                 Icon(CupertinoIcons.news),
                 SizedBox(width: 8),
-                H3('News & articles - coming soon!'),
+                H3('News & articles coming soon!'),
               ],
             ),
           ),

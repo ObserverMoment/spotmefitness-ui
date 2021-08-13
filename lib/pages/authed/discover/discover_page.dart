@@ -80,10 +80,10 @@ class DiscoverPageButton extends StatelessWidget {
       margin: EdgeInsets.only(right: 6),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(80),
           border: Border.all(color: context.theme.primary)),
       child: CupertinoButton(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         onPressed: onPressed,
         child: MyText(
           text.toUpperCase(),

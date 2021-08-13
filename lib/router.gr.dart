@@ -22,11 +22,13 @@ import 'components/do_workout/do_workout/do_workout_do_workout_page.dart'
     as _i52;
 import 'components/do_workout/do_workout_log_workout_page.dart' as _i53;
 import 'components/do_workout/do_workout_wrapper_page.dart' as _i10;
+import 'components/social/chats_overview_page.dart' as _i6;
+import 'components/social/one_to_one_chat_page.dart' as _i7;
 import 'components/workout/workout_finder/workout_finder.dart' as _i12;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i13;
 import 'generated/api/graphql_api.dart' as _i55;
-import 'pages/authed/app.dart' as _i5;
+import 'pages/authed/authed_routes_wrapper_page.dart' as _i4;
 import 'pages/authed/details_pages/club_details_page.dart' as _i14;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i9;
 import 'pages/authed/details_pages/logged_workout_details_page.dart' as _i15;
@@ -38,36 +40,34 @@ import 'pages/authed/details_pages/workout_details_page.dart' as _i19;
 import 'pages/authed/details_pages/workout_plan_details_page.dart' as _i20;
 import 'pages/authed/details_pages/workout_plan_enrolment_details_page.dart'
     as _i21;
-import 'pages/authed/discover/discover_challenges_page.dart' as _i40;
-import 'pages/authed/discover/discover_page.dart' as _i37;
-import 'pages/authed/discover/discover_plans_page.dart' as _i39;
-import 'pages/authed/discover/discover_workouts_page.dart' as _i38;
-import 'pages/authed/home/home_page.dart' as _i29;
-import 'pages/authed/home/your_challenges.dart' as _i31;
-import 'pages/authed/home/your_clubs.dart' as _i32;
-import 'pages/authed/home/your_collections.dart' as _i30;
-import 'pages/authed/home/your_events.dart' as _i33;
-import 'pages/authed/home/your_plans/your_plans.dart' as _i34;
-import 'pages/authed/home/your_schedule.dart' as _i35;
-import 'pages/authed/home/your_workouts/your_workouts.dart' as _i36;
+import 'pages/authed/discover/discover_challenges_page.dart' as _i41;
+import 'pages/authed/discover/discover_page.dart' as _i38;
+import 'pages/authed/discover/discover_plans_page.dart' as _i40;
+import 'pages/authed/discover/discover_workouts_page.dart' as _i39;
+import 'pages/authed/home/home_page.dart' as _i30;
+import 'pages/authed/home/your_challenges.dart' as _i32;
+import 'pages/authed/home/your_clubs.dart' as _i33;
+import 'pages/authed/home/your_collections.dart' as _i31;
+import 'pages/authed/home/your_events.dart' as _i34;
+import 'pages/authed/home/your_plans/your_plans.dart' as _i35;
+import 'pages/authed/home/your_schedule.dart' as _i36;
+import 'pages/authed/home/your_workouts/your_workouts.dart' as _i37;
 import 'pages/authed/landing_pages/club_invite_landing_page.dart' as _i8;
+import 'pages/authed/main_tabs_page.dart' as _i5;
 import 'pages/authed/profile/custom_moves_page.dart' as _i51;
 import 'pages/authed/profile/gym_profiles.dart' as _i50;
 import 'pages/authed/profile/personal_page.dart' as _i49;
-import 'pages/authed/profile/profile_page.dart' as _i28;
+import 'pages/authed/profile/profile_page.dart' as _i29;
 import 'pages/authed/profile/settings.dart' as _i11;
 import 'pages/authed/progress/body_transformation_page.dart' as _i47;
 import 'pages/authed/progress/journals_page.dart' as _i46;
 import 'pages/authed/progress/logged_workouts_page.dart' as _i48;
 import 'pages/authed/progress/personal_bests_page.dart' as _i45;
 import 'pages/authed/progress/progress_page.dart' as _i44;
-import 'pages/authed/social/chats_overview_page.dart' as _i6;
-import 'pages/authed/social/discover_clubs_page.dart' as _i42;
 import 'pages/authed/social/discover_people_page.dart' as _i43;
-import 'pages/authed/social/one_to_one_chat_page.dart' as _i7;
-import 'pages/authed/social/social_page.dart' as _i41;
+import 'pages/authed/social/social_page.dart' as _i42;
 import 'pages/unauthed/unauthed_landing.dart' as _i3;
-import 'router.dart' as _i4;
+import 'router.dart' as _i28;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -83,7 +83,7 @@ class AppRouter extends _i1.RootStackRouter {
     AuthedRouter.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i4.HeroEmptyRouterPage();
+          return _i4.AuthedRoutesWrapperPage();
         }),
     MainTabsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -279,99 +279,94 @@ class AppRouter extends _i1.RootStackRouter {
     HomeStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i4.HeroEmptyRouterPage();
+          return _i28.HeroEmptyRouterPage();
         }),
     DiscoverStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i4.HeroEmptyRouterPage();
+          return _i28.HeroEmptyRouterPage();
         }),
     SocialStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i4.HeroEmptyRouterPage();
+          return _i28.HeroEmptyRouterPage();
         }),
     ProgressStack.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i4.HeroEmptyRouterPage();
+          return _i28.HeroEmptyRouterPage();
         }),
     ProfileRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i28.ProfilePage();
+          return _i29.ProfilePage();
         }),
     HomeRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i29.HomePage();
+          return _i30.HomePage();
         }),
     YourCollectionsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i30.YourCollectionsPage();
+          return _i31.YourCollectionsPage();
         }),
     YourChallengesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i31.YourChallengesPage();
+          return _i32.YourChallengesPage();
         }),
     YourClubsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i32.YourClubsPage();
+          return _i33.YourClubsPage();
         }),
     YourEventsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i33.YourEventsPage();
+          return _i34.YourEventsPage();
         }),
     YourPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i34.YourPlansPage();
+          return _i35.YourPlansPage();
         }),
     YourScheduleRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<YourScheduleRouteArgs>(
               orElse: () => const YourScheduleRouteArgs());
-          return _i35.YourSchedulePage(openAtDate: args.openAtDate);
+          return _i36.YourSchedulePage(openAtDate: args.openAtDate);
         }),
     YourWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i36.YourWorkoutsPage();
+          return _i37.YourWorkoutsPage();
         }),
     DiscoverRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i37.DiscoverPage();
+          return _i38.DiscoverPage();
         }),
     DiscoverWorkoutsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i38.DiscoverWorkoutsPage();
+          return _i39.DiscoverWorkoutsPage();
         }),
     DiscoverPlansRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i39.DiscoverPlansPage();
+          return _i40.DiscoverPlansPage();
         }),
     DiscoverChallengesRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i40.DiscoverChallengesPage();
+          return _i41.DiscoverChallengesPage();
         }),
     SocialRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return _i41.SocialPage();
-        }),
-    DiscoverClubsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return const _i42.DiscoverClubsPage();
+          return _i42.SocialPage();
         }),
     DiscoverPeopleRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -466,7 +461,6 @@ class AppRouter extends _i1.RootStackRouter {
             ]),
             _i1.RouteConfig(SocialStack.name, path: 'social', children: [
               _i1.RouteConfig(SocialRoute.name, path: ''),
-              _i1.RouteConfig(DiscoverClubsRoute.name, path: 'discover-clubs'),
               _i1.RouteConfig(DiscoverPeopleRoute.name,
                   path: 'discover-people'),
               _i1.RouteConfig('*#redirect',
@@ -1047,12 +1041,6 @@ class SocialRoute extends _i1.PageRouteInfo {
   const SocialRoute() : super(name, path: '');
 
   static const String name = 'SocialRoute';
-}
-
-class DiscoverClubsRoute extends _i1.PageRouteInfo {
-  const DiscoverClubsRoute() : super(name, path: 'discover-clubs');
-
-  static const String name = 'DiscoverClubsRoute';
 }
 
 class DiscoverPeopleRoute extends _i1.PageRouteInfo {

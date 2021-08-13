@@ -27,7 +27,7 @@ class ComingUpList extends StatelessWidget {
         loadingIndicator: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ShimmerCard(
-            height: kListHeight + 14,
+            height: kListHeight + 8,
           ),
         ),
         builder: (data) {
@@ -56,6 +56,7 @@ class ComingUpList extends StatelessWidget {
                   height: kListHeight,
                   child: noPlans
                       ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
                               padding:

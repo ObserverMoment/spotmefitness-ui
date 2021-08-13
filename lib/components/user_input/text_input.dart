@@ -61,6 +61,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
         Stack(
           children: [
             Container(
+              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
               padding:
                   const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
               decoration: widget.backgroundColor != null
@@ -204,7 +205,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.all(6),
+          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
           padding: const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
           decoration: backgroundColor != null
               ? BoxDecoration(

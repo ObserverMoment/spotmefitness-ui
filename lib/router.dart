@@ -11,7 +11,8 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_pa
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
-import 'package:spotmefitness_ui/pages/authed/app.dart';
+import 'package:spotmefitness_ui/pages/authed/main_tabs_page.dart';
+import 'package:spotmefitness_ui/pages/authed/authed_routes_wrapper_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/club_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/personal_best_details_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/collection_details_page.dart';
@@ -44,10 +45,9 @@ import 'package:spotmefitness_ui/pages/authed/progress/body_transformation_page.
 import 'package:spotmefitness_ui/pages/authed/progress/logged_workouts_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/journals_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/progress_page.dart';
-import 'package:spotmefitness_ui/pages/authed/social/chats_overview_page.dart';
-import 'package:spotmefitness_ui/pages/authed/social/discover_clubs_page.dart';
+import 'package:spotmefitness_ui/components/social/chats_overview_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/discover_people_page.dart';
-import 'package:spotmefitness_ui/pages/authed/social/one_to_one_chat_page.dart';
+import 'package:spotmefitness_ui/components/social/one_to_one_chat_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 
@@ -58,7 +58,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
     AutoRoute(
         path: '/',
         name: 'authedRouter',
-        page: HeroEmptyRouterPage,
+        page: AuthedRoutesWrapperPage,
         children: [
           // The main tabs screen has five tabs where each is a stack. Generally these are pages that are user specific and are not likely to be shared across users or groups. Each stack maintains its own state and navigation in iOS style.
           AutoRoute(path: '', page: MainTabsPage, children: [
@@ -98,7 +98,6 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                 page: HeroEmptyRouterPage,
                 children: [
                   AutoRoute(path: '', page: SocialPage),
-                  AutoRoute(path: 'discover-clubs', page: DiscoverClubsPage),
                   AutoRoute(path: 'discover-people', page: DiscoverPeoplePage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),

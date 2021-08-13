@@ -161,6 +161,8 @@ class BorderButton extends StatelessWidget {
   final Widget? prefix;
   final String? text;
   final void Function() onPressed;
+  final Color? textColor;
+  final Color? backgroundColor;
   final bool withBorder;
   final bool mini;
   final bool loading;
@@ -172,7 +174,9 @@ class BorderButton extends StatelessWidget {
       this.withBorder = true,
       this.loading = false,
       this.disabled = false,
-      this.mini = false})
+      this.mini = false,
+      this.textColor,
+      this.backgroundColor})
       : assert(prefix != null || text != null);
 
   @override
@@ -185,11 +189,16 @@ class BorderButton extends StatelessWidget {
         opacity: disabled ? 0 : 1,
         duration: Duration(milliseconds: 250),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              border:
-                  withBorder ? Border.all(color: context.theme.primary) : null),
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(3),
+              border: withBorder
+                  ? Border.all(
+                      color: backgroundColor != null
+                          ? backgroundColor!.withOpacity(0.5)
+                          : context.theme.primary.withOpacity(0.5))
+                  : null),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -205,8 +214,7 @@ class BorderButton extends StatelessWidget {
                     if (text != null)
                       MyText(
                         text!.toUpperCase(),
-                        weight: FontWeight.bold,
-                        size: mini ? FONTSIZE.SMALL : FONTSIZE.MAIN,
+                        color: textColor,
                       )
                   ],
                 ),
@@ -217,7 +225,7 @@ class BorderButton extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [LoadingDots(size: 14)],
+                  children: [LoadingDots(size: 10)],
                 ),
               ),
             ],
@@ -344,7 +352,7 @@ class FloatingIconButton extends StatelessWidget {
         onPressed: disabled ? null : onPressed,
         child: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -370,7 +378,7 @@ class FloatingIconButton extends StatelessWidget {
                     child: loading
                         ? LoadingCircle(color: context.theme.primary, size: 12)
                         : Icon(iconData,
-                            size: 24, color: context.theme.background)),
+                            size: 20, color: context.theme.background)),
               ),
               MyText(
                 text,

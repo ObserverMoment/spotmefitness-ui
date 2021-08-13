@@ -117,7 +117,7 @@ class StackAndFloatingButton extends StatelessWidget {
   StackAndFloatingButton(
       {required this.child,
       this.pageHasBottomNavBar = true,
-      this.buttonIconData = CupertinoIcons.plus_circle,
+      this.buttonIconData = CupertinoIcons.plus,
       required this.onPressed,
       required this.buttonText});
   @override
@@ -129,9 +129,9 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom:
-                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 20,
-            // right: 0,
+            bottom: pageHasBottomNavBar
+                ? EnvironmentConfig.bottomNavBarHeight + 8
+                : 20,
             child: FloatingIconButton(
                 text: buttonText,
                 iconData: buttonIconData,

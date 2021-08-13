@@ -12,16 +12,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
-import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
-import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/uploadcare.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,8 +55,6 @@ class _AuthRouterState extends State<AuthRouter> {
   final _appRouter = AppRouter();
   late Brightness _userDeviceBrightness;
 
-  late StreamChatClient _getStreamChatClient;
-
   @override
   void initState() {
     super.initState();
@@ -69,14 +62,6 @@ class _AuthRouterState extends State<AuthRouter> {
 
     _userDeviceBrightness =
         SchedulerBinding.instance?.window.platformBrightness ?? Brightness.dark;
-
-    /// Setup GetStreamChatClient as a global singleton.
-    _getStreamChatClient = StreamChatClient(
-      EnvironmentConfig.getStreamPublicKey,
-      // https://getstream.io/chat/docs/react/multi_region/?language=dart
-      location: Location.euWest,
-    );
-    GetIt.I.registerSingleton<StreamChatClient>(_getStreamChatClient);
   }
 
   @override
@@ -84,11 +69,6 @@ class _AuthRouterState extends State<AuthRouter> {
     GetIt.I.unregister<AuthBloc>(
       instance: _authBloc,
       disposingFunction: (bloc) => bloc.dispose(),
-    );
-    // Close and dispose GetStreamChatClient.
-    GetIt.I.unregister<StreamChatClient>(
-      instance: _getStreamChatClient,
-      disposingFunction: (client) => client.dispose(),
     );
     _appRouter.dispose();
     super.dispose();
@@ -101,16 +81,8 @@ class _AuthRouterState extends State<AuthRouter> {
         builder: (context, authState, _) {
           final _authedUser = GetIt.I<AuthBloc>().authedUser;
 
-          return MultiProvider(
-            providers: [
-              Provider(create: (_) => GraphQLStore()),
-              ChangeNotifierProvider(create: (_) => MoveFiltersBloc()),
-              ChangeNotifierProvider(create: (_) => WorkoutFiltersBloc()),
-              ChangeNotifierProvider(create: (_) => WorkoutPlanFiltersBloc()),
-              ChangeNotifierProvider(
-                  create: (_) =>
-                      ThemeBloc(deviceBrightness: _userDeviceBrightness)),
-            ],
+          return ChangeNotifierProvider<ThemeBloc>(
+            create: (_) => ThemeBloc(deviceBrightness: _userDeviceBrightness),
             child: Builder(
                 builder: (context) => _Unfocus(
                         child: CupertinoApp.router(

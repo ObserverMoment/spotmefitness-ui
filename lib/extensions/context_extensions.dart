@@ -11,6 +11,8 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:stream_feed/stream_feed.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeBloc get theme {
@@ -19,6 +21,14 @@ extension BuildContextExtension on BuildContext {
 
   ThemeBloc get readTheme {
     return read<ThemeBloc>();
+  }
+
+  StreamFeedClient get streamFeedClient {
+    return read<StreamFeedClient>();
+  }
+
+  StreamChatClient get streamChatClient {
+    return read<StreamChatClient>();
   }
 
   GraphQLStore get graphQLStore => read<GraphQLStore>();

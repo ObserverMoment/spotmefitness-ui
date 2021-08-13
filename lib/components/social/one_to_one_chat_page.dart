@@ -11,7 +11,7 @@ import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.d
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/stream.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart' as s;
+import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -30,9 +30,9 @@ class OneToOneChatPage extends StatefulWidget {
 
 class OneToOneChatPageState extends State<OneToOneChatPage> {
   late AuthedUser _authedUser;
-  late s.StreamChatClient _streamChatClient;
-  late s.Channel _channel;
-  s.Member? _otherMember;
+  late chat.StreamChatClient _streamChatClient;
+  late chat.Channel _channel;
+  chat.Member? _otherMember;
   String? _displayName; // Of the other person to show at the top center.
   String? _avatarUri; // Of the other person to show at the top right.
   late bool _channelReady = false;
@@ -42,8 +42,9 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
   @override
   void initState() {
     super.initState();
-    _streamChatClient = GetIt.I<s.StreamChatClient>();
     _authedUser = GetIt.I<AuthBloc>().authedUser!;
+    _streamChatClient = context.streamChatClient;
+
     _initGetStreamChat();
   }
 
@@ -51,7 +52,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
     try {
       if (_streamChatClient.state.currentUser == null) {
         await _streamChatClient.connectUser(
-          s.User(id: _authedUser.id),
+          chat.User(id: _authedUser.id),
           _authedUser.streamChatToken,
         );
       }
@@ -91,7 +92,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
     return AnimatedSwitcher(
       duration: kStandardAnimationDuration,
       child: _channelReady
-          ? s.StreamChannel(
+          ? chat.StreamChannel(
               channel: _channel,
               child: CupertinoPageScaffold(
                 navigationBar: BorderlessNavBar(
@@ -127,13 +128,13 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                     ),
                   ),
                 ),
-                child: s.StreamChat(
+                child: chat.StreamChat(
                   client: _streamChatClient,
                   streamChatThemeData: StreamService.theme(context),
                   child: Column(
                     children: <Widget>[
                       Expanded(
-                        child: s.MessageListView(
+                        child: chat.MessageListView(
                           onMessageTap: (message) => print(message),
                           messageBuilder: (context, message, messages,
                               defaultMessageWidget) {
@@ -143,7 +144,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                                   print(message),
                               onAttachmentTap: (message, attachment) =>
                                   print('View, share, save options'),
-                              showUserAvatar: s.DisplayWidget.gone,
+                              showUserAvatar: chat.DisplayWidget.gone,
                               usernameBuilder: (context, message) => Padding(
                                 padding: const EdgeInsets.only(left: 4.0),
                                 child: MyText(
@@ -159,7 +160,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                           },
                         ),
                       ),
-                      s.MessageInput(),
+                      chat.MessageInput(),
                     ],
                   ),
                 ),

@@ -10,7 +10,7 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sli
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/stream.dart';
-import 'package:stream_chat_flutter/stream_chat_flutter.dart' as s;
+import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
@@ -25,9 +25,9 @@ class ChatsOverviewPage extends StatefulWidget {
 }
 
 class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
-  late AuthedUser? _authedUser;
-  late s.StreamChatClient _streamChatClient;
-  s.OwnUser? _streamUser;
+  late AuthedUser _authedUser;
+  late chat.StreamChatClient _streamChatClient;
+  chat.OwnUser? _streamUser;
 
   /// 0 = Clubs. 1 = Friends.
   int _tabIndex = 0;
@@ -36,8 +36,8 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
   @override
   void initState() {
     super.initState();
-    _authedUser = GetIt.I<AuthBloc>().authedUser;
-    _streamChatClient = GetIt.I<s.StreamChatClient>();
+    _authedUser = GetIt.I<AuthBloc>().authedUser!;
+    _streamChatClient = context.streamChatClient;
 
     _initGetStreamChat();
   }
@@ -45,8 +45,8 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
   Future<void> _initGetStreamChat() async {
     try {
       _streamUser = await _streamChatClient.connectUser(
-        s.User(id: _authedUser!.id),
-        _authedUser!.streamChatToken,
+        chat.User(id: _authedUser.id),
+        _authedUser.streamChatToken,
       );
     } catch (e) {
       print(e);
@@ -73,10 +73,10 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
         navigationBar: BorderlessNavBar(
           middle: NavBarTitle('Chats'),
         ),
-        child: s.StreamChat(
+        child: chat.StreamChat(
           streamChatThemeData: StreamService.theme(context),
           client: _streamChatClient,
-          child: s.ChannelsBloc(
+          child: chat.ChannelsBloc(
             child: Column(
               children: [
                 SizedBox(
@@ -118,29 +118,29 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
 }
 
 class FriendChatsChannelList extends StatelessWidget {
-  final s.StreamChatClient streamChatClient;
-  final s.OwnUser? streamUser;
+  final chat.StreamChatClient streamChatClient;
+  final chat.OwnUser? streamUser;
   const FriendChatsChannelList(
       {Key? key, required this.streamChatClient, this.streamUser})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return s.ChannelListView(
+    return chat.ChannelListView(
       listBuilder: (c, channels) => ListView.builder(
           itemCount: channels.length,
           itemBuilder: (c, i) =>
               FriendChannelPreviewTile(channel: channels[i])),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       filter: streamUser != null
-          ? s.Filter.and([
-              s.Filter.equal('type', 'messaging'),
-              s.Filter.equal('chatType', ChatType.friend.toString()),
-              s.Filter.in_('members', [streamUser!.id]),
+          ? chat.Filter.and([
+              chat.Filter.equal('type', 'messaging'),
+              chat.Filter.equal('chatType', ChatType.friend.toString()),
+              chat.Filter.in_('members', [streamUser!.id]),
             ])
           : null,
-      sort: const [s.SortOption('last_message_at')],
-      pagination: const s.PaginationParams(
+      sort: const [chat.SortOption('last_message_at')],
+      pagination: const chat.PaginationParams(
         limit: 20,
       ),
     );
@@ -148,7 +148,7 @@ class FriendChatsChannelList extends StatelessWidget {
 }
 
 class FriendChannelPreviewTile extends StatelessWidget {
-  final s.Channel channel;
+  final chat.Channel channel;
   const FriendChannelPreviewTile({Key? key, required this.channel})
       : super(key: key);
 
