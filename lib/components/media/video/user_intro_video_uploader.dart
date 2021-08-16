@@ -132,8 +132,8 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
 
   @override
   Widget build(BuildContext context) {
-    final Color _primary = context.theme.primary;
-    final Color _background = context.theme.background;
+    final Color primary = context.theme.primary;
+    final Color cardBackground = context.theme.cardBackground;
     final bool hasVideo = Utils.textNotNull(widget.introVideoUri);
 
     return GestureDetector(
@@ -195,7 +195,7 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
         height: widget.displaySize.height,
         decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _primary.withOpacity(0.7),
+            color: cardBackground,
             boxShadow: [Styles.avatarBoxShadow]),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: AnimatedSwitcher(
@@ -208,14 +208,14 @@ class _UserIntroVideoUploaderState extends State<UserIntroVideoUploader> {
                 )
               : _processing
                   ? LoadingCircle(
-                      color: _background.withOpacity(0.4),
+                      color: primary,
                     )
                   : Utils.textNotNull(widget.introVideoThumbUri)
                       ? SizedUploadcareImage(widget.introVideoThumbUri!)
                       : Icon(
                           CupertinoIcons.film,
                           size: widget.displaySize.width / 2.5,
-                          color: _background.withOpacity(0.4),
+                          color: primary.withOpacity(0.3),
                         ),
         ),
       ),

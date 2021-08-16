@@ -13,7 +13,7 @@ mixin UserSummaryMixin {
   String? $$typename;
   late String id;
   String? avatarUri;
-  late String displayName;
+  String? displayName;
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope userProfileScope;
   String? tagline;
@@ -456,7 +456,7 @@ mixin UserPublicProfileSummaryMixin {
   String? tagline;
   String? townCity;
   String? countryCode;
-  late String displayName;
+  String? displayName;
   late int numberPublicWorkouts;
   late int numberPublicPlans;
 }
@@ -476,7 +476,7 @@ mixin UserPublicProfileMixin {
   String? snapUrl;
   String? linkedinUrl;
   String? countryCode;
-  late String displayName;
+  String? displayName;
 }
 mixin BodyTransformationPhotoMixin {
   @JsonKey(name: '__typename')
@@ -558,6 +558,13 @@ mixin InviteTokenErrorMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
   late String message;
+}
+mixin UserAvatarDataMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  String? avatarUri;
+  String? displayName;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -6725,6 +6732,50 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   List<Object?> get props => [workoutById];
   @override
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarData extends JsonSerializable
+    with EquatableMixin, UserAvatarDataMixin {
+  UserAvatarData();
+
+  factory UserAvatarData.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarDataFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, avatarUri, displayName];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatars$Query extends JsonSerializable with EquatableMixin {
+  UserAvatars$Query();
+
+  factory UserAvatars$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatars$QueryFromJson(json);
+
+  late List<UserAvatarData> userAvatars;
+
+  @override
+  List<Object?> get props => [userAvatars];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatars$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarById$Query extends JsonSerializable with EquatableMixin {
+  UserAvatarById$Query();
+
+  factory UserAvatarById$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarById$QueryFromJson(json);
+
+  late UserAvatarData userAvatarById;
+
+  @override
+  List<Object?> get props => [userAvatarById];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarById$QueryToJson(this);
 }
 
 enum UserProfileScope {
@@ -59139,4 +59190,201 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarsArguments extends JsonSerializable with EquatableMixin {
+  UserAvatarsArguments({required this.ids});
+
+  @override
+  factory UserAvatarsArguments.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarsArgumentsFromJson(json);
+
+  late List<String> ids;
+
+  @override
+  List<Object?> get props => [ids];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarsArgumentsToJson(this);
+}
+
+final USER_AVATARS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userAvatars'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'ids')),
+            type: ListTypeNode(
+                type:
+                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userAvatars'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'ids'),
+                  value: VariableNode(name: NameNode(value: 'ids')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'UserAvatarData'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserAvatarData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserAvatarsQuery
+    extends GraphQLQuery<UserAvatars$Query, UserAvatarsArguments> {
+  UserAvatarsQuery({required this.variables});
+
+  @override
+  final DocumentNode document = USER_AVATARS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userAvatars';
+
+  @override
+  final UserAvatarsArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UserAvatars$Query parse(Map<String, dynamic> json) =>
+      UserAvatars$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarByIdArguments extends JsonSerializable with EquatableMixin {
+  UserAvatarByIdArguments({required this.id});
+
+  @override
+  factory UserAvatarByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarByIdArgumentsToJson(this);
+}
+
+final USER_AVATAR_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userAvatarById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userAvatarById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'UserAvatarData'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserAvatarData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserAvatarByIdQuery
+    extends GraphQLQuery<UserAvatarById$Query, UserAvatarByIdArguments> {
+  UserAvatarByIdQuery({required this.variables});
+
+  @override
+  final DocumentNode document = USER_AVATAR_BY_ID_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userAvatarById';
+
+  @override
+  final UserAvatarByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UserAvatarById$Query parse(Map<String, dynamic> json) =>
+      UserAvatarById$Query.fromJson(json);
 }

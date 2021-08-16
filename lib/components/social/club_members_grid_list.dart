@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Displays a grid of all the users in the club.
 /// Shows tags on the owner and the admins.
@@ -31,10 +32,12 @@ class ClubMembersGridList extends StatelessWidget {
   Widget _buildPositionedAdminTag(String text) =>
       Positioned(top: 8, child: Tag(tag: text));
 
-  Widget _buildDisplayName(String name) => MyText(
-        name,
-        size: FONTSIZE.TINY,
-      );
+  Widget _buildDisplayName(String? name) => Utils.textNotNull(name)
+      ? MyText(
+          name!,
+          size: FONTSIZE.TINY,
+        )
+      : Container();
 
   @override
   Widget build(BuildContext context) {

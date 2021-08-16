@@ -12,7 +12,7 @@ UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String
+    ..displayName = json['displayName'] as String?
     ..userProfileScope = _$enumDecode(
         _$UserProfileScopeEnumMap, json['userProfileScope'],
         unknownValue: UserProfileScope.artemisUnknown)
@@ -3540,7 +3540,7 @@ UserPublicProfileSummary _$UserPublicProfileSummaryFromJson(
     ..tagline = json['tagline'] as String?
     ..townCity = json['townCity'] as String?
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String
+    ..displayName = json['displayName'] as String?
     ..numberPublicWorkouts = json['numberPublicWorkouts'] as int
     ..numberPublicPlans = json['numberPublicPlans'] as int;
 }
@@ -3591,7 +3591,7 @@ UserPublicProfile _$UserPublicProfileFromJson(Map<String, dynamic> json) {
     ..snapUrl = json['snapUrl'] as String?
     ..linkedinUrl = json['linkedinUrl'] as String?
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String
+    ..displayName = json['displayName'] as String?
     ..workouts = (json['Workouts'] as List<dynamic>)
         .map((e) => Workout.fromJson(e as Map<String, dynamic>))
         .toList()
@@ -5411,6 +5411,46 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
+UserAvatarData _$UserAvatarDataFromJson(Map<String, dynamic> json) {
+  return UserAvatarData()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..displayName = json['displayName'] as String?;
+}
+
+Map<String, dynamic> _$UserAvatarDataToJson(UserAvatarData instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'displayName': instance.displayName,
+    };
+
+UserAvatars$Query _$UserAvatars$QueryFromJson(Map<String, dynamic> json) {
+  return UserAvatars$Query()
+    ..userAvatars = (json['userAvatars'] as List<dynamic>)
+        .map((e) => UserAvatarData.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserAvatars$QueryToJson(UserAvatars$Query instance) =>
+    <String, dynamic>{
+      'userAvatars': instance.userAvatars.map((e) => e.toJson()).toList(),
+    };
+
+UserAvatarById$Query _$UserAvatarById$QueryFromJson(Map<String, dynamic> json) {
+  return UserAvatarById$Query()
+    ..userAvatarById =
+        UserAvatarData.fromJson(json['userAvatarById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UserAvatarById$QueryToJson(
+        UserAvatarById$Query instance) =>
+    <String, dynamic>{
+      'userAvatarById': instance.userAvatarById.toJson(),
+    };
+
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
   return CreateClubArguments(
     data: CreateClubInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -6975,6 +7015,31 @@ WorkoutByIdArguments _$WorkoutByIdArgumentsFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
         WorkoutByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UserAvatarsArguments _$UserAvatarsArgumentsFromJson(Map<String, dynamic> json) {
+  return UserAvatarsArguments(
+    ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
+  );
+}
+
+Map<String, dynamic> _$UserAvatarsArgumentsToJson(
+        UserAvatarsArguments instance) =>
+    <String, dynamic>{
+      'ids': instance.ids,
+    };
+
+UserAvatarByIdArguments _$UserAvatarByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserAvatarByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserAvatarByIdArgumentsToJson(
+        UserAvatarByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
     };

@@ -309,7 +309,8 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(workoutPlan.user.displayName, size: FONTSIZE.SMALL),
+              MyText(workoutPlan.user.displayName ?? 'Unnamed',
+                  size: FONTSIZE.SMALL),
               if (isOwner)
                 MyText('${workoutPlan.contentAccessScope.display} plan',
                     color: Styles.colorTwo,

@@ -240,7 +240,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 _spacer(),
                 PageLink(
                     linkText: 'Sign out',
-                    onPress: () async => await GetIt.I<AuthBloc>().signOut(),
+                    onPress: () async {
+                      _cleareCache(context);
+                      await GetIt.I<AuthBloc>().signOut();
+                    },
                     icon: Icon(CupertinoIcons.square_arrow_right))
               ],
             )),

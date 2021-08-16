@@ -9,8 +9,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class MyTabBarNav extends StatefulWidget {
   final List<String> titles;
 
-  /// Display a small icon on the top right of the tab title.
-  /// Wrap in a [Positioned].
+  /// Display a small icon on the top of the tab title.
+  /// Wrap in a [Positioned] to place.
   final List<Widget?>? superscriptIcons;
   final int activeTabIndex;
   final Function(int newIndex) handleTabChange;

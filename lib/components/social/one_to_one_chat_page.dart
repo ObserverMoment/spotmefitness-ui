@@ -9,10 +9,10 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/stream.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
-import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// A standalone page that can open up a one to one chat conversation.
@@ -32,7 +32,6 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
   late AuthedUser _authedUser;
   late chat.StreamChatClient _streamChatClient;
   late chat.Channel _channel;
-  chat.Member? _otherMember;
   String? _displayName; // Of the other person to show at the top center.
   String? _avatarUri; // Of the other person to show at the top right.
   late bool _channelReady = false;
@@ -66,12 +65,14 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
 
       await _channel.watch();
 
-      /// Need to get the displayName and avatarUri (if it exists) from the other member of the two person group chat.
-      _otherMember = _channel.state?.members.firstWhereOrNull(
-          (m) => m.userId != GetIt.I<AuthBloc>().authedUser!.id);
+      /// Call API and get UserAvatarData[]
+      final result = await context.graphQLStore
+          .networkOnlyOperation<UserAvatarById$Query, UserAvatarByIdArguments>(
+              operation: UserAvatarByIdQuery(
+                  variables: UserAvatarByIdArguments(id: widget.otherUserId)));
 
-      _displayName = _otherMember?.user?.extraData['displayName'] as String?;
-      _avatarUri = _otherMember?.user?.extraData['avatarUri'] as String?;
+      _displayName = result.data?.userAvatarById.displayName;
+      _avatarUri = result.data?.userAvatarById.avatarUri;
 
       setState(() => _channelReady = true);
     } catch (e) {
@@ -79,6 +80,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
     }
   }
 
+  // supert.dispose() before async clean up.
   // https://github.com/flutter/flutter/issues/64935
   @override
   void dispose() async {
@@ -102,7 +104,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                               child: BottomSheetMenu(
                                   header: BottomSheetMenuHeader(
                                     name: _displayName ?? 'Unnamed',
-                                    subtitle: 'Profile',
+                                    subtitle: 'Chat',
                                     imageUri: _avatarUri,
                                   ),
                                   items: [
@@ -148,9 +150,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                               usernameBuilder: (context, message) => Padding(
                                 padding: const EdgeInsets.only(left: 4.0),
                                 child: MyText(
-                                  message.user?.extraData['displayName']
-                                          as String? ??
-                                      'Unnamed',
+                                  _displayName ?? 'Unnamed',
                                   color: Styles.colorOne,
                                   size: FONTSIZE.SMALL,
                                   weight: FontWeight.bold,

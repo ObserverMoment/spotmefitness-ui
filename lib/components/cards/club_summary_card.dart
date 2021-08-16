@@ -55,7 +55,7 @@ class ClubSummaryCard extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 2.0, vertical: 4),
                           child: MyText(
-                            club.owner.displayName,
+                            club.owner.displayName ?? 'Unnamed',
                             size: FONTSIZE.SMALL,
                           ),
                         ),

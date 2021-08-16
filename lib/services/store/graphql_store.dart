@@ -728,13 +728,13 @@ class GraphQLStore {
     await _box.clear();
   }
 
-  void dispose() {
-    _httpLink.dispose();
-    _artemisClient.dispose();
+  void dispose() async {
     observableQueries.forEach((k, v) {
       v.dispose();
     });
-    _box.close();
+    _httpLink.dispose();
+    _artemisClient.dispose();
+    await _box.close();
   }
 }
 

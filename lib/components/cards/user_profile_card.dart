@@ -32,7 +32,7 @@ class UserProfileCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: MyText(
-                        profileSummary.displayName,
+                        profileSummary.displayName ?? 'Unnamed',
                         weight: FontWeight.bold,
                       ),
                     ),

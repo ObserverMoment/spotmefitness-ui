@@ -67,7 +67,8 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
   late FlatFeed _authedUserTimeline;
   late FlatFeed _otherUserFeed;
 
-  bool _isConnected = false;
+  bool _isFollowing = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -93,18 +94,19 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
         filter: [FeedId.id('user_feed:${widget.otherUserId}')]);
 
     setState(() {
-      _isConnected = feed.isNotEmpty;
+      _isFollowing = feed.isNotEmpty;
+      _isLoading = false;
     });
   }
 
   Future<void> _followOtherUser() async {
     /// Optimistic: Assume succes and revert later if not.
-    setState(() => _isConnected = true);
+    setState(() => _isFollowing = true);
     try {
       // Follow feed without copying the activities:
       await _authedUserTimeline.follow(_otherUserFeed, activityCopyLimit: 0);
     } catch (e) {
-      setState(() => _isConnected = false);
+      setState(() => _isFollowing = false);
       context.showToast(
           toastType: ToastType.destructive,
           message: 'Sorry, there was a problem, please try again');
@@ -114,13 +116,13 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
 
   Future<void> _unfollowOtherUser() async {
     /// Optimistic: Assume succes and revert later if not.
-    setState(() => _isConnected = false);
+    setState(() => _isFollowing = false);
 
     try {
       // Unfollow feed but do not purge already received activities.
       await _authedUserTimeline.unfollow(_otherUserFeed, keepHistory: true);
     } catch (e) {
-      setState(() => _isConnected = true);
+      setState(() => _isFollowing = true);
       context.showToast(
           toastType: ToastType.destructive,
           message: 'Sorry, there was a problem, please try again');
@@ -132,18 +134,24 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
         duration: kStandardAnimationDuration,
-        child: _isConnected
-            ? BorderButton(
-                text: 'Following',
-                onPressed: _unfollowOtherUser,
-                backgroundColor: Styles.infoBlue,
-                textColor: Styles.white)
-            : BorderButton(
-                prefix: Icon(
-                  CupertinoIcons.person_add,
-                  size: 15,
-                ),
-                text: 'Follow',
-                onPressed: _followOtherUser));
+        child: SizedBox(
+          width: 120,
+          height: 42,
+          child: _isLoading
+              ? Center(child: LoadingDots(size: 10))
+              : _isFollowing
+                  ? BorderButton(
+                      text: 'Following',
+                      onPressed: _unfollowOtherUser,
+                      backgroundColor: Styles.infoBlue,
+                      textColor: Styles.white)
+                  : BorderButton(
+                      prefix: Icon(
+                        CupertinoIcons.person_add,
+                        size: 15,
+                      ),
+                      text: 'Follow',
+                      onPressed: _followOtherUser),
+        ));
   }
 }

@@ -819,6 +819,8 @@ type Query {
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
   userWorkoutTags: [WorkoutTag!]!
+  userAvatars(ids: [ID!]!): [UserAvatarData!]!
+  userAvatarById(id: ID!): UserAvatarData!
   userBenchmarks: [UserBenchmark!]!
   userBenchmarkById(id: ID!): UserBenchmark!
   userBenchmarkTags: [UserBenchmarkTag!]!
@@ -1225,6 +1227,12 @@ type User {
   ProgressJournalGoalTags: [ProgressJournalGoalTag!]
 }
 
+type UserAvatarData {
+  id: ID!
+  displayName: String
+  avatarUri: String
+}
+
 type UserBenchmark {
   id: String!
   createdAt: DateTime!
@@ -1273,7 +1281,7 @@ type UserPublicProfile {
   snapUrl: String
   linkedinUrl: String
   countryCode: String
-  displayName: String!
+  displayName: String
   Workouts: [Workout!]!
   WorkoutPlans: [WorkoutPlan!]!
 }
@@ -1284,14 +1292,14 @@ type UserPublicProfileSummary {
   tagline: String
   townCity: String
   countryCode: String
-  displayName: String!
+  displayName: String
   numberPublicWorkouts: Int!
   numberPublicPlans: Int!
 }
 
 type UserSummary {
   id: ID!
-  displayName: String!
+  displayName: String
   avatarUri: String
   userProfileScope: UserProfileScope!
   tagline: String

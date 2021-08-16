@@ -212,3 +212,92 @@ class ShimmerDetailsPage extends StatelessWidget {
         ));
   }
 }
+
+class ShimmerChatChannelPreviewList extends StatelessWidget {
+  final int itemCount;
+  ShimmerChatChannelPreviewList({
+    this.itemCount = 20,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = context.theme.primary.withOpacity(0.4);
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: itemCount,
+          itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Shimmer.fromColors(
+                  baseColor: context.theme.cardBackground,
+                  highlightColor: primary,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    height: 66,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: primary,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints.tightFor(
+                            height: 44,
+                            width: 44,
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: primary,
+                                  borderRadius: BorderRadius.circular(11),
+                                ),
+                                constraints: const BoxConstraints.tightFor(
+                                  height: 14,
+                                  width: 90,
+                                ),
+                              ),
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: primary,
+                                      borderRadius: BorderRadius.circular(11),
+                                    ),
+                                    constraints: const BoxConstraints.expand(
+                                      height: 14,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: primary,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints.tightFor(
+                            height: 22,
+                            width: 22,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )),
+    );
+  }
+}

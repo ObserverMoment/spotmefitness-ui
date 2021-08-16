@@ -27,8 +27,10 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
       );
 
   feed.StreamFeedClient get _createStreamFeedClient =>
-      feed.StreamFeedClient.connect(EnvironmentConfig.getStreamPublicKey,
-          token: feed.Token(GetIt.I<AuthBloc>().authedUser!.streamFeedToken));
+      feed.StreamFeedClient.connect(
+        EnvironmentConfig.getStreamPublicKey,
+        token: feed.Token(GetIt.I<AuthBloc>().authedUser!.streamFeedToken),
+      );
 
   @override
   Widget build(BuildContext context) {

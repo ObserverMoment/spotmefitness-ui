@@ -34,7 +34,7 @@ class WorkoutPlanReviewCard extends StatelessWidget {
                     SizedBox(
                       width: 10,
                     ),
-                    MyText(review.user.displayName),
+                    MyText(review.user.displayName ?? 'Unamed'),
                   ],
                 ),
                 Row(
