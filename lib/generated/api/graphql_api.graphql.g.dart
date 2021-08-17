@@ -5451,6 +5451,69 @@ Map<String, dynamic> _$UserAvatarById$QueryToJson(
       'userAvatarById': instance.userAvatarById.toJson(),
     };
 
+TimelinePostData _$TimelinePostDataFromJson(Map<String, dynamic> json) {
+  return TimelinePostData()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..type = _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
+        unknownValue: TimelinePostType.artemisUnknown)
+    ..title = json['title'] as String
+    ..audioUri = json['audioUri'] as String?
+    ..imageUri = json['imageUri'] as String?
+    ..videoUri = json['videoUri'] as String?
+    ..videoThumbUri = json['videoThumbUri'] as String?;
+}
+
+Map<String, dynamic> _$TimelinePostDataToJson(TimelinePostData instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'type': _$TimelinePostTypeEnumMap[instance.type],
+      'title': instance.title,
+      'audioUri': instance.audioUri,
+      'imageUri': instance.imageUri,
+      'videoUri': instance.videoUri,
+      'videoThumbUri': instance.videoThumbUri,
+    };
+
+const _$TimelinePostTypeEnumMap = {
+  TimelinePostType.workout: 'WORKOUT',
+  TimelinePostType.workoutplan: 'WORKOUTPLAN',
+  TimelinePostType.userprofile: 'USERPROFILE',
+  TimelinePostType.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+TimelinePostsData$Query _$TimelinePostsData$QueryFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostsData$Query()
+    ..timelinePostsData = (json['timelinePostsData'] as List<dynamic>)
+        .map((e) => TimelinePostData.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$TimelinePostsData$QueryToJson(
+        TimelinePostsData$Query instance) =>
+    <String, dynamic>{
+      'timelinePostsData':
+          instance.timelinePostsData.map((e) => e.toJson()).toList(),
+    };
+
+TimelinePostDataRequestInput _$TimelinePostDataRequestInputFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostDataRequestInput(
+    id: json['id'] as String,
+    type: _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
+        unknownValue: TimelinePostType.artemisUnknown),
+  );
+}
+
+Map<String, dynamic> _$TimelinePostDataRequestInputToJson(
+        TimelinePostDataRequestInput instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'type': _$TimelinePostTypeEnumMap[instance.type],
+    };
+
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
   return CreateClubArguments(
     data: CreateClubInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -7042,4 +7105,20 @@ Map<String, dynamic> _$UserAvatarByIdArgumentsToJson(
         UserAvatarByIdArguments instance) =>
     <String, dynamic>{
       'id': instance.id,
+    };
+
+TimelinePostsDataArguments _$TimelinePostsDataArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostsDataArguments(
+    posts: (json['posts'] as List<dynamic>)
+        .map((e) =>
+            TimelinePostDataRequestInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$TimelinePostsDataArgumentsToJson(
+        TimelinePostsDataArguments instance) =>
+    <String, dynamic>{
+      'posts': instance.posts.map((e) => e.toJson()).toList(),
     };

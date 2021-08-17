@@ -1,18 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Chat and Feeds service from getStream.io
 abstract class StreamService {
@@ -44,6 +48,68 @@ abstract class StreamService {
           subtitle: GoogleFonts.sourceSansPro(),
         ),
       ),
+    );
+  }
+}
+
+/// Chat bubble icon that can be used anywhere in the app.
+/// Displays an unread messages icon at top right (if there are unread messages).
+/// Requires [context.streamChatClient] via Provider + context_extensions
+/// Ontap open up the chats overview page.
+class ChatsIconButton extends StatefulWidget {
+  const ChatsIconButton({Key? key}) : super(key: key);
+
+  @override
+  _ChatsIconButtonState createState() => _ChatsIconButtonState();
+}
+
+class _ChatsIconButtonState extends State<ChatsIconButton> {
+  int _unreadCount = 0;
+  late StreamSubscription _subscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _unreadCount = context.streamChatClient.state.currentUser!.totalUnreadCount;
+
+    /// Setup the listener for changes to the unread count.
+    /// https://getstream.io/chat/docs/flutter-dart/unread/?language=dart&q=unread
+    _subscription = context.streamChatClient
+        .on()
+        .where((Event event) => event.totalUnreadCount != null)
+        .listen((Event event) {
+      setState(() => _unreadCount = event.totalUnreadCount!);
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CupertinoButton(
+            padding: const EdgeInsets.symmetric(horizontal: 13),
+            onPressed: () => context.pushRoute(ChatsOverviewRoute()),
+            child: Icon(CupertinoIcons.chat_bubble)),
+        if (_unreadCount > 0)
+          Positioned(
+            top: 4,
+            right: 8,
+            child: SizeFadeIn(
+                key: Key(_unreadCount.toString()),
+                child: Dot(
+                  diameter: 14,
+                  border: Border.all(color: context.theme.background, width: 2),
+                  color: Styles.peachRed,
+                )),
+          ),
+      ],
     );
   }
 }

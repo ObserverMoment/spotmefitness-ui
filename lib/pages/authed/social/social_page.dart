@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_and_f
 import 'package:spotmefitness_ui/components/social/horizontal_clubs_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/stream.dart';
 
 class SocialPage extends StatelessWidget {
   Widget _buildNavBarButton(IconData iconData, onPressed) => CupertinoButton(
@@ -20,8 +21,7 @@ class SocialPage extends StatelessWidget {
         trailing: NavBarTrailingRow(children: [
           _buildNavBarButton(CupertinoIcons.bell,
               () => print('navigate to notifications page')),
-          _buildNavBarButton(CupertinoIcons.chat_bubble_text,
-              () => context.pushRoute(ChatsOverviewRoute())),
+          ChatsIconButton(),
           _buildNavBarButton(CupertinoIcons.person_add,
               () => context.navigateTo(DiscoverPeopleRoute())),
         ]),

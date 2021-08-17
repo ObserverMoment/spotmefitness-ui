@@ -315,7 +315,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                       print('request invite flow')),
                             BottomSheetMenuItem(
                                 text: 'Share',
-                                icon: Icon(CupertinoIcons.share),
+                                icon: Icon(CupertinoIcons.paperplane),
                                 onPressed: () => print('share club flow')),
                             if (userIsMember && !userIsOwner)
                               BottomSheetMenuItem(

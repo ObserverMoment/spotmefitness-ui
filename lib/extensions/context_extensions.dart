@@ -31,6 +31,10 @@ extension BuildContextExtension on BuildContext {
     return read<StreamChatClient>();
   }
 
+  OwnUser get streamChatUser {
+    return read<OwnUser>();
+  }
+
   GraphQLStore get graphQLStore => read<GraphQLStore>();
 
   Future<T?> openBlurModalPopup<T>(Widget child,
@@ -327,16 +331,16 @@ extension BuildContextExtension on BuildContext {
   }) =>
       Flushbar(
         backgroundColor: toastType == ToastType.destructive
-            ? Styles.errorRed
+            ? Styles.errorRed.withOpacity(0.99)
             : toastType == ToastType.success
-                ? Styles.infoBlue
-                : CupertinoColors.darkBackgroundGray,
+                ? Styles.infoBlue.withOpacity(0.99)
+                : CupertinoColors.darkBackgroundGray.withOpacity(0.99),
         icon: icon,
         maxWidth: 400,
         flushbarPosition: flushbarPosition,
         animationDuration: Duration(milliseconds: 300),
-        borderRadius: BorderRadius.circular(20),
-        margin: const EdgeInsets.only(bottom: 8, left: 18, right: 18),
+        borderRadius: BorderRadius.circular(6),
+        margin: const EdgeInsets.only(left: 18, right: 18),
         messageText: MyText(message,
             color: Styles.white,
             weight: FontWeight.bold,

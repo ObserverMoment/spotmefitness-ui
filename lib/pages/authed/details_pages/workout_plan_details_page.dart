@@ -392,7 +392,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                           userId: workoutPlan.user.id))),
                             BottomSheetMenuItem(
                                 text: 'Share',
-                                icon: Icon(CupertinoIcons.share),
+                                icon: Icon(CupertinoIcons.paperplane),
                                 onPressed: () =>
                                     _shareWorkoutPlan(workoutPlan)),
                             if (isOwner)

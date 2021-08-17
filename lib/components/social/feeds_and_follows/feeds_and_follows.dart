@@ -11,10 +11,13 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Maintains subscriptions
 class FeedsAndFollows extends StatefulWidget {
@@ -34,7 +37,8 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
   /// Timeline - activities from feeds the users timeline is following.
   late FlatFeed _timeline;
   bool _timelineLoading = true;
-  List<Activity> _timelineActivities = <Activity>[];
+  List<ActivityWithObjectData> _timelineActivitiesWithObjectData =
+      <ActivityWithObjectData>[];
 
   /// List of feeds [user_feeds] which are being followed by this [user_timeline]
   List<FollowWithUserAvatarData> _following = <FollowWithUserAvatarData>[];
@@ -42,23 +46,20 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
   /// Feed - posts the user has made themselves.
   late FlatFeed _feed;
   bool _feedLoading = true;
-  List<Activity> _feedActivities = <Activity>[];
+  List<ActivityWithObjectData> _feedActivitiesWithObjectData =
+      <ActivityWithObjectData>[];
 
   /// List of followers [user_timelines] which are following this [user_feed]
   List<FollowWithUserAvatarData> _followers = <FollowWithUserAvatarData>[];
 
   void _addTest() async {
-    print('------------------------------');
-    print('------------------------------');
-    print('------------------------------');
-    print('------------------------------');
-    print('_streamFeedClient.currentUser');
-    print(_streamFeedClient.currentUser!.profile());
     await _feed.addActivity(Activity(
-        //
         actor: _streamFeedClient.currentUser!.ref,
         verb: 'post',
-        object: 'Article:${DateTime.now().millisecondsSinceEpoch}'));
+        object: 'Workout:b2879c8b-a679-44f8-a1ec-28abd9de79e6',
+        extraData: {
+          'caption': 'Check out this mad workout!',
+        }));
     _refreshFeed();
   }
 
@@ -83,10 +84,10 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
 
   Future<void> _loadInitialData() async {
     try {
-      _timelineActivities = await _timeline.getActivities();
+      await _getTimelinePosts();
       await _getFollowing();
 
-      _feedActivities = await _feed.getActivities();
+      await _getFeedPosts();
       await _getFollowers();
     } catch (e) {
       print(e.toString());
@@ -101,8 +102,59 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
     }
   }
 
-  Future<void> _getTimeline() async {}
-  Future<void> _getFeed() async {}
+  Future<void> _getTimelinePosts() async {
+    final timelineActivities = await _timeline.getActivities();
+
+    final List<TimelinePostDataRequestInput> objectIdsWithType =
+        timelineActivities.map((a) {
+      if (a.object == null) {
+        throw Exception('Error: Activity.object should never be null.');
+      }
+      final idAndType = a.object!.split(':');
+      return TimelinePostDataRequestInput(
+          id: idAndType[1], type: idAndType[0].toTimelinePostType());
+    }).toList();
+
+    /// Call API and get TimelinePostData[] (object data referenced by each post)
+    final result = await context.graphQLStore.networkOnlyOperation<
+            TimelinePostsData$Query, TimelinePostsDataArguments>(
+        operation: TimelinePostsDataQuery(
+            variables: TimelinePostsDataArguments(posts: objectIdsWithType)));
+
+    _timelineActivitiesWithObjectData = timelineActivities
+        .mapIndexed((i, activity) => ActivityWithObjectData(
+            activity,
+            result.data?.timelinePostsData
+                .firstWhereOrNull((p) => p.id == objectIdsWithType[i].id)))
+        .toList();
+  }
+
+  Future<void> _getFeedPosts() async {
+    final feedActivities = await _feed.getActivities();
+
+    final List<TimelinePostDataRequestInput> objectIdsWithType =
+        feedActivities.map((a) {
+      if (a.object == null) {
+        throw Exception('Error: Activity.object should never be null.');
+      }
+      final idAndType = a.object!.split(':');
+      return TimelinePostDataRequestInput(
+          id: idAndType[1], type: idAndType[0].toTimelinePostType());
+    }).toList();
+
+    /// Call API and get TimelinePostData[] (object data referenced by each post)
+    final result = await context.graphQLStore.networkOnlyOperation<
+            TimelinePostsData$Query, TimelinePostsDataArguments>(
+        operation: TimelinePostsDataQuery(
+            variables: TimelinePostsDataArguments(posts: objectIdsWithType)));
+
+    _feedActivitiesWithObjectData = feedActivities
+        .mapIndexed((i, activity) => ActivityWithObjectData(
+            activity,
+            result.data?.timelinePostsData
+                .firstWhereOrNull((p) => p.id == objectIdsWithType[i].id)))
+        .toList();
+  }
 
   Future<void> _getFollowing() async {
     final timelineFollowing = await _timeline.following();
@@ -146,7 +198,7 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
   /// Timeline and following
   Future<void> _refreshTimeline() async {
     try {
-      _timelineActivities = await _timeline.getActivities();
+      await _getTimelinePosts();
       await _getFollowing();
       setState(() {});
     } catch (e) {
@@ -161,7 +213,7 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
   /// Also called after user has added a new post to their feed so that update is immediate.
   Future<void> _refreshFeed() async {
     try {
-      _feedActivities = await _feed.getActivities();
+      await _getFeedPosts();
       await _getFollowers();
       setState(() {});
     } catch (e) {
@@ -215,8 +267,8 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
           ], superscriptIcons: [
             null,
             null,
-            _buildFollowCount(_followers.length),
-            _buildFollowCount(_following.length),
+            _followers.isNotEmpty ? _buildFollowCount(_followers.length) : null,
+            _following.isNotEmpty ? _buildFollowCount(_following.length) : null,
           ], handleTabChange: _changeTab, activeTabIndex: _activeTabIndex),
           SizedBox(height: 8),
           Expanded(
@@ -225,12 +277,12 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
               physics: NeverScrollableScrollPhysics(),
               children: [
                 AuthedUserTimeline(
-                  activities: _timelineActivities,
+                  activitiesWithObjectData: _timelineActivitiesWithObjectData,
                   isLoading: _timelineLoading,
                   refreshData: _refreshTimeline,
                 ),
                 AuthedUserFeed(
-                  activities: _feedActivities,
+                  activitiesWithObjectData: _feedActivitiesWithObjectData,
                   isLoading: _feedLoading,
                   refreshData: _refreshFeed,
                 ),
@@ -251,6 +303,12 @@ class _FeedsAndFollowsState extends State<FeedsAndFollows> {
       ),
     );
   }
+}
+
+class ActivityWithObjectData {
+  final Activity activity;
+  final TimelinePostData? objectData;
+  const ActivityWithObjectData(this.activity, this.objectData);
 }
 
 class FollowWithUserAvatarData {

@@ -1,0 +1,5 @@
+query timelinePostsData($posts: [TimelinePostDataRequestInput!]!) {
+  timelinePostsData(posts: $posts) {
+    ...TimelinePostData
+  }
+}

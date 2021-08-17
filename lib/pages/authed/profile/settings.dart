@@ -27,11 +27,14 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _loading = false;
   Widget _spacer() => SizedBox(height: 10);
 
-  Future<void> _cleareCache(BuildContext context) async {
+  /// Don't show toast when clearing cache before signing out - only when just clearing cache.
+  Future<void> _cleareCache(BuildContext context, bool showToast) async {
     setState(() => _loading = true);
     await context.graphQLStore.clear();
     setState(() => _loading = false);
-    context.showToast(message: 'Cache cleared.');
+    if (showToast) {
+      context.showToast(message: 'Cache cleared.');
+    }
   }
 
   Future<void> _updateUserProfileScope(
@@ -99,7 +102,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: <ThemeName, Widget>{
                             ThemeName.dark: Icon(
                               CupertinoIcons.moon_fill,
-                              color: CupertinoColors.white,
+                              color: context.theme.primary,
                             ),
                             ThemeName.light: Icon(
                               CupertinoIcons.sun_max_fill,
@@ -193,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 PageLink(
                   linkText: 'Clear cache',
-                  onPress: () => _cleareCache(context),
+                  onPress: () => _cleareCache(context, true),
                   icon: Icon(Icons.cached_rounded),
                   loading: _loading,
                 ),
@@ -241,7 +244,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 PageLink(
                     linkText: 'Sign out',
                     onPress: () async {
-                      _cleareCache(context);
+                      _cleareCache(context, false);
                       await GetIt.I<AuthBloc>().signOut();
                     },
                     icon: Icon(CupertinoIcons.square_arrow_right))

@@ -223,7 +223,8 @@ class LinearProgressIndicator extends StatelessWidget {
 class Dot extends StatelessWidget {
   final Color? color;
   final double diameter;
-  Dot({this.color, required this.diameter});
+  final Border? border;
+  const Dot({this.color, required this.diameter, this.border});
 
   @override
   Widget build(BuildContext context) {
@@ -231,6 +232,7 @@ class Dot extends StatelessWidget {
       width: diameter,
       height: diameter,
       decoration: BoxDecoration(
+        border: border,
         shape: BoxShape.circle,
         color: color ?? context.theme.primary,
       ),

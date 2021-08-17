@@ -55,3 +55,14 @@ fragment ScheduledWorkout on ScheduledWorkout {
   note
   workoutPlanEnrolmentId
 }
+
+fragment TimelinePostData on TimelinePostData {
+  __typename
+  id
+  type
+  title
+  audioUri
+  imageUri
+  videoUri
+  videoThumbUri
+}

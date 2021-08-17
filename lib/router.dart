@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
+import 'package:spotmefitness_ui/components/creators/post_creator.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';
@@ -160,6 +161,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
           AutoRoute(
               path: 'create-personal-best', page: PersonalBestCreatorPage),
+          AutoRoute(path: 'create-post', page: PostCreatorPage),
           AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
           AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
           AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),

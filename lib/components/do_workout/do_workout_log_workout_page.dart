@@ -200,7 +200,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
             ),
             PrimaryButton(
                 prefix: Icon(
-                  CupertinoIcons.share,
+                  CupertinoIcons.paperplane,
                   color: context.theme.background,
                   size: 20,
                 ),

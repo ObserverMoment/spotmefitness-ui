@@ -175,7 +175,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                             items: [
                           BottomSheetMenuItem(
                               text: 'Share',
-                              icon: Icon(CupertinoIcons.share),
+                              icon: Icon(CupertinoIcons.paperplane),
                               onPressed: () =>
                                   SharingAndLinking.shareImageRenderOfWidget(
                                       padding: const EdgeInsets.all(16),

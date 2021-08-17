@@ -145,7 +145,7 @@ class _UserPublicProfileDetailsPageState
                           items: [
                         BottomSheetMenuItem(
                             text: 'Share',
-                            icon: Icon(CupertinoIcons.share),
+                            icon: Icon(CupertinoIcons.paperplane),
                             onPressed: () =>
                                 _shareUserProfile(userPublicProfile)),
                         BottomSheetMenuItem(

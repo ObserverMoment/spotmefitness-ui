@@ -49,13 +49,6 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
 
   Future<void> _initGetStreamChat() async {
     try {
-      if (_streamChatClient.state.currentUser == null) {
-        await _streamChatClient.connectUser(
-          chat.User(id: _authedUser.id),
-          _authedUser.streamChatToken,
-        );
-      }
-
       /// Create / watch a channel consisting of the authed user and the 'other user.
       /// This type of channel is always just these two users. More users cannot be added.
       _channel = _streamChatClient.channel(kChannelType, extraData: {
@@ -77,16 +70,12 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
       setState(() => _channelReady = true);
     } catch (e) {
       print(e);
+      context.showToast(message: 'There was a problem setting up chat!');
     }
   }
 
-  // supert.dispose() before async clean up.
-  // https://github.com/flutter/flutter/issues/64935
-  @override
-  void dispose() async {
+  void dispose() {
     super.dispose();
-    _channel.dispose();
-    await _streamChatClient.disconnectUser();
   }
 
   @override

@@ -131,7 +131,7 @@ class ClubCreatorMembers extends StatelessWidget {
                             Row(
                               children: [
                                 _buildTokenRowButton(
-                                    CupertinoIcons.share,
+                                    CupertinoIcons.paperplane,
                                     () => SharingAndLinking.shareClubInviteLink(
                                         token.id)),
                                 _buildTokenRowButton(

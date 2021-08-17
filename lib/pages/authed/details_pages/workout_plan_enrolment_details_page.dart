@@ -275,7 +275,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                             onPressed: () => _updateStartDate(enrolment)),
                         BottomSheetMenuItem(
                             text: 'Share plan',
-                            icon: Icon(CupertinoIcons.share),
+                            icon: Icon(CupertinoIcons.paperplane),
                             onPressed: () =>
                                 _shareWorkoutPlan(enrolment.workoutPlan)),
                         BottomSheetMenuItem(

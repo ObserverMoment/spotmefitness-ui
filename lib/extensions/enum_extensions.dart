@@ -7,6 +7,27 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
+//// String to enum parser ////
+// https://stackoverflow.com/questions/27673781/enum-from-string
+extension EnumParser on String {
+  TimelinePostType toTimelinePostType() {
+    return TimelinePostType.values.firstWhere(
+        (e) =>
+            e.toString().toLowerCase() ==
+            'TimelinePostType.$this'.toLowerCase(), orElse: () {
+      throw Exception('$this is not a valid TimelinePostType');
+    });
+  }
+
+  DifficultyLevel toDifficultyLevel() {
+    return DifficultyLevel.values.firstWhere(
+        (v) =>
+            v.toString().toLowerCase() == 'DifficultyLevel.$this'.toLowerCase(),
+        orElse: () => DifficultyLevel.artemisUnknown);
+  }
+}
+
+//// Enum type extensions ////
 extension BenchmarkTypeExtension on BenchmarkType {
   String get apiValue => describeEnum(this).toUpperCase();
 
@@ -109,15 +130,6 @@ extension DifficultyLevelExtension on DifficultyLevel {
         throw new Exception(
             'This is not a valid DifficultyLevel numeric value: $value');
     }
-  }
-}
-
-extension EnumParser on String {
-  DifficultyLevel toDifficultyLevel() {
-    return DifficultyLevel.values.firstWhere(
-        (v) =>
-            v.toString().toLowerCase() == 'DifficultyLevel.$this'.toLowerCase(),
-        orElse: () => DifficultyLevel.artemisUnknown);
   }
 }
 

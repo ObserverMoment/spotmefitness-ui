@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_and_follows.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Followers of the currently logged in User.
 /// i.e Details of other users [user_timelines] which are following this users [user_feed]
@@ -22,6 +23,9 @@ class AuthedUserFollowers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    followers.forEach((element) {
+      print(element.userAvatarData?.toJson());
+    });
     return RefreshIndicator(
       strokeWidth: 1,
       backgroundColor: context.theme.cardBackground,
@@ -44,10 +48,19 @@ class AuthedUserFollowers extends StatelessWidget {
                     )
                   ],
                 )
-              : ListView.builder(
+              : GridView.count(
+                  padding: const EdgeInsets.all(8),
+                  childAspectRatio: 0.6,
                   shrinkWrap: true,
-                  itemCount: followers.length,
-                  itemBuilder: (c, i) => _UserFollower(follower: followers[i])),
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  children: followers
+                      .map((f) => _UserFollower(
+                            follower: f,
+                          ))
+                      .toList(),
+                ),
     );
   }
 }
@@ -63,14 +76,17 @@ class _UserFollower extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         UserAvatar(
-          size: 70,
+          size: 80,
           border: true,
           borderWidth: 1,
+          avatarUri: follower.userAvatarData?.avatarUri,
         ),
         Padding(
           padding: const EdgeInsets.all(6.0),
           child: MyText(
-            'Name',
+            Utils.textNotNull(follower.userAvatarData?.displayName)
+                ? follower.userAvatarData!.displayName!
+                : 'Unnamed',
             size: FONTSIZE.TINY,
           ),
         ),

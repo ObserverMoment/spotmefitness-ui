@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/components/timers/stopwatch_and_timer.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/stream.dart';
 
 class HomePage extends StatelessWidget {
   Widget _buildNavBarButton(IconData iconData, onPressed) => CupertinoButton(
@@ -24,8 +25,7 @@ class HomePage extends StatelessWidget {
         trailing: NavBarTrailingRow(children: [
           _buildNavBarButton(CupertinoIcons.bell,
               () => print('navigate to notifications page')),
-          _buildNavBarButton(CupertinoIcons.chat_bubble_text,
-              () => context.pushRoute(ChatsOverviewRoute())),
+          ChatsIconButton(),
           _buildNavBarButton(
               CupertinoIcons.timer,
               () => context.push(
@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
           _buildNavBarButton(
             CupertinoIcons.calendar,
             () => context.navigateTo(YourScheduleRoute()),
-          )
+          ),
         ]),
       ),
       child: ListView(

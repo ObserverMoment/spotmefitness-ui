@@ -566,6 +566,18 @@ mixin UserAvatarDataMixin {
   String? avatarUri;
   String? displayName;
 }
+mixin TimelinePostDataMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
+  late TimelinePostType type;
+  late String title;
+  String? audioUri;
+  String? imageUri;
+  String? videoUri;
+  String? videoThumbUri;
+}
 
 @JsonSerializable(explicitToJson: true)
 class UserSummary extends JsonSerializable
@@ -6778,6 +6790,63 @@ class UserAvatarById$Query extends JsonSerializable with EquatableMixin {
   Map<String, dynamic> toJson() => _$UserAvatarById$QueryToJson(this);
 }
 
+@JsonSerializable(explicitToJson: true)
+class TimelinePostData extends JsonSerializable
+    with EquatableMixin, TimelinePostDataMixin {
+  TimelinePostData();
+
+  factory TimelinePostData.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        type,
+        title,
+        audioUri,
+        imageUri,
+        videoUri,
+        videoThumbUri
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostsData$Query extends JsonSerializable with EquatableMixin {
+  TimelinePostsData$Query();
+
+  factory TimelinePostsData$Query.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostsData$QueryFromJson(json);
+
+  late List<TimelinePostData> timelinePostsData;
+
+  @override
+  List<Object?> get props => [timelinePostsData];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostsData$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostDataRequestInput extends JsonSerializable
+    with EquatableMixin {
+  TimelinePostDataRequestInput({required this.id, required this.type});
+
+  factory TimelinePostDataRequestInput.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataRequestInputFromJson(json);
+
+  late String id;
+
+  @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
+  late TimelinePostType type;
+
+  @override
+  List<Object?> get props => [id, type];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataRequestInputToJson(this);
+}
+
 enum UserProfileScope {
   @JsonValue('PRIVATE')
   private,
@@ -6923,6 +6992,16 @@ enum BenchmarkType {
   unbrokenreps,
   @JsonValue('UNBROKENTIME')
   unbrokentime,
+  @JsonValue('ARTEMIS_UNKNOWN')
+  artemisUnknown,
+}
+enum TimelinePostType {
+  @JsonValue('WORKOUT')
+  workout,
+  @JsonValue('WORKOUTPLAN')
+  workoutplan,
+  @JsonValue('USERPROFILE')
+  userprofile,
   @JsonValue('ARTEMIS_UNKNOWN')
   artemisUnknown,
 }
@@ -59387,4 +59466,129 @@ class UserAvatarByIdQuery
   @override
   UserAvatarById$Query parse(Map<String, dynamic> json) =>
       UserAvatarById$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostsDataArguments extends JsonSerializable with EquatableMixin {
+  TimelinePostsDataArguments({required this.posts});
+
+  @override
+  factory TimelinePostsDataArguments.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostsDataArgumentsFromJson(json);
+
+  late List<TimelinePostDataRequestInput> posts;
+
+  @override
+  List<Object?> get props => [posts];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostsDataArgumentsToJson(this);
+}
+
+final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'timelinePostsData'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'posts')),
+            type: ListTypeNode(
+                type: NamedTypeNode(
+                    name: NameNode(value: 'TimelinePostDataRequestInput'),
+                    isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'timelinePostsData'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'posts'),
+                  value: VariableNode(name: NameNode(value: 'posts')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'TimelinePostData'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'type'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'title'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'audioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'imageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'videoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'videoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class TimelinePostsDataQuery
+    extends GraphQLQuery<TimelinePostsData$Query, TimelinePostsDataArguments> {
+  TimelinePostsDataQuery({required this.variables});
+
+  @override
+  final DocumentNode document = TIMELINE_POSTS_DATA_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'timelinePostsData';
+
+  @override
+  final TimelinePostsDataArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  TimelinePostsData$Query parse(Map<String, dynamic> json) =>
+      TimelinePostsData$Query.fromJson(json);
 }

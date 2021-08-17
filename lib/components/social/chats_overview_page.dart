@@ -25,9 +25,7 @@ class ChatsOverviewPage extends StatefulWidget {
 }
 
 class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
-  late AuthedUser _authedUser;
   late chat.StreamChatClient _streamChatClient;
-  chat.OwnUser? _streamUser;
 
   /// 0 = Clubs. 1 = Friends.
   int _tabIndex = 0;
@@ -36,22 +34,7 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
   @override
   void initState() {
     super.initState();
-    _authedUser = GetIt.I<AuthBloc>().authedUser!;
     _streamChatClient = context.streamChatClient;
-
-    _initGetStreamChat();
-  }
-
-  Future<void> _initGetStreamChat() async {
-    try {
-      _streamUser = await _streamChatClient.connectUser(
-        chat.User(id: _authedUser.id),
-        _authedUser.streamChatToken,
-      );
-    } catch (e) {
-      print(e);
-    }
-    setState(() {});
   }
 
   void _updateTabIndex(int index) {
@@ -60,10 +43,9 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
   }
 
   @override
-  void dispose() async {
-    super.dispose();
+  void dispose() {
     _pageController.dispose();
-    await _streamChatClient.disconnectUser();
+    super.dispose();
   }
 
   @override
@@ -84,7 +66,7 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
                   children: {0: MyText('Friends'), 1: MyText('Clubs')}),
             ),
           ),
-          _streamUser == null
+          _streamChatClient.state.currentUser == null
               ? Expanded(child: ShimmerChatChannelPreviewList())
               : Flexible(
                   child: PageView(
@@ -93,7 +75,6 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
                     children: [
                       FriendChatsChannelList(
                         streamChatClient: _streamChatClient,
-                        streamUser: _streamUser!,
                       ),
                       Center(
                         child: MyHeaderText(
@@ -112,16 +93,17 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
 
 class FriendChatsChannelList extends StatefulWidget {
   final chat.StreamChatClient streamChatClient;
-  final chat.OwnUser streamUser;
-  const FriendChatsChannelList(
-      {Key? key, required this.streamChatClient, required this.streamUser})
+  // final chat.OwnUser streamUser;
+  const FriendChatsChannelList({Key? key, required this.streamChatClient})
       : super(key: key);
 
   @override
   _FriendChatsChannelListState createState() => _FriendChatsChannelListState();
 }
 
-class _FriendChatsChannelListState extends State<FriendChatsChannelList> {
+// https://stackoverflow.com/questions/45944777/losing-widget-state-when-switching-pages-in-a-flutter-pageview
+class _FriendChatsChannelListState extends State<FriendChatsChannelList>
+    with AutomaticKeepAliveClientMixin<FriendChatsChannelList> {
   late Stream<List<chat.Channel>> _channelStream;
   late StreamSubscription _channelSubscriber;
 
@@ -132,10 +114,12 @@ class _FriendChatsChannelListState extends State<FriendChatsChannelList> {
   @override
   void initState() {
     super.initState();
+
     _channelStream = widget.streamChatClient.queryChannels(
         filter: chat.Filter.and([
           chat.Filter.equal('type', 'messaging'),
-          chat.Filter.in_('members', [widget.streamUser.id]),
+          chat.Filter.in_(
+              'members', [widget.streamChatClient.state.currentUser!.id]),
         ]),
         sort: const [chat.SortOption('last_message_at')]);
 
@@ -179,6 +163,8 @@ class _FriendChatsChannelListState extends State<FriendChatsChannelList> {
 
   @override
   Widget build(BuildContext context) {
+    /// Necessary for [AutomaticKeepAliveClientMixin]
+    super.build(context);
     return _loadingUserData
         ? ShimmerChatChannelPreviewList()
         : ListView.builder(
@@ -187,6 +173,10 @@ class _FriendChatsChannelListState extends State<FriendChatsChannelList> {
                   channelWithUserData: _channelsWithUserData[i],
                 ));
   }
+
+  @override
+  // https://stackoverflow.com/questions/45944777/losing-widget-state-when-switching-pages-in-a-flutter-pageview
+  bool get wantKeepAlive => true;
 }
 
 class FriendChannelPreviewTile extends StatelessWidget {
@@ -251,16 +241,14 @@ class FriendChannelPreviewTile extends StatelessWidget {
                       child: Center(
                         child: unreadCount > 0
                             ? SizedBox(
-                                width: 20,
+                                width: 21,
                                 child: CircularBox(
                                     color: Styles.infoBlue,
                                     child: Center(
                                       child: MyText(
                                         unreadCount.toString(),
                                         color: Styles.white,
-                                        size: FONTSIZE.TINY,
-                                        lineHeight: 1.3,
-                                        weight: FontWeight.bold,
+                                        size: FONTSIZE.SMALL,
                                       ),
                                     )),
                               )

@@ -420,7 +420,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 ContentAccessScope.public)
                               BottomSheetMenuItem(
                                   text: 'Share',
-                                  icon: Icon(CupertinoIcons.share),
+                                  icon: Icon(CupertinoIcons.paperplane),
                                   onPressed: () => _shareWorkout(workout)),
                             if (isOwner)
                               BottomSheetMenuItem(
