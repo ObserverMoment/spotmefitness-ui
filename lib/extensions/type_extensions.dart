@@ -36,6 +36,12 @@ extension DateTimeFormatting on DateTime {
   String get minimalDateString => DateFormat('MMM d').format(this);
   String get dateAndTime => '${minimalDateString}, ${timeString}';
 
+  String get daysAgo => this.isToday
+      ? 'Today'
+      : this.isYesterday
+          ? 'Yesterday'
+          : '${DateTime.now().difference(this).inDays} days ago';
+
   bool get isYesterday {
     final yesterday = DateTime.now().subtract(Duration(days: 1));
     return yesterday.day == this.day &&

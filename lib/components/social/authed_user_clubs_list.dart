@@ -15,48 +15,52 @@ class AuthedUserClubsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final query = UserClubsQuery();
-    return QueryObserver<UserClubs$Query, json.JsonSerializable>(
-        key: Key('SocialPage.AuthedUserClubsList - ${query.operationName}'),
-        query: query,
-        loadingIndicator: ShimmerCardList(
-          itemCount: 10,
-          cardHeight: 240.0,
-        ),
-        builder: (data) {
-          final clubs = data.userClubs;
+    return StackAndFloatingButton(
+      onPressed: () => context.navigateTo(ClubCreatorRoute()),
+      buttonText: 'Club',
+      child: QueryObserver<UserClubs$Query, json.JsonSerializable>(
+          key: Key('SocialPage.AuthedUserClubsList - ${query.operationName}'),
+          query: query,
+          loadingIndicator: ShimmerCardList(
+            itemCount: 10,
+            cardHeight: 240.0,
+          ),
+          builder: (data) {
+            final clubs = data.userClubs;
 
-          return clubs.isNotEmpty
-              ? ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: clubs.length,
-                  itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: GestureDetector(
-                      onTap: () =>
-                          context.navigateTo(ClubDetailsRoute(id: clubs[i].id)),
-                      child: ClubCard(
-                        club: clubs[i],
-                      ),
-                    ),
-                  ),
-                )
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Center(
-                        child: ContentBox(
-                          child: BorderButton(
-                              withBorder: false,
-                              mini: true,
-                              prefix: Icon(CupertinoIcons.search_circle),
-                              text: 'Find clubs',
-                              onPressed: () => print('find clubs flow')),
+            return clubs.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: clubs.length,
+                    itemBuilder: (c, i) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: GestureDetector(
+                        onTap: () => context
+                            .navigateTo(ClubDetailsRoute(id: clubs[i].id)),
+                        child: ClubCard(
+                          club: clubs[i],
                         ),
                       ),
                     ),
-                  ],
-                );
-        });
+                  )
+                : Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Center(
+                          child: ContentBox(
+                            child: BorderButton(
+                                withBorder: false,
+                                mini: true,
+                                prefix: Icon(CupertinoIcons.search_circle),
+                                text: 'Find clubs',
+                                onPressed: () => print('find clubs flow')),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+          }),
+    );
   }
 }

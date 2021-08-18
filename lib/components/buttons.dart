@@ -404,6 +404,7 @@ class TextButton extends StatelessWidget {
   final EdgeInsets? padding;
   final bool? underline;
   final FONTSIZE fontSize;
+  final Color? color;
 
   TextButton(
       {required this.text,
@@ -414,6 +415,7 @@ class TextButton extends StatelessWidget {
       this.confirm = false,
       this.loading = false,
       this.padding,
+      this.color,
       this.fontSize = FONTSIZE.MAIN,
       this.underline = true})
       : assert(!(confirm && destructive));
@@ -440,11 +442,13 @@ class TextButton extends StatelessWidget {
                       size: fontSize,
                       weight: FontWeight.bold,
                       decoration: underline! ? TextDecoration.underline : null,
-                      color: confirm
-                          ? Styles.infoBlue
-                          : destructive
-                              ? Styles.errorRed
-                              : null),
+                      color: color != null
+                          ? color
+                          : confirm
+                              ? Styles.infoBlue
+                              : destructive
+                                  ? Styles.errorRed
+                                  : null),
                   if (suffix != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 6.0),

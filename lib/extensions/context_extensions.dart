@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -13,6 +14,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:stream_feed/stream_feed.dart';
+import 'package:stream_feed/src/client/notification_feed.dart';
 
 extension BuildContextExtension on BuildContext {
   ThemeBloc get theme {
@@ -23,16 +25,20 @@ extension BuildContextExtension on BuildContext {
     return read<ThemeBloc>();
   }
 
-  StreamFeedClient get streamFeedClient {
-    return read<StreamFeedClient>();
-  }
-
   StreamChatClient get streamChatClient {
     return read<StreamChatClient>();
   }
 
   OwnUser get streamChatUser {
     return read<OwnUser>();
+  }
+
+  StreamFeedClient get streamFeedClient {
+    return read<StreamFeedClient>();
+  }
+
+  NotificationFeed get notificationFeed {
+    return read<NotificationFeed>();
   }
 
   GraphQLStore get graphQLStore => read<GraphQLStore>();
@@ -346,6 +352,45 @@ extension BuildContextExtension on BuildContext {
             weight: FontWeight.bold,
             size: FONTSIZE.SMALL,
             textAlign: textAlign),
+        duration: Duration(seconds: 3),
+        blockBackgroundInteraction: false,
+        isDismissible: true,
+      )..show(this);
+
+  /// Toast + more text and a button for interactivity.
+  void showNotification({
+    required String title,
+    required String message,
+    String? buttonText,
+    VoidCallback? onPressed,
+    Widget? icon,
+    TextAlign textAlign = TextAlign.start,
+    FlushbarPosition flushbarPosition = FlushbarPosition.TOP,
+  }) =>
+      Flushbar(
+        backgroundColor: CupertinoColors.darkBackgroundGray.withOpacity(0.99),
+        icon: icon,
+        maxWidth: 460,
+        flushbarPosition: flushbarPosition,
+        animationDuration: Duration(milliseconds: 300),
+        borderRadius: BorderRadius.circular(6),
+        margin: const EdgeInsets.only(left: 18, right: 18),
+        title: title,
+        messageText: MyText(
+          message,
+          color: Styles.white,
+          textAlign: textAlign,
+          lineHeight: 1.3,
+          maxLines: 3,
+        ),
+        mainButton: onPressed != null
+            ? TextButton(
+                text: buttonText ?? 'View',
+                onPressed: onPressed,
+                color: Styles.white,
+                underline: false,
+              )
+            : null,
         duration: Duration(seconds: 3),
         blockBackgroundInteraction: false,
         isDismissible: true,

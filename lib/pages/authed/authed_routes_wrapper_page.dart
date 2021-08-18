@@ -15,6 +15,8 @@ import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
 import 'package:stream_feed/stream_feed.dart' as feed;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:stream_feed/src/client/notification_feed.dart';
+import 'package:faye_dart/src/subscription.dart';
 
 /// https://github.com/Milad-Akarie/auto_route_library/issues/418
 /// Creates and provides all the global objects required on a user is logged in.
@@ -25,15 +27,22 @@ class AuthedRoutesWrapperPage extends StatefulWidget {
 }
 
 class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
+  late AuthedUser _authedUser;
   late chat.StreamChatClient _streamChatClient;
   late chat.OwnUser _streamChatUser;
   bool _chatInitialized = false;
+  late feed.StreamFeedClient _streamFeedClient;
+  late NotificationFeed _notificationFeed;
+  late Subscription _feedSubscription;
+  bool _feedsInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    _authedUser = GetIt.I<AuthBloc>().authedUser!;
     _streamChatClient = _createStreamChatClient;
-    _connectUserToChat();
+    _streamFeedClient = _createStreamFeedClient;
+    _connectUserToChat().then((_) => _initNotificationFeed());
   }
 
   chat.StreamChatClient get _createStreamChatClient => chat.StreamChatClient(
@@ -43,8 +52,8 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
   Future<void> _connectUserToChat() async {
     try {
       _streamChatUser = await _streamChatClient.connectUser(
-        chat.User(id: GetIt.I<AuthBloc>().authedUser!.id),
-        GetIt.I<AuthBloc>().authedUser!.streamChatToken,
+        chat.User(id: _authedUser.id),
+        _authedUser.streamChatToken,
       );
       setState(() {
         _chatInitialized = true;
@@ -52,7 +61,7 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
     } catch (e) {
       print(e);
       context.showToast(message: "Oops, couldn't initialize chat!");
-      GetIt.I<AuthBloc>().signOut();
+      throw Exception(e);
     }
   }
 
@@ -61,34 +70,66 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
         EnvironmentConfig.getStreamPublicKey,
         appId: EnvironmentConfig.getStreamAppId,
         token: feed.Token(
-          GetIt.I<AuthBloc>().authedUser!.streamFeedToken,
+          _authedUser.streamFeedToken,
         ),
       );
+
+  Future<void> _initNotificationFeed() async {
+    try {
+      _notificationFeed = _streamFeedClient.notificationFeed(
+          'user_notification', _authedUser.id);
+
+      _feedSubscription =
+          await _notificationFeed.subscribe(_handleNotification);
+
+      setState(() {
+        _feedsInitialized = true;
+      });
+    } catch (e) {
+      print(e);
+      context.showToast(message: "Oops, couldn't initialize notifications!");
+      throw Exception(e);
+    }
+  }
+
+  Future<void> _handleNotification(feed.RealtimeMessage? message) async {
+    print('notification received');
+    print('TODO: Handle further processing');
+    print(message);
+    context.showNotification(
+        title: 'Notification',
+        onPressed: () => print('print a test'),
+        message: message!.newActivities[0].object!.data.toString());
+  }
 
   @override
   void dispose() async {
     super.dispose();
+    _feedSubscription.cancel();
     await _streamChatClient.disconnectUser();
     await _streamChatClient.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _chatInitialized
+    return _chatInitialized && _feedsInitialized
         ? MultiProvider(
             providers: [
               Provider<GraphQLStore>(
                 create: (_) => GraphQLStore(),
                 dispose: (context, store) => store.dispose(),
               ),
-              Provider<feed.StreamFeedClient>(
-                create: (_) => _createStreamFeedClient,
-              ),
               Provider<chat.StreamChatClient>.value(
                 value: _streamChatClient,
               ),
               Provider<chat.OwnUser>.value(
                 value: _streamChatUser,
+              ),
+              Provider<feed.StreamFeedClient>.value(
+                value: _streamFeedClient,
+              ),
+              Provider<NotificationFeed>.value(
+                value: _notificationFeed,
               ),
               ChangeNotifierProvider<MoveFiltersBloc>(
                   create: (_) => MoveFiltersBloc()),

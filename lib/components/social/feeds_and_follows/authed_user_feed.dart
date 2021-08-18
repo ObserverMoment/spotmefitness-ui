@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_follows_and_clubs.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 
 /// Feed for the currently logged in User.
 /// GetStream fees slug is [user_feed].
@@ -17,25 +20,29 @@ class AuthedUserFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? LoadingCircle()
-        : activitiesWithObjectData.isEmpty
-            ? ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Center(
-                      child: MyText(
-                        'No posts yet..',
-                        size: FONTSIZE.BIG,
-                        subtext: true,
+    return StackAndFloatingButton(
+      buttonText: 'Post',
+      onPressed: () => context.navigateTo(PostCreatorRoute()),
+      child: isLoading
+          ? LoadingCircle()
+          : activitiesWithObjectData.isEmpty
+              ? ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Center(
+                        child: MyText(
+                          'No posts yet..',
+                          size: FONTSIZE.BIG,
+                          subtext: true,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              )
-            : TimelineFeedPostList(
-                activitiesWithObjectData: activitiesWithObjectData,
-              );
+                    )
+                  ],
+                )
+              : TimelineFeedPostList(
+                  activitiesWithObjectData: activitiesWithObjectData,
+                ),
+    );
   }
 }

@@ -75,13 +75,13 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
       alignment: widget.alignment,
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(color: context.theme.cardBackground, width: 3)),
       ),
-      height: 42,
+      height: 46,
       child: ListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
@@ -98,7 +98,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                       alignment: Alignment.centerLeft,
                       onPressed: () => widget.handleTabChange(index),
                       child: Container(
-                        height: 50,
+                        height: 46,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,

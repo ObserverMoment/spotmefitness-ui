@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
@@ -9,7 +8,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -75,20 +73,19 @@ class _NotificationsIconButtonState extends State<NotificationsIconButton> {
   @override
   void initState() {
     super.initState();
-    _notificationFeed = context.streamFeedClient.notificationFeed(
-        'user_notification', GetIt.I<AuthBloc>().authedUser!.id);
-
+    _notificationFeed = context.notificationFeed;
     _initIndicator().then((_) => _subscribeToFeed());
   }
 
   void _addTest() async {
-    await _notificationFeed
-        .removeActivityById('d4efcb67-004b-11ec-a188-12e0c51dd22e');
-    // await _notificationFeed.addActivity(Activity(
-    //   actor: 'system',
-    //   verb: 'notify',
-    //   object: 'I am alerting!',
-    // ));
+    // await _notificationFeed
+    //     .removeActivityById('9e366c12-0049-11ec-a184-12e0c51dd22e');
+    await _notificationFeed.addActivity(Activity(
+      actor: context.streamFeedClient.currentUser!.ref,
+      verb: 'notify',
+      object:
+          'I am alerting and then something you better get to your workout!',
+    ));
   }
 
   Future<void> _initIndicator() async {
@@ -116,11 +113,6 @@ class _NotificationsIconButtonState extends State<NotificationsIconButton> {
   }
 
   Future<void> _updateIndicator(RealtimeMessage? message) async {
-    print('1message');
-    print('2message');
-    print('3message');
-    print('4message');
-    print(message);
     _initIndicator();
   }
 
@@ -137,12 +129,7 @@ class _NotificationsIconButtonState extends State<NotificationsIconButton> {
         CupertinoButton(
             padding: const EdgeInsets.symmetric(horizontal: 13),
             onPressed: _addTest,
-            child: Column(
-              children: [
-                MyText(_unseenCount.toString()),
-                Icon(CupertinoIcons.bell),
-              ],
-            )),
+            child: Icon(CupertinoIcons.bell)),
         if (_unseenCount > 0)
           Positioned(
             top: 4,

@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_follows_and_clubs.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Followers of the currently logged in User.
 /// i.e Details of other users [user_timelines] which are following this users [user_feed]
@@ -43,40 +41,10 @@ class AuthedUserFollowers extends StatelessWidget {
                 mainAxisSpacing: 20,
                 crossAxisSpacing: 20,
                 children: followers
-                    .map((f) => _UserFollower(
-                          follower: f,
+                    .map((f) => UserFollow(
+                          follow: f,
                         ))
                     .toList(),
               );
-  }
-}
-
-/// Displays a single follower of a feed.
-class _UserFollower extends StatelessWidget {
-  final FollowWithUserAvatarData follower;
-  const _UserFollower({Key? key, required this.follower}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        UserAvatar(
-          size: 80,
-          border: true,
-          borderWidth: 1,
-          avatarUri: follower.userAvatarData?.avatarUri,
-        ),
-        Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: MyText(
-            Utils.textNotNull(follower.userAvatarData?.displayName)
-                ? follower.userAvatarData!.displayName
-                : 'Unnamed',
-            size: FONTSIZE.TINY,
-          ),
-        ),
-      ],
-    );
   }
 }

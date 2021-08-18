@@ -130,8 +130,8 @@ class StackAndFloatingButton extends StatelessWidget {
         child,
         Positioned(
             bottom: pageHasBottomNavBar
-                ? EnvironmentConfig.bottomNavBarHeight + 8
-                : 20,
+                ? EnvironmentConfig.bottomNavBarHeight + 4
+                : 12,
             child: FloatingIconButton(
                 text: buttonText,
                 iconData: buttonIconData,

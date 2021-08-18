@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/social/authed_user_clubs_list.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user_feed.dart';
@@ -17,11 +17,14 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:faye_dart/src/subscription.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Maintains subscriptions - also includes a list of auth user's clubs
 class FeedsFollowsAndClubs extends StatefulWidget {
@@ -57,16 +60,6 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
 
   /// List of followers [user_timelines] which are following this [user_feed]
   List<FollowWithUserAvatarData> _followers = <FollowWithUserAvatarData>[];
-
-  void _addTest() async {
-    await _feed.addActivity(Activity(
-        actor: _streamFeedClient.currentUser!.ref,
-        verb: 'post',
-        object: 'Workout:1ccad49d-df80-4fe0-8ec8-927126a1ddfb',
-        extraData: {
-          'caption': 'In at the top!',
-        }));
-  }
 
   @override
   void initState() {
@@ -284,8 +277,8 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   }
 
   Widget _buildFollowCount(int count) => Positioned(
-        top: -5,
-        right: 2,
+        top: 2,
+        right: 3,
         child: MyText(
           count.toString(),
           color: Styles.colorTwo,
@@ -304,53 +297,49 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
 
   @override
   Widget build(BuildContext context) {
-    return StackAndFloatingButton(
-      buttonText: 'Post',
-      onPressed: _addTest,
-      child: Column(
-        children: [
-          SizedBox(height: 4),
-          MyTabBarNav(titles: [
-            'Timeline',
-            'Posts',
-            'Clubs',
-            'Followers',
-            'Following'
-          ], superscriptIcons: [
-            null,
-            null,
-            null,
-            _followers.isNotEmpty ? _buildFollowCount(_followers.length) : null,
-            _following.isNotEmpty ? _buildFollowCount(_following.length) : null,
-          ], handleTabChange: _changeTab, activeTabIndex: _activeTabIndex),
-          SizedBox(height: 8),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                AuthedUserTimeline(
-                  activitiesWithObjectData: _timelineActivitiesWithObjectData,
-                  isLoading: _timelineLoading,
-                ),
-                AuthedUserFeed(
-                  activitiesWithObjectData: _feedActivitiesWithObjectData,
-                  isLoading: _feedLoading,
-                ),
-                AuthedUserClubsList(),
-                AuthedUserFollowers(
-                  followers: _followers,
-                  isLoading: _feedLoading,
-                ),
-                AuthedUserFollowing(
-                  following: _following,
-                  isLoading: _timelineLoading,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+    return Column(
+      children: [
+        SizedBox(height: 4),
+        MyTabBarNav(titles: [
+          'Timeline',
+          'Posts',
+          'Clubs',
+          'Followers',
+          'Following'
+        ], superscriptIcons: [
+          null,
+          null,
+          null,
+          _followers.isNotEmpty ? _buildFollowCount(_followers.length) : null,
+          _following.isNotEmpty ? _buildFollowCount(_following.length) : null,
+        ], handleTabChange: _changeTab, activeTabIndex: _activeTabIndex),
+        SizedBox(height: 8),
+        Expanded(
+          child: PageView(
+            controller: _pageController,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              AuthedUserTimeline(
+                activitiesWithObjectData: _timelineActivitiesWithObjectData,
+                isLoading: _timelineLoading,
+              ),
+              AuthedUserFeed(
+                activitiesWithObjectData: _feedActivitiesWithObjectData,
+                isLoading: _feedLoading,
+              ),
+              AuthedUserClubsList(),
+              AuthedUserFollowers(
+                followers: _followers,
+                isLoading: _feedLoading,
+              ),
+              AuthedUserFollowing(
+                following: _following,
+                isLoading: _timelineLoading,
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }
@@ -408,6 +397,41 @@ class _TimelineFeedPostListState extends State<TimelineFeedPostList> {
         newPageProgressIndicatorBuilder: (c) => LoadingCircle(),
         noItemsFoundIndicatorBuilder: (c) =>
             Center(child: MyText('No results...')),
+      ),
+    );
+  }
+}
+
+class UserFollow extends StatelessWidget {
+  final FollowWithUserAvatarData follow;
+  const UserFollow({Key? key, required this.follow}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: follow.userAvatarData != null
+          ? () => context.navigateTo(
+              UserPublicProfileDetailsRoute(userId: follow.userAvatarData!.id))
+          : null,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          UserAvatar(
+            size: 80,
+            border: true,
+            borderWidth: 1,
+            avatarUri: follow.userAvatarData?.avatarUri,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: MyText(
+              Utils.textNotNull(follow.userAvatarData?.displayName)
+                  ? follow.userAvatarData!.displayName
+                  : 'Unnamed',
+              size: FONTSIZE.TINY,
+            ),
+          ),
+        ],
       ),
     );
   }

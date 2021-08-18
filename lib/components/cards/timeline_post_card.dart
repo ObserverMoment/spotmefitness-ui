@@ -103,9 +103,13 @@ class TimelinePostCard extends StatelessWidget {
                   CupertinoIcons.bookmark, () => print('save to collection')),
             ],
           ),
-          MyText(
-            (activity.time as DateTime).compactDateString,
-            size: FONTSIZE.SMALL,
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: MyText(
+              (activity.time as DateTime).daysAgo,
+              size: FONTSIZE.SMALL,
+              subtext: true,
+            ),
           )
         ],
       ),
