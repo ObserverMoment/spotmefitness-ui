@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
-import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_and_follows.dart';
+import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_follows_and_clubs.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:stream_feed/stream_feed.dart';
 
@@ -24,13 +28,16 @@ class TimelinePostCard extends StatelessWidget {
           Row(
             children: [
               UserAvatar(
-                size: 50,
+                size: 40,
+                avatarUri: objectData?.userAvatarUri,
               ),
+              SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MyText('TODO: displayName from API'),
-                  MyText(objectData?.type.toString() ?? '',
+                  MyText(objectData != null ? objectData.userDisplayName : ''),
+                  MyText(
+                      objectData != null ? objectData.objectType.display : '',
                       color: Styles.colorTwo)
                 ],
               ),
@@ -43,7 +50,9 @@ class TimelinePostCard extends StatelessWidget {
         ],
       );
 
-  Widget _buildTitleAndCaption(Activity activity) => Padding(
+  Widget _buildTitleAndCaption(
+          Activity activity, TimelinePostData? objectData) =>
+      Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
@@ -51,9 +60,11 @@ class TimelinePostCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 MyHeaderText(
-                  activity.extraData?['title'] as String? ?? 'No title',
+                  objectData?.title ?? 'No title',
                   size: FONTSIZE.LARGE,
+                  lineHeight: 1.2,
                 ),
+                SizedBox(height: 4),
                 MyText(
                   activity.extraData?['caption'] as String? ?? 'No caption',
                   lineHeight: 1.4,
@@ -71,7 +82,11 @@ class TimelinePostCard extends StatelessWidget {
     final objectData = activityWithObjectData.objectData;
 
     return Column(children: [
-      _buildAvatarAndDisplayName(objectData),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+        child: _buildAvatarAndDisplayName(objectData),
+      ),
+      SizedBox(height: 8),
       if (objectData?.imageUri != null)
         SizedBox(
             height: 200, child: SizedUploadcareImage(objectData!.imageUri!)),
@@ -88,10 +103,16 @@ class TimelinePostCard extends StatelessWidget {
                   CupertinoIcons.bookmark, () => print('save to collection')),
             ],
           ),
-          MyText((activity.time as DateTime).compactDateString)
+          MyText(
+            (activity.time as DateTime).compactDateString,
+            size: FONTSIZE.SMALL,
+          )
         ],
       ),
-      _buildTitleAndCaption(activity),
+      _buildTitleAndCaption(activity, objectData),
+      SizedBox(height: 10),
+      HorizontalLine(
+          verticalPadding: 0, color: context.theme.primary.withOpacity(0.1))
     ]);
   }
 }

@@ -38,8 +38,6 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
 
   chat.StreamChatClient get _createStreamChatClient => chat.StreamChatClient(
         EnvironmentConfig.getStreamPublicKey,
-        // https://getstream.io/chat/docs/react/multi_region/?language=dart
-        location: chat.Location.euWest,
       );
 
   Future<void> _connectUserToChat() async {
@@ -61,7 +59,10 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
   feed.StreamFeedClient get _createStreamFeedClient =>
       feed.StreamFeedClient.connect(
         EnvironmentConfig.getStreamPublicKey,
-        token: feed.Token(GetIt.I<AuthBloc>().authedUser!.streamFeedToken),
+        appId: EnvironmentConfig.getStreamAppId,
+        token: feed.Token(
+          GetIt.I<AuthBloc>().authedUser!.streamFeedToken,
+        ),
       );
 
   @override
@@ -125,10 +126,14 @@ class _InitAppLanding extends StatelessWidget {
               SvgPicture.asset(
                 'assets/logos/spotme_logo.svg',
                 width: 60.0,
+                color: Styles.white,
               ),
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: MyText('Getting ready'),
+                child: MyText(
+                  'Getting ready',
+                  color: Styles.white,
+                ),
               ),
               LoadingDots(
                 color: Styles.white,

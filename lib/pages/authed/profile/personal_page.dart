@@ -57,7 +57,7 @@ class ProfilePersonalPage extends StatelessWidget {
               _InputPadding(
                 child: EditableTextFieldRow(
                   title: 'Name',
-                  text: user.displayName ?? '',
+                  text: user.displayName,
                   onSave: (newText) => updateUserFields(
                       context, user.id, 'displayName', newText),
                   inputValidation: (String text) =>

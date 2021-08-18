@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -17,6 +18,8 @@ import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:faye_dart/src/subscription.dart';
+import 'package:stream_feed/src/client/notification_feed.dart';
 
 /// Chat and Feeds service from getStream.io
 abstract class StreamService {
@@ -52,8 +55,113 @@ abstract class StreamService {
   }
 }
 
+/// Notification bell icon that can be used anywhere in the app.
+/// Displays a dot in top right (if there are unread notifications).
+/// Requires [context.streamFeedClient] via Provider + context_extensions
+/// Ontap open up the notifications overview page.
+class NotificationsIconButton extends StatefulWidget {
+  const NotificationsIconButton({Key? key}) : super(key: key);
+
+  @override
+  _NotificationsIconButtonState createState() =>
+      _NotificationsIconButtonState();
+}
+
+class _NotificationsIconButtonState extends State<NotificationsIconButton> {
+  int _unseenCount = 0;
+  late NotificationFeed _notificationFeed;
+  late Subscription _feedSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _notificationFeed = context.streamFeedClient.notificationFeed(
+        'user_notification', GetIt.I<AuthBloc>().authedUser!.id);
+
+    _initIndicator().then((_) => _subscribeToFeed());
+  }
+
+  void _addTest() async {
+    await _notificationFeed
+        .removeActivityById('d4efcb67-004b-11ec-a188-12e0c51dd22e');
+    // await _notificationFeed.addActivity(Activity(
+    //   actor: 'system',
+    //   verb: 'notify',
+    //   object: 'I am alerting!',
+    // ));
+  }
+
+  Future<void> _initIndicator() async {
+    /// We only need to know if there are unseen activities - so set limit to 1.
+    final feedData = await _notificationFeed.getActivities();
+    _unseenCount = feedData.fold(0, (unseenCount, next) {
+      if (next.isSeen != true) {
+        return unseenCount + 1;
+      } else {
+        return unseenCount;
+      }
+    });
+    setState(() {});
+  }
+
+  Future<void> _subscribeToFeed() async {
+    try {
+      _feedSubscription = await _notificationFeed.subscribe(_updateIndicator);
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    } finally {
+      setState(() {});
+    }
+  }
+
+  Future<void> _updateIndicator(RealtimeMessage? message) async {
+    print('1message');
+    print('2message');
+    print('3message');
+    print('4message');
+    print(message);
+    _initIndicator();
+  }
+
+  @override
+  void dispose() {
+    _feedSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CupertinoButton(
+            padding: const EdgeInsets.symmetric(horizontal: 13),
+            onPressed: _addTest,
+            child: Column(
+              children: [
+                MyText(_unseenCount.toString()),
+                Icon(CupertinoIcons.bell),
+              ],
+            )),
+        if (_unseenCount > 0)
+          Positioned(
+            top: 4,
+            right: 8,
+            child: SizeFadeIn(
+                key: Key(_unseenCount.toString()),
+                child: Dot(
+                  diameter: 14,
+                  border: Border.all(color: context.theme.background, width: 2),
+                  color: Styles.infoBlue,
+                )),
+          ),
+      ],
+    );
+  }
+}
+
 /// Chat bubble icon that can be used anywhere in the app.
-/// Displays an unread messages icon at top right (if there are unread messages).
+/// Displays a dot in top right (if there are unread messages).
 /// Requires [context.streamChatClient] via Provider + context_extensions
 /// Ontap open up the chats overview page.
 class ChatsIconButton extends StatefulWidget {

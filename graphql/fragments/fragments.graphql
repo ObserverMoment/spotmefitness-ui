@@ -58,8 +58,11 @@ fragment ScheduledWorkout on ScheduledWorkout {
 
 fragment TimelinePostData on TimelinePostData {
   __typename
-  id
-  type
+  userId
+  userDisplayName
+  userAvatarUri
+  objectId
+  objectType
   title
   audioUri
   imageUri

@@ -13,7 +13,7 @@ mixin UserSummaryMixin {
   String? $$typename;
   late String id;
   String? avatarUri;
-  String? displayName;
+  late String displayName;
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope userProfileScope;
   String? tagline;
@@ -440,7 +440,7 @@ mixin UserMixin {
       toJson: fromDartDateTimeNullableToGraphQLDateTimeNullable)
   DateTime? birthdate;
   String? countryCode;
-  String? displayName;
+  late String displayName;
   String? introVideoUri;
   String? introVideoThumbUri;
   @JsonKey(unknownEnumValue: Gender.artemisUnknown)
@@ -456,7 +456,7 @@ mixin UserPublicProfileSummaryMixin {
   String? tagline;
   String? townCity;
   String? countryCode;
-  String? displayName;
+  late String displayName;
   late int numberPublicWorkouts;
   late int numberPublicPlans;
 }
@@ -476,7 +476,7 @@ mixin UserPublicProfileMixin {
   String? snapUrl;
   String? linkedinUrl;
   String? countryCode;
-  String? displayName;
+  late String displayName;
 }
 mixin BodyTransformationPhotoMixin {
   @JsonKey(name: '__typename')
@@ -564,14 +564,17 @@ mixin UserAvatarDataMixin {
   String? $$typename;
   late String id;
   String? avatarUri;
-  String? displayName;
+  late String displayName;
 }
 mixin TimelinePostDataMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
-  late String id;
+  late String userId;
+  late String userDisplayName;
+  String? userAvatarUri;
+  late String objectId;
   @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
-  late TimelinePostType type;
+  late TimelinePostType objectType;
   late String title;
   String? audioUri;
   String? imageUri;
@@ -6801,8 +6804,11 @@ class TimelinePostData extends JsonSerializable
   @override
   List<Object?> get props => [
         $$typename,
-        id,
-        type,
+        userId,
+        userDisplayName,
+        userAvatarUri,
+        objectId,
+        objectType,
         title,
         audioUri,
         imageUri,
@@ -6831,18 +6837,21 @@ class TimelinePostsData$Query extends JsonSerializable with EquatableMixin {
 @JsonSerializable(explicitToJson: true)
 class TimelinePostDataRequestInput extends JsonSerializable
     with EquatableMixin {
-  TimelinePostDataRequestInput({required this.id, required this.type});
+  TimelinePostDataRequestInput(
+      {required this.userId, required this.objectId, required this.objectType});
 
   factory TimelinePostDataRequestInput.fromJson(Map<String, dynamic> json) =>
       _$TimelinePostDataRequestInputFromJson(json);
 
-  late String id;
+  late String userId;
+
+  late String objectId;
 
   @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
-  late TimelinePostType type;
+  late TimelinePostType objectType;
 
   @override
-  List<Object?> get props => [id, type];
+  List<Object?> get props => [userId, objectId, objectType];
   @override
   Map<String, dynamic> toJson() => _$TimelinePostDataRequestInputToJson(this);
 }
@@ -59529,13 +59538,31 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'id'),
+            name: NameNode(value: 'userId'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'type'),
+            name: NameNode(value: 'userDisplayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'userAvatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'objectId'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'objectType'),
             alias: null,
             arguments: [],
             directives: [],

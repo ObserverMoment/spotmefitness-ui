@@ -23,8 +23,7 @@ class HomePage extends StatelessWidget {
         key: Key('HomePage-BorderlessNavBar'),
         customLeading: NavBarLargeTitle('Home'),
         trailing: NavBarTrailingRow(children: [
-          _buildNavBarButton(CupertinoIcons.bell,
-              () => print('navigate to notifications page')),
+          NotificationsIconButton(),
           ChatsIconButton(),
           _buildNavBarButton(
               CupertinoIcons.timer,

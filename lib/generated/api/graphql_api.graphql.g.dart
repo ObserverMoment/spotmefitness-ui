@@ -12,7 +12,7 @@ UserSummary _$UserSummaryFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String?
+    ..displayName = json['displayName'] as String
     ..userProfileScope = _$enumDecode(
         _$UserProfileScopeEnumMap, json['userProfileScope'],
         unknownValue: UserProfileScope.artemisUnknown)
@@ -3172,7 +3172,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..birthdate = fromGraphQLDateTimeNullableToDartDateTimeNullable(
         json['birthdate'] as int?)
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String?
+    ..displayName = json['displayName'] as String
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
     ..gender = _$enumDecode(_$GenderEnumMap, json['gender'],
@@ -3540,7 +3540,7 @@ UserPublicProfileSummary _$UserPublicProfileSummaryFromJson(
     ..tagline = json['tagline'] as String?
     ..townCity = json['townCity'] as String?
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String?
+    ..displayName = json['displayName'] as String
     ..numberPublicWorkouts = json['numberPublicWorkouts'] as int
     ..numberPublicPlans = json['numberPublicPlans'] as int;
 }
@@ -3591,7 +3591,7 @@ UserPublicProfile _$UserPublicProfileFromJson(Map<String, dynamic> json) {
     ..snapUrl = json['snapUrl'] as String?
     ..linkedinUrl = json['linkedinUrl'] as String?
     ..countryCode = json['countryCode'] as String?
-    ..displayName = json['displayName'] as String?
+    ..displayName = json['displayName'] as String
     ..workouts = (json['Workouts'] as List<dynamic>)
         .map((e) => Workout.fromJson(e as Map<String, dynamic>))
         .toList()
@@ -5416,7 +5416,7 @@ UserAvatarData _$UserAvatarDataFromJson(Map<String, dynamic> json) {
     ..$$typename = json['__typename'] as String?
     ..id = json['id'] as String
     ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String?;
+    ..displayName = json['displayName'] as String;
 }
 
 Map<String, dynamic> _$UserAvatarDataToJson(UserAvatarData instance) =>
@@ -5454,8 +5454,11 @@ Map<String, dynamic> _$UserAvatarById$QueryToJson(
 TimelinePostData _$TimelinePostDataFromJson(Map<String, dynamic> json) {
   return TimelinePostData()
     ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..type = _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
+    ..userId = json['userId'] as String
+    ..userDisplayName = json['userDisplayName'] as String
+    ..userAvatarUri = json['userAvatarUri'] as String?
+    ..objectId = json['objectId'] as String
+    ..objectType = _$enumDecode(_$TimelinePostTypeEnumMap, json['objectType'],
         unknownValue: TimelinePostType.artemisUnknown)
     ..title = json['title'] as String
     ..audioUri = json['audioUri'] as String?
@@ -5467,8 +5470,11 @@ TimelinePostData _$TimelinePostDataFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$TimelinePostDataToJson(TimelinePostData instance) =>
     <String, dynamic>{
       '__typename': instance.$$typename,
-      'id': instance.id,
-      'type': _$TimelinePostTypeEnumMap[instance.type],
+      'userId': instance.userId,
+      'userDisplayName': instance.userDisplayName,
+      'userAvatarUri': instance.userAvatarUri,
+      'objectId': instance.objectId,
+      'objectType': _$TimelinePostTypeEnumMap[instance.objectType],
       'title': instance.title,
       'audioUri': instance.audioUri,
       'imageUri': instance.imageUri,
@@ -5501,8 +5507,9 @@ Map<String, dynamic> _$TimelinePostsData$QueryToJson(
 TimelinePostDataRequestInput _$TimelinePostDataRequestInputFromJson(
     Map<String, dynamic> json) {
   return TimelinePostDataRequestInput(
-    id: json['id'] as String,
-    type: _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
+    userId: json['userId'] as String,
+    objectId: json['objectId'] as String,
+    objectType: _$enumDecode(_$TimelinePostTypeEnumMap, json['objectType'],
         unknownValue: TimelinePostType.artemisUnknown),
   );
 }
@@ -5510,8 +5517,9 @@ TimelinePostDataRequestInput _$TimelinePostDataRequestInputFromJson(
 Map<String, dynamic> _$TimelinePostDataRequestInputToJson(
         TimelinePostDataRequestInput instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'type': _$TimelinePostTypeEnumMap[instance.type],
+      'userId': instance.userId,
+      'objectId': instance.objectId,
+      'objectType': _$TimelinePostTypeEnumMap[instance.objectType],
     };
 
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {

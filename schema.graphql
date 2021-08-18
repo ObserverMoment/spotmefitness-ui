@@ -887,8 +887,11 @@ enum TimeUnit {
 }
 
 type TimelinePostData {
-  id: ID!
-  type: TimelinePostType!
+  userId: ID!
+  userDisplayName: String!
+  userAvatarUri: String
+  objectId: ID!
+  objectType: TimelinePostType!
   title: String!
   audioUri: String
   imageUri: String
@@ -897,8 +900,9 @@ type TimelinePostData {
 }
 
 input TimelinePostDataRequestInput {
-  id: ID!
-  type: TimelinePostType!
+  userId: ID!
+  objectId: ID!
+  objectType: TimelinePostType!
 }
 
 enum TimelinePostType {
@@ -1235,7 +1239,7 @@ type User {
   birthdate: DateTime
   townCity: String
   countryCode: String
-  displayName: String
+  displayName: String!
   instagramUrl: String
   tiktokUrl: String
   youtubeUrl: String
@@ -1251,7 +1255,7 @@ type User {
 
 type UserAvatarData {
   id: ID!
-  displayName: String
+  displayName: String!
   avatarUri: String
 }
 
@@ -1303,7 +1307,7 @@ type UserPublicProfile {
   snapUrl: String
   linkedinUrl: String
   countryCode: String
-  displayName: String
+  displayName: String!
   Workouts: [Workout!]!
   WorkoutPlans: [WorkoutPlan!]!
 }
@@ -1314,14 +1318,14 @@ type UserPublicProfileSummary {
   tagline: String
   townCity: String
   countryCode: String
-  displayName: String
+  displayName: String!
   numberPublicWorkouts: Int!
   numberPublicPlans: Int!
 }
 
 type UserSummary {
   id: ID!
-  displayName: String
+  displayName: String!
   avatarUri: String
   userProfileScope: UserProfileScope!
   tagline: String

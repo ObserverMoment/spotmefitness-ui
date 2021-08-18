@@ -317,8 +317,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MyText(workout.user.displayName ?? 'Unnamed',
-                  size: FONTSIZE.SMALL),
+              MyText(workout.user.displayName, size: FONTSIZE.SMALL),
               if (isOwner)
                 MyText(
                   '${workout.contentAccessScope.display} workout',

@@ -36,7 +36,7 @@ class ParticipantCard extends StatelessWidget {
                         Row(
                           children: [
                             MyText(
-                              userSummary.displayName ?? 'Unnamed',
+                              userSummary.displayName,
                               size: FONTSIZE.BIG,
                             ),
                             if (userSummary.countryCode != null)

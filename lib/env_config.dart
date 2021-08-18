@@ -45,6 +45,9 @@ class EnvironmentConfig {
   static String get getStreamPublicKey =>
       const String.fromEnvironment('GETSTREAM_PUBLIC_KEY');
 
+  static String get getStreamAppId =>
+      const String.fromEnvironment('GETSTREAM_APP_ID');
+
   /// Platform specific layout
   static double get bottomNavBarHeight => Platform.isAndroid ? 62.0 : 82.0;
 }

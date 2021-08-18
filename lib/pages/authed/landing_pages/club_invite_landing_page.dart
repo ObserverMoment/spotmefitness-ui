@@ -60,7 +60,7 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: MyText(
-                  club.owner.displayName ?? 'Unnamed',
+                  club.owner.displayName,
                   size: FONTSIZE.TINY,
                 ),
               ),

@@ -123,7 +123,7 @@ class _UserPublicProfileDetailsPageState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     MyHeaderText(
-                      userPublicProfile.displayName ?? 'Unnamed',
+                      userPublicProfile.displayName,
                     ),
                     if (userPublicProfile.countryCode != null)
                       Padding(
@@ -138,7 +138,7 @@ class _UserPublicProfileDetailsPageState
                   onPressed: () => context.showBottomSheet(
                       child: BottomSheetMenu(
                           header: BottomSheetMenuHeader(
-                            name: userPublicProfile.displayName ?? 'Unnamed',
+                            name: userPublicProfile.displayName,
                             subtitle: 'Profile',
                             imageUri: userPublicProfile.avatarUri,
                           ),
