@@ -43,22 +43,19 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: ComingUpList(),
           ),
+          SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(CupertinoIcons.news),
-                SizedBox(width: 8),
-                H3('News & articles coming soon!'),
-              ],
+            padding: const EdgeInsets.all(8.0),
+            child: MyHeaderText(
+              'Created and Saved',
+              size: FONTSIZE.LARGE,
             ),
           ),
           GridView.count(
             padding: EdgeInsets.zero,
             crossAxisCount: 2,
             shrinkWrap: true,
-            childAspectRatio: 1.5,
+            childAspectRatio: 1.3,
             physics: NeverScrollableScrollPhysics(),
             children: [
               GestureDetector(
@@ -103,14 +100,6 @@ class HomePage extends StatelessWidget {
                   assetImagePath: 'home_page_collections.jpg',
                 ),
               ),
-              _HomeScreenCard(
-                label: 'Nutrition',
-                assetImagePath: 'home_page_nutrition.jpg',
-              ),
-              _HomeScreenCard(
-                label: 'Mind',
-                assetImagePath: 'home_page_mind.jpg',
-              ),
             ],
           ),
         ],
@@ -133,7 +122,7 @@ class _HomeScreenCard extends StatelessWidget {
           image: DecorationImage(
               fit: BoxFit.cover,
               image: AssetImage('assets/home_page_images/${assetImagePath}')),
-          borderRadius: BorderRadius.circular(5)),
+          borderRadius: BorderRadius.circular(4)),
       child: Align(
           alignment: Alignment.bottomLeft,
           child: Padding(

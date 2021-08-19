@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -21,6 +22,7 @@ class MyTextFormFieldRow extends StatefulWidget {
   final TextEditingController? controller;
   final String? initialValue;
   final void Function(String text)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
 
   MyTextFormFieldRow(
       {this.prefix,
@@ -33,6 +35,7 @@ class MyTextFormFieldRow extends StatefulWidget {
       this.autofocus = false,
       this.obscureText = false,
       this.backgroundColor,
+      this.inputFormatters,
       this.validationMessage,
       this.validator,
       this.textAlign = TextAlign.left})
@@ -76,6 +79,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                   textAlign: widget.textAlign,
                   prefix: widget.prefix,
                   autofocus: widget.autofocus,
+                  inputFormatters: widget.inputFormatters,
                   padding: EdgeInsets.only(
                       top: 16,
                       bottom: 4,
@@ -84,9 +88,6 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
                   placeholder: widget.placeholder,
                   keyboardType: widget.keyboardType,
                   style: TextStyle(fontSize: 18),
-                  placeholderStyle: TextStyle(
-                      fontSize: 18,
-                      color: context.theme.primary.withOpacity(0.6)),
                   autofillHints: widget.autofillHints,
                   obscureText: widget.obscureText),
             ),
@@ -188,6 +189,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
   final TextEditingController controller;
   final bool Function()? validator;
   final Color? backgroundColor;
+  final List<TextInputFormatter>? inputFormatters;
 
   MyTextAreaFormFieldRow(
       {this.prefix,
@@ -198,7 +200,8 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
       this.autofocus = false,
       this.obscureText = false,
       this.validator,
-      this.backgroundColor});
+      this.backgroundColor,
+      this.inputFormatters});
 
   @override
   Widget build(BuildContext context) {
@@ -223,6 +226,7 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
               prefix: prefix,
               autofocus: autofocus,
               placeholder: placeholder,
+              inputFormatters: inputFormatters,
               keyboardType: keyboardType,
               style: TextStyle(fontSize: 18, height: 1.4),
               autofillHints: autofillHints,

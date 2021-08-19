@@ -12,6 +12,7 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_pa
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
+import 'package:spotmefitness_ui/pages/authed/discover/discover_clubs_page.dart';
 import 'package:spotmefitness_ui/pages/authed/main_tabs_page.dart';
 import 'package:spotmefitness_ui/pages/authed/authed_routes_wrapper_page.dart';
 import 'package:spotmefitness_ui/pages/authed/details_pages/club_details_page.dart';
@@ -91,6 +92,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
                   AutoRoute(
                       path: 'discover-challenges',
                       page: DiscoverChallengesPage),
+                  AutoRoute(path: 'discover-clubs', page: DiscoverClubsPage),
                   RedirectRoute(path: '*', redirectTo: '')
                 ]),
             AutoRoute(

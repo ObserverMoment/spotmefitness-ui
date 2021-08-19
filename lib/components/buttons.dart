@@ -293,9 +293,50 @@ class DestructiveButton extends StatelessWidget {
       suffix: suffix,
       loading: loading,
       onPressed: onPressed,
-      backgroundColor: CupertinoColors.destructiveRed,
-      contentColor: CupertinoColors.white,
+      backgroundColor: Styles.errorRed,
+      contentColor: Styles.white,
       withMinWidth: withMinWidth,
+    );
+  }
+}
+
+/// Like a secondary button but just an icon.
+class IconButton extends StatelessWidget {
+  final IconData iconData;
+  final VoidCallback onPressed;
+  final bool disabled;
+  final bool loading;
+
+  IconButton(
+      {required this.iconData,
+      required this.onPressed,
+      this.disabled = false,
+      this.loading = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 300),
+      opacity: disabled ? 0.2 : 1,
+      child: CupertinoButton(
+        padding: EdgeInsets.all(0),
+        pressedOpacity: 0.8,
+        onPressed: disabled ? null : onPressed,
+        child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            boxShadow: [Styles.avatarBoxShadow],
+            gradient: Styles.secondaryButtonGradient,
+          ),
+          child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              child: loading
+                  ? LoadingCircle(color: context.theme.primary, size: 12)
+                  : Icon(iconData, size: 34, color: Styles.white)),
+        ),
+      ),
     );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
+import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
@@ -43,6 +45,13 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
   late FlatFeed _feed;
   final TextEditingController _captionController = TextEditingController();
 
+  /// Tags are text input one at at time via _tagsController
+  final TextEditingController _tagInputController = TextEditingController();
+
+  /// List of strings. Added to Activity as a comma separated list.
+  /// "tag1,tag2,tag3".
+  List<String> _tags = <String>[];
+
   /// The selected object to share + vars to save the data to display object summary.
   /// [type:id]
   String? _object;
@@ -74,24 +83,45 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
     _captionController.addListener(() {
       setState(() {});
     });
-  }
-
-  void _removeAllObjects() {
-    setState(() {
-      _workout = null;
-      _workoutPlan = null;
+    _tagInputController.addListener(() {
+      setState(() {});
     });
   }
 
+  /// Doesn't setState...
+  void _removeAllObjects() {
+    _workout = null;
+    _workoutPlan = null;
+  }
+
   void _selectWorkout(Workout w) {
+    _removeAllObjects();
     _workout = w;
     _object = 'Workout:${w.id}';
     _changePage(1);
   }
 
   void _selectWorkoutPlan(WorkoutPlan plan) {
+    _removeAllObjects();
     _workoutPlan = plan;
     _changePage(1);
+  }
+
+  void _addTag() {
+    if (_tags.contains(_tagInputController.text)) {
+      context.showToast(message: 'Tag already being used.');
+    } else {
+      setState(() {
+        _tags.add(_tagInputController.text);
+        _tagInputController.text = '';
+      });
+    }
+  }
+
+  void _removeTag(String tag) {
+    setState(() {
+      _tags.remove(tag);
+    });
   }
 
   void _createPost() async {
@@ -108,7 +138,9 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
           object: _object,
           extraData: {
             'caption': _captionController.text,
-            'tags': 'tag1,tag2,tag3'
+            // Try and ensure we alwasy pass a list of strings.
+            // There is no type checking on the getStream side and ints, bools, objects etc will all be allowed.
+            'tags': _tags.whereType<String>().toList()
           }));
 
       context.pop();
@@ -158,9 +190,7 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
               ),
       );
 
-  Widget? get _buildTrailing => _activePageIndex == 1 &&
-          Utils.textNotNull(_captionController.text) &&
-          _object != null
+  Widget? get _buildTrailingPageOne => _object != null
       ? _loading
           ? NavBarTrailingRow(
               children: [
@@ -168,10 +198,24 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
               ],
             )
           : NavBarSaveButton(
-              _createPost,
-              text: 'Save',
+              () => _changePage(1),
+              text: 'Next',
             )
       : null;
+
+  Widget? get _buildTrailingPageTwo =>
+      Utils.textNotNull(_captionController.text) && _object != null
+          ? _loading
+              ? NavBarTrailingRow(
+                  children: [
+                    NavBarLoadingDots(),
+                  ],
+                )
+              : NavBarSaveButton(
+                  _createPost,
+                  text: 'Save',
+                )
+          : null;
 
   @override
   Widget build(BuildContext context) {
@@ -180,73 +224,115 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
             customLeading: _buildLeading,
             middle: NavBarTitle(
                 widget.activity == null ? 'Create Post' : 'Edit Post'),
-            trailing: _buildTrailing),
+            trailing: _activePageIndex == 0
+                ? _buildTrailingPageOne
+                : _buildTrailingPageTwo),
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
           children: [
             Column(
               children: [
+                if (_object != null)
+                  GrowIn(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: WorkoutCard(_workout!),
+                  )),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: _object == null
-                      ? MyText('Choose something to share.')
-                      : MyText(
-                          'Show appropriate card for the type and id selected'),
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: MyText('Choose something to share.'),
                 ),
-                ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ShareObjectTypeButton(
-                      title: 'Workout',
-                      description:
-                          'Share a workout you have created, found or are going to do!',
-                      assetImageUri:
-                          'assets/home_page_images/home_page_workouts.jpg',
-                      onPressed: () => context.pushRoute(
-                          WorkoutFinderRoute(selectWorkout: _selectWorkout)),
-                    ),
-                    ShareObjectTypeButton(
-                      title: 'Workout Plan',
-                      description:
-                          'Share a plan you have created, found or are going to do!',
-                      assetImageUri:
-                          'assets/home_page_images/home_page_plans.jpg',
-                      onPressed: () {},
-                      // onPressed: () => context.pushRoute(
-                      //     WorkoutPlanFinderRoute(selectPlan: _selectWorkoutPlan)),
-                    )
-                  ],
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      ShareObjectTypeButton(
+                        title: 'Workout',
+                        description:
+                            'Share a workout you have created, found or are going to do!',
+                        assetImageUri:
+                            'assets/home_page_images/home_page_workouts.jpg',
+                        onPressed: () => context.pushRoute(
+                            WorkoutFinderRoute(selectWorkout: _selectWorkout)),
+                      ),
+                      ShareObjectTypeButton(
+                        title: 'Workout Plan',
+                        description:
+                            'Share a plan you have created, found or are going to do!',
+                        assetImageUri:
+                            'assets/home_page_images/home_page_plans.jpg',
+                        onPressed: () {},
+                        // onPressed: () => context.pushRoute(
+                        //     WorkoutPlanFinderRoute(selectPlan: _selectWorkoutPlan)),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),
             ListView(
               shrinkWrap: true,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyText('Write something about it.'),
-                    ],
-                  ),
-                ),
                 MyTextAreaFormFieldRow(
                     placeholder: 'Description (required)',
+                    autofocus: _captionController.text.isEmpty,
                     backgroundColor: context.theme.cardBackground,
                     keyboardType: TextInputType.text,
                     controller: _captionController),
                 SizedBox(height: 10),
-                MyText(
-                    'Add tags input TODO - clickable row open tag creator + similar to other tag types.'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: MyTextFormFieldRow(
+                          backgroundColor: context.theme.cardBackground,
+                          controller: _tagInputController,
+                          // Don't allow any spaces or special chracters.
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp("[a-zA-Z0-9]")),
+                          ],
+                          placeholder: 'Tag...',
+                          keyboardType: TextInputType.text),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: IconButton(
+                          disabled: _tagInputController.text.length == 0,
+                          iconData: CupertinoIcons.add,
+                          onPressed: _addTag),
+                    )
+                  ],
+                ),
+                GrowInOut(
+                    show: _tags.isNotEmpty,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        children: _tags
+                            .map((t) => CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => _removeTag(t),
+                                  child: MyText(
+                                    '#${t}',
+                                    size: FONTSIZE.SMALL,
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    )),
                 SizedBox(height: 10),
+                HorizontalLine(),
                 // Preview of what the post will look like.
+
                 if (_object != null)
                   SizeFadeIn(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TimelinePostCard(
+                          isPreview: true,
                           activityWithObjectData: ActivityWithObjectData(
                               feed.Activity(
                                   actor: 'me',
@@ -255,7 +341,7 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
                                   time: DateTime.now(),
                                   extraData: {
                                     'caption': _captionController.text,
-                                    'tags': 'tag1,tag2,tag3'
+                                    'tags': _tags
                                   }),
                               postDataForPreview)),
                     ),
