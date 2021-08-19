@@ -31,10 +31,7 @@ class StartSectionModal extends StatelessWidget {
             ? Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: PrimaryButton(
-                    suffix: Icon(
-                      CupertinoIcons.arrow_right_circle,
-                      color: context.theme.background,
-                    ),
+                    suffixIconData: CupertinoIcons.arrow_right_circle,
                     text: 'Get Started',
                     onPressed: () => _startSection(context)),
               )

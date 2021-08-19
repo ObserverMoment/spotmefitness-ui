@@ -150,7 +150,7 @@ class NavBarLoadingDots extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: SpinKitThreeBounce(
-          color: color ?? CupertinoTheme.of(context).primaryColor, size: 14),
+          color: color ?? CupertinoTheme.of(context).primaryColor, size: 13),
     );
   }
 }

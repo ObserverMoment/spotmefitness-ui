@@ -200,6 +200,17 @@ abstract class Styles {
     stops: [0.1, 0.9],
   );
 
+  static const secondaryButtonGradient = const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: const [
+      const Color(0xff232526),
+      const Color(0xff272b33),
+      const Color(0xff232526)
+    ],
+    stops: [0, 0.5, 1],
+  );
+
   static final pinkGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -218,7 +229,7 @@ abstract class Styles {
   );
 
   static final BoxShadow avatarBoxShadow = BoxShadow(
-      color: CupertinoColors.black.withOpacity(0.5),
+      color: CupertinoColors.black.withOpacity(0.4),
       blurRadius: 2.0, // soften the shadow
       spreadRadius: 1.0, //extend the shadow
       offset: Offset(

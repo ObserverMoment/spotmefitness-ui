@@ -22,7 +22,8 @@ class UserAvatar extends StatelessWidget {
   Widget _buildAvatar(BuildContext context) => Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-          shape: BoxShape.circle, color: Styles.black.withOpacity(0.7)),
+          shape: BoxShape.circle,
+          color: context.theme.cardBackground.withOpacity(0.7)),
       width: border ? size - (borderWidth * 2) : size,
       height: border ? size - (borderWidth * 2) : size,
       child: avatarUri == null

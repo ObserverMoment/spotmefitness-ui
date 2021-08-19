@@ -323,10 +323,7 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
                       ? PrimaryButton(
                           text: 'Create Club',
                           onPressed: _createClub,
-                          prefix: Icon(
-                            CupertinoIcons.add_circled,
-                            color: context.theme.background,
-                          ),
+                          prefixIconData: CupertinoIcons.add,
                           disabled: _nameController.text.length < 3,
                           loading: _savingToDB,
                         )

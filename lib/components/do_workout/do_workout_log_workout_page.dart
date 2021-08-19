@@ -187,11 +187,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                       ],
                     )
                   : PrimaryButton(
-                      prefix: Icon(
-                        CupertinoIcons.doc_chart,
-                        color: context.theme.background,
-                        size: 20,
-                      ),
+                      prefixIconData: CupertinoIcons.doc_chart,
                       withMinWidth: false,
                       loading: _savingToDB,
                       text: 'Save Log',
@@ -199,11 +195,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                           loggedWorkout, scheduledWorkoutId)),
             ),
             PrimaryButton(
-                prefix: Icon(
-                  CupertinoIcons.paperplane,
-                  color: context.theme.background,
-                  size: 20,
-                ),
+                prefixIconData: CupertinoIcons.paperplane,
                 withMinWidth: false,
                 loading: _savingToDB,
                 text: 'Share Summary',

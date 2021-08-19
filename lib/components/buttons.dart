@@ -18,7 +18,8 @@ class MyButton extends StatelessWidget {
   final Widget? suffix;
   final void Function() onPressed;
   final Color contentColor;
-  final Color backgroundColor;
+  final Gradient? backgroundGradient;
+  final Color? backgroundColor;
   final bool border;
   final bool disabled;
   final bool loading;
@@ -30,11 +31,12 @@ class MyButton extends StatelessWidget {
       required this.text,
       this.suffix,
       required this.contentColor,
-      required this.backgroundColor,
+      this.backgroundColor,
       this.border = false,
       this.disabled = false,
       this.withMinWidth = true,
-      this.loading = false});
+      this.loading = false,
+      this.backgroundGradient});
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +51,10 @@ class MyButton extends StatelessWidget {
           constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
           padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           decoration: BoxDecoration(
+              gradient: backgroundGradient,
               border: border ? Border.all(color: contentColor) : null,
               color: backgroundColor,
-              borderRadius: BorderRadius.circular(12)),
+              borderRadius: BorderRadius.circular(6)),
           child: AnimatedSwitcher(
             duration: kStandardAnimationDuration,
             child: loading
@@ -72,7 +75,7 @@ class MyButton extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         child: MyText(
-                          text,
+                          text.toUpperCase(),
                           weight: FontWeight.bold,
                           color: contentColor,
                         ),
@@ -90,18 +93,18 @@ class MyButton extends StatelessWidget {
 /// Dark theme == white BG and black content
 /// Light theme == black BG and white content
 class PrimaryButton extends StatelessWidget {
-  final Widget? prefix;
+  final IconData? prefixIconData;
   final String text;
-  final Widget? suffix;
+  final IconData? suffixIconData;
   final void Function() onPressed;
   final bool disabled;
   final bool loading;
   final bool withMinWidth;
 
   PrimaryButton(
-      {this.prefix,
+      {this.prefixIconData,
       required this.text,
-      this.suffix,
+      this.suffixIconData,
       required this.onPressed,
       this.disabled = false,
       this.withMinWidth = true,
@@ -109,15 +112,34 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color backgroundColor = context.theme.primary;
+    final Color contentColor = context.theme.background;
     return MyButton(
       text: text,
       onPressed: onPressed,
-      prefix: prefix,
-      suffix: suffix,
+      prefix: prefixIconData != null
+          ? Icon(
+              prefixIconData,
+              color: contentColor,
+              size: 20,
+            )
+          : null,
+      suffix: suffixIconData != null
+          ? Icon(suffixIconData, color: contentColor, size: 20)
+          : null,
       disabled: disabled,
       loading: loading,
-      backgroundColor: context.theme.primary,
-      contentColor: context.theme.background,
+      backgroundGradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          backgroundColor.withOpacity(0.85),
+          backgroundColor,
+          backgroundColor.withOpacity(0.85)
+        ],
+        stops: [0, 0.5, 1],
+      ),
+      contentColor: contentColor,
       withMinWidth: withMinWidth,
     );
   }
@@ -125,31 +147,42 @@ class PrimaryButton extends StatelessWidget {
 
 /// Primary color border - primary color text.
 class SecondaryButton extends StatelessWidget {
-  final Widget? prefix;
+  final IconData? prefixIconData;
   final String text;
-  final Widget? suffix;
+  final IconData? suffixIconData;
   final void Function() onPressed;
   final bool loading;
   final bool withMinWidth;
   final bool withBorder;
+  final bool disabled;
 
   SecondaryButton(
-      {this.prefix,
+      {this.prefixIconData,
       required this.text,
-      this.suffix,
+      this.suffixIconData,
       required this.onPressed,
       this.withMinWidth = true,
       this.withBorder = false,
-      this.loading = false});
+      this.loading = false,
+      this.disabled = false});
 
   @override
   Widget build(BuildContext context) {
     return MyButton(
-      prefix: prefix,
-      suffix: suffix,
+      prefix: prefixIconData != null
+          ? Icon(
+              prefixIconData,
+              color: Styles.white,
+              size: 20,
+            )
+          : null,
+      suffix: suffixIconData != null
+          ? Icon(suffixIconData, color: Styles.white, size: 20)
+          : null,
       text: text,
+      disabled: disabled,
       onPressed: onPressed,
-      backgroundColor: CupertinoColors.darkBackgroundGray,
+      backgroundGradient: Styles.secondaryButtonGradient,
       contentColor: Styles.white,
       withMinWidth: withMinWidth,
       border: withBorder,

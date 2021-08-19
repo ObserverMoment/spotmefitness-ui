@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
-import 'package:spotmefitness_ui/components/social/feeds_and_follows/feeds_follows_and_clubs.dart';
+import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -50,7 +50,7 @@ class TimelinePostCard extends StatelessWidget {
         ],
       );
 
-  Widget _buildTitleAndCaption(
+  Widget _buildTitleCaptionAndTags(
           Activity activity, TimelinePostData? objectData) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -70,6 +70,21 @@ class TimelinePostCard extends StatelessWidget {
                   lineHeight: 1.4,
                   maxLines: 3,
                 ),
+                if (activity.extraData?['tags'] != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+                    child: Wrap(
+                      spacing: 5,
+                      runSpacing: 5,
+                      children: (activity.extraData?['tags'] as String)
+                          .split(',')
+                          .map((tag) => MyText(
+                                '#$tag',
+                                size: FONTSIZE.SMALL,
+                              ))
+                          .toList(),
+                    ),
+                  )
               ],
             ),
           ],
@@ -113,7 +128,7 @@ class TimelinePostCard extends StatelessWidget {
           )
         ],
       ),
-      _buildTitleAndCaption(activity, objectData),
+      _buildTitleCaptionAndTags(activity, objectData),
       SizedBox(height: 10),
       HorizontalLine(
           verticalPadding: 0, color: context.theme.primary.withOpacity(0.1))

@@ -131,20 +131,13 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
                               children: [
                                 PrimaryButton(
                                     withMinWidth: false,
-                                    prefix: Icon(
-                                      CupertinoIcons.checkmark_alt,
-                                      size: 18,
-                                      color: context.theme.background,
-                                    ),
+                                    prefixIconData:
+                                        CupertinoIcons.checkmark_alt,
                                     text: 'Yes, join the Club!',
                                     onPressed: () => print('join club flow')),
                                 SecondaryButton(
                                     withMinWidth: false,
-                                    prefix: Icon(
-                                      CupertinoIcons.xmark,
-                                      size: 18,
-                                      color: Styles.white,
-                                    ),
+                                    prefixIconData: CupertinoIcons.xmark,
                                     text: 'No, thanks',
                                     onPressed: context.pop)
                               ],

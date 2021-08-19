@@ -223,11 +223,8 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
             FadeInUp(
               child: PrimaryButton(
                   loading: _savingToDB,
-                  prefix: Icon(
-                    _isCreate ? CupertinoIcons.add : CupertinoIcons.pencil,
-                    size: 20,
-                    color: context.theme.background,
-                  ),
+                  prefixIconData:
+                      _isCreate ? CupertinoIcons.add : CupertinoIcons.pencil,
                   text: _isCreate ? 'Create Invite Link' : 'Update Invite Link',
                   onPressed: _isCreate
                       ? () => _handleCreate()

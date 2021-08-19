@@ -48,10 +48,7 @@ class SectionCompleteModal extends StatelessWidget {
           padding: const EdgeInsets.only(top: 12.0, bottom: 4),
           child: SecondaryButton(
             onPressed: () => _handleResetSection(context),
-            prefix: Icon(
-              CupertinoIcons.refresh_bold,
-              color: Styles.white,
-            ),
+            prefixIconData: CupertinoIcons.refresh_bold,
             text: 'Redo Section',
           ),
         ),

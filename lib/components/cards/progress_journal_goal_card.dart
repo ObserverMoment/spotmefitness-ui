@@ -228,10 +228,7 @@ class __MarkGoalCompletedBottomSheetState
             SizedBox(height: 30),
             PrimaryButton(
                 text: 'Mark Complete',
-                prefix: Icon(
-                  CupertinoIcons.checkmark_alt,
-                  color: Styles.infoBlue,
-                ),
+                prefixIconData: CupertinoIcons.checkmark_alt,
                 onPressed: _markComplete)
           ],
         ),

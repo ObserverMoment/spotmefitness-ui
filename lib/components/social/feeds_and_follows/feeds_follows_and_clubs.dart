@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user_followers.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user_following.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user_timeline.dart';
+import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -435,16 +436,4 @@ class UserFollow extends StatelessWidget {
       ),
     );
   }
-}
-
-class ActivityWithObjectData {
-  final Activity activity;
-  final TimelinePostData? objectData;
-  const ActivityWithObjectData(this.activity, this.objectData);
-}
-
-class FollowWithUserAvatarData {
-  final Follow follow;
-  final UserAvatarData? userAvatarData;
-  const FollowWithUserAvatarData(this.follow, this.userAvatarData);
 }

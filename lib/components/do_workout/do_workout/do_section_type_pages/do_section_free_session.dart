@@ -79,11 +79,7 @@ class _DoWorkoutSectionFreeSessionState
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SecondaryButton(
-                          prefix: Icon(
-                            CupertinoIcons.doc_chart,
-                            color: Styles.white,
-                            size: 20,
-                          ),
+                          prefixIconData: CupertinoIcons.doc_chart,
                           withMinWidth: false,
                           text: 'Log this section',
                           onPressed: _markSectionComplete),
