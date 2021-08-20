@@ -16,7 +16,11 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// Also allows inline creation of a new collection (name input only) which gets immediately returned.
 class CollectionSelector extends StatelessWidget {
   final void Function(Collection collection) selectCollection;
-  const CollectionSelector({Key? key, required this.selectCollection})
+  final String title;
+  const CollectionSelector(
+      {Key? key,
+      required this.selectCollection,
+      this.title = 'Your Collections'})
       : super(key: key);
 
   void _handleSelectCollection(BuildContext context, Collection collection) {
@@ -38,11 +42,10 @@ class CollectionSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        backgroundColor: context.theme.modalBackground,
-        navigationBar: BorderlessNavBar(
-          backgroundColor: context.theme.modalBackground,
+        navigationBar: BottomBorderNavBar(
+          bottomBorderColor: context.theme.navbarBottomBorder,
           customLeading: NavBarCancelButton(context.pop),
-          middle: NavBarTitle('Your Collections'),
+          middle: NavBarTitle(title),
         ),
         child: QueryObserver<UserCollections$Query, json.JsonSerializable>(
             key: Key(
@@ -62,30 +65,27 @@ class CollectionSelector extends StatelessWidget {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: CreateTextIconButton(
                             text: 'Create new collection',
                             onPressed: () => _openCreateCollection(context)),
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 16.0, left: 12, right: 12),
-                          child: GridView.builder(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: collections.length,
-                              gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                      maxCrossAxisExtent: 200,
-                                      crossAxisSpacing: 16,
-                                      mainAxisSpacing: 16),
                               itemBuilder: (c, i) => GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
                                     onTap: () => _handleSelectCollection(
                                         context, collections[i]),
-                                    child: CollectionCard(
-                                        backgroundColor:
-                                            context.theme.background,
-                                        collection: collections[i]),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: CollectionCard(
+                                          collection: collections[i]),
+                                    ),
                                   )),
                         ),
                       ),

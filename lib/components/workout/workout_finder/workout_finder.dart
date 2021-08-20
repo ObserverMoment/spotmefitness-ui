@@ -389,7 +389,9 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                           delayBasis: 15,
                           child: WorkoutFinderWorkoutCard(
                             workout: workout,
-                            selectWorkout: widget.selectWorkout,
+                            selectWorkout: widget.selectWorkout != null
+                                ? _selectWorkout
+                                : null,
                           ),
                         ),
                         firstPageProgressIndicatorBuilder: (c) =>

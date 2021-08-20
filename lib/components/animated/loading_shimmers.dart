@@ -46,7 +46,7 @@ class ShimmerCard extends StatelessWidget {
 
 class ShimmerCardList extends StatelessWidget {
   final int itemCount;
-  final double cardHeight;
+  final double? cardHeight;
   final EdgeInsets cardPadding;
   ShimmerCardList(
       {required this.itemCount,
@@ -147,7 +147,8 @@ class ShimmerCardGrid extends StatelessWidget {
 
 class ShimmerListPage extends StatelessWidget {
   final String title;
-  ShimmerListPage({this.title = 'Getting ready...'});
+  final double? cardHeight;
+  ShimmerListPage({this.title = 'Getting ready...', this.cardHeight});
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
@@ -156,6 +157,7 @@ class ShimmerListPage extends StatelessWidget {
         ),
         child: ShimmerCardList(
           itemCount: 10,
+          cardHeight: cardHeight,
         ));
   }
 }

@@ -22,14 +22,16 @@ class YourCollectionsPage extends StatelessWidget {
             'YourCollectionsPage - ${UserCollectionsQuery().operationName}'),
         query: UserCollectionsQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
-        loadingIndicator: ShimmerGridPage(),
+        loadingIndicator: ShimmerListPage(
+          cardHeight: 100,
+        ),
         builder: (data) {
           final collections = data.userCollections
               .sortedBy<DateTime>((c) => c.createdAt)
               .reversed
               .toList();
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
               navigationBar: BorderlessNavBar(
                 middle: NavBarTitle('Your Collections'),
                 trailing: Row(
@@ -38,9 +40,7 @@ class YourCollectionsPage extends StatelessWidget {
                   children: [
                     CreateIconButton(
                       onPressed: () => context.showBottomSheet(
-                          useRootNavigator: true,
-                          expand: true,
-                          child: CollectionCreator()),
+                          expand: true, child: CollectionCreator()),
                     ),
                     InfoPopupButton(
                         infoWidget: MyText('Info about collections'))
@@ -49,20 +49,19 @@ class YourCollectionsPage extends StatelessWidget {
               ),
               child: collections.isNotEmpty
                   ? Padding(
-                      padding:
-                          const EdgeInsets.only(top: 16.0, left: 16, right: 16),
-                      child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: collections.length,
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16),
                         itemBuilder: (c, i) => GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: () => context.navigateTo(
                               CollectionDetailsRoute(id: collections[i].id)),
-                          child: CollectionCard(
-                            collection: collections[i],
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: CollectionCard(
+                              collection: collections[i],
+                            ),
                           ),
                         ),
                       ),

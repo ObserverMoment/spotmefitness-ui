@@ -1,5 +1,13 @@
-query timelinePostsData($posts: [TimelinePostDataRequestInput!]!) {
-  timelinePostsData(posts: $posts) {
-    ...TimelinePostData
+query timelinePostsData($postDataRequests: [TimelinePostDataRequestInput!]!) {
+  timelinePostsData(postDataRequests: $postDataRequests) {
+    poster {
+      ...TimelinePostDataUser
+    }
+    creator {
+      ...TimelinePostDataUser
+    }
+    object {
+      ...TimelinePostDataObject
+    }
   }
 }

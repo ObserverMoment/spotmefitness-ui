@@ -92,7 +92,7 @@ extension BuildContextExtension on BuildContext {
             title: title != null
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: H3(title, textAlign: TextAlign.center),
+                    child: MyHeaderText(title, textAlign: TextAlign.center),
                   )
                 : null,
             content: content,
@@ -148,7 +148,7 @@ extension BuildContextExtension on BuildContext {
                 title: title != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: H3(title, textAlign: TextAlign.center),
+                        child: MyHeaderText(title, textAlign: TextAlign.center),
                       )
                     : null,
                 content: content,
@@ -190,7 +190,7 @@ extension BuildContextExtension on BuildContext {
     final T res = await showCupertinoDialog(
         context: context,
         builder: (context) => CupertinoAlertDialog(
-                title: H3(
+                title: MyHeaderText(
                   '${verb ?? "Delete"} $itemType',
                   textAlign: TextAlign.center,
                 ),
@@ -241,16 +241,15 @@ extension BuildContextExtension on BuildContext {
   Future<T?> showBottomSheet<T>(
       {required Widget child,
       bool expand = false,
-      bool useRootNavigator = false,
       bool showDragHandle = true,
-      Color? barrierColor}) async {
+      Color? barrierColor,
+      bool useRootNavigator = true}) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
         useRootNavigator: useRootNavigator,
-        backgroundColor: context.readTheme.modalBackground,
-        barrierColor: barrierColor ?? Styles.black.withOpacity(0.6),
+        barrierColor: barrierColor ?? Styles.black.withOpacity(0.75),
         builder: (context) => showDragHandle
             ? Column(
                 mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
@@ -281,7 +280,7 @@ extension BuildContextExtension on BuildContext {
                       color: Styles.infoBlue,
                     ),
                     SizedBox(height: 6),
-                    H3(title),
+                    MyHeaderText(title),
                   ],
                 ),
                 content: message != null
@@ -308,7 +307,7 @@ extension BuildContextExtension on BuildContext {
         builder: (context) => CupertinoAlertDialog(
                 title: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: H3(
+                  child: MyHeaderText(
                     'Oops, it went wrong!',
                     color: Styles.errorRed,
                     textAlign: TextAlign.center,

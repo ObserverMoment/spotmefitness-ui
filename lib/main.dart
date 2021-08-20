@@ -84,36 +84,40 @@ class _AuthRouterState extends State<AuthRouter> {
           return ChangeNotifierProvider<ThemeBloc>(
             create: (_) => ThemeBloc(deviceBrightness: _userDeviceBrightness),
             child: Builder(
-                builder: (context) => _Unfocus(
-                        child: CupertinoApp.router(
-                      routeInformationParser: _appRouter.defaultRouteParser(
-                          includePrefixMatches: true),
-                      routerDelegate: AutoRouterDelegate.declarative(
-                        _appRouter,
-                        routes: (_) => [
-                          // if the user is logged in, they may proceed to the main App
-                          if (authState == AuthState.AUTHED &&
-                              _authedUser != null)
-                            AuthedRouter()
-                          // if they are not logged in, bring them to the Login page
-                          else
-                            UnauthedLandingRoute(),
+                builder: (context) => Provider<GraphQLStore>(
+                      create: (_) => GraphQLStore(),
+                      dispose: (context, store) => store.dispose(),
+                      child: _Unfocus(
+                          child: CupertinoApp.router(
+                        routeInformationParser: _appRouter.defaultRouteParser(
+                            includePrefixMatches: true),
+                        routerDelegate: AutoRouterDelegate.declarative(
+                          _appRouter,
+                          routes: (_) => [
+                            // if the user is logged in, they may proceed to the main App
+                            if (authState == AuthState.AUTHED &&
+                                _authedUser != null)
+                              AuthedRouter()
+                            // if they are not logged in, bring them to the Login page
+                            else
+                              UnauthedLandingRoute(),
+                          ],
+                        ),
+                        debugShowCheckedModeBanner: false,
+                        theme: context.theme.cupertinoThemeData,
+                        localizationsDelegates: [
+                          DefaultMaterialLocalizations.delegate,
+                          DefaultCupertinoLocalizations.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
                         ],
-                      ),
-                      debugShowCheckedModeBanner: false,
-                      theme: context.theme.cupertinoThemeData,
-                      localizationsDelegates: [
-                        DefaultMaterialLocalizations.delegate,
-                        DefaultCupertinoLocalizations.delegate,
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
-                      supportedLocales: [
-                        const Locale('en', 'US'),
-                        const Locale('en', 'GB'),
-                      ],
-                    ))),
+                        supportedLocales: [
+                          const Locale('en', 'US'),
+                          const Locale('en', 'GB'),
+                        ],
+                      )),
+                    )),
           );
         });
   }

@@ -94,6 +94,13 @@ const kSectionTypesWithFinishLine = [
 const double kBodyAreaSelector_svg_width = 93.6;
 const double kBodyAreaSelector_svg_height = 213.43;
 
+/// GetStream ///
+const String kUserFeedName = 'user_feed'; // Post to this.
+const String kUserTimelineName =
+    'user_timeline'; // View this / follow other with this.
+const String kUserNotificationName =
+    'user_notification'; // System notifications
+
 /// Hive
 const String kSettingsHiveBoxName = 'settings_box';
 

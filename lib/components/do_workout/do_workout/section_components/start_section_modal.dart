@@ -8,7 +8,6 @@ import 'package:spotmefitness_ui/components/workout/workout_section_display.dart
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class StartSectionModal extends StatelessWidget {
   final WorkoutSection workoutSection;

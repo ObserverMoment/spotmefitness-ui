@@ -815,7 +815,7 @@ type Query {
   textSearchWorkoutPlanNames(text: String!): [TextSearchResult!]
   textSearchUserPublicProfiles(text: String!): [UserPublicProfile!]
   textSearchUserPublicNames(text: String!): [TextSearchResult!]
-  timelinePostsData(posts: [TimelinePostDataRequestInput!]!): [TimelinePostData!]!
+  timelinePostsData(postDataRequests: [TimelinePostDataRequestInput!]!): [TimelinePostData!]!
   authedUser: User!
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
@@ -887,28 +887,36 @@ enum TimeUnit {
 }
 
 type TimelinePostData {
-  userId: ID!
-  userDisplayName: String!
-  userAvatarUri: String
-  objectId: ID!
-  objectType: TimelinePostType!
-  title: String!
-  audioUri: String
-  imageUri: String
-  videoUri: String
-  videoThumbUri: String
+  poster: TimelinePostDataUser!
+  creator: TimelinePostDataUser!
+  object: TimelinePostDataObject!
+}
+
+type TimelinePostDataObject {
+  id: ID!
+  type: TimelinePostType!
+  name: String!
+  introAudioUri: String
+  coverImageUri: String
+  introVideoUri: String
+  introVideoThumbUri: String
 }
 
 input TimelinePostDataRequestInput {
-  userId: ID!
+  posterId: ID!
   objectId: ID!
   objectType: TimelinePostType!
+}
+
+type TimelinePostDataUser {
+  id: ID!
+  displayName: String!
+  avatarUri: String
 }
 
 enum TimelinePostType {
   WORKOUT
   WORKOUTPLAN
-  USERPROFILE
 }
 
 input UpdateBodyTransformationPhotoInput {

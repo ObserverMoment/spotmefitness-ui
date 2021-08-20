@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/discover_workout_plan_category_card.dart';
@@ -21,12 +19,8 @@ class DiscoverPlansPage extends StatelessWidget {
         middle: NavBarTitle('Discover Plans'),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,
-            child: Transform.rotate(
-              angle: pi / 2,
-              child: Icon(
-                CupertinoIcons.compass,
-                size: 28,
-              ),
+            child: Icon(
+              CupertinoIcons.search,
             ),
             onPressed: () => context.navigateTo(
                 WorkoutPlanFinderRoute(initialOpenPublicTab: true))),

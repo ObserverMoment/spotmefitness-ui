@@ -13,17 +13,19 @@ import 'package:spotmefitness_ui/router.gr.dart';
 class AuthedUserFeed extends StatelessWidget {
   final List<ActivityWithObjectData> activitiesWithObjectData;
   final bool isLoading;
+  final void Function(String activityId) deleteActivityById;
   const AuthedUserFeed({
     Key? key,
     required this.activitiesWithObjectData,
     required this.isLoading,
+    required this.deleteActivityById,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StackAndFloatingButton(
       buttonText: 'Post',
-      onPressed: () => context.navigateTo(PostCreatorRoute()),
+      onPressed: () => context.pushRoute(PostCreatorRoute()),
       child: isLoading
           ? LoadingCircle()
           : activitiesWithObjectData.isEmpty
@@ -43,7 +45,7 @@ class AuthedUserFeed extends StatelessWidget {
                 )
               : TimelineFeedPostList(
                   activitiesWithObjectData: activitiesWithObjectData,
-                ),
+                  deleteActivityById: deleteActivityById),
     );
   }
 }

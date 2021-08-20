@@ -15,6 +15,7 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/authed_user_timeline.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:faye_dart/src/subscription.dart';
@@ -68,8 +69,8 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
 
     _authedUser = GetIt.I<AuthBloc>().authedUser!;
     _streamFeedClient = context.streamFeedClient;
-    _timeline = _streamFeedClient.flatFeed('user_timeline', _authedUser.id);
-    _feed = _streamFeedClient.flatFeed('user_feed', _authedUser.id);
+    _timeline = _streamFeedClient.flatFeed(kUserTimelineName, _authedUser.id);
+    _feed = _streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
 
     _loadInitialData().then((_) {
       _subscribeToFeeds();
@@ -180,7 +181,7 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   /// [ActivityWithObjectData] is what is needed to display a single post in the UI.
   Future<List<ActivityWithObjectData>> _getPostsUserAndObjectData(
       List<Activity> activities) async {
-    final List<TimelinePostDataRequestInput> requestedPosts =
+    final List<TimelinePostDataRequestInput> postDataRequests =
         activities.map((a) {
       if (a.object == null) {
         throw Exception('Error: Activity.object should never be null.');
@@ -191,7 +192,7 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
       final idAndType = a.object!.split(':');
 
       return TimelinePostDataRequestInput(
-          userId: a.actor!.split(':')[1],
+          posterId: a.actor!.split(':')[1],
           objectId: idAndType[1],
           objectType: idAndType[0].toTimelinePostType());
     }).toList();
@@ -200,7 +201,8 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
     final result = await context.graphQLStore.networkOnlyOperation<
             TimelinePostsData$Query, TimelinePostsDataArguments>(
         operation: TimelinePostsDataQuery(
-            variables: TimelinePostsDataArguments(posts: requestedPosts)));
+            variables: TimelinePostsDataArguments(
+                postDataRequests: postDataRequests)));
 
     if (result.hasErrors || result.data == null) {
       throw Exception(
@@ -214,9 +216,26 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
             ActivityWithObjectData(
                 activity,
                 result.data?.timelinePostsData.firstWhereOrNull((p) =>
-                    p.objectId == requestedPosts[i].objectId &&
-                    p.userId == requestedPosts[i].userId)))
+                    p.poster.id == postDataRequests[i].posterId &&
+                    p.object.id == postDataRequests[i].objectId)))
         .toList();
+  }
+
+  void _handleDeleteActivityById(String activityId) {
+    context.showConfirmDeleteDialog(
+        itemType: 'Post',
+        message: 'This will remove the post from all timelines. Are you sure?',
+        onConfirm: () async {
+          try {
+            await _feed.removeActivityById(activityId);
+            context.showToast(message: 'Post deleted..');
+          } catch (e) {
+            print(e);
+            context.showToast(
+                message:
+                    'Sorry, there was a problem, the post could not be deleted.');
+          }
+        });
   }
 
   Future<void> _getFollowing() async {
@@ -325,9 +344,9 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
                 isLoading: _timelineLoading,
               ),
               AuthedUserFeed(
-                activitiesWithObjectData: _feedActivitiesWithObjectData,
-                isLoading: _feedLoading,
-              ),
+                  activitiesWithObjectData: _feedActivitiesWithObjectData,
+                  isLoading: _feedLoading,
+                  deleteActivityById: _handleDeleteActivityById),
               AuthedUserClubsList(),
               AuthedUserFollowers(
                 followers: _followers,
@@ -348,7 +367,11 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
 /// Displays a list of [TimelinePostCard] widgets and animates in an
 class TimelineFeedPostList extends StatefulWidget {
   final List<ActivityWithObjectData> activitiesWithObjectData;
-  const TimelineFeedPostList({Key? key, required this.activitiesWithObjectData})
+  final void Function(String activityId)? deleteActivityById;
+  const TimelineFeedPostList(
+      {Key? key,
+      required this.activitiesWithObjectData,
+      this.deleteActivityById})
       : super(key: key);
 
   @override
@@ -391,6 +414,7 @@ class _TimelineFeedPostListState extends State<TimelineFeedPostList> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TimelinePostCard(
               activityWithObjectData: post,
+              deleteActivityById: widget.deleteActivityById,
             ),
           ),
         ),

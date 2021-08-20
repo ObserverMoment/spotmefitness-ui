@@ -31,10 +31,9 @@ class _FilterableCollectionWorkoutPlansState
   Future<void> _moveToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
     await context.showBottomSheet(
-        useRootNavigator: true,
         expand: true,
         child: CollectionSelector(selectCollection: (collection) async {
-          await _removeWorkoutPlanFromCollection(workoutPlan);
+          await _removeWorkoutPlanFromCollection(workoutPlan, showToast: false);
           await _addWorkoutPlanToCollection(collection, workoutPlan);
         }));
   }
@@ -42,7 +41,6 @@ class _FilterableCollectionWorkoutPlansState
   Future<void> _copyToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
     await context.showBottomSheet(
-        useRootNavigator: true,
         expand: true,
         child: CollectionSelector(selectCollection: (collection) async {
           await _addWorkoutPlanToCollection(collection, workoutPlan);
@@ -90,7 +88,8 @@ class _FilterableCollectionWorkoutPlansState
         onConfirm: () => _removeWorkoutPlanFromCollection(workoutPlan));
   }
 
-  Future<void> _removeWorkoutPlanFromCollection(WorkoutPlan workoutPlan) async {
+  Future<void> _removeWorkoutPlanFromCollection(WorkoutPlan workoutPlan,
+      {bool showToast = true}) async {
     final updatedCollection = Collection.fromJson(widget.collection.toJson());
     updatedCollection.workoutPlans = widget.collection.workoutPlans
         .where((w) => w.id != workoutPlan.id)
@@ -115,7 +114,9 @@ class _FilterableCollectionWorkoutPlansState
       context.showErrorAlert(
           'Sorry there was a problem, the plan was not removed.');
     } else {
-      context.showToast(message: 'Removed ${workoutPlan.name}');
+      if (showToast) {
+        context.showToast(message: 'Removed ${workoutPlan.name}');
+      }
     }
   }
 

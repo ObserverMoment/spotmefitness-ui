@@ -8,13 +8,15 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/fin
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
 class YourFilteredWorkoutPlansList extends StatelessWidget {
+  final void Function(WorkoutPlan workoutPlan)? selectWorkoutPlan;
   final List<WorkoutPlan> workoutPlans;
   final bool loading;
   final ScrollController? listPositionScrollController;
   YourFilteredWorkoutPlansList(
       {required this.workoutPlans,
       this.listPositionScrollController,
-      this.loading = false});
+      this.loading = false,
+      this.selectWorkoutPlan});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class YourFilteredWorkoutPlansList extends StatelessWidget {
                       curve: Curves.easeInOut,
                       animation: animation,
                       child: WorkoutFinderWorkoutPlanCard(
+                          selectWorkoutPlan: selectWorkoutPlan,
                           workoutPlan: workoutPlan),
                     ),
                 removeItemBuilder:
@@ -41,6 +44,7 @@ class YourFilteredWorkoutPlansList extends StatelessWidget {
                   return FadeTransition(
                     opacity: animation,
                     child: WorkoutFinderWorkoutPlanCard(
+                        selectWorkoutPlan: selectWorkoutPlan,
                         workoutPlan: oldWorkoutPlan),
                   );
                 },

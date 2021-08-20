@@ -237,9 +237,9 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
     _streamFeedClient = context.streamFeedClient;
 
     _authedUserTimeline =
-        _streamFeedClient.flatFeed('user_timeline', _authedUser.id);
+        _streamFeedClient.flatFeed(kUserTimelineName, _authedUser.id);
     _otherUserFeed =
-        _streamFeedClient.flatFeed('user_feed', widget.otherUserId);
+        _streamFeedClient.flatFeed(kUserFeedName, widget.otherUserId);
 
     _checkUserConnection();
 
@@ -252,7 +252,7 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
     final feed = await _authedUserTimeline.following(
         offset: 0,
         limit: 1,
-        filter: [FeedId.id('user_feed:${widget.otherUserId}')]);
+        filter: [FeedId.id('$kUserFeedName:${widget.otherUserId}')]);
 
     setState(() {
       _isFollowing = feed.isNotEmpty;

@@ -178,8 +178,18 @@ extension LoadUnitExtension on LoadUnit {
 }
 
 extension TimelinePostTypeExtension on TimelinePostType {
-  String get display => describeEnum(this).capitalize;
   String get apiValue => describeEnum(this).toUpperCase();
+
+  String get display {
+    switch (this) {
+      case TimelinePostType.workout:
+        return 'Workout';
+      case TimelinePostType.workoutplan:
+        return 'Workout Plan';
+      default:
+        throw new Exception('This is not a valid TimelinePostType enum: $this');
+    }
+  }
 }
 
 extension TimeUnitExtension on TimeUnit {

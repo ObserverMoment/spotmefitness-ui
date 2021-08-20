@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
-import 'package:spotmefitness_ui/components/creators/post_creator.dart';
+import 'package:spotmefitness_ui/components/creators/post_creator/post_creator.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';

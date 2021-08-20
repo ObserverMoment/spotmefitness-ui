@@ -3,7 +3,6 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class StartWorkoutCountdownButton extends StatefulWidget {

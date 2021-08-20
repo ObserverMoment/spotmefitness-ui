@@ -7,14 +7,13 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/cupertino.dart' as _i56;
 import 'package:flutter/material.dart' as _i2;
-import 'package:stream_feed/stream_feed.dart' as _i58;
 
 import 'components/creators/club_creator/club_creator.dart' as _i22;
 import 'components/creators/logged_workout_creator/logged_workout_creator.dart'
     as _i28;
 import 'components/creators/personal_best_creator/personal_best_creator.dart'
     as _i24;
-import 'components/creators/post_creator.dart' as _i25;
+import 'components/creators/post_creator/post_creator.dart' as _i25;
 import 'components/creators/progress_journal_creator/progress_journal_creator.dart'
     as _i23;
 import 'components/creators/workout_creator/workout_creator.dart' as _i26;
@@ -155,7 +154,8 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<WorkoutPlanFinderRouteArgs>(
               orElse: () => const WorkoutPlanFinderRouteArgs());
           return _i13.WorkoutPlanFinderPage(
-              initialOpenPublicTab: args.initialOpenPublicTab);
+              initialOpenPublicTab: args.initialOpenPublicTab,
+              selectWorkoutPlan: args.selectWorkoutPlan);
         }),
     ClubDetailsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -259,11 +259,8 @@ class AppRouter extends _i1.RootStackRouter {
         }),
     PostCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
-        builder: (data) {
-          final args = data.argsAs<PostCreatorRouteArgs>(
-              orElse: () => const PostCreatorRouteArgs());
-          return _i25.PostCreatorPage(
-              key: args.key, activity: args.activity, object: args.object);
+        builder: (_) {
+          return const _i25.PostCreatorPage();
         }),
     WorkoutCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -683,19 +680,25 @@ class WorkoutFinderRouteArgs {
 
 class WorkoutPlanFinderRoute
     extends _i1.PageRouteInfo<WorkoutPlanFinderRouteArgs> {
-  WorkoutPlanFinderRoute({bool? initialOpenPublicTab})
+  WorkoutPlanFinderRoute(
+      {bool? initialOpenPublicTab,
+      void Function(_i57.WorkoutPlan)? selectWorkoutPlan})
       : super(name,
             path: 'find-plan',
             args: WorkoutPlanFinderRouteArgs(
-                initialOpenPublicTab: initialOpenPublicTab));
+                initialOpenPublicTab: initialOpenPublicTab,
+                selectWorkoutPlan: selectWorkoutPlan));
 
   static const String name = 'WorkoutPlanFinderRoute';
 }
 
 class WorkoutPlanFinderRouteArgs {
-  const WorkoutPlanFinderRouteArgs({this.initialOpenPublicTab});
+  const WorkoutPlanFinderRouteArgs(
+      {this.initialOpenPublicTab, this.selectWorkoutPlan});
 
   final bool? initialOpenPublicTab;
+
+  final void Function(_i57.WorkoutPlan)? selectWorkoutPlan;
 }
 
 class ClubDetailsRoute extends _i1.PageRouteInfo<ClubDetailsRouteArgs> {
@@ -884,24 +887,10 @@ class PersonalBestCreatorRouteArgs {
   final _i57.UserBenchmark? userBenchmark;
 }
 
-class PostCreatorRoute extends _i1.PageRouteInfo<PostCreatorRouteArgs> {
-  PostCreatorRoute({_i56.Key? key, _i58.Activity? activity, String? object})
-      : super(name,
-            path: 'create-post',
-            args: PostCreatorRouteArgs(
-                key: key, activity: activity, object: object));
+class PostCreatorRoute extends _i1.PageRouteInfo {
+  const PostCreatorRoute() : super(name, path: 'create-post');
 
   static const String name = 'PostCreatorRoute';
-}
-
-class PostCreatorRouteArgs {
-  const PostCreatorRouteArgs({this.key, this.activity, this.object});
-
-  final _i56.Key? key;
-
-  final _i58.Activity? activity;
-
-  final String? object;
 }
 
 class WorkoutCreatorRoute extends _i1.PageRouteInfo<WorkoutCreatorRouteArgs> {

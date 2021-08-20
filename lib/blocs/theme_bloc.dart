@@ -44,6 +44,7 @@ class ThemeBloc extends ChangeNotifier {
   Color get activeIcon => theme.customThemeData.activeIcon;
   Color get cardBackground => theme.customThemeData.cardBackground;
   Color get modalBackground => theme.customThemeData.cardBackground;
+  Color get navbarBottomBorder => theme.customThemeData.navbarBottomBorder;
 
   Future<void> switchToTheme(ThemeName switchToTheme) async {
     if (switchToTheme == ThemeName.dark && themeName != ThemeName.dark) {
@@ -88,11 +89,13 @@ class CustomThemeData {
   final Color bottomNavigationBackground;
   final Color activeIcon;
   final Color cardBackground;
+  final Color navbarBottomBorder;
   CustomThemeData(
       {required this.scaffoldGradient,
       required this.bottomNavigationBackground,
       required this.activeIcon,
-      required this.cardBackground});
+      required this.cardBackground,
+      required this.navbarBottomBorder});
 }
 
 abstract class ThemeData {
@@ -108,7 +111,8 @@ abstract class ThemeData {
       ),
       activeIcon: Styles.colorFour,
       cardBackground: const Color(0xFF151515),
-      bottomNavigationBackground: const Color(0xff434343));
+      bottomNavigationBackground: const Color(0xff434343),
+      navbarBottomBorder: Styles.white.withOpacity(0.1));
 
   static CustomThemeData customLightData = CustomThemeData(
       scaffoldGradient: LinearGradient(
@@ -119,7 +123,8 @@ abstract class ThemeData {
       ),
       activeIcon: Styles.neonBlueOne,
       cardBackground: CupertinoColors.white,
-      bottomNavigationBackground: const Color(0xffffffff));
+      bottomNavigationBackground: const Color(0xffffffff),
+      navbarBottomBorder: Styles.black.withOpacity(0.1));
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
       brightness: Brightness.dark,

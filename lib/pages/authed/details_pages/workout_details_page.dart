@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/collections/collection_manager.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
@@ -112,88 +113,6 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
         ));
     if (result is ToastRequest) {
       context.showToast(message: result.message, toastType: result.type);
-    }
-  }
-
-  /// Either removes the workout from its current collection ([collection] is not null)
-  /// Or Adds to an existing collection.
-  /// Or adds to a newly created collection.
-  Future<void> _toggleSavedWorkout(
-      Workout workout, Collection? collection) async {
-    if (collection != null) {
-      context.showConfirmDialog(
-          title: 'Remove from Saved',
-          content: MyText(
-            'Remove from: ${collection.name}?',
-            textAlign: TextAlign.center,
-            maxLines: 4,
-          ),
-          onConfirm: () => _removeWorkoutFromCollection(collection, workout));
-    } else {
-      /// Add to collection flow.
-      /// First choose a collection
-      await context.showBottomSheet(
-          useRootNavigator: true,
-          expand: true,
-          child: CollectionSelector(
-              selectCollection: (collection) =>
-                  _addWorkoutToCollection(collection, workout)));
-    }
-  }
-
-  Future<void> _addWorkoutToCollection(
-      Collection collection, Workout workout) async {
-    final updatedCollection = Collection.fromJson(collection.toJson());
-    updatedCollection.workouts.add(workout);
-
-    final variables = AddWorkoutToCollectionArguments(
-        data: AddWorkoutToCollectionInput(
-            collectionId: collection.id,
-            workout: ConnectRelationInput(id: workout.id)));
-
-    final result = await context.graphQLStore.mutate<
-            AddWorkoutToCollection$Mutation, AddWorkoutToCollectionArguments>(
-        mutation: AddWorkoutToCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context.showErrorAlert(
-          'Sorry there was a problem, the workout was not added.');
-    } else {
-      context.showToast(message: 'Saved to collection: ${collection.name}');
-    }
-  }
-
-  Future<void> _removeWorkoutFromCollection(
-      Collection collection, Workout workout) async {
-    final updatedCollection = Collection.fromJson(collection.toJson());
-    updatedCollection.workouts =
-        collection.workouts.where((w) => w.id != workout.id).toList();
-
-    final variables = RemoveWorkoutFromCollectionArguments(
-        data: RemoveWorkoutFromCollectionInput(
-            collectionId: collection.id,
-            workout: ConnectRelationInput(id: workout.id)));
-
-    final result = await context.graphQLStore.mutate<
-            RemoveWorkoutFromCollection$Mutation,
-            RemoveWorkoutFromCollectionArguments>(
-        mutation: RemoveWorkoutFromCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context.showErrorAlert(
-          'Sorry there was a problem, the workout was not removed.');
-    } else {
-      context.showToast(message: 'Removed from collection: ${collection.name}');
     }
   }
 
@@ -375,9 +294,11 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
               builder: (collectionsData) {
                 final Workout workout = workoutData.workoutById;
 
-                final Collection? collection = collectionsData.userCollections
-                    .firstWhereOrNull(
-                        (collection) => collection.workouts.contains(workout));
+                final List<Collection> collections = collectionsData
+                    .userCollections
+                    .where(
+                        (collection) => collection.workouts.contains(workout))
+                    .toList();
 
                 final List<WorkoutSection> sortedWorkoutSections = workout
                     .workoutSections
@@ -477,10 +398,13 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                   CupertinoButton(
                                       pressedOpacity: 1.0,
                                       padding: EdgeInsets.zero,
-                                      onPressed: () => _toggleSavedWorkout(
-                                          workout, collection),
+                                      onPressed: () => CollectionManager
+                                          .addOrRemoveObjectFromCollection(
+                                              context, workout,
+                                              alreadyInCollections:
+                                                  collections),
                                       child: AnimatedLikeHeart(
-                                        active: collection != null,
+                                        active: collections.isNotEmpty,
                                       )),
                                   CupertinoButton(
                                     padding: EdgeInsets.zero,

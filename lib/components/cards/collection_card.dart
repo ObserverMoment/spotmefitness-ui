@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -8,10 +9,7 @@ import 'package:collection/collection.dart';
 
 class CollectionCard extends StatelessWidget {
   final Collection collection;
-  final Color? backgroundColor;
-  const CollectionCard(
-      {Key? key, required this.collection, this.backgroundColor})
-      : super(key: key);
+  const CollectionCard({Key? key, required this.collection}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,50 +26,66 @@ class CollectionCard extends StatelessWidget {
             ? workoutWithImage.coverImageUri
             : null;
 
-    return Card(
-      backgroundImageUri: selectedImageUri,
-      backgroundColor: backgroundColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: MyHeaderText(
-              collection.name,
-              maxLines: 2,
-              size: FONTSIZE.BIG,
-              textAlign: TextAlign.center,
-            ),
+    return Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            height: 80,
+            width: 80,
+            child: selectedImageUri != null
+                ? SizedUploadcareImage(selectedImageUri)
+                : Image.asset(
+                    'assets/home_page_images/home_page_collections.jpg',
+                    fit: BoxFit.cover,
+                  ),
           ),
-          if (Utils.textNotNull(
-            collection.description,
-          ))
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: MyText(
-                collection.description!,
+        ),
+        SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MyHeaderText(
+                collection.name,
                 maxLines: 2,
                 textAlign: TextAlign.center,
+                lineHeight: 1.4,
               ),
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: MyText(
-              '${collection.workouts.length} ${collection.workouts.length == 1 ? "workout" : "workouts"}',
-              color: Styles.colorTwo,
-              weight: FontWeight.bold,
-            ),
+              if (Utils.textNotNull(
+                collection.description,
+              ))
+                Row(
+                  children: [
+                    Expanded(
+                      child: MyText(
+                        collection.description!,
+                        maxLines: 2,
+                        lineHeight: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              SizedBox(height: 6),
+              Wrap(
+                spacing: 10,
+                runSpacing: 6,
+                children: [
+                  MyText(
+                    '${collection.workouts.length} ${collection.workouts.length == 1 ? "workout" : "workouts"}',
+                    color: Styles.colorTwo,
+                  ),
+                  MyText(
+                    '${collection.workoutPlans.length} ${collection.workoutPlans.length == 1 ? "plan" : "plans"}',
+                    color: Styles.colorTwo,
+                  )
+                ],
+              )
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: MyText(
-              '${collection.workoutPlans.length} ${collection.workoutPlans.length == 1 ? "plan" : "plans"}',
-              color: Styles.colorTwo,
-              weight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

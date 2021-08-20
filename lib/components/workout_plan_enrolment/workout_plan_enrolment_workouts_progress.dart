@@ -129,7 +129,6 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
       BuildContext context, WorkoutPlanDayWorkout workoutPlanDayWorkout) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
-        useRootNavigator: true,
         child: ScheduledWorkoutCreator(
           workout: workoutPlanDayWorkout.workout,
           workoutPlanEnrolmentId: workoutPlanEnrolment.id,

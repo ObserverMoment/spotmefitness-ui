@@ -133,7 +133,6 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                             text: 'Edit',
                             icon: Icon(CupertinoIcons.pencil),
                             onPressed: () => context.showBottomSheet(
-                                useRootNavigator: true,
                                 expand: true,
                                 child:
                                     CollectionCreator(collection: collection))),

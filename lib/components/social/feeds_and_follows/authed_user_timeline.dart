@@ -38,6 +38,5 @@ class AuthedUserTimeline extends StatelessWidget {
             : TimelineFeedPostList(
                 activitiesWithObjectData: activitiesWithObjectData,
               );
-    ;
   }
 }

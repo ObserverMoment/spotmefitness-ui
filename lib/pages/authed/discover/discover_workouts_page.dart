@@ -21,12 +21,8 @@ class DiscoverWorkoutsPage extends StatelessWidget {
         middle: NavBarTitle('Discover Workouts'),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,
-            child: Transform.rotate(
-              angle: pi / 2,
-              child: Icon(
-                CupertinoIcons.compass,
-                size: 28,
-              ),
+            child: Icon(
+              CupertinoIcons.search,
             ),
             onPressed: () => context
                 .navigateTo(WorkoutFinderRoute(initialOpenPublicTab: true))),

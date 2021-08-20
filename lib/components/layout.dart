@@ -289,6 +289,33 @@ class BorderlessNavBar extends CupertinoNavigationBar {
             border: null);
 }
 
+class BottomBorderNavBar extends CupertinoNavigationBar {
+  final Key? key;
+  final bool automaticallyImplyLeading;
+  final Widget? customLeading;
+  final Widget? middle;
+  final Widget? trailing;
+  final Color? backgroundColor;
+  final bool withoutLeading;
+  final Color bottomBorderColor;
+  BottomBorderNavBar({
+    this.key,
+    this.automaticallyImplyLeading = false,
+    this.customLeading,
+    this.middle,
+    this.trailing,
+    this.backgroundColor,
+    this.withoutLeading = false,
+    required this.bottomBorderColor,
+  }) : super(
+            key: key,
+            automaticallyImplyLeading: automaticallyImplyLeading,
+            leading: withoutLeading
+                ? null
+                : customLeading ?? const NavBarBackButton(),
+            border: Border(bottom: BorderSide(color: bottomBorderColor)));
+}
+
 class NavBarBackButton extends StatelessWidget {
   final Alignment alignment;
   const NavBarBackButton({

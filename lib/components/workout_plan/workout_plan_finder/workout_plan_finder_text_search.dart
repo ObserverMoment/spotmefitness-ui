@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 
 class WorkoutPlanFinderTextSearch extends StatefulWidget {
+  final void Function(WorkoutPlan workoutPlan)? selectWorkoutPlan;
   final List<WorkoutPlan> userWorkoutPlans;
   final int initialPageIndex;
   final void Function(int index) updateActivePageIndex;
@@ -21,7 +22,8 @@ class WorkoutPlanFinderTextSearch extends StatefulWidget {
   WorkoutPlanFinderTextSearch(
       {required this.userWorkoutPlans,
       this.initialPageIndex = 0,
-      required this.updateActivePageIndex})
+      required this.updateActivePageIndex,
+      this.selectWorkoutPlan})
       : assert(initialPageIndex == 0 || initialPageIndex == 1);
 
   @override
@@ -162,6 +164,7 @@ class _WorkoutPlanFinderTextSearchState
                           subtext: true,
                         ))
                       : YourFilteredWorkoutPlansList(
+                          selectWorkoutPlan: widget.selectWorkoutPlan,
                           workoutPlans: _filteredUserWorkoutPlans)
                   : Center(
                       child: MyText(
@@ -224,6 +227,8 @@ class _WorkoutPlanFinderTextSearchState
                                         // Or show workouts list if not empty.
                                         return FadeIn(
                                           child: YourFilteredWorkoutPlansList(
+                                            selectWorkoutPlan:
+                                                widget.selectWorkoutPlan,
                                             workoutPlans:
                                                 workoutPlansSnapshot.data!,
                                           ),

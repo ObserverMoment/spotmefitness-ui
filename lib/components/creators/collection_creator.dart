@@ -126,10 +126,9 @@ class _CollectionCreatorState extends State<CollectionCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: context.theme.modalBackground,
-      navigationBar: BorderlessNavBar(
-        backgroundColor: context.theme.modalBackground,
+    return MyPageScaffold(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         customLeading: NavBarCancelButton(_cancel),
         middle:
             NavBarTitle(_isCreate ? 'Create Collection' : 'Edit Collection'),
@@ -157,30 +156,23 @@ class _CollectionCreatorState extends State<CollectionCreator> {
         padding: const EdgeInsets.only(top: 12.0),
         child: Column(
           children: [
-            CupertinoFormSection.insetGrouped(
-              backgroundColor: context.theme.modalBackground,
-              children: [
-                MyTextFormFieldRow(
-                  autofocus: true,
-                  controller: _nameController,
-                  placeholder: 'Name',
-                  keyboardType: TextInputType.text,
-                  validator: () =>
-                      _nameController.text.length > 2 &&
-                      _nameController.text.length < 21,
-                  validationMessage: 'Min 3, max 20 characters',
-                ),
-              ],
+            MyTextFormFieldRow(
+              autofocus: true,
+              backgroundColor: context.theme.cardBackground,
+              controller: _nameController,
+              placeholder: 'Name',
+              keyboardType: TextInputType.text,
+              validator: () =>
+                  _nameController.text.length > 2 &&
+                  _nameController.text.length < 21,
+              validationMessage: 'Min 3, max 20 characters',
             ),
-            CupertinoFormSection.insetGrouped(
-              backgroundColor: context.theme.modalBackground,
-              children: [
-                MyTextAreaFormFieldRow(
-                    placeholder: 'Description (optional)',
-                    keyboardType: TextInputType.text,
-                    controller: _descriptionController),
-              ],
-            ),
+            SizedBox(height: 10),
+            MyTextAreaFormFieldRow(
+                placeholder: 'Description (optional)',
+                backgroundColor: context.theme.cardBackground,
+                keyboardType: TextInputType.text,
+                controller: _descriptionController),
           ],
         ),
       ))),

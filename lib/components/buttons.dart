@@ -980,20 +980,21 @@ class InfoPopupButton extends StatelessWidget {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: () => context.push(
+          rootNavigator: true,
           child: CupertinoPageScaffold(
-        navigationBar: withoutNavBar
-            ? null
-            : BorderlessNavBar(middle: NavBarTitle(pageTitle)),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [infoWidget],
+            navigationBar: withoutNavBar
+                ? null
+                : BorderlessNavBar(middle: NavBarTitle(pageTitle)),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [infoWidget],
+                ),
+              ),
             ),
-          ),
-        ),
-      )),
+          )),
       child: Icon(CupertinoIcons.info, size: Styles.buttonIconSize),
     );
   }
@@ -1012,9 +1013,7 @@ class NoteIconViewerButton extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: NotesIcon(),
         onPressed: () => context.showBottomSheet(
-            useRootNavigator: useRootNavigator,
-            expand: true,
-            child: TextViewer(note, modalTitle)));
+            expand: true, child: TextViewer(note, modalTitle)));
   }
 }
 

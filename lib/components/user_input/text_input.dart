@@ -105,7 +105,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
             if (widget.validator != null && widget.validator!())
               Positioned(
                   right: 10,
-                  top: 28,
+                  top: 10,
                   child: FadeIn(
                       child: Icon(
                     CupertinoIcons.checkmark_alt,
@@ -115,7 +115,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
         ),
         if (widget.validationMessage != null)
           Padding(
-            padding: const EdgeInsets.only(top: 6.0, left: 6),
+            padding: const EdgeInsets.only(left: 10),
             child: MyText(
               '(${widget.validationMessage!})',
               size: FONTSIZE.SMALL,
@@ -245,8 +245,8 @@ class MyTextAreaFormFieldRow extends StatelessWidget {
               )),
         if (validator != null && validator!())
           Positioned(
-              right: 5,
-              bottom: 16,
+              right: 10,
+              bottom: 10,
               child: FadeIn(
                   child: Icon(
                 CupertinoIcons.check_mark_circled,

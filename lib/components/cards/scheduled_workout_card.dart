@@ -53,7 +53,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
   Future<void> _reschedule(BuildContext context) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
-        useRootNavigator: true,
         child: ScheduledWorkoutCreator(
           scheduledWorkout: scheduledWorkout,
         ));
@@ -129,7 +128,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
                 lineHeight: 1.4,
               ),
               onPressed: () => context.showBottomSheet(
-                  useRootNavigator: true,
                   expand: true,
                   child: TextViewer(scheduledWorkout.note!, 'Note'))),
       ],

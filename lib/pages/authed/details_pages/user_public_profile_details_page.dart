@@ -393,7 +393,6 @@ class _HeaderContent extends StatelessWidget {
               if (Utils.textNotNull(userPublicProfile.bio))
                 GestureDetector(
                   onTap: () => context.showBottomSheet(
-                      useRootNavigator: true,
                       expand: true,
                       child: TextViewer(userPublicProfile.bio!, 'Bio')),
                   child: Padding(

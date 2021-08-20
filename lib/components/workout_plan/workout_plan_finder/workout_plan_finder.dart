@@ -18,20 +18,25 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/fin
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder_text_search.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:auto_route/auto_route.dart';
 
 /// Widget that uses filters to find and view / save a workout plan.
 /// Wrapper around the UI which handles the [ObservableQuery]s [UserWorkoutPlans] and [UserCollections]
 /// Client side the user can filter their created plans and their saved plans. Via the api their can filter public plans.
 class WorkoutPlanFinderPage extends StatelessWidget {
+  final void Function(WorkoutPlan workoutPlan)? selectWorkoutPlan;
+
   /// Rather than 'your plans' - users client side plans list.
   /// https://github.com/Milad-Akarie/auto_route_library/issues/404
   /// Re [initialOpenPublicTab]: nullable route args.
   final bool? initialOpenPublicTab;
-  const WorkoutPlanFinderPage({this.initialOpenPublicTab = false});
+  const WorkoutPlanFinderPage(
+      {this.initialOpenPublicTab = false, this.selectWorkoutPlan});
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,7 @@ class WorkoutPlanFinderPage extends StatelessWidget {
                         [], (acum, next) => [...acum, ...next.workoutPlans]);
 
                 return WorkoutPlanFinderPageUI(
+                  selectWorkoutPlan: selectWorkoutPlan,
                   userPlans:
                       [...userPlans, ...savedPlans].reversed.toSet().toList(),
                   initialOpenPublicTab: initialOpenPublicTab ?? false,
@@ -64,11 +70,13 @@ class WorkoutPlanFinderPage extends StatelessWidget {
 }
 
 class WorkoutPlanFinderPageUI extends StatefulWidget {
+  final void Function(WorkoutPlan workoutPlan)? selectWorkoutPlan;
   final List<WorkoutPlan> userPlans;
   final bool initialOpenPublicTab;
   const WorkoutPlanFinderPageUI({
     required this.userPlans,
     this.initialOpenPublicTab = false,
+    this.selectWorkoutPlan,
   });
 
   @override
@@ -219,6 +227,18 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
     }
   }
 
+  /// Pops itself (and any stack items such as the text seach widget)
+  /// Then passes the selected workoutPlan to the parent.
+  void _selectWorkoutPlan(WorkoutPlan workoutPlan) {
+    if (widget.selectWorkoutPlan != null) {
+      // If open - pop the text search route.
+      context.router.popUntilRouteWithName(WorkoutPlanFinderRoute.name);
+      // Then pop itself.
+      context.pop();
+      widget.selectWorkoutPlan!(workoutPlan);
+    }
+  }
+
   @override
   void dispose() {
     _tabPageController.dispose();
@@ -316,10 +336,12 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
               onPressed: () => context.push(
                   fullscreenDialog: true,
                   child: WorkoutPlanFinderTextSearch(
-                    initialPageIndex: _activePageIndex,
-                    updateActivePageIndex: _updatePageIndex,
-                    userWorkoutPlans: widget.userPlans,
-                  )),
+                      initialPageIndex: _activePageIndex,
+                      updateActivePageIndex: _updatePageIndex,
+                      userWorkoutPlans: widget.userPlans,
+                      selectWorkoutPlan: widget.selectWorkoutPlan != null
+                          ? _selectWorkoutPlan
+                          : null)),
               child: Icon(
                 CupertinoIcons.search,
                 size: 25,
@@ -348,6 +370,9 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
                   physics: NeverScrollableScrollPhysics(),
                   children: [
                     YourFilteredWorkoutPlansList(
+                      selectWorkoutPlan: widget.selectWorkoutPlan != null
+                          ? _selectWorkoutPlan
+                          : null,
                       listPositionScrollController:
                           _userPlansListScrollController,
                       workoutPlans: _filteredUserWorkoutPlans,
@@ -365,6 +390,9 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
                           delay: index,
                           delayBasis: 20,
                           child: WorkoutFinderWorkoutPlanCard(
+                            selectWorkoutPlan: widget.selectWorkoutPlan != null
+                                ? _selectWorkoutPlan
+                                : null,
                             workoutPlan: workoutPlan,
                           ),
                         ),

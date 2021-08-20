@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/animated/animated_like_heart.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/collections/collection_manager.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
@@ -103,90 +104,6 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
           icon: Icon(Icons.thumb_up, color: Styles.white),
           message: 'Plan joined! Congratulations!',
           toastType: ToastType.success);
-    }
-  }
-
-  /// Either removes the workoutPlan from its current collection ([collection] is not null)
-  /// Or Adds to an existing collection.
-  /// Or adds to a newly created collection.
-  Future<void> _toggleSavedWorkoutPlan(
-      WorkoutPlan workoutPlan, Collection? collection) async {
-    if (collection != null) {
-      context.showConfirmDialog(
-          title: 'Remove from Saved',
-          content: MyText(
-            'Remove from: ${collection.name}?',
-            textAlign: TextAlign.center,
-            maxLines: 4,
-          ),
-          onConfirm: () =>
-              _removeWorkoutPlanFromCollection(collection, workoutPlan));
-    } else {
-      /// Add to collection flow.
-      /// First choose a collection
-      await context.showBottomSheet(
-          useRootNavigator: true,
-          expand: true,
-          child: CollectionSelector(
-              selectCollection: (collection) =>
-                  _addWorkoutPlanToCollection(collection, workoutPlan)));
-    }
-  }
-
-  Future<void> _addWorkoutPlanToCollection(
-      Collection collection, WorkoutPlan workoutPlan) async {
-    final updatedCollection = Collection.fromJson(collection.toJson());
-    updatedCollection.workoutPlans.add(workoutPlan);
-
-    final variables = AddWorkoutPlanToCollectionArguments(
-        data: AddWorkoutPlanToCollectionInput(
-            collectionId: collection.id,
-            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
-
-    final result = await context.graphQLStore.mutate<
-            AddWorkoutPlanToCollection$Mutation,
-            AddWorkoutPlanToCollectionArguments>(
-        mutation: AddWorkoutPlanToCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context.showErrorAlert(
-          'Sorry there was a problem, the workout plan was not added');
-    } else {
-      context.showToast(message: 'Saved to collection: ${collection.name}');
-    }
-  }
-
-  Future<void> _removeWorkoutPlanFromCollection(
-      Collection collection, WorkoutPlan workoutPlan) async {
-    final updatedCollection = Collection.fromJson(collection.toJson());
-    updatedCollection.workoutPlans =
-        collection.workoutPlans.where((wp) => wp.id != workoutPlan.id).toList();
-
-    final variables = RemoveWorkoutPlanFromCollectionArguments(
-        data: RemoveWorkoutPlanFromCollectionInput(
-            collectionId: collection.id,
-            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
-
-    final result = await context.graphQLStore.mutate<
-            RemoveWorkoutPlanFromCollection$Mutation,
-            RemoveWorkoutPlanFromCollectionArguments>(
-        mutation: RemoveWorkoutPlanFromCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context.showErrorAlert(
-          'Sorry there was a problem, the workout plan was not removed');
-    } else {
-      context.showToast(message: 'Removed from collection: ${collection.name}');
     }
   }
 
@@ -359,9 +276,11 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
               builder: (collectionsData) {
                 final workoutPlan = workoutPlanData.workoutPlanById;
 
-                final Collection? collection = collectionsData.userCollections
-                    .firstWhereOrNull((collection) =>
-                        collection.workoutPlans.contains(workoutPlan));
+                final List<Collection> collections = collectionsData
+                    .userCollections
+                    .where((collection) =>
+                        collection.workoutPlans.contains(workoutPlan))
+                    .toList();
 
                 final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
                 final bool isOwner = workoutPlan.user.id == authedUserId;
@@ -467,10 +386,12 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                                 CupertinoButton(
                                     pressedOpacity: 1.0,
                                     padding: EdgeInsets.zero,
-                                    onPressed: () => _toggleSavedWorkoutPlan(
-                                        workoutPlan, collection),
+                                    onPressed: () => CollectionManager
+                                        .addOrRemoveObjectFromCollection(
+                                            context, workoutPlan,
+                                            alreadyInCollections: collections),
                                     child: AnimatedLikeHeart(
-                                      active: collection != null,
+                                      active: collections.isNotEmpty,
                                     )),
                               ],
                             ),

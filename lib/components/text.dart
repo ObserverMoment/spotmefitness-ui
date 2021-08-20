@@ -332,8 +332,8 @@ class ViewMoreFullScreenTextBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.showBottomSheet(
-          expand: true, useRootNavigator: true, child: TextViewer(text, title)),
+      onTap: () =>
+          context.showBottomSheet(expand: true, child: TextViewer(text, title)),
       child: MyText(
         text,
         maxLines: maxLines,

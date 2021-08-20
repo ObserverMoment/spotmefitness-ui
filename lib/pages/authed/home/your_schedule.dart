@@ -75,7 +75,6 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
   Future<void> _openScheduleWorkout(Workout workout) async {
     final result = await context.showBottomSheet(
         showDragHandle: false,
-        useRootNavigator: true,
         child: ScheduledWorkoutCreator(
           workout: workout,
           scheduleOn: _selectedDay,
