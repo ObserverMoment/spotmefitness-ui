@@ -238,18 +238,17 @@ extension BuildContextExtension on BuildContext {
   }
 
   /// Opens a bottom sheet with a drag handle (can be set false) at the top to indicate it can be drag dismissed.
-  Future<T?> showBottomSheet<T>(
-      {required Widget child,
-      bool expand = false,
-      bool showDragHandle = true,
-      Color? barrierColor,
-      bool useRootNavigator = true}) async {
+  Future<T?> showBottomSheet<T>({
+    required Widget child,
+    bool expand = true,
+    bool showDragHandle = true,
+  }) async {
     final BuildContext context = this;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
-        useRootNavigator: useRootNavigator,
-        barrierColor: barrierColor ?? Styles.black.withOpacity(0.75),
+        useRootNavigator: true,
+        barrierColor: Styles.black.withOpacity(0.75),
         builder: (context) => showDragHandle
             ? Column(
                 mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
@@ -258,7 +257,7 @@ extension BuildContextExtension on BuildContext {
                     padding: const EdgeInsets.all(8.0),
                     child: DragBarHandle(),
                   ),
-                  Flexible(child: Builder(builder: (context) => child)),
+                  Flexible(child: child),
                 ],
               )
             : child);

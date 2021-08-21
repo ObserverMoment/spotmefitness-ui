@@ -256,7 +256,8 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                 final dayWorkout = sortedWorkoutPlanDayWorkouts[i];
                 final workoutCompleted = completedIds.contains(dayWorkout.id);
                 return GestureDetector(
-                  onTap: () => context.showBottomSheet(
+                  onTap: () => openBottomSheetMenu(
+                      context: context,
                       child: BottomSheetMenu(
                           header: BottomSheetMenuHeader(
                             name: dayWorkout.workout.name,
@@ -264,46 +265,49 @@ class _WorkoutPlanEnrolmentDayCard extends StatelessWidget {
                             imageUri: dayWorkout.workout.coverImageUri,
                           ),
                           items: [
-                        workoutCompleted
-                            ? BottomSheetMenuItem(
-                                text: 'Unmark as done',
-                                icon: Icon(CupertinoIcons.clear_thick),
-                                onPressed: () => _updateCompletedWorkoutIds(
-                                    context,
-                                    completedIds.toggleItem(dayWorkout.id)))
-                            : BottomSheetMenuItem(
-                                text: 'Mark as done',
-                                icon: Icon(CupertinoIcons.checkmark_alt),
-                                onPressed: () => _updateCompletedWorkoutIds(
-                                    context,
-                                    completedIds.toggleItem(dayWorkout.id))),
-                        if (!workoutCompleted) ...[
-                          BottomSheetMenuItem(
-                            text: 'Do it',
-                            icon: Icon(CupertinoIcons.arrow_right_square),
-                            onPressed: () =>
-                                context.navigateTo(DoWorkoutWrapperRoute(
-                              id: dayWorkout.workout.id,
-                            )),
-                          ),
-                          BottomSheetMenuItem(
-                              text: 'Log it',
-                              icon: Icon(CupertinoIcons.doc_plaintext),
-                              onPressed: () => _handleLogWorkoutProgramWorkout(
-                                  context, dayWorkout)),
-                          BottomSheetMenuItem(
-                              text: 'Schedule it',
-                              icon: Icon(CupertinoIcons.calendar_badge_plus),
-                              onPressed: () =>
-                                  _openScheduleWorkout(context, dayWorkout)),
-                        ],
-                        BottomSheetMenuItem(
-                            text: 'View workout',
-                            icon: Icon(CupertinoIcons.eye),
-                            onPressed: () => context.navigateTo(
-                                WorkoutDetailsRoute(
-                                    id: dayWorkout.workout.id))),
-                      ])),
+                            workoutCompleted
+                                ? BottomSheetMenuItem(
+                                    text: 'Unmark as done',
+                                    icon: Icon(CupertinoIcons.clear_thick),
+                                    onPressed: () => _updateCompletedWorkoutIds(
+                                        context,
+                                        completedIds.toggleItem(dayWorkout.id)))
+                                : BottomSheetMenuItem(
+                                    text: 'Mark as done',
+                                    icon: Icon(CupertinoIcons.checkmark_alt),
+                                    onPressed: () => _updateCompletedWorkoutIds(
+                                        context,
+                                        completedIds
+                                            .toggleItem(dayWorkout.id))),
+                            if (!workoutCompleted) ...[
+                              BottomSheetMenuItem(
+                                text: 'Do it',
+                                icon: Icon(CupertinoIcons.arrow_right_square),
+                                onPressed: () =>
+                                    context.navigateTo(DoWorkoutWrapperRoute(
+                                  id: dayWorkout.workout.id,
+                                )),
+                              ),
+                              BottomSheetMenuItem(
+                                  text: 'Log it',
+                                  icon: Icon(CupertinoIcons.doc_plaintext),
+                                  onPressed: () =>
+                                      _handleLogWorkoutProgramWorkout(
+                                          context, dayWorkout)),
+                              BottomSheetMenuItem(
+                                  text: 'Schedule it',
+                                  icon:
+                                      Icon(CupertinoIcons.calendar_badge_plus),
+                                  onPressed: () => _openScheduleWorkout(
+                                      context, dayWorkout)),
+                            ],
+                            BottomSheetMenuItem(
+                                text: 'View workout',
+                                icon: Icon(CupertinoIcons.eye),
+                                onPressed: () => context.navigateTo(
+                                    WorkoutDetailsRoute(
+                                        id: dayWorkout.workout.id))),
+                          ])),
                   child: Padding(
                     padding: const EdgeInsets.all(1.0),
                     child: Column(

@@ -88,7 +88,6 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
                   lineHeight: 1.4,
                 ),
                 onPressed: () => context.showBottomSheet(
-                    expand: true,
                     child: TextViewer(loggedWorkoutSection.note!, 'Note'))),
           ),
 

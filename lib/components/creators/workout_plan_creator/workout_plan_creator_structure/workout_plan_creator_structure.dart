@@ -180,52 +180,53 @@ class _WorkoutPlanCreatorStructureWeekState
                 ),
                 child: byDayNumber[dayIndex] != null
                     ? GestureDetector(
-                        onTap: () => context.showBottomSheet(
+                        onTap: () => openBottomSheetMenu(
+                            context: context,
                             child: BottomSheetMenu(
                                 header: BottomSheetMenuHeader(
                                   name: 'Workout Day ${dayIndex + 1}',
                                   subtitle: 'Week ${widget.weekNumber + 1}',
                                 ),
                                 items: [
-                              BottomSheetMenuItem(
-                                  text: 'Add workout',
-                                  icon: Icon(CupertinoIcons.add_circled),
-                                  onPressed: () =>
-                                      _addWorkoutToPlanDay(dayIndex)),
-                              BottomSheetMenuItem(
-                                text: Utils.textNotNull(
-                                        byDayNumber[dayIndex]!.note)
-                                    ? 'Edit day note'
-                                    : 'Add day note',
-                                icon: Icon(CupertinoIcons.doc_plaintext),
-                                onPressed: () => context.push(
-                                    child: FullScreenTextEditing(
-                                        title: 'Note',
-                                        initialValue:
-                                            byDayNumber[dayIndex]!.note,
-                                        maxChars: 200,
-                                        onSave: (note) =>
-                                            _addNoteToWorkoutPlanDay(
-                                                dayIndex, note),
-                                        inputValidation: (t) => true)),
-                              ),
-                              BottomSheetMenuItem(
-                                  text: 'Move to another day',
-                                  icon: Icon(CupertinoIcons.calendar_today),
-                                  onPressed: () =>
-                                      _movePlanDayToAnotherDay(dayIndex)),
-                              BottomSheetMenuItem(
-                                  text: 'Copy to another day',
-                                  icon: Icon(CupertinoIcons.doc_on_doc),
-                                  onPressed: () =>
-                                      _copyPlanDayToAnotherDay(dayIndex)),
-                              BottomSheetMenuItem(
-                                  text: 'Convert to rest day',
-                                  icon:
-                                      Icon(CupertinoIcons.calendar_badge_minus),
-                                  onPressed: () =>
-                                      _deleteWorkoutPlanDay(dayIndex)),
-                            ])),
+                                  BottomSheetMenuItem(
+                                      text: 'Add workout',
+                                      icon: Icon(CupertinoIcons.add_circled),
+                                      onPressed: () =>
+                                          _addWorkoutToPlanDay(dayIndex)),
+                                  BottomSheetMenuItem(
+                                    text: Utils.textNotNull(
+                                            byDayNumber[dayIndex]!.note)
+                                        ? 'Edit day note'
+                                        : 'Add day note',
+                                    icon: Icon(CupertinoIcons.doc_plaintext),
+                                    onPressed: () => context.push(
+                                        child: FullScreenTextEditing(
+                                            title: 'Note',
+                                            initialValue:
+                                                byDayNumber[dayIndex]!.note,
+                                            maxChars: 200,
+                                            onSave: (note) =>
+                                                _addNoteToWorkoutPlanDay(
+                                                    dayIndex, note),
+                                            inputValidation: (t) => true)),
+                                  ),
+                                  BottomSheetMenuItem(
+                                      text: 'Move to another day',
+                                      icon: Icon(CupertinoIcons.calendar_today),
+                                      onPressed: () =>
+                                          _movePlanDayToAnotherDay(dayIndex)),
+                                  BottomSheetMenuItem(
+                                      text: 'Copy to another day',
+                                      icon: Icon(CupertinoIcons.doc_on_doc),
+                                      onPressed: () =>
+                                          _copyPlanDayToAnotherDay(dayIndex)),
+                                  BottomSheetMenuItem(
+                                      text: 'Convert to rest day',
+                                      icon: Icon(
+                                          CupertinoIcons.calendar_badge_minus),
+                                      onPressed: () =>
+                                          _deleteWorkoutPlanDay(dayIndex)),
+                                ])),
                         child: EditableWorkoutPlanDayCard(
                           workoutPlanDay: byDayNumber[dayIndex]!,
                           displayDayNumber: dayIndex,

@@ -89,14 +89,15 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                 navigationBar: BorderlessNavBar(
                   middle: CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () => context.showBottomSheet(
-                              child: BottomSheetMenu(
-                                  header: BottomSheetMenuHeader(
-                                    name: _displayName ?? 'Unnamed',
-                                    subtitle: 'Chat',
-                                    imageUri: _avatarUri,
-                                  ),
-                                  items: [
+                      onPressed: () => openBottomSheetMenu(
+                          context: context,
+                          child: BottomSheetMenu(
+                              header: BottomSheetMenuHeader(
+                                name: _displayName ?? 'Unnamed',
+                                subtitle: 'Chat',
+                                imageUri: _avatarUri,
+                              ),
+                              items: [
                                 BottomSheetMenuItem(
                                     text: 'Block',
                                     icon: Icon(CupertinoIcons.nosign),

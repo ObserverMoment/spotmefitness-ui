@@ -18,6 +18,12 @@ class BottomSheetMenuItem {
       required this.onPressed});
 }
 
+/// Light wrapper around [showBottomSheet] setting [expand] to [false].
+void openBottomSheetMenu(
+    {required BuildContext context, required Widget child}) {
+  context.showBottomSheet(expand: false, child: child);
+}
+
 class BottomSheetMenu extends StatelessWidget {
   final List<BottomSheetMenuItem> items;
   final Widget? header;

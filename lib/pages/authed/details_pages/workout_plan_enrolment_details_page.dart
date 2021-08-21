@@ -248,7 +248,8 @@ class _WorkoutPlanEnrolmentDetailsPageState
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Icon(CupertinoIcons.ellipsis_circle),
-                  onPressed: () => context.showBottomSheet(
+                  onPressed: () => openBottomSheetMenu(
+                      context: context,
                       child: BottomSheetMenu(
                           header: BottomSheetMenuHeader(
                             name: enrolment.workoutPlan.name,
@@ -256,37 +257,37 @@ class _WorkoutPlanEnrolmentDetailsPageState
                             imageUri: enrolment.workoutPlan.coverImageUri,
                           ),
                           items: [
-                        BottomSheetMenuItem(
-                          text: 'Leave review',
-                          icon: Icon(CupertinoIcons.star),
-                          onPressed: () => context.showBottomSheet(
-                              child: WorkoutPlanReviewCreator(
-                            parentWorkoutPlanEnrolmentId: enrolment.id,
-                            parentWorkoutPlanId: workoutPlan.id,
-                          )),
-                        ),
-                        BottomSheetMenuItem(
-                            text: 'Reset progress',
-                            icon: Icon(CupertinoIcons.refresh_bold),
-                            onPressed: _confirmResetPlan),
-                        BottomSheetMenuItem(
-                            text: 'Change start date',
-                            icon: Icon(CupertinoIcons.calendar_today),
-                            onPressed: () => _updateStartDate(enrolment)),
-                        BottomSheetMenuItem(
-                            text: 'Share plan',
-                            icon: Icon(CupertinoIcons.paperplane),
-                            onPressed: () =>
-                                _shareWorkoutPlan(enrolment.workoutPlan)),
-                        BottomSheetMenuItem(
-                            text: 'Leave plan',
-                            isDestructive: true,
-                            icon: Icon(
-                              CupertinoIcons.square_arrow_right,
-                              color: Styles.errorRed,
+                            BottomSheetMenuItem(
+                              text: 'Leave review',
+                              icon: Icon(CupertinoIcons.star),
+                              onPressed: () => context.showBottomSheet(
+                                  child: WorkoutPlanReviewCreator(
+                                parentWorkoutPlanEnrolmentId: enrolment.id,
+                                parentWorkoutPlanId: workoutPlan.id,
+                              )),
                             ),
-                            onPressed: _confirmLeavePlan),
-                      ])),
+                            BottomSheetMenuItem(
+                                text: 'Reset progress',
+                                icon: Icon(CupertinoIcons.refresh_bold),
+                                onPressed: _confirmResetPlan),
+                            BottomSheetMenuItem(
+                                text: 'Change start date',
+                                icon: Icon(CupertinoIcons.calendar_today),
+                                onPressed: () => _updateStartDate(enrolment)),
+                            BottomSheetMenuItem(
+                                text: 'Share plan',
+                                icon: Icon(CupertinoIcons.paperplane),
+                                onPressed: () =>
+                                    _shareWorkoutPlan(enrolment.workoutPlan)),
+                            BottomSheetMenuItem(
+                                text: 'Leave plan',
+                                isDestructive: true,
+                                icon: Icon(
+                                  CupertinoIcons.square_arrow_right,
+                                  color: Styles.errorRed,
+                                ),
+                                onPressed: _confirmLeavePlan),
+                          ])),
                 ),
               ),
               child: Column(

@@ -313,7 +313,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                     trailing: CupertinoButton(
                       padding: EdgeInsets.zero,
                       child: Icon(CupertinoIcons.ellipsis_circle),
-                      onPressed: () => context.showBottomSheet(
+                      onPressed: () => openBottomSheetMenu(
+                          context: context,
                           child: BottomSheetMenu(
                               header: BottomSheetMenuHeader(
                                 name: workout.name,
@@ -321,60 +322,63 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 imageUri: workout.coverImageUri,
                               ),
                               items: [
-                            if (!isOwner &&
-                                workout.user.userProfileScope ==
-                                    UserProfileScope.public)
-                              BottomSheetMenuItem(
-                                  text: 'View creator',
-                                  icon: Icon(CupertinoIcons.profile_circled),
-                                  onPressed: () => context.navigateTo(
-                                      UserPublicProfileDetailsRoute(
-                                          userId: workout.user.id))),
-                            BottomSheetMenuItem(
-                                text: 'Log it',
-                                icon: Icon(CupertinoIcons.graph_square),
-                                onPressed: () => context.navigateTo(
-                                    LoggedWorkoutCreatorRoute(
-                                        workout: workout))),
-                            if (workout.contentAccessScope ==
-                                ContentAccessScope.public)
-                              BottomSheetMenuItem(
-                                  text: 'Share',
-                                  icon: Icon(CupertinoIcons.paperplane),
-                                  onPressed: () => _shareWorkout(workout)),
-                            if (isOwner)
-                              BottomSheetMenuItem(
-                                  text: 'Edit',
-                                  icon: Icon(CupertinoIcons.pencil),
-                                  onPressed: () => context.navigateTo(
-                                      WorkoutCreatorRoute(workout: workout))),
-                            if (isOwner ||
-                                workout.contentAccessScope ==
+                                if (!isOwner &&
+                                    workout.user.userProfileScope ==
+                                        UserProfileScope.public)
+                                  BottomSheetMenuItem(
+                                      text: 'View creator',
+                                      icon:
+                                          Icon(CupertinoIcons.profile_circled),
+                                      onPressed: () => context.navigateTo(
+                                          UserPublicProfileDetailsRoute(
+                                              userId: workout.user.id))),
+                                BottomSheetMenuItem(
+                                    text: 'Log it',
+                                    icon: Icon(CupertinoIcons.graph_square),
+                                    onPressed: () => context.navigateTo(
+                                        LoggedWorkoutCreatorRoute(
+                                            workout: workout))),
+                                if (workout.contentAccessScope ==
                                     ContentAccessScope.public)
-                              BottomSheetMenuItem(
-                                  text: 'Copy',
-                                  icon: Icon(CupertinoIcons.doc_on_doc),
-                                  onPressed: () => _copyWorkout(workout.id)),
-                            BottomSheetMenuItem(
-                                text: 'Export',
-                                icon: Icon(CupertinoIcons.download_circle),
-                                onPressed: () => print('export')),
-                            if (isOwner)
-                              BottomSheetMenuItem(
-                                  text: workout.archived
-                                      ? 'Unarchive'
-                                      : 'Archive',
-                                  icon: Icon(
-                                    CupertinoIcons.archivebox,
-                                    color: workout.archived
-                                        ? null
-                                        : Styles.errorRed,
-                                  ),
-                                  isDestructive: !workout.archived,
-                                  onPressed: () => workout.archived
-                                      ? _unarchiveWorkout(workout.id)
-                                      : _archiveWorkout(workout.id)),
-                          ])),
+                                  BottomSheetMenuItem(
+                                      text: 'Share',
+                                      icon: Icon(CupertinoIcons.paperplane),
+                                      onPressed: () => _shareWorkout(workout)),
+                                if (isOwner)
+                                  BottomSheetMenuItem(
+                                      text: 'Edit',
+                                      icon: Icon(CupertinoIcons.pencil),
+                                      onPressed: () => context.navigateTo(
+                                          WorkoutCreatorRoute(
+                                              workout: workout))),
+                                if (isOwner ||
+                                    workout.contentAccessScope ==
+                                        ContentAccessScope.public)
+                                  BottomSheetMenuItem(
+                                      text: 'Copy',
+                                      icon: Icon(CupertinoIcons.doc_on_doc),
+                                      onPressed: () =>
+                                          _copyWorkout(workout.id)),
+                                BottomSheetMenuItem(
+                                    text: 'Export',
+                                    icon: Icon(CupertinoIcons.download_circle),
+                                    onPressed: () => print('export')),
+                                if (isOwner)
+                                  BottomSheetMenuItem(
+                                      text: workout.archived
+                                          ? 'Unarchive'
+                                          : 'Archive',
+                                      icon: Icon(
+                                        CupertinoIcons.archivebox,
+                                        color: workout.archived
+                                            ? null
+                                            : Styles.errorRed,
+                                      ),
+                                      isDestructive: !workout.archived,
+                                      onPressed: () => workout.archived
+                                          ? _unarchiveWorkout(workout.id)
+                                          : _archiveWorkout(workout.id)),
+                              ])),
                     ),
                   ),
                   child: Padding(

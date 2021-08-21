@@ -72,7 +72,6 @@ class LoggedWorkoutCreatorWorkoutMove extends StatelessWidget {
             color: Styles.white,
           ),
           onTap: () => context.showBottomSheet(
-              expand: true,
               child: NumberInputModalDouble(
                   title: _adjustRepTypeString(),
                   value: loggedWorkoutMove.reps,

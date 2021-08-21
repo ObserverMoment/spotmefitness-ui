@@ -135,7 +135,8 @@ class _UserPublicProfileDetailsPageState
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Icon(CupertinoIcons.ellipsis_circle),
-                  onPressed: () => context.showBottomSheet(
+                  onPressed: () => openBottomSheetMenu(
+                      context: context,
                       child: BottomSheetMenu(
                           header: BottomSheetMenuHeader(
                             name: userPublicProfile.displayName,
@@ -143,20 +144,21 @@ class _UserPublicProfileDetailsPageState
                             imageUri: userPublicProfile.avatarUri,
                           ),
                           items: [
-                        BottomSheetMenuItem(
-                            text: 'Share',
-                            icon: Icon(CupertinoIcons.paperplane),
-                            onPressed: () =>
-                                _shareUserProfile(userPublicProfile)),
-                        BottomSheetMenuItem(
-                            text: 'Block',
-                            icon: Icon(CupertinoIcons.nosign),
-                            onPressed: () => print('block')),
-                        BottomSheetMenuItem(
-                            text: 'Report',
-                            icon: Icon(CupertinoIcons.exclamationmark_circle),
-                            onPressed: () => print('report')),
-                      ])),
+                            BottomSheetMenuItem(
+                                text: 'Share',
+                                icon: Icon(CupertinoIcons.paperplane),
+                                onPressed: () =>
+                                    _shareUserProfile(userPublicProfile)),
+                            BottomSheetMenuItem(
+                                text: 'Block',
+                                icon: Icon(CupertinoIcons.nosign),
+                                onPressed: () => print('block')),
+                            BottomSheetMenuItem(
+                                text: 'Report',
+                                icon:
+                                    Icon(CupertinoIcons.exclamationmark_circle),
+                                onPressed: () => print('report')),
+                          ])),
                 ),
               ),
               child: NestedScrollView(

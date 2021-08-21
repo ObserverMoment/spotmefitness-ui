@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
@@ -21,17 +20,16 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// Edit a post (activity) and update the activity on getStream. makes no calls to out API.
 /// Cannot change the referenced object here.
 /// Can only update the caption and the tags.
-/// No [page] suffix because this will usually be opened via a modal bottom sheet as minor changes only are possible.
-class PostEditor extends StatefulWidget {
+class PostEditorPage extends StatefulWidget {
   final ActivityWithObjectData activityWithObjectData;
-  const PostEditor({Key? key, required this.activityWithObjectData})
+  const PostEditorPage({Key? key, required this.activityWithObjectData})
       : super(key: key);
 
   @override
-  _PostEditorState createState() => _PostEditorState();
+  _PostEditorPageState createState() => _PostEditorPageState();
 }
 
-class _PostEditorState extends State<PostEditor> {
+class _PostEditorPageState extends State<PostEditorPage> {
   late AuthedUser _authedUser;
   bool _formIsDirty = false;
 
@@ -54,11 +52,11 @@ class _PostEditorState extends State<PostEditor> {
     super.initState();
     if (widget.activityWithObjectData.objectData == null) {
       throw Exception(
-          'PostEditor.initState: activityWithObjectData.objectData should never be null!');
+          'PostEditorPage.initState: activityWithObjectData.objectData should never be null!');
     }
     if (widget.activityWithObjectData.activity.id == null) {
       throw Exception(
-          'PostEditor.initState: activityWithObjectData.activity.id should never be null!');
+          'PostEditorPage.initState: activityWithObjectData.activity.id should never be null!');
     }
 
     _activity = widget.activityWithObjectData.activity;

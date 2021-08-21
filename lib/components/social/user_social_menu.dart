@@ -16,20 +16,21 @@ class UserSocialBottomSheetMenu extends StatelessWidget {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       child: Icon(CupertinoIcons.ellipsis_circle),
-      onPressed: () => context.showBottomSheet(
+      onPressed: () => openBottomSheetMenu(
+          context: context,
           child: BottomSheetMenu(
               header: BottomSheetMenuHeader(
                   name: displayName, subtitle: 'Profile', imageUri: avatarUri),
               items: [
-            BottomSheetMenuItem(
-                text: 'Block',
-                icon: Icon(CupertinoIcons.nosign),
-                onPressed: () => print('block')),
-            BottomSheetMenuItem(
-                text: 'Report',
-                icon: Icon(CupertinoIcons.exclamationmark_circle),
-                onPressed: () => print('report')),
-          ])),
+                BottomSheetMenuItem(
+                    text: 'Block',
+                    icon: Icon(CupertinoIcons.nosign),
+                    onPressed: () => print('block')),
+                BottomSheetMenuItem(
+                    text: 'Report',
+                    icon: Icon(CupertinoIcons.exclamationmark_circle),
+                    onPressed: () => print('report')),
+              ])),
     );
   }
 }

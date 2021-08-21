@@ -128,7 +128,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
                 lineHeight: 1.4,
               ),
               onPressed: () => context.showBottomSheet(
-                  expand: true,
                   child: TextViewer(scheduledWorkout.note!, 'Note'))),
       ],
     );

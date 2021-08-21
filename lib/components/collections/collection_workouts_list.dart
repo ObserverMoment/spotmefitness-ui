@@ -31,11 +31,10 @@ class _FilterableCollectionWorkoutsState
   Future<void> _moveToAnotherCollection(Workout workout) async {
     /// Select collection to move to
     await context.showBottomSheet(
-        expand: true,
         child: CollectionSelector(selectCollection: (collection) async {
-          await _removeWorkoutFromCollection(workout, showToast: false);
-          await _addWorkoutToCollection(collection, workout);
-        }));
+      await _removeWorkoutFromCollection(workout, showToast: false);
+      await _addWorkoutToCollection(collection, workout);
+    }));
   }
 
   Future<void> _copyToAnotherCollection(Workout workout) async {

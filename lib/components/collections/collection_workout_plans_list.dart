@@ -31,20 +31,18 @@ class _FilterableCollectionWorkoutPlansState
   Future<void> _moveToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
     await context.showBottomSheet(
-        expand: true,
         child: CollectionSelector(selectCollection: (collection) async {
-          await _removeWorkoutPlanFromCollection(workoutPlan, showToast: false);
-          await _addWorkoutPlanToCollection(collection, workoutPlan);
-        }));
+      await _removeWorkoutPlanFromCollection(workoutPlan, showToast: false);
+      await _addWorkoutPlanToCollection(collection, workoutPlan);
+    }));
   }
 
   Future<void> _copyToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
     await context.showBottomSheet(
-        expand: true,
         child: CollectionSelector(selectCollection: (collection) async {
-          await _addWorkoutPlanToCollection(collection, workoutPlan);
-        }));
+      await _addWorkoutPlanToCollection(collection, workoutPlan);
+    }));
   }
 
   /// Collection selected via [CollectionSelector]

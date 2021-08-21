@@ -85,9 +85,8 @@ class TimelinePostCard extends StatelessWidget {
             handleDeletePost: deleteActivityById != null
                 ? () => deleteActivityById!(activity.id!)
                 : null,
-            openEditPost: () => context.push(
-                child:
-                    PostEditor(activityWithObjectData: activityWithObjectData)),
+            openEditPost: () => context.navigateTo(PostEditorRoute(
+                activityWithObjectData: activityWithObjectData)),
             openDetailsPage: () => _openDetailsPageByType(context),
           )
         ],
@@ -231,52 +230,53 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: Icon(CupertinoIcons.ellipsis),
-      onPressed: () => context.showBottomSheet(
+      onPressed: () => openBottomSheetMenu(
+          context: context,
           child: BottomSheetMenu(
               header: BottomSheetMenuHeader(
                   name: '${object.name} by ${creator.displayName}',
                   subtitle: 'Posted by ${poster.displayName}',
                   imageUri: object.coverImageUri),
               items: [
-            if (userIsPoster)
-              BottomSheetMenuItem(
-                text: 'Edit Post',
-                icon: Icon(CupertinoIcons.pencil),
-                onPressed: openEditPost,
-              ),
-            BottomSheetMenuItem(
-                text: 'View ${object.type.display}',
-                icon: Icon(CupertinoIcons.eye),
-                onPressed: openDetailsPage),
-            if (!userIsCreator)
-              BottomSheetMenuItem(
-                  text: 'View Creator',
-                  icon: Icon(CupertinoIcons.person_crop_rectangle),
-                  onPressed: () => _openUserProfile(context, creator.id)),
-            if (!userIsPoster)
-              BottomSheetMenuItem(
-                  text: 'View Poster',
-                  icon: Icon(CupertinoIcons.person_crop_rectangle),
-                  onPressed: () => _openUserProfile(context, poster.id)),
-            if (userIsPoster && handleDeletePost != null)
-              BottomSheetMenuItem(
-                  text: 'Delete Post',
-                  icon: Icon(
-                    CupertinoIcons.delete_simple,
-                    color: Styles.errorRed,
+                if (userIsPoster)
+                  BottomSheetMenuItem(
+                    text: 'Edit Post',
+                    icon: Icon(CupertinoIcons.pencil),
+                    onPressed: openEditPost,
                   ),
-                  onPressed: handleDeletePost!,
-                  isDestructive: true),
-            if (!userIsPoster)
-              BottomSheetMenuItem(
-                  text: 'Report post',
-                  icon: Icon(
-                    CupertinoIcons.exclamationmark_circle,
-                    color: Styles.errorRed,
-                  ),
-                  isDestructive: true,
-                  onPressed: () => print('report')),
-          ])),
+                BottomSheetMenuItem(
+                    text: 'View ${object.type.display}',
+                    icon: Icon(CupertinoIcons.eye),
+                    onPressed: openDetailsPage),
+                if (!userIsCreator)
+                  BottomSheetMenuItem(
+                      text: 'View Creator',
+                      icon: Icon(CupertinoIcons.person_crop_rectangle),
+                      onPressed: () => _openUserProfile(context, creator.id)),
+                if (!userIsPoster)
+                  BottomSheetMenuItem(
+                      text: 'View Poster',
+                      icon: Icon(CupertinoIcons.person_crop_rectangle),
+                      onPressed: () => _openUserProfile(context, poster.id)),
+                if (userIsPoster && handleDeletePost != null)
+                  BottomSheetMenuItem(
+                      text: 'Delete Post',
+                      icon: Icon(
+                        CupertinoIcons.delete_simple,
+                        color: Styles.errorRed,
+                      ),
+                      onPressed: handleDeletePost!,
+                      isDestructive: true),
+                if (!userIsPoster)
+                  BottomSheetMenuItem(
+                      text: 'Report post',
+                      icon: Icon(
+                        CupertinoIcons.exclamationmark_circle,
+                        color: Styles.errorRed,
+                      ),
+                      isDestructive: true,
+                      onPressed: () => print('report')),
+              ])),
     );
   }
 }

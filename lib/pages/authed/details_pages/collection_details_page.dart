@@ -121,32 +121,33 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Icon(CupertinoIcons.ellipsis_circle),
-                onPressed: () => context.showBottomSheet(
+                onPressed: () => openBottomSheetMenu(
+                    context: context,
                     child: BottomSheetMenu(
                         header: BottomSheetMenuHeader(
                           name: collection.name,
                           subtitle: 'Collection',
                         ),
                         items: [
-                      if (isOwner)
-                        BottomSheetMenuItem(
-                            text: 'Edit',
-                            icon: Icon(CupertinoIcons.pencil),
-                            onPressed: () => context.showBottomSheet(
-                                expand: true,
-                                child:
-                                    CollectionCreator(collection: collection))),
-                      if (isOwner)
-                        BottomSheetMenuItem(
-                            text: 'Delete',
-                            icon: Icon(
-                              CupertinoIcons.delete_simple,
-                              color: Styles.errorRed,
-                            ),
-                            isDestructive: true,
-                            onPressed: () =>
-                                _confirmDeleteCollection(context, collection)),
-                    ])),
+                          if (isOwner)
+                            BottomSheetMenuItem(
+                                text: 'Edit',
+                                icon: Icon(CupertinoIcons.pencil),
+                                onPressed: () => context.showBottomSheet(
+                                    expand: true,
+                                    child: CollectionCreator(
+                                        collection: collection))),
+                          if (isOwner)
+                            BottomSheetMenuItem(
+                                text: 'Delete',
+                                icon: Icon(
+                                  CupertinoIcons.delete_simple,
+                                  color: Styles.errorRed,
+                                ),
+                                isDestructive: true,
+                                onPressed: () => _confirmDeleteCollection(
+                                    context, collection)),
+                        ])),
               ),
             ),
             child: NestedScrollView(

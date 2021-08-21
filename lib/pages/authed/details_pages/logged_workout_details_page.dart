@@ -166,38 +166,40 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                   trailing: CupertinoButton(
                     padding: EdgeInsets.zero,
                     child: Icon(CupertinoIcons.ellipsis_circle),
-                    onPressed: () => context.showBottomSheet(
+                    onPressed: () => openBottomSheetMenu(
+                        context: context,
                         child: BottomSheetMenu(
                             header: BottomSheetMenuHeader(
                               name: name,
                               subtitle: 'Logged Workout',
                             ),
                             items: [
-                          BottomSheetMenuItem(
-                              text: 'Share',
-                              icon: Icon(CupertinoIcons.paperplane),
-                              onPressed: () =>
-                                  SharingAndLinking.shareImageRenderOfWidget(
-                                      padding: const EdgeInsets.all(16),
-                                      context: context,
-                                      text: 'Just nailed this workout!',
-                                      subject: 'Just nailed this workout!',
-                                      widgetForImageCapture:
-                                          _buildLoggedWorkoutSummaryForSharing(
-                                              sortedSections))),
-                          BottomSheetMenuItem(
-                              text: 'Export',
-                              icon: Icon(CupertinoIcons.download_circle),
-                              onPressed: () => print('export')),
-                          BottomSheetMenuItem(
-                              text: 'Delete',
-                              icon: Icon(
-                                CupertinoIcons.delete_simple,
-                                color: Styles.errorRed,
-                              ),
-                              isDestructive: true,
-                              onPressed: () => _deleteLoggedWorkout(context)),
-                        ])),
+                              BottomSheetMenuItem(
+                                  text: 'Share',
+                                  icon: Icon(CupertinoIcons.paperplane),
+                                  onPressed: () => SharingAndLinking
+                                      .shareImageRenderOfWidget(
+                                          padding: const EdgeInsets.all(16),
+                                          context: context,
+                                          text: 'Just nailed this workout!',
+                                          subject: 'Just nailed this workout!',
+                                          widgetForImageCapture:
+                                              _buildLoggedWorkoutSummaryForSharing(
+                                                  sortedSections))),
+                              BottomSheetMenuItem(
+                                  text: 'Export',
+                                  icon: Icon(CupertinoIcons.download_circle),
+                                  onPressed: () => print('export')),
+                              BottomSheetMenuItem(
+                                  text: 'Delete',
+                                  icon: Icon(
+                                    CupertinoIcons.delete_simple,
+                                    color: Styles.errorRed,
+                                  ),
+                                  isDestructive: true,
+                                  onPressed: () =>
+                                      _deleteLoggedWorkout(context)),
+                            ])),
                   ),
                 ),
                 child: ListView(

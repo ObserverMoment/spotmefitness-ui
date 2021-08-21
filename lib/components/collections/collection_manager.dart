@@ -53,7 +53,6 @@ class CollectionManager {
 
   static void selectCollectionToSaveTo<T>(BuildContext context, T object) {
     context.showBottomSheet(
-        expand: true,
         child: CollectionSelector(
             title: 'Save to Collection',
             selectCollection: (collection) {

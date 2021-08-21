@@ -287,14 +287,15 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                       child: showOnlyNavBar
                           ? Icon(CupertinoIcons.ellipsis_circle)
                           : Icon(CupertinoIcons.ellipsis)),
-                  onPressed: () => context.showBottomSheet(
-                          child: BottomSheetMenu(
-                              header: BottomSheetMenuHeader(
-                                name: club.name,
-                                subtitle: 'Club',
-                                imageUri: club.coverImageUri,
-                              ),
-                              items: [
+                  onPressed: () => openBottomSheetMenu(
+                      context: context,
+                      child: BottomSheetMenu(
+                          header: BottomSheetMenuHeader(
+                            name: club.name,
+                            subtitle: 'Club',
+                            imageUri: club.coverImageUri,
+                          ),
+                          items: [
                             if (userIsOwner || userIsAdmin)
                               BottomSheetMenuItem(
                                   text: 'Manage',

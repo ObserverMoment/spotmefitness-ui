@@ -169,7 +169,7 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
               .contains(loggedWorkoutSection.workoutSectionType.name) &&
           loggedWorkoutSection.repScore == null) {
         context.showBottomSheet(
-            expand: true,
+            expand: false,
             child: RepsScorePicker(
               score: loggedWorkoutSection.repScore,
               section: loggedWorkoutSection,
@@ -182,14 +182,15 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
               .contains(loggedWorkoutSection.workoutSectionType.name) &&
           loggedWorkoutSection.timeTakenMs == null) {
         context.showBottomSheet(
+            expand: false,
             child: DurationPicker(
-          duration: null,
-          updateDuration: (duration) {
-            _updateDuration(context, duration.inMilliseconds);
-            toggleSelection();
-          },
-          title: 'Workout duration?',
-        ));
+              duration: null,
+              updateDuration: (duration) {
+                _updateDuration(context, duration.inMilliseconds);
+                toggleSelection();
+              },
+              title: 'Workout duration?',
+            ));
       } else {
         toggleSelection();
       }

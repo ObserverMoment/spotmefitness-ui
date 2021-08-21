@@ -1012,8 +1012,8 @@ class NoteIconViewerButton extends StatelessWidget {
     return CupertinoButton(
         padding: EdgeInsets.zero,
         child: NotesIcon(),
-        onPressed: () => context.showBottomSheet(
-            expand: true, child: TextViewer(note, modalTitle)));
+        onPressed: () =>
+            context.showBottomSheet(child: TextViewer(note, modalTitle)));
   }
 }
 

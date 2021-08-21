@@ -12,6 +12,7 @@ import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_fil
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
 import 'package:stream_feed/stream_feed.dart' as feed;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -115,6 +116,10 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
     return _chatInitialized && _feedsInitialized
         ? MultiProvider(
             providers: [
+              Provider<GraphQLStore>(
+                create: (_) => GraphQLStore(),
+                dispose: (context, store) => store.dispose(),
+              ),
               Provider<chat.StreamChatClient>.value(
                 value: _streamChatClient,
               ),
