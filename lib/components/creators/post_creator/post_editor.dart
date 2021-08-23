@@ -35,7 +35,7 @@ class _PostEditorPageState extends State<PostEditorPage> {
 
   /// Users always post to their feed [kUserFeedName]
   late FlatFeed _feed;
-  late feed.Activity _activity;
+  late feed.EnrichedActivity _activity;
   late final TextEditingController _captionController = TextEditingController();
 
   /// Tags are text input one at at time via _tagsController

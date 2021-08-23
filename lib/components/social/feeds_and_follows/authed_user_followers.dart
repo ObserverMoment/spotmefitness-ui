@@ -36,7 +36,7 @@ class _AuthedUserFollowersState extends State<AuthedUserFollowers>
 
   Future<void> _loadInitialData() async {
     try {
-      final followers = await widget.userFeed.following();
+      final followers = await widget.userFeed.followers();
       final userIds = followers.map((f) => f.targetId.split(':')[1]).toList();
 
       _followers =

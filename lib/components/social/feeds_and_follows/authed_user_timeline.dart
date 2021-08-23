@@ -21,9 +21,11 @@ import 'package:collection/collection.dart';
 /// A [user_timeline] follows many [user_feeds].
 class AuthedUserTimeline extends StatefulWidget {
   final FlatFeed timelineFeed;
+  final StreamFeedClient streamFeedClient;
   const AuthedUserTimeline({
     Key? key,
     required this.timelineFeed,
+    required this.streamFeedClient,
   }) : super(key: key);
 
   @override
@@ -45,6 +47,10 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
   /// We let the user choose if they want to see these via a floating button at the top of the list.
   /// Ontap these activities get added to the top of the [_pagingController.itemList] and the user is scrolled back to the top of the page.
   List<ActivityWithObjectData> _newActivitiesWithObjectData = [];
+
+  /// List of activities which the current user has marked as liked.
+  List<PostWithLikeReaction> _postsWithLikeReactions = [];
+  List<PostWithShareReaction> _postsWithShareReactions = [];
 
   @override
   void initState() {
@@ -71,8 +77,39 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
 
   Future<void> _getTimelinePosts({required int offset}) async {
     try {
-      final feedActivities = await widget.timelineFeed
-          .getActivities(limit: _postsPerPage, offset: offset);
+      final feedActivities = await widget.timelineFeed.getEnrichedActivities(
+        limit: _postsPerPage,
+        offset: offset,
+        // On the timeline we dont show like counts or share counts
+        // But we do want to know if the user has liked or shared a post already
+        flags: EnrichmentFlags().withOwnReactions(),
+      );
+
+      final feedActivitiesWithOwnLikeReactions = feedActivities.where((a) =>
+          a.ownReactions?[kLikeReactionName] != null &&
+          a.ownReactions![kLikeReactionName]!.isNotEmpty);
+
+      final feedActivitiesWithOwnShareReactions = feedActivities.where((a) =>
+          a.ownReactions?[kShareReactionName] != null &&
+          a.ownReactions![kShareReactionName]!.isNotEmpty);
+
+      _postsWithLikeReactions = [
+        ..._postsWithLikeReactions,
+        ...feedActivitiesWithOwnLikeReactions
+            .map((a) => PostWithLikeReaction(
+                activityId: a.id!,
+                reaction: a.ownReactions![kLikeReactionName]![0]))
+            .toList()
+      ];
+
+      _postsWithShareReactions = [
+        ..._postsWithShareReactions,
+        ...feedActivitiesWithOwnShareReactions
+            .map((a) => PostWithShareReaction(
+                activityId: a.id!,
+                reaction: a.ownReactions![kShareReactionName]![0]))
+            .toList()
+      ];
 
       final activitiesWithObjectData =
           await FeedUtils.getPostsUserAndObjectData(context, feedActivities);
@@ -111,10 +148,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
     if (message?.newActivities != null && message!.newActivities.isNotEmpty) {
       final newActivitiesWithObjectData =
           await FeedUtils.getPostsUserAndObjectData(
-              context,
-              message.newActivities
-                  .map((e) => FeedUtils.activityFromEnrichedActivity(e))
-                  .toList());
+              context, message.newActivities);
 
       final sortedNewActivities = newActivitiesWithObjectData
           .sortedBy<DateTime>((a) => a.activity.time!);
@@ -130,8 +164,10 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
 
   void _prependNewPosts() {
     /// Animate the user back to the top of the list.
-    _scrollController.animateTo(0,
-        duration: kStandardAnimationDuration, curve: Curves.easeOut);
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(0,
+          duration: kStandardAnimationDuration, curve: Curves.easeOut);
+    }
 
     /// Add the new items to the paging controller.
     _pagingController.itemList = [
@@ -143,6 +179,20 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
     setState(() {
       _newActivitiesWithObjectData = [];
     });
+  }
+
+  Future<void> _likeUnlikePost(String activityId) async {
+    final postWithReaction = _postsWithLikeReactions
+        .firstWhereOrNull((p) => p.activityId == activityId);
+    if (postWithReaction != null) {
+      widget.streamFeedClient.reactions.delete(postWithReaction.reaction.id!);
+
+      /// TODO: Remove from _postsWithLikeReactions - does this come through via the subscription?
+    } else {
+      widget.streamFeedClient.reactions.add(kLikeReactionName, activityId);
+
+      /// TODO: Add to _postsWithLikeReactions - does this come through via the subscription?
+    }
   }
 
   @override
@@ -157,6 +207,9 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
   Widget build(BuildContext context) {
     // https://stackoverflow.com/questions/45944777/losing-widget-state-when-switching-pages-in-a-flutter-pageview
     super.build(context);
+
+    final likedPostIds =
+        _postsWithLikeReactions.map((p) => p.activityId).toList();
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -195,6 +248,12 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: TimelinePostCard(
                             activityWithObjectData: post,
+                            likeUnlikePost: () =>
+                                _likeUnlikePost(post.activity.id!),
+                            userHasLiked:
+                                likedPostIds.contains(post.activity.id!),
+                            sharePost: () => print(post),
+                            userHasShared: true,
                           ),
                         ),
                       ),
@@ -230,4 +289,20 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class PostWithLikeReaction {
+  final String activityId;
+  final Reaction reaction;
+  const PostWithLikeReaction({
+    required this.activityId,
+    required this.reaction,
+  });
+}
+
+class PostWithShareReaction {
+  final String activityId;
+  final Reaction reaction;
+  const PostWithShareReaction(
+      {required this.activityId, required this.reaction});
 }

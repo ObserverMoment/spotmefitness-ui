@@ -382,10 +382,13 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
                       child: TimelinePostCard(
                           isPreview: true,
                           activityWithObjectData: ActivityWithObjectData(
-                              feed.Activity(
-                                  actor: 'me',
+                              feed.EnrichedActivity(
+                                  actor: feed.EnrichableField(
+                                    context.streamFeedClient.currentUser!.ref,
+                                  ),
                                   verb: 'post',
-                                  object: 'text',
+                                  object: feed.EnrichableField(
+                                      '${describeEnum(_selectedObjectType!)}:$_selectedObjectId'),
                                   time: DateTime.now(),
                                   extraData: {
                                     'caption': _captionController.text,

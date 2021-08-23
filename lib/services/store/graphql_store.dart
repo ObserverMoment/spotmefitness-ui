@@ -14,7 +14,6 @@ import 'package:normalize/normalize.dart';
 
 class GraphQLStore {
   static const String boxName = 'graphql-cache';
-  late ArtemisClient _artemisClient;
   late HttpLink _httpLink;
   late AuthLink _authLink;
   late Link _link;
@@ -733,8 +732,7 @@ class GraphQLStore {
       v.dispose();
     });
     _httpLink.dispose();
-    _artemisClient.dispose();
-    await _box.close();
+    await _box.clear();
   }
 }
 

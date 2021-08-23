@@ -100,6 +100,8 @@ const String kUserTimelineName =
     'user_timeline'; // View this / follow other with this.
 const String kUserNotificationName =
     'user_notification'; // System notifications
+const String kLikeReactionName = 'like'; // Activity reaction type.
+const String kShareReactionName = 'share'; // Activity reaction type.
 
 /// Hive
 const String kSettingsHiveBoxName = 'settings_box';

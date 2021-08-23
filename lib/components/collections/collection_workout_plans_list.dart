@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_card.dart';
+import 'package:spotmefitness_ui/components/collections/collection_manager.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
@@ -10,7 +11,6 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
 /// Didn't use [_FilterableCreatedWorkoutPlans] even tho very similar because we need the cards in this list to have context menu functionality - multiple options when clicked.
 /// Note: Also has similar functionality to that found in the [WorkoutPlanDetailsPage] with regards to adding and removing from collections.
@@ -30,92 +30,30 @@ class _FilterableCollectionWorkoutPlansState
 
   Future<void> _moveToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
-    await context.showBottomSheet(
+    await context.push(
         child: CollectionSelector(selectCollection: (collection) async {
-      await _removeWorkoutPlanFromCollection(workoutPlan, showToast: false);
-      await _addWorkoutPlanToCollection(collection, workoutPlan);
+      // Remove from [widget.collection]
+      await CollectionManager.removeWorkoutPlanFromCollection(
+          context, widget.collection, workoutPlan,
+          showToast: false);
+      // Add to selected collection.
+      await CollectionManager.addWorkoutPlanToCollection(
+          context, collection, workoutPlan);
     }));
   }
 
   Future<void> _copyToAnotherCollection(WorkoutPlan workoutPlan) async {
     /// Select collection to move to
-    await context.showBottomSheet(
+    await context.push(
         child: CollectionSelector(selectCollection: (collection) async {
-      await _addWorkoutPlanToCollection(collection, workoutPlan);
+      await CollectionManager.addWorkoutPlanToCollection(
+          context, collection, workoutPlan);
     }));
   }
 
-  /// Collection selected via [CollectionSelector]
-  Future<void> _addWorkoutPlanToCollection(
-      Collection collection, WorkoutPlan workoutPlan) async {
-    final updatedCollection = Collection.fromJson(collection.toJson());
-    updatedCollection.workoutPlans.add(workoutPlan);
-
-    final variables = AddWorkoutPlanToCollectionArguments(
-        data: AddWorkoutPlanToCollectionInput(
-            collectionId: collection.id,
-            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
-
-    final result = await context.graphQLStore.mutate<
-            AddWorkoutPlanToCollection$Mutation,
-            AddWorkoutPlanToCollectionArguments>(
-        mutation: AddWorkoutPlanToCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context
-          .showErrorAlert('Sorry there was a problem, the plan was not moved.');
-    } else {
-      context.showToast(
-          message: 'Added ${workoutPlan.name} to ${collection.name}');
-    }
-  }
-
   void _confirmRemoveFromCollection(WorkoutPlan workoutPlan) {
-    context.showConfirmDialog(
-        title: 'Remove from Collection',
-        content: MyText(
-          'Remove ${workoutPlan.name}?',
-          textAlign: TextAlign.center,
-          maxLines: 4,
-        ),
-        onConfirm: () => _removeWorkoutPlanFromCollection(workoutPlan));
-  }
-
-  Future<void> _removeWorkoutPlanFromCollection(WorkoutPlan workoutPlan,
-      {bool showToast = true}) async {
-    final updatedCollection = Collection.fromJson(widget.collection.toJson());
-    updatedCollection.workoutPlans = widget.collection.workoutPlans
-        .where((w) => w.id != workoutPlan.id)
-        .toList();
-
-    final variables = RemoveWorkoutPlanFromCollectionArguments(
-        data: RemoveWorkoutPlanFromCollectionInput(
-            collectionId: widget.collection.id,
-            workoutPlan: ConnectRelationInput(id: workoutPlan.id)));
-
-    final result = await context.graphQLStore.mutate<
-            RemoveWorkoutPlanFromCollection$Mutation,
-            RemoveWorkoutPlanFromCollectionArguments>(
-        mutation: RemoveWorkoutPlanFromCollectionMutation(variables: variables),
-        optimisticData: updatedCollection.toJson(),
-        broadcastQueryIds: [
-          UserCollectionsQuery().operationName,
-          GQLVarParamKeys.userCollectionByIdQuery(widget.collection.id)
-        ]);
-
-    if (result.hasErrors || result.data == null) {
-      context.showErrorAlert(
-          'Sorry there was a problem, the plan was not removed.');
-    } else {
-      if (showToast) {
-        context.showToast(message: 'Removed ${workoutPlan.name}');
-      }
-    }
+    CollectionManager.confirmRemoveObjectFromCollection<WorkoutPlan>(
+        context, widget.collection, workoutPlan);
   }
 
   @override

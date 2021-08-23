@@ -52,7 +52,7 @@ class AuthedUserClubsList extends StatelessWidget {
                             child: BorderButton(
                                 withBorder: false,
                                 mini: true,
-                                prefix: Icon(CupertinoIcons.search_circle),
+                                prefix: Icon(CupertinoIcons.search),
                                 text: 'Find clubs',
                                 onPressed: () => print('find clubs flow')),
                           ),

@@ -40,16 +40,6 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   /// Feed - posts the user has made themselves.
   late FlatFeed _userFeed;
 
-  // Subscription? _timelineSubscription;
-  // bool _timelineLoading = true;
-  // List<ActivityWithObjectData> _timelineActivitiesWithObjectData =
-  //     <ActivityWithObjectData>[];
-
-  /// Subscription handler will put new activities from [user_timeline] feed here.
-  /// This gets passed to the timeline widget to be handled.
-  // List<ActivityWithObjectData> _newTimelineActivitiesWithObjectData =
-  //     <ActivityWithObjectData>[];
-
   @override
   void initState() {
     super.initState();
@@ -59,71 +49,7 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
     _timelineFeed =
         _streamFeedClient.flatFeed(kUserTimelineName, _authedUser.id);
     _userFeed = _streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
-
-    // _loadInitialData().then((_) {
-    //   _subscribeToTimelineFeed();
-    // });
   }
-
-  // Future<void> _subscribeToTimelineFeed() async {
-  //   try {
-  //     _timelineSubscription =
-  //         await _timeline.subscribe(_updateNewTimelinePosts);
-  //   } catch (e) {
-  //     _handleSubscriptionError(e);
-  //   } finally {
-  //     setState(() {});
-  //   }
-  // }
-
-  // void _handleSubscriptionError(e) {
-  //   print(e);
-  //   context.showToast(
-  //       message: 'There was a problem, updates will not be received.');
-  // }
-
-  // Future<void> _loadInitialData() async {
-  //   try {
-
-  //     await _getFollowing();
-  //     await _getFollowers();
-  //   } catch (e) {
-  //     print(e.toString());
-  //     context.showToast(
-  //         message: 'Sorry there was a problem loading your timeline.',
-  //         toastType: ToastType.destructive);
-  //   } finally {
-  //     setState(() {
-  //       _timelineLoading = false;
-  //     });
-  //   }
-  // }
-
-  // Future<void> _updateNewTimelinePosts(RealtimeMessage? message) async {
-  //   if (message?.newActivities != null) {
-  //     final newActivitiesWithObjectData =
-  //         await FeedUtils.getPostsUserAndObjectData(
-  //             context,
-  //             message!.newActivities
-  //                 .map((e) => FeedUtils.activityFromEnrichedActivity(e))
-  //                 .toList());
-
-  //     setState(() {
-  //       _timelineActivitiesWithObjectData = [
-  //         ...newActivitiesWithObjectData,
-  //         ..._timelineActivitiesWithObjectData,
-  //       ];
-  //     });
-  //   }
-  // }
-
-  /// Gets followers of [user_feed] and hydrate with UserAvatarData.
-  // Future<void> _getFollowers() async {
-  //   final feedFollowers = await _feed.followers();
-  //   final userIds = feedFollowers.map((f) => f.feedId.split(':')[1]).toList();
-
-  //   _followers = await _getFollowsWithUserData(feedFollowers, userIds);
-  // }
 
   void _changeTab(int index) {
     _pageController.jumpToPage(
@@ -157,8 +83,8 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
             physics: NeverScrollableScrollPhysics(),
             children: [
               AuthedUserTimeline(
-                timelineFeed: _timelineFeed,
-              ),
+                  timelineFeed: _timelineFeed,
+                  streamFeedClient: _streamFeedClient),
               AuthedUserFeed(
                 userFeed: _userFeed,
               ),
@@ -176,80 +102,6 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
     );
   }
 }
-
-/// Displays a list of [TimelinePostCard] widgets and animates in an
-// class TimelineFeedPostList extends StatefulWidget {
-//   final List<ActivityWithObjectData> activitiesWithObjectData;
-
-//   /// When this is not empty we show a floating 'new posts' button at the top of the list.
-//   /// Tapping this button will add these to the main list [activitiesWithObjectData] and scroll the user to the top of the list.
-//   final List<ActivityWithObjectData> newActivitiesWithObjectData;
-//   final void Function(String activityId)? deleteActivityById;
-//   const TimelineFeedPostList(
-//       {Key? key,
-//       required this.activitiesWithObjectData,
-//       this.deleteActivityById,
-//       this.newActivitiesWithObjectData = const []})
-//       : super(key: key);
-
-//   @override
-//   _TimelineFeedPostListState createState() => _TimelineFeedPostListState();
-// }
-
-// class _TimelineFeedPostListState extends State<TimelineFeedPostList> {
-//   late PagingController<int, ActivityWithObjectData> _pagingController;
-//   late ScrollController _scrollController;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _pagingController =
-//         PagingController<int, ActivityWithObjectData>(firstPageKey: 0);
-//     _scrollController = ScrollController();
-
-//     _pagingController.appendPage(widget.activitiesWithObjectData, 1);
-//   }
-
-//   @override
-//   void didUpdateWidget(covariant TimelineFeedPostList oldWidget) {
-//     // TODO: implement didUpdateWidget
-//     super.didUpdateWidget(oldWidget);
-//   }
-
-//   @override
-//   void dispose() {
-//     _pagingController.dispose();
-//     _scrollController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return PagedListView<int, ActivityWithObjectData>(
-//       pagingController: _pagingController,
-//       scrollController: _scrollController,
-//       physics: AlwaysScrollableScrollPhysics(),
-//       builderDelegate: PagedChildBuilderDelegate<ActivityWithObjectData>(
-//         itemBuilder: (context, post, index) => SizeFadeIn(
-//           duration: 50,
-//           delay: index,
-//           delayBasis: 10,
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 8.0),
-//             child: TimelinePostCard(
-//               activityWithObjectData: post,
-//               deleteActivityById: widget.deleteActivityById,
-//             ),
-//           ),
-//         ),
-//         firstPageProgressIndicatorBuilder: (c) => LoadingCircle(),
-//         newPageProgressIndicatorBuilder: (c) => LoadingCircle(),
-//         noItemsFoundIndicatorBuilder: (c) =>
-//             Center(child: MyText('No results...')),
-//       ),
-//     );
-//   }
-// }
 
 class UserFollow extends StatelessWidget {
   final FollowWithUserAvatarData follow;

@@ -27,7 +27,7 @@ void main() async {
 
   /// Once we have ensured that clean up and garbage collection is working well.
   /// TODO: Remove this before pushing anything to production.
-  Hive.box(GraphQLStore.boxName).clear();
+  await Hive.box(GraphQLStore.boxName).clear();
 
   await Firebase.initializeApp();
 

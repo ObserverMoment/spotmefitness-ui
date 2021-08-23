@@ -40,9 +40,8 @@ class CollectionSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        navigationBar: BottomBorderNavBar(
-          bottomBorderColor: context.theme.navbarBottomBorder,
+    return MyPageScaffold(
+        navigationBar: BorderlessNavBar(
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(title),
         ),
@@ -58,39 +57,34 @@ class CollectionSelector extends StatelessWidget {
                   .reversed
                   .toList();
 
-              return SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: CreateTextIconButton(
-                            text: 'Create new collection',
-                            onPressed: () => _openCreateCollection(context)),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: collections.length,
-                              itemBuilder: (c, i) => GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
-                                    onTap: () => _handleSelectCollection(
-                                        context, collections[i]),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      child: CollectionCard(
-                                          collection: collections[i]),
-                                    ),
-                                  )),
-                        ),
-                      ),
-                    ],
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: CreateTextIconButton(
+                        text: 'Create new collection',
+                        onPressed: () => _openCreateCollection(context)),
                   ),
-                ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: collections.length,
+                          itemBuilder: (c, i) => GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () => _handleSelectCollection(
+                                    context, collections[i]),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: CollectionCard(
+                                      collection: collections[i]),
+                                ),
+                              )),
+                    ),
+                  ),
+                ],
               );
             }));
   }

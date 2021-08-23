@@ -8,11 +8,13 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/feed_utils.
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:faye_dart/src/subscription.dart';
 import 'package:collection/collection.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Feed for the currently logged in User.
 /// GetStream fees slug is [user_feed].
@@ -65,8 +67,11 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
 
   Future<void> _getFeedPosts({required int offset}) async {
     try {
-      final feedActivities = await widget.userFeed
-          .getActivities(limit: _postsPerPage, offset: offset);
+      final feedActivities = await widget.userFeed.getEnrichedActivities(
+        limit: _postsPerPage,
+        offset: offset,
+        flags: EnrichmentFlags().withReactionCounts(),
+      );
 
       final activitiesWithObjectData =
           await FeedUtils.getPostsUserAndObjectData(context, feedActivities);
@@ -105,15 +110,14 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
     if (message?.newActivities != null && message!.newActivities.isNotEmpty) {
       final newActivitiesWithObjectData =
           await FeedUtils.getPostsUserAndObjectData(
-              context,
-              message.newActivities
-                  .map((e) => FeedUtils.activityFromEnrichedActivity(e))
-                  .toList());
+              context, message.newActivities);
 
       final sortedNewActivities = newActivitiesWithObjectData
           .sortedBy<DateTime>((a) => a.activity.time!);
 
-      _scrollController.jumpTo(0.0);
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(0.0);
+      }
       _pagingController.itemList = [
         ...sortedNewActivities,
         ..._pagingController.itemList ?? []
@@ -180,6 +184,8 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TimelinePostCard(
                         activityWithObjectData: post,
+                        openEditPost: () => context.navigateTo(
+                            PostEditorRoute(activityWithObjectData: post)),
                         deleteActivityById: _deleteActivityById,
                       ),
                     ),

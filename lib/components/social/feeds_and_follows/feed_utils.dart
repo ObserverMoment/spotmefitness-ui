@@ -12,7 +12,7 @@ class FeedUtils {
   /// Based on [userId] via [activity.actor], and [objectId] | [objectType] via [activity.object]
   /// [ActivityWithObjectData] is what is needed to display a single post in the UI.
   static Future<List<ActivityWithObjectData>> getPostsUserAndObjectData(
-      BuildContext context, List<Activity> activities) async {
+      BuildContext context, List<EnrichedActivity> activities) async {
     final List<TimelinePostDataRequestInput> postDataRequests =
         activities.map((a) {
       if (a.object == null) {
@@ -21,10 +21,10 @@ class FeedUtils {
       if (a.actor == null) {
         throw Exception('Error: Activity.actor should never be null.');
       }
-      final idAndType = a.object!.split(':');
+      final idAndType = objectStringIdFromEnriched(a.object!).split(':');
 
       return TimelinePostDataRequestInput(
-          posterId: a.actor!.split(':')[1],
+          posterId: actorStringIdFromEnriched(a.actor!).split(':')[1],
           objectId: idAndType[1],
           objectType: idAndType[0].toTimelinePostType());
     }).toList();
@@ -109,4 +109,11 @@ class FeedUtils {
         time: e.time,
         extraData: e.extraData,
       );
+
+  /// Helpers to convert EnrichableField data to standard [type:id] string IDs.
+  static String actorStringIdFromEnriched(EnrichableField actor) =>
+      "SU:${(actor.data as Map)['id']}";
+
+  static String objectStringIdFromEnriched(EnrichableField object) =>
+      object.data.toString();
 }

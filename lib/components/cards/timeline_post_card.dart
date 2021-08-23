@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -19,14 +20,24 @@ import 'package:auto_route/auto_route.dart';
 
 class TimelinePostCard extends StatelessWidget {
   final ActivityWithObjectData activityWithObjectData;
-  // Removes interactivity.
+  // Removes interactivity when [true].
   final bool isPreview;
+  final VoidCallback? openEditPost;
   final void Function(String activityId)? deleteActivityById;
+  final VoidCallback? likeUnlikePost;
+  final bool userHasLiked;
+  final VoidCallback? sharePost;
+  final bool userHasShared;
   const TimelinePostCard(
       {Key? key,
       required this.activityWithObjectData,
       this.isPreview = false,
-      this.deleteActivityById})
+      this.deleteActivityById,
+      this.openEditPost,
+      this.likeUnlikePost,
+      this.sharePost,
+      this.userHasLiked = false,
+      this.userHasShared = false})
       : super(key: key);
 
   void _openDetailsPageByType(BuildContext context) {
@@ -44,55 +55,73 @@ class TimelinePostCard extends StatelessWidget {
     }
   }
 
-  Widget _buildReactionButton(IconData iconData, VoidCallback onPressed) =>
+  Widget _buildReactionButtonsOrDisplay(
+          BuildContext context, bool userIsPoster) =>
+      userIsPoster
+          ? Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
+              child: Row(
+                children: [
+                  Icon(
+                    CupertinoIcons.hand_thumbsup_fill,
+                    color: context.theme.primary.withOpacity(0.4),
+                    size: 16,
+                  ),
+                  SizedBox(width: 4),
+                  MyText('16 likes'),
+                  SizedBox(width: 10),
+                  Icon(
+                    CupertinoIcons.paperplane_fill,
+                    color: context.theme.primary.withOpacity(0.4),
+                    size: 16,
+                  ),
+                  SizedBox(width: 4),
+                  MyText('8 shares'),
+                ],
+              ),
+            )
+          : Row(
+              children: [
+                if (likeUnlikePost != null)
+                  _buildReactionButton(
+                      inactiveIconData: CupertinoIcons.hand_thumbsup,
+                      activeIconData: CupertinoIcons.hand_thumbsup_fill,
+                      onPressed: likeUnlikePost!,
+                      active: userHasLiked),
+                if (sharePost != null)
+                  _buildReactionButton(
+                      inactiveIconData: CupertinoIcons.paperplane,
+                      activeIconData: CupertinoIcons.paperplane_fill,
+                      onPressed: userHasShared
+                          ? () => print('already shared warning')
+                          : () => print('share this post flow'),
+                      active: userHasShared),
+              ],
+            );
+
+  Widget _buildReactionButton(
+          {required IconData inactiveIconData,
+          required IconData activeIconData,
+          required VoidCallback onPressed,
+          required bool active}) =>
       CupertinoButton(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
           onPressed: isPreview ? null : onPressed,
-          child: Icon(iconData));
-
-  Widget _buildAvatarAndDisplayName(BuildContext context,
-          TimelinePostData? objectData, Activity activity) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              UserAvatar(
-                size: 40,
-                avatarUri: objectData?.creator.avatarUri,
-              ),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MyText(objectData != null
-                      ? 'By ${objectData.creator.displayName}'
-                      : ''),
-                  MyHeaderText(
-                    objectData != null ? objectData.object.type.display : '',
-                    size: FONTSIZE.SMALL,
-                    lineHeight: 1.3,
+          child: AnimatedSwitcher(
+            duration: kStandardAnimationDuration,
+            child: active
+                ? Icon(
+                    activeIconData,
+                    color: Styles.peachRed,
                   )
-                ],
-              ),
-            ],
-          ),
-          _TimelinePostEllipsisMenu(
-            object: objectData!.object,
-            poster: objectData.poster,
-            creator: objectData.creator,
-            handleDeletePost: deleteActivityById != null
-                ? () => deleteActivityById!(activity.id!)
-                : null,
-            openEditPost: () => context.navigateTo(PostEditorRoute(
-                activityWithObjectData: activityWithObjectData)),
-            openDetailsPage: () => _openDetailsPageByType(context),
-          )
-        ],
-      );
+                : Icon(
+                    inactiveIconData,
+                  ),
+          ));
 
   Widget _buildTitleCaptionAndTags(
-          Activity activity, TimelinePostData? objectData) =>
+          EnrichedActivity activity, TimelinePostData? objectData) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
@@ -126,6 +155,7 @@ class TimelinePostCard extends StatelessWidget {
                             .map((tag) => MyText(
                                   '#$tag',
                                   color: Styles.colorOne,
+                                  weight: FontWeight.bold,
                                 ))
                             .toList(),
                       ),
@@ -141,54 +171,95 @@ class TimelinePostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final activity = activityWithObjectData.activity;
     final objectData = activityWithObjectData.objectData;
+    final authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
+    final userIsPoster = authedUserId == objectData?.poster.id;
+    final userIsCreator = authedUserId == objectData?.creator.id;
 
     return GestureDetector(
       onTap: () => _openDetailsPageByType(context),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6.0),
-          child: _buildAvatarAndDisplayName(context, objectData, activity),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  UserAvatar(
+                    size: 40,
+                    avatarUri: objectData?.creator.avatarUri,
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyText(objectData != null
+                          ? 'By ${objectData.creator.displayName}'
+                          : ''),
+                      MyHeaderText(
+                        objectData != null
+                            ? objectData.object.type.display
+                            : '',
+                        size: FONTSIZE.SMALL,
+                        lineHeight: 1.3,
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              _TimelinePostEllipsisMenu(
+                userIsCreator: userIsCreator,
+                userIsPoster: userIsPoster,
+                object: objectData!.object,
+                poster: objectData.poster,
+                creator: objectData.creator,
+                handleDeletePost:
+                    deleteActivityById != null && activity.id != null
+                        ? () => deleteActivityById!(activity.id!)
+                        : null,
+                openEditPost: openEditPost != null ? openEditPost : null,
+                openDetailsPage: () => _openDetailsPageByType(context),
+              )
+            ],
+          ),
         ),
         SizedBox(height: 4),
-        if (objectData?.object.coverImageUri != null)
+        if (objectData.object.coverImageUri != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: SizedBox(
                 height: 200,
-                child: SizedUploadcareImage(objectData!.object.coverImageUri!)),
+                child: SizedUploadcareImage(objectData.object.coverImageUri!)),
           ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                _buildReactionButton(CupertinoIcons.hand_thumbsup,
-                    () => print('like this post')),
-                _buildReactionButton(
-                    CupertinoIcons.paperplane, () => print('share')),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  MyText(
-                    'Posted by ${objectData?.poster.displayName ?? "Unknown"}',
-                    size: FONTSIZE.SMALL,
-                    subtext: true,
-                    lineHeight: 1.3,
-                  ),
-                  MyText(
-                    (activity.time as DateTime).daysAgo,
-                    size: FONTSIZE.SMALL,
-                    subtext: true,
-                    lineHeight: 1.3,
-                  ),
-                ],
-              ),
-            )
-          ],
+        SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildReactionButtonsOrDisplay(context, userIsPoster),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText(
+                      'Posted by ${userIsPoster ? "You" : objectData.poster.displayName}',
+                      size: FONTSIZE.SMALL,
+                      subtext: true,
+                      lineHeight: 1.3,
+                    ),
+                    MyText(
+                      (activity.time as DateTime).daysAgo,
+                      size: FONTSIZE.SMALL,
+                      subtext: true,
+                      lineHeight: 1.3,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
         Flexible(child: _buildTitleCaptionAndTags(activity, objectData)),
         SizedBox(height: 10),
@@ -200,11 +271,13 @@ class TimelinePostCard extends StatelessWidget {
 }
 
 class _TimelinePostEllipsisMenu extends StatelessWidget {
+  final bool userIsPoster;
+  final bool userIsCreator;
   final TimelinePostDataUser poster;
   final TimelinePostDataUser creator;
   final TimelinePostDataObject object;
   final VoidCallback? handleDeletePost;
-  final VoidCallback openEditPost;
+  final VoidCallback? openEditPost;
   final VoidCallback openDetailsPage;
   const _TimelinePostEllipsisMenu(
       {Key? key,
@@ -212,8 +285,10 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
       required this.openDetailsPage,
       required this.poster,
       required this.creator,
-      required this.openEditPost,
-      this.handleDeletePost})
+      this.openEditPost,
+      this.handleDeletePost,
+      required this.userIsPoster,
+      required this.userIsCreator})
       : super(key: key);
 
   void _openUserProfile(BuildContext context, String userId) {
@@ -222,10 +297,6 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
-    final userIsPoster = authedUserId == poster.id;
-    final userIsCreator = authedUserId == creator.id;
-
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: Icon(CupertinoIcons.ellipsis),
@@ -237,12 +308,6 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
                   subtitle: 'Posted by ${poster.displayName}',
                   imageUri: object.coverImageUri),
               items: [
-                if (userIsPoster)
-                  BottomSheetMenuItem(
-                    text: 'Edit Post',
-                    icon: Icon(CupertinoIcons.pencil),
-                    onPressed: openEditPost,
-                  ),
                 BottomSheetMenuItem(
                     text: 'View ${object.type.display}',
                     icon: Icon(CupertinoIcons.eye),
@@ -257,6 +322,12 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
                       text: 'View Poster',
                       icon: Icon(CupertinoIcons.person_crop_rectangle),
                       onPressed: () => _openUserProfile(context, poster.id)),
+                if (userIsPoster && openEditPost != null)
+                  BottomSheetMenuItem(
+                    text: 'Edit Post',
+                    icon: Icon(CupertinoIcons.pencil),
+                    onPressed: openEditPost!,
+                  ),
                 if (userIsPoster && handleDeletePost != null)
                   BottomSheetMenuItem(
                       text: 'Delete Post',
@@ -268,7 +339,7 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
                       isDestructive: true),
                 if (!userIsPoster)
                   BottomSheetMenuItem(
-                      text: 'Report post',
+                      text: 'Report',
                       icon: Icon(
                         CupertinoIcons.exclamationmark_circle,
                         color: Styles.errorRed,

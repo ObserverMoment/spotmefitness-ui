@@ -28,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _spacer() => SizedBox(height: 10);
 
   /// Don't show toast when clearing cache before signing out - only when just clearing cache.
-  Future<void> _cleareCache(BuildContext context, bool showToast) async {
+  Future<void> _clearCache(BuildContext context, bool showToast) async {
     setState(() => _loading = true);
     await context.graphQLStore.clear();
     setState(() => _loading = false);
@@ -196,7 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 PageLink(
                   linkText: 'Clear cache',
-                  onPress: () => _cleareCache(context, true),
+                  onPress: () => _clearCache(context, true),
                   icon: Icon(Icons.cached_rounded),
                   loading: _loading,
                 ),
@@ -244,7 +244,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 PageLink(
                     linkText: 'Sign out',
                     onPress: () async {
-                      _cleareCache(context, false);
+                      _clearCache(context, false);
                       await GetIt.I<AuthBloc>().signOut();
                     },
                     icon: Icon(CupertinoIcons.square_arrow_right))

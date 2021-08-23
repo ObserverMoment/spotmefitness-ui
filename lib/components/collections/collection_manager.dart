@@ -35,7 +35,10 @@ class CollectionManager {
                               onPressed: () {
                                 dialogContext.pop();
                                 confirmRemoveObjectFromCollection<T>(
-                                    context, object, collection);
+                                  context,
+                                  collection,
+                                  object,
+                                );
                               }),
                         )
                         .toList()
@@ -68,7 +71,10 @@ class CollectionManager {
   }
 
   static void confirmRemoveObjectFromCollection<T>(
-      BuildContext context, T object, Collection collection) {
+    BuildContext context,
+    Collection collection,
+    T object,
+  ) {
     context.showConfirmDialog(
         title: 'Remove from Collection',
         content: MyText(
@@ -88,7 +94,7 @@ class CollectionManager {
   }
 
   /// Add / Remove Workout from Collection ////
-  static void addWorkoutToCollection(
+  static Future<void> addWorkoutToCollection(
       BuildContext context, Collection collection, Workout workout) async {
     final updatedCollection = Collection.fromJson(collection.toJson());
     updatedCollection.workouts.add(workout);
@@ -116,7 +122,8 @@ class CollectionManager {
   }
 
   static Future<void> removeWorkoutFromCollection(
-      BuildContext context, Collection collection, Workout workout) async {
+      BuildContext context, Collection collection, Workout workout,
+      {bool showToast = true}) async {
     final updatedCollection = Collection.fromJson(collection.toJson());
     updatedCollection.workouts =
         collection.workouts.where((w) => w.id != workout.id).toList();
@@ -140,7 +147,10 @@ class CollectionManager {
       context.showErrorAlert(
           'Sorry there was a problem, the workout was not removed.');
     } else {
-      context.showToast(message: 'Removed from collection: ${collection.name}');
+      if (showToast) {
+        context.showToast(
+            message: 'Removed from collection: ${collection.name}');
+      }
     }
   }
 
@@ -173,8 +183,9 @@ class CollectionManager {
     }
   }
 
-  static Future<void> removeWorkoutPlanFromCollection(BuildContext context,
-      Collection collection, WorkoutPlan workoutPlan) async {
+  static Future<void> removeWorkoutPlanFromCollection(
+      BuildContext context, Collection collection, WorkoutPlan workoutPlan,
+      {bool showToast = true}) async {
     final updatedCollection = Collection.fromJson(collection.toJson());
     updatedCollection.workoutPlans =
         collection.workoutPlans.where((wp) => wp.id != workoutPlan.id).toList();
@@ -198,7 +209,10 @@ class CollectionManager {
       context.showErrorAlert(
           'Sorry there was a problem, the workout plan was not removed');
     } else {
-      context.showToast(message: 'Removed from collection: ${collection.name}');
+      if (showToast) {
+        context.showToast(
+            message: 'Removed from collection: ${collection.name}');
+      }
     }
   }
 }
