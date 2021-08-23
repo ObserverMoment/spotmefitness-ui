@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
-import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 
@@ -26,12 +26,11 @@ class ProfileGymProfilesPage extends StatelessWidget {
           cardHeight: 160,
         ),
         builder: (data) {
-          final gymProfiles = data.gymProfiles;
+          final gymProfiles = data.gymProfiles.reversed.toList();
           return StackAndFloatingButton(
             pageHasBottomNavBar: true,
             buttonText: 'Add Profile',
-            onPressed: () => context.push(
-                child: GymProfileCreator(), fullscreenDialog: true),
+            onPressed: () => context.pushRoute(GymProfileCreatorRoute()),
             child: gymProfiles.isNotEmpty
                 ? Padding(
                     padding:
@@ -49,11 +48,11 @@ class ProfileGymProfilesPage extends StatelessWidget {
                                     EnvironmentConfig.bottomNavBarHeight);
                           } else {
                             return GestureDetector(
-                              onTap: () => context.push(
-                                  child: GymProfileCreator(
-                                    gymProfile: gymProfiles[i],
-                                  ),
-                                  fullscreenDialog: true),
+                              onTap: () => context.pushRoute(
+                                GymProfileCreatorRoute(
+                                  gymProfile: gymProfiles[i],
+                                ),
+                              ),
                               child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 5.0),

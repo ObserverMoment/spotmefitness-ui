@@ -20,7 +20,6 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
-import 'package:spotmefitness_ui/components/user_input/selectors/collection_selector.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';

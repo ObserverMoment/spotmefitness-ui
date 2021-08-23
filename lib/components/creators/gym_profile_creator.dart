@@ -16,14 +16,14 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 
-class GymProfileCreator extends StatefulWidget {
+class GymProfileCreatorPage extends StatefulWidget {
   final GymProfile? gymProfile;
-  GymProfileCreator({this.gymProfile});
+  GymProfileCreatorPage({this.gymProfile});
   @override
-  _GymProfileCreatorState createState() => _GymProfileCreatorState();
+  _GymProfileCreatorPageState createState() => _GymProfileCreatorPageState();
 }
 
-class _GymProfileCreatorState extends State<GymProfileCreator> {
+class _GymProfileCreatorPageState extends State<GymProfileCreatorPage> {
   bool _formIsDirty = false;
   late bool _isCreate;
   bool _loading = false;
@@ -212,12 +212,12 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: _GymProfileCreatorDetails(
+                  child: _GymProfileCreatorPageDetails(
                       nameController: _nameController,
                       descriptionController: _descriptionController,
                       handleDelete: _isCreate ? null : _handleDelete),
                 ),
-                _GymProfileCreatorEquipment(
+                _GymProfileCreatorPageEquipment(
                   clearAllEquipment: _clearAllEquipment,
                   handleSelection: _toggleEquipment,
                   selectedEquipments: _activeGymProfile.equipments,
@@ -231,11 +231,11 @@ class _GymProfileCreatorState extends State<GymProfileCreator> {
   }
 }
 
-class _GymProfileCreatorDetails extends StatelessWidget {
+class _GymProfileCreatorPageDetails extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController descriptionController;
   final void Function()? handleDelete;
-  _GymProfileCreatorDetails(
+  _GymProfileCreatorPageDetails(
       {required this.nameController,
       required this.descriptionController,
       this.handleDelete});
@@ -283,11 +283,11 @@ class _GymProfileCreatorDetails extends StatelessWidget {
   }
 }
 
-class _GymProfileCreatorEquipment extends StatelessWidget {
+class _GymProfileCreatorPageEquipment extends StatelessWidget {
   final List<Equipment> selectedEquipments;
   final void Function(Equipment equipment) handleSelection;
   final void Function() clearAllEquipment;
-  _GymProfileCreatorEquipment(
+  _GymProfileCreatorPageEquipment(
       {required this.selectedEquipments,
       required this.handleSelection,
       required this.clearAllEquipment});
@@ -320,8 +320,8 @@ class _GymProfileCreatorEquipment extends StatelessWidget {
         ),
         Expanded(
           child: QueryObserver<Equipments$Query, json.JsonSerializable>(
-              key:
-                  Key('GymProfileCreator - ${EquipmentsQuery().operationName}'),
+              key: Key(
+                  'GymProfileCreatorPage - ${EquipmentsQuery().operationName}'),
               query: EquipmentsQuery(),
               fetchPolicy: QueryFetchPolicy.storeFirst,
               builder: (data) {

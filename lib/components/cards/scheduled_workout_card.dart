@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
-import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';
@@ -51,11 +50,9 @@ class ScheduledWorkoutCard extends StatelessWidget {
   }
 
   Future<void> _reschedule(BuildContext context) async {
-    final result = await context.showBottomSheet(
-        showDragHandle: false,
-        child: ScheduledWorkoutCreator(
-          scheduledWorkout: scheduledWorkout,
-        ));
+    final result = await context.pushRoute(ScheduledWorkoutCreatorRoute(
+      scheduledWorkout: scheduledWorkout,
+    ));
     if (result is ToastRequest) {
       context.showToast(message: result.message, toastType: result.type);
     }

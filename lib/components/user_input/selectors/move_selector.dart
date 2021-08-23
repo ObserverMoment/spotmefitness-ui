@@ -3,7 +3,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
-import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_move_creator.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
@@ -12,12 +11,14 @@ import 'package:spotmefitness_ui/components/user_input/filters/screens/move_filt
 import 'package:spotmefitness_ui/components/workout/move_details.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:auto_route/auto_route.dart';
 
 /// The user is required to select a move before moving on to the workoutMove creator.
 /// Unlike some other selectors this runs callback immediately on press.
@@ -58,9 +59,9 @@ class _MoveSelectorState extends State<MoveSelector> {
 
   Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();
-    final success =
-        await context.push<bool?>(child: CustomMoveCreator(move: moveToUpdate));
-    if (success != null && success) {
+    final success = await context
+        .pushRoute<bool?>(CustomMoveCreatorRoute(move: moveToUpdate));
+    if (success == true) {
       if (moveToUpdate == null) {
         // Created
         context.showToast(message: 'New move created!');
@@ -108,7 +109,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                     if (widget.includeCustomMoves)
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0, vertical: 8),
+                            horizontal: 8.0, vertical: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

@@ -10,7 +10,6 @@ import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/collections/collection_manager.dart';
-import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -20,7 +19,6 @@ import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
-import 'package:spotmefitness_ui/components/user_input/selectors/collection_selector.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -105,12 +103,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   }
 
   Future<void> _openScheduleWorkout(Workout workout) async {
-    final result = await context.showBottomSheet(
-        showDragHandle: false,
-        expand: true,
-        child: ScheduledWorkoutCreator(
-          workout: workout,
-        ));
+    final result = await context.pushRoute(ScheduledWorkoutCreatorRoute(
+      workout: workout,
+    ));
     if (result is ToastRequest) {
       context.showToast(message: result.message, toastType: result.type);
     }

@@ -19,9 +19,15 @@ class BottomSheetMenuItem {
 }
 
 /// Light wrapper around [showBottomSheet] setting [expand] to [false].
-void openBottomSheetMenu(
-    {required BuildContext context, required Widget child}) {
-  context.showBottomSheet(expand: false, child: child);
+Future<dynamic> openBottomSheetMenu({
+  required BuildContext context,
+  required Widget child,
+}) async {
+  final result = await context.showBottomSheet(
+    expand: false,
+    child: child,
+  );
+  return result;
 }
 
 class BottomSheetMenu extends StatelessWidget {
@@ -40,30 +46,27 @@ class BottomSheetMenu extends StatelessWidget {
             Column(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 20),
                   child: header,
                 ),
-                HorizontalLine(),
               ],
             ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 12.0, left: 16, right: 16, bottom: 20),
-              child: ContentBox(
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) => HorizontalLine(
-                          color: context.theme.primary.withOpacity(0.07),
-                          verticalPadding: 2,
-                        ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) =>
-                        BottomSheetMenuItemContainer(
-                          items[index],
-                        )),
-              ),
+          Container(
+            color: context.theme.background,
+            padding: const EdgeInsets.only(
+                top: 12.0, left: 16, right: 16, bottom: 20),
+            child: ContentBox(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (context, index) => HorizontalLine(
+                        color: context.theme.primary.withOpacity(0.07),
+                        verticalPadding: 2,
+                      ),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) => BottomSheetMenuItemContainer(
+                        items[index],
+                      )),
             ),
           ),
         ],

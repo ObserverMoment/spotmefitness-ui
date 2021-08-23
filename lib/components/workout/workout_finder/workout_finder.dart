@@ -42,13 +42,17 @@ class WorkoutFinderPage extends StatelessWidget {
     return QueryObserver<UserWorkouts$Query, json.JsonSerializable>(
         key: Key('WorkoutFinderPage - ${UserWorkoutsQuery().operationName}'),
         query: UserWorkoutsQuery(),
-        loadingIndicator: ShimmerListPage(),
+        loadingIndicator: ShimmerListPage(
+          cardHeight: 220,
+        ),
         builder: (createdWorkoutsData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
                   'WorkoutFinderPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
-              loadingIndicator: ShimmerListPage(),
+              loadingIndicator: ShimmerListPage(
+                cardHeight: 220,
+              ),
               builder: (collectionsData) {
                 final userWorkouts = createdWorkoutsData.userWorkouts;
 
@@ -114,7 +118,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
   /// Adjust the scroll position when refreshing this list.
   final ScrollController _pagingScrollController = ScrollController();
   final PagingController<int, Workout> _pagingController =
-      PagingController(firstPageKey: 0, invisibleItemsThreshold: 5);
+      PagingController(firstPageKey: 0, invisibleItemsThreshold: 10);
 
   void _updateLastUsedFilters() {
     _lastUsedFilters = WorkoutFilters.fromJson(_bloc.filters.json);
@@ -173,7 +177,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
         _pagingController.appendPage(workouts, 1);
       }
     } catch (error) {
-      _pagingController.error = error;
+      if (mounted) _pagingController.error = error;
     }
 
     /// If [nextPageKey == 0] then this is a fresh set of filters / results triggered by [paginationController.refresh()]. Padding on the bottom of the [PagedListView] which pushes it up over the collapsed sliding panel at the bottom of the page was causing new results to emerge scrolled down by the same value as vertical padding. May be a bug in the package but this has resolved it.

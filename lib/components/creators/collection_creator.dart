@@ -9,20 +9,20 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
-class CollectionCreator extends StatefulWidget {
+class CollectionCreatorPage extends StatefulWidget {
   final Collection? collection;
   final void Function(Collection collection)? onComplete;
-  const CollectionCreator({
+  const CollectionCreatorPage({
     Key? key,
     this.collection,
     this.onComplete,
   }) : super(key: key);
 
   @override
-  _CollectionCreatorState createState() => _CollectionCreatorState();
+  _CollectionCreatorPageState createState() => _CollectionCreatorPageState();
 }
 
-class _CollectionCreatorState extends State<CollectionCreator> {
+class _CollectionCreatorPageState extends State<CollectionCreatorPage> {
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
   bool _loading = false;

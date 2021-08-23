@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Standard modal bottom sheet for allowing actions on another user
 /// E.g. [share], [block], [report]

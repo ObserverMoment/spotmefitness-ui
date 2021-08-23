@@ -154,6 +154,9 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
   }
 
   void _changePage(int index) {
+    if (index == 0) {
+      Utils.hideKeyboard(context);
+    }
     _pageController.toPage(
       index,
     );

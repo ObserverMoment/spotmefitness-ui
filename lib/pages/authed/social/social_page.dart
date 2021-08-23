@@ -18,7 +18,11 @@ class SocialPage extends StatelessWidget {
           CupertinoButton(
               padding: const EdgeInsets.symmetric(horizontal: 13),
               onPressed: () => context.navigateTo(DiscoverPeopleRoute()),
-              child: Icon(CupertinoIcons.person_add))
+              child: Icon(CupertinoIcons.search)),
+          CupertinoButton(
+              padding: const EdgeInsets.symmetric(horizontal: 13),
+              onPressed: () => context.navigateTo(PostCreatorRoute()),
+              child: Icon(CupertinoIcons.pencil))
         ]),
       ),
       child: FeedsFollowsAndClubs(),

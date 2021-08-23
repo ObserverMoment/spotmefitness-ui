@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/collection_card.dart';
-import 'package:spotmefitness_ui/components/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
@@ -11,7 +10,6 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 
 class YourCollectionsPage extends StatelessWidget {
@@ -39,8 +37,8 @@ class YourCollectionsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     CreateIconButton(
-                      onPressed: () => context.showBottomSheet(
-                          expand: true, child: CollectionCreator()),
+                      onPressed: () =>
+                          context.navigateTo(CollectionCreatorRoute()),
                     ),
                     InfoPopupButton(
                         infoWidget: MyText('Info about collections'))

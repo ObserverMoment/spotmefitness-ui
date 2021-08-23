@@ -2,15 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/collection_card.dart';
-import 'package:spotmefitness_ui/components/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Returns a collection.
 /// Also allows inline creation of a new collection (name input only) which gets immediately returned.
@@ -29,14 +30,12 @@ class CollectionSelector extends StatelessWidget {
   }
 
   void _openCreateCollection(BuildContext context) {
-    context.showBottomSheet(
-        expand: true,
-        child: CollectionCreator(
-          onComplete: (collection) {
-            selectCollection(collection);
-            context.pop();
-          },
-        ));
+    context.pushRoute(CollectionCreatorRoute(
+      onComplete: (collection) {
+        selectCollection(collection);
+        context.pop();
+      },
+    ));
   }
 
   @override

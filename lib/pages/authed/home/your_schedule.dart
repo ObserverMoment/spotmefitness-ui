@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/scheduled_workout_card.dart';
-import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -73,12 +72,10 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
       WorkoutFinderRoute(selectWorkout: (w) => _openScheduleWorkout(w)));
 
   Future<void> _openScheduleWorkout(Workout workout) async {
-    final result = await context.showBottomSheet(
-        showDragHandle: false,
-        child: ScheduledWorkoutCreator(
-          workout: workout,
-          scheduleOn: _selectedDay,
-        ));
+    final result = await context.pushRoute(ScheduledWorkoutCreatorRoute(
+      workout: workout,
+      scheduleOn: _selectedDay,
+    ));
     if (result is ToastRequest) {
       context.showToast(message: result.message, toastType: result.type);
     }

@@ -10,7 +10,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/review_card.dart';
-import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -26,6 +25,7 @@ import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_
 import 'package:spotmefitness_ui/components/workout_plan_enrolment/workout_plan_enrolment_workouts_progress.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
@@ -260,8 +260,8 @@ class _WorkoutPlanEnrolmentDetailsPageState
                             BottomSheetMenuItem(
                               text: 'Leave review',
                               icon: Icon(CupertinoIcons.star),
-                              onPressed: () => context.showBottomSheet(
-                                  child: WorkoutPlanReviewCreator(
+                              onPressed: () => context
+                                  .pushRoute(WorkoutPlanReviewCreatorRoute(
                                 parentWorkoutPlanEnrolmentId: enrolment.id,
                                 parentWorkoutPlanId: workoutPlan.id,
                               )),
@@ -484,8 +484,8 @@ class _YourReviewDisplay extends StatelessWidget {
                         size: 14,
                       ),
                       text: 'Edit Review',
-                      onPressed: () => context.showBottomSheet(
-                          child: WorkoutPlanReviewCreator(
+                      onPressed: () =>
+                          context.pushRoute(WorkoutPlanReviewCreatorRoute(
                         parentWorkoutPlanEnrolmentId: enrolment.id,
                         parentWorkoutPlanId: workoutPlan.id,
                         workoutPlanReview: loggedInUserReview,
@@ -501,8 +501,8 @@ class _YourReviewDisplay extends StatelessWidget {
                     size: 14,
                   ),
                   text: 'Leave Review',
-                  onPressed: () => context.showBottomSheet(
-                      child: WorkoutPlanReviewCreator(
+                  onPressed: () =>
+                      context.pushRoute(WorkoutPlanReviewCreatorRoute(
                     parentWorkoutPlanEnrolmentId: enrolment.id,
                     parentWorkoutPlanId: workoutPlan.id,
                   )),

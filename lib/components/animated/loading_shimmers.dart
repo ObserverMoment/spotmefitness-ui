@@ -145,10 +145,36 @@ class ShimmerCardGrid extends StatelessWidget {
   }
 }
 
+class ShimmerCirclesGrid extends StatelessWidget {
+  final int itemCount;
+  final double maxDiameter;
+  final EdgeInsets cardPadding;
+  ShimmerCirclesGrid(
+      {this.itemCount = 20,
+      this.maxDiameter = 80,
+      this.cardPadding = const EdgeInsets.all(6.0)});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12.0, left: 12, right: 12),
+      child: GridView.builder(
+          shrinkWrap: true,
+          itemCount: itemCount,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: maxDiameter,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16),
+          itemBuilder: (c, i) => ShimmerCircle(
+                diameter: maxDiameter,
+              )),
+    );
+  }
+}
+
 class ShimmerListPage extends StatelessWidget {
   final String title;
   final double? cardHeight;
-  ShimmerListPage({this.title = 'Getting ready...', this.cardHeight});
+  ShimmerListPage({this.title = 'Getting ready...', this.cardHeight = 200});
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(

@@ -44,13 +44,17 @@ class WorkoutPlanFinderPage extends StatelessWidget {
         key: Key(
             'WorkoutPlanFinderPage - ${UserWorkoutPlansQuery().operationName}'),
         query: UserWorkoutPlansQuery(),
-        loadingIndicator: ShimmerListPage(),
+        loadingIndicator: ShimmerListPage(
+          cardHeight: 240,
+        ),
         builder: (createdPlansData) {
           return QueryObserver<UserCollections$Query, json.JsonSerializable>(
               key: Key(
                   'WorkoutPlanFinderPage - ${UserCollectionsQuery().operationName}'),
               query: UserCollectionsQuery(),
-              loadingIndicator: ShimmerListPage(),
+              loadingIndicator: ShimmerListPage(
+                cardHeight: 240,
+              ),
               builder: (collectionsData) {
                 final userPlans = createdPlansData.userWorkoutPlans;
 
@@ -172,7 +176,9 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
         _pagingController.appendPage(workoutPlans, 1);
       }
     } catch (error) {
-      _pagingController.error = error;
+      if (mounted) {
+        _pagingController.error = error;
+      }
     }
 
     /// If [nextPageKey == 0] then this is a fresh set of filters / results triggered by [paginationController.refresh()]. Padding on the bottom of the [PagedListView] which pushes it up over the collapsed sliding panel at the bottom of the page was causing new results to emerge scrolled down by the same value as vertical padding. May be a bug in the package but this has resolved it.

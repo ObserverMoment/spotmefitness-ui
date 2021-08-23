@@ -16,15 +16,15 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Updates everything to DB when user saves and closes.
-class CustomMoveCreator extends StatefulWidget {
+class CustomMoveCreatorPage extends StatefulWidget {
   /// For use when editing.
   final Move? move;
-  CustomMoveCreator({this.move});
+  CustomMoveCreatorPage({this.move});
   @override
-  _CustomMoveCreatorState createState() => _CustomMoveCreatorState();
+  _CustomMoveCreatorPageState createState() => _CustomMoveCreatorPageState();
 }
 
-class _CustomMoveCreatorState extends State<CustomMoveCreator> {
+class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
   int _activeTabIndex = 0;
   late Move? _activeMove;
   final PageController _pageController = PageController();
@@ -125,7 +125,7 @@ class _CustomMoveCreatorState extends State<CustomMoveCreator> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: BasicNavBar(
-          heroTag: 'CustomMoveCreator',
+          heroTag: 'CustomMoveCreatorPage',
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
           trailing: _formIsDirty

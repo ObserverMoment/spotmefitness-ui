@@ -1,22 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
-import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_move_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ProfileCustomMovesPage extends StatelessWidget {
   Future<void> _openCustomMoveCreator(
       {required BuildContext context, Move? moveToUpdate}) async {
-    final success =
-        await context.push<bool?>(child: CustomMoveCreator(move: moveToUpdate));
-    if (success != null && success) {
+    final success = await context
+        .pushRoute<bool?>(CustomMoveCreatorRoute(move: moveToUpdate));
+    if (success == true) {
       if (moveToUpdate == null) {
         // Created
         context.showToast(message: 'New move created!');

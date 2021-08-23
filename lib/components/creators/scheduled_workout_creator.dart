@@ -21,12 +21,12 @@ import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
 /// [scheduledOn] will be ignored if [scheduledWorkout] is present.
 /// Otherwise it will be set as the initial date when the widget is opened.
-class ScheduledWorkoutCreator extends StatefulWidget {
+class ScheduledWorkoutCreatorPage extends StatefulWidget {
   final ScheduledWorkout? scheduledWorkout;
   final Workout? workout;
   final DateTime? scheduleOn;
   final String? workoutPlanEnrolmentId;
-  ScheduledWorkoutCreator({
+  ScheduledWorkoutCreatorPage({
     this.scheduledWorkout,
     this.workout,
     this.scheduleOn,
@@ -34,11 +34,12 @@ class ScheduledWorkoutCreator extends StatefulWidget {
   }) : assert(scheduledWorkout != null || workout != null);
 
   @override
-  _ScheduledWorkoutCreatorState createState() =>
-      _ScheduledWorkoutCreatorState();
+  _ScheduledWorkoutCreatorPageState createState() =>
+      _ScheduledWorkoutCreatorPageState();
 }
 
-class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
+class _ScheduledWorkoutCreatorPageState
+    extends State<ScheduledWorkoutCreatorPage> {
   late ScheduledWorkout _activeScheduledWorkout;
   late bool _isCreate;
   bool _loading = false;
@@ -153,10 +154,8 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: context.theme.modalBackground,
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
-        backgroundColor: context.theme.modalBackground,
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Schedule Workout'),
         trailing: AnimatedSwitcher(
@@ -174,116 +173,103 @@ class _ScheduledWorkoutCreatorState extends State<ScheduledWorkoutCreator> {
                   )
                 : NavBarSaveButton(_schedule)),
       ),
-      // Use SafeArea as this screen can be opened as a bottom sheet.
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Column(
               children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: WorkoutCard(
-                        _activeScheduledWorkout.workout!,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    DatePickerDisplay(
-                      dateTime: _activeScheduledWorkout.scheduledAt,
-                      updateDateTime: (DateTime d) {
-                        final prev = _activeScheduledWorkout.scheduledAt;
-                        setState(() {
-                          _activeScheduledWorkout.scheduledAt = DateTime(
-                              d.year, d.month, d.day, prev.hour, prev.minute);
-                        });
-                      },
-                    ),
-                    SizedBox(height: 12),
-                    TimePickerDisplay(
-                      timeOfDay: TimeOfDay.fromDateTime(
-                          _activeScheduledWorkout.scheduledAt),
-                      updateTimeOfDay: (TimeOfDay t) {
-                        final prev = _activeScheduledWorkout.scheduledAt;
-                        setState(() {
-                          _activeScheduledWorkout.scheduledAt = DateTime(
-                              prev.year,
-                              prev.month,
-                              prev.day,
-                              t.hour,
-                              t.minute);
-                        });
-                      },
-                    ),
-                    SizedBox(height: 12),
-                    SizedBox(
-                      height: 46,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TappableRow(
-                                onTap: () => context.showBottomSheet(
-                                        child: SafeArea(
-                                      child: GymProfileSelector(
-                                          selectedGymProfile:
-                                              _activeScheduledWorkout
-                                                  .gymProfile,
-                                          selectGymProfile: (p) => setState(
-                                              () => _activeScheduledWorkout
-                                                  .gymProfile = p)),
-                                    )),
-                                title: 'Gym Profile',
-                                display:
-                                    _activeScheduledWorkout.gymProfile == null
-                                        ? MyText(
-                                            'Select...',
-                                            subtext: true,
-                                          )
-                                        : MyText(_activeScheduledWorkout
-                                            .gymProfile!.name)),
-                          ),
-                          if (_activeScheduledWorkout.gymProfile != null)
-                            FadeIn(
-                              child: CupertinoButton(
-                                  padding: EdgeInsets.zero,
-                                  child: Icon(
-                                    CupertinoIcons.clear_thick,
-                                    color: Styles.errorRed,
-                                    size: 20,
-                                  ),
-                                  onPressed: () => setState(() =>
-                                      _activeScheduledWorkout.gymProfile =
-                                          null)),
-                            )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    EditableTextAreaRow(
-                        title: 'Note',
-                        text: _activeScheduledWorkout.note ?? '',
-                        onSave: (note) =>
-                            setState(() => _activeScheduledWorkout.note = note),
-                        maxDisplayLines: 4,
-                        inputValidation: (t) => true),
-                    SizedBox(height: 16),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: WorkoutCard(
+                    _activeScheduledWorkout.workout!,
+                  ),
                 ),
-                if (!_isCreate)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: DestructiveButton(
-                        text: 'Unschedule',
-                        suffix: Icon(CupertinoIcons.calendar_badge_minus,
-                            color: Styles.white),
-                        onPressed: _confirmUnschedule),
-                  )
+                SizedBox(height: 10),
+                DatePickerDisplay(
+                  dateTime: _activeScheduledWorkout.scheduledAt,
+                  updateDateTime: (DateTime d) {
+                    final prev = _activeScheduledWorkout.scheduledAt;
+                    setState(() {
+                      _activeScheduledWorkout.scheduledAt = DateTime(
+                          d.year, d.month, d.day, prev.hour, prev.minute);
+                    });
+                  },
+                ),
+                SizedBox(height: 12),
+                TimePickerDisplay(
+                  timeOfDay: TimeOfDay.fromDateTime(
+                      _activeScheduledWorkout.scheduledAt),
+                  updateTimeOfDay: (TimeOfDay t) {
+                    final prev = _activeScheduledWorkout.scheduledAt;
+                    setState(() {
+                      _activeScheduledWorkout.scheduledAt = DateTime(
+                          prev.year, prev.month, prev.day, t.hour, t.minute);
+                    });
+                  },
+                ),
+                SizedBox(height: 12),
+                SizedBox(
+                  height: 46,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TappableRow(
+                            onTap: () => context.push(
+                                    child: SafeArea(
+                                  child: GymProfileSelector(
+                                      selectedGymProfile:
+                                          _activeScheduledWorkout.gymProfile,
+                                      selectGymProfile: (p) => setState(() =>
+                                          _activeScheduledWorkout.gymProfile =
+                                              p)),
+                                )),
+                            title: 'Gym Profile',
+                            display: _activeScheduledWorkout.gymProfile == null
+                                ? MyText(
+                                    'Select...',
+                                    subtext: true,
+                                  )
+                                : MyText(
+                                    _activeScheduledWorkout.gymProfile!.name)),
+                      ),
+                      if (_activeScheduledWorkout.gymProfile != null)
+                        FadeIn(
+                          child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              child: Icon(
+                                CupertinoIcons.clear_thick,
+                                color: Styles.errorRed,
+                                size: 20,
+                              ),
+                              onPressed: () => setState(() =>
+                                  _activeScheduledWorkout.gymProfile = null)),
+                        )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 12),
+                EditableTextAreaRow(
+                    title: 'Note',
+                    text: _activeScheduledWorkout.note ?? '',
+                    onSave: (note) =>
+                        setState(() => _activeScheduledWorkout.note = note),
+                    maxDisplayLines: 4,
+                    inputValidation: (t) => true),
+                SizedBox(height: 16),
               ],
             ),
-          ),
+            if (!_isCreate)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: DestructiveButton(
+                    text: 'Unschedule',
+                    suffix: Icon(CupertinoIcons.calendar_badge_minus,
+                        color: Styles.white),
+                    onPressed: _confirmUnschedule),
+              )
+          ],
         ),
       ),
     );

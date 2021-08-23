@@ -242,19 +242,22 @@ extension BuildContextExtension on BuildContext {
     required Widget child,
     bool expand = true,
     bool showDragHandle = true,
+    bool useRootNavigator = true,
   }) async {
     final BuildContext context = this;
+    final Color backgroundColor = context.readTheme.modalBackground;
     final T? result = await showCupertinoModalBottomSheet(
         expand: expand,
         context: context,
-        useRootNavigator: true,
+        useRootNavigator: useRootNavigator,
+        backgroundColor: backgroundColor,
         barrierColor: Styles.black.withOpacity(0.75),
         builder: (context) => showDragHandle
             ? Column(
                 mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(12.0),
                     child: DragBarHandle(),
                   ),
                   Flexible(child: child),

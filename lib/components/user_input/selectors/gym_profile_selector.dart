@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
-import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:auto_route/auto_route.dart';
 
 /// Not wrapped in a page scaffold to allow inline opening or bottom sheet style.
 class GymProfileSelector extends StatefulWidget {
@@ -44,59 +47,46 @@ class _GymProfileSelectorState extends State<GymProfileSelector> {
   Widget build(BuildContext context) {
     return QueryObserver<GymProfiles$Query, json.JsonSerializable>(
       key: Key('GymProfileSelector - ${GymProfilesQuery().operationName}'),
+      loadingIndicator: ShimmerListPage(
+        cardHeight: 160,
+      ),
       query: GymProfilesQuery(),
       builder: (data) {
-        final gymProfiles = data.gymProfiles;
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  NavBarTitle('Select Gym Profile'),
-                  TextButton(
-                    text: 'Done',
-                    onPressed: context.pop,
-                    underline: false,
-                  )
-                ],
-              ),
-            ),
-            gymProfiles.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        MyText('No gym profiles created...'),
-                        SizedBox(height: 16),
-                        BorderButton(
-                            prefix: Icon(
-                              CupertinoIcons.add_circled,
-                              size: 22,
-                            ),
-                            text: 'Create a Gym Profile',
-                            onPressed: () => context.showBottomSheet(
-                                child: GymProfileCreator()))
-                      ],
-                    ),
-                  )
-                : Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: ListView.builder(
-                          itemCount: gymProfiles.length,
-                          itemBuilder: (context, index) => GestureDetector(
-                                onTap: () =>
-                                    _handleSelection(gymProfiles[index]),
-                                child: SelectGymProfileItem(
-                                    gymProfiles[index],
-                                    gymProfiles[index] ==
-                                        _activeSelectedGymProfile),
-                              )),
-                    ),
-                  )
-          ],
+        final gymProfiles = data.gymProfiles.reversed.toList();
+        return MyPageScaffold(
+          navigationBar: BorderlessNavBar(
+            withoutLeading: true,
+            middle: NavBarTitle('Select Gym Profile'),
+            trailing: NavBarSaveButton(context.pop, text: 'Done'),
+          ),
+          child: gymProfiles.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      MyText('No gym profiles created...'),
+                      SizedBox(height: 16),
+                      BorderButton(
+                          prefix: Icon(
+                            CupertinoIcons.add_circled,
+                            size: 22,
+                          ),
+                          text: 'Create a Gym Profile',
+                          onPressed: () =>
+                              context.pushRoute(GymProfileCreatorRoute()))
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: gymProfiles.length,
+                  itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: GestureDetector(
+                          onTap: () => _handleSelection(gymProfiles[index]),
+                          child: SelectGymProfileItem(gymProfiles[index],
+                              gymProfiles[index] == _activeSelectedGymProfile),
+                        ),
+                      )),
         );
       },
     );
@@ -110,18 +100,15 @@ class SelectGymProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: AnimatedContainer(
-        duration: kStandardAnimationDuration,
-        decoration: BoxDecoration(
-            borderRadius: kStandardCardBorderRadius,
-            border: Border.all(
-                width: 3,
-                color: Styles.colorOne.withOpacity(isSelected ? 1.0 : 0.0))),
-        child: GymProfileCard(
-          gymProfile: gymProfile,
-        ),
+    return AnimatedContainer(
+      duration: kStandardAnimationDuration,
+      decoration: BoxDecoration(
+          borderRadius: kStandardCardBorderRadius,
+          border: Border.all(
+              width: 3,
+              color: Styles.colorOne.withOpacity(isSelected ? 1.0 : 0.0))),
+      child: GymProfileCard(
+        gymProfile: gymProfile,
       ),
     );
   }

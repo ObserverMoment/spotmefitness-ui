@@ -1,13 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_creator.dart';
+import 'package:spotmefitness_ui/components/creators/collection_creator.dart';
+import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_move_creator.dart';
+import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
 import 'package:spotmefitness_ui/components/creators/post_creator/post_creator.dart';
 import 'package:spotmefitness_ui/components/creators/post_creator/post_editor.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
+import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';
+import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
@@ -160,15 +165,24 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
               page: WorkoutPlanEnrolmentDetailsPage),
 
           /// Creator pages. CRUD pages for database models.
-          AutoRoute(path: 'create-club', page: ClubCreatorPage),
-          AutoRoute(path: 'create-journal', page: ProgressJournalCreatorPage),
+          AutoRoute(path: 'create/club', page: ClubCreatorPage),
+          AutoRoute(path: 'create/collection', page: CollectionCreatorPage),
+          AutoRoute(path: 'create/custom-move', page: CustomMoveCreatorPage),
+          AutoRoute(path: 'create/gym-profile', page: GymProfileCreatorPage),
+          AutoRoute(path: 'create/journal', page: ProgressJournalCreatorPage),
           AutoRoute(
-              path: 'create-personal-best', page: PersonalBestCreatorPage),
-          AutoRoute(path: 'create-post', page: PostCreatorPage),
-          AutoRoute(path: 'edit-post', page: PostEditorPage),
-          AutoRoute(path: 'create-workout', page: WorkoutCreatorPage),
-          AutoRoute(path: 'create-workout-plan', page: WorkoutPlanCreatorPage),
-          AutoRoute(path: 'log-workout', page: LoggedWorkoutCreatorPage),
+              path: 'create/personal-best', page: PersonalBestCreatorPage),
+          AutoRoute(path: 'create/post', page: PostCreatorPage),
+          AutoRoute(path: 'edit/post', page: PostEditorPage),
+          AutoRoute(
+              path: 'create/scheduled-workout',
+              page: ScheduledWorkoutCreatorPage),
+          AutoRoute(path: 'create/workout', page: WorkoutCreatorPage),
+          AutoRoute(path: 'create/workout-log', page: LoggedWorkoutCreatorPage),
+          AutoRoute(path: 'create/workout-plan', page: WorkoutPlanCreatorPage),
+          AutoRoute(
+              path: 'create/workout-plan-review',
+              page: WorkoutPlanReviewCreatorPage),
           RedirectRoute(path: '*', redirectTo: '/')
         ]),
   ],

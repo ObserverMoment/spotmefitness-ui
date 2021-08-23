@@ -13,11 +13,11 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 
-class WorkoutPlanReviewCreator extends StatefulWidget {
+class WorkoutPlanReviewCreatorPage extends StatefulWidget {
   final String parentWorkoutPlanId;
   final String parentWorkoutPlanEnrolmentId;
   final WorkoutPlanReview? workoutPlanReview;
-  const WorkoutPlanReviewCreator(
+  const WorkoutPlanReviewCreatorPage(
       {Key? key,
       this.workoutPlanReview,
       required this.parentWorkoutPlanId,
@@ -25,11 +25,12 @@ class WorkoutPlanReviewCreator extends StatefulWidget {
       : super(key: key);
 
   @override
-  _WorkoutPlanReviewCreatorState createState() =>
-      _WorkoutPlanReviewCreatorState();
+  _WorkoutPlanReviewCreatorPageState createState() =>
+      _WorkoutPlanReviewCreatorPageState();
 }
 
-class _WorkoutPlanReviewCreatorState extends State<WorkoutPlanReviewCreator> {
+class _WorkoutPlanReviewCreatorPageState
+    extends State<WorkoutPlanReviewCreatorPage> {
   double? _score;
   String? _comment;
   bool _loading = false;
@@ -157,10 +158,8 @@ class _WorkoutPlanReviewCreatorState extends State<WorkoutPlanReviewCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      backgroundColor: context.theme.modalBackground,
+    return MyPageScaffold(
       navigationBar: BorderlessNavBar(
-        backgroundColor: context.theme.modalBackground,
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Leave Review'),
         trailing: AnimatedSwitcher(
@@ -180,65 +179,58 @@ class _WorkoutPlanReviewCreatorState extends State<WorkoutPlanReviewCreator> {
                     ? NavBarSaveButton(_handleSave)
                     : Container(width: 0)),
       ),
-      // Use SafeArea as this screen can be opened as a bottom sheet.
-      child: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        child: SingleChildScrollView(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: RatingBar.builder(
-                initialRating: _score ?? 0.0,
-                minRating: 0.5,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                glowRadius: 0.5,
-                updateOnDrag: true,
-                unratedColor: Styles.starGold.withOpacity(0.2),
-                itemBuilder: (context, _) => Icon(
-                  CupertinoIcons.star_fill,
-                  color: Styles.starGold,
-                ),
-                onRatingUpdate: (rating) {
-                  setState(() => _score = rating);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularBox(
+      child: SingleChildScrollView(
+          child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RatingBar.builder(
+              initialRating: _score ?? 0.0,
+              minRating: 0.5,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              glowRadius: 0.5,
+              updateOnDrag: true,
+              unratedColor: Styles.starGold.withOpacity(0.2),
+              itemBuilder: (context, _) => Icon(
+                CupertinoIcons.star_fill,
                 color: Styles.starGold,
-                child: Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: MyText(
-                    _score != null
-                        ? _score!.roundMyDouble(1).toString()
-                        : ' - ',
-                    color: Styles.white,
-                    weight: FontWeight.bold,
-                    size: FONTSIZE.HUGE,
-                    lineHeight: 1.2,
-                  ),
+              ),
+              onRatingUpdate: (rating) {
+                setState(() => _score = rating);
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircularBox(
+              color: Styles.starGold,
+              child: Container(
+                height: 40,
+                alignment: Alignment.center,
+                child: MyText(
+                  _score != null ? _score!.roundMyDouble(1).toString() : ' - ',
+                  color: Styles.white,
+                  weight: FontWeight.bold,
+                  size: FONTSIZE.HUGE,
+                  lineHeight: 1.2,
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            EditableTextAreaRow(
-              text: _comment ?? '',
-              inputValidation: (_) => true,
-              onSave: (t) => setState(() => _comment = t),
-              title: 'Comment',
-              placeholder: 'Add a comment...',
-              maxDisplayLines: 10,
-            ),
-            SizedBox(height: 100),
-          ],
-        )),
+          ),
+          SizedBox(height: 10),
+          EditableTextAreaRow(
+            text: _comment ?? '',
+            inputValidation: (_) => true,
+            onSave: (t) => setState(() => _comment = t),
+            title: 'Comment',
+            placeholder: 'Add a comment...',
+            maxDisplayLines: 10,
+          ),
+          SizedBox(height: 100),
+        ],
       )),
     );
   }

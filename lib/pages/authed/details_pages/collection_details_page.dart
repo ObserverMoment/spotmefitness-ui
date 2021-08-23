@@ -6,13 +6,13 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/collections/collection_workout_plans_list.dart';
 import 'package:spotmefitness_ui/components/collections/collection_workouts_list.dart';
-import 'package:spotmefitness_ui/components/creators/collection_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -133,9 +133,8 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                             BottomSheetMenuItem(
                                 text: 'Edit',
                                 icon: Icon(CupertinoIcons.pencil),
-                                onPressed: () => context.showBottomSheet(
-                                    expand: true,
-                                    child: CollectionCreator(
+                                onPressed: () => context.pushRoute(
+                                    CollectionCreatorRoute(
                                         collection: collection))),
                           if (isOwner)
                             BottomSheetMenuItem(
