@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/club_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -47,16 +48,7 @@ class AuthedUserClubsList extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(24.0),
-                        child: Center(
-                          child: ContentBox(
-                            child: BorderButton(
-                                withBorder: false,
-                                mini: true,
-                                prefix: Icon(CupertinoIcons.search),
-                                text: 'Find clubs',
-                                onPressed: () => print('find clubs flow')),
-                          ),
-                        ),
+                        child: MyText('No clubs yet...'),
                       ),
                     ],
                   );

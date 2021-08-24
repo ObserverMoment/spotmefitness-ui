@@ -149,26 +149,10 @@ class _WorkoutPlanEnrolmentDetailsPageState
     }
   }
 
-  /// This code is duplicated in [WorkoutPlanDetails].
-  /// Not abtracted as [WorkoutPlanDetails] share may end up being different.
   Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
-    SharingAndLinking.shareImageRenderOfWidget(
-        context: context,
-        text: '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
-        subject: 'Check out this workout plan!',
-        widgetForImageCapture: SizedBox(
-          height: 100,
-          width: 100,
-          child: workoutPlan.coverImageUri != null
-              ? SizedUploadcareImage(
-                  workoutPlan.coverImageUri!,
-                  displaySize: Size(300, 300),
-                )
-              : Image.asset(
-                  'assets/home_page_images/home_page_plans.jpg',
-                  fit: BoxFit.cover,
-                ),
-        ));
+    await SharingAndLinking.shareLink(
+        '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
+        'Check out this workout plan!');
   }
 
   void _confirmLeavePlan() {

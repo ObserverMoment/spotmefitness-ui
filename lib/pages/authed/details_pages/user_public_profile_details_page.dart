@@ -61,23 +61,9 @@ class _UserPublicProfileDetailsPageState
   }
 
   Future<void> _shareUserProfile(UserPublicProfile userPublicProfile) async {
-    SharingAndLinking.shareImageRenderOfWidget(
-        context: context,
-        text: '${kDeepLinkSchema}profile/${userPublicProfile.id}',
-        subject: 'Check out this profile!',
-        widgetForImageCapture: SizedBox(
-          height: 100,
-          width: 100,
-          child: userPublicProfile.avatarUri != null
-              ? SizedUploadcareImage(
-                  userPublicProfile.avatarUri!,
-                  displaySize: Size(300, 300),
-                )
-              : SvgPicture.asset(
-                  'assets/logos/spotme_logo.svg',
-                  fit: BoxFit.cover,
-                ),
-        ));
+    await SharingAndLinking.shareLink(
+        '${kDeepLinkSchema}profile/${userPublicProfile.id}',
+        'Check out this profile!');
   }
 
   /// Top right of tabs to indicate how many of each type are in the list.

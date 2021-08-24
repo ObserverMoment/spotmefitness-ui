@@ -15,6 +15,7 @@ class Tag extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffix;
   final FONTSIZE fontSize;
+  final FontWeight fontWeight;
   final bool withBorder;
   final EdgeInsets padding;
   Tag(
@@ -25,6 +26,7 @@ class Tag extends StatelessWidget {
       this.suffix,
       this.withBorder = false,
       this.padding = kDefaultTagPadding,
+      this.fontWeight = FontWeight.bold,
       this.fontSize = FONTSIZE.TINY});
 
   @override
@@ -41,7 +43,7 @@ class Tag extends StatelessWidget {
       child: MyText(
         tag,
         size: fontSize,
-        weight: FontWeight.bold,
+        weight: fontWeight,
         color: _textColor,
         lineHeight: 1.1,
       ),

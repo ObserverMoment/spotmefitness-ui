@@ -80,16 +80,22 @@ class _AuthedUserFollowingState extends State<AuthedUserFollowing>
               )
             : GridView.count(
                 padding: const EdgeInsets.all(8),
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.9,
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                mainAxisSpacing: 20,
+                mainAxisSpacing: 6,
                 crossAxisSpacing: 20,
-                children: _following
-                    .map((f) => UserFollow(
-                          follow: f,
-                        ))
-                    .toList(),
+                children: [
+                  FollowTotalAvatar(
+                    total: _following.length,
+                    label: 'Following',
+                  ),
+                  ..._following
+                      .map((f) => UserFollow(
+                            follow: f,
+                          ))
+                      .toList()
+                ],
               );
   }
 

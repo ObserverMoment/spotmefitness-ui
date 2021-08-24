@@ -112,23 +112,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
   }
 
   Future<void> _shareWorkout(Workout workout) async {
-    SharingAndLinking.shareImageRenderOfWidget(
-        context: context,
-        text: '${kDeepLinkSchema}workout/${workout.id}',
-        subject: 'Check out this workout!',
-        widgetForImageCapture: SizedBox(
-          height: 100,
-          width: 100,
-          child: workout.coverImageUri != null
-              ? SizedUploadcareImage(
-                  workout.coverImageUri!,
-                  displaySize: Size(100, 100),
-                )
-              : Image.asset(
-                  'assets/home_page_images/home_page_workouts.jpg',
-                  fit: BoxFit.cover,
-                ),
-        ));
+    await SharingAndLinking.shareLink(
+        '${kDeepLinkSchema}workout/${workout.id}', 'Check out this workout!');
   }
 
   Future<void> _archiveWorkout(String id) async {

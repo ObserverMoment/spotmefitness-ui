@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -14,6 +15,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:stream_feed/stream_feed.dart' as feed;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:stream_feed/src/client/notification_feed.dart';
@@ -56,6 +58,13 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
         chat.User(id: _authedUser.id),
         _authedUser.streamChatToken,
       );
+
+      /// Add the users device to Stream backend.
+      /// https://getstream.io/chat/docs/sdk/flutter/guides/adding_push_notifications/#registering-a-device-at-stream-backend
+      FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+        _streamChatClient.addDevice(token, PushProvider.firebase);
+      });
+
       setState(() {
         _chatInitialized = true;
       });

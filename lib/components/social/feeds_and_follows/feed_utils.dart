@@ -99,15 +99,23 @@ class FeedUtils {
   /// The difference between the structures of EnrichedActivity and Activty is awkward...
   /// Will also change depending if you have stored an object (a user for example) in getStream.
   /// Here we assume that no enriched data exists.
-  static Activity activityFromEnrichedActivity(EnrichedActivity e) => Activity(
-        id: e.id,
+  /// [removeTime]: Set true when you are creating a new activity as it is auto-generated.
+  /// [removeId]: Set true when you are creating a new activity as it is auto-generated.
+  static Activity activityFromEnrichedActivity(EnrichedActivity e,
+          {Map<String, dynamic> data = const {},
+          bool removeTime = false,
+          bool removeId = false}) =>
+      Activity(
+        id: removeId ? null : data['id'] ?? e.id,
         // Must be [SU:id]
-        actor: "SU:${(e.actor!.data as Map)['id']}",
+        actor: data['actor'] ?? "SU:${(e.actor!.data as Map)['id']}",
         // Must be [ObjectType:id]
-        object: e.object!.data.toString(),
-        verb: e.verb,
-        time: e.time,
-        extraData: e.extraData,
+        object: data['object'] ?? e.object!.data.toString(),
+        verb: data['verb'] ?? e.verb,
+        time: removeTime ? null : data['time'] ?? e.time,
+        extraData: data['extraData'] != null
+            ? Map.from(data['extraData'])
+            : e.extraData,
       );
 
   /// Helpers to convert EnrichableField data to standard [type:id] string IDs.

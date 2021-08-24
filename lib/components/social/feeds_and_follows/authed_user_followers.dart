@@ -37,7 +37,7 @@ class _AuthedUserFollowersState extends State<AuthedUserFollowers>
   Future<void> _loadInitialData() async {
     try {
       final followers = await widget.userFeed.followers();
-      final userIds = followers.map((f) => f.targetId.split(':')[1]).toList();
+      final userIds = followers.map((f) => f.feedId.split(':')[1]).toList();
 
       _followers =
           await FeedUtils.getFollowsWithUserData(context, followers, userIds);
@@ -78,16 +78,22 @@ class _AuthedUserFollowersState extends State<AuthedUserFollowers>
               )
             : GridView.count(
                 padding: const EdgeInsets.all(8),
-                childAspectRatio: 0.6,
+                childAspectRatio: 0.9,
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                mainAxisSpacing: 20,
+                mainAxisSpacing: 6,
                 crossAxisSpacing: 20,
-                children: _followers
-                    .map((f) => UserFollow(
-                          follow: f,
-                        ))
-                    .toList(),
+                children: [
+                  FollowTotalAvatar(
+                    total: _followers.length,
+                    label: 'Followers',
+                  ),
+                  ..._followers
+                      .map((f) => UserFollow(
+                            follow: f,
+                          ))
+                      .toList()
+                ],
               );
   }
 

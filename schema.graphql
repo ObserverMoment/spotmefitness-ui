@@ -640,6 +640,7 @@ type Mutation {
   createClubInviteToken(data: CreateClubInviteTokenInput!): ClubInviteToken!
   updateClubInviteToken(data: UpdateClubInviteTokenInput!): ClubInviteToken!
   deleteClubInviteTokenById(id: ID!): ID!
+  addUserToClubViaInviteToken(userId: ID!, clubInviteTokenId: ID!): Club!
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
   createGymProfile(data: CreateGymProfileInput!): GymProfile!

@@ -53,10 +53,10 @@ class BottomSheetMenu extends StatelessWidget {
               ],
             ),
           Container(
-            color: context.theme.background,
             padding: const EdgeInsets.only(
                 top: 12.0, left: 16, right: 16, bottom: 20),
             child: ContentBox(
+              backgroundColor: context.theme.background,
               child: ListView.separated(
                   shrinkWrap: true,
                   separatorBuilder: (context, index) => HorizontalLine(

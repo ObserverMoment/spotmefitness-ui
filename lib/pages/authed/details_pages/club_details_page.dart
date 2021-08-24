@@ -16,7 +16,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -26,6 +28,37 @@ class ClubDetailsPage extends StatelessWidget {
   ClubDetailsPage({@PathParam('id') required this.id});
 
   final _kthumbDisplaySize = Size(80, 80);
+
+  void _confirmDeleteClub(BuildContext context, String clubName) {
+    context.showConfirmDeleteDialog(
+        message:
+            'Warning: This cannot be undone and will result in the deletion of all data, chat and timeline history from this club!',
+        itemName: clubName,
+        itemType: 'Club',
+        onConfirm: () async {
+          try {
+            await context.graphQLStore
+                .delete<DeleteClubById$Mutation, DeleteClubByIdArguments>(
+                    mutation: DeleteClubByIdMutation(
+                        variables: DeleteClubByIdArguments(id: id)),
+                    objectId: id,
+                    typename: kClubTypeName,
+                    removeAllRefsToId: true,
+                    clearQueryDataAtKeys: [
+                  GQLVarParamKeys.clubByIdQuery(id),
+                ],
+                    removeRefFromQueries: [
+                  GQLOpNames.userClubsQuery
+                ]);
+            context.pop();
+          } catch (e) {
+            print(e);
+            context.showToast(
+                message: 'Sorry, there was a problem deleting this club!',
+                toastType: ToastType.destructive);
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +87,11 @@ class ClubDetailsPage extends StatelessWidget {
               slivers: [
                 SliverPersistentHeader(
                   delegate: _ClubDetailsSliverAppBarDelegate(
+                    deleteClub: () => _confirmDeleteClub(context, club.name),
                     club: club,
-                    userIsMember: userIsOwner,
+                    userIsMember: userIsMember,
                     userIsAdmin: userIsAdmin,
-                    userIsOwner: userIsMember,
+                    userIsOwner: userIsOwner,
                     expandedHeight: 210,
                     safeAreaSize: MediaQuery.of(context).padding.top,
                     appBarSize: CupertinoNavigationBar().preferredSize.height,
@@ -170,6 +204,7 @@ class ClubDetailsPage extends StatelessWidget {
 }
 
 class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final VoidCallback deleteClub;
   final double expandedHeight;
   final double safeAreaSize;
   final double appBarSize;
@@ -179,7 +214,8 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final bool userIsMember;
 
   const _ClubDetailsSliverAppBarDelegate(
-      {required this.safeAreaSize,
+      {required this.deleteClub,
+      required this.safeAreaSize,
       required this.appBarSize,
       required this.expandedHeight,
       required this.club,
@@ -302,25 +338,9 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                   icon: Icon(CupertinoIcons.pencil),
                                   onPressed: () => context.navigateTo(
                                       ClubCreatorRoute(club: club))),
-                            if (userIsOwner || userIsAdmin)
-                              BottomSheetMenuItem(
-                                  text: 'Invites',
-                                  icon: Icon(CupertinoIcons.person_badge_plus),
-                                  onPressed: () => print(
-                                      'view / manage join requests and invites')),
-                            if (!userIsMember)
-                              BottomSheetMenuItem(
-                                  text: 'Request invite',
-                                  icon: Icon(CupertinoIcons.mail),
-                                  onPressed: () =>
-                                      print('request invite flow')),
-                            BottomSheetMenuItem(
-                                text: 'Share',
-                                icon: Icon(CupertinoIcons.paperplane),
-                                onPressed: () => print('share club flow')),
                             if (userIsMember && !userIsOwner)
                               BottomSheetMenuItem(
-                                  text: 'Leave',
+                                  text: 'Leave Club',
                                   isDestructive: true,
                                   icon: Icon(
                                     CupertinoIcons.square_arrow_right,
@@ -335,7 +355,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                     color: Styles.errorRed,
                                   ),
                                   isDestructive: true,
-                                  onPressed: () => print('delete club flow')),
+                                  onPressed: deleteClub),
                           ])))),
         ],
       );

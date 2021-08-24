@@ -20,12 +20,15 @@ import 'package:collection/collection.dart';
 /// GetStream fees slug is [user_timeline].
 /// A [user_timeline] follows many [user_feeds].
 class AuthedUserTimeline extends StatefulWidget {
+  /// So the user can re-post and activity, from their timeline, to their own feed.
+  final FlatFeed userFeed;
   final FlatFeed timelineFeed;
   final StreamFeedClient streamFeedClient;
   const AuthedUserTimeline({
     Key? key,
     required this.timelineFeed,
     required this.streamFeedClient,
+    required this.userFeed,
   }) : super(key: key);
 
   @override
@@ -185,13 +188,76 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
     final postWithReaction = _postsWithLikeReactions
         .firstWhereOrNull((p) => p.activityId == activityId);
     if (postWithReaction != null) {
-      widget.streamFeedClient.reactions.delete(postWithReaction.reaction.id!);
-
-      /// TODO: Remove from _postsWithLikeReactions - does this come through via the subscription?
+      await widget.streamFeedClient.reactions
+          .delete(postWithReaction.reaction.id!);
+      _postsWithLikeReactions.removeWhere((p) => p.activityId == activityId);
     } else {
-      widget.streamFeedClient.reactions.add(kLikeReactionName, activityId);
+      final reaction = await widget.streamFeedClient.reactions
+          .add(kLikeReactionName, activityId);
+      _postsWithLikeReactions.add(
+          PostWithLikeReaction(activityId: activityId, reaction: reaction));
+    }
+    setState(() {});
+  }
 
-      /// TODO: Add to _postsWithLikeReactions - does this come through via the subscription?
+  /// If the user has already shared this post, they cannot share it again.
+  /// In this case just show an alert.
+  Future<void> _sharePost(EnrichedActivity enrichedActivity) async {
+    final postWithShare = _postsWithShareReactions
+        .firstWhereOrNull((p) => p.activityId == enrichedActivity.id);
+
+    if (postWithShare != null) {
+      context.showAlertDialog(
+          title: 'Already Shared',
+          message:
+              "You can only share other people's posts to your own feed once.");
+    } else {
+      try {
+        await context.showConfirmDialog(
+            title: 'Re-Post',
+            content: MyText(
+              'Send this post to your feed and all your followers timelines?',
+              maxLines: 4,
+              textAlign: TextAlign.center,
+            ),
+            onConfirm: () async {
+              final extraData =
+                  enrichedActivity.extraData ?? <String, Object>{};
+              final originalPostId = extraData['original_post_id'] as String?;
+
+              Activity newActivityToRepost =
+                  FeedUtils.activityFromEnrichedActivity(enrichedActivity,
+                      data: {
+                        'actor': widget.streamFeedClient.currentUser!.ref,
+                        'extraData': {
+                          ...extraData,
+                          // A list of stream user Ids, starting from the original poster, who have reposted this activity.
+                          'original_post_id':
+                              originalPostId ?? enrichedActivity.id
+                        }
+                      },
+                      removeTime: true,
+                      removeId: true);
+
+              /// Add the original activity to the users own [user_feed].
+              await widget.userFeed.addActivity(newActivityToRepost);
+
+              /// On success - add the reaction to the API and then save locally.
+              final reaction = await widget.streamFeedClient.reactions
+                  .add(kShareReactionName, enrichedActivity.id!);
+              _postsWithShareReactions.add(PostWithShareReaction(
+                  activityId: enrichedActivity.id!, reaction: reaction));
+
+              setState(() {});
+
+              context.showToast(
+                  icon: Icon(CupertinoIcons.paperplane),
+                  message: 'Post sahared');
+            });
+      } catch (e) {
+        print(e);
+        context.showToast(message: 'Sorry, there was a problem re-posting!');
+      }
     }
   }
 
@@ -210,6 +276,8 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
 
     final likedPostIds =
         _postsWithLikeReactions.map((p) => p.activityId).toList();
+    final sharedPostIds =
+        _postsWithShareReactions.map((p) => p.activityId).toList();
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -252,8 +320,9 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline>
                                 _likeUnlikePost(post.activity.id!),
                             userHasLiked:
                                 likedPostIds.contains(post.activity.id!),
-                            sharePost: () => print(post),
-                            userHasShared: true,
+                            sharePost: () => _sharePost(post.activity),
+                            userHasShared:
+                                sharedPostIds.contains(post.activity.id!),
                           ),
                         ),
                       ),

@@ -184,8 +184,6 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TimelinePostCard(
                         activityWithObjectData: post,
-                        openEditPost: () => context.navigateTo(
-                            PostEditorRoute(activityWithObjectData: post)),
                         deleteActivityById: _deleteActivityById,
                       ),
                     ),

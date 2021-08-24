@@ -80,7 +80,7 @@ extension BuildContextExtension on BuildContext {
   Future<T> showDialog<T>(
       {String? title,
       Widget? content,
-      bool useRootNavigator = false,
+      bool useRootNavigator = true,
       bool barrierDismissible = false,
       required List<CupertinoDialogAction> actions}) async {
     final BuildContext context = this;
@@ -98,6 +98,37 @@ extension BuildContextExtension on BuildContext {
             content: content,
             actions: actions));
     return res;
+  }
+
+  /// Just one action. 'OK', dialog pops itself on tap, no callback.
+  /// [barrierDismissible] is true so can dismiss by clicking anywhere on background.
+  Future<void> showAlertDialog({
+    required String title,
+    String? message,
+  }) async {
+    final BuildContext context = this;
+    await showCupertinoDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: MyHeaderText(title, textAlign: TextAlign.center),
+                ),
+                content: message != null
+                    ? MyText(message,
+                        maxLines: 6,
+                        lineHeight: 1.3,
+                        textAlign: TextAlign.center)
+                    : null,
+                actions: [
+                  CupertinoDialogAction(
+                    child: MyText(
+                      'OK',
+                    ),
+                    onPressed: context.pop,
+                  ),
+                ]));
   }
 
   Future<void> showLoadingAlert(String message,
@@ -208,7 +239,7 @@ extension BuildContextExtension on BuildContext {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: MyText(
                         message ?? 'Are you sure?',
-                        maxLines: 3,
+                        maxLines: 6,
                         textAlign: TextAlign.center,
                         lineHeight: 1.5,
                       ),

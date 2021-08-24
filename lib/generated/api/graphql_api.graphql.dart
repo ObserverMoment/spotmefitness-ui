@@ -448,6 +448,13 @@ mixin UserMixin {
   @JsonKey(unknownEnumValue: UserProfileScope.artemisUnknown)
   late UserProfileScope userProfileScope;
 }
+mixin UserAvatarDataMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  String? avatarUri;
+  late String displayName;
+}
 mixin UserPublicProfileSummaryMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -549,23 +556,6 @@ mixin ScheduledWorkoutMixin {
   String? note;
   String? workoutPlanEnrolmentId;
 }
-mixin ClubInviteTokenDataMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String token;
-}
-mixin InviteTokenErrorMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String message;
-}
-mixin UserAvatarDataMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  String? avatarUri;
-  late String displayName;
-}
 mixin TimelinePostDataUserMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -584,6 +574,16 @@ mixin TimelinePostDataObjectMixin {
   String? coverImageUri;
   String? introVideoUri;
   String? introVideoThumbUri;
+}
+mixin ClubInviteTokenDataMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String token;
+}
+mixin InviteTokenErrorMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String message;
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -4182,6 +4182,50 @@ class UpdateUserInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class UserAvatarData extends JsonSerializable
+    with EquatableMixin, UserAvatarDataMixin {
+  UserAvatarData();
+
+  factory UserAvatarData.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarDataFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, avatarUri, displayName];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarById$Query extends JsonSerializable with EquatableMixin {
+  UserAvatarById$Query();
+
+  factory UserAvatarById$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarById$QueryFromJson(json);
+
+  late UserAvatarData userAvatarById;
+
+  @override
+  List<Object?> get props => [userAvatarById];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarById$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatars$Query extends JsonSerializable with EquatableMixin {
+  UserAvatars$Query();
+
+  factory UserAvatars$Query.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatars$QueryFromJson(json);
+
+  late List<UserAvatarData> userAvatars;
+
+  @override
+  List<Object?> get props => [userAvatars];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatars$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CreateMove$Mutation extends JsonSerializable with EquatableMixin {
   CreateMove$Mutation();
 
@@ -6345,6 +6389,101 @@ class DeleteScheduledWorkoutById$Mutation extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
+class TimelinePostDataUser extends JsonSerializable
+    with EquatableMixin, TimelinePostDataUserMixin {
+  TimelinePostDataUser();
+
+  factory TimelinePostDataUser.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataUserFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, displayName, avatarUri];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataUserToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostDataObject extends JsonSerializable
+    with EquatableMixin, TimelinePostDataObjectMixin {
+  TimelinePostDataObject();
+
+  factory TimelinePostDataObject.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataObjectFromJson(json);
+
+  @override
+  List<Object?> get props => [
+        $$typename,
+        id,
+        type,
+        name,
+        introAudioUri,
+        coverImageUri,
+        introVideoUri,
+        introVideoThumbUri
+      ];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataObjectToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostData extends JsonSerializable with EquatableMixin {
+  TimelinePostData();
+
+  factory TimelinePostData.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataFromJson(json);
+
+  late TimelinePostDataUser poster;
+
+  late TimelinePostDataUser creator;
+
+  late TimelinePostDataObject object;
+
+  @override
+  List<Object?> get props => [poster, creator, object];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostsData$Query extends JsonSerializable with EquatableMixin {
+  TimelinePostsData$Query();
+
+  factory TimelinePostsData$Query.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostsData$QueryFromJson(json);
+
+  late List<TimelinePostData> timelinePostsData;
+
+  @override
+  List<Object?> get props => [timelinePostsData];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostsData$QueryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class TimelinePostDataRequestInput extends JsonSerializable
+    with EquatableMixin {
+  TimelinePostDataRequestInput(
+      {required this.posterId,
+      required this.objectId,
+      required this.objectType});
+
+  factory TimelinePostDataRequestInput.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostDataRequestInputFromJson(json);
+
+  late String posterId;
+
+  late String objectId;
+
+  @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
+  late TimelinePostType objectType;
+
+  @override
+  List<Object?> get props => [posterId, objectId, objectType];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostDataRequestInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class ClubInviteTokenData extends CheckClubInviteTokenResult
     with EquatableMixin, ClubInviteTokenDataMixin {
   ClubInviteTokenData();
@@ -6754,142 +6893,21 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserAvatarData extends JsonSerializable
-    with EquatableMixin, UserAvatarDataMixin {
-  UserAvatarData();
-
-  factory UserAvatarData.fromJson(Map<String, dynamic> json) =>
-      _$UserAvatarDataFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, avatarUri, displayName];
-  @override
-  Map<String, dynamic> toJson() => _$UserAvatarDataToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UserAvatars$Query extends JsonSerializable with EquatableMixin {
-  UserAvatars$Query();
-
-  factory UserAvatars$Query.fromJson(Map<String, dynamic> json) =>
-      _$UserAvatars$QueryFromJson(json);
-
-  late List<UserAvatarData> userAvatars;
-
-  @override
-  List<Object?> get props => [userAvatars];
-  @override
-  Map<String, dynamic> toJson() => _$UserAvatars$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UserAvatarById$Query extends JsonSerializable with EquatableMixin {
-  UserAvatarById$Query();
-
-  factory UserAvatarById$Query.fromJson(Map<String, dynamic> json) =>
-      _$UserAvatarById$QueryFromJson(json);
-
-  late UserAvatarData userAvatarById;
-
-  @override
-  List<Object?> get props => [userAvatarById];
-  @override
-  Map<String, dynamic> toJson() => _$UserAvatarById$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostDataUser extends JsonSerializable
-    with EquatableMixin, TimelinePostDataUserMixin {
-  TimelinePostDataUser();
-
-  factory TimelinePostDataUser.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostDataUserFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, displayName, avatarUri];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostDataUserToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostDataObject extends JsonSerializable
-    with EquatableMixin, TimelinePostDataObjectMixin {
-  TimelinePostDataObject();
-
-  factory TimelinePostDataObject.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostDataObjectFromJson(json);
-
-  @override
-  List<Object?> get props => [
-        $$typename,
-        id,
-        type,
-        name,
-        introAudioUri,
-        coverImageUri,
-        introVideoUri,
-        introVideoThumbUri
-      ];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostDataObjectToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostData extends JsonSerializable with EquatableMixin {
-  TimelinePostData();
-
-  factory TimelinePostData.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostDataFromJson(json);
-
-  late TimelinePostDataUser poster;
-
-  late TimelinePostDataUser creator;
-
-  late TimelinePostDataObject object;
-
-  @override
-  List<Object?> get props => [poster, creator, object];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostDataToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostsData$Query extends JsonSerializable with EquatableMixin {
-  TimelinePostsData$Query();
-
-  factory TimelinePostsData$Query.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostsData$QueryFromJson(json);
-
-  late List<TimelinePostData> timelinePostsData;
-
-  @override
-  List<Object?> get props => [timelinePostsData];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostsData$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostDataRequestInput extends JsonSerializable
+class AddUserToClubViaInviteToken$Mutation extends JsonSerializable
     with EquatableMixin {
-  TimelinePostDataRequestInput(
-      {required this.posterId,
-      required this.objectId,
-      required this.objectType});
+  AddUserToClubViaInviteToken$Mutation();
 
-  factory TimelinePostDataRequestInput.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostDataRequestInputFromJson(json);
+  factory AddUserToClubViaInviteToken$Mutation.fromJson(
+          Map<String, dynamic> json) =>
+      _$AddUserToClubViaInviteToken$MutationFromJson(json);
 
-  late String posterId;
-
-  late String objectId;
-
-  @JsonKey(unknownEnumValue: TimelinePostType.artemisUnknown)
-  late TimelinePostType objectType;
+  late Club addUserToClubViaInviteToken;
 
   @override
-  List<Object?> get props => [posterId, objectId, objectType];
+  List<Object?> get props => [addUserToClubViaInviteToken];
   @override
-  Map<String, dynamic> toJson() => _$TimelinePostDataRequestInputToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$AddUserToClubViaInviteToken$MutationToJson(this);
 }
 
 enum UserProfileScope {
@@ -41271,6 +41289,203 @@ class UpdateUserMutation
 }
 
 @JsonSerializable(explicitToJson: true)
+class UserAvatarByIdArguments extends JsonSerializable with EquatableMixin {
+  UserAvatarByIdArguments({required this.id});
+
+  @override
+  factory UserAvatarByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarByIdArgumentsToJson(this);
+}
+
+final USER_AVATAR_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userAvatarById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userAvatarById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'UserAvatarData'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserAvatarData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserAvatarByIdQuery
+    extends GraphQLQuery<UserAvatarById$Query, UserAvatarByIdArguments> {
+  UserAvatarByIdQuery({required this.variables});
+
+  @override
+  final DocumentNode document = USER_AVATAR_BY_ID_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userAvatarById';
+
+  @override
+  final UserAvatarByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UserAvatarById$Query parse(Map<String, dynamic> json) =>
+      UserAvatarById$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class UserAvatarsArguments extends JsonSerializable with EquatableMixin {
+  UserAvatarsArguments({required this.ids});
+
+  @override
+  factory UserAvatarsArguments.fromJson(Map<String, dynamic> json) =>
+      _$UserAvatarsArgumentsFromJson(json);
+
+  late List<String> ids;
+
+  @override
+  List<Object?> get props => [ids];
+  @override
+  Map<String, dynamic> toJson() => _$UserAvatarsArgumentsToJson(this);
+}
+
+final USER_AVATARS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'userAvatars'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'ids')),
+            type: ListTypeNode(
+                type:
+                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'userAvatars'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'ids'),
+                  value: VariableNode(name: NameNode(value: 'ids')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'UserAvatarData'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'UserAvatarData'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class UserAvatarsQuery
+    extends GraphQLQuery<UserAvatars$Query, UserAvatarsArguments> {
+  UserAvatarsQuery({required this.variables});
+
+  @override
+  final DocumentNode document = USER_AVATARS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'userAvatars';
+
+  @override
+  final UserAvatarsArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  UserAvatars$Query parse(Map<String, dynamic> json) =>
+      UserAvatars$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CreateMoveArguments extends JsonSerializable with EquatableMixin {
   CreateMoveArguments({required this.data});
 
@@ -55012,6 +55227,193 @@ class DeleteScheduledWorkoutByIdMutation extends GraphQLQuery<
 }
 
 @JsonSerializable(explicitToJson: true)
+class TimelinePostsDataArguments extends JsonSerializable with EquatableMixin {
+  TimelinePostsDataArguments({required this.postDataRequests});
+
+  @override
+  factory TimelinePostsDataArguments.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostsDataArgumentsFromJson(json);
+
+  late List<TimelinePostDataRequestInput> postDataRequests;
+
+  @override
+  List<Object?> get props => [postDataRequests];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostsDataArgumentsToJson(this);
+}
+
+final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'timelinePostsData'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'postDataRequests')),
+            type: ListTypeNode(
+                type: NamedTypeNode(
+                    name: NameNode(value: 'TimelinePostDataRequestInput'),
+                    isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'timelinePostsData'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'postDataRequests'),
+                  value:
+                      VariableNode(name: NameNode(value: 'postDataRequests')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FieldNode(
+                  name: NameNode(value: 'poster'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'creator'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'object'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostDataObject'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostDataUser'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostDataUser'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostDataObject'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostDataObject'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'type'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class TimelinePostsDataQuery
+    extends GraphQLQuery<TimelinePostsData$Query, TimelinePostsDataArguments> {
+  TimelinePostsDataQuery({required this.variables});
+
+  @override
+  final DocumentNode document = TIMELINE_POSTS_DATA_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'timelinePostsData';
+
+  @override
+  final TimelinePostsDataArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  TimelinePostsData$Query parse(Map<String, dynamic> json) =>
+      TimelinePostsData$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class CheckClubInviteTokenArguments extends JsonSerializable
     with EquatableMixin {
   CheckClubInviteTokenArguments({required this.id});
@@ -59315,128 +59717,40 @@ class WorkoutByIdQuery
 }
 
 @JsonSerializable(explicitToJson: true)
-class UserAvatarsArguments extends JsonSerializable with EquatableMixin {
-  UserAvatarsArguments({required this.ids});
+class AddUserToClubViaInviteTokenArguments extends JsonSerializable
+    with EquatableMixin {
+  AddUserToClubViaInviteTokenArguments(
+      {required this.userId, required this.clubInviteTokenId});
 
   @override
-  factory UserAvatarsArguments.fromJson(Map<String, dynamic> json) =>
-      _$UserAvatarsArgumentsFromJson(json);
+  factory AddUserToClubViaInviteTokenArguments.fromJson(
+          Map<String, dynamic> json) =>
+      _$AddUserToClubViaInviteTokenArgumentsFromJson(json);
 
-  late List<String> ids;
+  late String userId;
+
+  late String clubInviteTokenId;
 
   @override
-  List<Object?> get props => [ids];
+  List<Object?> get props => [userId, clubInviteTokenId];
   @override
-  Map<String, dynamic> toJson() => _$UserAvatarsArgumentsToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$AddUserToClubViaInviteTokenArgumentsToJson(this);
 }
 
-final USER_AVATARS_QUERY_DOCUMENT = DocumentNode(definitions: [
+final ADD_USER_TO_CLUB_VIA_INVITE_TOKEN_MUTATION_DOCUMENT =
+    DocumentNode(definitions: [
   OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'userAvatars'),
+      type: OperationType.mutation,
+      name: NameNode(value: 'addUserToClubViaInviteToken'),
       variableDefinitions: [
         VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'ids')),
-            type: ListTypeNode(
-                type:
-                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-                isNonNull: true),
+            variable: VariableNode(name: NameNode(value: 'userId')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
             defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'userAvatars'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'ids'),
-                  value: VariableNode(name: NameNode(value: 'ids')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'UserAvatarData'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'UserAvatarData'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'avatarUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'displayName'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UserAvatarsQuery
-    extends GraphQLQuery<UserAvatars$Query, UserAvatarsArguments> {
-  UserAvatarsQuery({required this.variables});
-
-  @override
-  final DocumentNode document = USER_AVATARS_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'userAvatars';
-
-  @override
-  final UserAvatarsArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UserAvatars$Query parse(Map<String, dynamic> json) =>
-      UserAvatars$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class UserAvatarByIdArguments extends JsonSerializable with EquatableMixin {
-  UserAvatarByIdArguments({required this.id});
-
-  @override
-  factory UserAvatarByIdArguments.fromJson(Map<String, dynamic> json) =>
-      _$UserAvatarByIdArgumentsFromJson(json);
-
-  late String id;
-
-  @override
-  List<Object?> get props => [id];
-  @override
-  Map<String, dynamic> toJson() => _$UserAvatarByIdArgumentsToJson(this);
-}
-
-final USER_AVATAR_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'userAvatarById'),
-      variableDefinitions: [
+            directives: []),
         VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'id')),
+            variable: VariableNode(name: NameNode(value: 'clubInviteTokenId')),
             type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
             defaultValue: DefaultValueNode(value: null),
             directives: [])
@@ -59444,154 +59758,104 @@ final USER_AVATAR_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
       directives: [],
       selectionSet: SelectionSetNode(selections: [
         FieldNode(
-            name: NameNode(value: 'userAvatarById'),
+            name: NameNode(value: 'addUserToClubViaInviteToken'),
             alias: null,
             arguments: [
               ArgumentNode(
-                  name: NameNode(value: 'id'),
-                  value: VariableNode(name: NameNode(value: 'id')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'UserAvatarData'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'UserAvatarData'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'UserAvatarData'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'avatarUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'displayName'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class UserAvatarByIdQuery
-    extends GraphQLQuery<UserAvatarById$Query, UserAvatarByIdArguments> {
-  UserAvatarByIdQuery({required this.variables});
-
-  @override
-  final DocumentNode document = USER_AVATAR_BY_ID_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'userAvatarById';
-
-  @override
-  final UserAvatarByIdArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  UserAvatarById$Query parse(Map<String, dynamic> json) =>
-      UserAvatarById$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostsDataArguments extends JsonSerializable with EquatableMixin {
-  TimelinePostsDataArguments({required this.postDataRequests});
-
-  @override
-  factory TimelinePostsDataArguments.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostsDataArgumentsFromJson(json);
-
-  late List<TimelinePostDataRequestInput> postDataRequests;
-
-  @override
-  List<Object?> get props => [postDataRequests];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostsDataArgumentsToJson(this);
-}
-
-final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'timelinePostsData'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'postDataRequests')),
-            type: ListTypeNode(
-                type: NamedTypeNode(
-                    name: NameNode(value: 'TimelinePostDataRequestInput'),
-                    isNonNull: true),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'timelinePostsData'),
-            alias: null,
-            arguments: [
+                  name: NameNode(value: 'userId'),
+                  value: VariableNode(name: NameNode(value: 'userId'))),
               ArgumentNode(
-                  name: NameNode(value: 'postDataRequests'),
+                  name: NameNode(value: 'clubInviteTokenId'),
                   value:
-                      VariableNode(name: NameNode(value: 'postDataRequests')))
+                      VariableNode(name: NameNode(value: 'clubInviteTokenId')))
             ],
             directives: [],
             selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(name: NameNode(value: 'Club'), directives: []),
               FieldNode(
-                  name: NameNode(value: 'poster'),
+                  name: NameNode(value: 'Owner'),
                   alias: null,
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
                     FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostDataUser'),
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'Admins'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'Members'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'UserSummary'), directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'ClubInviteTokens'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'ClubInviteToken'),
                         directives: [])
                   ])),
               FieldNode(
-                  name: NameNode(value: 'creator'),
+                  name: NameNode(value: 'JoinClubInvites'),
                   alias: null,
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
                     FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostDataUser'),
-                        directives: [])
+                        name: NameNode(value: 'JoinClubInvite'),
+                        directives: []),
+                    FieldNode(
+                        name: NameNode(value: 'Invited'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'UserSummary'),
+                              directives: [])
+                        ]))
                   ])),
               FieldNode(
-                  name: NameNode(value: 'object'),
+                  name: NameNode(value: 'JoinClubRequests'),
                   alias: null,
                   arguments: [],
                   directives: [],
                   selectionSet: SelectionSetNode(selections: [
                     FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostDataObject'),
-                        directives: [])
+                        name: NameNode(value: 'JoinClubRequest'),
+                        directives: []),
+                    FieldNode(
+                        name: NameNode(value: 'Applicant'),
+                        alias: null,
+                        arguments: [],
+                        directives: [],
+                        selectionSet: SelectionSetNode(selections: [
+                          FragmentSpreadNode(
+                              name: NameNode(value: 'UserSummary'),
+                              directives: [])
+                        ]))
                   ]))
             ]))
       ])),
   FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostDataUser'),
+      name: NameNode(value: 'UserSummary'),
       typeCondition: TypeConditionNode(
           on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostDataUser'), isNonNull: false)),
+              name: NameNode(value: 'UserSummary'), isNonNull: false)),
       directives: [],
       selectionSet: SelectionSetNode(selections: [
         FieldNode(
@@ -59602,6 +59866,12 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             selectionSet: null),
         FieldNode(
             name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
             alias: null,
             arguments: [],
             directives: [],
@@ -59613,18 +59883,35 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'avatarUri'),
+            name: NameNode(value: 'userProfileScope'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'tagline'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'countryCode'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'townCity'),
             alias: null,
             arguments: [],
             directives: [],
             selectionSet: null)
       ])),
   FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostDataObject'),
+      name: NameNode(value: 'ClubInviteToken'),
       typeCondition: TypeConditionNode(
           on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostDataObject'),
-              isNonNull: false)),
+              name: NameNode(value: 'ClubInviteToken'), isNonNull: false)),
       directives: [],
       selectionSet: SelectionSetNode(selections: [
         FieldNode(
@@ -59640,7 +59927,7 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'type'),
+            name: NameNode(value: 'createdAt'),
             alias: null,
             arguments: [],
             directives: [],
@@ -59652,7 +59939,144 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             directives: [],
             selectionSet: null),
         FieldNode(
-            name: NameNode(value: 'introAudioUri'),
+            name: NameNode(value: 'active'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'inviteLimit'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'invitesUsed'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'joinedUserIds'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'JoinClubInvite'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'JoinClubInvite'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'respondedAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'status'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'JoinClubRequest'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'JoinClubRequest'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'respondedAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'status'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'Club'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(name: NameNode(value: 'Club'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'createdAt'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'description'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'location'),
             alias: null,
             arguments: [],
             directives: [],
@@ -59674,26 +60098,34 @@ final TIMELINE_POSTS_DATA_QUERY_DOCUMENT = DocumentNode(definitions: [
             alias: null,
             arguments: [],
             directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
             selectionSet: null)
       ]))
 ]);
 
-class TimelinePostsDataQuery
-    extends GraphQLQuery<TimelinePostsData$Query, TimelinePostsDataArguments> {
-  TimelinePostsDataQuery({required this.variables});
+class AddUserToClubViaInviteTokenMutation extends GraphQLQuery<
+    AddUserToClubViaInviteToken$Mutation,
+    AddUserToClubViaInviteTokenArguments> {
+  AddUserToClubViaInviteTokenMutation({required this.variables});
 
   @override
-  final DocumentNode document = TIMELINE_POSTS_DATA_QUERY_DOCUMENT;
+  final DocumentNode document =
+      ADD_USER_TO_CLUB_VIA_INVITE_TOKEN_MUTATION_DOCUMENT;
 
   @override
-  final String operationName = 'timelinePostsData';
+  final String operationName = 'addUserToClubViaInviteToken';
 
   @override
-  final TimelinePostsDataArguments variables;
+  final AddUserToClubViaInviteTokenArguments variables;
 
   @override
   List<Object?> get props => [document, operationName, variables];
   @override
-  TimelinePostsData$Query parse(Map<String, dynamic> json) =>
-      TimelinePostsData$Query.fromJson(json);
+  AddUserToClubViaInviteToken$Mutation parse(Map<String, dynamic> json) =>
+      AddUserToClubViaInviteToken$Mutation.fromJson(json);
 }

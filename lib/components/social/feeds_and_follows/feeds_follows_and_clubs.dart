@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/social/authed_user_clubs_list.dart';
@@ -83,6 +85,7 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
             physics: NeverScrollableScrollPhysics(),
             children: [
               AuthedUserTimeline(
+                  userFeed: _userFeed,
                   timelineFeed: _timelineFeed,
                   streamFeedClient: _streamFeedClient),
               AuthedUserFeed(
@@ -103,6 +106,35 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   }
 }
 
+class FollowTotalAvatar extends StatelessWidget {
+  final int total;
+  final String label;
+  const FollowTotalAvatar({Key? key, required this.total, required this.label})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+        child: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MyHeaderText(
+            total.toString(),
+            size: FONTSIZE.LARGE,
+          ),
+          SizedBox(height: 6),
+          MyText(
+            label.toUpperCase(),
+            subtext: true,
+            size: FONTSIZE.TINY,
+          )
+        ],
+      ),
+    ));
+  }
+}
+
 class UserFollow extends StatelessWidget {
   final FollowWithUserAvatarData follow;
   const UserFollow({Key? key, required this.follow}) : super(key: key);
@@ -114,17 +146,20 @@ class UserFollow extends StatelessWidget {
           ? () => context.navigateTo(
               UserPublicProfileDetailsRoute(userId: follow.userAvatarData!.id))
           : null,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          UserAvatar(
-            size: 80,
-            border: true,
-            borderWidth: 1,
-            avatarUri: follow.userAvatarData?.avatarUri,
-          ),
           Padding(
-            padding: const EdgeInsets.all(6.0),
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: UserAvatar(
+              size: 80,
+              border: true,
+              borderWidth: 1,
+              avatarUri: follow.userAvatarData?.avatarUri,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
             child: MyText(
               Utils.textNotNull(follow.userAvatarData?.displayName)
                   ? follow.userAvatarData!.displayName

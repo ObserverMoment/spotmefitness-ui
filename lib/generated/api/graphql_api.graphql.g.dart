@@ -3278,6 +3278,46 @@ Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
       'lastname': instance.lastname,
     };
 
+UserAvatarData _$UserAvatarDataFromJson(Map<String, dynamic> json) {
+  return UserAvatarData()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..avatarUri = json['avatarUri'] as String?
+    ..displayName = json['displayName'] as String;
+}
+
+Map<String, dynamic> _$UserAvatarDataToJson(UserAvatarData instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'avatarUri': instance.avatarUri,
+      'displayName': instance.displayName,
+    };
+
+UserAvatarById$Query _$UserAvatarById$QueryFromJson(Map<String, dynamic> json) {
+  return UserAvatarById$Query()
+    ..userAvatarById =
+        UserAvatarData.fromJson(json['userAvatarById'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$UserAvatarById$QueryToJson(
+        UserAvatarById$Query instance) =>
+    <String, dynamic>{
+      'userAvatarById': instance.userAvatarById.toJson(),
+    };
+
+UserAvatars$Query _$UserAvatars$QueryFromJson(Map<String, dynamic> json) {
+  return UserAvatars$Query()
+    ..userAvatars = (json['userAvatars'] as List<dynamic>)
+        .map((e) => UserAvatarData.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$UserAvatars$QueryToJson(UserAvatars$Query instance) =>
+    <String, dynamic>{
+      'userAvatars': instance.userAvatars.map((e) => e.toJson()).toList(),
+    };
+
 CreateMove$Mutation _$CreateMove$MutationFromJson(Map<String, dynamic> json) {
   return CreateMove$Mutation()
     ..createMove = Move.fromJson(json['createMove'] as Map<String, dynamic>);
@@ -5072,6 +5112,106 @@ Map<String, dynamic> _$DeleteScheduledWorkoutById$MutationToJson(
       'deleteScheduledWorkoutById': instance.deleteScheduledWorkoutById,
     };
 
+TimelinePostDataUser _$TimelinePostDataUserFromJson(Map<String, dynamic> json) {
+  return TimelinePostDataUser()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..displayName = json['displayName'] as String
+    ..avatarUri = json['avatarUri'] as String?;
+}
+
+Map<String, dynamic> _$TimelinePostDataUserToJson(
+        TimelinePostDataUser instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'displayName': instance.displayName,
+      'avatarUri': instance.avatarUri,
+    };
+
+TimelinePostDataObject _$TimelinePostDataObjectFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostDataObject()
+    ..$$typename = json['__typename'] as String?
+    ..id = json['id'] as String
+    ..type = _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
+        unknownValue: TimelinePostType.artemisUnknown)
+    ..name = json['name'] as String
+    ..introAudioUri = json['introAudioUri'] as String?
+    ..coverImageUri = json['coverImageUri'] as String?
+    ..introVideoUri = json['introVideoUri'] as String?
+    ..introVideoThumbUri = json['introVideoThumbUri'] as String?;
+}
+
+Map<String, dynamic> _$TimelinePostDataObjectToJson(
+        TimelinePostDataObject instance) =>
+    <String, dynamic>{
+      '__typename': instance.$$typename,
+      'id': instance.id,
+      'type': _$TimelinePostTypeEnumMap[instance.type],
+      'name': instance.name,
+      'introAudioUri': instance.introAudioUri,
+      'coverImageUri': instance.coverImageUri,
+      'introVideoUri': instance.introVideoUri,
+      'introVideoThumbUri': instance.introVideoThumbUri,
+    };
+
+const _$TimelinePostTypeEnumMap = {
+  TimelinePostType.workout: 'WORKOUT',
+  TimelinePostType.workoutplan: 'WORKOUTPLAN',
+  TimelinePostType.artemisUnknown: 'ARTEMIS_UNKNOWN',
+};
+
+TimelinePostData _$TimelinePostDataFromJson(Map<String, dynamic> json) {
+  return TimelinePostData()
+    ..poster =
+        TimelinePostDataUser.fromJson(json['poster'] as Map<String, dynamic>)
+    ..creator =
+        TimelinePostDataUser.fromJson(json['creator'] as Map<String, dynamic>)
+    ..object =
+        TimelinePostDataObject.fromJson(json['object'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$TimelinePostDataToJson(TimelinePostData instance) =>
+    <String, dynamic>{
+      'poster': instance.poster.toJson(),
+      'creator': instance.creator.toJson(),
+      'object': instance.object.toJson(),
+    };
+
+TimelinePostsData$Query _$TimelinePostsData$QueryFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostsData$Query()
+    ..timelinePostsData = (json['timelinePostsData'] as List<dynamic>)
+        .map((e) => TimelinePostData.fromJson(e as Map<String, dynamic>))
+        .toList();
+}
+
+Map<String, dynamic> _$TimelinePostsData$QueryToJson(
+        TimelinePostsData$Query instance) =>
+    <String, dynamic>{
+      'timelinePostsData':
+          instance.timelinePostsData.map((e) => e.toJson()).toList(),
+    };
+
+TimelinePostDataRequestInput _$TimelinePostDataRequestInputFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostDataRequestInput(
+    posterId: json['posterId'] as String,
+    objectId: json['objectId'] as String,
+    objectType: _$enumDecode(_$TimelinePostTypeEnumMap, json['objectType'],
+        unknownValue: TimelinePostType.artemisUnknown),
+  );
+}
+
+Map<String, dynamic> _$TimelinePostDataRequestInputToJson(
+        TimelinePostDataRequestInput instance) =>
+    <String, dynamic>{
+      'posterId': instance.posterId,
+      'objectId': instance.objectId,
+      'objectType': _$TimelinePostTypeEnumMap[instance.objectType],
+    };
+
 ClubInviteTokenData _$ClubInviteTokenDataFromJson(Map<String, dynamic> json) {
   return ClubInviteTokenData()
     ..$$typename = json['__typename'] as String?
@@ -5411,144 +5551,18 @@ Map<String, dynamic> _$WorkoutById$QueryToJson(WorkoutById$Query instance) =>
       'workoutById': instance.workoutById.toJson(),
     };
 
-UserAvatarData _$UserAvatarDataFromJson(Map<String, dynamic> json) {
-  return UserAvatarData()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..avatarUri = json['avatarUri'] as String?
-    ..displayName = json['displayName'] as String;
+AddUserToClubViaInviteToken$Mutation
+    _$AddUserToClubViaInviteToken$MutationFromJson(Map<String, dynamic> json) {
+  return AddUserToClubViaInviteToken$Mutation()
+    ..addUserToClubViaInviteToken = Club.fromJson(
+        json['addUserToClubViaInviteToken'] as Map<String, dynamic>);
 }
 
-Map<String, dynamic> _$UserAvatarDataToJson(UserAvatarData instance) =>
+Map<String, dynamic> _$AddUserToClubViaInviteToken$MutationToJson(
+        AddUserToClubViaInviteToken$Mutation instance) =>
     <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'avatarUri': instance.avatarUri,
-      'displayName': instance.displayName,
-    };
-
-UserAvatars$Query _$UserAvatars$QueryFromJson(Map<String, dynamic> json) {
-  return UserAvatars$Query()
-    ..userAvatars = (json['userAvatars'] as List<dynamic>)
-        .map((e) => UserAvatarData.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$UserAvatars$QueryToJson(UserAvatars$Query instance) =>
-    <String, dynamic>{
-      'userAvatars': instance.userAvatars.map((e) => e.toJson()).toList(),
-    };
-
-UserAvatarById$Query _$UserAvatarById$QueryFromJson(Map<String, dynamic> json) {
-  return UserAvatarById$Query()
-    ..userAvatarById =
-        UserAvatarData.fromJson(json['userAvatarById'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$UserAvatarById$QueryToJson(
-        UserAvatarById$Query instance) =>
-    <String, dynamic>{
-      'userAvatarById': instance.userAvatarById.toJson(),
-    };
-
-TimelinePostDataUser _$TimelinePostDataUserFromJson(Map<String, dynamic> json) {
-  return TimelinePostDataUser()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..displayName = json['displayName'] as String
-    ..avatarUri = json['avatarUri'] as String?;
-}
-
-Map<String, dynamic> _$TimelinePostDataUserToJson(
-        TimelinePostDataUser instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'displayName': instance.displayName,
-      'avatarUri': instance.avatarUri,
-    };
-
-TimelinePostDataObject _$TimelinePostDataObjectFromJson(
-    Map<String, dynamic> json) {
-  return TimelinePostDataObject()
-    ..$$typename = json['__typename'] as String?
-    ..id = json['id'] as String
-    ..type = _$enumDecode(_$TimelinePostTypeEnumMap, json['type'],
-        unknownValue: TimelinePostType.artemisUnknown)
-    ..name = json['name'] as String
-    ..introAudioUri = json['introAudioUri'] as String?
-    ..coverImageUri = json['coverImageUri'] as String?
-    ..introVideoUri = json['introVideoUri'] as String?
-    ..introVideoThumbUri = json['introVideoThumbUri'] as String?;
-}
-
-Map<String, dynamic> _$TimelinePostDataObjectToJson(
-        TimelinePostDataObject instance) =>
-    <String, dynamic>{
-      '__typename': instance.$$typename,
-      'id': instance.id,
-      'type': _$TimelinePostTypeEnumMap[instance.type],
-      'name': instance.name,
-      'introAudioUri': instance.introAudioUri,
-      'coverImageUri': instance.coverImageUri,
-      'introVideoUri': instance.introVideoUri,
-      'introVideoThumbUri': instance.introVideoThumbUri,
-    };
-
-const _$TimelinePostTypeEnumMap = {
-  TimelinePostType.workout: 'WORKOUT',
-  TimelinePostType.workoutplan: 'WORKOUTPLAN',
-  TimelinePostType.artemisUnknown: 'ARTEMIS_UNKNOWN',
-};
-
-TimelinePostData _$TimelinePostDataFromJson(Map<String, dynamic> json) {
-  return TimelinePostData()
-    ..poster =
-        TimelinePostDataUser.fromJson(json['poster'] as Map<String, dynamic>)
-    ..creator =
-        TimelinePostDataUser.fromJson(json['creator'] as Map<String, dynamic>)
-    ..object =
-        TimelinePostDataObject.fromJson(json['object'] as Map<String, dynamic>);
-}
-
-Map<String, dynamic> _$TimelinePostDataToJson(TimelinePostData instance) =>
-    <String, dynamic>{
-      'poster': instance.poster.toJson(),
-      'creator': instance.creator.toJson(),
-      'object': instance.object.toJson(),
-    };
-
-TimelinePostsData$Query _$TimelinePostsData$QueryFromJson(
-    Map<String, dynamic> json) {
-  return TimelinePostsData$Query()
-    ..timelinePostsData = (json['timelinePostsData'] as List<dynamic>)
-        .map((e) => TimelinePostData.fromJson(e as Map<String, dynamic>))
-        .toList();
-}
-
-Map<String, dynamic> _$TimelinePostsData$QueryToJson(
-        TimelinePostsData$Query instance) =>
-    <String, dynamic>{
-      'timelinePostsData':
-          instance.timelinePostsData.map((e) => e.toJson()).toList(),
-    };
-
-TimelinePostDataRequestInput _$TimelinePostDataRequestInputFromJson(
-    Map<String, dynamic> json) {
-  return TimelinePostDataRequestInput(
-    posterId: json['posterId'] as String,
-    objectId: json['objectId'] as String,
-    objectType: _$enumDecode(_$TimelinePostTypeEnumMap, json['objectType'],
-        unknownValue: TimelinePostType.artemisUnknown),
-  );
-}
-
-Map<String, dynamic> _$TimelinePostDataRequestInputToJson(
-        TimelinePostDataRequestInput instance) =>
-    <String, dynamic>{
-      'posterId': instance.posterId,
-      'objectId': instance.objectId,
-      'objectType': _$TimelinePostTypeEnumMap[instance.objectType],
+      'addUserToClubViaInviteToken':
+          instance.addUserToClubViaInviteToken.toJson(),
     };
 
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
@@ -6400,6 +6414,31 @@ Map<String, dynamic> _$UpdateUserArgumentsToJson(
       'data': instance.data.toJson(),
     };
 
+UserAvatarByIdArguments _$UserAvatarByIdArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return UserAvatarByIdArguments(
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserAvatarByIdArgumentsToJson(
+        UserAvatarByIdArguments instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+    };
+
+UserAvatarsArguments _$UserAvatarsArgumentsFromJson(Map<String, dynamic> json) {
+  return UserAvatarsArguments(
+    ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
+  );
+}
+
+Map<String, dynamic> _$UserAvatarsArgumentsToJson(
+        UserAvatarsArguments instance) =>
+    <String, dynamic>{
+      'ids': instance.ids,
+    };
+
 CreateMoveArguments _$CreateMoveArgumentsFromJson(Map<String, dynamic> json) {
   return CreateMoveArguments(
     data: CreateMoveInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -7023,6 +7062,23 @@ Map<String, dynamic> _$DeleteScheduledWorkoutByIdArgumentsToJson(
       'id': instance.id,
     };
 
+TimelinePostsDataArguments _$TimelinePostsDataArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return TimelinePostsDataArguments(
+    postDataRequests: (json['postDataRequests'] as List<dynamic>)
+        .map((e) =>
+            TimelinePostDataRequestInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$TimelinePostsDataArgumentsToJson(
+        TimelinePostsDataArguments instance) =>
+    <String, dynamic>{
+      'postDataRequests':
+          instance.postDataRequests.map((e) => e.toJson()).toList(),
+    };
+
 CheckClubInviteTokenArguments _$CheckClubInviteTokenArgumentsFromJson(
     Map<String, dynamic> json) {
   return CheckClubInviteTokenArguments(
@@ -7119,44 +7175,17 @@ Map<String, dynamic> _$WorkoutByIdArgumentsToJson(
       'id': instance.id,
     };
 
-UserAvatarsArguments _$UserAvatarsArgumentsFromJson(Map<String, dynamic> json) {
-  return UserAvatarsArguments(
-    ids: (json['ids'] as List<dynamic>).map((e) => e as String).toList(),
+AddUserToClubViaInviteTokenArguments
+    _$AddUserToClubViaInviteTokenArgumentsFromJson(Map<String, dynamic> json) {
+  return AddUserToClubViaInviteTokenArguments(
+    userId: json['userId'] as String,
+    clubInviteTokenId: json['clubInviteTokenId'] as String,
   );
 }
 
-Map<String, dynamic> _$UserAvatarsArgumentsToJson(
-        UserAvatarsArguments instance) =>
+Map<String, dynamic> _$AddUserToClubViaInviteTokenArgumentsToJson(
+        AddUserToClubViaInviteTokenArguments instance) =>
     <String, dynamic>{
-      'ids': instance.ids,
-    };
-
-UserAvatarByIdArguments _$UserAvatarByIdArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return UserAvatarByIdArguments(
-    id: json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$UserAvatarByIdArgumentsToJson(
-        UserAvatarByIdArguments instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-    };
-
-TimelinePostsDataArguments _$TimelinePostsDataArgumentsFromJson(
-    Map<String, dynamic> json) {
-  return TimelinePostsDataArguments(
-    postDataRequests: (json['postDataRequests'] as List<dynamic>)
-        .map((e) =>
-            TimelinePostDataRequestInput.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$TimelinePostsDataArgumentsToJson(
-        TimelinePostsDataArguments instance) =>
-    <String, dynamic>{
-      'postDataRequests':
-          instance.postDataRequests.map((e) => e.toJson()).toList(),
+      'userId': instance.userId,
+      'clubInviteTokenId': instance.clubInviteTokenId,
     };

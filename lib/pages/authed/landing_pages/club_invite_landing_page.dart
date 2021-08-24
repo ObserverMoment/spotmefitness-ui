@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/future_builder_handler.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
@@ -45,6 +46,34 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
           'There was a network error while trying to get details of this invite.');
     } else {
       return result.data!.checkClubInviteToken;
+    }
+  }
+
+  Future<void> _addUserToClub(BuildContext context, Club club) async {
+    final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
+    context.showLoadingAlert('Joining Club...',
+        icon: Icon(CupertinoIcons.star));
+
+    final variables = AddUserToClubViaInviteTokenArguments(
+        userId: authedUserId, clubInviteTokenId: widget.id);
+
+    final result = await context.graphQLStore.networkOnlyOperation<
+            AddUserToClubViaInviteToken$Mutation,
+            AddUserToClubViaInviteTokenArguments>(
+        operation: AddUserToClubViaInviteTokenMutation(variables: variables));
+
+    context.pop(); // Loading dialog.
+
+    if (result.hasErrors || result.data == null) {
+      result.errors?.forEach((e) {
+        print(e);
+      });
+      context.showToast(
+          message: 'Sorry, there was a problem joining the club.',
+          toastType: ToastType.destructive);
+    } else {
+      // Successfully joined - pop this screen and push to the Club details page.
+      context.router.popAndPush(ClubDetailsRoute(id: club.id));
     }
   }
 
@@ -117,12 +146,14 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
                     child: Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
-                        Utils.textNotNull(club.coverImageUri)
-                            ? SizedUploadcareImage(club.coverImageUri!)
-                            : Image.asset(
-                                'assets/social_images/group_placeholder.jpg',
-                                fit: BoxFit.cover,
-                              ),
+                        SizedBox.expand(
+                          child: Utils.textNotNull(club.coverImageUri)
+                              ? SizedUploadcareImage(club.coverImageUri!)
+                              : Image.asset(
+                                  'assets/social_images/group_placeholder.jpg',
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                         if (!userIsMember)
                           Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -134,7 +165,8 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
                                     prefixIconData:
                                         CupertinoIcons.checkmark_alt,
                                     text: 'Yes, join the Club!',
-                                    onPressed: () => print('join club flow')),
+                                    onPressed: () =>
+                                        _addUserToClub(context, club)),
                                 SecondaryButton(
                                     withMinWidth: false,
                                     prefixIconData: CupertinoIcons.xmark,
@@ -151,6 +183,11 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
                         vertical: 24, horizontal: 12),
                     shrinkWrap: true,
                     children: [
+                      MyText(
+                        'You have been invited to join a club!',
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 8),
                       MyHeaderText(
                         club.name,
                         size: FONTSIZE.HUGE,
@@ -229,6 +266,7 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
+                                        /// TODO: Get the data from the club once it is being returned.
                                         _buildContentText('x workouts'),
                                         _buildContentText('x plans'),
                                         _buildContentText('x challenges'),
