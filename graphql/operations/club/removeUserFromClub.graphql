@@ -1,0 +1,29 @@
+mutation removeUserFromClub($userToRemoveId: ID!, $clubId: ID!) {
+  removeUserFromClub(userToRemoveId: $userToRemoveId, clubId: $clubId) {
+    ...Club
+    Owner {
+      ...UserSummary
+    }
+    Admins {
+      ...UserSummary
+    }
+    Members {
+      ...UserSummary
+    }
+    ClubInviteTokens {
+      ...ClubInviteToken
+    }
+    JoinClubInvites {
+      ...JoinClubInvite
+      Invited {
+        ...UserSummary
+      }
+    }
+    JoinClubRequests {
+      ...JoinClubRequest
+      Applicant {
+        ...UserSummary
+      }
+    }
+  }
+}

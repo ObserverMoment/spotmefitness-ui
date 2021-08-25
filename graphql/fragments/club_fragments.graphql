@@ -21,8 +21,6 @@ fragment ClubInviteToken on ClubInviteToken {
   # 0 means unlimited.
   inviteLimit
   # Only updated by the sever when user joins via this token.
-  invitesUsed
-  # Only updated by the sever when user joins via this token.
   joinedUserIds
 }
 

@@ -27,6 +27,10 @@ class TimelinePostCard extends StatelessWidget {
   final void Function(String activityId)? deleteActivityById;
   final VoidCallback? likeUnlikePost;
   final bool userHasLiked;
+
+  /// When true we don't display share count or display UI to allow the user to share.
+  /// Used for post types which should not be freely shared - i.e. posts within clubs / private challenges etc.
+  final bool disableSharing;
   final VoidCallback? sharePost;
   final bool userHasShared;
   const TimelinePostCard(
@@ -37,7 +41,8 @@ class TimelinePostCard extends StatelessWidget {
       this.likeUnlikePost,
       this.sharePost,
       this.userHasLiked = false,
-      this.userHasShared = false})
+      this.userHasShared = false,
+      this.disableSharing = false})
       : super(key: key);
 
   void _openDetailsPageByType(BuildContext context) {
@@ -71,14 +76,19 @@ class TimelinePostCard extends StatelessWidget {
                 ),
                 SizedBox(width: 4),
                 MyText('$likesCount'),
-                SizedBox(width: 16),
-                Icon(
-                  CupertinoIcons.paperplane_fill,
-                  color: context.theme.primary.withOpacity(0.4),
-                  size: 16,
-                ),
-                SizedBox(width: 4),
-                MyText('$sharesCount'),
+                if (!disableSharing)
+                  Row(
+                    children: [
+                      SizedBox(width: 16),
+                      Icon(
+                        CupertinoIcons.paperplane_fill,
+                        color: context.theme.primary.withOpacity(0.4),
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      MyText('$sharesCount'),
+                    ],
+                  )
               ],
             ),
           )
@@ -90,7 +100,7 @@ class TimelinePostCard extends StatelessWidget {
                     activeIconData: CupertinoIcons.hand_thumbsup_fill,
                     onPressed: likeUnlikePost!,
                     active: userHasLiked),
-              if (sharePost != null)
+              if (!disableSharing && sharePost != null)
                 _buildReactionButton(
                     inactiveIconData: CupertinoIcons.paperplane,
                     activeIconData: CupertinoIcons.paperplane_fill,
@@ -223,6 +233,7 @@ class TimelinePostCard extends StatelessWidget {
                         ? () => deleteActivityById!(activity.id!)
                         : null,
                 openDetailsPage: () => _openDetailsPageByType(context),
+                disableSharing: disableSharing,
               )
             ],
           ),
@@ -299,6 +310,7 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
   final VoidCallback? handleDeletePost;
   final VoidCallback? openEditPost;
   final VoidCallback openDetailsPage;
+  final bool disableSharing;
   const _TimelinePostEllipsisMenu(
       {Key? key,
       required this.object,
@@ -308,7 +320,8 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
       this.openEditPost,
       this.handleDeletePost,
       required this.userIsPoster,
-      required this.userIsCreator})
+      required this.userIsCreator,
+      required this.disableSharing})
       : super(key: key);
 
   void _openUserProfile(BuildContext context, String userId) {
@@ -329,8 +342,10 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
   }
 
   Future<void> _shareObject() async {
-    await SharingAndLinking.shareLink(
-        _genLinkText(), 'Check out this ${object.type.display}');
+    if (!disableSharing) {
+      await SharingAndLinking.shareLink(
+          _genLinkText(), 'Check out this ${object.type.display}');
+    }
   }
 
   @override
@@ -360,10 +375,11 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
                       text: 'View Poster',
                       icon: Icon(CupertinoIcons.person_crop_rectangle),
                       onPressed: () => _openUserProfile(context, poster.id)),
-                BottomSheetMenuItem(
-                    text: 'Share ${object.type.display} to...',
-                    icon: Icon(CupertinoIcons.paperplane),
-                    onPressed: _shareObject),
+                if (!disableSharing)
+                  BottomSheetMenuItem(
+                      text: 'Share ${object.type.display} to...',
+                      icon: Icon(CupertinoIcons.paperplane),
+                      onPressed: _shareObject),
                 if (userIsPoster && handleDeletePost != null)
                   BottomSheetMenuItem(
                       text: 'Delete Post',

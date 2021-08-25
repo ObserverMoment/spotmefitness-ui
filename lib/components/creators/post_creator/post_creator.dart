@@ -27,9 +27,15 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:auto_route/auto_route.dart';
 
 /// Create a post and sends it to GetStream.
-/// Currently: Like a content share function. Can only share certain objects from within the app such as [Workout], [WorkoutPlan] etc.
+/// Currently: Like a content share function. Can only share certain objects from within the app such as [Workout], [WorkoutPlan] etc. If posting to a club you can post an [Announcement]. This has no referenced object in our DB and is text only. [Title], [Caption], [Tags].
 class PostCreatorPage extends StatefulWidget {
-  const PostCreatorPage({Key? key}) : super(key: key);
+  /// Club feed posts can post an extra object type vs user posts - 'Announcement'.
+  final PostFeedType postFeedType;
+  final String? clubId;
+  const PostCreatorPage({Key? key, required this.postFeedType, this.clubId})
+      : assert((clubId != null && postFeedType == PostFeedType.club) ||
+            (clubId == null && postFeedType == PostFeedType.user)),
+        super(key: key);
 
   @override
   _PostCreatorPageState createState() => _PostCreatorPageState();
@@ -38,7 +44,8 @@ class PostCreatorPage extends StatefulWidget {
 class _PostCreatorPageState extends State<PostCreatorPage> {
   late AuthedUser _authedUser;
 
-  /// Users always post to their feed [kUserFeedName]
+  /// If postType == PostType.user then we post to feed [kUserFeedName]
+  /// If postType == PostType.club then we post to feed [kClubMembersFeedName]
   late FlatFeed _feed;
   final TextEditingController _captionController = TextEditingController();
 
@@ -70,7 +77,13 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
   void initState() {
     super.initState();
     _authedUser = GetIt.I<AuthBloc>().authedUser!;
-    _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
+
+    if (widget.postFeedType == PostFeedType.user) {
+      _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
+    } else {
+      /// TODO:
+      _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
+    }
 
     _captionController.addListener(() {
       setState(() {});
@@ -136,7 +149,7 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
           object: '${describeEnum(_selectedObjectType!)}:$_selectedObjectId',
           extraData: {
             'caption': _captionController.text,
-            // Try and ensure we alwasy pass a list of strings.
+            // Try and ensure we always pass a list of strings.
             // There is no type checking on the getStream side and ints, bools, objects etc will all be allowed.
             'tags': _tags.whereType<String>().toList()
           }));

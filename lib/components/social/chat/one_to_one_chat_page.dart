@@ -36,8 +36,6 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
   String? _avatarUri; // Of the other person to show at the top right.
   late bool _channelReady = false;
 
-  final kChannelType = 'messaging';
-
   @override
   void initState() {
     super.initState();
@@ -51,7 +49,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
     try {
       /// Create / watch a channel consisting of the authed user and the 'other user.
       /// This type of channel is always just these two users. More users cannot be added.
-      _channel = _streamChatClient.channel(kChannelType, extraData: {
+      _channel = _streamChatClient.channel(kMessagingChannelName, extraData: {
         'members': [_authedUser.id, widget.otherUserId],
         'chatType': ChatType.friend.toString(),
       });

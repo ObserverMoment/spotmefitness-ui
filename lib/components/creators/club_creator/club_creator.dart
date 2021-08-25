@@ -289,7 +289,7 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
         withoutLeading: true,
         middle: Row(
           children: [
-            NavBarLargeTitle(_isCreate ? 'Create Club' : 'Edit Club'),
+            NavBarLargeTitle(_isCreate ? 'Create Club' : 'Manage Club'),
           ],
         ),
         trailing: _savingToDB

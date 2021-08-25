@@ -30,8 +30,7 @@ class AuthedUserFeed extends StatefulWidget {
   _AuthedUserFeedState createState() => _AuthedUserFeedState();
 }
 
-class _AuthedUserFeedState extends State<AuthedUserFeed>
-    with AutomaticKeepAliveClientMixin<AuthedUserFeed> {
+class _AuthedUserFeedState extends State<AuthedUserFeed> {
   bool _isLoading = true;
 
   late PagingController<int, ActivityWithObjectData> _pagingController;
@@ -147,8 +146,6 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
 
   @override
   Widget build(BuildContext context) {
-    // https://stackoverflow.com/questions/45944777/losing-widget-state-when-switching-pages-in-a-flutter-pageview
-    super.build(context);
     return _isLoading
         ? ShimmerCardList(
             itemCount: 10,
@@ -157,6 +154,7 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
         : _pagingController.itemList == null ||
                 _pagingController.itemList!.isEmpty
             ? ListView(
+                shrinkWrap: true,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(32.0),
@@ -205,7 +203,4 @@ class _AuthedUserFeedState extends State<AuthedUserFeed>
                 ),
               );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -6,3 +6,5 @@ enum ChatType { friend, club }
 enum TrialType { BASIC, PRO }
 
 enum ToastType { standard, destructive, success }
+
+enum PostFeedType { user, club }

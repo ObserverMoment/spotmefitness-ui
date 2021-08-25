@@ -354,6 +354,11 @@ class GraphQLStore {
       List<String> addRefToQueries = const [],
       List<String> removeRefFromQueries = const [],
 
+      /// Remove a whole query key from the store.
+      /// Useful when deleting single objects that have query root data in the store.
+      /// i.e. [workoutById(id: 123)].
+      List<String> clearQueryDataAtKeys = const [],
+
       /// [customVariablesMap] - if you do not want to pass all the fields of the object to the API. If you pass null fields then those fields will be set null in the DB.
       Map<String, dynamic>? customVariablesMap,
       Map<String, dynamic>? optimisticData,
@@ -381,6 +386,9 @@ class GraphQLStore {
       }
 
       _broadcast(broadcastQueryIds);
+
+      /// Note that [clearQueryDataAtKeys] are not handled optimistically.
+      /// This is just for simplicity and may want to be handled at some point.
 
       if (onOptimisticUpdate != null) {
         onOptimisticUpdate();
@@ -437,6 +445,12 @@ class GraphQLStore {
           _removeRefFromQueries(data: data, queryIds: removeRefFromQueries);
         }
       }
+
+      /// Handled the same way whether return value is a list or not - it just deletes the data at the specified keys.
+      if (clearQueryDataAtKeys.isNotEmpty) {
+        _clearQueryDataAtKeys(clearQueryDataAtKeys);
+      }
+
       _broadcast(broadcastQueryIds);
     }
 
@@ -451,9 +465,14 @@ class GraphQLStore {
       {required GraphQLQuery<TData, TVars> mutation,
       required String objectId,
       required String typename,
-      // useful if you have deleted an object that has parent(s) which may still be referencing it.
+
+      /// useful if you have deleted an object that has parent(s) which may still be referencing it.
       bool removeAllRefsToId = false,
       List<String> removeRefFromQueries = const [],
+
+      /// Remove a whole query key from the store.
+      /// Useful when deleting single objects that have query root data in the store.
+      /// i.e. [workoutById(id: 123)].
       List<String> clearQueryDataAtKeys = const [],
       List<String> broadcastQueryIds = const []}) async {
     final response = await execute(mutation);
@@ -477,9 +496,6 @@ class GraphQLStore {
       }
 
       if (clearQueryDataAtKeys.isNotEmpty) {
-        /// Remove a whole query key from the store.
-        /// Useful when deleting single objects that have query root data in the store.
-        /// i.e. [workoutById(id: 123)].
         _clearQueryDataAtKeys(clearQueryDataAtKeys);
       }
 

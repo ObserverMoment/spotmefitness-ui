@@ -94,12 +94,18 @@ const kSectionTypesWithFinishLine = [
 const double kBodyAreaSelector_svg_width = 93.6;
 const double kBodyAreaSelector_svg_height = 213.43;
 
-/// GetStream ///
+/// GetStream Chat ///
+const String kMessagingChannelName = 'messaging';
+const String kClubMembersChannelName = 'club_members';
+
+/// GetStream Feeds ///
 const String kUserFeedName = 'user_feed'; // Post to this.
 const String kUserTimelineName =
-    'user_timeline'; // View this / follow other with this.
+    'user_timeline'; // View this / follow other feeds with this.
 const String kUserNotificationName =
     'user_notification'; // System notifications
+const String kClubMembersFeedName =
+    'club_members_feed'; // Club members can follow this (optionally) with their timeline.
 const String kLikeReactionName = 'like'; // Activity reaction type.
 const String kShareReactionName = 'share'; // Activity reaction type.
 

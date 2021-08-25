@@ -5,12 +5,12 @@ import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/club/club_details_content.dart';
+import 'package:spotmefitness_ui/components/club/club_details_info.dart';
+import 'package:spotmefitness_ui/components/club/club_details_timeline.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
-import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
-import 'package:spotmefitness_ui/components/social/club_members_grid_list.dart';
+import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
@@ -23,11 +23,16 @@ import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class ClubDetailsPage extends StatelessWidget {
+class ClubDetailsPage extends StatefulWidget {
   final String id;
   ClubDetailsPage({@PathParam('id') required this.id});
 
-  final _kthumbDisplaySize = Size(80, 80);
+  @override
+  _ClubDetailsPageState createState() => _ClubDetailsPageState();
+}
+
+class _ClubDetailsPageState extends State<ClubDetailsPage> {
+  int _activeTabIndex = 0;
 
   void _confirmDeleteClub(BuildContext context, String clubName) {
     context.showConfirmDeleteDialog(
@@ -40,12 +45,12 @@ class ClubDetailsPage extends StatelessWidget {
             await context.graphQLStore
                 .delete<DeleteClubById$Mutation, DeleteClubByIdArguments>(
                     mutation: DeleteClubByIdMutation(
-                        variables: DeleteClubByIdArguments(id: id)),
-                    objectId: id,
+                        variables: DeleteClubByIdArguments(id: widget.id)),
+                    objectId: widget.id,
                     typename: kClubTypeName,
                     removeAllRefsToId: true,
                     clearQueryDataAtKeys: [
-                  GQLVarParamKeys.clubByIdQuery(id),
+                  GQLVarParamKeys.clubByIdQuery(widget.id),
                 ],
                     removeRefFromQueries: [
                   GQLOpNames.userClubsQuery
@@ -60,21 +65,48 @@ class ClubDetailsPage extends StatelessWidget {
         });
   }
 
+  void _confirmLeaveClub(
+      BuildContext context, String authedUserId, String clubId) {
+    context.showConfirmDialog(
+        title: 'Leave this Club?',
+        content: MyText(
+          'Are you sure you want to leave this club? You will no longer have access to club chat, feeds or content',
+          maxLines: 6,
+          lineHeight: 1.3,
+          textAlign: TextAlign.center,
+        ),
+        onConfirm: () async {
+          try {
+            await context.graphQLStore.mutate<RemoveUserFromClub$Mutation,
+                RemoveUserFromClubArguments>(
+              mutation: RemoveUserFromClubMutation(
+                  variables: RemoveUserFromClubArguments(
+                      userToRemoveId: authedUserId, clubId: clubId)),
+              clearQueryDataAtKeys: [GQLVarParamKeys.clubByIdQuery(clubId)],
+              removeRefFromQueries: [GQLOpNames.userClubsQuery],
+            );
+            context.pop();
+          } catch (e) {
+            print(e);
+            context.showToast(
+                message: 'Sorry, there was a problem deleting this club!',
+                toastType: ToastType.destructive);
+          }
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final query = ClubByIdQuery(variables: ClubByIdArguments(id: id));
+    final query = ClubByIdQuery(variables: ClubByIdArguments(id: widget.id));
     return QueryObserver<ClubById$Query, ClubByIdArguments>(
-        key: Key('ClubDetailsPage - ${query.operationName}-${id}'),
+        key: Key('ClubDetailsPage - ${query.operationName}-${widget.id}'),
         query: query,
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
         builder: (data) {
           final club = data.clubById;
 
-          /// 1 is the owner.
-          final totalMembers = 1 + club.admins.length + club.members.length;
-
-          final authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
+          final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
           final userIsOwner = authedUserId == club.owner.id;
           final userIsAdmin = club.admins.any((a) => a.id == authedUserId);
 
@@ -88,6 +120,8 @@ class ClubDetailsPage extends StatelessWidget {
                 SliverPersistentHeader(
                   delegate: _ClubDetailsSliverAppBarDelegate(
                     deleteClub: () => _confirmDeleteClub(context, club.name),
+                    confirmLeaveClub: () =>
+                        _confirmLeaveClub(context, authedUserId, club.id),
                     club: club,
                     userIsMember: userIsMember,
                     userIsAdmin: userIsAdmin,
@@ -98,101 +132,28 @@ class ClubDetailsPage extends StatelessWidget {
                   ),
                   pinned: true,
                 ),
+                SliverPersistentHeader(
+                  delegate: _ClubDetailsTabBarDelegate(
+                      activeTabIndex: _activeTabIndex,
+                      selectTabIndex: (i) =>
+                          setState(() => _activeTabIndex = i)),
+                  pinned: true,
+                ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   sliver: SliverList(
                       delegate: SliverChildListDelegate([
-                    SizedBox(height: 24),
-                    MyHeaderText(
-                      club.name,
-                      size: FONTSIZE.HUGE,
-                      textAlign: TextAlign.center,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          if (Utils.textNotNull(club.location))
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.location,
-                                    size: 18, color: Styles.infoBlue),
-                                SizedBox(width: 2),
-                                MyText(club.location!, color: Styles.infoBlue)
-                              ],
-                            ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(CupertinoIcons.person_2, size: 20),
-                              SizedBox(width: 8),
-                              MyText('$totalMembers')
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (Utils.anyNotNull(
-                        [club.introAudioUri, club.introVideoUri]))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            if (club.introVideoUri != null)
-                              VideoThumbnailPlayer(
-                                videoUri: club.introVideoUri,
-                                videoThumbUri: club.introVideoThumbUri,
-                                displaySize: _kthumbDisplaySize,
-                              ),
-                            if (club.introAudioUri != null)
-                              AudioThumbnailPlayer(
-                                audioUri: club.introAudioUri!,
-                                displaySize: _kthumbDisplaySize,
-                                playerTitle: '${club.name} - Intro',
-                              ),
-                          ],
+                    IndexedStack(
+                      index: _activeTabIndex,
+                      children: [
+                        ClubDetailsInfo(
+                          club: club,
                         ),
-                      ),
-                    if (Utils.textNotNull(club.description))
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ViewMoreFullScreenTextBlock(
-                          text: club.description!,
-                          title: 'Description',
-                          maxLines: 8,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    SizedBox(height: 10),
-                    PageLink(
-                        linkText: 'Workouts (x)',
-                        bold: true,
-                        onPress: () => {}),
-                    PageLink(
-                        linkText: 'Plans (x)', bold: true, onPress: () => {}),
-                    PageLink(
-                        linkText: 'Challenges (x)',
-                        bold: true,
-                        onPress: () => {}),
-                    SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Icon(CupertinoIcons.person_2),
-                          SizedBox(width: 8),
-                          H3('Members ($totalMembers)')
-                        ],
-                      ),
-                    ),
-                    ClubMembersGridList(
-                      scrollPhysics: NeverScrollableScrollPhysics(),
-                      admins: club.admins,
-                      members: club.members,
-                      owner: club.owner,
+                        ClubDetailsContent(club: club),
+                        ClubDetailsTimeline(
+                          club: club,
+                        )
+                      ],
                     ),
                   ])),
                 )
@@ -203,8 +164,42 @@ class ClubDetailsPage extends StatelessWidget {
   }
 }
 
+class _ClubDetailsTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final void Function(int index) selectTabIndex;
+  final int activeTabIndex;
+  const _ClubDetailsTabBarDelegate(
+      {required this.selectTabIndex, required this.activeTabIndex});
+
+  final kHeight = 60.0;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: context.theme.background,
+      alignment: Alignment.center,
+      height: kHeight,
+      child: MyTabBarNav(
+          titles: ['About', 'Content', 'Timeline'],
+          handleTabChange: selectTabIndex,
+          activeTabIndex: activeTabIndex),
+    );
+  }
+
+  @override
+  double get maxExtent => kHeight;
+
+  @override
+  double get minExtent => kHeight;
+
+  @override
+  bool shouldRebuild(covariant _ClubDetailsTabBarDelegate oldDelegate) =>
+      oldDelegate.activeTabIndex != activeTabIndex;
+}
+
 class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final VoidCallback deleteClub;
+  final VoidCallback confirmLeaveClub;
   final double expandedHeight;
   final double safeAreaSize;
   final double appBarSize;
@@ -214,7 +209,8 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final bool userIsMember;
 
   const _ClubDetailsSliverAppBarDelegate(
-      {required this.deleteClub,
+      {required this.confirmLeaveClub,
+      required this.deleteClub,
       required this.safeAreaSize,
       required this.appBarSize,
       required this.expandedHeight,
@@ -222,6 +218,9 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       required this.userIsMember,
       required this.userIsAdmin,
       required this.userIsOwner});
+
+  void _openClubChat(BuildContext context) =>
+      context.navigateTo(ClubMembersChatRoute(clubId: club.id));
 
   @override
   Widget build(
@@ -231,20 +230,22 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
     return Stack(
       alignment: Alignment.bottomCenter,
-      fit: StackFit.expand,
+      fit: StackFit.passthrough,
       children: [
         if (!showOnlyNavBar) buildBackground(context, shrinkOffset),
+        if (!showOnlyNavBar)
+          Positioned(
+            left: 8,
+            bottom: 8,
+            child: buildClubNameTag(context, shrinkOffset),
+          ),
         buildAppBar(context, showOnlyNavBar ? expandedHeight : shrinkOffset),
         Positioned(left: 8, top: safeAreaSize, child: buildBackButton(context)),
         Positioned(
             right: 8,
             top: safeAreaSize,
-            child: buildMenuButtons(context, userIsMember, showOnlyNavBar)),
-        if (!userIsMember && !showOnlyNavBar)
-          Positioned(
-            top: safeAreaSize,
-            child: buildInviteButton(),
-          ),
+            child: buildMenuButtons(context, userIsMember, showOnlyNavBar,
+                () => _openClubChat(context))),
       ],
     );
   }
@@ -280,14 +281,18 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   )),
       );
 
-  Widget buildInviteButton() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FloatingIconButton(
-              iconData: CupertinoIcons.mail,
-              onPressed: () => print('request invite'),
-              text: 'Request Invite'),
-        ],
+  Widget buildClubNameTag(BuildContext context, double shrinkOffset) => Opacity(
+        opacity: disappear(shrinkOffset),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+          decoration: BoxDecoration(
+              color: context.theme.background,
+              borderRadius: BorderRadius.circular(50)),
+          child: MyHeaderText(
+            club.name,
+            size: FONTSIZE.LARGE,
+          ),
+        ),
       );
 
   Widget buildBackButton(BuildContext context) => CircularBox(
@@ -297,8 +302,8 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         alignment: Alignment.center,
       ));
 
-  Widget buildMenuButtons(
-          BuildContext context, bool userIsMember, bool showOnlyNavBar) =>
+  Widget buildMenuButtons(BuildContext context, bool userIsMember,
+          bool showOnlyNavBar, VoidCallback openClubChat) =>
       NavBarTrailingRow(
         children: [
           if (userIsMember)
@@ -308,10 +313,9 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   padding: const EdgeInsets.all(0),
                   color: context.theme.cardBackground,
                   child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: Icon(CupertinoIcons.chat_bubble_2),
-                    onPressed: () => print('open club chat'),
-                  )),
+                      padding: EdgeInsets.zero,
+                      child: Icon(CupertinoIcons.chat_bubble_2),
+                      onPressed: openClubChat)),
             ),
           CircularBox(
               padding: const EdgeInsets.all(0),
@@ -338,6 +342,14 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                   icon: Icon(CupertinoIcons.pencil),
                                   onPressed: () => context.navigateTo(
                                       ClubCreatorRoute(club: club))),
+                            if (userIsOwner || userIsAdmin)
+                              BottomSheetMenuItem(
+                                  text: 'New Post',
+                                  icon: Icon(CupertinoIcons.add),
+                                  onPressed: () => context.navigateTo(
+                                      PostCreatorRoute(
+                                          postFeedType: PostFeedType.club,
+                                          clubId: club.id))),
                             if (userIsMember && !userIsOwner)
                               BottomSheetMenuItem(
                                   text: 'Leave Club',
@@ -346,7 +358,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                                     CupertinoIcons.square_arrow_right,
                                     color: Styles.errorRed,
                                   ),
-                                  onPressed: () => print('leave club flow')),
+                                  onPressed: confirmLeaveClub),
                             if (userIsOwner)
                               BottomSheetMenuItem(
                                   text: 'Delete',

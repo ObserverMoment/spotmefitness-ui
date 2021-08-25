@@ -54,15 +54,14 @@ class ShimmerCardList extends StatelessWidget {
       this.cardPadding = const EdgeInsets.symmetric(vertical: 6.0)});
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return ListView.builder(
+      shrinkWrap: true,
       padding: const EdgeInsets.all(4.0),
-      child: ListView.builder(
-        itemCount: itemCount,
-        itemBuilder: (context, index) => Padding(
-          padding: cardPadding,
-          child: ShimmerCard(
-            height: cardHeight,
-          ),
+      itemCount: itemCount,
+      itemBuilder: (context, index) => Padding(
+        padding: cardPadding,
+        child: ShimmerCard(
+          height: cardHeight,
         ),
       ),
     );
@@ -82,6 +81,7 @@ class ShimmerHorizontalCardList extends StatelessWidget {
     return Container(
       height: listHeight,
       child: ListView.builder(
+        shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemCount: itemCount,
         itemBuilder: (context, index) => Padding(
@@ -108,6 +108,7 @@ class ShimmerFriendsList extends StatelessWidget {
     return Container(
       height: avatarSize,
       child: ListView.builder(
+        shrinkWrap: true,
         itemCount: itemCount,
         scrollDirection: scrollDirection,
         itemBuilder: (context, index) => Padding(

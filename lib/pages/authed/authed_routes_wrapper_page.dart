@@ -45,7 +45,7 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
     _authedUser = GetIt.I<AuthBloc>().authedUser!;
     _streamChatClient = _createStreamChatClient;
     _streamFeedClient = _createStreamFeedClient;
-    _connectUserToChat().then((_) => _initNotificationFeed());
+    _connectUserToChat().then((_) => _initFeeds());
   }
 
   chat.StreamChatClient get _createStreamChatClient => chat.StreamChatClient(
@@ -84,8 +84,12 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
         ),
       );
 
-  Future<void> _initNotificationFeed() async {
+  Future<void> _initFeeds() async {
     try {
+      /// Set the user on the feed client.
+      await _streamFeedClient.setUser({});
+
+      /// Set up the notification feed.
       _notificationFeed = _streamFeedClient.notificationFeed(
           kUserNotificationName, _authedUser.id);
 

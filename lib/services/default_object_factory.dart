@@ -13,7 +13,6 @@ class DefaultObjectfactory {
       ..active = true
       ..name = ''
       ..inviteLimit = 0
-      ..invitesUsed = 0
       ..joinedUserIds = [];
   }
 

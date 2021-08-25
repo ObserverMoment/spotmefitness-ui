@@ -24,3 +24,7 @@ extension WorkoutExtension on Workout {
     return copy;
   }
 }
+
+extension ClubExtension on Club {
+  int get totalMembers => 1 + this.admins.length + this.members.length;
+}

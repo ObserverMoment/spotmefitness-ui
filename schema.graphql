@@ -105,9 +105,8 @@ type ClubInviteToken {
   active: Boolean!
   name: String!
   inviteLimit: Int!
-  invitesUsed: Int!
-  User: UserSummary!
   joinedUserIds: [String!]!
+  User: UserSummary!
 }
 
 type ClubInviteTokenData {
@@ -641,6 +640,7 @@ type Mutation {
   updateClubInviteToken(data: UpdateClubInviteTokenInput!): ClubInviteToken!
   deleteClubInviteTokenById(id: ID!): ID!
   addUserToClubViaInviteToken(userId: ID!, clubInviteTokenId: ID!): Club!
+  removeUserFromClub(userToRemoveId: ID!, clubId: ID!): Club!
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
   createGymProfile(data: CreateGymProfileInput!): GymProfile!

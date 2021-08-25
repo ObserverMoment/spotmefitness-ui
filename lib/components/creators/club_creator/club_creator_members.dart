@@ -80,7 +80,6 @@ class ClubCreatorMembers extends StatelessWidget {
         ),
         Container(
             margin: const EdgeInsets.symmetric(vertical: 6),
-            padding: const EdgeInsets.only(left: 8),
             child: sortedInviteTokens.isEmpty
                 ? Center(child: MyText('No invite links'))
                 : ListView.builder(

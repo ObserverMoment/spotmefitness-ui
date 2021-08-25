@@ -73,7 +73,6 @@ ClubInviteToken _$ClubInviteTokenFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String
     ..active = json['active'] as bool
     ..inviteLimit = json['inviteLimit'] as int
-    ..invitesUsed = json['invitesUsed'] as int
     ..joinedUserIds = (json['joinedUserIds'] as List<dynamic>)
         .map((e) => e as String)
         .toList();
@@ -87,7 +86,6 @@ Map<String, dynamic> _$ClubInviteTokenToJson(ClubInviteToken instance) =>
       'name': instance.name,
       'active': instance.active,
       'inviteLimit': instance.inviteLimit,
-      'invitesUsed': instance.invitesUsed,
       'joinedUserIds': instance.joinedUserIds,
     };
 
@@ -5565,6 +5563,19 @@ Map<String, dynamic> _$AddUserToClubViaInviteToken$MutationToJson(
           instance.addUserToClubViaInviteToken.toJson(),
     };
 
+RemoveUserFromClub$Mutation _$RemoveUserFromClub$MutationFromJson(
+    Map<String, dynamic> json) {
+  return RemoveUserFromClub$Mutation()
+    ..removeUserFromClub =
+        Club.fromJson(json['removeUserFromClub'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$RemoveUserFromClub$MutationToJson(
+        RemoveUserFromClub$Mutation instance) =>
+    <String, dynamic>{
+      'removeUserFromClub': instance.removeUserFromClub.toJson(),
+    };
+
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
   return CreateClubArguments(
     data: CreateClubInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -7188,4 +7199,19 @@ Map<String, dynamic> _$AddUserToClubViaInviteTokenArgumentsToJson(
     <String, dynamic>{
       'userId': instance.userId,
       'clubInviteTokenId': instance.clubInviteTokenId,
+    };
+
+RemoveUserFromClubArguments _$RemoveUserFromClubArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return RemoveUserFromClubArguments(
+    userToRemoveId: json['userToRemoveId'] as String,
+    clubId: json['clubId'] as String,
+  );
+}
+
+Map<String, dynamic> _$RemoveUserFromClubArgumentsToJson(
+        RemoveUserFromClubArguments instance) =>
+    <String, dynamic>{
+      'userToRemoveId': instance.userToRemoveId,
+      'clubId': instance.clubId,
     };

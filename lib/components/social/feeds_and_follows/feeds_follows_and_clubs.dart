@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/social/authed_user_clubs_list.dart';
@@ -31,7 +28,6 @@ class FeedsFollowsAndClubs extends StatefulWidget {
 
 class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   int _activeTabIndex = 0;
-  final _pageController = PageController();
 
   late AuthedUser _authedUser;
   late StreamFeedClient _streamFeedClient;
@@ -54,16 +50,7 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
   }
 
   void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
     setState(() => _activeTabIndex = index);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   @override
@@ -80,9 +67,8 @@ class _FeedsFollowsAndClubsState extends State<FeedsFollowsAndClubs> {
         ], handleTabChange: _changeTab, activeTabIndex: _activeTabIndex),
         SizedBox(height: 8),
         Expanded(
-          child: PageView(
-            controller: _pageController,
-            physics: NeverScrollableScrollPhysics(),
+          child: IndexedStack(
+            index: _activeTabIndex,
             children: [
               AuthedUserTimeline(
                   userFeed: _userFeed,

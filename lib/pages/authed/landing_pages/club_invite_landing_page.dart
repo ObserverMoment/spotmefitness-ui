@@ -52,7 +52,7 @@ class _ClubInviteLandingPageState extends State<ClubInviteLandingPage> {
   Future<void> _addUserToClub(BuildContext context, Club club) async {
     final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
     context.showLoadingAlert('Joining Club...',
-        icon: Icon(CupertinoIcons.star));
+        icon: Icon(CupertinoIcons.star_fill));
 
     final variables = AddUserToClubViaInviteTokenArguments(
         userId: authedUserId, clubInviteTokenId: widget.id);

@@ -21,8 +21,7 @@ class AuthedUserFollowers extends StatefulWidget {
   _AuthedUserFollowersState createState() => _AuthedUserFollowersState();
 }
 
-class _AuthedUserFollowersState extends State<AuthedUserFollowers>
-    with AutomaticKeepAliveClientMixin<AuthedUserFollowers> {
+class _AuthedUserFollowersState extends State<AuthedUserFollowers> {
   bool _isLoading = true;
 
   // /// List of followers [user_timelines] which are following this [user_feed]
@@ -57,12 +56,11 @@ class _AuthedUserFollowersState extends State<AuthedUserFollowers>
 
   @override
   Widget build(BuildContext context) {
-    // https://stackoverflow.com/questions/45944777/losing-widget-state-when-switching-pages-in-a-flutter-pageview
-    super.build(context);
     return _isLoading
         ? ShimmerCirclesGrid()
         : _followers.isEmpty
             ? ListView(
+                shrinkWrap: true,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(32.0),
@@ -96,7 +94,4 @@ class _AuthedUserFollowersState extends State<AuthedUserFollowers>
                 ],
               );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -1,4 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
+import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
+import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:stream_feed/stream_feed.dart';
+import 'package:stream_feed/src/client/flat_feed.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
@@ -7,35 +15,33 @@ import 'package:spotmefitness_ui/components/cards/timeline_post_card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/feed_utils.dart';
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
-import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
-import 'package:stream_feed/src/client/flat_feed.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:faye_dart/src/subscription.dart';
-import 'package:stream_feed/stream_feed.dart';
 import 'package:collection/collection.dart';
 
-/// Timeline for the currently logged in User.
-/// GetStream fees slug is [user_timeline].
-/// A [user_timeline] follows many [user_feeds].
-class AuthedUserTimeline extends StatefulWidget {
-  /// So the user can re-post and activity, from their timeline, to their own feed.
-  final FlatFeed userFeed;
-  final FlatFeed timelineFeed;
-  final StreamFeedClient streamFeedClient;
-  const AuthedUserTimeline({
+/// NOTE: Logic in this widget is very simlar to that in [AuthedUserTimeline] in [FeedsAndFollows]. Except there is no sharing of posts to club feeds - they are club specific. Plus we may add some additional functionality - such as comments / threads to timeline posts here.
+class ClubDetailsTimeline extends StatefulWidget {
+  final Club club;
+  const ClubDetailsTimeline({
     Key? key,
-    required this.timelineFeed,
-    required this.streamFeedClient,
-    required this.userFeed,
+    required this.club,
   }) : super(key: key);
 
   @override
-  _AuthedUserTimelineState createState() => _AuthedUserTimelineState();
+  _ClubDetailsTimelineState createState() => _ClubDetailsTimelineState();
 }
 
-class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
+class _ClubDetailsTimelineState extends State<ClubDetailsTimeline> {
+  late AuthedUser _authedUser;
+  late StreamFeedClient _streamFeedClient;
+
+  /// Owners and admins can post to this feed.
+  late FlatFeed _clubMembersFeed;
+
+  /// TODO:
+  /// Members can follow / unfollow the club members feed with their timeline.
+  late FlatFeed _authedUserTimelineFeed;
+
   bool _isLoading = true;
   late PagingController<int, ActivityWithObjectData> _pagingController;
   late ScrollController _scrollController;
@@ -52,11 +58,19 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
 
   /// List of activities which the current user has marked as liked.
   List<PostWithLikeReaction> _postsWithLikeReactions = [];
-  List<PostWithShareReaction> _postsWithShareReactions = [];
 
   @override
   void initState() {
     super.initState();
+    _authedUser = GetIt.I<AuthBloc>().authedUser!;
+    _streamFeedClient = context.streamFeedClient;
+
+    _clubMembersFeed = _streamFeedClient.flatFeed(kClubMembersFeedName);
+    _authedUserTimelineFeed =
+        _streamFeedClient.flatFeed(kUserTimelineName, _authedUser.id);
+
+    _loadInitialData().then((_) => _subscribeToFeed());
+
     _pagingController = PagingController<int, ActivityWithObjectData>(
         firstPageKey: 0, invisibleItemsThreshold: 5);
     _scrollController = ScrollController();
@@ -64,8 +78,6 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
     _pagingController.addPageRequestListener((nextPageKey) {
       _getTimelinePosts(offset: nextPageKey);
     });
-
-    _loadInitialData().then((_) => _subscribeToFeed());
   }
 
   Future<void> _loadInitialData() async {
@@ -79,7 +91,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
 
   Future<void> _getTimelinePosts({required int offset}) async {
     try {
-      final feedActivities = await widget.timelineFeed.getEnrichedActivities(
+      final feedActivities = await _clubMembersFeed.getEnrichedActivities(
         limit: _postsPerPage,
         offset: offset,
         // On the timeline we dont show like counts or share counts
@@ -91,25 +103,12 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
           a.ownReactions?[kLikeReactionName] != null &&
           a.ownReactions![kLikeReactionName]!.isNotEmpty);
 
-      final feedActivitiesWithOwnShareReactions = feedActivities.where((a) =>
-          a.ownReactions?[kShareReactionName] != null &&
-          a.ownReactions![kShareReactionName]!.isNotEmpty);
-
       _postsWithLikeReactions = [
         ..._postsWithLikeReactions,
         ...feedActivitiesWithOwnLikeReactions
             .map((a) => PostWithLikeReaction(
                 activityId: a.id!,
                 reaction: a.ownReactions![kLikeReactionName]![0]))
-            .toList()
-      ];
-
-      _postsWithShareReactions = [
-        ..._postsWithShareReactions,
-        ...feedActivitiesWithOwnShareReactions
-            .map((a) => PostWithShareReaction(
-                activityId: a.id!,
-                reaction: a.ownReactions![kShareReactionName]![0]))
             .toList()
       ];
 
@@ -136,7 +135,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
 
   Future<void> _subscribeToFeed() async {
     try {
-      _feedSubscription = await widget.timelineFeed.subscribe(_handleNewPosts);
+      _feedSubscription = await _clubMembersFeed.subscribe(_handleNewPosts);
     } catch (e) {
       print(e);
       context.showToast(
@@ -187,77 +186,15 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
     final postWithReaction = _postsWithLikeReactions
         .firstWhereOrNull((p) => p.activityId == activityId);
     if (postWithReaction != null) {
-      await widget.streamFeedClient.reactions
-          .delete(postWithReaction.reaction.id!);
+      await _streamFeedClient.reactions.delete(postWithReaction.reaction.id!);
       _postsWithLikeReactions.removeWhere((p) => p.activityId == activityId);
     } else {
-      final reaction = await widget.streamFeedClient.reactions
-          .add(kLikeReactionName, activityId);
+      final reaction =
+          await _streamFeedClient.reactions.add(kLikeReactionName, activityId);
       _postsWithLikeReactions.add(
           PostWithLikeReaction(activityId: activityId, reaction: reaction));
     }
     setState(() {});
-  }
-
-  /// If the user has already shared this post, they cannot share it again.
-  /// In this case just show an alert.
-  Future<void> _sharePost(EnrichedActivity enrichedActivity) async {
-    final postWithShare = _postsWithShareReactions
-        .firstWhereOrNull((p) => p.activityId == enrichedActivity.id);
-
-    if (postWithShare != null) {
-      context.showAlertDialog(
-          title: 'Already Shared',
-          message:
-              "You can only share other people's posts to your own feed once.");
-    } else {
-      try {
-        await context.showConfirmDialog(
-            title: 'Re-Post',
-            content: MyText(
-              'Send this post to your feed and all your followers timelines?',
-              maxLines: 4,
-              textAlign: TextAlign.center,
-            ),
-            onConfirm: () async {
-              final extraData =
-                  enrichedActivity.extraData ?? <String, Object>{};
-              final originalPostId = extraData['original_post_id'] as String?;
-
-              Activity newActivityToRepost =
-                  FeedUtils.activityFromEnrichedActivity(enrichedActivity,
-                      data: {
-                        'actor': widget.streamFeedClient.currentUser!.ref,
-                        'extraData': {
-                          ...extraData,
-                          // A list of stream user Ids, starting from the original poster, who have reposted this activity.
-                          'original_post_id':
-                              originalPostId ?? enrichedActivity.id
-                        }
-                      },
-                      removeTime: true,
-                      removeId: true);
-
-              /// Add the original activity to the users own [user_feed].
-              await widget.userFeed.addActivity(newActivityToRepost);
-
-              /// On success - add the reaction to the API and then save locally.
-              final reaction = await widget.streamFeedClient.reactions
-                  .add(kShareReactionName, enrichedActivity.id!);
-              _postsWithShareReactions.add(PostWithShareReaction(
-                  activityId: enrichedActivity.id!, reaction: reaction));
-
-              setState(() {});
-
-              context.showToast(
-                  icon: Icon(CupertinoIcons.paperplane),
-                  message: 'Post sahared');
-            });
-      } catch (e) {
-        print(e);
-        context.showToast(message: 'Sorry, there was a problem re-posting!');
-      }
-    }
   }
 
   @override
@@ -272,8 +209,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
   Widget build(BuildContext context) {
     final likedPostIds =
         _postsWithLikeReactions.map((p) => p.activityId).toList();
-    final sharedPostIds =
-        _postsWithShareReactions.map((p) => p.activityId).toList();
+
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -317,9 +253,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
                                 _likeUnlikePost(post.activity.id!),
                             userHasLiked:
                                 likedPostIds.contains(post.activity.id!),
-                            sharePost: () => _sharePost(post.activity),
-                            userHasShared:
-                                sharedPostIds.contains(post.activity.id!),
+                            disableSharing: true,
                           ),
                         ),
                       ),

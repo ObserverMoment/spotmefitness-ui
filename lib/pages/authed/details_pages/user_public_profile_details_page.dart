@@ -69,8 +69,8 @@ class _UserPublicProfileDetailsPageState
   /// Top right of tabs to indicate how many of each type are in the list.
   Widget _buildNumberDisplay(int number) {
     return Positioned(
-      top: -4,
-      right: 4,
+      top: 0,
+      right: 8,
       child: MyText(
         number.toString(),
         size: FONTSIZE.SMALL,

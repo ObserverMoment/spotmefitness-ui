@@ -16,6 +16,7 @@ import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
+import 'package:spotmefitness_ui/components/social/chat/group_chat_page.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_clubs_page.dart';
@@ -53,9 +54,9 @@ import 'package:spotmefitness_ui/pages/authed/progress/body_transformation_page.
 import 'package:spotmefitness_ui/pages/authed/progress/logged_workouts_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/journals_page.dart';
 import 'package:spotmefitness_ui/pages/authed/progress/progress_page.dart';
-import 'package:spotmefitness_ui/components/social/chats_overview_page.dart';
+import 'package:spotmefitness_ui/components/social/chat/chats_overview_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/discover_people_page.dart';
-import 'package:spotmefitness_ui/components/social/one_to_one_chat_page.dart';
+import 'package:spotmefitness_ui/components/social/chat/one_to_one_chat_page.dart';
 import 'package:spotmefitness_ui/pages/authed/social/social_page.dart';
 import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
 
@@ -135,6 +136,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           // Usually the flow from these pages ends up back on this page - where the user can hit [back] to go back to the main tabs view. E.g. MainTabsView -> WorkoutDetails -> Do Workout -> LogWorkout -> WorkoutDetails -> MainTabsView
           AutoRoute(path: 'chats', page: ChatsOverviewPage),
           AutoRoute(path: 'chat', page: OneToOneChatPage),
+          AutoRoute(path: 'club-chat', page: ClubMembersChatPage),
           AutoRoute(path: 'club-invite/:id', page: ClubInviteLandingPage),
           AutoRoute(path: 'collection/:id', page: CollectionDetailsPage),
           AutoRoute(

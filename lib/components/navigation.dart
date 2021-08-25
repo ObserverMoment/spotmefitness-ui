@@ -93,7 +93,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                   clipBehavior: Clip.none,
                   children: [
                     CupertinoButton(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      padding: const EdgeInsets.only(left: 8, right: 16),
                       pressedOpacity: 0.9,
                       alignment: Alignment.centerLeft,
                       onPressed: () => widget.handleTabChange(index),
@@ -111,11 +111,12 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                                 title,
                               ),
                             ),
+                            SizedBox(height: 2),
                             GrowInOut(
                                 axis: Axis.horizontal,
                                 show: index == widget.activeTabIndex,
                                 child: Container(
-                                  height: 2.5,
+                                  height: 4,
                                   width: _tabRenderBoxWidths?[index] ?? 50,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
