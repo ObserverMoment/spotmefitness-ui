@@ -70,7 +70,7 @@ class _ClubDetailsPageState extends State<ClubDetailsPage> {
     context.showConfirmDialog(
         title: 'Leave this Club?',
         content: MyText(
-          'Are you sure you want to leave this club? You will no longer have access to club chat, feeds or content',
+          'Are you sure you want to leave this club? You will no longer have access to club chat, feeds or content.',
           maxLines: 6,
           lineHeight: 1.3,
           textAlign: TextAlign.center,

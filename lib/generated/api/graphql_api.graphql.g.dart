@@ -5576,6 +5576,32 @@ Map<String, dynamic> _$RemoveUserFromClub$MutationToJson(
       'removeUserFromClub': instance.removeUserFromClub.toJson(),
     };
 
+RemoveMemberAdminStatus$Mutation _$RemoveMemberAdminStatus$MutationFromJson(
+    Map<String, dynamic> json) {
+  return RemoveMemberAdminStatus$Mutation()
+    ..removeMemberAdminStatus =
+        Club.fromJson(json['removeMemberAdminStatus'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$RemoveMemberAdminStatus$MutationToJson(
+        RemoveMemberAdminStatus$Mutation instance) =>
+    <String, dynamic>{
+      'removeMemberAdminStatus': instance.removeMemberAdminStatus.toJson(),
+    };
+
+GiveMemberAdminStatus$Mutation _$GiveMemberAdminStatus$MutationFromJson(
+    Map<String, dynamic> json) {
+  return GiveMemberAdminStatus$Mutation()
+    ..giveMemberAdminStatus =
+        Club.fromJson(json['giveMemberAdminStatus'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$GiveMemberAdminStatus$MutationToJson(
+        GiveMemberAdminStatus$Mutation instance) =>
+    <String, dynamic>{
+      'giveMemberAdminStatus': instance.giveMemberAdminStatus.toJson(),
+    };
+
 CreateClubArguments _$CreateClubArgumentsFromJson(Map<String, dynamic> json) {
   return CreateClubArguments(
     data: CreateClubInput.fromJson(json['data'] as Map<String, dynamic>),
@@ -7213,5 +7239,35 @@ Map<String, dynamic> _$RemoveUserFromClubArgumentsToJson(
         RemoveUserFromClubArguments instance) =>
     <String, dynamic>{
       'userToRemoveId': instance.userToRemoveId,
+      'clubId': instance.clubId,
+    };
+
+RemoveMemberAdminStatusArguments _$RemoveMemberAdminStatusArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return RemoveMemberAdminStatusArguments(
+    userId: json['userId'] as String,
+    clubId: json['clubId'] as String,
+  );
+}
+
+Map<String, dynamic> _$RemoveMemberAdminStatusArgumentsToJson(
+        RemoveMemberAdminStatusArguments instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
+      'clubId': instance.clubId,
+    };
+
+GiveMemberAdminStatusArguments _$GiveMemberAdminStatusArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return GiveMemberAdminStatusArguments(
+    userId: json['userId'] as String,
+    clubId: json['clubId'] as String,
+  );
+}
+
+Map<String, dynamic> _$GiveMemberAdminStatusArgumentsToJson(
+        GiveMemberAdminStatusArguments instance) =>
+    <String, dynamic>{
+      'userId': instance.userId,
       'clubId': instance.clubId,
     };

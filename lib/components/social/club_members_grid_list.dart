@@ -4,9 +4,8 @@ import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:auto_route/auto_route.dart';
 
 /// Displays a grid of all the users in the club.
 /// Shows tags on the owner and the admins.
@@ -15,12 +14,14 @@ class ClubMembersGridList extends StatelessWidget {
   final List<UserSummary> admins;
   final List<UserSummary> members;
   final ScrollPhysics? scrollPhysics;
+  final void Function(String userId, ClubMemberType memberType) onTapAvatar;
   const ClubMembersGridList(
       {Key? key,
       required this.members,
       required this.owner,
       required this.admins,
-      this.scrollPhysics})
+      this.scrollPhysics,
+      required this.onTapAvatar})
       : super(key: key);
 
   Widget _buildPositionedOwnerTag(String text) => Positioned(
@@ -44,10 +45,10 @@ class ClubMembersGridList extends StatelessWidget {
   Widget _gestureDetectorWrap(
           {required BuildContext context,
           required String userId,
-          required Widget child}) =>
+          required Widget child,
+          required ClubMemberType memberType}) =>
       GestureDetector(
-        onTap: () =>
-            context.navigateTo(UserPublicProfileDetailsRoute(userId: userId)),
+        onTap: () => onTapAvatar(userId, memberType),
         child: child,
       );
 
@@ -65,6 +66,7 @@ class ClubMembersGridList extends StatelessWidget {
         _gestureDetectorWrap(
           context: context,
           userId: owner.id,
+          memberType: ClubMemberType.owner,
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
@@ -85,6 +87,7 @@ class ClubMembersGridList extends StatelessWidget {
             .map((a) => _gestureDetectorWrap(
                   context: context,
                   userId: a.id,
+                  memberType: ClubMemberType.admin,
                   child: Stack(
                     alignment: Alignment.topCenter,
                     children: [
@@ -106,6 +109,7 @@ class ClubMembersGridList extends StatelessWidget {
             .map((m) => _gestureDetectorWrap(
                   context: context,
                   userId: m.id,
+                  memberType: ClubMemberType.member,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

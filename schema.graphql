@@ -639,6 +639,8 @@ type Mutation {
   createClubInviteToken(data: CreateClubInviteTokenInput!): ClubInviteToken!
   updateClubInviteToken(data: UpdateClubInviteTokenInput!): ClubInviteToken!
   deleteClubInviteTokenById(id: ID!): ID!
+  giveMemberAdminStatus(userId: ID!, clubId: ID!): Club!
+  removeMemberAdminStatus(userId: ID!, clubId: ID!): Club!
   addUserToClubViaInviteToken(userId: ID!, clubInviteTokenId: ID!): Club!
   removeUserFromClub(userToRemoveId: ID!, clubId: ID!): Club!
   createEquipment(data: CreateEquipmentInput!): Equipment

@@ -268,6 +268,126 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
     }
   }
 
+  Future<void> _giveMemberAdminStatus(String userId) async {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._giveMemberAdminStatus: [_activeClub] has not been initialized.');
+    }
+
+    try {
+      setState(() => _savingToDB = true);
+
+      final result = await context.graphQLStore.mutate<
+              GiveMemberAdminStatus$Mutation, GiveMemberAdminStatusArguments>(
+          mutation: GiveMemberAdminStatusMutation(
+              variables: GiveMemberAdminStatusArguments(
+                  userId: userId, clubId: _activeClub!.id)),
+          broadcastQueryIds: [
+            GQLVarParamKeys.clubByIdQuery(_activeClub!.id),
+            GQLOpNames.userClubsQuery
+          ]);
+
+      setState(() {
+        _activeClub = result.data!.giveMemberAdminStatus;
+      });
+      context.showToast(
+        message: 'Member given admin status.',
+      );
+    } catch (e) {
+      print(e);
+      context.showToast(
+          message: 'Sorry, there was a problem adding admin status!',
+          toastType: ToastType.destructive);
+    } finally {
+      setState(() => _savingToDB = false);
+    }
+
+    /// Update the backup data.
+    _activeClubBackup = _activeClub!.toJson();
+  }
+
+  Future<void> _removeMemberAdminStatus(String userId) async {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._removeMemberAdminStatus: [_activeClub] has not been initialized.');
+    }
+
+    try {
+      setState(() => _savingToDB = true);
+
+      final result = await context.graphQLStore.mutate<
+              RemoveMemberAdminStatus$Mutation,
+              RemoveMemberAdminStatusArguments>(
+          mutation: RemoveMemberAdminStatusMutation(
+              variables: RemoveMemberAdminStatusArguments(
+                  userId: userId, clubId: _activeClub!.id)),
+          broadcastQueryIds: [
+            GQLVarParamKeys.clubByIdQuery(_activeClub!.id),
+            GQLOpNames.userClubsQuery
+          ]);
+
+      setState(() {
+        _activeClub = result.data!.removeMemberAdminStatus;
+      });
+      context.showToast(
+        message: 'Member admin status removed.',
+      );
+    } catch (e) {
+      print(e);
+      context.showToast(
+          message: 'Sorry, there was a problem removing admin status!',
+          toastType: ToastType.destructive);
+    } finally {
+      setState(() => _savingToDB = false);
+    }
+
+    /// Update the backup data.
+    _activeClubBackup = _activeClub!.toJson();
+  }
+
+  Future<void> _removeUserFromClub(
+      String userId, ClubMemberType memberType) async {
+    if (_activeClub == null) {
+      throw Exception(
+          'ClubCreatorPage._removeUserFromClub: [_activeClub] has not been initialized.');
+    }
+    if (memberType == ClubMemberType.owner) {
+      throw Exception(
+          'ClubCreatorPage._removeUserFromClub: Cannot remove and Owner from the club.');
+    }
+    try {
+      setState(() => _savingToDB = true);
+      final result = await context.graphQLStore
+          .mutate<RemoveUserFromClub$Mutation, RemoveUserFromClubArguments>(
+              mutation: RemoveUserFromClubMutation(
+                  variables: RemoveUserFromClubArguments(
+                      userToRemoveId: userId, clubId: _activeClub!.id)),
+              broadcastQueryIds: [
+            GQLVarParamKeys.clubByIdQuery(_activeClub!.id),
+            GQLOpNames.userClubsQuery
+          ]);
+
+      setState(() {
+        _activeClub = result.data!.removeUserFromClub;
+      });
+
+      context.showToast(
+        message: 'Member removed from club.',
+      );
+    } catch (e) {
+      print(e);
+      context.showToast(
+          message:
+              'Sorry, there was a problem removing this person from the club!',
+          toastType: ToastType.destructive);
+    } finally {
+      setState(() => _savingToDB = false);
+    }
+
+    /// Update the backup data.
+    _activeClubBackup = _activeClub!.toJson();
+  }
+
   /// Will not save anything.
   void _close() {
     context.pop();
@@ -389,6 +509,9 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
                         onUpdateInviteToken: _addUpdatedInviteTokenToState,
                         deleteClubInviteToken: (token) =>
                             _deleteClubInviteToken(token),
+                        giveMemberAdminStatus: _giveMemberAdminStatus,
+                        removeMemberAdminStatus: _removeMemberAdminStatus,
+                        removeUserFromClub: _removeUserFromClub,
                       ),
                     ],
                   ),

@@ -5,8 +5,10 @@ import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.d
 import 'package:spotmefitness_ui/components/social/club_members_grid_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ClubDetailsInfo extends StatelessWidget {
   final Club club;
@@ -72,11 +74,12 @@ class ClubDetailsInfo extends StatelessWidget {
           ),
         ),
         ClubMembersGridList(
-          scrollPhysics: NeverScrollableScrollPhysics(),
-          admins: club.admins,
-          members: club.members,
-          owner: club.owner,
-        ),
+            scrollPhysics: NeverScrollableScrollPhysics(),
+            admins: club.admins,
+            members: club.members,
+            owner: club.owner,
+            onTapAvatar: (userId, _) => context
+                .navigateTo(UserPublicProfileDetailsRoute(userId: userId))),
       ],
     );
   }

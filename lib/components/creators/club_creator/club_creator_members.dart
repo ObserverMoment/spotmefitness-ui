@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/club_creator/club_invite_token_creator.dart';
@@ -8,19 +10,30 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ClubCreatorMembers extends StatelessWidget {
   final Club club;
   final void Function(ClubInviteToken token) onCreateInviteToken;
   final void Function(ClubInviteToken token) onUpdateInviteToken;
   final void Function(ClubInviteToken token) deleteClubInviteToken;
+  final void Function(String userId, ClubMemberType memberType)
+      removeUserFromClub;
+  final void Function(String userId) giveMemberAdminStatus;
+  final void Function(String userId) removeMemberAdminStatus;
+
   const ClubCreatorMembers(
       {Key? key,
       required this.club,
       required this.deleteClubInviteToken,
       required this.onCreateInviteToken,
-      required this.onUpdateInviteToken})
+      required this.onUpdateInviteToken,
+      required this.removeUserFromClub,
+      required this.giveMemberAdminStatus,
+      required this.removeMemberAdminStatus})
       : super(key: key);
 
   void _confirmDeleteToken(BuildContext context, ClubInviteToken token) {
@@ -30,6 +43,97 @@ class ClubCreatorMembers extends StatelessWidget {
         onConfirm: () => deleteClubInviteToken(token));
   }
 
+  void _confirmRemoveUserFromClub(
+      BuildContext context, String userId, ClubMemberType memberType) {
+    context.showConfirmDialog(
+        title: 'Remove from Club?',
+        content: MyText(
+          'Are you sure you want to remove this person from the club? They will no longer have access to club chat, feeds or content.',
+          maxLines: 6,
+          lineHeight: 1.3,
+          textAlign: TextAlign.center,
+        ),
+        onConfirm: () => removeUserFromClub(userId, memberType));
+  }
+
+  void _onTapAvatar(
+      BuildContext context,
+      String userId,
+      ClubMemberType memberType,
+      ClubMemberType authedUserMemberType,
+      String authedUserId) {
+    showCupertinoModalPopup(
+      useRootNavigator: false,
+      context: context,
+      builder: (context) => CupertinoActionSheet(
+          actions: [
+            CupertinoActionSheetAction(
+              child: MyText('View Profile'),
+              onPressed: () async {
+                context.pop();
+                context
+                    .navigateTo(UserPublicProfileDetailsRoute(userId: userId));
+              },
+            ),
+            // Don't try and message yourself...
+            if (authedUserId != userId)
+              CupertinoActionSheetAction(
+                child: MyText('Send Message'),
+                onPressed: () async {
+                  context.pop();
+                  context.navigateTo(OneToOneChatRoute(
+                    otherUserId: userId,
+                  ));
+                },
+              ),
+            if (authedUserMemberType == ClubMemberType.owner &&
+                memberType == ClubMemberType.member)
+              CupertinoActionSheetAction(
+                child: MyText('Give Admin Status'),
+                onPressed: () async {
+                  context.pop();
+                  giveMemberAdminStatus(userId);
+                },
+              ),
+
+            if (authedUserMemberType == ClubMemberType.owner &&
+                memberType == ClubMemberType.admin)
+              CupertinoActionSheetAction(
+                child: MyText('Remove Admin Status'),
+                onPressed: () async {
+                  context.pop();
+                  removeMemberAdminStatus(userId);
+                },
+              ),
+            // Cannot remove owners from clubs - clubs needs to be deleted first.
+            // Owners can remove anyone else from the club.
+            // Admins can remove members, but not other admins.
+            if (memberType != ClubMemberType.owner &&
+                (authedUserMemberType == ClubMemberType.owner ||
+                    memberType == ClubMemberType.member))
+              CupertinoActionSheetAction(
+                child: MyText(
+                  'Remove from Club',
+                  color: Styles.errorRed,
+                ),
+                isDestructiveAction: true,
+                onPressed: () {
+                  context.pop();
+                  _confirmRemoveUserFromClub(context, userId, memberType);
+                },
+              ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: MyText(
+              'Cancel',
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )),
+    );
+  }
+
   Widget _buildTokenRowButton(IconData iconData, onPressed) => CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       onPressed: onPressed,
@@ -37,6 +141,17 @@ class ClubCreatorMembers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
+    final authedUserMemberType = club.owner.id == authedUserId
+        ? ClubMemberType.owner
+        : club.admins.any((a) => a.id == authedUserId)
+            ? ClubMemberType.admin
+            : ClubMemberType.member;
+
+    if (authedUserMemberType == ClubMemberType.member) {
+      throw Exception('Members should not have access to Club management!');
+    }
+
     final totalMembers = 1 + club.admins.length + club.members.length;
     final sortedInviteTokens = club.clubInviteTokens
         .sortedBy<DateTime>((t) => t.createdAt)
@@ -168,6 +283,8 @@ class ClubCreatorMembers extends StatelessWidget {
           members: club.members,
           owner: club.owner,
           scrollPhysics: NeverScrollableScrollPhysics(),
+          onTapAvatar: (userId, memberType) => _onTapAvatar(
+              context, userId, memberType, authedUserMemberType, authedUserId),
         ),
       ],
     );
