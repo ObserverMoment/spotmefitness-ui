@@ -188,22 +188,10 @@ class WorkoutDetailsSection extends StatelessWidget {
                   ),
                   withBorder: false,
                   onPressed: () => context.push(
-                      child: CupertinoPageScaffold(
-                          navigationBar: BasicNavBar(
-                              heroTag: 'WorkoutDetailsSection',
-                              middle: NavBarTitle('Targeted Body Areas')),
-                          child: TargetedBodyAreasPageView(
-                              bodyAreaMoveScoresFromSection())),
+                      child: TargetedBodyAreasPageView(
+                          bodyAreaMoveScoresFromSection()),
                       fullscreenDialog: true),
                 ),
-                if (Utils.textNotNull(workoutSection.note))
-                  CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: NotesIcon(),
-                      onPressed: () => context.showBottomSheet(
-                          expand: true,
-                          child: TextViewer(
-                              workoutSection.note!, 'Section Note'))),
               ],
             ),
           ),
@@ -216,6 +204,12 @@ class WorkoutDetailsSection extends StatelessWidget {
                 rounds: workoutSection.rounds,
                 timecap: workoutSection.timecap,
               ),
+            ),
+          if (Utils.textNotNull(workoutSection.note))
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ViewMoreFullScreenTextBlock(
+                  text: workoutSection.note!, title: 'Section Note'),
             ),
           if (sortedSets.isNotEmpty)
             Flexible(

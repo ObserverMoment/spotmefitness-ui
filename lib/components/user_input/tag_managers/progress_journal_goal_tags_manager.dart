@@ -162,7 +162,8 @@ class _ProgressJournalGoalTagsManagerState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         automaticallyImplyLeading: !_isLoading,
         middle:
             NavBarTitle(widget.allowCreateTagOnly ? 'Create Tag' : 'Goal Tags'),

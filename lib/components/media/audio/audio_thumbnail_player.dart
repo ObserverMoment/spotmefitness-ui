@@ -21,13 +21,8 @@ class AudioThumbnailPlayer extends StatelessWidget {
       this.displaySize = const Size(120, 120)});
 
   Future<void> _listenToAudio(BuildContext context) async {
-    await context.showBottomSheet(
-        expand: true,
-        child: FullAudioPlayer(
-          audioUri: audioUri,
-          title: playerTitle,
-          autoPlay: true,
-        ));
+    await AudioPlayerController.openAudioPlayer(context, audioUri, playerTitle,
+        autoPlay: true);
   }
 
   @override

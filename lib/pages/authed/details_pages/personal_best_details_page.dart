@@ -89,15 +89,13 @@ class _PersonalBestDetailsPageState extends State<PersonalBestDetailsPage> {
         builder: (data) {
           final benchmark = data.userBenchmarkById;
           return MyPageScaffold(
-            key: Key('PersonalBestDetailsPage - CupertinoPageScaffold'),
-            navigationBar: BorderlessNavBar(
-              key: Key('PersonalBestDetailsPage - BasicNavBar'),
+            navigationBar: BottomBorderNavBar(
+              bottomBorderColor: context.theme.navbarBottomBorder,
               middle: NavBarTitle(benchmark.name),
               trailing: NavBarTrailingRow(
                 children: [
                   CreateIconButton(
-                    onPressed: () => context.showBottomSheet(
-                        expand: true,
+                    onPressed: () => context.push(
                         child:
                             PersonalBestEntryCreator(userBenchmark: benchmark)),
                   ),
@@ -278,12 +276,11 @@ class __PersonalBestEntrieslistState extends State<_PersonalBestEntrieslist> {
                       return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4.0),
                           child: GestureDetector(
-                            onTap: () => context.showBottomSheet(
-                                expand: true,
+                            onTap: () => context.push(
                                 child: PersonalBestEntryCreator(
-                                  userBenchmark: widget.userBenchmark,
-                                  userBenchmarkEntry: sortedEntries[i],
-                                )),
+                              userBenchmark: widget.userBenchmark,
+                              userBenchmarkEntry: sortedEntries[i],
+                            )),
                             child: AnimatedSlidable(
                                 key: Key('pb-entry-${sortedEntries[i].id}'),
                                 index: i,

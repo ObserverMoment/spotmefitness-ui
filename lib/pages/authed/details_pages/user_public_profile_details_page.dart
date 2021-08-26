@@ -379,23 +379,10 @@ class _HeaderContent extends StatelessWidget {
                   ),
                 ),
               if (Utils.textNotNull(userPublicProfile.bio))
-                GestureDetector(
-                  onTap: () => context.showBottomSheet(
-                      expand: true,
-                      child: TextViewer(userPublicProfile.bio!, 'Bio')),
-                  child: Padding(
-                    padding: verticalPadding,
-                    child: Column(
-                      children: [
-                        MyText(
-                          '${userPublicProfile.bio!}...',
-                          maxLines: 4,
-                          textAlign: TextAlign.center,
-                          lineHeight: 1.1,
-                        ),
-                      ],
-                    ),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ViewMoreFullScreenTextBlock(
+                      text: userPublicProfile.bio!, title: 'Bio'),
                 ),
               if (hasSocialLinks)
                 Padding(

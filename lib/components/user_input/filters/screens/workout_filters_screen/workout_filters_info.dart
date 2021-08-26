@@ -138,7 +138,7 @@ class WorkoutFiltersInfo extends StatelessWidget {
               selectedWorkoutGoals: workoutGoals,
               updateSelectedWorkoutGoals: (goals) => _updateFilters(
                   {'workoutGoals': goals.map((t) => t.toJson()).toList()})),
-          SizedBox(height: 12),
+          SizedBox(height: 28),
           WorkoutSectionTypeMultiSelector(
             selectedTypes: workoutSectionTypes,
             updateSelectedTypes: (types) => _updateFilters(
@@ -146,7 +146,7 @@ class WorkoutFiltersInfo extends StatelessWidget {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 24.0, horizontal: 8.0),
+                const EdgeInsets.symmetric(vertical: 28.0, horizontal: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -155,7 +155,7 @@ class WorkoutFiltersInfo extends StatelessWidget {
                   textAlign: TextAlign.start,
                   size: FONTSIZE.BIG,
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: SlidingSelect<int>(
@@ -168,13 +168,13 @@ class WorkoutFiltersInfo extends StatelessWidget {
                         2: MyText("Don't mind")
                       }),
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 12),
                 MyText(
                   'Class Audio',
                   textAlign: TextAlign.start,
                   size: FONTSIZE.BIG,
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: SlidingSelect<int>(

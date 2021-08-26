@@ -83,9 +83,6 @@ class _WorkoutPlanEnrolmentDetailsPageState
       firstDate: DateTime(DateTime.now().year - 10),
       lastDate: DateTime(DateTime.now().year + 10),
       helpText: 'Select a date',
-      builder: (context, child) {
-        return buildDateTimePickerTheme(context, child!);
-      },
     );
     if (newDate != null) {
       final variables = UpdateWorkoutPlanEnrolmentArguments(

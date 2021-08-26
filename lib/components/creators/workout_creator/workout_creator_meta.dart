@@ -18,6 +18,8 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutCreatorMeta extends StatelessWidget {
+  Widget get _spacer => SizedBox(height: 10);
+
   @override
   Widget build(BuildContext context) {
     final _updateWorkoutMeta =
@@ -45,6 +47,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 maxChars: 50,
                 validationMessage: 'Required. Min 3 chars. max 50',
               ),
+              _spacer,
               EditableTextAreaRow(
                 title: 'Description',
                 text: workoutData.description ?? '',
@@ -53,6 +56,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 inputValidation: (t) => true,
                 maxDisplayLines: 2,
               ),
+              _spacer,
               Column(
                 children: [
                   TappableRow(
@@ -74,6 +78,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                             subtext: true,
                           ),
                   ),
+                  _spacer,
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, top: 4, bottom: 8),
@@ -87,7 +92,7 @@ class WorkoutCreatorMeta extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 6),
+              _spacer,
               WorkoutGoalsSelectorRow(
                   selectedWorkoutGoals: workoutData.workoutGoals,
                   max: 2,
@@ -126,13 +131,13 @@ class WorkoutCreatorMeta extends StatelessWidget {
                           'WorkoutTags': tags.map((t) => t.toJson()).toList()
                         }),
                       ))),
-              SizedBox(height: 20),
+              SizedBox(height: 24),
               DifficultyLevelSelectorRow(
                 difficultyLevel: workoutData.difficultyLevel,
                 updateDifficultyLevel: (level) =>
                     _updateWorkoutMeta({'difficultyLevel': level?.apiValue}),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Row(

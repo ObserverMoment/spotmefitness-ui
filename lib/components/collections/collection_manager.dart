@@ -55,7 +55,8 @@ class CollectionManager {
   }
 
   static void selectCollectionToSaveTo<T>(BuildContext context, T object) {
-    context.showBottomSheet(
+    context.push(
+        fullscreenDialog: true,
         child: CollectionSelector(
             title: 'Save to Collection',
             selectCollection: (collection) {

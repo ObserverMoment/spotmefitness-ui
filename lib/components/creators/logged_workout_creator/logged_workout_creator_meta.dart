@@ -83,12 +83,12 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
             children: [
               Expanded(
                 child: TappableRow(
-                  onTap: () => context.showBottomSheet(
-                      child: SafeArea(
-                          child: GymProfileSelector(
-                    selectedGymProfile: gymProfile,
-                    selectGymProfile: (p) => _bloc.updateGymProfile(p),
-                  ))),
+                  onTap: () => context.push(
+                      fullscreenDialog: true,
+                      child: GymProfileSelector(
+                        selectedGymProfile: gymProfile,
+                        selectGymProfile: (p) => _bloc.updateGymProfile(p),
+                      )),
                   title: 'Gym Profile',
                   display: gymProfile == null
                       ? MyText(

@@ -93,28 +93,26 @@ class EquipmentMultiSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: boxSize,
-      child: GridView.builder(
-          scrollDirection: scrollDirection,
-          shrinkWrap: true,
-          itemCount: equipments.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5),
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () => handleSelection(equipments[index]),
-              child: EquipmentTile(
-                  showIcon: showIcon,
-                  equipment: equipments[index],
-                  withBorder: tilesBorder,
-                  fontSize: fontSize,
-                  isSelected: selectedEquipments.contains(equipments[index])),
-            );
-          }),
-    );
+    return GridView.builder(
+        padding: EdgeInsets.zero,
+        scrollDirection: scrollDirection,
+        shrinkWrap: true,
+        itemCount: equipments.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 5),
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () => handleSelection(equipments[index]),
+            child: EquipmentTile(
+                showIcon: showIcon,
+                equipment: equipments[index],
+                withBorder: tilesBorder,
+                fontSize: fontSize,
+                isSelected: selectedEquipments.contains(equipments[index])),
+          );
+        });
   }
 }
 

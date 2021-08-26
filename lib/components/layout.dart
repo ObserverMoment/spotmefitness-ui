@@ -16,7 +16,7 @@ class ContentBox extends StatelessWidget {
   const ContentBox(
       {required this.child,
       this.backgroundColor,
-      this.padding = const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       this.borderRadius = 8});
   @override
   Widget build(BuildContext context) {
@@ -375,8 +375,8 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
-      navigationBar: BasicNavBar(
-        heroTag: 'ModalCupertinoPageScaffold - $title',
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),

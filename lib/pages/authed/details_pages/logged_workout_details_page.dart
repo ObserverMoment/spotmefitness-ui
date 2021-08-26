@@ -223,13 +223,12 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                           children: [
                             Expanded(
                               child: TappableRow(
-                                onTap: () => context.showBottomSheet(
-                                    child: SafeArea(
-                                        child: GymProfileSelector(
+                                onTap: () => context.push(
+                                    child: GymProfileSelector(
                                   selectedGymProfile: gymProfile,
                                   selectGymProfile: (p) =>
                                       bloc.updateGymProfile(p),
-                                ))),
+                                )),
                                 title: 'Gym Profile',
                                 display: gymProfile == null
                                     ? MyText(

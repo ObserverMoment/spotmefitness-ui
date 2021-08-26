@@ -54,7 +54,8 @@ class _GymProfileSelectorState extends State<GymProfileSelector> {
       builder: (data) {
         final gymProfiles = data.gymProfiles.reversed.toList();
         return MyPageScaffold(
-          navigationBar: BorderlessNavBar(
+          navigationBar: BottomBorderNavBar(
+            bottomBorderColor: context.theme.navbarBottomBorder,
             withoutLeading: true,
             middle: NavBarTitle('Select Gym Profile'),
             trailing: NavBarSaveButton(context.pop, text: 'Done'),

@@ -24,6 +24,7 @@ class ClubDetailsInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(CupertinoIcons.location, size: 18, color: Styles.infoBlue),
                 SizedBox(width: 2),

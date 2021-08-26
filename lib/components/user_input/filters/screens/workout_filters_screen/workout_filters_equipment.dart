@@ -18,16 +18,16 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class WorkoutFiltersEquipment extends StatelessWidget {
   void _handleImportFromGymProfile(BuildContext context) {
-    context.showBottomSheet(child: SafeArea(
-      child: GymProfileSelector(selectGymProfile: (gymProfile) {
-        if (gymProfile != null) {
-          context.read<WorkoutFiltersBloc>().updateFilters({
-            'availableEquipments':
-                gymProfile.equipments.map((e) => e.toJson()).toList()
-          });
-        }
-      }),
-    ));
+    context.push(
+        fullscreenDialog: true,
+        child: GymProfileSelector(selectGymProfile: (gymProfile) {
+          if (gymProfile != null) {
+            context.read<WorkoutFiltersBloc>().updateFilters({
+              'availableEquipments':
+                  gymProfile.equipments.map((e) => e.toJson()).toList()
+            });
+          }
+        }));
   }
 
   @override
@@ -72,7 +72,7 @@ class WorkoutFiltersEquipment extends StatelessWidget {
         if (bodyweightOnly != true)
           SizeFadeIn(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+              padding: const EdgeInsets.only(bottom: 12.0),
               child: BorderButton(
                   mini: true,
                   prefix: Icon(

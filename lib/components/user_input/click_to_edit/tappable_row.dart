@@ -7,7 +7,12 @@ class TappableRow extends StatelessWidget {
   final void Function() onTap;
   final String title;
   final Widget? display;
-  TappableRow({required this.onTap, required this.title, this.display});
+  final bool showPenIcon;
+  const TappableRow(
+      {required this.onTap,
+      required this.title,
+      this.display,
+      this.showPenIcon = true});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -26,10 +31,11 @@ class TappableRow extends StatelessWidget {
                       'Select...',
                       color: context.theme.primary.withOpacity(0.5),
                     ),
-                SizedBox(
-                  width: 8,
-                ),
-                Icon(CupertinoIcons.pencil, size: 18)
+                if (showPenIcon)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(CupertinoIcons.pencil, size: 18),
+                  )
               ],
             )
           ],

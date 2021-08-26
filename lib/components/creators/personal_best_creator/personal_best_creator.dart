@@ -146,7 +146,8 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+          bottomBorderColor: context.theme.navbarBottomBorder,
           customLeading: NavBarCancelButton(_handleCancel),
           middle: NavBarTitle(widget.userBenchmark == null
               ? 'New Personal Best'
@@ -172,27 +173,20 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
                   InfoPopupButton(infoWidget: MyText('Info about the PB types'))
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 4),
-                height: 60,
-                child: ListView(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  children: BenchmarkType.values
-                      .where((v) => v != BenchmarkType.artemisUnknown)
-                      .map((type) => Padding(
-                            padding: const EdgeInsets.only(right: 6.0),
-                            child: SelectableTag(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 9),
-                                fontSize: FONTSIZE.BIG,
-                                isSelected: type == _benchmarkType,
-                                onPressed: () =>
-                                    setState(() => _benchmarkType = type),
-                                text: type.display),
-                          ))
-                      .toList(),
-                ),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 4,
+                children: BenchmarkType.values
+                    .where((v) => v != BenchmarkType.artemisUnknown)
+                    .map((type) => SelectableTag(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 9),
+                        fontSize: FONTSIZE.BIG,
+                        isSelected: type == _benchmarkType,
+                        onPressed: () => setState(() => _benchmarkType = type),
+                        text: type.display))
+                    .toList(),
               ),
               SizedBox(height: 16),
               GrowInOut(

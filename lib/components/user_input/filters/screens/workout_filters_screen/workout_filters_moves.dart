@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/move_selector.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -22,7 +24,7 @@ class WorkoutFiltersMoves extends StatelessWidget {
           WorkoutFilterMovesList(
             moves: requiredMoves,
             title: 'Required',
-            subtitle: 'Workouts must include these moves.',
+            subtitle: 'Workouts must include these moves',
             updateMoves: (moves) => context
                 .read<WorkoutFiltersBloc>()
                 .updateFilters(
@@ -32,7 +34,7 @@ class WorkoutFiltersMoves extends StatelessWidget {
           WorkoutFilterMovesList(
             moves: excludedMoves,
             title: 'Excluded',
-            subtitle: 'Workouts cannot include these mnoves',
+            subtitle: 'Workouts cannot include these moves',
             updateMoves: (moves) => context
                 .read<WorkoutFiltersBloc>()
                 .updateFilters(
@@ -58,7 +60,9 @@ class WorkoutFilterMovesList extends StatelessWidget {
       required this.subtitle});
 
   void _handleAdd(BuildContext context, Move move) {
-    updateMoves([...moves, move]);
+    if (!moves.contains(move)) {
+      updateMoves([...moves, move]);
+    }
     context.pop(); // The move selector.
   }
 
@@ -109,31 +113,25 @@ class WorkoutFilterMovesList extends StatelessWidget {
                   MyText(
                     subtitle,
                     subtext: true,
-                    size: FONTSIZE.TINY,
+                    lineHeight: 1.3,
                   )
                 ],
               ),
-              Row(
-                children: [
-                  if (moves.isNotEmpty)
-                    TextButton(
-                      text: 'Clear',
-                      onPressed: _handleClearAll,
-                      destructive: true,
+              CreateTextIconButton(
+                text: 'Add',
+                onPressed: () => context.push(
+                  child: MyPageScaffold(
+                    navigationBar: BottomBorderNavBar(
+                      customLeading: NavBarCancelButton(context.pop),
+                      middle: NavBarTitle('Select Move'),
+                      bottomBorderColor: context.readTheme.navbarBottomBorder,
                     ),
-                  CreateTextIconButton(
-                    text: 'Add',
-                    onPressed: () => context.showBottomSheet(
-                      child: SafeArea(
-                        child: MoveSelector(
-                            includeCustomMoves: false,
-                            showCreateCustomMoveButton: false,
-                            selectMove: (Move move) =>
-                                _handleAdd(context, move)),
-                      ),
-                    ),
+                    child: MoveSelector(
+                        includeCustomMoves: false,
+                        showCreateCustomMoveButton: false,
+                        selectMove: (Move move) => _handleAdd(context, move)),
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -154,6 +152,16 @@ class WorkoutFilterMovesList extends StatelessWidget {
                   ],
                 ),
         ),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          GrowInOut(
+            show: moves.isNotEmpty,
+            child: TextButton(
+              text: 'Clear all',
+              onPressed: _handleClearAll,
+              destructive: true,
+            ),
+          ),
+        ])
       ],
     );
   }

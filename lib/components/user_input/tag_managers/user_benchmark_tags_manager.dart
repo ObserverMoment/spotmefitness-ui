@@ -148,7 +148,8 @@ class UserBenchmarkTagsManagerState extends State<UserBenchmarkTagsManager> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         automaticallyImplyLeading: !_isLoading,
         middle: NavBarTitle(
             widget.allowCreateTagOnly ? 'Create Tag' : 'Personal Best Tags'),

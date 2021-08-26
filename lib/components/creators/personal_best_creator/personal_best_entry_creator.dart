@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
@@ -175,6 +178,8 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
         return 'Unbroken Reps';
       case BenchmarkType.unbrokentime:
         return 'Unbroken Time';
+      case BenchmarkType.amrap:
+        return 'AMRAP';
       default:
         throw Exception(
             'PersonalBestEntryCreator._buildScoreHeaderText: No method defined for ${widget.userBenchmark.benchmarkType}.');
@@ -188,6 +193,7 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
       case BenchmarkType.fastesttime:
       case BenchmarkType.unbrokentime:
         return 'SECONDS';
+      case BenchmarkType.amrap:
       case BenchmarkType.unbrokenreps:
         return 'REPS';
       default:
@@ -236,51 +242,72 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalCupertinoPageScaffold(
-      cancel: _handleCancel,
-      save: _saveAndClose,
-      title: widget.userBenchmark.name,
-      validToSave: _validToSubmit,
-      loading: _loading,
+    return MyPageScaffold(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
+        customLeading: NavBarCancelButton(_handleCancel),
+        middle: NavBarTitle(widget.userBenchmark.name),
+        trailing: _loading
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  LoadingDots(
+                    size: 12,
+                    color: Styles.infoBlue,
+                  ),
+                ],
+              )
+            : _validToSubmit
+                ? FadeIn(child: NavBarSaveButton(_saveAndClose))
+                : null,
+      ),
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            DatePickerDisplay(
-              dateTime: _completedOn,
-              updateDateTime: (DateTime d) {
-                final prev = _completedOn;
-                _setStateWrapper(() {
-                  _completedOn =
-                      DateTime(d.year, d.month, d.day, prev.hour, prev.minute);
-                });
-              },
-            ),
-            SizedBox(height: 12),
-            TimePickerDisplay(
-              timeOfDay: TimeOfDay.fromDateTime(_completedOn),
-              updateTimeOfDay: (TimeOfDay t) {
-                final prev = _completedOn;
-                _setStateWrapper(() {
-                  _completedOn = DateTime(
-                      prev.year, prev.month, prev.day, t.hour, t.minute);
-                });
-              },
-            ),
-            SizedBox(height: 12),
-            H3(_buildScoreHeaderText()),
-            if ([BenchmarkType.maxload, BenchmarkType.unbrokenreps]
-                .contains(widget.userBenchmark.benchmarkType))
-              _buildNumberInput()
-            else
-              _buildDurationInput(),
-            EditableTextAreaRow(
-                title: 'Note',
-                text: _note ?? '',
-                maxDisplayLines: 6,
-                onSave: (t) => _setStateWrapper(() => _note = t),
-                inputValidation: (t) => true)
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              DatePickerDisplay(
+                dateTime: _completedOn,
+                updateDateTime: (DateTime d) {
+                  final prev = _completedOn;
+                  _setStateWrapper(() {
+                    _completedOn = DateTime(
+                        d.year, d.month, d.day, prev.hour, prev.minute);
+                  });
+                },
+              ),
+              SizedBox(height: 12),
+              TimePickerDisplay(
+                timeOfDay: TimeOfDay.fromDateTime(_completedOn),
+                updateTimeOfDay: (TimeOfDay t) {
+                  final prev = _completedOn;
+                  _setStateWrapper(() {
+                    _completedOn = DateTime(
+                        prev.year, prev.month, prev.day, t.hour, t.minute);
+                  });
+                },
+              ),
+              SizedBox(height: 12),
+              H3(_buildScoreHeaderText()),
+              SizedBox(height: 12),
+              if ([
+                BenchmarkType.maxload,
+                BenchmarkType.unbrokenreps,
+                BenchmarkType.amrap
+              ].contains(widget.userBenchmark.benchmarkType))
+                _buildNumberInput()
+              else
+                _buildDurationInput(),
+              EditableTextAreaRow(
+                  title: 'Note',
+                  text: _note ?? '',
+                  maxDisplayLines: 6,
+                  onSave: (t) => _setStateWrapper(() => _note = t),
+                  inputValidation: (t) => true)
+            ],
+          ),
         ),
       ),
     );

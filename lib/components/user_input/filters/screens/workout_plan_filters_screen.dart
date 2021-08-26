@@ -107,7 +107,7 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
                   ],
                 ),
                 title: 'Days / Week'),
-            SizedBox(height: 8),
+            SizedBox(height: 12),
             H3('Use Equipment?'),
             Row(
               children: [
@@ -136,13 +136,13 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
                 ))
               ],
             ),
-            SizedBox(height: 25),
+            SizedBox(height: 24),
             DifficultyLevelSelectorRow(
               difficultyLevel: difficultyLevel,
               updateDifficultyLevel: (difficultyLevel) => _updateFilters(
                   {'difficultyLevel': difficultyLevel?.apiValue}),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 24),
             WorkoutGoalsSelectorRow(
                 selectedWorkoutGoals: workoutGoals,
                 updateSelectedWorkoutGoals: (goals) => _updateFilters(

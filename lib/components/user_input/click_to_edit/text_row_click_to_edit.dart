@@ -219,7 +219,8 @@ class _FullScreenTextEditingState extends State<FullScreenTextEditing> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: BottomBorderNavBar(
+          bottomBorderColor: context.theme.navbarBottomBorder,
           customLeading: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -243,42 +244,45 @@ class _FullScreenTextEditingState extends State<FullScreenTextEditing> {
                 ))
               : null,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MyTextField(
-                  placeholder: widget.title,
-                  autofocus: true,
-                  maxLines: widget.maxInputLines,
-                  controller: _controller),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  children: [
-                    if (widget.maxChars != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2, top: 6.0),
-                        child: MyText(
-                          '${_controller.text.length}/${widget.maxChars}',
-                          size: FONTSIZE.SMALL,
-                          color: _controller.text.length > widget.maxChars!
-                              ? Styles.errorRed
-                              : CupertinoTheme.of(context).primaryColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MyTextField(
+                    placeholder: widget.title,
+                    autofocus: true,
+                    maxLines: widget.maxInputLines,
+                    controller: _controller),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    children: [
+                      if (widget.maxChars != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2, top: 6.0),
+                          child: MyText(
+                            '${_controller.text.length}/${widget.maxChars}',
+                            size: FONTSIZE.SMALL,
+                            color: _controller.text.length > widget.maxChars!
+                                ? Styles.errorRed
+                                : CupertinoTheme.of(context).primaryColor,
+                          ),
                         ),
-                      ),
-                    if (widget.validationMessage != null)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 3, top: 5.0),
-                        child: MyText(
-                          '(${widget.validationMessage})',
-                          size: FONTSIZE.SMALL,
-                        ),
-                      )
-                  ],
+                      if (widget.validationMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 3, top: 5.0),
+                          child: MyText(
+                            '(${widget.validationMessage})',
+                            size: FONTSIZE.SMALL,
+                          ),
+                        )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
   }

@@ -99,10 +99,8 @@ class MoveTypeTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(color: context.theme.primary.withOpacity(0.7)),
-          color: Styles.grey,
-          borderRadius: BorderRadius.circular(60)),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          color: Styles.grey, borderRadius: BorderRadius.circular(60)),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: MyText(
         moveType.name,
         size: fontSize,

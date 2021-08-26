@@ -123,7 +123,7 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: BasicNavBar(
           heroTag: 'CustomMoveCreatorPage',
           customLeading: NavBarCancelButton(context.pop),
@@ -137,7 +137,7 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
                 )
               : null),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
             Padding(

@@ -243,14 +243,6 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        if (Utils.textNotNull(workoutSection.note))
-                          CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              child: NotesIcon(),
-                              onPressed: () => context.showBottomSheet(
-                                  expand: true,
-                                  child: TextViewer(
-                                      workoutSection.note!, 'Section Note'))),
                         NavBarEllipsisMenu(ellipsisCircled: false, items: [
                           ContextMenuItem(
                             text: Utils.textNotNull(workoutSection.name)
@@ -291,6 +283,12 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                 ),
               ],
             ),
+            if (Utils.textNotNull(workoutSection.note))
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ViewMoreFullScreenTextBlock(
+                    text: workoutSection.note!, title: 'Section Note'),
+              ),
             Padding(
               padding: const EdgeInsets.all(6.0),
               child: Wrap(

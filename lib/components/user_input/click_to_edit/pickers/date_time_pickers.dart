@@ -1,67 +1,385 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart' as myTheme;
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/calendar.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-TextTheme _buildShrineTextTheme(BuildContext context, TextTheme base) {
-  return base.copyWith(
-    // Selected date in header.
-    headline4: GoogleFonts.nunitoSans(textStyle: TextStyle(fontSize: 30)),
-    // Month picker dropdown.
-    subtitle2: GoogleFonts.nunitoSans(),
-    // Days and dates.
-    caption: GoogleFonts.sourceSansPro(
-        textStyle: TextStyle(fontSize: 18, height: 1)),
-  );
+/// Determines which picker is open.
+/// https://www.idownloadblog.com/2021/06/09/apple-ios-15-wheel-time-picker/
+enum DateTimePickerMode { date, time }
+
+class DateTimePickerDisplay extends StatelessWidget {
+  final String title;
+  final DateTime? dateTime;
+  final bool showDate;
+  final bool showTime;
+  final void Function(DateTime dateTime) saveDateTime;
+  const DateTimePickerDisplay(
+      {Key? key,
+      required this.dateTime,
+      this.showDate = true,
+      this.showTime = true,
+      this.title = 'When',
+      required this.saveDateTime})
+      : assert(showDate || showTime),
+        super(key: key);
+
+  void _openDateTimePicker(BuildContext context, DateTimePickerMode mode) {
+    context.showBottomSheet(
+        showDragHandle: false,
+        expand: false,
+        child: DateTimePicker(
+          title: title,
+          dateTime: dateTime,
+          showDate: showDate,
+          showTime: showTime,
+          mode: mode,
+          saveDateTime: saveDateTime,
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DateTimePickerDisplayRow(
+      title: title,
+      dateTime: dateTime,
+      showDate: showDate,
+      showTime: showTime,
+      onTapDate: () => _openDateTimePicker(context, DateTimePickerMode.date),
+      onTapTime: () => _openDateTimePicker(context, DateTimePickerMode.time),
+    );
+  }
 }
 
-ColorScheme _buildColorScheme(BuildContext context) {
-  final theme = context.theme;
-  return ColorScheme(
-    primary: myTheme.Styles.colorTwo,
-    primaryVariant: theme.primary,
-    secondary: theme.cardBackground,
-    secondaryVariant: theme.primary,
-    surface: theme.cardBackground,
-    background: theme.cardBackground,
-    error: myTheme.Styles.errorRed,
-    onPrimary: theme.primary,
-    onSecondary: theme.primary,
-    onSurface: theme.primary,
-    onBackground: theme.primary,
-    onError: myTheme.Styles.white,
-    brightness: theme.brightness,
-  );
-}
+class DateTimePickerDisplayRow extends StatelessWidget {
+  final String title;
+  final DateTime? dateTime;
+  final bool showDate;
+  final bool showTime;
+  final VoidCallback onTapDate;
+  final VoidCallback onTapTime;
+  final Color? contextBoxColor;
 
-Widget buildDateTimePickerTheme(BuildContext context, Widget child) {
-  final ThemeData base = context.theme.themeName == myTheme.ThemeName.dark
-      ? ThemeData.dark()
-      : ThemeData.light();
-  final theme = context.theme;
-  return Theme(
-      data: base.copyWith(
-        colorScheme: _buildColorScheme(context),
-        primaryIconTheme: _customIconTheme(context, base.iconTheme),
-        appBarTheme: base.appBarTheme.copyWith(
-            backgroundColor:
-                theme.background), // Header background of range picker.
-        primaryColor: theme.primary, // Head of Date Picker background
-        accentColor: Colors.yellow, // Selection color for date picker
-        dialogBackgroundColor: theme.cardBackground,
-        scaffoldBackgroundColor:
-            theme.cardBackground, // Main background of range picker.
-        textTheme: _buildShrineTextTheme(context, base.textTheme),
+  /// When being used in picker (rather than in display) - highlight the active picker type display.
+  final int? activePickerIndex;
+  const DateTimePickerDisplayRow(
+      {Key? key,
+      required this.dateTime,
+      this.showDate = true,
+      this.showTime = true,
+      this.title = 'When',
+      required this.onTapDate,
+      required this.onTapTime,
+      this.contextBoxColor,
+      this.activePickerIndex})
+      : assert(showDate || showTime),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Color highlightColor = Styles.peachRed;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          MyText(title),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (showDate)
+                GestureDetector(
+                  onTap: onTapDate,
+                  child: ContentBox(
+                      backgroundColor: contextBoxColor,
+                      child: MyText(
+                        dateTime == null
+                            ? 'select date...'
+                            : dateTime!.compactDateString,
+                        color: activePickerIndex == 0 ? highlightColor : null,
+                        weight: activePickerIndex == 0
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      )),
+                ),
+              if (showDate && showTime) SizedBox(width: 6),
+              if (showTime)
+                GestureDetector(
+                  onTap: onTapTime,
+                  child: ContentBox(
+                      backgroundColor: contextBoxColor,
+                      child: MyText(
+                        dateTime == null
+                            ? 'select time...'
+                            : dateTime!.timeString,
+                        color: activePickerIndex == 1 ? highlightColor : null,
+                        weight: activePickerIndex == 1
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      )),
+                ),
+            ],
+          ),
+        ],
       ),
-      child: child);
+    );
+  }
 }
 
-IconThemeData _customIconTheme(BuildContext context, IconThemeData original) {
-  return original.copyWith(color: context.theme.primary);
+class DateTimePicker extends StatefulWidget {
+  final String title;
+  final DateTime? dateTime;
+  final bool showDate;
+  final bool showTime;
+  final DateTimePickerMode mode;
+  final void Function(DateTime dateTime) saveDateTime;
+  const DateTimePicker(
+      {Key? key,
+      this.showDate = true,
+      this.showTime = true,
+      this.mode = DateTimePickerMode.date,
+      required this.title,
+      this.dateTime,
+      required this.saveDateTime})
+      : assert(showDate || showTime),
+        super(key: key);
+
+  @override
+  _DateTimePickerState createState() => _DateTimePickerState();
+}
+
+class _DateTimePickerState extends State<DateTimePicker> {
+  late int _activePickerIndex;
+  late DateTime _activeDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _activePickerIndex = widget.mode == DateTimePickerMode.date ? 0 : 1;
+    _activeDateTime = widget.dateTime ?? DateTime.now();
+  }
+
+  void _updateDate(DateTime newDate) {
+    final updatedDateTime = DateTime(newDate.year, newDate.month, newDate.day,
+        _activeDateTime.hour, _activeDateTime.minute);
+    setState(() => _activeDateTime = updatedDateTime);
+  }
+
+  void _updateTime(DateTime newTime) {
+    final updatedDateTime = DateTime(
+        _activeDateTime.year,
+        _activeDateTime.month,
+        _activeDateTime.day,
+        newTime.hour,
+        newTime.minute);
+    setState(() => _activeDateTime = updatedDateTime);
+  }
+
+  void _saveAndClose() {
+    widget.saveDateTime(_activeDateTime);
+    context.pop();
+  }
+
+  String get _buildTitle {
+    if (widget.showDate && widget.showTime) {
+      return 'Select Date and Time';
+    } else if (!widget.showDate) {
+      return 'Select Time';
+    } else {
+      return 'Select Date';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: CupertinoPageScaffold(
+        backgroundColor: context.theme.modalBackground,
+        navigationBar: BottomBorderNavBar(
+          backgroundColor: context.theme.modalBackground,
+          customLeading: NavBarCancelButton(context.pop),
+          middle: NavBarTitle(_buildTitle),
+          bottomBorderColor: context.theme.navbarBottomBorder,
+          trailing: NavBarSaveButton(_saveAndClose),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              DateTimePickerDisplayRow(
+                  title: widget.title,
+                  dateTime: _activeDateTime,
+                  showDate: widget.showDate,
+                  showTime: widget.showTime,
+                  contextBoxColor: context.theme.background,
+                  onTapDate: () => setState(() => _activePickerIndex = 0),
+                  onTapTime: () => setState(() => _activePickerIndex = 1),
+                  activePickerIndex: _activePickerIndex),
+              SizedBox(height: 10),
+              ContentBox(
+                backgroundColor: context.theme.background,
+                child: IndexedStack(
+                  index: _activePickerIndex,
+                  children: [
+                    GrowInOut(
+                        show: _activePickerIndex == 0,
+                        child: DatePickerCalendar(
+                          dateTime: _activeDateTime,
+                          updateDateTime: _updateDate,
+                        )),
+                    GrowInOut(
+                        show: _activePickerIndex == 1,
+                        child: TimePicker(
+                          dateTime: _activeDateTime,
+                          updateDateTime: _updateTime,
+                        )),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Will only update the years, months and days.
+/// Will maintain the original hours and minutes.
+class DatePickerCalendar extends StatefulWidget {
+  final DateTime? dateTime;
+  final void Function(DateTime date) updateDateTime;
+  const DatePickerCalendar(
+      {Key? key, required this.dateTime, required this.updateDateTime})
+      : super(key: key);
+
+  @override
+  _DatePickerCalendarState createState() => _DatePickerCalendarState();
+}
+
+class _DatePickerCalendarState extends State<DatePickerCalendar> {
+  late DateTime _selectedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = widget.dateTime ?? DateTime.now();
+  }
+
+  void _onDaySelected(DateTime selected, DateTime _) {
+    widget.updateDateTime(selected);
+    setState(() {
+      _selectedDay = selected;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CupertinoButton(
+                onPressed: () => print('open month and year picker'),
+                child: Row(
+                  children: [
+                    MyText(
+                      'April 2021',
+                      weight: FontWeight.bold,
+                      size: FONTSIZE.BIG,
+                    ),
+                    SizedBox(width: 4),
+                    Icon(
+                      CupertinoIcons.chevron_right,
+                      size: 18,
+                    ),
+                  ],
+                )),
+            Row(
+              children: [
+                CupertinoButton(
+                  onPressed: () => print('back a month'),
+                  child: Icon(
+                    CupertinoIcons.chevron_left,
+                  ),
+                ),
+                CupertinoButton(
+                  onPressed: () => print('forward a month'),
+                  child: Icon(
+                    CupertinoIcons.chevron_right,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Material(
+          color: context.theme.background,
+          child: TableCalendar(
+              headerVisible: false,
+              onDaySelected: _onDaySelected,
+              firstDay: DateTime.utc(2010, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              focusedDay: _selectedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              daysOfWeekStyle: CalendarUI.daysOfWeekStyle(context),
+              calendarStyle: CalendarUI.calendarStyle(context)),
+        ),
+      ],
+    );
+  }
+}
+
+/// Will only update the hours and minutes.
+/// Will maintain the original years, months and days.
+class TimePicker extends StatefulWidget {
+  final DateTime? dateTime;
+  final void Function(DateTime date) updateDateTime;
+  const TimePicker(
+      {Key? key, required this.dateTime, required this.updateDateTime})
+      : super(key: key);
+
+  @override
+  _TimePickerState createState() => _TimePickerState();
+}
+
+class _TimePickerState extends State<TimePicker> {
+  late DateTime _activeDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeDateTime = widget.dateTime ?? DateTime.now();
+  }
+
+  void onDateTimeChanged(DateTime selected) {
+    widget.updateDateTime(selected);
+    setState(() {
+      _activeDateTime = selected;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 220,
+      child: CupertinoDatePicker(
+        initialDateTime: _activeDateTime,
+        mode: CupertinoDatePickerMode.time,
+        onDateTimeChanged: onDateTimeChanged,
+      ),
+    );
+  }
 }
 
 class DatePickerDisplay extends StatelessWidget {
@@ -82,9 +400,6 @@ class DatePickerDisplay extends StatelessWidget {
       firstDate: earliestAllowedDate ?? DateTime(DateTime.now().year - 10),
       lastDate: DateTime(DateTime.now().year + 10),
       helpText: 'Select a date',
-      builder: (context, child) {
-        return buildDateTimePickerTheme(context, child!);
-      },
     );
     if (newDate != null) {
       updateDateTime(newDate);
@@ -118,9 +433,6 @@ class TimePickerDisplay extends StatelessWidget {
       context: context,
       initialTime: timeOfDay ?? TimeOfDay.now(),
       initialEntryMode: TimePickerEntryMode.dial,
-      builder: (context, child) {
-        return buildDateTimePickerTheme(context, child!);
-      },
     );
     if (newTime != null) {
       updateTimeOfDay(newTime);
@@ -162,9 +474,6 @@ class DateRangePickerDisplay extends StatelessWidget {
           end: to ?? now),
       firstDate: DateTime(now.year - 10),
       lastDate: DateTime(now.year + 10),
-      builder: (context, child) {
-        return buildDateTimePickerTheme(context, child!);
-      },
     );
     if (range != null) {
       updateRange(range.start, range.end);

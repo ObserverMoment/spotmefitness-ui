@@ -36,6 +36,7 @@ Future<void> openColorPickerDialog(
     required void Function(Color color) onSave}) async {
   context.showBottomSheet(
       expand: false,
+      useRootNavigator: false,
       child: MyColorPicker(
         title: title,
         onCancel: context.pop,

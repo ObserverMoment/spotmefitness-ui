@@ -57,7 +57,7 @@ class _ScheduledWorkoutCreatorPageState
     _isCreate = widget.scheduledWorkout == null;
 
     _activeScheduledWorkout = widget.scheduledWorkout != null
-        ? widget.scheduledWorkout!
+        ? ScheduledWorkout.fromJson(widget.scheduledWorkout!.toJson())
         : _defaultScheduledWorkout();
 
     super.initState();
@@ -155,7 +155,8 @@ class _ScheduledWorkoutCreatorPageState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Schedule Workout'),
         trailing: AnimatedSwitcher(
@@ -181,73 +182,54 @@ class _ScheduledWorkoutCreatorPageState
             Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: WorkoutCard(
                     _activeScheduledWorkout.workout!,
                   ),
                 ),
                 SizedBox(height: 10),
-                DatePickerDisplay(
+                DateTimePickerDisplay(
                   dateTime: _activeScheduledWorkout.scheduledAt,
-                  updateDateTime: (DateTime d) {
-                    final prev = _activeScheduledWorkout.scheduledAt;
-                    setState(() {
-                      _activeScheduledWorkout.scheduledAt = DateTime(
-                          d.year, d.month, d.day, prev.hour, prev.minute);
-                    });
-                  },
+                  saveDateTime: (d) =>
+                      setState(() => _activeScheduledWorkout.scheduledAt = d),
                 ),
-                SizedBox(height: 12),
-                TimePickerDisplay(
-                  timeOfDay: TimeOfDay.fromDateTime(
-                      _activeScheduledWorkout.scheduledAt),
-                  updateTimeOfDay: (TimeOfDay t) {
-                    final prev = _activeScheduledWorkout.scheduledAt;
-                    setState(() {
-                      _activeScheduledWorkout.scheduledAt = DateTime(
-                          prev.year, prev.month, prev.day, t.hour, t.minute);
-                    });
-                  },
-                ),
-                SizedBox(height: 12),
-                SizedBox(
-                  height: 46,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TappableRow(
-                            onTap: () => context.push(
-                                    child: SafeArea(
-                                  child: GymProfileSelector(
-                                      selectedGymProfile:
-                                          _activeScheduledWorkout.gymProfile,
-                                      selectGymProfile: (p) => setState(() =>
-                                          _activeScheduledWorkout.gymProfile =
-                                              p)),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TappableRow(
+                          showPenIcon:
+                              _activeScheduledWorkout.gymProfile == null,
+                          onTap: () => context.push(
+                              child: GymProfileSelector(
+                                  selectedGymProfile:
+                                      _activeScheduledWorkout.gymProfile,
+                                  selectGymProfile: (p) => setState(() =>
+                                      _activeScheduledWorkout.gymProfile = p))),
+                          title: 'Gym Profile',
+                          display: _activeScheduledWorkout.gymProfile == null
+                              ? MyText(
+                                  'Select...',
+                                  subtext: true,
+                                )
+                              : ContentBox(
+                                  child: MyText(
+                                      _activeScheduledWorkout.gymProfile!.name),
                                 )),
-                            title: 'Gym Profile',
-                            display: _activeScheduledWorkout.gymProfile == null
-                                ? MyText(
-                                    'Select...',
-                                    subtext: true,
-                                  )
-                                : MyText(
-                                    _activeScheduledWorkout.gymProfile!.name)),
-                      ),
-                      if (_activeScheduledWorkout.gymProfile != null)
-                        FadeIn(
-                          child: CupertinoButton(
-                              padding: EdgeInsets.zero,
-                              child: Icon(
-                                CupertinoIcons.clear_thick,
-                                color: Styles.errorRed,
-                                size: 20,
-                              ),
-                              onPressed: () => setState(() =>
-                                  _activeScheduledWorkout.gymProfile = null)),
-                        )
-                    ],
-                  ),
+                    ),
+                    if (_activeScheduledWorkout.gymProfile != null)
+                      FadeIn(
+                        child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Icon(
+                              CupertinoIcons.clear_thick,
+                              color: Styles.errorRed,
+                              size: 20,
+                            ),
+                            onPressed: () => setState(() =>
+                                _activeScheduledWorkout.gymProfile = null)),
+                      )
+                  ],
                 ),
                 SizedBox(height: 12),
                 EditableTextAreaRow(

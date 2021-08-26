@@ -112,7 +112,7 @@ abstract class ThemeData {
       activeIcon: Styles.colorFour,
       cardBackground: const Color(0xFF151515),
       bottomNavigationBackground: const Color(0xff434343),
-      navbarBottomBorder: Styles.white.withOpacity(0.25));
+      navbarBottomBorder: Styles.white.withOpacity(0.15));
 
   static CustomThemeData customLightData = CustomThemeData(
       scaffoldGradient: LinearGradient(
@@ -124,7 +124,7 @@ abstract class ThemeData {
       activeIcon: Styles.neonBlueOne,
       cardBackground: CupertinoColors.white,
       bottomNavigationBackground: const Color(0xffffffff),
-      navbarBottomBorder: Styles.black.withOpacity(0.25));
+      navbarBottomBorder: Styles.black.withOpacity(0.15));
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
       brightness: Brightness.dark,

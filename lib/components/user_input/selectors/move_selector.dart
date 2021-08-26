@@ -59,8 +59,8 @@ class _MoveSelectorState extends State<MoveSelector> {
 
   Future<void> _openCustomMoveCreator(Move? moveToUpdate) async {
     Utils.unfocusAny();
-    final success = await context
-        .pushRoute<bool?>(CustomMoveCreatorRoute(move: moveToUpdate));
+    final success =
+        await context.pushRoute(CustomMoveCreatorRoute(move: moveToUpdate));
     if (success == true) {
       if (moveToUpdate == null) {
         // Created
@@ -108,8 +108,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                   children: [
                     if (widget.includeCustomMoves)
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -141,8 +140,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                         ),
                       ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 4),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: CupertinoSearchTextField(
                         onChanged: (value) =>
                             setState(() => _searchString = value.toLowerCase()),
@@ -163,8 +161,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                     GrowInOut(
                         show: moveFiltersBloc.hasActiveFilters,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6.0, vertical: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 2),
                           child: Column(
                             children: [
                               Row(
@@ -187,39 +184,36 @@ class _MoveSelectorState extends State<MoveSelector> {
                                   ),
                                 ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Wrap(
-                                  alignment: WrapAlignment.center,
-                                  spacing: 6,
-                                  runSpacing: 6,
-                                  children: [
-                                    ...moveFiltersBloc.moveTypeFilters
-                                        .map((e) => Tag(
-                                              tag: e.name,
-                                            ))
-                                        .toList(),
-                                    if (moveFiltersBloc.bodyweightOnlyFilter)
-                                      Tag(
-                                        tag: 'Bodyweight Only',
-                                        color: Styles.colorOne,
-                                        textColor: Styles.white,
-                                      )
-                                    else
-                                      ...moveFiltersBloc.equipmentFilters
-                                          .map((e) => Tag(
-                                              tag: e.name,
-                                              color: Styles.colorOne,
-                                              textColor: Styles.white))
-                                          .toList(),
-                                    ...moveFiltersBloc.bodyAreaFilters
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 6,
+                                runSpacing: 6,
+                                children: [
+                                  ...moveFiltersBloc.moveTypeFilters
+                                      .map((e) => Tag(
+                                            tag: e.name,
+                                          ))
+                                      .toList(),
+                                  if (moveFiltersBloc.bodyweightOnlyFilter)
+                                    Tag(
+                                      tag: 'Bodyweight Only',
+                                      color: Styles.colorOne,
+                                      textColor: Styles.white,
+                                    )
+                                  else
+                                    ...moveFiltersBloc.equipmentFilters
                                         .map((e) => Tag(
                                             tag: e.name,
-                                            color: Styles.colorThree,
+                                            color: Styles.colorOne,
                                             textColor: Styles.white))
                                         .toList(),
-                                  ],
-                                ),
+                                  ...moveFiltersBloc.bodyAreaFilters
+                                      .map((e) => Tag(
+                                          tag: e.name,
+                                          color: Styles.colorThree,
+                                          textColor: Styles.white))
+                                      .toList(),
+                                ],
                               ),
                             ],
                           ),

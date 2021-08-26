@@ -116,16 +116,13 @@ class ScheduledWorkoutCard extends StatelessWidget {
           ],
         ),
         if (showNote && Utils.textNotNull(scheduledWorkout.note))
-          CupertinoButton(
-              padding: const EdgeInsets.only(top: 5),
-              child: MyText(
-                scheduledWorkout.note!,
-                size: FONTSIZE.SMALL,
-                maxLines: 4,
-                lineHeight: 1.4,
-              ),
-              onPressed: () => context.showBottomSheet(
-                  child: TextViewer(scheduledWorkout.note!, 'Note'))),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ViewMoreFullScreenTextBlock(
+              text: scheduledWorkout.note!,
+              title: 'Note',
+            ),
+          ),
       ],
     );
   }

@@ -18,9 +18,11 @@ class ClosePicker extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            H3(
+            MyText(
               'Save',
               color: Styles.infoBlue,
+              size: FONTSIZE.BIG,
+              weight: FontWeight.bold,
             ),
           ],
         ),

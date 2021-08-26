@@ -77,12 +77,11 @@ class _AudioUploaderState extends State<AudioUploader> {
 
   Future<void> _listenToAudio() async {
     if (widget.audioUri != null) {
-      await context.showBottomSheet(
-          expand: true,
-          child: FullAudioPlayer(
-            audioUri: widget.audioUri!,
-            title: 'Preview Audio',
-          ));
+      await AudioPlayerController.openAudioPlayer(
+        context,
+        widget.audioUri!,
+        'Preview Audio',
+      );
     }
   }
 

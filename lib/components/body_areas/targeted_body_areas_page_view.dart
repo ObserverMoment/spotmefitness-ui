@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -35,146 +37,154 @@ class TargetedBodyAreasPageView extends StatelessWidget {
         key: Key('TargetedBodyAreasPageView-${BodyAreasQuery().operationName}'),
         query: BodyAreasQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
+        loadingIndicator: ShimmerDetailsPage(),
         builder: (data) {
           final List<BodyArea> allBodyAreas = data.bodyAreas;
 
-          return LayoutBuilder(builder: (context, constraints) {
-            return Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: bodyAreaMoveScores.isEmpty
-                  ? Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: MyText(
-                            'Full Body Exercise',
-                            weight: FontWeight.bold,
-                            size: FONTSIZE.BIG,
+          return MyPageScaffold(
+            navigationBar: BottomBorderNavBar(
+                bottomBorderColor: context.theme.navbarBottomBorder,
+                middle: NavBarTitle('Targeted Body Areas')),
+            child: LayoutBuilder(builder: (context, constraints) {
+              return Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                alignment: Alignment.center,
+                child: bodyAreaMoveScores.isEmpty
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                            child: MyText(
+                              'Full Body Exercise',
+                              weight: FontWeight.bold,
+                              size: FONTSIZE.BIG,
+                            ),
                           ),
-                        ),
-                        Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                  'assets/body_areas/full_front.svg',
-                                  height: constraints.maxHeight * 0.4,
-                                  color: activeColor.withOpacity(0.7)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SvgPicture.asset(
-                                  'assets/body_areas/full_back.svg',
-                                  height: constraints.maxHeight * 0.4,
-                                  color: activeColor.withOpacity(0.7)),
-                            ),
-                          ],
-                        )
-                      ],
-                    )
-                  : PageView(
-                      children: [
-                        Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            H2(
-                              'Front',
-                            ),
-                            Positioned(
-                              right: 12,
-                              child: Column(
-                                children: [
-                                  MyText(
-                                    'Back >',
-                                  ),
-                                  Icon(Icons.swipe),
-                                ],
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                    'assets/body_areas/full_front.svg',
+                                    height: constraints.maxHeight * 0.4,
+                                    color: activeColor.withOpacity(0.7)),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 40.0),
-                              child: SingleChildScrollView(
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset(
+                                    'assets/body_areas/full_back.svg',
+                                    height: constraints.maxHeight * 0.4,
+                                    color: activeColor.withOpacity(0.7)),
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    : PageView(
+                        children: [
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              H2(
+                                'Front',
+                              ),
+                              Positioned(
+                                right: 12,
                                 child: Column(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 12.0),
-                                      child: TargetedBodyAreasScoreList(
-                                          percentagedBodyAreaMoveScores
-                                              .where((bams) =>
-                                                  bams.bodyArea.frontBack ==
-                                                      BodyAreaFrontBack.front ||
-                                                  bams.bodyArea.frontBack ==
-                                                      BodyAreaFrontBack.both)
-                                              .toList()),
+                                    MyText(
+                                      'Back >',
                                     ),
-                                    TargetedBodyAreasSelectedIndicator(
-                                      frontBack: BodyAreaFrontBack.front,
-                                      allBodyAreas: allBodyAreas,
-                                      activeColor: activeColor,
-                                      selectedBodyAreas:
-                                          bodyAreasThatHaveScore.toList(),
-                                      height: constraints.maxHeight * 0.7,
-                                    ),
+                                    Icon(Icons.swipe),
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            H2(
-                              'Back',
-                            ),
-                            Positioned(
-                              left: 12,
-                              child: Column(
-                                children: [
-                                  MyText(
-                                    '< Front',
+                              Padding(
+                                padding: const EdgeInsets.only(top: 40.0),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 12.0),
+                                        child: TargetedBodyAreasScoreList(
+                                            percentagedBodyAreaMoveScores
+                                                .where((bams) =>
+                                                    bams.bodyArea.frontBack ==
+                                                        BodyAreaFrontBack
+                                                            .front ||
+                                                    bams.bodyArea.frontBack ==
+                                                        BodyAreaFrontBack.both)
+                                                .toList()),
+                                      ),
+                                      TargetedBodyAreasSelectedIndicator(
+                                        frontBack: BodyAreaFrontBack.front,
+                                        allBodyAreas: allBodyAreas,
+                                        activeColor: activeColor,
+                                        selectedBodyAreas:
+                                            bodyAreasThatHaveScore.toList(),
+                                        height: constraints.maxHeight * 0.7,
+                                      ),
+                                    ],
                                   ),
-                                  Icon(Icons.swipe),
-                                ],
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 40.0),
-                              child: SingleChildScrollView(
+                            ],
+                          ),
+                          Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              H2(
+                                'Back',
+                              ),
+                              Positioned(
+                                left: 12,
                                 child: Column(
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 12.0),
-                                      child: TargetedBodyAreasScoreList(
-                                          percentagedBodyAreaMoveScores
-                                              .where((bams) =>
-                                                  bams.bodyArea.frontBack ==
-                                                      BodyAreaFrontBack.back ||
-                                                  bams.bodyArea.frontBack ==
-                                                      BodyAreaFrontBack.both)
-                                              .toList()),
+                                    MyText(
+                                      '< Front',
                                     ),
-                                    TargetedBodyAreasSelectedIndicator(
-                                      frontBack: BodyAreaFrontBack.back,
-                                      allBodyAreas: allBodyAreas,
-                                      activeColor: activeColor,
-                                      selectedBodyAreas:
-                                          bodyAreasThatHaveScore.toList(),
-                                      height: constraints.maxHeight * 0.7,
-                                    ),
+                                    Icon(Icons.swipe),
                                   ],
                                 ),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-            );
-          });
+                              Padding(
+                                padding: const EdgeInsets.only(top: 40.0),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 12.0),
+                                        child: TargetedBodyAreasScoreList(
+                                            percentagedBodyAreaMoveScores
+                                                .where((bams) =>
+                                                    bams.bodyArea.frontBack ==
+                                                        BodyAreaFrontBack
+                                                            .back ||
+                                                    bams.bodyArea.frontBack ==
+                                                        BodyAreaFrontBack.both)
+                                                .toList()),
+                                      ),
+                                      TargetedBodyAreasSelectedIndicator(
+                                        frontBack: BodyAreaFrontBack.back,
+                                        allBodyAreas: allBodyAreas,
+                                        activeColor: activeColor,
+                                        selectedBodyAreas:
+                                            bodyAreasThatHaveScore.toList(),
+                                        height: constraints.maxHeight * 0.7,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+              );
+            }),
+          );
         });
   }
 }

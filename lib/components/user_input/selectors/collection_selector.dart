@@ -41,7 +41,8 @@ class CollectionSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: BottomBorderNavBar(
+          bottomBorderColor: context.theme.navbarBottomBorder,
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(title),
         ),

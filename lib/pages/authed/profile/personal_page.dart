@@ -149,6 +149,6 @@ class _InputPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6), child: child);
+        padding: const EdgeInsets.symmetric(vertical: 10), child: child);
   }
 }

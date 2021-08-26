@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_rotation.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -222,8 +222,12 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
       _filteredUserWorkoutPlans =
           _bloc.filterYourWorkoutPlans(widget.userPlans);
       _resetScrollPosition(_userPlansListScrollController);
-      setState(() {});
     }
+    setState(() => _panelIsOpen = false);
+  }
+
+  void _handlePanelOpen() {
+    setState(() => _panelIsOpen = true);
   }
 
   void _resetScrollPosition(ScrollController controller) {
@@ -262,158 +266,161 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
         context.select<WorkoutPlanFiltersBloc, int>((b) => b.numActiveFilters);
 
     return CupertinoPageScaffold(
-        child: SafeArea(
-      child: SlidingUpPanel(
-        color: context.theme.cardBackground,
-        controller: _panelController,
-        onPanelClosed: _handlePanelClose,
-        border: Border.all(color: context.theme.primary.withOpacity(0.05)),
-        minHeight: kCollapsedpanelheight,
-        maxHeight: size.height - 70,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(kPanelBorderRadius),
-            topRight: Radius.circular(kPanelBorderRadius)),
-        panel: Column(
-          children: [
-            GestureDetector(
-              onTap: _togglePanel,
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                height: kCollapsedpanelheight,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AnimatedSwitcher(
-                          duration: kStandardAnimationDuration,
-                          child: numActiveFilters > 0
-                              ? TextButton(
-                                  text: 'Clear filters',
-                                  onPressed: _clearAllFilters)
-                              : MyText(
-                                  'No active filters',
-                                  subtext: true,
+        child: SlidingUpPanel(
+      color: context.theme.background,
+      controller: _panelController,
+      onPanelClosed: _handlePanelClose,
+      onPanelOpened: _handlePanelOpen,
+      minHeight: kCollapsedpanelheight,
+      maxHeight: size.height - 70,
+      borderRadius: BorderRadius.circular(12),
+      panel: Column(
+        children: [
+          GestureDetector(
+            onTap: _togglePanel,
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: kCollapsedpanelheight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      AnimatedRotation(
+                          rotate: _panelIsOpen,
+                          child: Icon(
+                            CupertinoIcons.chevron_up,
+                          )),
+                      AnimatedSwitcher(
+                        duration: kStandardAnimationDuration,
+                        child: numActiveFilters > 0
+                            ? TextButton(
+                                text: 'Clear Filters',
+                                prefix: Icon(
+                                  CupertinoIcons.clear_thick,
+                                  size: 16,
                                 ),
-                        ),
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  CupertinoIcons.slider_horizontal_3,
-                                ),
-                                SizedBox(width: 8),
-                              ],
-                            ),
-                            if (numActiveFilters > 0)
-                              Positioned(
-                                  top: -16,
-                                  right: 0,
-                                  child: FadeIn(
-                                      child: CircularBox(
-                                          padding: const EdgeInsets.all(6),
-                                          color: Styles.infoBlue,
-                                          child: MyText(
-                                            numActiveFilters.toString(),
-                                            color: Styles.white,
-                                            lineHeight: 1.2,
-                                            size: FONTSIZE.SMALL,
-                                            weight: FontWeight.bold,
-                                          ))))
-                          ],
-                        ),
-                      ]),
-                ),
-              ),
-            ),
-            Expanded(child: WorkoutPlanFiltersScreen())
-          ],
-        ),
-        body: CupertinoPageScaffold(
-          navigationBar: BorderlessNavBar(
-            middle: NavBarTitle('Find a Workout Plan'),
-            trailing: CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () => context.push(
-                  fullscreenDialog: true,
-                  child: WorkoutPlanFinderTextSearch(
-                      initialPageIndex: _activePageIndex,
-                      updateActivePageIndex: _updatePageIndex,
-                      userWorkoutPlans: widget.userPlans,
-                      selectWorkoutPlan: widget.selectWorkoutPlan != null
-                          ? _selectWorkoutPlan
-                          : null)),
-              child: Icon(
-                CupertinoIcons.search,
-                size: 25,
-              ),
-            ),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SlidingSelect<int>(
-                      value: _activePageIndex,
-                      updateValue: _updatePageIndex,
-                      children: {
-                        0: MyText('Your Plans'),
-                        1: MyText('All Plans'),
-                      }),
-                ),
-              ),
-              Expanded(
-                child: PageView(
-                  controller: _tabPageController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    YourFilteredWorkoutPlansList(
-                      selectWorkoutPlan: widget.selectWorkoutPlan != null
-                          ? _selectWorkoutPlan
-                          : null,
-                      listPositionScrollController:
-                          _userPlansListScrollController,
-                      workoutPlans: _filteredUserWorkoutPlans,
-                    ),
-                    PagedListView<int, WorkoutPlan>(
-                      // Bottom padding to push list up above floating filters panel.
-                      padding: const EdgeInsets.only(
-                          left: 8, right: 8, top: 4, bottom: 138),
-                      pagingController: _pagingController,
-                      scrollController: _pagingScrollController,
-                      builderDelegate: PagedChildBuilderDelegate<WorkoutPlan>(
-                        itemBuilder: (context, workoutPlan, index) =>
-                            SizeFadeIn(
-                          duration: 100,
-                          delay: index,
-                          delayBasis: 20,
-                          child: WorkoutFinderWorkoutPlanCard(
-                            selectWorkoutPlan: widget.selectWorkoutPlan != null
-                                ? _selectWorkoutPlan
-                                : null,
-                            workoutPlan: workoutPlan,
-                          ),
-                        ),
-                        firstPageProgressIndicatorBuilder: (c) =>
-                            LoadingCircle(),
-                        newPageProgressIndicatorBuilder: (c) => LoadingCircle(),
-                        noItemsFoundIndicatorBuilder: (c) =>
-                            Center(child: MyText('No results...')),
+                                underline: false,
+                                onPressed: _clearAllFilters)
+                            : MyText(
+                                'No active filters',
+                                subtext: true,
+                              ),
                       ),
-                    ),
-                  ],
-                ),
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                CupertinoIcons.slider_horizontal_3,
+                              ),
+                              SizedBox(width: 8),
+                            ],
+                          ),
+                          if (numActiveFilters > 0)
+                            Positioned(
+                                top: -16,
+                                right: 0,
+                                child: FadeIn(
+                                    child: CircularBox(
+                                        padding: const EdgeInsets.all(6),
+                                        color: context.theme.primary,
+                                        child: MyText(
+                                          numActiveFilters.toString(),
+                                          color: context.theme.background,
+                                          lineHeight: 1.2,
+                                          size: FONTSIZE.SMALL,
+                                        ))))
+                        ],
+                      ),
+                    ]),
               ),
-            ],
+            ),
           ),
+          Expanded(child: WorkoutPlanFiltersScreen())
+        ],
+      ),
+      body: CupertinoPageScaffold(
+        navigationBar: BorderlessNavBar(
+          middle: NavBarTitle('Find a Workout Plan'),
+          trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => context.push(
+                fullscreenDialog: true,
+                child: WorkoutPlanFinderTextSearch(
+                    initialPageIndex: _activePageIndex,
+                    updateActivePageIndex: _updatePageIndex,
+                    userWorkoutPlans: widget.userPlans,
+                    selectWorkoutPlan: widget.selectWorkoutPlan != null
+                        ? _selectWorkoutPlan
+                        : null)),
+            child: Icon(
+              CupertinoIcons.search,
+              size: 25,
+            ),
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
+              child: SizedBox(
+                width: double.infinity,
+                child: SlidingSelect<int>(
+                    value: _activePageIndex,
+                    updateValue: _updatePageIndex,
+                    children: {
+                      0: MyText('Your Plans'),
+                      1: MyText('All Plans'),
+                    }),
+              ),
+            ),
+            Expanded(
+              child: PageView(
+                controller: _tabPageController,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  YourFilteredWorkoutPlansList(
+                    selectWorkoutPlan: widget.selectWorkoutPlan != null
+                        ? _selectWorkoutPlan
+                        : null,
+                    listPositionScrollController:
+                        _userPlansListScrollController,
+                    workoutPlans: _filteredUserWorkoutPlans,
+                  ),
+                  PagedListView<int, WorkoutPlan>(
+                    // Bottom padding to push list up above floating filters panel.
+                    padding: const EdgeInsets.only(
+                        left: 8, right: 8, top: 4, bottom: 138),
+                    pagingController: _pagingController,
+                    scrollController: _pagingScrollController,
+                    builderDelegate: PagedChildBuilderDelegate<WorkoutPlan>(
+                      itemBuilder: (context, workoutPlan, index) => SizeFadeIn(
+                        duration: 100,
+                        delay: index,
+                        delayBasis: 20,
+                        child: WorkoutFinderWorkoutPlanCard(
+                          selectWorkoutPlan: widget.selectWorkoutPlan != null
+                              ? _selectWorkoutPlan
+                              : null,
+                          workoutPlan: workoutPlan,
+                        ),
+                      ),
+                      firstPageProgressIndicatorBuilder: (c) => LoadingCircle(),
+                      newPageProgressIndicatorBuilder: (c) => LoadingCircle(),
+                      noItemsFoundIndicatorBuilder: (c) =>
+                          Center(child: MyText('No results...')),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     ));

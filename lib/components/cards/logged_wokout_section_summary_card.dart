@@ -79,16 +79,11 @@ class LoggedWorkoutSectionSummaryCard extends StatelessWidget {
         if (Utils.textNotNull(loggedWorkoutSection.note))
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: MyText(
-                  loggedWorkoutSection.note!,
-                  size: FONTSIZE.SMALL,
-                  maxLines: 3,
-                  lineHeight: 1.4,
-                ),
-                onPressed: () => context.showBottomSheet(
-                    child: TextViewer(loggedWorkoutSection.note!, 'Note'))),
+            child: ViewMoreFullScreenTextBlock(
+              text: loggedWorkoutSection.note!,
+              title: 'Note',
+              maxLines: 3,
+            ),
           ),
 
         /// Similar to [LoggedWorkout > LoggedWorkoutSectionTimes] logic.

@@ -205,6 +205,13 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
     return Card(
       child: Column(
         children: [
+          if (Utils.textNotNull(_loggedWorkoutSet.note))
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10),
+              child: ViewMoreFullScreenTextBlock(
+                  text: _loggedWorkoutSet.note!, title: 'Note'),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
             child: Row(
@@ -217,9 +224,6 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                       _buildSetRepeats(),
                     if (_loggedWorkoutSet.duration != null) _buildSetTime(),
                     _buildSetDefinition(),
-                    if (Utils.textNotNull(_loggedWorkoutSet.note))
-                      NoteIconViewerButton(_loggedWorkoutSet.note!,
-                          modalTitle: 'Set Note')
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [

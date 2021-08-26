@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/calendar.dart';
 import 'package:spotmefitness_ui/components/cards/scheduled_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -31,12 +32,6 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
   late DateTime _selectedDay;
   late DateTime _focusedDay;
   CalendarFormat _calendarFormat = CalendarFormat.week;
-
-  // https://github.com/aleksanderwozniak/table_calendar/issues/498
-  final BoxDecoration kDefaultDecoration = BoxDecoration(
-      shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10));
-
-  final kBoxDecorationRadius = BorderRadius.circular(10);
 
   @override
   void initState() {
@@ -89,10 +84,6 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryTextStyle = GoogleFonts.sourceSansPro(
-        textStyle:
-            TextStyle(color: context.theme.primary, height: 1, fontSize: 15));
-
     return QueryObserver<UserScheduledWorkouts$Query, json.JsonSerializable>(
       key: Key(
           'YourSchedulePage - ${UserScheduledWorkoutsQuery().operationName}'),
@@ -113,7 +104,10 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: MyText(DateFormat.yMMM().format(_focusedDay)),
+                    child: MyText(
+                      DateFormat.yMMM().format(_focusedDay),
+                      weight: FontWeight.bold,
+                    ),
                   ),
                   CupertinoButton(
                     padding: EdgeInsets.zero,
@@ -153,65 +147,39 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: TableCalendar(
-                            headerVisible: false,
-                            firstDay: DateTime.utc(2021, 01, 01),
-                            lastDay: DateTime(DateTime.now().year + 10),
-                            focusedDay: _focusedDay,
-                            selectedDayPredicate: (day) {
-                              return isSameDay(_selectedDay, day);
-                            },
-                            onDaySelected: (selectedDay, focusedDay) {
-                              _onDaySelected(
-                                  selectedDay, focusedDay, allScheduled);
-                            },
-                            onPageChanged: (focusedDay) {
-                              setState(() {
-                                _focusedDay = focusedDay;
-                              });
-                            },
-                            calendarFormat: _calendarFormat,
-                            onFormatChanged: (format) {
-                              setState(() {
-                                _calendarFormat = format;
-                              });
-                            },
-                            eventLoader: (day) {
-                              return allScheduled
-                                  .where((s) => isSameDay(s.scheduledAt, day))
-                                  .toList();
-                            },
-                            calendarBuilders:
-                                CalendarBuilders<List<ScheduledWorkout>>(
-                                    singleMarkerBuilder: _buildSingleMarker),
-                            daysOfWeekStyle: DaysOfWeekStyle(
-                              weekdayStyle: primaryTextStyle,
-                              weekendStyle: primaryTextStyle,
-                            ),
-                            calendarStyle: CalendarStyle(
-                                markerDecoration: const BoxDecoration(
-                                    color: Styles.colorFour,
-                                    shape: BoxShape.circle),
-                                // https://github.com/aleksanderwozniak/table_calendar/issues/498
-                                defaultDecoration: kDefaultDecoration,
-                                weekendDecoration: kDefaultDecoration,
-                                outsideDecoration: kDefaultDecoration,
-                                disabledDecoration: kDefaultDecoration,
-                                holidayDecoration: kDefaultDecoration,
-                                selectedDecoration: BoxDecoration(
-                                    color: context.theme.primary,
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: kBoxDecorationRadius),
-                                todayDecoration: BoxDecoration(
-                                    border: Border.all(color: Styles.colorOne),
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: kBoxDecorationRadius),
-                                weekendTextStyle: primaryTextStyle,
-                                selectedTextStyle: primaryTextStyle.copyWith(
-                                    color: context.theme.background,
-                                    fontWeight: FontWeight.bold),
-                                todayTextStyle: primaryTextStyle,
-                                defaultTextStyle: primaryTextStyle),
-                          ),
+                              headerVisible: false,
+                              firstDay: DateTime.utc(2021, 01, 01),
+                              lastDay: DateTime(DateTime.now().year + 10),
+                              focusedDay: _focusedDay,
+                              selectedDayPredicate: (day) {
+                                return isSameDay(_selectedDay, day);
+                              },
+                              onDaySelected: (selectedDay, focusedDay) {
+                                _onDaySelected(
+                                    selectedDay, focusedDay, allScheduled);
+                              },
+                              onPageChanged: (focusedDay) {
+                                setState(() {
+                                  _focusedDay = focusedDay;
+                                });
+                              },
+                              calendarFormat: _calendarFormat,
+                              onFormatChanged: (format) {
+                                setState(() {
+                                  _calendarFormat = format;
+                                });
+                              },
+                              eventLoader: (day) {
+                                return allScheduled
+                                    .where((s) => isSameDay(s.scheduledAt, day))
+                                    .toList();
+                              },
+                              calendarBuilders:
+                                  CalendarBuilders<List<ScheduledWorkout>>(
+                                      singleMarkerBuilder: _buildSingleMarker),
+                              daysOfWeekStyle:
+                                  CalendarUI.daysOfWeekStyle(context),
+                              calendarStyle: CalendarUI.calendarStyle(context)),
                         ),
                       ),
                     )

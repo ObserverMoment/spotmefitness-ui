@@ -56,31 +56,32 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
     context.read<DoWorkoutBloc>().pauseWorkout();
 
     context.showDialog(
+        useRootNavigator: true,
         title: 'Leave the Workout?',
         barrierDismissible: true,
         actions: [
           CupertinoDialogAction(
               child: MyText('Leave without logging'),
               onPressed: () {
-                context.pop();
-                context.popRoute();
+                context.pop(rootNavigator: true); // Dialog.
+                context.popRoute(); // Do workout.
               }),
           CupertinoDialogAction(
               child: MyText('Log progress, then Leave'),
               onPressed: () {
-                context.pop();
+                context.pop(rootNavigator: true); // Dialog.
                 context.read<DoWorkoutBloc>().generatePartialLog();
               }),
           CupertinoDialogAction(
               child: MyText('Restart the workout'),
               onPressed: () {
-                context.pop();
+                context.pop(rootNavigator: true); // Dialog.
                 _handleResetWorkout();
               }),
           CupertinoDialogAction(
-            child: MyText('Cancel'),
-            onPressed: context.pop,
-          ),
+              child: MyText('Cancel'),
+              onPressed: () => context.pop(rootNavigator: true) // Dialog.,
+              ),
         ]);
   }
 
