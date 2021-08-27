@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/club_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';

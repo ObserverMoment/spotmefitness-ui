@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get_it/get_it.dart';
-import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -24,7 +22,6 @@ class ClubMembersChatPage extends StatefulWidget {
 }
 
 class _ClubMembersChatPageState extends State<ClubMembersChatPage> {
-  late AuthedUser _authedUser;
   late chat.StreamChatClient _streamChatClient;
   late chat.Channel _channel;
   late bool _channelReady = false;
@@ -33,7 +30,6 @@ class _ClubMembersChatPageState extends State<ClubMembersChatPage> {
   @override
   void initState() {
     super.initState();
-    _authedUser = GetIt.I<AuthBloc>().authedUser!;
     _streamChatClient = context.streamChatClient;
 
     _initGetStreamChat();

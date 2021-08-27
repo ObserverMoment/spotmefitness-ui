@@ -11,6 +11,13 @@ fragment Club on Club {
   introAudioUri
 }
 
+fragment ClubPublicSummary on ClubPublicSummary {
+  __typename
+  id
+  name
+  coverImageUri
+}
+
 fragment ClubInviteToken on ClubInviteToken {
   __typename
   id

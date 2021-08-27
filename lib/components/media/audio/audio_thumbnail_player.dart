@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Displays an icon which can be clicked to open the audio player.
 /// Cannot display a placeholder...unlike the similar video player, as there is not image associated with these audio uploads.

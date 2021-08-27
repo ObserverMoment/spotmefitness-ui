@@ -120,7 +120,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
               middle: NavBarTitle(collection.name),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.ellipsis_circle),
+                child: Icon(CupertinoIcons.ellipsis),
                 onPressed: () => openBottomSheetMenu(
                     context: context,
                     child: BottomSheetMenu(

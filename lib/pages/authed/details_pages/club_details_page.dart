@@ -325,7 +325,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   child: AnimatedSwitcher(
                       duration: kStandardAnimationDuration,
                       child: showOnlyNavBar
-                          ? Icon(CupertinoIcons.ellipsis_circle)
+                          ? Icon(CupertinoIcons.ellipsis)
                           : Icon(CupertinoIcons.ellipsis)),
                   onPressed: () => openBottomSheetMenu(
                       context: context,

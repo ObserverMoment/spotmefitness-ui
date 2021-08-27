@@ -8,12 +8,14 @@ class MyNumberInput extends StatelessWidget {
   final double textSize;
   final bool autoFocus;
   final Color? backgroundColor;
+  final EdgeInsetsGeometry padding;
   MyNumberInput(
     this.controller, {
     this.allowDouble = false,
     this.textSize = 50,
     this.autoFocus = false,
     this.backgroundColor,
+    this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
   });
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class MyNumberInput extends StatelessWidget {
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,
           borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      padding: padding,
       style: TextStyle(fontSize: textSize, height: 1),
       textAlign: TextAlign.center,
     );

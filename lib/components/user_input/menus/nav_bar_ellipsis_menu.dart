@@ -35,7 +35,7 @@ class _NavBarEllipsisMenuState extends State<NavBarEllipsisMenu> {
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: Icon(
           widget.ellipsisCircled
-              ? CupertinoIcons.ellipsis_circle
+              ? CupertinoIcons.ellipsis
               : CupertinoIcons.ellipsis,
           size: Styles.buttonIconSize,
         ),

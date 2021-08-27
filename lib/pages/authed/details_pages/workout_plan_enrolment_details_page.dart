@@ -12,12 +12,10 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/review_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
-import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
@@ -228,7 +226,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                 middle: NavBarTitle(enrolment.workoutPlan.name),
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  child: Icon(CupertinoIcons.ellipsis_circle),
+                  child: Icon(CupertinoIcons.ellipsis),
                   onPressed: () => openBottomSheetMenu(
                       context: context,
                       child: BottomSheetMenu(

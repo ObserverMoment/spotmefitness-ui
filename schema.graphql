@@ -114,6 +114,12 @@ type ClubInviteTokenData {
   Club: Club!
 }
 
+type ClubPublicSummary {
+  id: ID!
+  name: String!
+  coverImageUri: String
+}
+
 type Collection {
   id: ID!
   createdAt: DateTime!
@@ -797,6 +803,7 @@ type Query {
   moveTypes: [MoveType!]!
   workoutGoals: [WorkoutGoal!]!
   workoutSectionTypes: [WorkoutSectionType!]!
+  clubSummaries(ids: [ID!]!): [ClubPublicSummary!]!
   userClubs: [Club!]!
   clubById(id: ID!): Club!
   discoverFeatured: [DiscoverFeatured!]!

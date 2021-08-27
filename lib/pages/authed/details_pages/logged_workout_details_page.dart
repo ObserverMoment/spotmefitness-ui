@@ -34,16 +34,8 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
   final String id;
   LoggedWorkoutDetailsPage({@PathParam('id') required this.id});
 
-  void _updateCompletedOnDate(LoggedWorkoutCreatorBloc bloc, DateTime date) {
-    final prev = bloc.loggedWorkout.completedOn;
-    bloc.updateCompletedOn(DateTime(
-        date.year, date.month, date.day, prev.hour, prev.minute, prev.second));
-  }
-
-  void _updateCompletedOnTime(LoggedWorkoutCreatorBloc bloc, TimeOfDay time) {
-    final prev = bloc.loggedWorkout.completedOn;
-    bloc.updateCompletedOn(
-        DateTime(prev.year, prev.month, prev.day, time.hour, time.minute));
+  void _updateCompletedOn(LoggedWorkoutCreatorBloc bloc, DateTime date) {
+    bloc.updateCompletedOn(date);
   }
 
   Widget _buildLoggedWorkoutSummaryForSharing(
@@ -165,7 +157,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                   middle: NavBarTitle(log.name),
                   trailing: CupertinoButton(
                     padding: EdgeInsets.zero,
-                    child: Icon(CupertinoIcons.ellipsis_circle),
+                    child: Icon(CupertinoIcons.ellipsis),
                     onPressed: () => openBottomSheetMenu(
                         context: context,
                         child: BottomSheetMenu(
@@ -207,16 +199,9 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        DatePickerDisplay(
+                        DateTimePickerDisplay(
                           dateTime: completedOn,
-                          updateDateTime: (d) =>
-                              _updateCompletedOnDate(bloc, d),
-                        ),
-                        SizedBox(height: 12),
-                        TimePickerDisplay(
-                          timeOfDay: TimeOfDay.fromDateTime(completedOn),
-                          updateTimeOfDay: (t) =>
-                              _updateCompletedOnTime(bloc, t),
+                          saveDateTime: (d) => _updateCompletedOn(bloc, d),
                         ),
                         SizedBox(height: 12),
                         Row(

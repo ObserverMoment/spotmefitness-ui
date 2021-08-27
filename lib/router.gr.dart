@@ -30,7 +30,7 @@ import 'components/do_workout/do_workout/do_workout_do_workout_page.dart'
 import 'components/do_workout/do_workout_log_workout_page.dart' as _i61;
 import 'components/do_workout/do_workout_wrapper_page.dart' as _i11;
 import 'components/social/chat/chats_overview_page.dart' as _i6;
-import 'components/social/chat/group_chat_page.dart' as _i8;
+import 'components/social/chat/club_members_chat_page.dart' as _i8;
 import 'components/social/chat/one_to_one_chat_page.dart' as _i7;
 import 'components/workout/workout_finder/workout_finder.dart' as _i13;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'

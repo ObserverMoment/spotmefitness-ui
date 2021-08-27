@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
 import 'package:spotmefitness_ui/components/creators/post_creator/post_creator.dart';
-import 'package:spotmefitness_ui/components/creators/post_creator/archived/post_editor.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
@@ -16,7 +15,7 @@ import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator
 import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
-import 'package:spotmefitness_ui/components/social/chat/group_chat_page.dart';
+import 'package:spotmefitness_ui/components/social/chat/club_members_chat_page.dart';
 import 'package:spotmefitness_ui/components/workout/workout_finder/workout_finder.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/workout_plan_finder.dart';
 import 'package:spotmefitness_ui/pages/authed/discover/discover_clubs_page.dart';

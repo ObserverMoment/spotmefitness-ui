@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_view.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/tags.dart';

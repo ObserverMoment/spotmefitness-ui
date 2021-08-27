@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
@@ -8,7 +7,6 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/image_viewer.dart';
-import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -120,7 +118,7 @@ class _UserPublicProfileDetailsPageState
                 ),
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,
-                  child: Icon(CupertinoIcons.ellipsis_circle),
+                  child: Icon(CupertinoIcons.ellipsis),
                   onPressed: () => openBottomSheetMenu(
                       context: context,
                       child: BottomSheetMenu(

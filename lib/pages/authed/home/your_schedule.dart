@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';

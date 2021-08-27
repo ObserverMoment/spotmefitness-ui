@@ -30,6 +30,7 @@ class ProgressJournalGoalCard extends StatelessWidget {
 
   Future<void> _markComplete(BuildContext context) async {
     final result = await context.showBottomSheet<MutationResult>(
+        useRootNavigator: false,
         expand: false,
         child: _MarkGoalCompletedBottomSheet(progressJournalGoal));
 
@@ -117,7 +118,7 @@ class ProgressJournalGoalCard extends StatelessWidget {
                             child: MyText(
                               'Completed ${progressJournalGoal.completedDate!.compactDateString}',
                               color: Styles.infoBlue,
-                              weight: FontWeight.bold,
+                              size: FONTSIZE.SMALL,
                             ),
                           )
                       ],
@@ -214,23 +215,28 @@ class __MarkGoalCompletedBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DatePickerDisplay(
-                title: 'Completed Date',
-                dateTime: _completedDate,
-                updateDateTime: (d) => setState(() => _completedDate = d)),
-            SizedBox(height: 30),
-            PrimaryButton(
-                text: 'Mark Complete',
-                prefixIconData: CupertinoIcons.checkmark_alt,
-                onPressed: _markComplete)
-          ],
+    return CupertinoPageScaffold(
+      backgroundColor: context.theme.modalBackground,
+      child: SizedBox(
+        height: 300,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32.0, horizontal: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DateTimePickerDisplay(
+                  title: 'Completed Date',
+                  dateTime: _completedDate,
+                  showTime: false,
+                  contentBoxColor: context.theme.background,
+                  saveDateTime: (d) => setState(() => _completedDate = d)),
+              SizedBox(height: 30),
+              PrimaryButton(
+                  text: 'Mark Complete',
+                  prefixIconData: CupertinoIcons.checkmark_alt,
+                  onPressed: _markComplete)
+            ],
+          ),
         ),
       ),
     );

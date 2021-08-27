@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/animated_rotation.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/calendar.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -21,13 +22,15 @@ class DateTimePickerDisplay extends StatelessWidget {
   final bool showDate;
   final bool showTime;
   final void Function(DateTime dateTime) saveDateTime;
+  final Color? contentBoxColor;
   const DateTimePickerDisplay(
       {Key? key,
       required this.dateTime,
       this.showDate = true,
       this.showTime = true,
       this.title = 'When',
-      required this.saveDateTime})
+      required this.saveDateTime,
+      this.contentBoxColor})
       : assert(showDate || showTime),
         super(key: key);
 
@@ -54,6 +57,7 @@ class DateTimePickerDisplay extends StatelessWidget {
       showTime: showTime,
       onTapDate: () => _openDateTimePicker(context, DateTimePickerMode.date),
       onTapTime: () => _openDateTimePicker(context, DateTimePickerMode.time),
+      contentBoxColor: contentBoxColor,
     );
   }
 }
@@ -65,7 +69,7 @@ class DateTimePickerDisplayRow extends StatelessWidget {
   final bool showTime;
   final VoidCallback onTapDate;
   final VoidCallback onTapTime;
-  final Color? contextBoxColor;
+  final Color? contentBoxColor;
 
   /// When being used in picker (rather than in display) - highlight the active picker type display.
   final int? activePickerIndex;
@@ -77,7 +81,7 @@ class DateTimePickerDisplayRow extends StatelessWidget {
       this.title = 'When',
       required this.onTapDate,
       required this.onTapTime,
-      this.contextBoxColor,
+      this.contentBoxColor,
       this.activePickerIndex})
       : assert(showDate || showTime),
         super(key: key);
@@ -99,10 +103,10 @@ class DateTimePickerDisplayRow extends StatelessWidget {
                 GestureDetector(
                   onTap: onTapDate,
                   child: ContentBox(
-                      backgroundColor: contextBoxColor,
+                      backgroundColor: contentBoxColor,
                       child: MyText(
                         dateTime == null
-                            ? 'select date...'
+                            ? 'Select date...'
                             : dateTime!.compactDateString,
                         color: activePickerIndex == 0 ? highlightColor : null,
                         weight: activePickerIndex == 0
@@ -115,11 +119,11 @@ class DateTimePickerDisplayRow extends StatelessWidget {
                 GestureDetector(
                   onTap: onTapTime,
                   child: ContentBox(
-                      backgroundColor: contextBoxColor,
+                      backgroundColor: contentBoxColor,
                       child: MyText(
                         dateTime == null
-                            ? 'select time...'
-                            : dateTime!.timeString,
+                            ? 'Select time...'
+                            : dateTime!.timeString24,
                         color: activePickerIndex == 1 ? highlightColor : null,
                         weight: activePickerIndex == 1
                             ? FontWeight.bold
@@ -201,11 +205,11 @@ class _DateTimePickerState extends State<DateTimePicker> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: CupertinoPageScaffold(
         backgroundColor: context.theme.modalBackground,
         navigationBar: BottomBorderNavBar(
-          backgroundColor: context.theme.modalBackground,
+          backgroundColor: context.theme.cardBackground,
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(_buildTitle),
           bottomBorderColor: context.theme.navbarBottomBorder,
@@ -220,7 +224,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                   dateTime: _activeDateTime,
                   showDate: widget.showDate,
                   showTime: widget.showTime,
-                  contextBoxColor: context.theme.background,
+                  contentBoxColor: context.theme.background,
                   onTapDate: () => setState(() => _activePickerIndex = 0),
                   onTapTime: () => setState(() => _activePickerIndex = 1),
                   activePickerIndex: _activePickerIndex),
@@ -267,18 +271,38 @@ class DatePickerCalendar extends StatefulWidget {
 }
 
 class _DatePickerCalendarState extends State<DatePickerCalendar> {
-  late DateTime _selectedDay;
+  /// use this to move around the calendar.
+  late DateTime _focusedDay;
+
+  /// controls highlighting of the selected day.
+  DateTime? _selectedDay;
+
+  /// 0 is the calendar grid view.
+  /// 1 is the month and year picker in iOS style (scroll wheel)
+  int _activeTabIndex = 0;
+
+  final DateTime _earliestDate = DateTime.utc(2000, 01, 01);
+  final DateTime _latestDate = DateTime.utc(2099, 12, 31);
 
   @override
   void initState() {
     super.initState();
-    _selectedDay = widget.dateTime ?? DateTime.now();
+    _focusedDay = widget.dateTime ?? DateTime.now();
+    _selectedDay = widget.dateTime;
   }
 
-  void _onDaySelected(DateTime selected, DateTime _) {
+  @override
+  void didUpdateWidget(covariant DatePickerCalendar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _focusedDay = widget.dateTime ?? DateTime.now();
+    _selectedDay = widget.dateTime;
+  }
+
+  void _onDaySelected(DateTime selected, DateTime focused) {
     widget.updateDateTime(selected);
     setState(() {
       _selectedDay = selected;
+      _focusedDay = focused;
     });
   }
 
@@ -290,31 +314,44 @@ class _DatePickerCalendarState extends State<DatePickerCalendar> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CupertinoButton(
-                onPressed: () => print('open month and year picker'),
+                onPressed: () => setState(
+                    () => _activeTabIndex = _activeTabIndex == 0 ? 1 : 0),
                 child: Row(
                   children: [
                     MyText(
-                      'April 2021',
+                      DateFormat('MMMM yyyy').format(_focusedDay),
                       weight: FontWeight.bold,
                       size: FONTSIZE.BIG,
+                      color: _activeTabIndex == 1 ? Styles.peachRed : null,
                     ),
                     SizedBox(width: 4),
-                    Icon(
-                      CupertinoIcons.chevron_right,
-                      size: 18,
-                    ),
+                    AnimatedRotation(
+                      turns: 0.25,
+                      rotate: _activeTabIndex == 1,
+                      child: Icon(
+                        CupertinoIcons.chevron_right,
+                        size: 18,
+                        color: _activeTabIndex == 1 ? Styles.peachRed : null,
+                      ),
+                    )
                   ],
                 )),
             Row(
               children: [
                 CupertinoButton(
-                  onPressed: () => print('back a month'),
+                  onPressed: () => setState(() {
+                    _focusedDay =
+                        DateTime(_focusedDay.year, _focusedDay.month - 1);
+                  }),
                   child: Icon(
                     CupertinoIcons.chevron_left,
                   ),
                 ),
                 CupertinoButton(
-                  onPressed: () => print('forward a month'),
+                  onPressed: () => setState(() {
+                    _focusedDay =
+                        DateTime(_focusedDay.year, _focusedDay.month + 1);
+                  }),
                   child: Icon(
                     CupertinoIcons.chevron_right,
                   ),
@@ -323,18 +360,37 @@ class _DatePickerCalendarState extends State<DatePickerCalendar> {
             ),
           ],
         ),
-        Material(
-          color: context.theme.background,
-          child: TableCalendar(
-              headerVisible: false,
-              onDaySelected: _onDaySelected,
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: _selectedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              daysOfWeekStyle: CalendarUI.daysOfWeekStyle(context),
-              calendarStyle: CalendarUI.calendarStyle(context)),
-        ),
+        SizedBox(height: 8),
+        SizedBox(
+          height: 350,
+          child: IndexedStack(
+            index: _activeTabIndex,
+            children: [
+              Material(
+                color: context.theme.background,
+                child: TableCalendar(
+                    headerVisible: false,
+                    onDaySelected: _onDaySelected,
+                    firstDay: _earliestDate,
+                    lastDay: _latestDate,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    daysOfWeekStyle: CalendarUI.daysOfWeekStyle(context),
+                    calendarStyle: CalendarUI.calendarStyle(context)),
+              ),
+              SizedBox(
+                height: 300,
+                child: CupertinoDatePicker(
+                  initialDateTime: DateTime.now(),
+                  minimumDate: _earliestDate,
+                  maximumDate: _latestDate,
+                  mode: CupertinoDatePickerMode.date,
+                  onDateTimeChanged: (d) => _onDaySelected(d, d),
+                ),
+              )
+            ],
+          ),
+        )
       ],
     );
   }
@@ -362,7 +418,7 @@ class _TimePickerState extends State<TimePicker> {
     _activeDateTime = widget.dateTime ?? DateTime.now();
   }
 
-  void onDateTimeChanged(DateTime selected) {
+  void onDateTimeChangedViaScroll(DateTime selected) {
     widget.updateDateTime(selected);
     setState(() {
       _activeDateTime = selected;
@@ -372,84 +428,13 @@ class _TimePickerState extends State<TimePicker> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 220,
+      height: 260,
       child: CupertinoDatePicker(
         initialDateTime: _activeDateTime,
         mode: CupertinoDatePickerMode.time,
-        onDateTimeChanged: onDateTimeChanged,
+        use24hFormat: true,
+        onDateTimeChanged: onDateTimeChangedViaScroll,
       ),
-    );
-  }
-}
-
-class DatePickerDisplay extends StatelessWidget {
-  final DateTime? dateTime;
-  final void Function(DateTime d) updateDateTime;
-  final DateTime? earliestAllowedDate;
-  final String title;
-  DatePickerDisplay(
-      {required this.updateDateTime,
-      this.title = 'Date',
-      this.dateTime,
-      this.earliestAllowedDate});
-
-  Future<void> _openDatePicker(BuildContext context) async {
-    final DateTime? newDate = await showDatePicker(
-      context: context,
-      initialDate: dateTime ?? DateTime.now(),
-      firstDate: earliestAllowedDate ?? DateTime(DateTime.now().year - 10),
-      lastDate: DateTime(DateTime.now().year + 10),
-      helpText: 'Select a date',
-    );
-    if (newDate != null) {
-      updateDateTime(newDate);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TappableRow(
-      onTap: () => _openDatePicker(context),
-      title: title,
-      display: dateTime == null
-          ? MyText('select date...')
-          : MyText(
-              dateTime!.compactDateString,
-              weight: FontWeight.bold,
-            ),
-    );
-  }
-}
-
-class TimePickerDisplay extends StatelessWidget {
-  final TimeOfDay? timeOfDay;
-  final void Function(TimeOfDay t) updateTimeOfDay;
-  final String title;
-  TimePickerDisplay(
-      {required this.updateTimeOfDay, this.timeOfDay, this.title = 'Time'});
-
-  Future<void> _openTimePicker(BuildContext context) async {
-    final TimeOfDay? newTime = await showTimePicker(
-      context: context,
-      initialTime: timeOfDay ?? TimeOfDay.now(),
-      initialEntryMode: TimePickerEntryMode.dial,
-    );
-    if (newTime != null) {
-      updateTimeOfDay(newTime);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TappableRow(
-      onTap: () => _openTimePicker(context),
-      title: title,
-      display: timeOfDay == null
-          ? MyText('select date...')
-          : MyText(
-              timeOfDay!.format(context),
-              weight: FontWeight.bold,
-            ),
     );
   }
 }
@@ -457,32 +442,17 @@ class TimePickerDisplay extends StatelessWidget {
 class DateRangePickerDisplay extends StatelessWidget {
   final DateTime? from;
   final DateTime? to;
-  final Color? textColor;
   final void Function(DateTime? from, DateTime? to) updateRange;
-  DateRangePickerDisplay(
-      {required this.from,
-      required this.to,
-      required this.updateRange,
-      this.textColor});
-
-  Future<void> _openDateRangePicker(BuildContext context) async {
-    final now = DateTime.now();
-    final DateTimeRange? range = await showDateRangePicker(
-      context: context,
-      initialDateRange: DateTimeRange(
-          start: from ?? DateTime(now.year, now.month, now.day - 7),
-          end: to ?? now),
-      firstDate: DateTime(now.year - 10),
-      lastDate: DateTime(now.year + 10),
-    );
-    if (range != null) {
-      updateRange(range.start, range.end);
-    }
-  }
+  final Color textColor;
+  DateRangePickerDisplay({
+    required this.from,
+    required this.to,
+    required this.updateRange,
+    required this.textColor,
+  });
 
   Widget _text(String t) => MyText(
         t,
-        size: FONTSIZE.SMALL,
         color: textColor,
       );
 
@@ -490,13 +460,19 @@ class DateRangePickerDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      onPressed: () => _openDateRangePicker(context),
+      onPressed: () => context.showBottomSheet(
+          child: DateRangePicker(
+        from: from,
+        saveDateRange: updateRange,
+        to: to,
+      )),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             CupertinoIcons.calendar,
             color: textColor,
+            size: 20,
           ),
           SizedBox(width: 10),
           if (from == null && to == null)
@@ -506,7 +482,181 @@ class DateRangePickerDisplay extends StatelessWidget {
           else if ((from != null && to == null))
             _text('After ${from!.compactDateString}')
           else
-            _text('${from!.minimalDateString} - ${to!.minimalDateString}'),
+            _text(
+                '${from!.minimalDateStringYear} - ${to!.minimalDateStringYear}'),
+        ],
+      ),
+    );
+  }
+}
+
+class DateRangePicker extends StatefulWidget {
+  final DateTime? from;
+  final DateTime? to;
+  final void Function(DateTime? from, DateTime? to) saveDateRange;
+  const DateRangePicker(
+      {Key? key,
+      required this.from,
+      required this.to,
+      required this.saveDateRange})
+      : super(key: key);
+
+  @override
+  _DateRangePickerState createState() => _DateRangePickerState();
+}
+
+class _DateRangePickerState extends State<DateRangePicker> {
+  /// 0 is [_from]. 1 is [_to]
+  int _activePickerIndex = 0;
+  late DateTime? _from;
+  late DateTime? _to;
+
+  @override
+  void initState() {
+    super.initState();
+    _from = widget.from;
+    _to = widget.to;
+  }
+
+  void _updateFrom(DateTime? newDate) {
+    setState(() => _from = newDate);
+  }
+
+  void _updateTo(DateTime? newDate) {
+    setState(() => _to = newDate);
+  }
+
+  bool _inputsValid() {
+    if (_from != null && _to != null) {
+      return _from!.isBefore(_to!);
+    } else {
+      return true;
+    }
+  }
+
+  void _saveAndClose() {
+    widget.saveDateRange(_from, _to);
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: CupertinoPageScaffold(
+        backgroundColor: context.theme.modalBackground,
+        navigationBar: BottomBorderNavBar(
+          backgroundColor: context.theme.cardBackground,
+          customLeading: NavBarCancelButton(context.pop),
+          middle: NavBarTitle('Select Date Range'),
+          bottomBorderColor: context.theme.navbarBottomBorder,
+          trailing: _inputsValid() ? NavBarSaveButton(_saveAndClose) : null,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: ListView(
+            children: [
+              ContentBox(
+                  backgroundColor: context.theme.background,
+                  child: Column(
+                    children: [
+                      DateRangePickerRow(
+                        onTapDate: () => setState(() => _activePickerIndex = 0),
+                        pickerActive: _activePickerIndex == 0,
+                        dateTime: _from,
+                        title: 'Start date',
+                        selectedDateIsValid: _inputsValid(),
+                        clearDateTime: () => _updateFrom(null),
+                      ),
+                      GrowInOut(
+                          show: _activePickerIndex == 0,
+                          child: DatePickerCalendar(
+                              dateTime: _from, updateDateTime: _updateFrom)),
+                    ],
+                  )),
+              SizedBox(height: 12),
+              ContentBox(
+                  backgroundColor: context.theme.background,
+                  child: Column(
+                    children: [
+                      DateRangePickerRow(
+                        onTapDate: () => setState(() => _activePickerIndex = 1),
+                        pickerActive: _activePickerIndex == 1,
+                        dateTime: _to,
+                        title: 'End date',
+                        selectedDateIsValid: _inputsValid(),
+                        clearDateTime: () => _updateTo(null),
+                      ),
+                      GrowInOut(
+                          show: _activePickerIndex == 1,
+                          child: DatePickerCalendar(
+                              dateTime: _to, updateDateTime: _updateTo)),
+                    ],
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DateRangePickerRow extends StatelessWidget {
+  final String title;
+  final DateTime? dateTime;
+  final VoidCallback clearDateTime;
+  final VoidCallback onTapDate;
+  final bool pickerActive;
+  final Color? contentBoxColor;
+  final bool selectedDateIsValid;
+  const DateRangePickerRow(
+      {Key? key,
+      required this.title,
+      this.dateTime,
+      required this.onTapDate,
+      this.contentBoxColor,
+      required this.pickerActive,
+      required this.selectedDateIsValid,
+      required this.clearDateTime})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          MyText(title),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: onTapDate,
+                child: ContentBox(
+                    backgroundColor: contentBoxColor,
+                    child: MyText(
+                      dateTime == null
+                          ? 'Select date...'
+                          : dateTime!.compactDateString,
+                      color: !selectedDateIsValid
+                          ? Styles.errorRed
+                          : pickerActive
+                              ? Styles.peachRed
+                              : null,
+                      weight:
+                          pickerActive ? FontWeight.bold : FontWeight.normal,
+                      decoration: selectedDateIsValid
+                          ? null
+                          : TextDecoration.lineThrough,
+                    )),
+              ),
+              CupertinoButton(
+                  child: Icon(CupertinoIcons.clear_thick, size: 18),
+                  onPressed: clearDateTime)
+            ],
+          ),
         ],
       ),
     );

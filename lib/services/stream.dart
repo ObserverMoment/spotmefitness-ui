@@ -35,19 +35,17 @@ abstract class StreamService {
               accentPrimary: primary,
             )
           : ColorTheme.light(accentPrimary: primary),
-      messageInputTheme: MessageInputTheme(
+      messageInputTheme: MessageInputThemeData(
           inputTextStyle: GoogleFonts.sourceSansPro(),
-          inputBackground: cardBackground),
+          inputBackgroundColor: cardBackground),
       channelListViewTheme:
           ChannelListViewThemeData(backgroundColor: background),
       messageListViewTheme:
           MessageListViewThemeData(backgroundColor: background),
-      channelTheme: ChannelTheme(
-        channelHeaderTheme: ChannelHeaderTheme(
-          color: background,
-          title: GoogleFonts.archivo(textStyle: TextStyle(color: primary)),
-          subtitle: GoogleFonts.sourceSansPro(),
-        ),
+      channelHeaderTheme: ChannelHeaderThemeData(
+        color: background,
+        titleStyle: GoogleFonts.archivo(textStyle: TextStyle(color: primary)),
+        subtitleStyle: GoogleFonts.sourceSansPro(),
       ),
     );
   }

@@ -8,13 +8,11 @@ import 'package:spotmefitness_ui/components/social/feeds_and_follows/feed_utils.
 import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:stream_feed/src/client/flat_feed.dart';
 import 'package:stream_feed/stream_feed.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:faye_dart/src/subscription.dart';
 import 'package:collection/collection.dart';
-import 'package:auto_route/auto_route.dart';
 
 /// Feed for the currently logged in User.
 /// GetStream fees slug is [user_feed].

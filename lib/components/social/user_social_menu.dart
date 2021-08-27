@@ -14,7 +14,7 @@ class UserSocialBottomSheetMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
-      child: Icon(CupertinoIcons.ellipsis_circle),
+      child: Icon(CupertinoIcons.ellipsis),
       onPressed: () => openBottomSheetMenu(
           context: context,
           child: BottomSheetMenu(

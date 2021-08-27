@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/tag_managers/progress_journal_goal_tags_manager.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -192,9 +192,10 @@ class _ProgressJournalGoalCreatorState
                   onSave: _updateDescription,
                   maxDisplayLines: 10,
                   inputValidation: (t) => true),
-              DatePickerDisplay(
+              DateTimePickerDisplay(
                 dateTime: _activeProgressJournalGoal.deadline,
-                updateDateTime: _updateDeadline,
+                saveDateTime: _updateDeadline,
+                showTime: false,
                 title: 'Deadline',
               ),
               // Allow adjusting of the completed date - but only once it has been marked completed.
@@ -202,10 +203,11 @@ class _ProgressJournalGoalCreatorState
               if (_activeProgressJournalGoal.completedDate != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: DatePickerDisplay(
+                  child: DateTimePickerDisplay(
                     dateTime: _activeProgressJournalGoal.completedDate,
-                    updateDateTime: _updateCompletedDate,
+                    saveDateTime: _updateCompletedDate,
                     title: 'Completed On',
+                    showTime: false,
                   ),
                 ),
               Padding(

@@ -262,53 +262,35 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
                 ? FadeIn(child: NavBarSaveButton(_saveAndClose))
                 : null,
       ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              DatePickerDisplay(
-                dateTime: _completedOn,
-                updateDateTime: (DateTime d) {
-                  final prev = _completedOn;
-                  _setStateWrapper(() {
-                    _completedOn = DateTime(
-                        d.year, d.month, d.day, prev.hour, prev.minute);
-                  });
-                },
-              ),
-              SizedBox(height: 12),
-              TimePickerDisplay(
-                timeOfDay: TimeOfDay.fromDateTime(_completedOn),
-                updateTimeOfDay: (TimeOfDay t) {
-                  final prev = _completedOn;
-                  _setStateWrapper(() {
-                    _completedOn = DateTime(
-                        prev.year, prev.month, prev.day, t.hour, t.minute);
-                  });
-                },
-              ),
-              SizedBox(height: 12),
-              H3(_buildScoreHeaderText()),
-              SizedBox(height: 12),
-              if ([
-                BenchmarkType.maxload,
-                BenchmarkType.unbrokenreps,
-                BenchmarkType.amrap
-              ].contains(widget.userBenchmark.benchmarkType))
-                _buildNumberInput()
-              else
-                _buildDurationInput(),
-              EditableTextAreaRow(
-                  title: 'Note',
-                  text: _note ?? '',
-                  maxDisplayLines: 6,
-                  onSave: (t) => _setStateWrapper(() => _note = t),
-                  inputValidation: (t) => true)
-            ],
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          DateTimePickerDisplay(
+            dateTime: _completedOn,
+            saveDateTime: (DateTime d) {
+              _setStateWrapper(() {
+                _completedOn = d;
+              });
+            },
           ),
-        ),
+          SizedBox(height: 12),
+          H3(_buildScoreHeaderText()),
+          SizedBox(height: 12),
+          if ([
+            BenchmarkType.maxload,
+            BenchmarkType.unbrokenreps,
+            BenchmarkType.amrap
+          ].contains(widget.userBenchmark.benchmarkType))
+            _buildNumberInput()
+          else
+            _buildDurationInput(),
+          EditableTextAreaRow(
+              title: 'Note',
+              text: _note ?? '',
+              maxDisplayLines: 6,
+              onSave: (t) => _setStateWrapper(() => _note = t),
+              inputValidation: (t) => true)
+        ],
       ),
     );
   }

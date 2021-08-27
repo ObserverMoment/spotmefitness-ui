@@ -5,9 +5,14 @@ import 'package:spotmefitness_ui/constants.dart';
 class AnimatedRotation extends StatefulWidget {
   final bool rotate;
   final Widget child;
+
+  /// Rotates 180deg by default. (0.5 = 180deg)
+  /// For anti-clockwise use -0.5.
+  final double turns;
   AnimatedRotation({
     required this.rotate,
     required this.child,
+    this.turns = 0.5,
   });
   @override
   _AnimatedRotationState createState() => _AnimatedRotationState();
@@ -27,7 +32,7 @@ class _AnimatedRotationState extends State<AnimatedRotation>
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 0, end: 0.5).animate(
+    _animation = Tween<double>(begin: 0, end: widget.turns).animate(
         CurvedAnimation(parent: _controller, curve: Curves.linearToEaseOut));
   }
 

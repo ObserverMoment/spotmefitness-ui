@@ -13,7 +13,6 @@ import 'package:spotmefitness_ui/components/collections/collection_manager.dart'
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
-import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
@@ -273,7 +272,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                     middle: NavBarTitle(workoutPlan.name),
                     trailing: CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: Icon(CupertinoIcons.ellipsis_circle),
+                      child: Icon(CupertinoIcons.ellipsis),
                       onPressed: () => openBottomSheetMenu(
                           context: context,
                           child: BottomSheetMenu(

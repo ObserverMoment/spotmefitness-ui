@@ -36,7 +36,8 @@ extension DateTimeFormatting on DateTime {
   String get dateString => DateFormat.yMMMMd().format(this);
 
   String get compactDateString => DateFormat('MMM d, yyyy').format(this);
-  String get minimalDateString => DateFormat('MMM d').format(this);
+  String get minimalDateStringYear => DateFormat('MMM d, yy').format(this);
+  String get minimalDateString => DateFormat('MMM d ').format(this);
   String get dateAndTime => '${minimalDateString}, ${timeString}';
 
   String get daysAgo => this.isToday

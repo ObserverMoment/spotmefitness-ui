@@ -35,15 +35,7 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
   }
 
   void _updateCompletedOnDate(DateTime date) {
-    final prev = _bloc.loggedWorkout.completedOn;
-    _bloc.updateCompletedOn(DateTime(
-        date.year, date.month, date.day, prev.hour, prev.minute, prev.second));
-  }
-
-  void _updateCompletedOnTime(TimeOfDay time) {
-    final prev = _bloc.loggedWorkout.completedOn;
-    _bloc.updateCompletedOn(
-        DateTime(prev.year, prev.month, prev.day, time.hour, time.minute));
+    _bloc.updateCompletedOn(date);
   }
 
   @override
@@ -67,14 +59,9 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
 
     return Column(
       children: [
-        DatePickerDisplay(
+        DateTimePickerDisplay(
           dateTime: completedOn,
-          updateDateTime: _updateCompletedOnDate,
-        ),
-        SizedBox(height: 12),
-        TimePickerDisplay(
-          timeOfDay: TimeOfDay.fromDateTime(completedOn),
-          updateTimeOfDay: _updateCompletedOnTime,
+          saveDateTime: _updateCompletedOnDate,
         ),
         SizedBox(height: 12),
         SizedBox(

@@ -78,58 +78,55 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        child: SafeArea(
-      top: false,
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          PageView(
-            controller: _pageController,
-            children: _featurePages,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0),
-            child: _logoHeader(),
-          ),
-          Positioned(
-              bottom: 0,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: BasicProgressDots(
-                      numDots: _featurePages.length,
-                      currentIndex: _pageController.hasClients &&
-                              _pageController.page != null
-                          ? _pageController.page!.toInt()
-                          : 0,
-                      color: Styles.white,
-                    ),
+        child: Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        PageView(
+          controller: _pageController,
+          children: _featurePages,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 100.0),
+          child: _logoHeader(),
+        ),
+        Positioned(
+            bottom: 0,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: BasicProgressDots(
+                    numDots: _featurePages.length,
+                    currentIndex: _pageController.hasClients &&
+                            _pageController.page != null
+                        ? _pageController.page!.toInt()
+                        : 0,
+                    color: Styles.white,
                   ),
-                  MyButton(
-                    text: 'Sign In',
-                    onPressed: () => Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            fullscreenDialog: true, builder: (_) => SignIn())),
-                    backgroundColor: Styles.white,
-                    contentColor: Styles.black,
-                    withMinWidth: true,
-                  ),
-                  SizedBox(height: 10),
-                  SecondaryButton(
-                    text: 'Free Trial',
-                    onPressed: () => Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            fullscreenDialog: true,
-                            builder: (_) => StartTrial())),
-                  ),
-                  SizedBox(height: 32),
-                ],
-              ))
-        ],
-      ),
+                ),
+                MyButton(
+                  text: 'Sign In',
+                  onPressed: () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          fullscreenDialog: true, builder: (_) => SignIn())),
+                  backgroundColor: Styles.white,
+                  contentColor: Styles.black,
+                  withMinWidth: true,
+                ),
+                SizedBox(height: 10),
+                SecondaryButton(
+                  text: 'Free Trial',
+                  onPressed: () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                          fullscreenDialog: true,
+                          builder: (_) => StartTrial())),
+                ),
+                SizedBox(height: 100),
+              ],
+            ))
+      ],
     ));
   }
 }
