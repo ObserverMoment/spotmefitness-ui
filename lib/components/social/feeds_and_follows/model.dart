@@ -3,7 +3,7 @@ import 'package:stream_feed/stream_feed.dart';
 
 class ActivityWithObjectData {
   final EnrichedActivity activity;
-  final TimelinePostData? objectData;
+  final TimelinePostObjectData? objectData;
   const ActivityWithObjectData(this.activity, this.objectData);
 }
 

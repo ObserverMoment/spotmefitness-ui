@@ -57,7 +57,7 @@ fragment ScheduledWorkout on ScheduledWorkout {
 }
 
 # Minimal data for the poster of a post or the creator of the object referenced by it.
-fragment TimelinePostDataUser on TimelinePostDataUser {
+fragment TimelinePostObjectDataUser on TimelinePostObjectDataUser {
   __typename
   id
   displayName
@@ -65,7 +65,7 @@ fragment TimelinePostDataUser on TimelinePostDataUser {
 }
 
 # An object referenced by a post.
-fragment TimelinePostDataObject on TimelinePostDataObject {
+fragment TimelinePostObjectDataObject on TimelinePostObjectDataObject {
   __typename
   id
   type

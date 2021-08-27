@@ -99,6 +99,11 @@ const String kMessagingChannelName = 'messaging';
 const String kClubMembersChannelName = 'club_members';
 
 /// GetStream Feeds ///
+// Global user posts which are open to all
+const String kUserPostVerbName = 'post';
+// Posts to club feeds - they are private.
+const String kClubMembersPostVerbName = 'club-post';
+
 const String kUserFeedName = 'user_feed'; // Post to this.
 const String kUserTimelineName =
     'user_timeline'; // View this / follow other feeds with this.

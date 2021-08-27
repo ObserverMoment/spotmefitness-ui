@@ -806,6 +806,7 @@ type Query {
   clubSummaries(ids: [ID!]!): [ClubPublicSummary!]!
   userClubs: [Club!]!
   clubById(id: ID!): Club!
+  clubMembersFeedPosts(clubId: ID!, limit: Int!, offset: Int!): [TimelinePostFullData!]!
   discoverFeatured: [DiscoverFeatured!]!
   discoverWorkoutCategories: [DiscoverWorkoutCategory!]!
   discoverWorkoutPlanCategories: [DiscoverWorkoutPlanCategory!]!
@@ -825,7 +826,7 @@ type Query {
   textSearchWorkoutPlanNames(text: String!): [TextSearchResult!]
   textSearchUserPublicProfiles(text: String!): [UserPublicProfile!]
   textSearchUserPublicNames(text: String!): [TextSearchResult!]
-  timelinePostsData(postDataRequests: [TimelinePostDataRequestInput!]!): [TimelinePostData!]!
+  timelinePostsData(postDataRequests: [TimelinePostDataRequestInput!]!): [TimelinePostObjectData!]!
   authedUser: User!
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!
@@ -896,13 +897,31 @@ enum TimeUnit {
   SECONDS
 }
 
-type TimelinePostData {
-  poster: TimelinePostDataUser!
-  creator: TimelinePostDataUser!
-  object: TimelinePostDataObject!
+input TimelinePostDataRequestInput {
+  activityId: String!
+  posterId: ID!
+  objectId: ID!
+  objectType: TimelinePostType!
 }
 
-type TimelinePostDataObject {
+type TimelinePostFullData {
+  activityId: String!
+  postedAt: DateTime!
+  caption: String
+  tags: [String!]!
+  poster: TimelinePostObjectDataUser!
+  creator: TimelinePostObjectDataUser!
+  object: TimelinePostObjectDataObject!
+}
+
+type TimelinePostObjectData {
+  activityId: String!
+  poster: TimelinePostObjectDataUser!
+  creator: TimelinePostObjectDataUser!
+  object: TimelinePostObjectDataObject!
+}
+
+type TimelinePostObjectDataObject {
   id: ID!
   type: TimelinePostType!
   name: String!
@@ -912,13 +931,7 @@ type TimelinePostDataObject {
   introVideoThumbUri: String
 }
 
-input TimelinePostDataRequestInput {
-  posterId: ID!
-  objectId: ID!
-  objectType: TimelinePostType!
-}
-
-type TimelinePostDataUser {
+type TimelinePostObjectDataUser {
   id: ID!
   displayName: String!
   avatarUri: String

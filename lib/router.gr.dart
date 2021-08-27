@@ -36,7 +36,6 @@ import 'components/workout/workout_finder/workout_finder.dart' as _i13;
 import 'components/workout_plan/workout_plan_finder/workout_plan_finder.dart'
     as _i14;
 import 'generated/api/graphql_api.dart' as _i63;
-import 'model/enum.dart' as _i64;
 import 'pages/authed/authed_routes_wrapper_page.dart' as _i4;
 import 'pages/authed/details_pages/club_details_page.dart' as _i15;
 import 'pages/authed/details_pages/collection_details_page.dart' as _i10;
@@ -297,12 +296,8 @@ class AppRouter extends _i1.RootStackRouter {
         }),
     PostCreatorRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
-        builder: (data) {
-          final args = data.argsAs<PostCreatorRouteArgs>();
-          return _i29.PostCreatorPage(
-              key: args.key,
-              postFeedType: args.postFeedType,
-              clubId: args.clubId);
+        builder: (_) {
+          return const _i29.PostCreatorPage();
         }),
     ScheduledWorkoutCreatorRoute.name: (routeData) =>
         _i1.CupertinoPageX<dynamic>(
@@ -1039,26 +1034,10 @@ class PersonalBestCreatorRouteArgs {
   final _i63.UserBenchmark? userBenchmark;
 }
 
-class PostCreatorRoute extends _i1.PageRouteInfo<PostCreatorRouteArgs> {
-  PostCreatorRoute(
-      {_i62.Key? key, required _i64.PostFeedType postFeedType, String? clubId})
-      : super(name,
-            path: 'create/post',
-            args: PostCreatorRouteArgs(
-                key: key, postFeedType: postFeedType, clubId: clubId));
+class PostCreatorRoute extends _i1.PageRouteInfo {
+  const PostCreatorRoute() : super(name, path: 'create/post');
 
   static const String name = 'PostCreatorRoute';
-}
-
-class PostCreatorRouteArgs {
-  const PostCreatorRouteArgs(
-      {this.key, required this.postFeedType, this.clubId});
-
-  final _i62.Key? key;
-
-  final _i64.PostFeedType postFeedType;
-
-  final String? clubId;
 }
 
 class ScheduledWorkoutCreatorRoute

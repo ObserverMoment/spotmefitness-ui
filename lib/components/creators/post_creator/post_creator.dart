@@ -27,15 +27,10 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:auto_route/auto_route.dart';
 
 /// Create a post and sends it to GetStream.
-/// Currently: Like a content share function. Can only share certain objects from within the app such as [Workout], [WorkoutPlan] etc. If posting to a club you can post an [Announcement]. This has no referenced object in our DB and is text only. [Title], [Caption], [Tags].
+/// Currently: Like a content share function. Can only share certain objects from within the app such as [Workout], [WorkoutPlan] etc.
+/// Separate componenet needed for creating Club Posts as they will have different structure and also be handled server side due to the extra privacy requirements.
 class PostCreatorPage extends StatefulWidget {
-  /// Club feed posts can post an extra object type vs user posts - 'Announcement'.
-  final PostFeedType postFeedType;
-  final String? clubId;
-  const PostCreatorPage({Key? key, required this.postFeedType, this.clubId})
-      : assert((clubId != null && postFeedType == PostFeedType.club) ||
-            (clubId == null && postFeedType == PostFeedType.user)),
-        super(key: key);
+  const PostCreatorPage({Key? key}) : super(key: key);
 
   @override
   _PostCreatorPageState createState() => _PostCreatorPageState();
@@ -45,7 +40,6 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
   late AuthedUser _authedUser;
 
   /// If postType == PostType.user then we post to feed [kUserFeedName]
-  /// If postType == PostType.club then we post to feed [kClubMembersFeedName]
   late FlatFeed _feed;
   final TextEditingController _captionController = TextEditingController();
 
@@ -78,12 +72,7 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
     super.initState();
     _authedUser = GetIt.I<AuthBloc>().authedUser!;
 
-    if (widget.postFeedType == PostFeedType.user) {
-      _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
-    } else {
-      /// TODO:
-      _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
-    }
+    _feed = context.streamFeedClient.flatFeed(kUserFeedName, _authedUser.id);
 
     _captionController.addListener(() {
       setState(() {});
@@ -145,8 +134,9 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
     try {
       await _feed.addActivity(feed.Activity(
           actor: context.streamFeedClient.currentUser!.ref,
-          verb: 'post',
-          object: '${describeEnum(_selectedObjectType!)}:$_selectedObjectId',
+          verb: kUserPostVerbName,
+          // Send the object type in UPPERCASE!. E.g. WORKOUT:id
+          object: '${_selectedObjectType!.apiValue}:$_selectedObjectId',
           extraData: {
             'caption': _captionController.text,
             // Try and ensure we always pass a list of strings.
@@ -188,13 +178,13 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
     }
   }
 
-  TimelinePostDataObject _getSelectedObjectData() {
+  TimelinePostObjectDataObject _getSelectedObjectData() {
     switch (_selectedObjectType) {
       case TimelinePostType.workout:
-        return TimelinePostDataObject.fromJson(
+        return TimelinePostObjectDataObject.fromJson(
             {..._workout!.toJson(), 'type': _selectedObjectType!.apiValue});
       case TimelinePostType.workoutplan:
-        return TimelinePostDataObject.fromJson(
+        return TimelinePostObjectDataObject.fromJson(
             {..._workoutPlan!.toJson(), 'type': _selectedObjectType!.apiValue});
       default:
         throw Exception(
@@ -203,14 +193,16 @@ class _PostCreatorPageState extends State<PostCreatorPage> {
   }
 
   /// Form data required to display a preview of what the post will look like.
-  TimelinePostDataUser _getPosterDataForPreview() => TimelinePostDataUser()
-    ..id = 'not_required_for_preview'
-    ..displayName = 'You';
+  TimelinePostObjectDataUser _getPosterDataForPreview() =>
+      TimelinePostObjectDataUser()
+        ..id = 'not_required_for_preview'
+        ..displayName = 'You';
 
-  TimelinePostDataUser _getCreatorDataForPreview() =>
-      TimelinePostDataUser.fromJson(_getSelectedObjectCreator().toJson());
+  TimelinePostObjectDataUser _getCreatorDataForPreview() =>
+      TimelinePostObjectDataUser.fromJson(_getSelectedObjectCreator().toJson());
 
-  TimelinePostData get postDataForPreview => TimelinePostData()
+  TimelinePostObjectData get postDataForPreview => TimelinePostObjectData()
+    ..activityId = 'temp'
     ..poster = _getPosterDataForPreview()
     ..creator = _getCreatorDataForPreview()
     ..object = _getSelectedObjectData();

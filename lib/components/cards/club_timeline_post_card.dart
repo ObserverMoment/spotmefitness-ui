@@ -6,46 +6,33 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
-import 'package:spotmefitness_ui/components/social/feeds_and_follows/model.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
-import 'package:stream_feed/stream_feed.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
-class TimelinePostCard extends StatelessWidget {
-  final ActivityWithObjectData activityWithObjectData;
+class ClubTimelinePostCard extends StatelessWidget {
+  final TimelinePostFullData postData;
   // Removes interactivity when [true].
   final bool isPreview;
   final void Function(String activityId)? deleteActivityById;
-  final VoidCallback? likeUnlikePost;
-  final bool userHasLiked;
 
-  /// When true we don't display share count or display UI to allow the user to share.
-  /// Used for post types which should not be freely shared - i.e. posts within clubs / private challenges etc.
-  // final bool disableSharing;
-  final VoidCallback? sharePost;
-  final bool userHasShared;
-  const TimelinePostCard({
+  const ClubTimelinePostCard({
     Key? key,
-    required this.activityWithObjectData,
+    required this.postData,
     this.isPreview = false,
     this.deleteActivityById,
-    this.likeUnlikePost,
-    this.sharePost,
-    this.userHasLiked = false,
-    this.userHasShared = false,
   }) : super(key: key);
 
   void _openDetailsPageByType(BuildContext context) {
-    final object = activityWithObjectData.objectData!.object;
+    final object = postData.object;
     switch (object.type) {
       case TimelinePostType.workout:
         context.navigateTo(WorkoutDetailsRoute(id: object.id));
@@ -55,82 +42,11 @@ class TimelinePostCard extends StatelessWidget {
         break;
       default:
         throw Exception(
-            'TimelinePostCard._TimelinePostEllipsisMenu: No method defined for ${object.type}.');
+            'ClubTimelinePostCard._ClubTimelinePostEllipsisMenu: No method defined for ${postData.object.type}.');
     }
   }
 
-  Widget _buildReactionButtonsOrDisplay(
-      BuildContext context, EnrichedActivity activity, bool userIsPoster) {
-    final likesCount = activity.reactionCounts?[kLikeReactionName] ?? 0;
-    final sharesCount = activity.reactionCounts?[kShareReactionName] ?? 0;
-    return userIsPoster
-        ? Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-            child: Row(
-              children: [
-                Icon(
-                  CupertinoIcons.hand_thumbsup_fill,
-                  color: context.theme.primary.withOpacity(0.4),
-                  size: 16,
-                ),
-                SizedBox(width: 4),
-                MyText('$likesCount'),
-                Row(
-                  children: [
-                    SizedBox(width: 16),
-                    Icon(
-                      CupertinoIcons.paperplane_fill,
-                      color: context.theme.primary.withOpacity(0.4),
-                      size: 16,
-                    ),
-                    SizedBox(width: 4),
-                    MyText('$sharesCount'),
-                  ],
-                )
-              ],
-            ),
-          )
-        : Row(
-            children: [
-              if (likeUnlikePost != null)
-                _buildReactionButton(
-                    inactiveIconData: CupertinoIcons.hand_thumbsup,
-                    activeIconData: CupertinoIcons.hand_thumbsup_fill,
-                    onPressed: likeUnlikePost!,
-                    active: userHasLiked),
-              if (sharePost != null)
-                _buildReactionButton(
-                    inactiveIconData: CupertinoIcons.paperplane,
-                    activeIconData: CupertinoIcons.paperplane_fill,
-                    onPressed: sharePost!,
-                    active: userHasShared),
-            ],
-          );
-  }
-
-  Widget _buildReactionButton(
-          {required IconData inactiveIconData,
-          required IconData activeIconData,
-          required VoidCallback onPressed,
-          required bool active}) =>
-      CupertinoButton(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          onPressed: isPreview ? null : onPressed,
-          child: AnimatedSwitcher(
-            duration: kStandardAnimationDuration,
-            child: active
-                ? Icon(
-                    activeIconData,
-                    color: Styles.peachRed,
-                  )
-                : Icon(
-                    inactiveIconData,
-                  ),
-          ));
-
-  Widget _buildTitleCaptionAndTags(
-          EnrichedActivity activity, TimelinePostObjectData objectData) =>
-      Padding(
+  Widget _buildTitleCaptionAndTags() => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Row(
           children: [
@@ -139,27 +55,24 @@ class TimelinePostCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MyHeaderText(
-                    objectData.object.name,
+                    postData.object.name,
                     size: FONTSIZE.LARGE,
                     lineHeight: 1.2,
                   ),
                   SizedBox(height: 4),
-                  if (activity.extraData?['caption'] is String)
+                  if (Utils.textNotNull(postData.caption))
                     MyText(
-                      activity.extraData?['caption'] as String,
+                      postData.caption!,
                       lineHeight: 1.4,
                       maxLines: 3,
                     ),
-                  // There are no type checks on the getStream side so we need to defend against anything weird being in this field.
-                  if (activity.extraData?['tags'] is List)
+                  if (postData.tags.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 12.0, bottom: 4),
                       child: Wrap(
                         spacing: 5,
                         runSpacing: 5,
-                        children: (activity.extraData?['tags'] as List)
-                            // Ensure we only render strings.
-                            .whereType<String>()
+                        children: postData.tags
                             .map((tag) => MyText(
                                   '#$tag',
                                   color: Styles.colorOne,
@@ -177,12 +90,9 @@ class TimelinePostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activity = activityWithObjectData.activity;
-    final objectData = activityWithObjectData.objectData;
     final authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
-    final userIsPoster = authedUserId == objectData?.poster.id;
-    final userIsCreator = authedUserId == objectData?.creator.id;
-    final originalPostId = activity.extraData?['original_post_id'] as String?;
+    final userIsPoster = authedUserId == postData.poster.id;
+    final userIsCreator = authedUserId == postData.creator.id;
 
     return GestureDetector(
       onTap: () => _openDetailsPageByType(context),
@@ -196,23 +106,19 @@ class TimelinePostCard extends StatelessWidget {
                 children: [
                   UserAvatar(
                     size: 40,
-                    avatarUri: objectData?.creator.avatarUri,
+                    avatarUri: postData.creator.avatarUri,
                   ),
                   SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MyHeaderText(
-                        objectData != null
-                            ? objectData.object.type.display
-                            : '',
+                        postData.object.type.display,
                         size: FONTSIZE.SMALL,
                         lineHeight: 1.3,
                       ),
                       MyText(
-                        objectData != null
-                            ? 'By ${objectData.creator.displayName}'
-                            : '',
+                        'By ${postData.creator.displayName}',
                         lineHeight: 1.4,
                         size: FONTSIZE.SMALL,
                       ),
@@ -220,44 +126,47 @@ class TimelinePostCard extends StatelessWidget {
                   ),
                 ],
               ),
-              _TimelinePostEllipsisMenu(
+              _ClubTimelinePostEllipsisMenu(
                 userIsCreator: userIsCreator,
                 userIsPoster: userIsPoster,
-                object: objectData!.object,
-                poster: objectData.poster,
-                creator: objectData.creator,
-                handleDeletePost:
-                    deleteActivityById != null && activity.id != null
-                        ? () => deleteActivityById!(activity.id!)
-                        : null,
+                object: postData.object,
+                poster: postData.poster,
+                creator: postData.creator,
                 openDetailsPage: () => _openDetailsPageByType(context),
               )
             ],
           ),
         ),
         SizedBox(height: 4),
-        if (objectData.object.coverImageUri != null)
+        if (postData.object.coverImageUri != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: SizedBox(
                 height: 200,
-                child: SizedUploadcareImage(objectData.object.coverImageUri!)),
+                child: SizedUploadcareImage(postData.object.coverImageUri!)),
           ),
-        SizedBox(
-          height: 60,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildReactionButtonsOrDisplay(context, activity, userIsPoster),
+              Row(
+                children: [
+                  CupertinoButton(
+                      onPressed: () => print('like'),
+                      child: Icon(CupertinoIcons.hand_thumbsup)),
+                  CupertinoButton(
+                      onPressed: () => print('comments / chat'),
+                      child: Icon(CupertinoIcons.chat_bubble)),
+                ],
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   userIsPoster
                       ? Tag(
-                          tag: originalPostId != null
-                              ? 'Re-posted by you'
-                              : 'Posted by you',
+                          tag: 'Posted by you',
                           withBorder: true,
                           textColor: context.theme.primary,
                           color: context.theme.background,
@@ -266,8 +175,7 @@ class TimelinePostCard extends StatelessWidget {
                               vertical: 3, horizontal: 10),
                         )
                       : Tag(
-                          tag:
-                              '${originalPostId != null ? "Re-posted" : "Posted"} by ${objectData.poster.displayName}',
+                          tag: 'Posted by ${postData.poster.displayName}',
                           textColor: context.theme.primary,
                           color: context.theme.cardBackground,
                           fontSize: FONTSIZE.SMALL,
@@ -276,7 +184,7 @@ class TimelinePostCard extends StatelessWidget {
                         ),
                   SizedBox(height: 4),
                   Tag(
-                    tag: (activity.time as DateTime).daysAgo,
+                    tag: postData.postedAt.daysAgo,
                     textColor: context.theme.primary,
                     color: context.theme.cardBackground,
                     fontSize: FONTSIZE.SMALL,
@@ -289,7 +197,7 @@ class TimelinePostCard extends StatelessWidget {
             ],
           ),
         ),
-        Flexible(child: _buildTitleCaptionAndTags(activity, objectData)),
+        Flexible(child: _buildTitleCaptionAndTags()),
         SizedBox(height: 10),
         HorizontalLine(
             verticalPadding: 0, color: context.theme.primary.withOpacity(0.2))
@@ -298,17 +206,16 @@ class TimelinePostCard extends StatelessWidget {
   }
 }
 
-class _TimelinePostEllipsisMenu extends StatelessWidget {
+class _ClubTimelinePostEllipsisMenu extends StatelessWidget {
   final bool userIsPoster;
   final bool userIsCreator;
-  final TimelinePostObjectDataObject object;
-  final TimelinePostObjectDataUser creator;
   final TimelinePostObjectDataUser poster;
+  final TimelinePostObjectDataUser creator;
+  final TimelinePostObjectDataObject object;
   final VoidCallback? handleDeletePost;
   final VoidCallback? openEditPost;
   final VoidCallback openDetailsPage;
-
-  const _TimelinePostEllipsisMenu({
+  const _ClubTimelinePostEllipsisMenu({
     Key? key,
     required this.object,
     required this.openDetailsPage,
@@ -322,24 +229,6 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
 
   void _openUserProfile(BuildContext context, String userId) {
     context.navigateTo(UserPublicProfileDetailsRoute(userId: userId));
-  }
-
-  String _genLinkText() {
-    switch (object.type) {
-      case TimelinePostType.workout:
-        return 'workout/${object.id}';
-
-      case TimelinePostType.workoutplan:
-        return 'workout-plan/${object.id}';
-      default:
-        throw Exception(
-            'TimelinePostCard._TimelinePostEllipsisMenu._genLinkText: Cannot form alink text for ${object.type}');
-    }
-  }
-
-  Future<void> _shareObject() async {
-    await SharingAndLinking.shareLink(
-        _genLinkText(), 'Check out this ${object.type.display}');
   }
 
   @override
@@ -369,10 +258,6 @@ class _TimelinePostEllipsisMenu extends StatelessWidget {
                       text: 'View Poster',
                       icon: Icon(CupertinoIcons.person_crop_rectangle),
                       onPressed: () => _openUserProfile(context, poster.id)),
-                BottomSheetMenuItem(
-                    text: 'Share ${object.type.display} to...',
-                    icon: Icon(CupertinoIcons.paperplane),
-                    onPressed: _shareObject),
                 if (userIsPoster && handleDeletePost != null)
                   BottomSheetMenuItem(
                       text: 'Delete Post',

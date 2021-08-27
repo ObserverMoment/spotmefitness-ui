@@ -18,70 +18,73 @@ class ClubDetailsInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (Utils.textNotNull(club.location))
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          if (Utils.textNotNull(club.location))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(CupertinoIcons.location,
+                      size: 18, color: Styles.infoBlue),
+                  SizedBox(width: 2),
+                  MyText(club.location!, color: Styles.infoBlue)
+                ],
+              ),
+            ),
+          if (Utils.anyNotNull([club.introAudioUri, club.introVideoUri]))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (club.introVideoUri != null)
+                    VideoThumbnailPlayer(
+                      videoUri: club.introVideoUri,
+                      videoThumbUri: club.introVideoThumbUri,
+                      displaySize: _kthumbDisplaySize,
+                    ),
+                  if (club.introAudioUri != null)
+                    AudioThumbnailPlayer(
+                      audioUri: club.introAudioUri!,
+                      displaySize: _kthumbDisplaySize,
+                      playerTitle: '${club.name} - Intro',
+                    ),
+                ],
+              ),
+            ),
+          if (Utils.textNotNull(club.description))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: ViewMoreFullScreenTextBlock(
+                text: club.description!,
+                title: 'Description',
+                maxLines: 8,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          SizedBox(height: 8),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(CupertinoIcons.location, size: 18, color: Styles.infoBlue),
-                SizedBox(width: 2),
-                MyText(club.location!, color: Styles.infoBlue)
+                Icon(CupertinoIcons.person_2),
+                SizedBox(width: 8),
+                H3('Members (${club.totalMembers})')
               ],
             ),
           ),
-        if (Utils.anyNotNull([club.introAudioUri, club.introVideoUri]))
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (club.introVideoUri != null)
-                  VideoThumbnailPlayer(
-                    videoUri: club.introVideoUri,
-                    videoThumbUri: club.introVideoThumbUri,
-                    displaySize: _kthumbDisplaySize,
-                  ),
-                if (club.introAudioUri != null)
-                  AudioThumbnailPlayer(
-                    audioUri: club.introAudioUri!,
-                    displaySize: _kthumbDisplaySize,
-                    playerTitle: '${club.name} - Intro',
-                  ),
-              ],
-            ),
-          ),
-        if (Utils.textNotNull(club.description))
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ViewMoreFullScreenTextBlock(
-              text: club.description!,
-              title: 'Description',
-              maxLines: 8,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Icon(CupertinoIcons.person_2),
-              SizedBox(width: 8),
-              H3('Members (${club.totalMembers})')
-            ],
-          ),
-        ),
-        ClubMembersGridList(
-            scrollPhysics: NeverScrollableScrollPhysics(),
-            admins: club.admins,
-            members: club.members,
-            owner: club.owner,
-            onTapAvatar: (userId, _) => context
-                .navigateTo(UserPublicProfileDetailsRoute(userId: userId))),
-      ],
+          ClubMembersGridList(
+              scrollPhysics: NeverScrollableScrollPhysics(),
+              admins: club.admins,
+              members: club.members,
+              owner: club.owner,
+              onTapAvatar: (userId, _) => context
+                  .navigateTo(UserPublicProfileDetailsRoute(userId: userId))),
+        ],
+      ),
     );
   }
 }

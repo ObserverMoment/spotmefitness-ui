@@ -8,12 +8,14 @@ class ClubDetailsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PageLink(linkText: 'Workouts (x)', bold: true, onPress: () => {}),
-        PageLink(linkText: 'Plans (x)', bold: true, onPress: () => {}),
-        PageLink(linkText: 'Challenges (x)', bold: true, onPress: () => {}),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          PageLink(linkText: 'Workouts (x)', bold: true, onPress: () => {}),
+          PageLink(linkText: 'Plans (x)', bold: true, onPress: () => {}),
+          PageLink(linkText: 'Challenges (x)', bold: true, onPress: () => {}),
+        ],
+      ),
     );
   }
 }

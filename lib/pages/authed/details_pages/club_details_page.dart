@@ -139,11 +139,11 @@ class _ClubDetailsPageState extends State<ClubDetailsPage> {
                           setState(() => _activeTabIndex = i)),
                   pinned: true,
                 ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  sliver: SliverList(
-                      delegate: SliverChildListDelegate([
-                    IndexedStack(
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: IndexedStack(
+                      sizing: StackFit.passthrough,
                       index: _activeTabIndex,
                       children: [
                         ClubDetailsInfo(
@@ -155,7 +155,7 @@ class _ClubDetailsPageState extends State<ClubDetailsPage> {
                         )
                       ],
                     ),
-                  ])),
+                  ),
                 )
               ],
             ),
@@ -346,10 +346,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                               BottomSheetMenuItem(
                                   text: 'New Post',
                                   icon: Icon(CupertinoIcons.add),
-                                  onPressed: () => context.navigateTo(
-                                      PostCreatorRoute(
-                                          postFeedType: PostFeedType.club,
-                                          clubId: club.id))),
+                                  onPressed: () => print('club post flow')),
                             if (userIsMember && !userIsOwner)
                               BottomSheetMenuItem(
                                   text: 'Leave Club',

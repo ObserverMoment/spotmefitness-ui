@@ -24,6 +24,7 @@ class FeedUtils {
       final idAndType = objectStringIdFromEnriched(a.object!).split(':');
 
       return TimelinePostDataRequestInput(
+          activityId: a.id!,
           posterId: actorStringIdFromEnriched(a.actor!).split(':')[1],
           objectId: idAndType[1],
           objectType: idAndType[0].toTimelinePostType());
@@ -44,12 +45,10 @@ class FeedUtils {
     /// [activities] and [requestedPosts] are in the same order - so we can match without going back into the [activities].
     /// Find the correct [TimelinePostData] by matching both the userId and the objectId, then add  to [ActivityWithObjectData] along with the [activity].
     return activities
-        .mapIndexed<ActivityWithObjectData>((i, activity) =>
-            ActivityWithObjectData(
-                activity,
-                result.data?.timelinePostsData.firstWhereOrNull((p) =>
-                    p.poster.id == postDataRequests[i].posterId &&
-                    p.object.id == postDataRequests[i].objectId)))
+        .map<ActivityWithObjectData>((activity) => ActivityWithObjectData(
+            activity,
+            result.data?.timelinePostsData
+                .firstWhereOrNull((pd) => pd.activityId == activity.id)))
         .toList();
   }
 
