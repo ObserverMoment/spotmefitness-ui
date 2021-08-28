@@ -102,7 +102,6 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
     } catch (e) {
       print(e);
       context.showToast(message: "Oops, couldn't initialize notifications!");
-      throw Exception(e);
     }
   }
 
