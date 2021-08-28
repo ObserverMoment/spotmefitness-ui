@@ -64,14 +64,14 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
       FirebaseMessaging.instance.onTokenRefresh.listen((token) {
         _streamChatClient.addDevice(token, PushProvider.firebase);
       });
-
+    } catch (e) {
+      print(e);
+      context.showToast(message: e.toString());
+      context.showToast(message: "Oops, couldn't initialize chat! $e");
+    } finally {
       setState(() {
         _chatInitialized = true;
       });
-    } catch (e) {
-      print(e);
-      context.showToast(message: "Oops, couldn't initialize chat!");
-      throw Exception(e);
     }
   }
 
@@ -95,13 +95,14 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
 
       _feedSubscription =
           await _notificationFeed.subscribe(_handleNotification);
-
+    } catch (e) {
+      print(e);
+      context.showToast(message: e.toString());
+      context.showToast(message: "Oops, couldn't initialize notifications! $e");
+    } finally {
       setState(() {
         _feedsInitialized = true;
       });
-    } catch (e) {
-      print(e);
-      context.showToast(message: "Oops, couldn't initialize notifications!");
     }
   }
 
