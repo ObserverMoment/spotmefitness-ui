@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -61,17 +61,17 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
 
       /// Add the users device to Stream backend.
       /// https://getstream.io/chat/docs/sdk/flutter/guides/adding_push_notifications/#registering-a-device-at-stream-backend
-      FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-        _streamChatClient.addDevice(token, PushProvider.firebase);
+      // FirebaseMessaging.instance.onTokenRefresh.listen((token) {
+      //   _streamChatClient.addDevice(token, PushProvider.firebase);
+      // });
+
+      setState(() {
+        _chatInitialized = true;
       });
     } catch (e) {
       print(e);
       context.showToast(message: e.toString());
       context.showToast(message: "Oops, couldn't initialize chat! $e");
-    } finally {
-      setState(() {
-        _chatInitialized = true;
-      });
     }
   }
 
@@ -95,14 +95,14 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
 
       _feedSubscription =
           await _notificationFeed.subscribe(_handleNotification);
+
+      setState(() {
+        _feedsInitialized = true;
+      });
     } catch (e) {
       print(e);
       context.showToast(message: e.toString());
       context.showToast(message: "Oops, couldn't initialize notifications! $e");
-    } finally {
-      setState(() {
-        _feedsInitialized = true;
-      });
     }
   }
 
