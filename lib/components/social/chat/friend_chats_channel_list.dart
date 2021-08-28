@@ -86,11 +86,20 @@ class _FriendChatsChannelListState extends State<FriendChatsChannelList> {
   Widget build(BuildContext context) {
     return _loadingUserData
         ? ShimmerChatChannelPreviewList()
-        : ListView.builder(
-            itemCount: _channelsWithUserData.length,
-            itemBuilder: (c, i) => FriendChannelPreviewTile(
-                  channelWithUserData: _channelsWithUserData[i],
-                ));
+        : _channelsWithUserData.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(32),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText('No one to one chats yet...'),
+                  ],
+                ))
+            : ListView.builder(
+                itemCount: _channelsWithUserData.length,
+                itemBuilder: (c, i) => FriendChannelPreviewTile(
+                      channelWithUserData: _channelsWithUserData[i],
+                    ));
   }
 }
 

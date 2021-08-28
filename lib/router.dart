@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/creators/custom_move_creator/custom_
 import 'package:spotmefitness_ui/components/creators/gym_profile_creator.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/personal_best_creator/personal_best_creator.dart';
+import 'package:spotmefitness_ui/components/creators/post_creator/club_post_creator.dart';
 import 'package:spotmefitness_ui/components/creators/post_creator/post_creator.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_creator.dart';
 import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.dart';
@@ -174,6 +175,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
           AutoRoute(
               path: 'create/personal-best', page: PersonalBestCreatorPage),
           AutoRoute(path: 'create/post', page: PostCreatorPage),
+          AutoRoute(path: 'create/club-post', page: ClubPostCreatorPage),
           AutoRoute(
               path: 'create/scheduled-workout',
               page: ScheduledWorkoutCreatorPage),

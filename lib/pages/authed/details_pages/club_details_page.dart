@@ -346,7 +346,8 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                               BottomSheetMenuItem(
                                   text: 'New Post',
                                   icon: Icon(CupertinoIcons.add),
-                                  onPressed: () => print('club post flow')),
+                                  onPressed: () => context.navigateTo(
+                                      ClubPostCreatorRoute(clubId: club.id))),
                             if (userIsMember && !userIsOwner)
                               BottomSheetMenuItem(
                                   text: 'Leave Club',

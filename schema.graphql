@@ -163,6 +163,13 @@ input CreateClubInviteTokenInput {
   Club: ConnectRelationInput!
 }
 
+input CreateClubTimelinePostInput {
+  clubId: String!
+  object: String!
+  caption: String
+  tags: [String!]
+}
+
 input CreateCollectionInput {
   name: String!
   description: String
@@ -649,6 +656,8 @@ type Mutation {
   removeMemberAdminStatus(userId: ID!, clubId: ID!): Club!
   addUserToClubViaInviteToken(userId: ID!, clubInviteTokenId: ID!): Club!
   removeUserFromClub(userToRemoveId: ID!, clubId: ID!): Club!
+  createClubTimelinePost(data: CreateClubTimelinePostInput!): TimelinePostFullData!
+  deleteClubTimelinePost(activityId: ID!): ID!
   createEquipment(data: CreateEquipmentInput!): Equipment
   updateEquipment(data: UpdateEquipmentInput!): Equipment
   createGymProfile(data: CreateGymProfileInput!): GymProfile!
@@ -806,7 +815,6 @@ type Query {
   clubSummaries(ids: [ID!]!): [ClubPublicSummary!]!
   userClubs: [Club!]!
   clubById(id: ID!): Club!
-  clubMembersFeedPosts(clubId: ID!, limit: Int!, offset: Int!): [TimelinePostFullData!]!
   discoverFeatured: [DiscoverFeatured!]!
   discoverWorkoutCategories: [DiscoverWorkoutCategory!]!
   discoverWorkoutPlanCategories: [DiscoverWorkoutPlanCategory!]!
@@ -827,6 +835,7 @@ type Query {
   textSearchUserPublicProfiles(text: String!): [UserPublicProfile!]
   textSearchUserPublicNames(text: String!): [TextSearchResult!]
   timelinePostsData(postDataRequests: [TimelinePostDataRequestInput!]!): [TimelinePostObjectData!]!
+  clubMembersFeedPosts(clubId: ID!, limit: Int!, offset: Int!): [TimelinePostFullData!]!
   authedUser: User!
   checkUniqueDisplayName(displayName: String!): Boolean!
   gymProfiles: [GymProfile!]!

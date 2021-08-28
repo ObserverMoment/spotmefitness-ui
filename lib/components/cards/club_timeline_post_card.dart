@@ -13,8 +13,8 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
-import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
@@ -30,6 +30,31 @@ class ClubTimelinePostCard extends StatelessWidget {
     this.isPreview = false,
     this.deleteActivityById,
   }) : super(key: key);
+
+  Future<void> _handleDeletePost(BuildContext context) async {
+    context.showConfirmDeleteDialog(
+        itemType: 'Post',
+        message: 'This cannot be undone, are you sure?',
+        onConfirm: () async {
+          final result = await context.graphQLStore.networkOnlyOperation<
+                  DeleteClubTimelinePost$Mutation,
+                  DeleteClubTimelinePostArguments>(
+              operation: DeleteClubTimelinePostMutation(
+                  variables: DeleteClubTimelinePostArguments(
+                      activityId: postData.activityId)));
+
+          if (result.hasErrors || result.data == null) {
+            result.errors?.forEach((e) {
+              print(e);
+            });
+            context.showToast(
+                message: 'Sorry, there was a problem deleting the post.',
+                toastType: ToastType.destructive);
+          } else {
+            context.showToast(message: 'Post deleted.');
+          }
+        });
+  }
 
   void _openDetailsPageByType(BuildContext context) {
     final object = postData.object;
@@ -112,10 +137,24 @@ class ClubTimelinePostCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MyHeaderText(
-                        postData.object.type.display,
-                        size: FONTSIZE.SMALL,
-                        lineHeight: 1.3,
+                      Row(
+                        children: [
+                          MyHeaderText(
+                            postData.object.type.display,
+                            size: FONTSIZE.SMALL,
+                            lineHeight: 1.3,
+                          ),
+                          SizedBox(width: 10),
+                          Tag(
+                            tag: postData.postedAt.daysAgo,
+                            textColor: context.theme.primary,
+                            color: context.theme.cardBackground,
+                            fontSize: FONTSIZE.SMALL,
+                            fontWeight: FontWeight.normal,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 2, horizontal: 10),
+                          )
+                        ],
                       ),
                       MyText(
                         'By ${postData.creator.displayName}',
@@ -132,12 +171,13 @@ class ClubTimelinePostCard extends StatelessWidget {
                 object: postData.object,
                 poster: postData.poster,
                 creator: postData.creator,
+                handleDeletePost: () => _handleDeletePost(context),
                 openDetailsPage: () => _openDetailsPageByType(context),
               )
             ],
           ),
         ),
-        SizedBox(height: 4),
+        SizedBox(height: 6),
         if (postData.object.coverImageUri != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
@@ -145,60 +185,27 @@ class ClubTimelinePostCard extends StatelessWidget {
                 height: 200,
                 child: SizedUploadcareImage(postData.object.coverImageUri!)),
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CupertinoButton(
-                      onPressed: () => print('like'),
-                      child: Icon(CupertinoIcons.hand_thumbsup)),
-                  CupertinoButton(
-                      onPressed: () => print('comments / chat'),
-                      child: Icon(CupertinoIcons.chat_bubble)),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  userIsPoster
-                      ? Tag(
-                          tag: 'Posted by you',
-                          withBorder: true,
-                          textColor: context.theme.primary,
-                          color: context.theme.background,
-                          fontSize: FONTSIZE.SMALL,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                        )
-                      : Tag(
-                          tag: 'Posted by ${postData.poster.displayName}',
-                          textColor: context.theme.primary,
-                          color: context.theme.cardBackground,
-                          fontSize: FONTSIZE.SMALL,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                        ),
-                  SizedBox(height: 4),
-                  Tag(
-                    tag: postData.postedAt.daysAgo,
-                    textColor: context.theme.primary,
-                    color: context.theme.cardBackground,
-                    fontSize: FONTSIZE.SMALL,
-                    fontWeight: FontWeight.normal,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                  )
-                ],
-              )
-            ],
-          ),
-        ),
+        SizedBox(height: 6),
         Flexible(child: _buildTitleCaptionAndTags()),
-        SizedBox(height: 10),
+        if (!isPreview)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CupertinoButton(
+                        onPressed: () => print('like'),
+                        child: Icon(CupertinoIcons.hand_thumbsup)),
+                    CupertinoButton(
+                        onPressed: () => print('comments / chat'),
+                        child: Icon(CupertinoIcons.chat_bubble)),
+                  ],
+                ),
+              ],
+            ),
+          ),
         HorizontalLine(
             verticalPadding: 0, color: context.theme.primary.withOpacity(0.2))
       ]),
@@ -213,7 +220,6 @@ class _ClubTimelinePostEllipsisMenu extends StatelessWidget {
   final TimelinePostObjectDataUser creator;
   final TimelinePostObjectDataObject object;
   final VoidCallback? handleDeletePost;
-  final VoidCallback? openEditPost;
   final VoidCallback openDetailsPage;
   const _ClubTimelinePostEllipsisMenu({
     Key? key,
@@ -221,15 +227,10 @@ class _ClubTimelinePostEllipsisMenu extends StatelessWidget {
     required this.openDetailsPage,
     required this.poster,
     required this.creator,
-    this.openEditPost,
     this.handleDeletePost,
     required this.userIsPoster,
     required this.userIsCreator,
   }) : super(key: key);
-
-  void _openUserProfile(BuildContext context, String userId) {
-    context.navigateTo(UserPublicProfileDetailsRoute(userId: userId));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,16 +249,6 @@ class _ClubTimelinePostEllipsisMenu extends StatelessWidget {
                     text: 'View ${object.type.display}',
                     icon: Icon(CupertinoIcons.eye),
                     onPressed: openDetailsPage),
-                if (!userIsCreator)
-                  BottomSheetMenuItem(
-                      text: 'View Creator',
-                      icon: Icon(CupertinoIcons.person_crop_rectangle),
-                      onPressed: () => _openUserProfile(context, creator.id)),
-                if (!userIsPoster)
-                  BottomSheetMenuItem(
-                      text: 'View Poster',
-                      icon: Icon(CupertinoIcons.person_crop_rectangle),
-                      onPressed: () => _openUserProfile(context, poster.id)),
                 if (userIsPoster && handleDeletePost != null)
                   BottomSheetMenuItem(
                       text: 'Delete Post',

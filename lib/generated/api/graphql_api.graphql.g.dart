@@ -5664,6 +5664,50 @@ Map<String, dynamic> _$TimelinePostFullDataToJson(
       'object': instance.object.toJson(),
     };
 
+CreateClubTimelinePost$Mutation _$CreateClubTimelinePost$MutationFromJson(
+    Map<String, dynamic> json) {
+  return CreateClubTimelinePost$Mutation()
+    ..createClubTimelinePost = TimelinePostFullData.fromJson(
+        json['createClubTimelinePost'] as Map<String, dynamic>);
+}
+
+Map<String, dynamic> _$CreateClubTimelinePost$MutationToJson(
+        CreateClubTimelinePost$Mutation instance) =>
+    <String, dynamic>{
+      'createClubTimelinePost': instance.createClubTimelinePost.toJson(),
+    };
+
+CreateClubTimelinePostInput _$CreateClubTimelinePostInputFromJson(
+    Map<String, dynamic> json) {
+  return CreateClubTimelinePostInput(
+    clubId: json['clubId'] as String,
+    object: json['object'] as String,
+    caption: json['caption'] as String?,
+    tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  );
+}
+
+Map<String, dynamic> _$CreateClubTimelinePostInputToJson(
+        CreateClubTimelinePostInput instance) =>
+    <String, dynamic>{
+      'clubId': instance.clubId,
+      'object': instance.object,
+      'caption': instance.caption,
+      'tags': instance.tags,
+    };
+
+DeleteClubTimelinePost$Mutation _$DeleteClubTimelinePost$MutationFromJson(
+    Map<String, dynamic> json) {
+  return DeleteClubTimelinePost$Mutation()
+    ..deleteClubTimelinePost = json['deleteClubTimelinePost'] as String;
+}
+
+Map<String, dynamic> _$DeleteClubTimelinePost$MutationToJson(
+        DeleteClubTimelinePost$Mutation instance) =>
+    <String, dynamic>{
+      'deleteClubTimelinePost': instance.deleteClubTimelinePost,
+    };
+
 ClubMembersFeedPosts$Query _$ClubMembersFeedPosts$QueryFromJson(
     Map<String, dynamic> json) {
   return ClubMembersFeedPosts$Query()
@@ -7360,6 +7404,33 @@ Map<String, dynamic> _$ClubSummariesArgumentsToJson(
         ClubSummariesArguments instance) =>
     <String, dynamic>{
       'ids': instance.ids,
+    };
+
+CreateClubTimelinePostArguments _$CreateClubTimelinePostArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return CreateClubTimelinePostArguments(
+    data: CreateClubTimelinePostInput.fromJson(
+        json['data'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$CreateClubTimelinePostArgumentsToJson(
+        CreateClubTimelinePostArguments instance) =>
+    <String, dynamic>{
+      'data': instance.data.toJson(),
+    };
+
+DeleteClubTimelinePostArguments _$DeleteClubTimelinePostArgumentsFromJson(
+    Map<String, dynamic> json) {
+  return DeleteClubTimelinePostArguments(
+    activityId: json['activityId'] as String,
+  );
+}
+
+Map<String, dynamic> _$DeleteClubTimelinePostArgumentsToJson(
+        DeleteClubTimelinePostArguments instance) =>
+    <String, dynamic>{
+      'activityId': instance.activityId,
     };
 
 ClubMembersFeedPostsArguments _$ClubMembersFeedPostsArgumentsFromJson(

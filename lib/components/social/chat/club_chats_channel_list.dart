@@ -89,11 +89,21 @@ class _ClubChatsChannelListState extends State<ClubChatsChannelList> {
   Widget build(BuildContext context) {
     return _loadingClubSummaryData
         ? ShimmerChatChannelPreviewList()
-        : ListView.builder(
-            itemCount: _channelsWithClubSummaryData.length,
-            itemBuilder: (c, i) => ClubChannelPreviewTile(
-                  channelWithClubSummaryData: _channelsWithClubSummaryData[i],
-                ));
+        : _channelsWithClubSummaryData.isEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(32),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText('No club chats yet...'),
+                  ],
+                ))
+            : ListView.builder(
+                itemCount: _channelsWithClubSummaryData.length,
+                itemBuilder: (c, i) => ClubChannelPreviewTile(
+                      channelWithClubSummaryData:
+                          _channelsWithClubSummaryData[i],
+                    ));
   }
 }
 

@@ -118,7 +118,7 @@ class _ClubDetailsTimelineState extends State<ClubDetailsTimeline> {
               )
             : PagedListView<int, TimelinePostFullData>(
                 shrinkWrap: true,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 pagingController: _pagingController,
                 scrollController: _scrollController,
                 // Scrolling being handled in parent.
