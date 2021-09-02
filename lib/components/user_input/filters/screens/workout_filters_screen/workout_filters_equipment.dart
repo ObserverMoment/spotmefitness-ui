@@ -96,9 +96,8 @@ class WorkoutFiltersEquipment extends StatelessWidget {
                     builder: (data) {
                       final allEquipments = data.equipments;
 
-                      return EquipmentMultiSelector(
+                      return EquipmentMultiSelectorGrid(
                           selectedEquipments: availableEquipments,
-                          scrollDirection: Axis.vertical,
                           // Bodyweight has no impact on workout filters. It is / should be ignored by both the client side and api side filter logic.
                           equipments: allEquipments
                               .where((e) => e.id != kBodyweightEquipmentId)

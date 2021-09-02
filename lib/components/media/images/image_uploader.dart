@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -43,8 +44,10 @@ class _ImageUploaderState extends State<ImageUploader> {
       setState(() => _uploading = true);
       await _uploadFile(croppedFile);
       setState(() => _uploading = false);
-    } catch (e) {
-      await context.showErrorAlert(e.toString());
+    } on PlatformException catch (e) {
+      context.showErrorAlert(e.toString());
+    } on Exception catch (_) {
+      context.showToast(message: 'Image not selected');
     } finally {
       setState(() => _uploading = false);
     }

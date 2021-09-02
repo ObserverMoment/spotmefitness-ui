@@ -211,9 +211,8 @@ class MoveFiltersEquipment extends StatelessWidget {
                     builder: (data) {
                       final allEquipments = data.equipments;
 
-                      return EquipmentMultiSelector(
+                      return EquipmentMultiSelectorGrid(
                           selectedEquipments: selectedEquipments,
-                          scrollDirection: Axis.vertical,
                           equipments: allEquipments,
                           crossAxisCount: 4,
                           fontSize: FONTSIZE.SMALL,

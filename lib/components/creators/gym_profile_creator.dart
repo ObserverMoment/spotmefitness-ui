@@ -330,11 +330,10 @@ class _GymProfileCreatorPageEquipment extends StatelessWidget {
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
-                  child: EquipmentMultiSelector(
+                  child: EquipmentMultiSelectorGrid(
                     showIcon: true,
                     crossAxisCount: 4,
                     equipments: equipments,
-                    scrollDirection: Axis.vertical,
                     handleSelection: handleSelection,
                     selectedEquipments: selectedEquipments,
                     fontSize: FONTSIZE.TINY,

@@ -50,6 +50,7 @@ class _VideoUploaderState extends State<VideoUploader> {
           '${(file.lengthSync() / 1000000).toStringAsFixed(2)} MB';
 
       await context.showDialog(
+          useRootNavigator: false,
           title: 'Upload video',
           content: MyText(
             'This file is $fileSize in size.',

@@ -60,8 +60,7 @@ class _UserPublicProfileDetailsPageState
 
   Future<void> _shareUserProfile(UserPublicProfile userPublicProfile) async {
     await SharingAndLinking.shareLink(
-        '${kDeepLinkSchema}profile/${userPublicProfile.id}',
-        'Check out this profile!');
+        'profile/${userPublicProfile.id}', 'Check out this profile!');
   }
 
   /// Top right of tabs to indicate how many of each type are in the list.

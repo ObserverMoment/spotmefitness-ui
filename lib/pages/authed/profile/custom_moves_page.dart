@@ -15,8 +15,8 @@ import 'package:auto_route/auto_route.dart';
 class ProfileCustomMovesPage extends StatelessWidget {
   Future<void> _openCustomMoveCreator(
       {required BuildContext context, Move? moveToUpdate}) async {
-    final success = await context
-        .pushRoute<bool?>(CustomMoveCreatorRoute(move: moveToUpdate));
+    final success =
+        await context.pushRoute(CustomMoveCreatorRoute(move: moveToUpdate));
     if (success == true) {
       if (moveToUpdate == null) {
         // Created

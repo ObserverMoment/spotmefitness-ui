@@ -69,39 +69,82 @@ class EquipmentTile extends StatelessWidget {
   }
 }
 
-class EquipmentMultiSelector extends StatelessWidget {
+/// Horizontal scrolling list - single row.
+class EquipmentSelectorList extends StatelessWidget {
+  final List<Equipment> selectedEquipments;
+  final List<Equipment> equipments;
+  final Function(Equipment) handleSelection;
+  final bool showIcon;
+  final bool tilesBorder;
+  final FONTSIZE fontSize;
+  final double tileSize;
+  EquipmentSelectorList({
+    required this.selectedEquipments,
+    required this.equipments,
+    this.showIcon = false,
+    required this.handleSelection,
+    this.fontSize = FONTSIZE.SMALL,
+    this.tilesBorder = false,
+    this.tileSize = 100,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: tileSize,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          itemCount: equipments.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () => handleSelection(equipments[index]),
+              child: Container(
+                width: tileSize,
+                height: tileSize,
+                padding: const EdgeInsets.only(right: 8.0),
+                child: EquipmentTile(
+                    showIcon: showIcon,
+                    equipment: equipments[index],
+                    withBorder: tilesBorder,
+                    fontSize: fontSize,
+                    isSelected: selectedEquipments.contains(equipments[index])),
+              ),
+            );
+          }),
+    );
+  }
+}
+
+class EquipmentMultiSelectorGrid extends StatelessWidget {
   final List<Equipment> selectedEquipments;
   final List<Equipment> equipments;
   final Function(Equipment) handleSelection;
   final bool showIcon;
   final int crossAxisCount;
-  final Axis scrollDirection;
   final bool tilesBorder;
   final FONTSIZE fontSize;
-  final double boxSize;
-  EquipmentMultiSelector({
+  EquipmentMultiSelectorGrid({
     required this.selectedEquipments,
     required this.equipments,
     this.showIcon = false,
     required this.handleSelection,
-    this.crossAxisCount = 1,
+    this.crossAxisCount = 4,
     this.fontSize = FONTSIZE.MAIN,
-    this.boxSize = 100,
     this.tilesBorder = false,
-    this.scrollDirection = Axis.horizontal,
   });
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
         padding: EdgeInsets.zero,
-        scrollDirection: scrollDirection,
         shrinkWrap: true,
         itemCount: equipments.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8),
         itemBuilder: (context, index) {
           return GestureDetector(
             onTap: () => handleSelection(equipments[index]),
@@ -155,9 +198,9 @@ class _FullScreenEquipmentSelectorState
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'FullScreenEquipmentSelector',
+    return MyPageScaffold(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         automaticallyImplyLeading: false,
         middle: NavBarTitle('Select Equipment'),
         trailing: NavBarSaveButton(
@@ -166,27 +209,35 @@ class _FullScreenEquipmentSelectorState
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: GridView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: widget.allEquipments.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: widget.crossAxisCount,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8),
-            itemBuilder: (context, index) {
-              final Equipment e = widget.allEquipments[index];
-              return GestureDetector(
-                onTap: () => _handleSelection(e),
-                child: EquipmentTile(
-                    showIcon: true,
-                    equipment: e,
-                    withBorder: widget.tilesBorder,
-                    fontSize: widget.fontSize,
-                    isSelected: _activeSelectedEquipments.contains(e)),
-              );
-            }),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
+        child: EquipmentMultiSelectorGrid(
+          showIcon: true,
+          equipments: widget.allEquipments,
+          handleSelection: _handleSelection,
+          selectedEquipments: _activeSelectedEquipments,
+          fontSize: widget.fontSize,
+          tilesBorder: widget.tilesBorder,
+        ),
+        // child: GridView.builder(
+        //     scrollDirection: Axis.vertical,
+        //     shrinkWrap: true,
+        //     itemCount: widget.allEquipments.length,
+        //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        //         crossAxisCount: widget.crossAxisCount,
+        //         mainAxisSpacing: 8,
+        //         crossAxisSpacing: 8),
+        //     itemBuilder: (context, index) {
+        //       final Equipment e = widget.allEquipments[index];
+        //       return GestureDetector(
+        //         onTap: () => _handleSelection(e),
+        //         child: EquipmentTile(
+        //             showIcon: true,
+        //             equipment: e,
+        //             withBorder: widget.tilesBorder,
+        //             fontSize: widget.fontSize,
+        //             isSelected: _activeSelectedEquipments.contains(e)),
+        //       );
+        //     }),
       ),
     );
   }

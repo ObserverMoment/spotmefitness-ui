@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -248,7 +249,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      vertical: 16.0),
+                                      vertical: 24.0),
                                   child: Wrap(
                                     spacing: 30,
                                     runSpacing: 10,
@@ -310,7 +311,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       MyText('Required'),
-                                      SizedBox(height: 4),
+                                      SizedBox(height: 10),
                                       Wrap(
                                         alignment: WrapAlignment.center,
                                         spacing: 8,
@@ -321,6 +322,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                                   child: MyText(
                                                     e.name,
                                                     weight: FontWeight.bold,
+                                                    size: FONTSIZE.BIG,
                                                   ),
                                                 ))
                                             .toList(),
@@ -335,13 +337,18 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: MyText('Select from...',
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: MyText('Select one from...',
+                                              color: _activeWorkoutMove
+                                                          ?.equipment ==
+                                                      null
+                                                  ? Styles.errorRed
+                                                  : null,
                                               lineHeight: 1.4),
                                         ),
-                                        EquipmentMultiSelector(
+                                        EquipmentSelectorList(
                                             showIcon: true,
-                                            fontSize: FONTSIZE.SMALL,
+                                            tilesBorder: true,
                                             equipments:
                                                 _equipmentsWithBodyWeightFirst(
                                                     _activeWorkoutMove!.move
@@ -363,7 +370,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                 if (_activeWorkoutMove!.equipment != null)
                                   GrowIn(
                                       child: Padding(
-                                    padding: const EdgeInsets.only(top: 4.0),
+                                    padding: const EdgeInsets.only(top: 12.0),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -373,7 +380,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                                               CrossAxisAlignment.center,
                                           children: [
                                             MyText('Selected'),
-                                            SizedBox(height: 4),
+                                            SizedBox(height: 10),
                                             ContentBox(
                                               child: MyText(
                                                 _activeWorkoutMove!

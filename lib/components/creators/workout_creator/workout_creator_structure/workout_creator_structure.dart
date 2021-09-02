@@ -251,7 +251,10 @@ class WorkoutSectionInWorkout extends StatelessWidget {
                             onTap: () => context.push(
                                 child: FullScreenTextEditing(
                               title: 'Name',
-                              inputValidation: (text) => true,
+                              inputValidation: (t) =>
+                                  t.length > 0 && t.length <= 40,
+                              maxChars: 30,
+                              validationMessage: 'Max 30 chars',
                               initialValue: workoutSection.name,
                               onSave: (text) =>
                                   _updateSection(context, {'name': text}),

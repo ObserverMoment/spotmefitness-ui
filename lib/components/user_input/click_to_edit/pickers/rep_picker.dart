@@ -210,6 +210,7 @@ class _RepPickerModalState extends State<RepPickerModal> {
                   child: MyNumberInput(
                     _repsController,
                     autoFocus: true,
+                    allowDouble: true,
                   ),
                 ),
               ),

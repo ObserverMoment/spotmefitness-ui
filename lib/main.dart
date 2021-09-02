@@ -12,6 +12,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_plan_filters_bloc.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
@@ -81,39 +84,51 @@ class _AuthRouterState extends State<AuthRouter> {
         builder: (context, authState, _) {
           final _authedUser = GetIt.I<AuthBloc>().authedUser;
 
-          return ChangeNotifierProvider<ThemeBloc>(
-            create: (_) => ThemeBloc(deviceBrightness: _userDeviceBrightness),
-            child: Builder(
-                builder: (context) => _Unfocus(
-                        child: CupertinoApp.router(
-                      routeInformationParser: _appRouter.defaultRouteParser(
-                          includePrefixMatches: true),
-                      routerDelegate: AutoRouterDelegate.declarative(
-                        _appRouter,
-                        routes: (_) => [
-                          // if the user is logged in, they may proceed to the main App
-                          if (authState == AuthState.AUTHED &&
-                              _authedUser != null)
-                            AuthedRouter()
-                          // if they are not logged in, bring them to the Login page
-                          else
-                            UnauthedLandingRoute(),
-                        ],
-                      ),
-                      debugShowCheckedModeBanner: false,
-                      theme: context.theme.cupertinoThemeData,
-                      localizationsDelegates: [
-                        DefaultMaterialLocalizations.delegate,
-                        DefaultCupertinoLocalizations.delegate,
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
-                      supportedLocales: [
-                        const Locale('en', 'US'),
-                        const Locale('en', 'GB'),
-                      ],
-                    ))),
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider<ThemeBloc>(
+                  create: (_) =>
+                      ThemeBloc(deviceBrightness: _userDeviceBrightness)),
+              Provider<GraphQLStore>(
+                create: (_) => GraphQLStore(),
+                dispose: (context, store) => store.dispose(),
+              ),
+              ChangeNotifierProvider<MoveFiltersBloc>(
+                  create: (_) => MoveFiltersBloc()),
+              ChangeNotifierProvider<WorkoutFiltersBloc>(
+                  create: (_) => WorkoutFiltersBloc()),
+              ChangeNotifierProvider<WorkoutPlanFiltersBloc>(
+                  create: (_) => WorkoutPlanFiltersBloc()),
+            ],
+            builder: (context, child) => _Unfocus(
+                child: CupertinoApp.router(
+              routeInformationParser:
+                  _appRouter.defaultRouteParser(includePrefixMatches: true),
+              routerDelegate: AutoRouterDelegate.declarative(
+                _appRouter,
+                routes: (_) => [
+                  // if the user is logged in, they may proceed to the main App
+                  if (authState == AuthState.AUTHED && _authedUser != null)
+                    AuthedRouter()
+                  // if they are not logged in, bring them to the Login page
+                  else
+                    UnauthedLandingRoute(),
+                ],
+              ),
+              debugShowCheckedModeBanner: false,
+              theme: context.theme.cupertinoThemeData,
+              localizationsDelegates: [
+                DefaultMaterialLocalizations.delegate,
+                DefaultCupertinoLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en', 'US'),
+                const Locale('en', 'GB'),
+              ],
+            )),
           );
         });
   }

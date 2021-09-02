@@ -90,7 +90,7 @@ class WorkoutPlanFinderPageUI extends StatefulWidget {
 
 class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
   final kPanelBorderRadius = 18.0;
-  final kCollapsedpanelheight = 60.0;
+  final kCollapsedpanelheight = 80.0;
 
   /// Doesn't appear to require disposing.
   final PanelController _panelController = PanelController();
@@ -261,6 +261,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final size = mediaQuery.size;
+    final safePaddingTop = mediaQuery.padding.top;
 
     final numActiveFilters =
         context.select<WorkoutPlanFiltersBloc, int>((b) => b.numActiveFilters);
@@ -272,7 +273,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
       onPanelClosed: _handlePanelClose,
       onPanelOpened: _handlePanelOpen,
       minHeight: kCollapsedpanelheight,
-      maxHeight: size.height - 70,
+      maxHeight: size.height - safePaddingTop,
       borderRadius: BorderRadius.circular(12),
       panel: Column(
         children: [

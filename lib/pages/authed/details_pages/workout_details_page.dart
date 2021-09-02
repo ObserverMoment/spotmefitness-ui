@@ -74,8 +74,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
     await context.showConfirmDialog(
         title: 'Make a copy of this Workout?',
         content: MyText(
-          'Note: Any media on this workout will not be copied across.',
-          maxLines: 3,
+          'Note: Media and tags will not be copied across.',
+          textAlign: TextAlign.center,
+          maxLines: 4,
         ),
         onConfirm: () async {
           context.showLoadingAlert('Making a copy...',

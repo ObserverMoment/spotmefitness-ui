@@ -109,11 +109,13 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
   Future<void> _handleNotification(feed.RealtimeMessage? message) async {
     print('notification received');
     print('TODO: Handle further processing');
+    final _message =
+        message?.newActivities[0].object?.data.toString() ?? 'No message';
     print(message);
     context.showNotification(
         title: 'Notification',
         onPressed: () => print('print a test'),
-        message: message!.newActivities[0].object!.data.toString());
+        message: _message);
   }
 
   @override
@@ -129,10 +131,6 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
     return _chatInitialized && _feedsInitialized
         ? MultiProvider(
             providers: [
-              Provider<GraphQLStore>(
-                create: (_) => GraphQLStore(),
-                dispose: (context, store) => store.dispose(),
-              ),
               Provider<chat.StreamChatClient>.value(
                 value: _streamChatClient,
               ),
@@ -145,12 +143,6 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
               Provider<NotificationFeed>.value(
                 value: _notificationFeed,
               ),
-              ChangeNotifierProvider<MoveFiltersBloc>(
-                  create: (_) => MoveFiltersBloc()),
-              ChangeNotifierProvider<WorkoutFiltersBloc>(
-                  create: (_) => WorkoutFiltersBloc()),
-              ChangeNotifierProvider<WorkoutPlanFiltersBloc>(
-                  create: (_) => WorkoutPlanFiltersBloc()),
             ],
             child: HeroControllerScope(
               controller: HeroController(),
