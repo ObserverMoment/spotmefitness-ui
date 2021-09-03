@@ -21,9 +21,6 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// Delegates to the correct sub bloc types for each workout section
 /// As required by the workoutSectionType
 class DoWorkoutBloc extends ChangeNotifier {
-  /// Is the user doing a scheduled workout?
-  /// Pass the id here if you want to link the created log to it.
-  final String? scheduledWorkoutId;
   final BuildContext context;
   late List<WorkoutSection> _sortedWorkoutSections;
   late LoggedWorkout loggedWorkout;
@@ -56,10 +53,10 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// This is true whenever any section is in progress. False
   bool workoutInProgress = false;
 
-  DoWorkoutBloc(
-      {required BuildContext this.context,
-      required Workout workout,
-      String? this.scheduledWorkoutId}) {
+  DoWorkoutBloc({
+    required BuildContext this.context,
+    required Workout workout,
+  }) {
     loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
 
     _sortedWorkoutSections = workout.workoutSections

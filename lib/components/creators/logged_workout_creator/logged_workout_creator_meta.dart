@@ -63,39 +63,10 @@ class _LoggedWorkoutCreatorMetaState extends State<LoggedWorkoutCreatorMeta> {
           dateTime: completedOn,
           saveDateTime: _updateCompletedOnDate,
         ),
-        SizedBox(height: 12),
-        SizedBox(
-          height: 40,
-          child: Row(
-            children: [
-              Expanded(
-                child: TappableRow(
-                  onTap: () => context.push(
-                      fullscreenDialog: true,
-                      child: GymProfileSelector(
-                        selectedGymProfile: gymProfile,
-                        selectGymProfile: (p) => _bloc.updateGymProfile(p),
-                      )),
-                  title: 'Gym Profile',
-                  display: gymProfile == null
-                      ? MyText(
-                          'Select...',
-                          subtext: true,
-                        )
-                      : MyText(gymProfile.name),
-                ),
-              ),
-              if (gymProfile != null)
-                CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: Icon(
-                      CupertinoIcons.clear_thick,
-                      color: Styles.errorRed,
-                      size: 20,
-                    ),
-                    onPressed: () => _bloc.updateGymProfile(null))
-            ],
-          ),
+        GymProfileSelectorDisplay(
+          clearGymProfile: () => _bloc.updateGymProfile(null),
+          gymProfile: gymProfile,
+          selectGymProfile: _bloc.updateGymProfile,
         ),
         EditableTextAreaRow(
           title: 'Note',

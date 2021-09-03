@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -7,10 +8,12 @@ import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
 import 'package:spotmefitness_ui/router.gr.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 class ProfileCustomMovesPage extends StatelessWidget {
   Future<void> _openCustomMoveCreator(
@@ -26,6 +29,20 @@ class ProfileCustomMovesPage extends StatelessWidget {
         context.showToast(message: 'Move updates saved!');
       }
     }
+  }
+
+  Future<void> _softDeleteCustomMove(BuildContext context, String id) async {
+    final result = await context.graphQLStore
+        .delete<SoftDeleteMoveById$Mutation, SoftDeleteMoveByIdArguments>(
+            mutation: SoftDeleteMoveByIdMutation(
+                variables: SoftDeleteMoveByIdArguments(id: id)),
+            removeRefFromQueries: [GQLOpNames.userCustomMovesQuery],
+            objectId: id,
+            typename: kMoveTypename);
+
+    await checkOperationResult(context, result, onSuccess: () {
+      context.showToast(message: 'Custom move deleted.');
+    });
   }
 
   @override
@@ -61,8 +78,17 @@ class ProfileCustomMovesPage extends StatelessWidget {
                                 onTap: () => _openCustomMoveCreator(
                                     context: context,
                                     moveToUpdate: customMoves[i]),
-                                child: MoveListItem(
-                                  move: customMoves[i],
+                                child: AnimatedSlidable(
+                                  index: i,
+                                  itemType: 'Custom Move',
+                                  itemName: customMoves[i].name,
+                                  key: Key('${customMoves[i].id} - $i'),
+                                  removeItem: (_) => _softDeleteCustomMove(
+                                      context, customMoves[i].id),
+                                  secondaryActions: [],
+                                  child: MoveListItem(
+                                    move: customMoves[i],
+                                  ),
                                 ));
                           }
                         }),

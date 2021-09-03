@@ -49,15 +49,11 @@ class YourClubsPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.all(24.0),
                           child: Center(
-                            child: ContentBox(
-                              child: BorderButton(
-                                  withBorder: false,
-                                  mini: true,
-                                  prefix: Icon(CupertinoIcons.add),
-                                  text: 'New Club',
-                                  onPressed: () =>
-                                      context.navigateTo(ClubCreatorRoute())),
-                            ),
+                            child: SecondaryButton(
+                                prefixIconData: CupertinoIcons.add,
+                                text: 'New Club',
+                                onPressed: () =>
+                                    context.navigateTo(ClubCreatorRoute())),
                           ),
                         ),
                       ],

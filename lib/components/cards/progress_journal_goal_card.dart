@@ -93,7 +93,7 @@ class ProgressJournalGoalCard extends StatelessWidget {
                       children: [
                         MyText(
                           progressJournalGoal.name,
-                          weight: FontWeight.bold,
+                          lineHeight: 1.3,
                           decoration:
                               isComplete ? TextDecoration.lineThrough : null,
                         ),
@@ -129,7 +129,8 @@ class ProgressJournalGoalCard extends StatelessWidget {
                             right: 6.0, top: 6, bottom: 6),
                         child: MyText(
                           progressJournalGoal.description!,
-                          maxLines: 99,
+                          maxLines: 10,
+                          lineHeight: 1.3,
                           decoration:
                               isComplete ? TextDecoration.lineThrough : null,
                           size: FONTSIZE.SMALL,
@@ -137,10 +138,10 @@ class ProgressJournalGoalCard extends StatelessWidget {
                       ),
                     if (progressJournalGoal.progressJournalGoalTags.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Wrap(
-                          spacing: 4,
-                          runSpacing: 4,
+                          spacing: 5,
+                          runSpacing: 5,
                           children: progressJournalGoal.progressJournalGoalTags
                               .map((tag) => Tag(
                                     tag: tag.tag,

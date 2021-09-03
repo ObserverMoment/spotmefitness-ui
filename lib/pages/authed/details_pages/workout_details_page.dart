@@ -208,7 +208,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
       mainAxisSize: MainAxisSize.min,
       children: [
         UserAvatar(
-          avatarUri: workout.user.avatarUri!,
+          avatarUri: workout.user.avatarUri,
           size: size,
         ),
         Padding(
@@ -276,8 +276,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
                 final List<Collection> collections = collectionsData
                     .userCollections
-                    .where(
-                        (collection) => collection.workouts.contains(workout))
+                    .where((collection) => collection.workouts
+                        .map((w) => w.id)
+                        .contains(workout.id))
                     .toList();
 
                 final List<WorkoutSection> sortedWorkoutSections = workout

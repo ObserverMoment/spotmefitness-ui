@@ -245,12 +245,11 @@ class RequiredSuperText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: const Offset(2, -8),
-      child: MyText(
-        '(required)',
+      offset: const Offset(0, -8),
+      child: Icon(
+        CupertinoIcons.exclamationmark_circle_fill,
+        size: 14,
         color: Styles.errorRed,
-        weight: FontWeight.bold,
-        size: FONTSIZE.TINY,
       ),
     );
   }

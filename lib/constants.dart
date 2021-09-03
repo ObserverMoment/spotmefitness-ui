@@ -34,6 +34,7 @@ const kClubTypeName = 'Club';
 const kClubInviteTokenTypeName = 'ClubInviteToken';
 const kBodyTransformationPhotoTypename = 'BodyTransformationPhoto';
 const kGymProfileTypename = 'GymProfile';
+const kMoveTypename = 'Move';
 const kUserTypename = 'User';
 const kWorkoutTypename = 'Workout';
 const kWorkoutTagTypename = 'WorkoutTag';

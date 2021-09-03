@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:uuid/uuid.dart';
 
-// /// Converts a workout logged workout by first converting each workout section to a logged workout section. The process of doing this depends on the type of workout section.
+// /// Converts a workout to a logged workout by first converting each workout section to a logged workout section. The process of doing this depends on the type of workout section.
 LoggedWorkout workoutToLoggedWorkout(
     {Workout? workout, ScheduledWorkout? scheduledWorkout}) {
   final name = Utils.textNotNull(workout?.name)
@@ -18,6 +18,7 @@ LoggedWorkout workoutToLoggedWorkout(
             .sortedBy<num>((ws) => ws.sortPosition)
         : []
     ..gymProfile = scheduledWorkout?.gymProfile
+    ..note = scheduledWorkout?.note
     ..name = name;
 }
 

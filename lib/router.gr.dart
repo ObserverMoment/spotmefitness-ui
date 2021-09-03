@@ -146,7 +146,7 @@ class AppRouter extends _i1.RootStackRouter {
           return _i11.DoWorkoutWrapperPage(
               key: args.key,
               id: args.id,
-              scheduledWorkoutId: args.scheduledWorkoutId);
+              scheduledWorkout: args.scheduledWorkout);
         }),
     SettingsRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -507,7 +507,7 @@ class AppRouter extends _i1.RootStackRouter {
           final args = data.argsAs<DoWorkoutLogWorkoutRouteArgs>(
               orElse: () => const DoWorkoutLogWorkoutRouteArgs());
           return _i62.DoWorkoutLogWorkoutPage(
-              key: args.key, scheduledWorkoutId: args.scheduledWorkoutId);
+              key: args.key, scheduledWorkout: args.scheduledWorkout);
         })
   };
 
@@ -727,12 +727,12 @@ class DoWorkoutWrapperRoute
   DoWorkoutWrapperRoute(
       {_i63.Key? key,
       required String id,
-      String? scheduledWorkoutId,
+      _i64.ScheduledWorkout? scheduledWorkout,
       List<_i1.PageRouteInfo>? children})
       : super(name,
             path: 'do-workout/:id',
             args: DoWorkoutWrapperRouteArgs(
-                key: key, id: id, scheduledWorkoutId: scheduledWorkoutId),
+                key: key, id: id, scheduledWorkout: scheduledWorkout),
             rawPathParams: {'id': id},
             initialChildren: children);
 
@@ -741,13 +741,13 @@ class DoWorkoutWrapperRoute
 
 class DoWorkoutWrapperRouteArgs {
   const DoWorkoutWrapperRouteArgs(
-      {this.key, required this.id, this.scheduledWorkoutId});
+      {this.key, required this.id, this.scheduledWorkout});
 
   final _i63.Key? key;
 
   final String id;
 
-  final String? scheduledWorkoutId;
+  final _i64.ScheduledWorkout? scheduledWorkout;
 }
 
 class SettingsRoute extends _i1.PageRouteInfo {
@@ -1390,19 +1390,20 @@ class DoWorkoutDoWorkoutRouteArgs {
 
 class DoWorkoutLogWorkoutRoute
     extends _i1.PageRouteInfo<DoWorkoutLogWorkoutRouteArgs> {
-  DoWorkoutLogWorkoutRoute({_i63.Key? key, String? scheduledWorkoutId})
+  DoWorkoutLogWorkoutRoute(
+      {_i63.Key? key, _i64.ScheduledWorkout? scheduledWorkout})
       : super(name,
             path: 'do-workout-log-workout-page',
             args: DoWorkoutLogWorkoutRouteArgs(
-                key: key, scheduledWorkoutId: scheduledWorkoutId));
+                key: key, scheduledWorkout: scheduledWorkout));
 
   static const String name = 'DoWorkoutLogWorkoutRoute';
 }
 
 class DoWorkoutLogWorkoutRouteArgs {
-  const DoWorkoutLogWorkoutRouteArgs({this.key, this.scheduledWorkoutId});
+  const DoWorkoutLogWorkoutRouteArgs({this.key, this.scheduledWorkout});
 
   final _i63.Key? key;
 
-  final String? scheduledWorkoutId;
+  final _i64.ScheduledWorkout? scheduledWorkout;
 }

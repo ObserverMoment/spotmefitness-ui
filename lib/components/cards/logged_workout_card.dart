@@ -81,17 +81,15 @@ class LoggedWorkoutCard extends StatelessWidget {
                     ...moveTypes
                         .map((moveType) => Tag(
                               tag: moveType.name,
-                              color: context.theme.background,
-                              textColor: context.theme.primary,
+                              color: Styles.colorOne,
+                              textColor: Styles.white,
                             ))
                         .toList(),
                   ...bodyAreas
-                      // .take(kNumBodyAreaTags)
                       .map((bodyArea) => Tag(
                             tag: bodyArea.name,
                           ))
                       .toList(),
-                  // if (bodyAreasOverflow) MyText(' ... more')
                 ]),
           ),
         ],

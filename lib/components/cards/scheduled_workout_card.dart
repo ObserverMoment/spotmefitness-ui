@@ -28,24 +28,15 @@ class ScheduledWorkoutCard extends StatelessWidget {
             ? Styles.errorRed // Missed
             : Styles.colorFour; // Upcoming
     final IconData icon = hasLog
-        ? CupertinoIcons.checkmark_alt // Done
+        ? CupertinoIcons.checkmark_alt_circle // Done
         : scheduledWorkout.scheduledAt.isBefore(DateTime.now())
-            ? CupertinoIcons.exclamationmark // Missed
+            ? CupertinoIcons.exclamationmark_circle // Missed
             : CupertinoIcons.clock; // Upcoming
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-            height: 16,
-            width: 16,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-        Icon(
-          icon,
-          size: 12,
-          color: Styles.white,
-        )
-      ],
+    return Icon(
+      icon,
+      size: 18,
+      color: color,
     );
   }
 
@@ -100,6 +91,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
               children: [
                 MyText(
                   '${scheduledWorkout.scheduledAt.minimalDateString}, ${scheduledWorkout.scheduledAt.timeString}',
+                  lineHeight: 1.3,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 6),
@@ -203,7 +195,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
             text: 'Do it',
             onTap: () => context.navigateTo(DoWorkoutWrapperRoute(
                 id: scheduledWorkout.workout!.id,
-                scheduledWorkoutId: scheduledWorkout.id)),
+                scheduledWorkout: scheduledWorkout)),
             iconData: CupertinoIcons.arrow_right_square,
           ),
         if (!hasLog)

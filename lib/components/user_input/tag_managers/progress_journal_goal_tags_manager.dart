@@ -205,18 +205,15 @@ class _ProgressJournalGoalTagsManagerState
                   GrowInOut(
                     show: _tagNameController.text.length > 2,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(12.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           BorderButton(
                             prefix: _newTagColor != null
-                                ? Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: CircularBox(
-                                        color: _newTagColor,
-                                        child: SizedBox(height: 9, width: 9)),
-                                  )
+                                ? CircularBox(
+                                    color: _newTagColor,
+                                    child: SizedBox(height: 9, width: 9))
                                 : null,
                             text: _newTagColor != null
                                 ? 'Change Color'
@@ -229,6 +226,15 @@ class _ProgressJournalGoalTagsManagerState
                             },
                             loading: _isLoading,
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GrowInOut(
+                      show: _canSaveNewTag,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           BorderButton(
                               prefix: Icon(
                                 CupertinoIcons.add,
@@ -237,11 +243,9 @@ class _ProgressJournalGoalTagsManagerState
                               loading: _isLoading,
                               disabled: !_canSaveNewTag,
                               text: 'Create Tag',
-                              onPressed: _createNewTag)
+                              onPressed: _createNewTag),
                         ],
-                      ),
-                    ),
-                  ),
+                      )),
                   if (!widget.allowCreateTagOnly)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),

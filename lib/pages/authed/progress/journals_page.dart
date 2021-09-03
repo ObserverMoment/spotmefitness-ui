@@ -41,21 +41,37 @@ class JournalsPage extends StatelessWidget {
                 ],
               ),
             ),
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: journals.length,
-                itemBuilder: (context, index) {
-                  final ProgressJournal journal = journals[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: GestureDetector(
-                        behavior: HitTestBehavior
-                            .opaque, // As there is empty space in the [ProgressJournalCard] which otherwise would not react to taps.
-                        onTap: () => context.navigateTo(
-                            ProgressJournalDetailsRoute(id: journal.id)),
-                        child: ProgressJournalCard(journal)),
-                  );
-                }),
+            child: journals.isEmpty
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Center(
+                          child: SecondaryButton(
+                              prefixIconData: CupertinoIcons.add,
+                              text: 'New Journal',
+                              onPressed: () => context
+                                  .navigateTo(ProgressJournalCreatorRoute())),
+                        ),
+                      ),
+                    ],
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: journals.length,
+                    itemBuilder: (context, index) {
+                      final ProgressJournal journal = journals[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: GestureDetector(
+                            behavior: HitTestBehavior
+                                .opaque, // As there is empty space in the [ProgressJournalCard] which otherwise would not react to taps.
+                            onTap: () => context.navigateTo(
+                                ProgressJournalDetailsRoute(id: journal.id)),
+                            child: ProgressJournalCard(journal)),
+                      );
+                    }),
           );
         });
   }

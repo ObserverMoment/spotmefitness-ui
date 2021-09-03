@@ -176,9 +176,14 @@ class _ProgressJournalCreatorPageState
     return MyPageScaffold(
       // Non standard nav bar (not [CreateEdit] version as the journal is not created immediately on init of this widget (as is the case for workot creator), but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
       navigationBar: BorderlessNavBar(
-        customLeading: Align(
+        withoutLeading: true,
+        middle: Align(
             alignment: Alignment.centerLeft,
-            child: NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal')),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child:
+                  NavBarTitle(_isEditing ? 'Edit Journal' : 'Create Journal'),
+            )),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -211,10 +216,10 @@ class _ProgressJournalCreatorPageState
               title: 'Name',
               text: _activeProgressJournal.name,
               onSave: _updateName,
-              maxChars: 30,
-              validationMessage: 'Min 3, max 30 characters',
+              maxChars: 40,
+              validationMessage: 'Min 3, max 40 characters',
               isRequired: true,
-              inputValidation: (t) => t.length > 2 && t.length < 31),
+              inputValidation: (t) => t.length > 2 && t.length < 41),
           EditableTextAreaRow(
               title: 'Description',
               text: _activeProgressJournal.description ?? '',

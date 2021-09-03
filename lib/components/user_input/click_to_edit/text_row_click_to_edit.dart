@@ -66,11 +66,13 @@ class EditableTextFieldRow extends StatelessWidget {
           Expanded(
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Expanded(
-                child: MyText(
-                  hasText ? text : placeholder,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: hasText ? TextAlign.center : TextAlign.end,
-                  subtext: !hasText,
+                child: ContentBox(
+                  child: MyText(
+                    hasText ? text : placeholder,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: hasText ? TextAlign.center : TextAlign.end,
+                    subtext: !hasText,
+                  ),
                 ),
               ),
               SizedBox(
@@ -153,14 +155,16 @@ class EditableTextAreaRow extends StatelessWidget {
               ),
             ],
           ),
-          if (text != '')
+          if (Utils.textNotNull(text))
             Padding(
-              padding: const EdgeInsets.only(top: 10.0, left: 1),
-              child: MyText(
-                text,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-                maxLines: maxDisplayLines,
+              padding: const EdgeInsets.only(top: 10.0),
+              child: ContentBox(
+                child: MyText(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  maxLines: maxDisplayLines,
+                ),
               ),
             ),
         ],

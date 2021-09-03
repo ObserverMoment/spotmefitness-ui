@@ -194,43 +194,12 @@ class _ScheduledWorkoutCreatorPageState
                       setState(() => _activeScheduledWorkout.scheduledAt = d),
                 ),
                 SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TappableRow(
-                          showPenIcon:
-                              _activeScheduledWorkout.gymProfile == null,
-                          onTap: () => context.push(
-                              child: GymProfileSelector(
-                                  selectedGymProfile:
-                                      _activeScheduledWorkout.gymProfile,
-                                  selectGymProfile: (p) => setState(() =>
-                                      _activeScheduledWorkout.gymProfile = p))),
-                          title: 'Gym Profile',
-                          display: _activeScheduledWorkout.gymProfile == null
-                              ? MyText(
-                                  'Select...',
-                                  subtext: true,
-                                )
-                              : ContentBox(
-                                  child: MyText(
-                                      _activeScheduledWorkout.gymProfile!.name),
-                                )),
-                    ),
-                    if (_activeScheduledWorkout.gymProfile != null)
-                      FadeIn(
-                        child: CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            child: Icon(
-                              CupertinoIcons.clear_thick,
-                              color: Styles.errorRed,
-                              size: 20,
-                            ),
-                            onPressed: () => setState(() =>
-                                _activeScheduledWorkout.gymProfile = null)),
-                      )
-                  ],
-                ),
+                GymProfileSelectorDisplay(
+                    gymProfile: _activeScheduledWorkout.gymProfile,
+                    selectGymProfile: (p) =>
+                        setState(() => _activeScheduledWorkout.gymProfile = p),
+                    clearGymProfile: () => setState(
+                        () => _activeScheduledWorkout.gymProfile = null)),
                 SizedBox(height: 12),
                 EditableTextAreaRow(
                     title: 'Note',

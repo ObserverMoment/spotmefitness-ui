@@ -250,7 +250,7 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  height: 60,
+                  height: 70,
                   child: Row(
                     children: [
                       MyText(

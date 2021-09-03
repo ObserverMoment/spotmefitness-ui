@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
@@ -15,13 +16,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/sharing_and_linking.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DoWorkoutLogWorkoutPage extends StatefulWidget {
-  final String? scheduledWorkoutId;
-  const DoWorkoutLogWorkoutPage({Key? key, this.scheduledWorkoutId})
+  final ScheduledWorkout? scheduledWorkout;
+  const DoWorkoutLogWorkoutPage({Key? key, this.scheduledWorkout})
       : super(key: key);
 
   @override
@@ -38,32 +40,45 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
   bool _logSavedToDB = false;
   bool _savingToDB = false;
 
-  Future<void> _createLoggedWorkout(
-      LoggedWorkout loggedWorkout, String? scheduledWorkoutId) async {
+  Future<void> _createLoggedWorkout(LoggedWorkout loggedWorkout) async {
     setState(() => _savingToDB = true);
 
     final input = CreateLoggedWorkoutInput.fromJson(loggedWorkout.toJson());
-    if (scheduledWorkoutId != null) {
-      input.scheduledWorkout = ConnectRelationInput(id: scheduledWorkoutId);
+
+    /// Add the data associated with the schedule workout if it exists.
+    if (widget.scheduledWorkout != null) {
+      input.note = widget.scheduledWorkout!.note;
+      input.scheduledWorkout =
+          ConnectRelationInput(id: widget.scheduledWorkout!.id);
+      if (widget.scheduledWorkout!.gymProfile != null)
+        input.gymProfile =
+            ConnectRelationInput(id: widget.scheduledWorkout!.gymProfile!.id);
     }
 
     final variables = CreateLoggedWorkoutArguments(data: input);
 
     final result = await context.graphQLStore
         .mutate<CreateLoggedWorkout$Mutation, CreateLoggedWorkoutArguments>(
-            mutation: CreateLoggedWorkoutMutation(variables: variables),
-            addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
-            broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
+      mutation: CreateLoggedWorkoutMutation(variables: variables),
+      addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
+    );
 
     setState(() => _savingToDB = false);
+
+    await checkOperationResult(context, result);
+
+    if (widget.scheduledWorkout != null) {
+      LoggedWorkoutCreatorBloc.updateScheduleWithLoggedWorkout(
+          context, widget.scheduledWorkout!, result.data!.createLoggedWorkout);
+    }
+
+    setState(() => _logSavedToDB = true);
 
     if (result.hasErrors || result.data == null) {
       context.showToast(
           message: 'There was a problem, the log was not saved...',
           toastType: ToastType.destructive);
-    } else {
-      setState(() => _logSavedToDB = true);
-    }
+    } else {}
   }
 
   void _handleExitRequest() {
@@ -121,9 +136,6 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final String? scheduledWorkoutId =
-        context.select<DoWorkoutBloc, String?>((b) => b.scheduledWorkoutId);
-
     final loggedWorkout =
         context.select<DoWorkoutBloc, LoggedWorkout>((b) => b.loggedWorkout);
 
@@ -191,8 +203,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
                       withMinWidth: false,
                       loading: _savingToDB,
                       text: 'Save Log',
-                      onPressed: () => _createLoggedWorkout(
-                          loggedWorkout, scheduledWorkoutId)),
+                      onPressed: () => _createLoggedWorkout(loggedWorkout)),
             ),
             PrimaryButton(
                 prefixIconData: CupertinoIcons.paperplane,

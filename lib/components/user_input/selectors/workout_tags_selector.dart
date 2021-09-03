@@ -82,6 +82,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
             query: UserWorkoutTagsQuery(),
             fetchPolicy: QueryFetchPolicy.storeFirst,
             builder: (data) {
+              final workoutTags = data.userWorkoutTags.reversed.toList();
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -91,16 +92,18 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        MyText(
-                          'Click to select / deselect.',
-                          size: FONTSIZE.SMALL,
-                        ),
+                        workoutTags.isEmpty
+                            ? MyText('No tags created yet...')
+                            : MyText(
+                                'Click to select / deselect.',
+                                size: FONTSIZE.SMALL,
+                              ),
                         SizedBox(height: 16),
                         Wrap(
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: data.userWorkoutTags.reversed
+                          children: workoutTags
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(

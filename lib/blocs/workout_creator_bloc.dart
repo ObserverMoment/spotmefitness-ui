@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// All updates to workout or descendants follow this pattern.
 /// 1: Update local data
@@ -69,7 +70,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
         /// The reordering ops in this bloc use [list.remove] and [list.insert] whch requires that the initial sort order is correct.
         return prevWorkout.copyAndSortAllChildren;
       } else {
-        print('creating workout');
+        print('creating workout via network');
         // User is creating - make an empty workout in the db and return.
         final variables = CreateWorkoutArguments(
           data: CreateWorkoutInput(
@@ -83,10 +84,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
                 mutation: CreateWorkoutMutation(variables: variables),
                 writeToStore: false);
 
-        if (result.hasErrors || result.data == null) {
+        await checkOperationResult(context, result, onFail: () {
           throw Exception(
               'There was a problem creating a new workout in the database.');
-        }
+        });
 
         /// Only the [UserSummary] sub field is returned by the create resolver.
         /// Add these fields manually to avoid [fromJson] throwing an error.

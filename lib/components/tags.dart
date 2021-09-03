@@ -10,41 +10,43 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class Tag extends StatelessWidget {
   final Color? color;
+  final Color? borderColor;
   final Color? textColor;
   final String tag;
   final Widget? prefix;
   final Widget? suffix;
   final FONTSIZE fontSize;
   final FontWeight fontWeight;
-  final bool withBorder;
   final EdgeInsets padding;
   Tag(
       {this.color,
+      this.borderColor,
       this.textColor,
       required this.tag,
       this.prefix,
       this.suffix,
-      this.withBorder = false,
       this.padding = kDefaultTagPadding,
       this.fontWeight = FontWeight.bold,
       this.fontSize = FONTSIZE.TINY});
 
   @override
   Widget build(BuildContext context) {
-    final _color = color ?? context.theme.primary.withOpacity(0.95);
-    final _textColor = textColor ?? context.theme.background;
+    final background = color ?? context.theme.primary.withOpacity(0.95);
+    final border =
+        borderColor ?? color ?? context.theme.primary.withOpacity(0.95);
+    final text = textColor ?? context.theme.background;
 
     return Container(
       padding: padding,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: _color,
-          border: withBorder ? Border.all(color: context.theme.primary) : null),
+          color: background,
+          border: Border.all(color: border)),
       child: MyText(
         tag,
         size: fontSize,
         weight: fontWeight,
-        color: _textColor,
+        color: text,
         lineHeight: 1.1,
       ),
     );
@@ -138,7 +140,7 @@ class DifficultyLevelTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)

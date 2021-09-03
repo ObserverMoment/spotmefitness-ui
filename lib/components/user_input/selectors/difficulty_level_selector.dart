@@ -29,7 +29,9 @@ class DifficultyLevelSelectorRow extends StatelessWidget {
                   textColor: Styles.white,
                   tag: difficultyLevel!.display,
                   color: difficultyLevel!.displayColor,
-                  withBorder: difficultyLevel == DifficultyLevel.elite,
+                  borderColor: difficultyLevel == DifficultyLevel.elite
+                      ? context.theme.primary
+                      : null,
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2.0),

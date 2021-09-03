@@ -196,15 +196,12 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
                               ],
                             ),
                             SizedBox(height: 20),
-                            ContentBox(
-                              child: BorderButton(
-                                  withBorder: false,
-                                  mini: true,
-                                  prefix:
-                                      Icon(CupertinoIcons.calendar_badge_plus),
-                                  text: 'Plan Something',
-                                  onPressed: _findWorkoutToSchedule),
-                            ),
+                            SecondaryButton(
+                                withBorder: false,
+                                prefixIconData:
+                                    CupertinoIcons.calendar_badge_plus,
+                                text: 'Plan Something',
+                                onPressed: _findWorkoutToSchedule),
                           ],
                         ),
                       )

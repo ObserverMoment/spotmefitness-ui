@@ -84,6 +84,8 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
             query: UserBenchmarkTagsQuery(),
             fetchPolicy: QueryFetchPolicy.storeFirst,
             builder: (data) {
+              final userBenchmarkTags =
+                  data.userBenchmarkTags.reversed.toList();
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
@@ -93,16 +95,18 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        MyText(
-                          'Click to select / deselect.',
-                          size: FONTSIZE.SMALL,
-                        ),
+                        userBenchmarkTags.isEmpty
+                            ? MyText('No tags created yet...')
+                            : MyText(
+                                'Click to select / deselect.',
+                                size: FONTSIZE.SMALL,
+                              ),
                         SizedBox(height: 16),
                         Wrap(
                           spacing: 10,
                           runSpacing: 10,
                           alignment: WrapAlignment.center,
-                          children: data.userBenchmarkTags.reversed
+                          children: userBenchmarkTags
                               .map((tag) => GestureDetector(
                                     onTap: () => _updateSelected(tag),
                                     child: FadeIn(

@@ -25,18 +25,19 @@ class MyButton extends StatelessWidget {
   final bool loading;
   final bool withMinWidth;
 
-  MyButton(
-      {this.prefix,
-      required this.onPressed,
-      required this.text,
-      this.suffix,
-      required this.contentColor,
-      this.backgroundColor,
-      this.border = false,
-      this.disabled = false,
-      this.withMinWidth = true,
-      this.loading = false,
-      this.backgroundGradient});
+  MyButton({
+    this.prefix,
+    required this.onPressed,
+    required this.text,
+    this.suffix,
+    required this.contentColor,
+    this.backgroundColor,
+    this.border = false,
+    this.disabled = false,
+    this.withMinWidth = true,
+    this.loading = false,
+    this.backgroundGradient,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +48,9 @@ class MyButton extends StatelessWidget {
         padding: EdgeInsets.all(0),
         onPressed: disabled ? null : onPressed,
         child: Container(
-          height: 48,
+          height: 54,
           constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
-          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           decoration: BoxDecoration(
               gradient: backgroundGradient,
               border: border ? Border.all(color: contentColor) : null,
@@ -155,6 +156,7 @@ class SecondaryButton extends StatelessWidget {
   final bool withMinWidth;
   final bool withBorder;
   final bool disabled;
+  final EdgeInsets? padding;
 
   SecondaryButton(
       {this.prefixIconData,
@@ -164,7 +166,8 @@ class SecondaryButton extends StatelessWidget {
       this.withMinWidth = true,
       this.withBorder = false,
       this.loading = false,
-      this.disabled = false});
+      this.disabled = false,
+      this.padding});
 
   @override
   Widget build(BuildContext context) {

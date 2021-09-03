@@ -204,38 +204,10 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                           saveDateTime: (d) => _updateCompletedOn(bloc, d),
                         ),
                         SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TappableRow(
-                                onTap: () => context.push(
-                                    child: GymProfileSelector(
-                                  selectedGymProfile: gymProfile,
-                                  selectGymProfile: (p) =>
-                                      bloc.updateGymProfile(p),
-                                )),
-                                title: 'Gym Profile',
-                                display: gymProfile == null
-                                    ? MyText(
-                                        'Select...',
-                                        subtext: true,
-                                      )
-                                    : MyText(gymProfile.name),
-                              ),
-                            ),
-                            if (gymProfile != null)
-                              FadeIn(
-                                child: CupertinoButton(
-                                    padding: EdgeInsets.zero,
-                                    child: Icon(
-                                      CupertinoIcons.clear_thick,
-                                      color: Styles.errorRed,
-                                      size: 20,
-                                    ),
-                                    onPressed: () =>
-                                        bloc.updateGymProfile(null)),
-                              )
-                          ],
+                        GymProfileSelectorDisplay(
+                          clearGymProfile: () => bloc.updateGymProfile(null),
+                          gymProfile: gymProfile,
+                          selectGymProfile: bloc.updateGymProfile,
                         ),
                         EditableTextAreaRow(
                           title: 'Note',
@@ -341,7 +313,7 @@ class _LoggedWorkoutSectionSummary extends StatelessWidget {
                       ...moveTypes
                           .map((moveType) => Tag(
                                 tag: moveType.name,
-                                withBorder: true,
+                                borderColor: context.theme.primary,
                                 color: context.theme.background,
                                 textColor: context.theme.primary,
                                 padding: const EdgeInsets.symmetric(

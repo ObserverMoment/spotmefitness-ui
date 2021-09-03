@@ -10,9 +10,9 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class DoWorkoutWrapperPage extends StatefulWidget {
   final String id;
-  final String? scheduledWorkoutId;
+  final ScheduledWorkout? scheduledWorkout;
   const DoWorkoutWrapperPage(
-      {Key? key, @PathParam('id') required this.id, this.scheduledWorkoutId})
+      {Key? key, @PathParam('id') required this.id, this.scheduledWorkout})
       : super(key: key);
 
   @override
@@ -51,9 +51,9 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
         future: _initWorkoutFuture,
         builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
             create: (context) => DoWorkoutBloc(
-                context: context,
-                workout: workout,
-                scheduledWorkoutId: widget.scheduledWorkoutId),
+                  context: context,
+                  workout: workout,
+                ),
             child: Builder(builder: (context) {
               final allSectionsComplete = context
                   .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
@@ -62,7 +62,9 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
                   routes: (_) => [
                         if (!allSectionsComplete)
                           DoWorkoutDoWorkoutRoute(workout: workout),
-                        if (allSectionsComplete) DoWorkoutLogWorkoutRoute(),
+                        if (allSectionsComplete)
+                          DoWorkoutLogWorkoutRoute(
+                              scheduledWorkout: widget.scheduledWorkout),
                       ]);
             })));
   }

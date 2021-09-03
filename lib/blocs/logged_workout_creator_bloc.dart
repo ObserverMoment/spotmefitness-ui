@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// Can either create a new logged workout or edit (in real time) and already existing one.
 /// Create: The full object is constructed on the client and then saved as a whole to the API when the user is done.
@@ -24,8 +25,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   late Map<String, dynamic> _backupJson;
   List<String> includedSectionIds = [];
 
-  /// When creating the initial log - nothing is saved to the API until the end of the flow.
-  /// When editing:
+  /// When [creating] the initial log - nothing is saved to the API until the end of the flow and the user hits save.
+  /// When [editing]:
   ///  - Log: Edits are saved to the DB immediately (optimistically to UI, then to the API). The store is written after the API has returned.
   ///  - Section and below. Changes are saved to the DB only when the section as a whole is saved. The returned section (from the API) is merged with the log and then written to the client store. Only the [LoggedWorkout] object is normalized into the store (as a root object) - all its children are not..
   late bool _isEditing;
@@ -97,10 +98,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   /// Writes all changes to the graphQLStore.
   /// Via the normalized root object which is the LoggedWorkout.
   /// At [LoggedWorkout:{loggedWorkout.id}].
-  /// Should only be run when user is editing the lo, not when they are creating it.
+  /// Should only be run when user is editing the log, not when they are creating it.
   bool writeAllChangesToStore() {
-    /// When editing you have (currently!) come from the workout details page which is being fed by an observable query with id [workoutById({id: id})].
-    /// This may need revisiting if there is a way the user can edit a workout without first opening up this page where this query will be registered.
     final success = context.graphQLStore.writeDataToStore(
         data: loggedWorkout.toJson(),
         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
@@ -173,18 +172,12 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         mutation: CreateLoggedWorkoutMutation(variables: variables),
         addRefToQueries: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
 
+    await checkOperationResult(context, result);
+
     /// If the log is being created from a scheduled workout then we need to add the newly completed workout log to the scheduledWorkout.loggedWorkout (or the alias for the field if there is one) in the store.
     if (scheduledWorkout != null && result.data != null) {
-      final prevData = context.graphQLStore.readDenomalized(
-          '$kScheduledWorkoutTypename:${scheduledWorkout!.id}');
-
-      final updatedScheduledWorkout = ScheduledWorkout.fromJson(prevData);
-      updatedScheduledWorkout.loggedWorkoutId =
-          result.data!.createLoggedWorkout.id;
-
-      context.graphQLStore.writeDataToStore(
-          data: updatedScheduledWorkout.toJson(),
-          broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
+      updateScheduleWithLoggedWorkout(
+          context, scheduledWorkout!, result.data!.createLoggedWorkout);
     }
 
     return result;
@@ -606,5 +599,21 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     loggedWorkoutMoves.forEachIndexed((i, loggedWorkoutMove) {
       loggedWorkoutMove.sortPosition = i;
     });
+  }
+
+  /// Static helpers and methods ///
+  /// Updates the client side store by adding the newly created workout log to the scheduled workout at [scheduledWorkout.loggedWorkoutId].
+  /// Meaning that the user's schedule will update and show the scheduled workout as completed.
+  static void updateScheduleWithLoggedWorkout(BuildContext context,
+      ScheduledWorkout scheduledWorkout, LoggedWorkout loggedWorkout) {
+    final prevData = context.graphQLStore
+        .readDenomalized('$kScheduledWorkoutTypename:${scheduledWorkout.id}');
+
+    final updated = ScheduledWorkout.fromJson(prevData);
+    updated.loggedWorkoutId = loggedWorkout.id;
+
+    context.graphQLStore.writeDataToStore(
+        data: updated.toJson(),
+        broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
   }
 }

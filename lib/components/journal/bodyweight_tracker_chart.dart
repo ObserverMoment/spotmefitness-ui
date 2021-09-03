@@ -18,7 +18,7 @@ class BodyweightTrackerChart extends StatelessWidget {
         journal.progressJournalEntries.sortedBy<DateTime>((e) => e.createdAt);
 
     final firstRecordedBodyweight =
-        sortedEntries.firstWhere((e) => e.bodyweight != null).bodyweight;
+        sortedEntries.firstWhereOrNull((e) => e.bodyweight != null)?.bodyweight;
 
     final minBodyweight = sortedEntries.fold<double>(
         firstRecordedBodyweight ?? 0.0,
@@ -37,17 +37,13 @@ class BodyweightTrackerChart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             MyText(
-              'Bodyweight Tracker',
+              'Bodyweight Tracker (in ${journal.bodyweightUnit.display})',
               weight: FontWeight.bold,
             ),
           ],
         ),
       ),
       SizedBox(height: 12),
-      MyText(
-        'Bodyweight in ${journal.bodyweightUnit.display}',
-        size: FONTSIZE.SMALL,
-      ),
       firstRecordedBodyweight == null
           ? Padding(
               padding: const EdgeInsets.all(16.0),
@@ -59,7 +55,6 @@ class BodyweightTrackerChart extends StatelessWidget {
             )
           : SfCartesianChart(
               plotAreaBorderWidth: 0,
-              // enableAxisAnimation: true,
               tooltipBehavior: TooltipBehavior(
                   enable: true,
                   duration: 6000,

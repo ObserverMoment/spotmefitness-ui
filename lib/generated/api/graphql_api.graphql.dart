@@ -79,6 +79,13 @@ mixin ClubMixin {
   String? introVideoThumbUri;
   String? introAudioUri;
 }
+mixin ClubPublicSummaryMixin {
+  @JsonKey(name: '__typename')
+  String? $$typename;
+  late String id;
+  late String name;
+  String? coverImageUri;
+}
 mixin EquipmentMixin {
   @JsonKey(name: '__typename')
   String? $$typename;
@@ -584,13 +591,6 @@ mixin InviteTokenErrorMixin {
   String? $$typename;
   late String message;
 }
-mixin ClubPublicSummaryMixin {
-  @JsonKey(name: '__typename')
-  String? $$typename;
-  late String id;
-  late String name;
-  String? coverImageUri;
-}
 
 @JsonSerializable(explicitToJson: true)
 class UserSummary extends JsonSerializable
@@ -956,6 +956,35 @@ class GiveMemberAdminStatus$Mutation extends JsonSerializable
   List<Object?> get props => [giveMemberAdminStatus];
   @override
   Map<String, dynamic> toJson() => _$GiveMemberAdminStatus$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubPublicSummary extends JsonSerializable
+    with EquatableMixin, ClubPublicSummaryMixin {
+  ClubPublicSummary();
+
+  factory ClubPublicSummary.fromJson(Map<String, dynamic> json) =>
+      _$ClubPublicSummaryFromJson(json);
+
+  @override
+  List<Object?> get props => [$$typename, id, name, coverImageUri];
+  @override
+  Map<String, dynamic> toJson() => _$ClubPublicSummaryToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubSummaries$Query extends JsonSerializable with EquatableMixin {
+  ClubSummaries$Query();
+
+  factory ClubSummaries$Query.fromJson(Map<String, dynamic> json) =>
+      _$ClubSummaries$QueryFromJson(json);
+
+  late List<ClubPublicSummary> clubSummaries;
+
+  @override
+  List<Object?> get props => [clubSummaries];
+  @override
+  Map<String, dynamic> toJson() => _$ClubSummaries$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -4388,6 +4417,21 @@ class BodyAreaMoveScoreInput extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
+class SoftDeleteMoveById$Mutation extends JsonSerializable with EquatableMixin {
+  SoftDeleteMoveById$Mutation();
+
+  factory SoftDeleteMoveById$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$SoftDeleteMoveById$MutationFromJson(json);
+
+  late String softDeleteMoveById;
+
+  @override
+  List<Object?> get props => [softDeleteMoveById];
+  @override
+  Map<String, dynamic> toJson() => _$SoftDeleteMoveById$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class UpdateMove$Mutation extends JsonSerializable with EquatableMixin {
   UpdateMove$Mutation();
 
@@ -6491,6 +6535,93 @@ class TimelinePostObjectDataObject extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
+class TimelinePostFullData extends JsonSerializable with EquatableMixin {
+  TimelinePostFullData();
+
+  factory TimelinePostFullData.fromJson(Map<String, dynamic> json) =>
+      _$TimelinePostFullDataFromJson(json);
+
+  late String activityId;
+
+  @JsonKey(
+      fromJson: fromGraphQLDateTimeToDartDateTime,
+      toJson: fromDartDateTimeToGraphQLDateTime)
+  late DateTime postedAt;
+
+  String? caption;
+
+  late List<String> tags;
+
+  late TimelinePostObjectDataUser poster;
+
+  late TimelinePostObjectDataUser creator;
+
+  late TimelinePostObjectDataObject object;
+
+  @override
+  List<Object?> get props =>
+      [activityId, postedAt, caption, tags, poster, creator, object];
+  @override
+  Map<String, dynamic> toJson() => _$TimelinePostFullDataToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateClubTimelinePost$Mutation extends JsonSerializable
+    with EquatableMixin {
+  CreateClubTimelinePost$Mutation();
+
+  factory CreateClubTimelinePost$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$CreateClubTimelinePost$MutationFromJson(json);
+
+  late TimelinePostFullData createClubTimelinePost;
+
+  @override
+  List<Object?> get props => [createClubTimelinePost];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateClubTimelinePost$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class CreateClubTimelinePostInput extends JsonSerializable with EquatableMixin {
+  CreateClubTimelinePostInput(
+      {required this.clubId, required this.object, this.caption, this.tags});
+
+  factory CreateClubTimelinePostInput.fromJson(Map<String, dynamic> json) =>
+      _$CreateClubTimelinePostInputFromJson(json);
+
+  late String clubId;
+
+  late String object;
+
+  String? caption;
+
+  List<String>? tags;
+
+  @override
+  List<Object?> get props => [clubId, object, caption, tags];
+  @override
+  Map<String, dynamic> toJson() => _$CreateClubTimelinePostInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteClubTimelinePost$Mutation extends JsonSerializable
+    with EquatableMixin {
+  DeleteClubTimelinePost$Mutation();
+
+  factory DeleteClubTimelinePost$Mutation.fromJson(Map<String, dynamic> json) =>
+      _$DeleteClubTimelinePost$MutationFromJson(json);
+
+  late String deleteClubTimelinePost;
+
+  @override
+  List<Object?> get props => [deleteClubTimelinePost];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteClubTimelinePost$MutationToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
 class TimelinePostObjectData extends JsonSerializable with EquatableMixin {
   TimelinePostObjectData();
 
@@ -6551,6 +6682,21 @@ class TimelinePostDataRequestInput extends JsonSerializable
   List<Object?> get props => [activityId, posterId, objectId, objectType];
   @override
   Map<String, dynamic> toJson() => _$TimelinePostDataRequestInputToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubMembersFeedPosts$Query extends JsonSerializable with EquatableMixin {
+  ClubMembersFeedPosts$Query();
+
+  factory ClubMembersFeedPosts$Query.fromJson(Map<String, dynamic> json) =>
+      _$ClubMembersFeedPosts$QueryFromJson(json);
+
+  late List<TimelinePostFullData> clubMembersFeedPosts;
+
+  @override
+  List<Object?> get props => [clubMembersFeedPosts];
+  @override
+  Map<String, dynamic> toJson() => _$ClubMembersFeedPosts$QueryToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -6960,137 +7106,6 @@ class WorkoutById$Query extends JsonSerializable with EquatableMixin {
   List<Object?> get props => [workoutById];
   @override
   Map<String, dynamic> toJson() => _$WorkoutById$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ClubPublicSummary extends JsonSerializable
-    with EquatableMixin, ClubPublicSummaryMixin {
-  ClubPublicSummary();
-
-  factory ClubPublicSummary.fromJson(Map<String, dynamic> json) =>
-      _$ClubPublicSummaryFromJson(json);
-
-  @override
-  List<Object?> get props => [$$typename, id, name, coverImageUri];
-  @override
-  Map<String, dynamic> toJson() => _$ClubPublicSummaryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ClubSummaries$Query extends JsonSerializable with EquatableMixin {
-  ClubSummaries$Query();
-
-  factory ClubSummaries$Query.fromJson(Map<String, dynamic> json) =>
-      _$ClubSummaries$QueryFromJson(json);
-
-  late List<ClubPublicSummary> clubSummaries;
-
-  @override
-  List<Object?> get props => [clubSummaries];
-  @override
-  Map<String, dynamic> toJson() => _$ClubSummaries$QueryToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class TimelinePostFullData extends JsonSerializable with EquatableMixin {
-  TimelinePostFullData();
-
-  factory TimelinePostFullData.fromJson(Map<String, dynamic> json) =>
-      _$TimelinePostFullDataFromJson(json);
-
-  late String activityId;
-
-  @JsonKey(
-      fromJson: fromGraphQLDateTimeToDartDateTime,
-      toJson: fromDartDateTimeToGraphQLDateTime)
-  late DateTime postedAt;
-
-  String? caption;
-
-  late List<String> tags;
-
-  late TimelinePostObjectDataUser poster;
-
-  late TimelinePostObjectDataUser creator;
-
-  late TimelinePostObjectDataObject object;
-
-  @override
-  List<Object?> get props =>
-      [activityId, postedAt, caption, tags, poster, creator, object];
-  @override
-  Map<String, dynamic> toJson() => _$TimelinePostFullDataToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateClubTimelinePost$Mutation extends JsonSerializable
-    with EquatableMixin {
-  CreateClubTimelinePost$Mutation();
-
-  factory CreateClubTimelinePost$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$CreateClubTimelinePost$MutationFromJson(json);
-
-  late TimelinePostFullData createClubTimelinePost;
-
-  @override
-  List<Object?> get props => [createClubTimelinePost];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateClubTimelinePost$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateClubTimelinePostInput extends JsonSerializable with EquatableMixin {
-  CreateClubTimelinePostInput(
-      {required this.clubId, required this.object, this.caption, this.tags});
-
-  factory CreateClubTimelinePostInput.fromJson(Map<String, dynamic> json) =>
-      _$CreateClubTimelinePostInputFromJson(json);
-
-  late String clubId;
-
-  late String object;
-
-  String? caption;
-
-  List<String>? tags;
-
-  @override
-  List<Object?> get props => [clubId, object, caption, tags];
-  @override
-  Map<String, dynamic> toJson() => _$CreateClubTimelinePostInputToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteClubTimelinePost$Mutation extends JsonSerializable
-    with EquatableMixin {
-  DeleteClubTimelinePost$Mutation();
-
-  factory DeleteClubTimelinePost$Mutation.fromJson(Map<String, dynamic> json) =>
-      _$DeleteClubTimelinePost$MutationFromJson(json);
-
-  late String deleteClubTimelinePost;
-
-  @override
-  List<Object?> get props => [deleteClubTimelinePost];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteClubTimelinePost$MutationToJson(this);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ClubMembersFeedPosts$Query extends JsonSerializable with EquatableMixin {
-  ClubMembersFeedPosts$Query();
-
-  factory ClubMembersFeedPosts$Query.fromJson(Map<String, dynamic> json) =>
-      _$ClubMembersFeedPosts$QueryFromJson(json);
-
-  late List<TimelinePostFullData> clubMembersFeedPosts;
-
-  @override
-  List<Object?> get props => [clubMembersFeedPosts];
-  @override
-  Map<String, dynamic> toJson() => _$ClubMembersFeedPosts$QueryToJson(this);
 }
 
 enum UserProfileScope {
@@ -10573,6 +10588,106 @@ class GiveMemberAdminStatusMutation extends GraphQLQuery<
   @override
   GiveMemberAdminStatus$Mutation parse(Map<String, dynamic> json) =>
       GiveMemberAdminStatus$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubSummariesArguments extends JsonSerializable with EquatableMixin {
+  ClubSummariesArguments({required this.ids});
+
+  @override
+  factory ClubSummariesArguments.fromJson(Map<String, dynamic> json) =>
+      _$ClubSummariesArgumentsFromJson(json);
+
+  late List<String> ids;
+
+  @override
+  List<Object?> get props => [ids];
+  @override
+  Map<String, dynamic> toJson() => _$ClubSummariesArgumentsToJson(this);
+}
+
+final CLUB_SUMMARIES_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'clubSummaries'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'ids')),
+            type: ListTypeNode(
+                type:
+                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'clubSummaries'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'ids'),
+                  value: VariableNode(name: NameNode(value: 'ids')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FragmentSpreadNode(
+                  name: NameNode(value: 'ClubPublicSummary'), directives: [])
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'ClubPublicSummary'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'ClubPublicSummary'), isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class ClubSummariesQuery
+    extends GraphQLQuery<ClubSummaries$Query, ClubSummariesArguments> {
+  ClubSummariesQuery({required this.variables});
+
+  @override
+  final DocumentNode document = CLUB_SUMMARIES_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'clubSummaries';
+
+  @override
+  final ClubSummariesArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  ClubSummaries$Query parse(Map<String, dynamic> json) =>
+      ClubSummaries$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -43530,6 +43645,68 @@ class CreateMoveMutation
 }
 
 @JsonSerializable(explicitToJson: true)
+class SoftDeleteMoveByIdArguments extends JsonSerializable with EquatableMixin {
+  SoftDeleteMoveByIdArguments({required this.id});
+
+  @override
+  factory SoftDeleteMoveByIdArguments.fromJson(Map<String, dynamic> json) =>
+      _$SoftDeleteMoveByIdArgumentsFromJson(json);
+
+  late String id;
+
+  @override
+  List<Object?> get props => [id];
+  @override
+  Map<String, dynamic> toJson() => _$SoftDeleteMoveByIdArgumentsToJson(this);
+}
+
+final SOFT_DELETE_MOVE_BY_ID_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'softDeleteMoveById'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'id')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'softDeleteMoveById'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'id'),
+                  value: VariableNode(name: NameNode(value: 'id')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class SoftDeleteMoveByIdMutation extends GraphQLQuery<
+    SoftDeleteMoveById$Mutation, SoftDeleteMoveByIdArguments> {
+  SoftDeleteMoveByIdMutation({required this.variables});
+
+  @override
+  final DocumentNode document = SOFT_DELETE_MOVE_BY_ID_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'softDeleteMoveById';
+
+  @override
+  final SoftDeleteMoveByIdArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  SoftDeleteMoveById$Mutation parse(Map<String, dynamic> json) =>
+      SoftDeleteMoveById$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class UpdateMoveArguments extends JsonSerializable with EquatableMixin {
   UpdateMoveArguments({required this.data});
 
@@ -56988,6 +57165,281 @@ class DeleteScheduledWorkoutByIdMutation extends GraphQLQuery<
 }
 
 @JsonSerializable(explicitToJson: true)
+class CreateClubTimelinePostArguments extends JsonSerializable
+    with EquatableMixin {
+  CreateClubTimelinePostArguments({required this.data});
+
+  @override
+  factory CreateClubTimelinePostArguments.fromJson(Map<String, dynamic> json) =>
+      _$CreateClubTimelinePostArgumentsFromJson(json);
+
+  late CreateClubTimelinePostInput data;
+
+  @override
+  List<Object?> get props => [data];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CreateClubTimelinePostArgumentsToJson(this);
+}
+
+final CREATE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'createClubTimelinePost'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'data')),
+            type: NamedTypeNode(
+                name: NameNode(value: 'CreateClubTimelinePostInput'),
+                isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'createClubTimelinePost'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'data'),
+                  value: VariableNode(name: NameNode(value: 'data')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FieldNode(
+                  name: NameNode(value: 'activityId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'postedAt'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'caption'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'tags'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'poster'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'creator'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'object'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataObject'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostObjectDataUser'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostObjectDataUser'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostObjectDataObject'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostObjectDataObject'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'type'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class CreateClubTimelinePostMutation extends GraphQLQuery<
+    CreateClubTimelinePost$Mutation, CreateClubTimelinePostArguments> {
+  CreateClubTimelinePostMutation({required this.variables});
+
+  @override
+  final DocumentNode document = CREATE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'createClubTimelinePost';
+
+  @override
+  final CreateClubTimelinePostArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  CreateClubTimelinePost$Mutation parse(Map<String, dynamic> json) =>
+      CreateClubTimelinePost$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class DeleteClubTimelinePostArguments extends JsonSerializable
+    with EquatableMixin {
+  DeleteClubTimelinePostArguments({required this.activityId});
+
+  @override
+  factory DeleteClubTimelinePostArguments.fromJson(Map<String, dynamic> json) =>
+      _$DeleteClubTimelinePostArgumentsFromJson(json);
+
+  late String activityId;
+
+  @override
+  List<Object?> get props => [activityId];
+  @override
+  Map<String, dynamic> toJson() =>
+      _$DeleteClubTimelinePostArgumentsToJson(this);
+}
+
+final DELETE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.mutation,
+      name: NameNode(value: 'deleteClubTimelinePost'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'activityId')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'deleteClubTimelinePost'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'activityId'),
+                  value: VariableNode(name: NameNode(value: 'activityId')))
+            ],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class DeleteClubTimelinePostMutation extends GraphQLQuery<
+    DeleteClubTimelinePost$Mutation, DeleteClubTimelinePostArguments> {
+  DeleteClubTimelinePostMutation({required this.variables});
+
+  @override
+  final DocumentNode document = DELETE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT;
+
+  @override
+  final String operationName = 'deleteClubTimelinePost';
+
+  @override
+  final DeleteClubTimelinePostArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  DeleteClubTimelinePost$Mutation parse(Map<String, dynamic> json) =>
+      DeleteClubTimelinePost$Mutation.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
 class TimelinePostsDataArguments extends JsonSerializable with EquatableMixin {
   TimelinePostsDataArguments({required this.postDataRequests});
 
@@ -57179,6 +57631,235 @@ class TimelinePostsDataQuery
   @override
   TimelinePostsData$Query parse(Map<String, dynamic> json) =>
       TimelinePostsData$Query.fromJson(json);
+}
+
+@JsonSerializable(explicitToJson: true)
+class ClubMembersFeedPostsArguments extends JsonSerializable
+    with EquatableMixin {
+  ClubMembersFeedPostsArguments(
+      {required this.clubId, required this.limit, required this.offset});
+
+  @override
+  factory ClubMembersFeedPostsArguments.fromJson(Map<String, dynamic> json) =>
+      _$ClubMembersFeedPostsArgumentsFromJson(json);
+
+  late String clubId;
+
+  late int limit;
+
+  late int offset;
+
+  @override
+  List<Object?> get props => [clubId, limit, offset];
+  @override
+  Map<String, dynamic> toJson() => _$ClubMembersFeedPostsArgumentsToJson(this);
+}
+
+final CLUB_MEMBERS_FEED_POSTS_QUERY_DOCUMENT = DocumentNode(definitions: [
+  OperationDefinitionNode(
+      type: OperationType.query,
+      name: NameNode(value: 'clubMembersFeedPosts'),
+      variableDefinitions: [
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'clubId')),
+            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: []),
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'limit')),
+            type: NamedTypeNode(name: NameNode(value: 'Int'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: []),
+        VariableDefinitionNode(
+            variable: VariableNode(name: NameNode(value: 'offset')),
+            type: NamedTypeNode(name: NameNode(value: 'Int'), isNonNull: true),
+            defaultValue: DefaultValueNode(value: null),
+            directives: [])
+      ],
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: 'clubMembersFeedPosts'),
+            alias: null,
+            arguments: [
+              ArgumentNode(
+                  name: NameNode(value: 'clubId'),
+                  value: VariableNode(name: NameNode(value: 'clubId'))),
+              ArgumentNode(
+                  name: NameNode(value: 'limit'),
+                  value: VariableNode(name: NameNode(value: 'limit'))),
+              ArgumentNode(
+                  name: NameNode(value: 'offset'),
+                  value: VariableNode(name: NameNode(value: 'offset')))
+            ],
+            directives: [],
+            selectionSet: SelectionSetNode(selections: [
+              FieldNode(
+                  name: NameNode(value: 'activityId'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'postedAt'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'caption'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'tags'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: null),
+              FieldNode(
+                  name: NameNode(value: 'poster'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'creator'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataUser'),
+                        directives: [])
+                  ])),
+              FieldNode(
+                  name: NameNode(value: 'object'),
+                  alias: null,
+                  arguments: [],
+                  directives: [],
+                  selectionSet: SelectionSetNode(selections: [
+                    FragmentSpreadNode(
+                        name: NameNode(value: 'TimelinePostObjectDataObject'),
+                        directives: [])
+                  ]))
+            ]))
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostObjectDataUser'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostObjectDataUser'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'displayName'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'avatarUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ])),
+  FragmentDefinitionNode(
+      name: NameNode(value: 'TimelinePostObjectDataObject'),
+      typeCondition: TypeConditionNode(
+          on: NamedTypeNode(
+              name: NameNode(value: 'TimelinePostObjectDataObject'),
+              isNonNull: false)),
+      directives: [],
+      selectionSet: SelectionSetNode(selections: [
+        FieldNode(
+            name: NameNode(value: '__typename'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'id'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'type'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'name'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introAudioUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'coverImageUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null),
+        FieldNode(
+            name: NameNode(value: 'introVideoThumbUri'),
+            alias: null,
+            arguments: [],
+            directives: [],
+            selectionSet: null)
+      ]))
+]);
+
+class ClubMembersFeedPostsQuery extends GraphQLQuery<ClubMembersFeedPosts$Query,
+    ClubMembersFeedPostsArguments> {
+  ClubMembersFeedPostsQuery({required this.variables});
+
+  @override
+  final DocumentNode document = CLUB_MEMBERS_FEED_POSTS_QUERY_DOCUMENT;
+
+  @override
+  final String operationName = 'clubMembersFeedPosts';
+
+  @override
+  final ClubMembersFeedPostsArguments variables;
+
+  @override
+  List<Object?> get props => [document, operationName, variables];
+  @override
+  ClubMembersFeedPosts$Query parse(Map<String, dynamic> json) =>
+      ClubMembersFeedPosts$Query.fromJson(json);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -61476,608 +62157,4 @@ class WorkoutByIdQuery
   @override
   WorkoutById$Query parse(Map<String, dynamic> json) =>
       WorkoutById$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ClubSummariesArguments extends JsonSerializable with EquatableMixin {
-  ClubSummariesArguments({required this.ids});
-
-  @override
-  factory ClubSummariesArguments.fromJson(Map<String, dynamic> json) =>
-      _$ClubSummariesArgumentsFromJson(json);
-
-  late List<String> ids;
-
-  @override
-  List<Object?> get props => [ids];
-  @override
-  Map<String, dynamic> toJson() => _$ClubSummariesArgumentsToJson(this);
-}
-
-final CLUB_SUMMARIES_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'clubSummaries'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'ids')),
-            type: ListTypeNode(
-                type:
-                    NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'clubSummaries'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'ids'),
-                  value: VariableNode(name: NameNode(value: 'ids')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FragmentSpreadNode(
-                  name: NameNode(value: 'ClubPublicSummary'), directives: [])
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'ClubPublicSummary'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'ClubPublicSummary'), isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class ClubSummariesQuery
-    extends GraphQLQuery<ClubSummaries$Query, ClubSummariesArguments> {
-  ClubSummariesQuery({required this.variables});
-
-  @override
-  final DocumentNode document = CLUB_SUMMARIES_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'clubSummaries';
-
-  @override
-  final ClubSummariesArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  ClubSummaries$Query parse(Map<String, dynamic> json) =>
-      ClubSummaries$Query.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class CreateClubTimelinePostArguments extends JsonSerializable
-    with EquatableMixin {
-  CreateClubTimelinePostArguments({required this.data});
-
-  @override
-  factory CreateClubTimelinePostArguments.fromJson(Map<String, dynamic> json) =>
-      _$CreateClubTimelinePostArgumentsFromJson(json);
-
-  late CreateClubTimelinePostInput data;
-
-  @override
-  List<Object?> get props => [data];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$CreateClubTimelinePostArgumentsToJson(this);
-}
-
-final CREATE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'createClubTimelinePost'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'data')),
-            type: NamedTypeNode(
-                name: NameNode(value: 'CreateClubTimelinePostInput'),
-                isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'createClubTimelinePost'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'data'),
-                  value: VariableNode(name: NameNode(value: 'data')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                  name: NameNode(value: 'activityId'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'postedAt'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'caption'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'tags'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'poster'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataUser'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'creator'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataUser'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'object'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataObject'),
-                        directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostObjectDataUser'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostObjectDataUser'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'displayName'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'avatarUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostObjectDataObject'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostObjectDataObject'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'type'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introAudioUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introVideoUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introVideoThumbUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class CreateClubTimelinePostMutation extends GraphQLQuery<
-    CreateClubTimelinePost$Mutation, CreateClubTimelinePostArguments> {
-  CreateClubTimelinePostMutation({required this.variables});
-
-  @override
-  final DocumentNode document = CREATE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'createClubTimelinePost';
-
-  @override
-  final CreateClubTimelinePostArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  CreateClubTimelinePost$Mutation parse(Map<String, dynamic> json) =>
-      CreateClubTimelinePost$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class DeleteClubTimelinePostArguments extends JsonSerializable
-    with EquatableMixin {
-  DeleteClubTimelinePostArguments({required this.activityId});
-
-  @override
-  factory DeleteClubTimelinePostArguments.fromJson(Map<String, dynamic> json) =>
-      _$DeleteClubTimelinePostArgumentsFromJson(json);
-
-  late String activityId;
-
-  @override
-  List<Object?> get props => [activityId];
-  @override
-  Map<String, dynamic> toJson() =>
-      _$DeleteClubTimelinePostArgumentsToJson(this);
-}
-
-final DELETE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.mutation,
-      name: NameNode(value: 'deleteClubTimelinePost'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'activityId')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'deleteClubTimelinePost'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'activityId'),
-                  value: VariableNode(name: NameNode(value: 'activityId')))
-            ],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class DeleteClubTimelinePostMutation extends GraphQLQuery<
-    DeleteClubTimelinePost$Mutation, DeleteClubTimelinePostArguments> {
-  DeleteClubTimelinePostMutation({required this.variables});
-
-  @override
-  final DocumentNode document = DELETE_CLUB_TIMELINE_POST_MUTATION_DOCUMENT;
-
-  @override
-  final String operationName = 'deleteClubTimelinePost';
-
-  @override
-  final DeleteClubTimelinePostArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  DeleteClubTimelinePost$Mutation parse(Map<String, dynamic> json) =>
-      DeleteClubTimelinePost$Mutation.fromJson(json);
-}
-
-@JsonSerializable(explicitToJson: true)
-class ClubMembersFeedPostsArguments extends JsonSerializable
-    with EquatableMixin {
-  ClubMembersFeedPostsArguments(
-      {required this.clubId, required this.limit, required this.offset});
-
-  @override
-  factory ClubMembersFeedPostsArguments.fromJson(Map<String, dynamic> json) =>
-      _$ClubMembersFeedPostsArgumentsFromJson(json);
-
-  late String clubId;
-
-  late int limit;
-
-  late int offset;
-
-  @override
-  List<Object?> get props => [clubId, limit, offset];
-  @override
-  Map<String, dynamic> toJson() => _$ClubMembersFeedPostsArgumentsToJson(this);
-}
-
-final CLUB_MEMBERS_FEED_POSTS_QUERY_DOCUMENT = DocumentNode(definitions: [
-  OperationDefinitionNode(
-      type: OperationType.query,
-      name: NameNode(value: 'clubMembersFeedPosts'),
-      variableDefinitions: [
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'clubId')),
-            type: NamedTypeNode(name: NameNode(value: 'ID'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: []),
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'limit')),
-            type: NamedTypeNode(name: NameNode(value: 'Int'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: []),
-        VariableDefinitionNode(
-            variable: VariableNode(name: NameNode(value: 'offset')),
-            type: NamedTypeNode(name: NameNode(value: 'Int'), isNonNull: true),
-            defaultValue: DefaultValueNode(value: null),
-            directives: [])
-      ],
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: 'clubMembersFeedPosts'),
-            alias: null,
-            arguments: [
-              ArgumentNode(
-                  name: NameNode(value: 'clubId'),
-                  value: VariableNode(name: NameNode(value: 'clubId'))),
-              ArgumentNode(
-                  name: NameNode(value: 'limit'),
-                  value: VariableNode(name: NameNode(value: 'limit'))),
-              ArgumentNode(
-                  name: NameNode(value: 'offset'),
-                  value: VariableNode(name: NameNode(value: 'offset')))
-            ],
-            directives: [],
-            selectionSet: SelectionSetNode(selections: [
-              FieldNode(
-                  name: NameNode(value: 'activityId'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'postedAt'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'caption'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'tags'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: null),
-              FieldNode(
-                  name: NameNode(value: 'poster'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataUser'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'creator'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataUser'),
-                        directives: [])
-                  ])),
-              FieldNode(
-                  name: NameNode(value: 'object'),
-                  alias: null,
-                  arguments: [],
-                  directives: [],
-                  selectionSet: SelectionSetNode(selections: [
-                    FragmentSpreadNode(
-                        name: NameNode(value: 'TimelinePostObjectDataObject'),
-                        directives: [])
-                  ]))
-            ]))
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostObjectDataUser'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostObjectDataUser'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'displayName'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'avatarUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ])),
-  FragmentDefinitionNode(
-      name: NameNode(value: 'TimelinePostObjectDataObject'),
-      typeCondition: TypeConditionNode(
-          on: NamedTypeNode(
-              name: NameNode(value: 'TimelinePostObjectDataObject'),
-              isNonNull: false)),
-      directives: [],
-      selectionSet: SelectionSetNode(selections: [
-        FieldNode(
-            name: NameNode(value: '__typename'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'id'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'type'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'name'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introAudioUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'coverImageUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introVideoUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null),
-        FieldNode(
-            name: NameNode(value: 'introVideoThumbUri'),
-            alias: null,
-            arguments: [],
-            directives: [],
-            selectionSet: null)
-      ]))
-]);
-
-class ClubMembersFeedPostsQuery extends GraphQLQuery<ClubMembersFeedPosts$Query,
-    ClubMembersFeedPostsArguments> {
-  ClubMembersFeedPostsQuery({required this.variables});
-
-  @override
-  final DocumentNode document = CLUB_MEMBERS_FEED_POSTS_QUERY_DOCUMENT;
-
-  @override
-  final String operationName = 'clubMembersFeedPosts';
-
-  @override
-  final ClubMembersFeedPostsArguments variables;
-
-  @override
-  List<Object?> get props => [document, operationName, variables];
-  @override
-  ClubMembersFeedPosts$Query parse(Map<String, dynamic> json) =>
-      ClubMembersFeedPosts$Query.fromJson(json);
 }

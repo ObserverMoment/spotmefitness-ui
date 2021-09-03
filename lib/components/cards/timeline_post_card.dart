@@ -258,7 +258,7 @@ class TimelinePostCard extends StatelessWidget {
                           tag: originalPostId != null
                               ? 'Re-posted by you'
                               : 'Posted by you',
-                          withBorder: true,
+                          borderColor: context.theme.primary,
                           textColor: context.theme.primary,
                           color: context.theme.background,
                           fontSize: FONTSIZE.SMALL,

@@ -50,11 +50,6 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
   Amplitude? _amplitude;
   String? _recordedFilePath;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> _pauseStartOrResume() async {
     if (_isStopped) {
       await _start();
@@ -170,99 +165,120 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+          bottomBorderColor: context.theme.navbarBottomBorder,
           customLeading: NavBarCancelButton(_handleCancelAndClose),
           middle: NavBarTitle('Record Mic'),
           trailing: InfoPopupButton(
               infoWidget: MyText('Explains how the audio recorder works'))),
       child: SizedBox.expand(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 20),
-            Padding(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 20),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularPercentIndicator(
+                    percent: _calcVolumePeakPercent(),
+                    lineWidth: 1,
+                    radius: MediaQuery.of(context).size.width * 0.35,
+                    center: _amplitude != null
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              MyText(
+                                'Level',
+                                size: FONTSIZE.SMALL,
+                                subtext: true,
+                              ),
+                              SizedBox(height: 6),
+                              MyText(
+                                'Current: ${_amplitude?.current ?? 0.0}',
+                                size: FONTSIZE.SMALL,
+                                subtext: true,
+                              ),
+                              SizedBox(height: 3),
+                              MyText(
+                                'Max: ${_amplitude?.max ?? 0.0}',
+                                size: FONTSIZE.SMALL,
+                                subtext: true,
+                              ),
+                            ],
+                          )
+                        : null,
+                    backgroundColor: context.theme.primary.withOpacity(0.1),
+                    progressColor: Styles.peachRed,
+                  )),
+              Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CircularPercentIndicator(
-                  percent: _calcVolumePeakPercent(),
-                  lineWidth: 1,
-                  radius: MediaQuery.of(context).size.width * 0.4,
-                  center: _amplitude != null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            MyText(
-                              'Current: ${_amplitude?.current ?? 0.0}',
-                              size: FONTSIZE.SMALL,
-                              subtext: true,
-                            ),
-                            MyText(
-                              'Max: ${_amplitude?.max ?? 0.0}',
-                              size: FONTSIZE.SMALL,
-                              subtext: true,
-                            ),
-                          ],
+                child: AnimatedSwitcher(
+                  duration: kStandardAnimationDuration,
+                  child: !_isPaused && !_isStopped
+                      ? SpinKitDoubleBounce(
+                          color: Styles.peachRed.withOpacity(0.7),
+                          size: 20,
+                          duration: Duration(seconds: 4),
                         )
-                      : null,
-                  backgroundColor: context.theme.primary.withOpacity(0.1),
-                  progressColor: Styles.peachRed,
-                )),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: AnimatedSwitcher(
-                duration: kStandardAnimationDuration,
-                child: !_isPaused && !_isStopped
-                    ? SpinKitDoubleBounce(
-                        color: Styles.peachRed.withOpacity(0.7),
-                        size: 30,
-                        duration: Duration(seconds: 4),
-                      )
-                    : Icon(
-                        CupertinoIcons.circle_fill,
-                        color: context.theme.primary.withOpacity(0.07),
-                        size: 30,
-                      ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TimerDisplayText(
-                milliseconds: _recordDuration * 1000,
-                size: 24,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: context.theme.primary, shape: BoxShape.circle),
-                child: CupertinoButton(
-                    child: AnimatedSwitcher(
-                      duration: kStandardAnimationDuration,
-                      child: !_isPaused
-                          ? Icon(CupertinoIcons.pause_solid,
-                              color: context.theme.background, size: 36)
-                          : Icon(CupertinoIcons.mic_fill,
-                              color: context.theme.background, size: 36),
-                    ),
-                    onPressed: _pauseStartOrResume),
-              ),
-            ),
-            if (_isPaused && _recordDuration > 0)
-              FadeIn(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      PrimaryButton(
-                          text: 'Save Recording', onPressed: _saveRecording),
-                      SizedBox(height: 12),
-                      DestructiveButton(
-                          text: 'Clear', onPressed: _clearAndReset)
-                    ],
-                  ),
+                      : Icon(
+                          CupertinoIcons.circle_fill,
+                          color: context.theme.primary.withOpacity(0.07),
+                          size: 20,
+                        ),
                 ),
-              )
-          ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TimerDisplayText(
+                  milliseconds: _recordDuration * 1000,
+                  size: 36,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: context.theme.primary, shape: BoxShape.circle),
+                  child: CupertinoButton(
+                      child: AnimatedSwitcher(
+                          duration: kStandardAnimationDuration,
+                          child: _isPaused || _isStopped
+                              ? Column(
+                                  children: [
+                                    Icon(CupertinoIcons.mic_fill,
+                                        color: context.theme.background,
+                                        size: 42),
+                                    if (_recordDuration > 0)
+                                      MyText(
+                                        'More..',
+                                        color: context.theme.background,
+                                        lineHeight: 1.3,
+                                        size: FONTSIZE.TINY,
+                                      )
+                                  ],
+                                )
+                              : Icon(CupertinoIcons.pause_solid,
+                                  color: context.theme.background, size: 42)),
+                      onPressed: _pauseStartOrResume),
+                ),
+              ),
+              if (_isPaused && _recordDuration > 0)
+                FadeIn(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 40.0),
+                    child: Column(
+                      children: [
+                        PrimaryButton(
+                            text: 'Save Recording', onPressed: _saveRecording),
+                        SizedBox(height: 12),
+                        DestructiveButton(
+                            text: 'Clear', onPressed: _clearAndReset)
+                      ],
+                    ),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );

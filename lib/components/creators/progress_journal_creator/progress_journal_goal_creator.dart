@@ -236,7 +236,7 @@ class _ProgressJournalGoalCreatorState
                       'ProgressJournalGoalCreator - ${ProgressJournalGoalTagsQuery().operationName}'),
                   query: ProgressJournalGoalTagsQuery(),
                   builder: (data) {
-                    final tags = data.progressJournalGoalTags;
+                    final tags = data.progressJournalGoalTags.reversed.toList();
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Wrap(

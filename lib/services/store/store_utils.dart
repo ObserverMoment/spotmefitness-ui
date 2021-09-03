@@ -1,11 +1,34 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:gql/ast.dart';
 import 'package:hive/hive.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:artemis/artemis.dart';
+import 'package:spotmefitness_ui/services/store/graphql_store.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 const kStoreReferenceKey = '\$ref';
+
+Future<void> checkOperationResult<T>(
+    BuildContext context, MutationResult<T> result,
+    {VoidCallback? onSuccess, VoidCallback? onFail}) async {
+  if (result.hasErrors || result.data == null) {
+    result.errors?.forEach((e) {
+      print(e);
+    });
+    if (onFail != null) {
+      onFail();
+    } else {
+      // Default to showing a generic error toast.
+      context.showToast(message: "Sorry, there was a problem, it didn't work!");
+    }
+  } else {
+    if (onSuccess != null) {
+      onSuccess();
+    }
+  }
+}
 
 /// Accepts hierarchical data and write it to a normalized key value store [Hive] box.
 /// All objects must have two fields, [__typename] and [id] to generate a unique id.
