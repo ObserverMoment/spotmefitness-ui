@@ -107,8 +107,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
 
   Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
     await SharingAndLinking.shareLink(
-        '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
-        'Check out this workout plan!');
+        'workout-plan/${workoutPlan.id}', 'Check out this workout plan!');
   }
 
   Future<void> _archiveWorkoutPlan(String id) async {

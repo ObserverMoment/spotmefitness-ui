@@ -146,8 +146,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
 
   Future<void> _shareWorkoutPlan(WorkoutPlan workoutPlan) async {
     await SharingAndLinking.shareLink(
-        '${kDeepLinkSchema}workout-plan/${workoutPlan.id}',
-        'Check out this workout plan!');
+        'workout-plan/${workoutPlan.id}', 'Check out this workout plan!');
   }
 
   void _confirmLeavePlan() {

@@ -113,7 +113,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
 
   Future<void> _shareWorkout(Workout workout) async {
     await SharingAndLinking.shareLink(
-        '${kDeepLinkSchema}workout/${workout.id}', 'Check out this workout!');
+        'workout/${workout.id}', 'Check out this workout!');
   }
 
   Future<void> _archiveWorkout(String id) async {
