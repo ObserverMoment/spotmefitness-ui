@@ -133,14 +133,13 @@ class DifficultyLevelDot extends StatelessWidget {
 
 class DifficultyLevelTag extends StatelessWidget {
   final DifficultyLevel difficultyLevel;
+  final FONTSIZE fontSize;
 
-  DifficultyLevelTag(
-    this.difficultyLevel,
-  );
+  DifficultyLevelTag(this.difficultyLevel, {this.fontSize = FONTSIZE.SMALL});
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+      padding: kDefaultTagPadding,
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)
@@ -150,9 +149,9 @@ class DifficultyLevelTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MyHeaderText(
+          MyText(
             difficultyLevel.display.toUpperCase(),
-            size: FONTSIZE.TINY,
+            size: fontSize,
             color: Styles.white,
             weight: FontWeight.bold,
             lineHeight: 1.2,
@@ -181,10 +180,10 @@ class WorkoutSectionTypeTag extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
+          padding: kDefaultTagPadding,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(color: context.theme.primary.withOpacity(0.3)),
+            border: Border.all(color: context.theme.primary),
             borderRadius: BorderRadius.circular(60),
           ),
           child: Row(

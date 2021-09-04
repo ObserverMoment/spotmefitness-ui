@@ -207,7 +207,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
 
     if (postWithShare != null) {
       context.showAlertDialog(
-          title: 'Already Shared',
+          title: 'Already shared',
           message:
               "You can only share other people's posts to your own feed once.");
     } else {
@@ -251,7 +251,7 @@ class _AuthedUserTimelineState extends State<AuthedUserTimeline> {
 
               context.showToast(
                   icon: Icon(CupertinoIcons.paperplane),
-                  message: 'Post sahared');
+                  message: 'Post shared');
             });
       } catch (e) {
         print(e);

@@ -9,6 +9,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoggedWorkoutCard extends StatelessWidget {
   final LoggedWorkout loggedWorkout;
@@ -17,7 +18,6 @@ class LoggedWorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Set<BodyArea> bodyAreas = {};
     Set<MoveType> moveTypes = {};
 
     final sortedSections = loggedWorkout.loggedWorkoutSections
@@ -26,9 +26,6 @@ class LoggedWorkoutCard extends StatelessWidget {
     for (final workoutSection in sortedSections) {
       for (final workoutSet in workoutSection.loggedWorkoutSets) {
         for (final workoutMove in workoutSet.loggedWorkoutMoves) {
-          bodyAreas.addAll(workoutMove.move.bodyAreaMoveScores
-              .map((bams) => bams.bodyArea)
-              .toList());
           moveTypes.add(workoutMove.move.moveType);
         }
       }
@@ -36,7 +33,7 @@ class LoggedWorkoutCard extends StatelessWidget {
 
     return Card(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
@@ -55,20 +52,31 @@ class LoggedWorkoutCard extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: Row(
               children: [
-                MyText(
+                MyHeaderText(
                   loggedWorkout.name,
+                  weight: FontWeight.normal,
                 ),
               ],
             ),
           ),
+          if (Utils.textNotNull(loggedWorkout.note))
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6.0),
+              child: MyText(
+                loggedWorkout.note!,
+                maxLines: 3,
+                subtext: true,
+                lineHeight: 1.3,
+              ),
+            ),
           HorizontalLine(),
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
             child: Wrap(
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
-                spacing: 8,
-                runSpacing: 12,
+                spacing: 6,
+                runSpacing: 6,
                 children: [
                   ...loggedWorkout.loggedWorkoutSections
                       .map((section) => LoggedWorkoutSectionSummaryTag(
@@ -85,11 +93,6 @@ class LoggedWorkoutCard extends StatelessWidget {
                               textColor: Styles.white,
                             ))
                         .toList(),
-                  ...bodyAreas
-                      .map((bodyArea) => Tag(
-                            tag: bodyArea.name,
-                          ))
-                      .toList(),
                 ]),
           ),
         ],

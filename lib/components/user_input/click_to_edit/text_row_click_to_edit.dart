@@ -164,6 +164,7 @@ class EditableTextAreaRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
                   maxLines: maxDisplayLines,
+                  lineHeight: 1.4,
                 ),
               ),
             ),

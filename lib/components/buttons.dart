@@ -77,7 +77,6 @@ class MyButton extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         child: MyText(
                           text.toUpperCase(),
-                          weight: FontWeight.bold,
                           color: contentColor,
                         ),
                       ),
@@ -628,7 +627,6 @@ class DoItButton extends StatelessWidget {
           children: [
             MyText(
               text.toUpperCase(),
-              weight: FontWeight.bold,
               size: FONTSIZE.SMALL,
               color: context.theme.background,
             ),

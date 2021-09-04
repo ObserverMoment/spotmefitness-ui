@@ -61,17 +61,14 @@ class ComingUpList extends StatelessWidget {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 4.0),
-                              child: ContentBox(
-                                child: BorderButton(
-                                  withBorder: false,
-                                  mini: true,
-                                  prefix:
-                                      Icon(CupertinoIcons.calendar_badge_plus),
-                                  text: 'Plan Something',
-                                  onPressed: () => context.navigateTo(
-                                      YourScheduleRoute(
-                                          openAtDate: DateTime.now())),
-                                ),
+                              child: SecondaryButton(
+                                withBorder: false,
+                                prefixIconData:
+                                    CupertinoIcons.calendar_badge_plus,
+                                text: 'Plan Something',
+                                onPressed: () => context.navigateTo(
+                                    YourScheduleRoute(
+                                        openAtDate: DateTime.now())),
                               ),
                             ),
                           ],

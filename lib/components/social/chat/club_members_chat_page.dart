@@ -157,7 +157,9 @@ class _ClubMembersChatPageState extends State<ClubMembersChatPage> {
                           },
                         ),
                       ),
-                      chat.MessageInput(),
+                      chat.MessageInput(
+                        showCommandsButton: false,
+                      ),
                     ],
                   ),
                 ),

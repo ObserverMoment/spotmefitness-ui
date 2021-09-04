@@ -93,7 +93,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                   clipBehavior: Clip.none,
                   children: [
                     CupertinoButton(
-                      padding: const EdgeInsets.only(left: 8, right: 16),
+                      padding: const EdgeInsets.only(left: 8, right: 12),
                       pressedOpacity: 0.9,
                       alignment: Alignment.centerLeft,
                       onPressed: () => widget.handleTabChange(index),
@@ -107,8 +107,9 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                               key: _globalTextBoxKeys[index],
                               opacity: index == widget.activeTabIndex ? 1 : 0.7,
                               duration: Duration(milliseconds: 400),
-                              child: MyHeaderText(
+                              child: MyText(
                                 title,
+                                size: FONTSIZE.BIG,
                               ),
                             ),
                             SizedBox(height: 2),

@@ -150,18 +150,12 @@ class _WorkoutPlanCreatorStructureWeekState
 
     return Column(
       children: [
-        HorizontalLine(),
-        // https://stackoverflow.com/questions/51587003/how-to-center-only-one-element-in-a-row-of-2-elements-in-flutter
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               H3('Week ${widget.weekNumber + 1}'),
-              ShowHideDetailsButton(
-                  onPressed: () => setState(
-                      () => _minimizePlanDayCards = !_minimizePlanDayCards),
-                  showDetails: !_minimizePlanDayCards)
             ],
           ),
         ),
@@ -230,7 +224,6 @@ class _WorkoutPlanCreatorStructureWeekState
                         child: EditableWorkoutPlanDayCard(
                           workoutPlanDay: byDayNumber[dayIndex]!,
                           displayDayNumber: dayIndex,
-                          minimize: _minimizePlanDayCards,
                           addNoteToWorkoutPlanDayWorkout:
                               (note, workoutPlanDayWorkout) =>
                                   _addNoteToWorkoutPlanWorkout(

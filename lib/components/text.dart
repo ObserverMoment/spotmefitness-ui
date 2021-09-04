@@ -64,7 +64,7 @@ class MyText extends StatelessWidget {
             height: lineHeight,
             fontSize: _fontSizeMap[size],
             color: subtext
-                ? context.theme.primary.withOpacity(0.6)
+                ? context.theme.primary.withOpacity(0.7)
                 : color != null
                     ? color
                     : context.theme.primary));
@@ -319,25 +319,29 @@ class ViewMoreFullScreenTextBlock extends StatelessWidget {
   final int maxLines;
   final TextAlign textAlign;
   final double lineHeight;
+  final FONTSIZE? fontSize;
+  final bool subtext;
   const ViewMoreFullScreenTextBlock(
       {Key? key,
       required this.text,
       required this.title,
       this.maxLines = 4,
       this.textAlign = TextAlign.start,
-      this.lineHeight = 1.3})
+      this.lineHeight = 1.3,
+      this.fontSize,
+      this.subtext = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => context.showBottomSheet(child: TextViewer(text, title)),
-      child: MyText(
-        text,
-        maxLines: maxLines,
-        textAlign: textAlign,
-        lineHeight: lineHeight,
-      ),
+      child: MyText(text,
+          maxLines: maxLines,
+          textAlign: textAlign,
+          lineHeight: lineHeight,
+          size: fontSize ?? FONTSIZE.MAIN,
+          subtext: subtext),
     );
   }
 }

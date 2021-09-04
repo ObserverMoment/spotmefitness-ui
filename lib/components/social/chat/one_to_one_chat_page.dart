@@ -148,7 +148,9 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
                           },
                         ),
                       ),
-                      chat.MessageInput(),
+                      chat.MessageInput(
+                        showCommandsButton: false,
+                      ),
                     ],
                   ),
                 ),

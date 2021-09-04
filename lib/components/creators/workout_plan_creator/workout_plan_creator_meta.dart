@@ -14,6 +14,7 @@ import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_se
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class WorkoutPlanCreatorMeta extends StatelessWidget {
   const WorkoutPlanCreatorMeta({Key? key}) : super(key: key);
@@ -109,7 +110,6 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
                 text: workoutPlanData.name,
                 onSave: (text) => _updateWorkoutPlanMeta({'name': text}),
                 inputValidation: (t) => t.length > 2 && t.length <= 50,
-                isRequired: true,
                 maxChars: 50,
                 validationMessage: 'Required. Min 3 chars. max 50',
               ),

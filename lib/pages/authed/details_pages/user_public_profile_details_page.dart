@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -98,6 +100,8 @@ class _UserPublicProfileDetailsPageState
         parameterizeQuery: true,
         loadingIndicator: ShimmerDetailsPage(title: 'Getting Ready'),
         builder: (data) {
+          final authedUserId = GetIt.I<AuthBloc>().authedUser!.id;
+          final bool isAuthedUserProfile = authedUserId == widget.userId;
           final userPublicProfile = data.userPublicProfileById;
 
           return MyPageScaffold(
@@ -132,15 +136,17 @@ class _UserPublicProfileDetailsPageState
                                 icon: Icon(CupertinoIcons.paperplane),
                                 onPressed: () =>
                                     _shareUserProfile(userPublicProfile)),
-                            BottomSheetMenuItem(
-                                text: 'Block',
-                                icon: Icon(CupertinoIcons.nosign),
-                                onPressed: () => print('block')),
-                            BottomSheetMenuItem(
-                                text: 'Report',
-                                icon:
-                                    Icon(CupertinoIcons.exclamationmark_circle),
-                                onPressed: () => print('report')),
+                            if (!isAuthedUserProfile)
+                              BottomSheetMenuItem(
+                                  text: 'Block',
+                                  icon: Icon(CupertinoIcons.nosign),
+                                  onPressed: () => print('block')),
+                            if (!isAuthedUserProfile)
+                              BottomSheetMenuItem(
+                                  text: 'Report',
+                                  icon: Icon(
+                                      CupertinoIcons.exclamationmark_circle),
+                                  onPressed: () => print('report')),
                           ])),
                 ),
               ),
@@ -159,6 +165,7 @@ class _UserPublicProfileDetailsPageState
                                 _HeaderContent(
                                   userPublicProfile: userPublicProfile,
                                   avatarSize: kAvatarSize,
+                                  isAuthedUserProfile: isAuthedUserProfile,
                                 ),
                                 if (Utils.textNotNull(
                                     userPublicProfile.avatarUri))
@@ -275,8 +282,12 @@ class _UserPublicProfileDetailsPageState
 class _HeaderContent extends StatelessWidget {
   final UserPublicProfile userPublicProfile;
   final double avatarSize;
+  final bool isAuthedUserProfile;
   const _HeaderContent(
-      {Key? key, required this.userPublicProfile, this.avatarSize = 100})
+      {Key? key,
+      required this.userPublicProfile,
+      this.avatarSize = 100,
+      required this.isAuthedUserProfile})
       : super(key: key);
 
   final verticalPadding = const EdgeInsets.symmetric(vertical: 6.0);
@@ -305,7 +316,7 @@ class _HeaderContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              SizedBox(height: 8),
+              SizedBox(height: 10),
               if (Utils.textNotNull(userPublicProfile.countryCode) ||
                   Utils.textNotNull(userPublicProfile.townCity))
                 Padding(
@@ -343,28 +354,29 @@ class _HeaderContent extends StatelessWidget {
                     ],
                   ),
                 ),
-              Padding(
-                padding: verticalPadding,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    UserFeedConnectionButton(
-                      otherUserId: userPublicProfile.id,
-                    ),
-                    SizedBox(width: 8),
-                    BorderButton(
-                      text: 'Message',
-                      prefix: Icon(
-                        CupertinoIcons.chat_bubble_2,
-                        size: 15,
-                      ),
-                      onPressed: () => context.navigateTo(OneToOneChatRoute(
+              if (!isAuthedUserProfile)
+                Padding(
+                  padding: verticalPadding,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UserFeedConnectionButton(
                         otherUserId: userPublicProfile.id,
-                      )),
-                    ),
-                  ],
+                      ),
+                      SizedBox(width: 8),
+                      BorderButton(
+                        text: 'Message',
+                        prefix: Icon(
+                          CupertinoIcons.chat_bubble_2,
+                          size: 15,
+                        ),
+                        onPressed: () => context.navigateTo(OneToOneChatRoute(
+                          otherUserId: userPublicProfile.id,
+                        )),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               if (Utils.textNotNull(userPublicProfile.tagline))
                 Padding(
                   padding: verticalPadding,

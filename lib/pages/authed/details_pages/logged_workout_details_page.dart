@@ -218,37 +218,45 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: MyText(
-                        'Logged Sections',
-                        weight: FontWeight.bold,
-                        textAlign: TextAlign.center,
-                      ),
+                    SizedBox(height: 10),
+                    MyText(
+                      'Logged Sections',
+                      weight: FontWeight.bold,
+                      textAlign: TextAlign.center,
                     ),
+                    SizedBox(height: 10),
                     HorizontalLine(verticalPadding: 0),
-                    ...sortedSections
-                        .map((s) => GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () => Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                    builder: (c) => ChangeNotifierProvider.value(
-                                        value: context
-                                            .read<LoggedWorkoutCreatorBloc>(),
-                                        child:
-                                            LoggedWorkoutSectionDetailsEditable(
-                                                s.sortPosition)))),
-                            child: AnimatedSlidable(
-                                key: Key('Index - ${s.sortPosition} - ${s.id}'),
-                                child: _LoggedWorkoutSectionSummary(s),
-                                removeItem: (index) =>
-                                    _deleteLoggedWorkoutSection(bloc, index),
-                                secondaryActions: [],
-                                index: s.sortPosition,
-                                confirmMessage:
-                                    'This cannot be undone. Are you sure?',
-                                itemType: 'Logged Section')))
-                        .toList()
+                    ListView(
+                      shrinkWrap: true,
+                      children: sortedSections
+                          .map((s) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                      builder: (c) => ChangeNotifierProvider.value(
+                                          value: context
+                                              .read<LoggedWorkoutCreatorBloc>(),
+                                          child:
+                                              LoggedWorkoutSectionDetailsEditable(
+                                                  s.sortPosition)))),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10.0),
+                                child: AnimatedSlidable(
+                                    key: Key(
+                                        'Index - ${s.sortPosition} - ${s.id}'),
+                                    child: _LoggedWorkoutSectionSummary(s),
+                                    removeItem: (index) =>
+                                        _deleteLoggedWorkoutSection(
+                                            bloc, index),
+                                    secondaryActions: [],
+                                    index: s.sortPosition,
+                                    confirmMessage:
+                                        'This cannot be undone. Are you sure?',
+                                    itemType: 'Logged Section'),
+                              )))
+                          .toList(),
+                    )
                   ],
                 ),
               );
@@ -277,72 +285,73 @@ class _LoggedWorkoutSectionSummary extends StatelessWidget {
       }
     }
 
-    return Column(
+    return Row(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: LoggedWorkoutSectionSummaryTag(
-                  loggedWorkoutSection,
-                ),
-              ),
-              if (Utils.textNotNull(loggedWorkoutSection.name))
-                MyText(
-                  '"${loggedWorkoutSection.name!}"',
-                  lineHeight: 1.5,
-                  weight: FontWeight.bold,
-                ),
-              if (Utils.textNotNull(loggedWorkoutSection.note))
-                MyText(
-                  loggedWorkoutSection.note!,
-                  lineHeight: 1.5,
-                  maxLines: 3,
-                  size: FONTSIZE.SMALL,
-                ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                    alignment: WrapAlignment.center,
-                    runAlignment: WrapAlignment.center,
-                    spacing: 4,
-                    runSpacing: 4,
-                    children: [
-                      ...moveTypes
-                          .map((moveType) => Tag(
-                                tag: moveType.name,
-                                borderColor: context.theme.primary,
-                                color: context.theme.background,
-                                textColor: context.theme.primary,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 6),
-                              ))
-                          .toList(),
-                    ]),
-              ),
-              if (showBodyAreas)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      spacing: 4,
-                      runSpacing: 4,
+        Expanded(
+          child: ContentBox(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (Utils.textNotNull(loggedWorkoutSection.name))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
                       children: [
-                        ...bodyAreas
-                            .map((bodyArea) => Tag(
-                                tag: bodyArea.name,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 4)))
-                            .toList(),
-                      ]),
+                        MyHeaderText(
+                          '"${loggedWorkoutSection.name!}"',
+                        ),
+                      ],
+                    ),
+                  ),
+                if (Utils.textNotNull(loggedWorkoutSection.note))
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: MyText(
+                      loggedWorkoutSection.note!,
+                      lineHeight: 1.3,
+                      maxLines: 3,
+                    ),
+                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Wrap(spacing: 6, runSpacing: 6, children: [
+                    LoggedWorkoutSectionSummaryTag(
+                      loggedWorkoutSection,
+                    ),
+                    ...moveTypes
+                        .map((moveType) => Tag(
+                              tag: moveType.name,
+                              color: Styles.colorOne,
+                              textColor: Styles.white,
+                              fontSize: FONTSIZE.SMALL,
+                            ))
+                        .toList(),
+                  ]),
                 ),
-            ],
+                if (showBodyAreas)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Wrap(
+                        alignment: WrapAlignment.center,
+                        runAlignment: WrapAlignment.center,
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          ...bodyAreas
+                              .map((bodyArea) => Tag(
+                                    tag: bodyArea.name,
+                                    fontWeight: FontWeight.normal,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 3, horizontal: 6),
+                                  ))
+                              .toList(),
+                        ]),
+                  ),
+              ],
+            ),
           ),
         ),
-        HorizontalLine(verticalPadding: 0)
       ],
     );
   }

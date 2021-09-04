@@ -126,7 +126,8 @@ class WorkoutCreatorBloc extends ChangeNotifier {
           ? []
           : [
               GQLVarParamKeys.workoutByIdQuery(initialWorkout.id),
-              UserWorkoutsQuery().operationName
+              GQLOpNames.userScheduledWorkoutsQuery,
+              GQLOpNames.userWorkoutsQuery,
             ],
     );
     return success;

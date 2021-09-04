@@ -32,6 +32,8 @@ class GQLOpNames {
   static String get userCustomMovesQuery =>
       UserCustomMovesQuery().operationName;
 
+  static String get userWorkoutsQuery => UserWorkoutsQuery().operationName;
+
   static String get userScheduledWorkoutsQuery =>
       UserScheduledWorkoutsQuery().operationName;
 }

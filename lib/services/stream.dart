@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
@@ -296,21 +297,23 @@ class _UserFeedConnectionButtonState extends State<UserFeedConnectionButton> {
         child: SizedBox(
           width: 120,
           height: 42,
-          child: _isLoading
-              ? Center(child: LoadingDots(size: 10))
-              : _isFollowing
-                  ? BorderButton(
-                      text: 'Following',
-                      onPressed: _unfollowOtherUser,
-                      backgroundColor: Styles.infoBlue,
-                      textColor: Styles.white)
-                  : BorderButton(
-                      prefix: Icon(
-                        CupertinoIcons.person_add,
-                        size: 15,
-                      ),
-                      text: 'Follow',
-                      onPressed: _followOtherUser),
+          child: _authedUser.id == widget.otherUserId
+              ? Center(child: MyText('...'))
+              : _isLoading
+                  ? Center(child: LoadingDots(size: 10))
+                  : _isFollowing
+                      ? BorderButton(
+                          text: 'Following',
+                          onPressed: _unfollowOtherUser,
+                          backgroundColor: Styles.infoBlue,
+                          textColor: Styles.white)
+                      : BorderButton(
+                          prefix: Icon(
+                            CupertinoIcons.person_add,
+                            size: 15,
+                          ),
+                          text: 'Follow',
+                          onPressed: _followOtherUser),
         ));
   }
 }

@@ -11,9 +11,9 @@ class ClubDetailsContent extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          PageLink(linkText: 'Workouts (x)', bold: true, onPress: () => {}),
-          PageLink(linkText: 'Plans (x)', bold: true, onPress: () => {}),
-          PageLink(linkText: 'Challenges (x)', bold: true, onPress: () => {}),
+          PageLink(linkText: 'Workouts (x)', onPress: () => {}),
+          PageLink(linkText: 'Plans (x)', onPress: () => {}),
+          PageLink(linkText: 'Challenges (x)', onPress: () => {}),
         ],
       ),
     );

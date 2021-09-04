@@ -91,7 +91,6 @@ class DiscoverPageButton extends StatelessWidget {
         onPressed: onPressed,
         child: MyText(
           text.toUpperCase(),
-          weight: FontWeight.bold,
           size: FONTSIZE.SMALL,
         ),
       ),

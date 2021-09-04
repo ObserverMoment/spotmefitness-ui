@@ -131,7 +131,6 @@ class _HomeScreenCard extends StatelessWidget {
               child: MyText(
                 label,
                 lineHeight: 1,
-                weight: FontWeight.bold,
               ),
               borderRadius: 4,
             ),

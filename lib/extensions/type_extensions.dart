@@ -155,6 +155,17 @@ extension DurationExtension on Duration {
     }
   }
 
+  String get displayString {
+    final int minutes = this.inMinutes;
+    final int seconds = this.inSeconds.remainder(60);
+    final String minuteString = minutes != 0 ? '$minutes min' : "";
+    final String secondsString = seconds != 0 ? '$seconds sec' : "";
+
+    final spaceNeeded = minutes != 0 && seconds != 0;
+
+    return '$minuteString${spaceNeeded ? " " : ""}$secondsString';
+  }
+
   Duration clamp(Duration lower, Duration upper) {
     if (this < lower) {
       return lower;

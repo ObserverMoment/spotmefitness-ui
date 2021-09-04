@@ -155,12 +155,10 @@ class ScheduledWorkoutCard extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: 8.0, bottom: 6, left: 10, right: 10),
-                    child: WorkoutCard(
+                        top: 2.0, bottom: 6, left: 4, right: 4),
+                    child: MinimalWorkoutCard(
                       scheduledWorkout.workout!,
                       withBoxShadow: false,
-                      padding: const EdgeInsets.only(
-                          bottom: 0, top: 12, right: 12, left: 12),
                     ),
                   )
                 ],
@@ -179,11 +177,10 @@ class ScheduledWorkoutCard extends StatelessWidget {
               verticalPadding: 0,
             ),
             Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: WorkoutCard(
+              padding: const EdgeInsets.all(3.0),
+              child: MinimalWorkoutCard(
                 scheduledWorkout.workout!,
                 withBoxShadow: false,
-                padding: const EdgeInsets.only(left: 4, right: 4),
               ),
             )
           ],

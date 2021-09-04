@@ -64,7 +64,8 @@ class WorkoutPlanDaySelector extends StatelessWidget {
         .fold<List<int>>([], (acum, next) => [...acum, next.dayNumber]);
 
     return CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: BottomBorderNavBar(
+        bottomBorderColor: context.theme.navbarBottomBorder,
         middle: NavBarTitle(title),
       ),
       child: Column(
@@ -91,70 +92,74 @@ class WorkoutPlanDaySelector extends StatelessWidget {
               ],
             ),
           ),
-          LayoutBuilder(
-              builder: (context, constraints) => ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: workoutPlan.lengthWeeks,
-                  itemBuilder: (c, weekIndex) {
-                    final dayItemWidth =
-                        (constraints.maxWidth - (kWeekRowPadding * 2)) / 7;
+          Expanded(
+            child: LayoutBuilder(
+                builder: (context, constraints) => ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: workoutPlan.lengthWeeks,
+                    itemBuilder: (c, weekIndex) {
+                      final dayItemWidth =
+                          (constraints.maxWidth - (kWeekRowPadding * 2)) / 7;
 
-                    return Column(
-                      children: [
-                        H3('Week ${weekIndex + 1}'),
-                        Padding(
-                          padding: EdgeInsets.all(kWeekRowPadding),
-                          child: Row(
-                            children: List.generate(7, (dayIndex) {
-                              final sameAsPrevSelected = prevSelectedDay ==
-                                  dayNumberFromIndexes(weekIndex, dayIndex);
+                      return Column(
+                        children: [
+                          H3('Week ${weekIndex + 1}'),
+                          Padding(
+                            padding: EdgeInsets.all(kWeekRowPadding),
+                            child: Row(
+                              children: List.generate(7, (dayIndex) {
+                                final sameAsPrevSelected = prevSelectedDay ==
+                                    dayNumberFromIndexes(weekIndex, dayIndex);
 
-                              return GestureDetector(
-                                onTap: () => !sameAsPrevSelected
-                                    ? _handleSelectDayNumber(
-                                        context,
-                                        daysWithWorkoutsPlanned,
-                                        weekIndex,
-                                        dayIndex)
-                                    : null,
-                                child: Opacity(
-                                  opacity: sameAsPrevSelected ? 0.3 : 1,
-                                  child: Container(
-                                    margin: EdgeInsets.all(kDayItemMargin),
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                            color: context.theme.primary)),
-                                    alignment: Alignment.center,
-                                    width: dayItemWidth - (kDayItemMargin * 2),
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
+                                return GestureDetector(
+                                  onTap: () => !sameAsPrevSelected
+                                      ? _handleSelectDayNumber(
+                                          context,
+                                          daysWithWorkoutsPlanned,
+                                          weekIndex,
+                                          dayIndex)
+                                      : null,
+                                  child: Opacity(
+                                    opacity: sameAsPrevSelected ? 0.3 : 1,
+                                    child: Container(
+                                      margin: EdgeInsets.all(kDayItemMargin),
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                              color: context.theme.primary)),
                                       alignment: Alignment.center,
-                                      children: [
-                                        if (daysWithWorkoutsPlanned.contains(
-                                            dayNumberFromIndexes(
-                                                weekIndex, dayIndex)))
-                                          Dot(
-                                            diameter: 30,
-                                            color: Styles.infoBlue,
+                                      width:
+                                          dayItemWidth - (kDayItemMargin * 2),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        alignment: Alignment.center,
+                                        children: [
+                                          if (daysWithWorkoutsPlanned.contains(
+                                              dayNumberFromIndexes(
+                                                  weekIndex, dayIndex)))
+                                            Dot(
+                                              diameter: 30,
+                                              color: Styles.infoBlue,
+                                            ),
+                                          MyText(
+                                            '${dayIndex + 1}',
+                                            weight: FontWeight.bold,
+                                            lineHeight: 1.2,
                                           ),
-                                        MyText(
-                                          '${dayIndex + 1}',
-                                          weight: FontWeight.bold,
-                                          lineHeight: 1.2,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }),
-                          ),
-                        )
-                      ],
-                    );
-                  }))
+                                );
+                              }),
+                            ),
+                          )
+                        ],
+                      );
+                    })),
+          )
         ],
       ),
     );

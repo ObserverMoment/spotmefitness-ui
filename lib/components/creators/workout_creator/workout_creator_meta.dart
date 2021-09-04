@@ -44,7 +44,6 @@ class WorkoutCreatorMeta extends StatelessWidget {
                 text: workoutData.name,
                 onSave: (text) => _updateWorkoutMeta({'name': text}),
                 inputValidation: (t) => t.length > 2 && t.length <= 50,
-                isRequired: true,
                 maxChars: 50,
                 validationMessage: 'Required. Min 3 chars. max 50',
               ),

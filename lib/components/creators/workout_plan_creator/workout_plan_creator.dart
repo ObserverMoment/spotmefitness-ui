@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_media.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_meta.dart';
-import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_structure/workout_plan_creator_structure.dart';
+import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator_structure.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';

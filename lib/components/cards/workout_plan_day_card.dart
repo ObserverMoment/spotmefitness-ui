@@ -34,21 +34,20 @@ class WorkoutPlanDayCard extends StatelessWidget {
         .toList();
 
     return Card(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 5),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding:
+                const EdgeInsets.only(left: 9.0, right: 9, top: 9, bottom: 6),
             child: MyHeaderText(
               'Day ${displayDayNumber + 1}',
-              weight: FontWeight.bold,
             ),
           ),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+              padding: const EdgeInsets.only(left: 9, right: 9, bottom: 8),
               child: MyText(
                 workoutPlanDay.note!,
                 size: FONTSIZE.SMALL,
@@ -60,35 +59,18 @@ class WorkoutPlanDayCard extends StatelessWidget {
               itemCount: sortedWorkoutPlanDayWorkouts.length,
               separatorBuilder: (c, i) => HorizontalLine(),
               itemBuilder: (c, i) => Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (Utils.textNotNull(
-                            sortedWorkoutPlanDayWorkouts[i].note))
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: 10, left: 8, right: 8),
-                            child: MyHeaderText(
-                              sortedWorkoutPlanDayWorkouts[i].note!,
-                              color: Styles.infoBlue,
-                              size: FONTSIZE.SMALL,
-                            ),
-                          ),
-                        GestureDetector(
-                          onTap: openWorkoutDetailsOnTap
-                              ? () => context.navigateTo(WorkoutDetailsRoute(
-                                  id: sortedWorkoutPlanDayWorkouts[i]
-                                      .workout
-                                      .id))
-                              : null,
-                          child: WorkoutCard(
-                            sortedWorkoutPlanDayWorkouts[i].workout,
-                            withBoxShadow: false,
-                            padding: const EdgeInsets.all(0),
-                          ),
-                        ),
-                      ],
+                    padding: const EdgeInsets.all(2.0),
+                    child: GestureDetector(
+                      onTap: openWorkoutDetailsOnTap
+                          ? () => context.navigateTo(WorkoutDetailsRoute(
+                              id: sortedWorkoutPlanDayWorkouts[i].workout.id))
+                          : null,
+                      child: MinimalWorkoutCard(
+                        sortedWorkoutPlanDayWorkouts[i].workout,
+                        withBoxShadow: false,
+                        padding: EdgeInsets.zero,
+                        backgroundColor: context.theme.background,
+                      ),
                     ),
                   )),
         ],
@@ -105,7 +87,6 @@ class EditableWorkoutPlanDayCard extends StatelessWidget {
   /// Zero indexed.
   final int displayDayNumber;
   final WorkoutPlanDay workoutPlanDay;
-  final bool minimize;
   final void Function(WorkoutPlanDayWorkout w) removeWorkoutPlanDayWorkout;
   final void Function(int from, int to) reorderWorkoutPlanDayWorkouts;
   final void Function(String note, WorkoutPlanDayWorkout w)
@@ -115,7 +96,6 @@ class EditableWorkoutPlanDayCard extends StatelessWidget {
       {Key? key,
       required this.workoutPlanDay,
       required this.displayDayNumber,
-      this.minimize = false,
       required this.removeWorkoutPlanDayWorkout,
       required this.reorderWorkoutPlanDayWorkouts,
       required this.addNoteToWorkoutPlanDayWorkout})
@@ -128,24 +108,32 @@ class EditableWorkoutPlanDayCard extends StatelessWidget {
         .toList();
 
     return Card(
+      padding: const EdgeInsets.all(3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          H3(' Day ${displayDayNumber + 1}'),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 9.0, right: 9, top: 9, bottom: 6),
+            child: MyHeaderText('Day ${displayDayNumber + 1}'),
+          ),
           if (Utils.textNotNull(workoutPlanDay.note))
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
+              padding: const EdgeInsets.only(left: 9, right: 9, bottom: 8),
               child: MyText(
                 workoutPlanDay.note!,
                 subtext: true,
                 lineHeight: 1.4,
+                maxLines: 3,
               ),
             ),
           ListView.separated(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: sortedWorkoutPlanDayWorkouts.length,
-              separatorBuilder: (c, i) => HorizontalLine(),
+              separatorBuilder: (c, i) => HorizontalLine(
+                    verticalPadding: 10,
+                  ),
               itemBuilder: (c, i) => AnimatedSlidable(
                     key: Key(
                         'EditableWorkoutPlanDayCard - ${sortedWorkoutPlanDayWorkouts[i].id}'),
@@ -167,42 +155,14 @@ class EditableWorkoutPlanDayCard extends StatelessWidget {
                           icon: CupertinoIcons.arrow_down_circle,
                           onTap: () => reorderWorkoutPlanDayWorkouts(i, i + 1),
                         ),
-                      IconSlideAction(
-                        caption: 'Note',
-                        icon: CupertinoIcons.doc_plaintext,
-                        onTap: () => context.push(
-                            child: FullScreenTextEditing(
-                                title: 'Note',
-                                initialValue:
-                                    sortedWorkoutPlanDayWorkouts[i].note,
-                                onSave: (note) =>
-                                    addNoteToWorkoutPlanDayWorkout(
-                                        note, sortedWorkoutPlanDayWorkouts[i]),
-                                maxChars: 200,
-                                inputValidation: (t) => true)),
-                      ),
                     ],
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (Utils.textNotNull(
-                              sortedWorkoutPlanDayWorkouts[i].note))
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4),
-                              child: MyText(
-                                sortedWorkoutPlanDayWorkouts[i].note!,
-                                color: Styles.infoBlue,
-                              ),
-                            ),
-                          WorkoutCard(
-                            sortedWorkoutPlanDayWorkouts[i].workout,
-                            withBoxShadow: false,
-                            padding: const EdgeInsets.all(0),
-                          ),
-                        ],
+                      child: MinimalWorkoutCard(
+                        sortedWorkoutPlanDayWorkouts[i].workout,
+                        withBoxShadow: false,
+                        padding: EdgeInsets.zero,
+                        backgroundColor: context.theme.background,
                       ),
                     ),
                   )),
