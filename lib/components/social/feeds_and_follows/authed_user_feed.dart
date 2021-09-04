@@ -104,6 +104,7 @@ class _AuthedUserFeedState extends State<AuthedUserFeed> {
   }
 
   Future<void> _updateNewFeedPosts(RealtimeMessage? message) async {
+    print(message);
     if (message?.newActivities != null && message!.newActivities.isNotEmpty) {
       final newActivitiesWithObjectData =
           await FeedUtils.getPostsUserAndObjectData(

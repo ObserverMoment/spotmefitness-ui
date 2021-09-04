@@ -140,7 +140,7 @@ class TimelinePostCard extends StatelessWidget {
                 children: [
                   MyHeaderText(
                     objectData.object.name,
-                    size: FONTSIZE.LARGE,
+                    size: FONTSIZE.BIG,
                     lineHeight: 1.2,
                   ),
                   SizedBox(height: 4),
@@ -253,27 +253,30 @@ class TimelinePostCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  userIsPoster
-                      ? Tag(
-                          tag: originalPostId != null
-                              ? 'Re-posted by you'
-                              : 'Posted by you',
-                          borderColor: context.theme.primary,
-                          textColor: context.theme.primary,
-                          color: context.theme.background,
-                          fontSize: FONTSIZE.SMALL,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                        )
-                      : Tag(
-                          tag:
-                              '${originalPostId != null ? "Re-posted" : "Posted"} by ${objectData.poster.displayName}',
-                          textColor: context.theme.primary,
-                          color: context.theme.cardBackground,
-                          fontSize: FONTSIZE.SMALL,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 10),
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: userIsPoster
+                        ? Tag(
+                            tag: originalPostId != null
+                                ? 'Re-posted by you'
+                                : 'Posted by you',
+                            borderColor: context.theme.primary,
+                            textColor: context.theme.primary,
+                            color: context.theme.background,
+                            fontSize: FONTSIZE.SMALL,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 10),
+                          )
+                        : Tag(
+                            tag:
+                                '${originalPostId != null ? "Re-posted" : "Posted"} by ${objectData.poster.displayName}',
+                            textColor: context.theme.primary,
+                            color: context.theme.cardBackground,
+                            fontSize: FONTSIZE.SMALL,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 10),
+                          ),
+                  ),
                   SizedBox(height: 4),
                   Tag(
                     tag: (activity.time as DateTime).daysAgo,
