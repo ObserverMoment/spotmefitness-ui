@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/logging/reps_score_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';

@@ -129,9 +129,8 @@ class StackAndFloatingButton extends StatelessWidget {
       children: [
         child,
         Positioned(
-            bottom: pageHasBottomNavBar
-                ? EnvironmentConfig.bottomNavBarHeight + 4
-                : 12,
+            bottom:
+                pageHasBottomNavBar ? EnvironmentConfig.bottomNavBarHeight : 12,
             child: FloatingIconButton(
                 text: buttonText,
                 iconData: buttonIconData,
@@ -233,38 +232,13 @@ class MyPageScaffold extends StatelessWidget {
     return CupertinoPageScaffold(
         navigationBar: navigationBar,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
           child: child,
         ));
   }
 }
 
-/// Removes the bottom border from all nav bars.
-/// Has been replaced by [BorderlessNavBar]
-class BasicNavBar extends CupertinoNavigationBar {
-  final Key? key;
-  final Object heroTag;
-  final bool automaticallyImplyLeading;
-  final Widget? customLeading;
-  final Widget? middle;
-  final Widget? trailing;
-  final Color? backgroundColor;
-  BasicNavBar(
-      {this.key,
-      required this.heroTag,
-      this.automaticallyImplyLeading = false,
-      this.customLeading,
-      this.middle,
-      this.trailing,
-      this.backgroundColor})
-      : super(
-            key: key,
-            automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: customLeading ?? const NavBarBackButton(),
-            border: null);
-}
-
-class BorderlessNavBar extends CupertinoNavigationBar {
+class MyNavBar extends CupertinoNavigationBar {
   final Key? key;
   final bool automaticallyImplyLeading;
   final Widget? customLeading;
@@ -272,7 +246,7 @@ class BorderlessNavBar extends CupertinoNavigationBar {
   final Widget? trailing;
   final Color? backgroundColor;
   final bool withoutLeading;
-  BorderlessNavBar({
+  MyNavBar({
     this.key,
     this.automaticallyImplyLeading = false,
     this.customLeading,
@@ -281,39 +255,12 @@ class BorderlessNavBar extends CupertinoNavigationBar {
     this.backgroundColor,
     this.withoutLeading = false,
   }) : super(
-            key: key,
-            automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: withoutLeading
-                ? null
-                : customLeading ?? const NavBarBackButton(),
-            border: null);
-}
-
-class BottomBorderNavBar extends CupertinoNavigationBar {
-  final Key? key;
-  final bool automaticallyImplyLeading;
-  final Widget? customLeading;
-  final Widget? middle;
-  final Widget? trailing;
-  final Color? backgroundColor;
-  final bool withoutLeading;
-  final Color bottomBorderColor;
-  BottomBorderNavBar({
-    this.key,
-    this.automaticallyImplyLeading = false,
-    this.customLeading,
-    this.middle,
-    this.trailing,
-    this.backgroundColor,
-    this.withoutLeading = false,
-    required this.bottomBorderColor,
-  }) : super(
-            key: key,
-            automaticallyImplyLeading: automaticallyImplyLeading,
-            leading: withoutLeading
-                ? null
-                : customLeading ?? const NavBarBackButton(),
-            border: Border(bottom: BorderSide(color: bottomBorderColor)));
+          key: key,
+          border: null,
+          automaticallyImplyLeading: automaticallyImplyLeading,
+          leading:
+              withoutLeading ? null : customLeading ?? const NavBarBackButton(),
+        );
 }
 
 class NavBarBackButton extends StatelessWidget {
@@ -375,8 +322,7 @@ class ModalCupertinoPageScaffold extends StatelessWidget {
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: context.theme.modalBackground,
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         customLeading: cancel != null ? NavBarCancelButton(cancel!) : null,
         backgroundColor: context.theme.modalBackground,
         middle: NavBarTitle(title),

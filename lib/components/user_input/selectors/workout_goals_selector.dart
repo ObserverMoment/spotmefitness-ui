@@ -93,8 +93,7 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'WorkoutGoalsSelector',
+      navigationBar: MyNavBar(
         customLeading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(

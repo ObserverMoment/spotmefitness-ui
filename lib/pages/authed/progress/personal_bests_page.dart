@@ -29,7 +29,7 @@ class PersonalBestsPage extends StatelessWidget {
               .toList();
 
           return MyPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               middle: NavBarTitle('Personal Bests'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,

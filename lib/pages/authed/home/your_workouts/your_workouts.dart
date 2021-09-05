@@ -42,7 +42,7 @@ class _YourWorkoutsPageState extends State<YourWorkoutsPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle('Your Workouts'),
           trailing: NavBarTrailingRow(
             children: [

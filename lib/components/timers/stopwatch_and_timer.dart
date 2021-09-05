@@ -38,7 +38,7 @@ class _StopwatchAndTimerState extends State<StopwatchAndTimer> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         middle: NavBarTitle('Timer'),
       ),
       child: Stack(

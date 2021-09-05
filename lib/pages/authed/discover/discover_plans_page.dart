@@ -15,7 +15,7 @@ class DiscoverPlansPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         middle: NavBarTitle('Discover Plans'),
         trailing: CupertinoButton(
             padding: EdgeInsets.zero,

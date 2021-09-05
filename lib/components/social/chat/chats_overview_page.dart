@@ -35,7 +35,7 @@ class _ChatsOverviewPageState extends State<ChatsOverviewPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         middle: NavBarTitle('Chats'),
       ),
       child: Column(

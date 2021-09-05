@@ -221,7 +221,7 @@ class _WorkoutPlanEnrolmentDetailsPageState
                   .firstWhereOrNull((r) => r.user.id == authedUserId);
 
           return CupertinoPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle(enrolment.workoutPlan.name),
                 trailing: CupertinoButton(
                   padding: EdgeInsets.zero,

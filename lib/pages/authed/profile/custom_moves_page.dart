@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
@@ -61,37 +62,25 @@ class ProfileCustomMovesPage extends StatelessWidget {
             onPressed: () => _openCustomMoveCreator(context: context),
             child: customMoves.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-
-                        // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                        itemCount: customMoves.length + 1,
-                        itemBuilder: (c, i) {
-                          if (i == customMoves.length) {
-                            return SizedBox(
-                                height: kAssumedFloatingButtonHeight +
-                                    EnvironmentConfig.bottomNavBarHeight);
-                          } else {
-                            return GestureDetector(
-                                onTap: () => _openCustomMoveCreator(
-                                    context: context,
-                                    moveToUpdate: customMoves[i]),
-                                child: AnimatedSlidable(
-                                  index: i,
-                                  itemType: 'Custom Move',
-                                  itemName: customMoves[i].name,
-                                  key: Key('${customMoves[i].id} - $i'),
-                                  removeItem: (_) => _softDeleteCustomMove(
-                                      context, customMoves[i].id),
-                                  secondaryActions: [],
-                                  child: MoveListItem(
-                                    move: customMoves[i],
-                                  ),
-                                ));
-                          }
-                        }),
+                    padding: const EdgeInsets.only(top: 6.0),
+                    child: ListAvoidFAB(
+                      itemCount: customMoves.length,
+                      itemBuilder: (c, i) => GestureDetector(
+                          onTap: () => _openCustomMoveCreator(
+                              context: context, moveToUpdate: customMoves[i]),
+                          child: AnimatedSlidable(
+                            index: i,
+                            itemType: 'Custom Move',
+                            itemName: customMoves[i].name,
+                            key: Key('${customMoves[i].id} - $i'),
+                            removeItem: (_) => _softDeleteCustomMove(
+                                context, customMoves[i].id),
+                            secondaryActions: [],
+                            child: MoveListItem(
+                              move: customMoves[i],
+                            ),
+                          )),
+                    ),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(32.0),

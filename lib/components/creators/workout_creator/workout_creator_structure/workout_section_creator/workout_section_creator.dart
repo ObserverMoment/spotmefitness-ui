@@ -270,7 +270,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         context.select<WorkoutCreatorBloc, bool>((b) => b.showFullSetInfo);
 
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         middle: _buildTitle(),
         trailing: _pageController.hasClients && _pageController.page != 0
             ? NavBarEllipsisMenu(

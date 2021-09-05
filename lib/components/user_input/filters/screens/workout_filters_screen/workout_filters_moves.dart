@@ -121,10 +121,9 @@ class WorkoutFilterMovesList extends StatelessWidget {
                 text: 'Add',
                 onPressed: () => context.push(
                   child: MyPageScaffold(
-                    navigationBar: BottomBorderNavBar(
+                    navigationBar: MyNavBar(
                       customLeading: NavBarCancelButton(context.pop),
                       middle: NavBarTitle('Select Move'),
-                      bottomBorderColor: context.readTheme.navbarBottomBorder,
                     ),
                     child: MoveSelector(
                         includeCustomMoves: false,

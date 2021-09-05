@@ -6,15 +6,14 @@ import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_details_editable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_summary_tag.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
@@ -73,6 +72,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         title: 'Delete this workout log?',
         content: MyText(
           'This cannot be undone.',
+          textAlign: TextAlign.center,
           maxLines: 3,
         ),
         onConfirm: () async {
@@ -152,8 +152,8 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
 
               return MyPageScaffold(
                 key: Key('LoggedWorkoutDetailsPage - CupertinoPageScaffold'),
-                navigationBar: BorderlessNavBar(
-                  key: Key('LoggedWorkoutDetailsPage - BasicNavBar'),
+                navigationBar: MyNavBar(
+                  key: Key('LoggedWorkoutDetailsPage - MyNavBar'),
                   middle: NavBarTitle(log.name),
                   trailing: CupertinoButton(
                     padding: EdgeInsets.zero,
@@ -203,7 +203,6 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                           dateTime: completedOn,
                           saveDateTime: (d) => _updateCompletedOn(bloc, d),
                         ),
-                        SizedBox(height: 12),
                         GymProfileSelectorDisplay(
                           clearGymProfile: () => bloc.updateGymProfile(null),
                           gymProfile: gymProfile,
@@ -226,37 +225,33 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     HorizontalLine(verticalPadding: 0),
-                    ListView(
-                      shrinkWrap: true,
-                      children: sortedSections
-                          .map((s) => GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                      builder: (c) => ChangeNotifierProvider.value(
-                                          value: context
-                                              .read<LoggedWorkoutCreatorBloc>(),
-                                          child:
-                                              LoggedWorkoutSectionDetailsEditable(
-                                                  s.sortPosition)))),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10.0),
-                                child: AnimatedSlidable(
-                                    key: Key(
-                                        'Index - ${s.sortPosition} - ${s.id}'),
-                                    child: _LoggedWorkoutSectionSummary(s),
-                                    removeItem: (index) =>
-                                        _deleteLoggedWorkoutSection(
-                                            bloc, index),
-                                    secondaryActions: [],
-                                    index: s.sortPosition,
-                                    confirmMessage:
-                                        'This cannot be undone. Are you sure?',
-                                    itemType: 'Logged Section'),
-                              )))
-                          .toList(),
-                    )
+                    ...sortedSections
+                        .map((s) => GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () => Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                    builder: (c) => ChangeNotifierProvider.value(
+                                        value: context
+                                            .read<LoggedWorkoutCreatorBloc>(),
+                                        child:
+                                            LoggedWorkoutSectionDetailsEditable(
+                                                s.sortPosition)))),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 6.0),
+                              child: AnimatedSlidable(
+                                  key: Key(
+                                      'Index - ${s.sortPosition} - ${s.id}'),
+                                  child: _LoggedWorkoutSectionSummary(s),
+                                  removeItem: (index) =>
+                                      _deleteLoggedWorkoutSection(bloc, index),
+                                  secondaryActions: [],
+                                  index: s.sortPosition,
+                                  confirmMessage:
+                                      'This cannot be undone. Are you sure?',
+                                  itemType: 'Logged Section'),
+                            )))
+                        .toList(),
                   ],
                 ),
               );
@@ -331,22 +326,11 @@ class _LoggedWorkoutSectionSummary extends StatelessWidget {
                 ),
                 if (showBodyAreas)
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Wrap(
-                        alignment: WrapAlignment.center,
-                        runAlignment: WrapAlignment.center,
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          ...bodyAreas
-                              .map((bodyArea) => Tag(
-                                    tag: bodyArea.name,
-                                    fontWeight: FontWeight.normal,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 3, horizontal: 6),
-                                  ))
-                              .toList(),
-                        ]),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 4),
+                    child: CommaSeparatedList(
+                      bodyAreas.map((b) => b.name).toList(),
+                    ),
                   ),
               ],
             ),

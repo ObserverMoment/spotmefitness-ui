@@ -86,7 +86,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
             .sortedBy<num>((s) => s.sortPosition);
 
         return MyPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               customLeading:
                   NavBarCancelButton(() => context.pop(result: false)),
               middle: NavBarTitle('Log Workout'),

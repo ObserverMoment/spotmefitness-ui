@@ -75,8 +75,7 @@ class _DifficultyLevelSelectorState extends State<DifficultyLevelSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'DifficultyLevelSelector',
+      navigationBar: MyNavBar(
         customLeading: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(

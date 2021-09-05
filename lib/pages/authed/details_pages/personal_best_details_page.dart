@@ -89,8 +89,7 @@ class _PersonalBestDetailsPageState extends State<PersonalBestDetailsPage> {
         builder: (data) {
           final benchmark = data.userBenchmarkById;
           return MyPageScaffold(
-            navigationBar: BottomBorderNavBar(
-              bottomBorderColor: context.theme.navbarBottomBorder,
+            navigationBar: MyNavBar(
               middle: NavBarTitle(benchmark.name),
               trailing: NavBarTrailingRow(
                 children: [

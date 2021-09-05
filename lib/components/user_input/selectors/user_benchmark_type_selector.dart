@@ -22,7 +22,7 @@ class BenchmarkTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(

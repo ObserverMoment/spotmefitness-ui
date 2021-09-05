@@ -51,7 +51,7 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(

@@ -147,7 +147,7 @@ class _ClubInviteTokenCreatorState extends State<ClubInviteTokenCreator> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
           withoutLeading: true,
           middle: Row(
             children: [

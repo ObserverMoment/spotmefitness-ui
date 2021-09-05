@@ -84,7 +84,7 @@
 //                 text: move != null ? 'Change' : 'Select Move',
 //                 onPressed: () => context.push(
 //                     child: CupertinoPageScaffold(
-//                         navigationBar: BasicNavBar(
+//                         navigationBar: MyNavBar(
 //                           heroTag: 'BenchmarkMoveCreator - MoveSelector',
 //                           customLeading: NavBarCancelButton(context.pop),
 //                           middle: NavBarTitle('Select Move'),

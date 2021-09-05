@@ -126,7 +126,7 @@ class _FullAudioPlayerState extends State<FullAudioPlayer> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         customLeading: CupertinoButton(
             child: Icon(CupertinoIcons.chevron_down), onPressed: context.pop),
       ),

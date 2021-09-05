@@ -158,8 +158,7 @@ class _ProgressJournalGoalCreatorState
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-          heroTag: 'ProgressJournalGoalCreator',
+      navigationBar: MyNavBar(
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(_isEditing ? 'Update Goal' : 'Add Goal'),
           trailing: AnimatedSwitcher(

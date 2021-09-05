@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/gym_profile_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
@@ -33,36 +34,23 @@ class ProfileGymProfilesPage extends StatelessWidget {
             onPressed: () => context.pushRoute(GymProfileCreatorRoute()),
             child: gymProfiles.isNotEmpty
                 ? Padding(
-                    padding:
-                        const EdgeInsets.only(top: 12.0, left: 4, right: 4),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-
-                        // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                        itemCount: gymProfiles.length + 1,
-                        itemBuilder: (c, i) {
-                          if (i == gymProfiles.length) {
-                            return SizedBox(
-                                height: kAssumedFloatingButtonHeight +
-                                    EnvironmentConfig.bottomNavBarHeight);
-                          } else {
-                            return GestureDetector(
-                              onTap: () => context.pushRoute(
-                                GymProfileCreatorRoute(
-                                  gymProfile: gymProfiles[i],
-                                ),
-                              ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 5.0),
-                                child: GymProfileCard(
-                                  gymProfile: gymProfiles[i],
-                                ),
-                              ),
-                            );
-                          }
-                        }),
+                    padding: const EdgeInsets.only(top: 6.0, left: 4, right: 4),
+                    child: ListAvoidFAB(
+                      itemCount: gymProfiles.length,
+                      itemBuilder: (c, i) => GestureDetector(
+                        onTap: () => context.pushRoute(
+                          GymProfileCreatorRoute(
+                            gymProfile: gymProfiles[i],
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                          child: GymProfileCard(
+                            gymProfile: gymProfiles[i],
+                          ),
+                        ),
+                      ),
+                    ),
                   )
                 : Padding(
                     padding: const EdgeInsets.all(32.0),

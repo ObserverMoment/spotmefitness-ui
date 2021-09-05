@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/cards/progress_journal_entry_card.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_entry_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -58,38 +59,29 @@ class ProgressJournalEntries extends StatelessWidget {
                 subtext: true,
               ),
             )
-          : ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-              itemCount: entries.length + 1,
-              itemBuilder: (c, i) {
-                if (i == entries.length) {
-                  return SizedBox(height: kAssumedFloatingButtonHeight);
-                } else {
-                  return GestureDetector(
-                      onTap: () => context.push(
-                              child: ProgressJournalEntryCreator(
+          : ListAvoidFAB(
+              itemCount: entries.length,
+              itemBuilder: (c, i) => GestureDetector(
+                  onTap: () => context.push(
+                          child: ProgressJournalEntryCreator(
+                        parentJournal: parentJournal,
+                        progressJournalEntry: sortedEntries[i],
+                      )),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: AnimatedSlidable(
+                          key: Key(
+                              'progress-journal-entry-${sortedEntries[i].id}'),
+                          index: i,
+                          itemType: 'Journal Entry',
+                          itemName: sortedEntries[i].createdAt.dateString,
+                          removeItem: (index) =>
+                              _deleteJournalEntry(context, sortedEntries[i].id),
+                          secondaryActions: [],
+                          child: ProgressJournalEntryCard(
                             parentJournal: parentJournal,
                             progressJournalEntry: sortedEntries[i],
-                          )),
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: AnimatedSlidable(
-                              key: Key(
-                                  'progress-journal-entry-${sortedEntries[i].id}'),
-                              index: i,
-                              itemType: 'Journal Entry',
-                              itemName: sortedEntries[i].createdAt.dateString,
-                              removeItem: (index) => _deleteJournalEntry(
-                                  context, sortedEntries[i].id),
-                              secondaryActions: [],
-                              child: ProgressJournalEntryCard(
-                                parentJournal: parentJournal,
-                                progressJournalEntry: sortedEntries[i],
-                              ))));
-                }
-              },
+                          )))),
             ),
     );
   }

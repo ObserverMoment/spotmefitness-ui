@@ -15,7 +15,7 @@ class DiscoverPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         customLeading: NavBarLargeTitle('Discover'),
       ),
       child: Column(

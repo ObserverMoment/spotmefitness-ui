@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -155,8 +153,7 @@ class _ScheduledWorkoutCreatorPageState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Schedule Workout'),
         trailing: AnimatedSwitcher(

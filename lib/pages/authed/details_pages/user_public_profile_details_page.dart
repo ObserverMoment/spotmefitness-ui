@@ -105,7 +105,7 @@ class _UserPublicProfileDetailsPageState
           final userPublicProfile = data.userPublicProfileById;
 
           return MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

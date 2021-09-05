@@ -23,7 +23,7 @@ class YourClubsPage extends StatelessWidget {
           final clubs = data.userClubs;
 
           return MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle('Clubs'),
                 trailing: CreateIconButton(
                   onPressed: () => context.navigateTo(ClubCreatorRoute()),

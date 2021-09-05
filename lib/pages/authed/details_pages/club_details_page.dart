@@ -262,7 +262,7 @@ class _ClubDetailsSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildAppBar(BuildContext context, double shrinkOffset) => Opacity(
         opacity: appear(shrinkOffset),
-        child: BorderlessNavBar(
+        child: MyNavBar(
           withoutLeading: true,
           backgroundColor: context.theme.cardBackground,
           middle: NavBarTitle(club.name),

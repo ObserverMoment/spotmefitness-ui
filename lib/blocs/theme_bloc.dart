@@ -128,7 +128,7 @@ abstract class ThemeData {
 
   static CupertinoThemeData cupertinoDarkData = CupertinoThemeData(
       brightness: Brightness.dark,
-      barBackgroundColor: CupertinoColors.black,
+      barBackgroundColor: const Color(0xff080808),
       scaffoldBackgroundColor: CupertinoColors.black,
       primaryColor: CupertinoColors.white,
       primaryContrastingColor: const Color(0xff286E6E),
@@ -140,7 +140,7 @@ abstract class ThemeData {
 
   static CupertinoThemeData cupertinoLightData = CupertinoThemeData(
       brightness: Brightness.light,
-      barBackgroundColor: CupertinoColors.systemGroupedBackground,
+      barBackgroundColor: const Color(0xFFF7F7F7),
       scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
       primaryColor: CupertinoColors.black,
       primaryContrastingColor: const Color(0xff286E6E),

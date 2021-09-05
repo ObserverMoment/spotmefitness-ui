@@ -23,7 +23,6 @@ import 'package:spotmefitness_ui/components/workout_plan/workout_plan_goals.dart
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_participants.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_workout_schedule.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -267,7 +266,7 @@ class _WorkoutPlanDetailsPageState extends State<WorkoutPlanDetailsPage> {
                 final bool isOwner = workoutPlan.user.id == authedUserId;
 
                 return CupertinoPageScaffold(
-                  navigationBar: BorderlessNavBar(
+                  navigationBar: MyNavBar(
                     middle: NavBarTitle(workoutPlan.name),
                     trailing: CupertinoButton(
                       padding: EdgeInsets.zero,

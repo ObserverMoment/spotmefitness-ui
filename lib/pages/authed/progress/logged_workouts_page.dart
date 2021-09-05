@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_workout_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -34,8 +35,8 @@ class LoggedWorkoutsPage extends StatelessWidget {
 
           return MyPageScaffold(
             key: Key('LoggedWorkoutsPage - CupertinoPageScaffold'),
-            navigationBar: BorderlessNavBar(
-              key: Key('LoggedWorkoutsPage - BasicNavBar'),
+            navigationBar: MyNavBar(
+              key: Key('LoggedWorkoutsPage - MyNavBar'),
               middle: NavBarTitle('Workout Logs'),
               trailing:
                   InfoPopupButton(infoWidget: MyText('Info about the logs')),
@@ -155,28 +156,20 @@ class _FilterableLoggedWorkoutsListState
                       ),
                     ),
                   Expanded(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: filteredLogs.length + 1,
-                        itemBuilder: (c, i) {
-                          if (i == filteredLogs.length) {
-                            return SizedBox(height: 60);
-                          } else {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
-                              child: GestureDetector(
-                                  onTap: () => _openLoggedWorkoutDetails(
-                                      context, filteredLogs[i].id),
-                                  child: LoggedWorkoutCard(filteredLogs[i])),
-                            );
-                          }
-                        }),
-                  ),
+                      child: ListAvoidFAB(
+                    itemBuilder: (c, i) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: GestureDetector(
+                          onTap: () => _openLoggedWorkoutDetails(
+                              context, filteredLogs[i].id),
+                          child: LoggedWorkoutCard(filteredLogs[i])),
+                    ),
+                    itemCount: filteredLogs.length,
+                  )),
                 ],
               ),
         Positioned(
-            bottom: EnvironmentConfig.bottomNavBarHeight + 10,
+            bottom: EnvironmentConfig.bottomNavBarHeight + 6,
             child: RaisedButtonContainer(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
               child: SizedBox(

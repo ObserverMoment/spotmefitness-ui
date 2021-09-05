@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/components/cards/progress_journal_goal_card.dar
 import 'package:spotmefitness_ui/components/cards/progress_journal_goals_summary_card.dart';
 import 'package:spotmefitness_ui/components/creators/progress_journal_creator/progress_journal_goal_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -65,40 +66,31 @@ class ProgressJournalGoals extends StatelessWidget {
                       subtext: true,
                     ),
                   )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    // Hack...+ 1 to allow for building a sized box spacer to lift up above the floating button.
-                    itemCount: sortedGoals.length + 1,
-                    itemBuilder: (c, i) {
-                      if (i == sortedGoals.length) {
-                        return SizedBox(height: kAssumedFloatingButtonHeight);
-                      } else {
-                        return GestureDetector(
-                          onTap: () => context.push(
-                              child: ProgressJournalGoalCreator(
-                            parentJournalId: parentJournalId,
-                            progressJournalGoal: sortedGoals[i],
-                          )),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: AnimatedSlidable(
-                              key: Key(
-                                  'progress-journal-goal-${sortedGoals[i].id}'),
-                              index: i,
-                              itemType: 'Journal Goal',
-                              itemName: sortedGoals[i].name,
-                              removeItem: (index) => _deleteJournalGoal(
-                                  context, sortedGoals[i].id),
-                              secondaryActions: [],
-                              child: ProgressJournalGoalCard(
-                                  markGoalComplete: (goal) => print(goal),
-                                  progressJournalGoal: sortedGoals[i]),
-                            ),
-                          ),
-                        );
-                      }
-                    },
+                : ListAvoidFAB(
+                    itemCount: sortedGoals.length,
+                    itemBuilder: (c, i) => GestureDetector(
+                      onTap: () => context.push(
+                          child: ProgressJournalGoalCreator(
+                        parentJournalId: parentJournalId,
+                        progressJournalGoal: sortedGoals[i],
+                      )),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: AnimatedSlidable(
+                          key:
+                              Key('progress-journal-goal-${sortedGoals[i].id}'),
+                          index: i,
+                          itemType: 'Journal Goal',
+                          itemName: sortedGoals[i].name,
+                          removeItem: (index) =>
+                              _deleteJournalGoal(context, sortedGoals[i].id),
+                          secondaryActions: [],
+                          child: ProgressJournalGoalCard(
+                              markGoalComplete: (goal) => print(goal),
+                              progressJournalGoal: sortedGoals[i]),
+                        ),
+                      ),
+                    ),
                   ),
           ),
         ),

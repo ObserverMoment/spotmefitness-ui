@@ -143,8 +143,7 @@ class WorkoutTagsManagerState extends State<WorkoutTagsManager> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         automaticallyImplyLeading: !_isLoading,
         middle: NavBarTitle(
             widget.allowCreateTagOnly ? 'Create Tag' : 'Workout Tags'),

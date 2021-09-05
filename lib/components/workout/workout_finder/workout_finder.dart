@@ -344,7 +344,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
         ],
       ),
       body: CupertinoPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle('Find a Workout'),
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,

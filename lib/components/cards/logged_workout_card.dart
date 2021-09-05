@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/components/logged_workout/logged_workout_sectio
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
@@ -52,9 +51,12 @@ class LoggedWorkoutCard extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: Row(
               children: [
-                MyHeaderText(
-                  loggedWorkout.name,
-                  weight: FontWeight.normal,
+                Expanded(
+                  child: MyHeaderText(
+                    loggedWorkout.name,
+                    weight: FontWeight.normal,
+                    maxLines: 2,
+                  ),
                 ),
               ],
             ),
@@ -64,8 +66,8 @@ class LoggedWorkoutCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6.0),
               child: MyText(
                 loggedWorkout.note!,
+                size: FONTSIZE.SMALL,
                 maxLines: 3,
-                subtext: true,
                 lineHeight: 1.3,
               ),
             ),
@@ -73,8 +75,8 @@ class LoggedWorkoutCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0, top: 10.0),
             child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.start,
                 spacing: 6,
                 runSpacing: 6,
                 children: [

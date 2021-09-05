@@ -37,8 +37,7 @@ class _DateSelectorState extends State<DateSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: BasicNavBar(
-        heroTag: 'DateSelector',
+      navigationBar: MyNavBar(
         customLeading: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: _handleCancel,

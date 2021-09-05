@@ -405,7 +405,7 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         withoutLeading: true,
         middle: Row(
           children: [

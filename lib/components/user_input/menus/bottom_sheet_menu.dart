@@ -103,7 +103,7 @@ class BottomSheetMenuHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              MyText(
+              MyHeaderText(
                 name,
                 size: FONTSIZE.BIG,
               ),
@@ -141,7 +141,6 @@ class BottomSheetMenuItemContainer extends StatelessWidget {
           color: bottomSheetMenuItem.isDestructive
               ? Styles.errorRed
               : context.theme.primary,
-          weight: FontWeight.bold,
         ),
         if (bottomSheetMenuItem.icon != null) bottomSheetMenuItem.icon!,
       ]),

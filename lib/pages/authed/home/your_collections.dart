@@ -30,7 +30,7 @@ class YourCollectionsPage extends StatelessWidget {
               .toList();
 
           return MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle('Your Collections'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,

@@ -107,7 +107,7 @@ class MoveDetails extends StatelessWidget {
         fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
           return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               middle: NavBarTitle(move.name),
             ),
             child: SingleChildScrollView(

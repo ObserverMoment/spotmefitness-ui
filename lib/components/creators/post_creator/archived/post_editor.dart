@@ -151,7 +151,7 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return MyPageScaffold(
-//         navigationBar: BottomBorderNavBar(
+//         navigationBar: MyNavBar(
 //             bottomBorderColor: context.theme.navbarBottomBorder,
 //             customLeading: NavBarCancelButton(context.pop),
 //             middle: NavBarTitle('Edit Post'),

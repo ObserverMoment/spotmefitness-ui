@@ -77,8 +77,7 @@ class _StartTrialState extends State<StartTrial> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          heroTag: 'StartTrial',
+        navigationBar: MyNavBar(
           customLeading: CupertinoButton(
               padding: const EdgeInsets.all(0),
               onPressed: context.pop,

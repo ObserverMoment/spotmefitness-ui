@@ -38,7 +38,7 @@ class CustomMoveCreatorMeta extends StatelessWidget {
                           : context.theme.primary.withOpacity(0.65))),
               child: MyText(
                 repType.display,
-                color: Styles.white,
+                color: isSelected ? Styles.white : null,
               ),
             ),
           ),
@@ -119,7 +119,6 @@ class CustomMoveCreatorMeta extends StatelessWidget {
             EditableTextFieldRow(
               title: 'Name',
               text: move.name,
-              isRequired: true,
               onSave: (text) => updateMove({'name': text}),
               inputValidation: (text) => text.length >= 3,
               maxChars: 50,

@@ -71,8 +71,7 @@ class _MoveFiltersScreenState extends State<MoveFiltersScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-            heroTag: 'MoveFiltersScreen',
+        navigationBar: MyNavBar(
             automaticallyImplyLeading: false,
             customLeading: null,
             middle: NavBarTitle('Move Filters'),

@@ -30,8 +30,7 @@ class DiscoverPeoplePage extends StatelessWidget {
               .toList();
 
           return MyPageScaffold(
-              navigationBar:
-                  BorderlessNavBar(middle: NavBarTitle('Discover People')),
+              navigationBar: MyNavBar(middle: NavBarTitle('Discover People')),
               child: publicProfiles.isNotEmpty
                   ? Padding(
                       padding:

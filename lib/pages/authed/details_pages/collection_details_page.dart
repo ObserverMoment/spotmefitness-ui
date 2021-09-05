@@ -116,7 +116,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
           final bool isOwner = collection.user.id == authedUserId;
 
           return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               middle: NavBarTitle(collection.name),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,

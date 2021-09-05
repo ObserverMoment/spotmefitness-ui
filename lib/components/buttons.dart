@@ -983,9 +983,8 @@ class InfoPopupButton extends StatelessWidget {
       onPressed: () => context.push(
           rootNavigator: true,
           child: CupertinoPageScaffold(
-            navigationBar: withoutNavBar
-                ? null
-                : BorderlessNavBar(middle: NavBarTitle(pageTitle)),
+            navigationBar:
+                withoutNavBar ? null : MyNavBar(middle: NavBarTitle(pageTitle)),
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),

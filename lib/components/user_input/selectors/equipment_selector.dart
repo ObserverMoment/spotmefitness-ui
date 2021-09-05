@@ -199,8 +199,7 @@ class _FullScreenEquipmentSelectorState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         automaticallyImplyLeading: false,
         middle: NavBarTitle('Select Equipment'),
         trailing: NavBarSaveButton(
@@ -218,26 +217,6 @@ class _FullScreenEquipmentSelectorState
           fontSize: widget.fontSize,
           tilesBorder: widget.tilesBorder,
         ),
-        // child: GridView.builder(
-        //     scrollDirection: Axis.vertical,
-        //     shrinkWrap: true,
-        //     itemCount: widget.allEquipments.length,
-        //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //         crossAxisCount: widget.crossAxisCount,
-        //         mainAxisSpacing: 8,
-        //         crossAxisSpacing: 8),
-        //     itemBuilder: (context, index) {
-        //       final Equipment e = widget.allEquipments[index];
-        //       return GestureDetector(
-        //         onTap: () => _handleSelection(e),
-        //         child: EquipmentTile(
-        //             showIcon: true,
-        //             equipment: e,
-        //             withBorder: widget.tilesBorder,
-        //             fontSize: widget.fontSize,
-        //             isSelected: _activeSelectedEquipments.contains(e)),
-        //       );
-        //     }),
       ),
     );
   }

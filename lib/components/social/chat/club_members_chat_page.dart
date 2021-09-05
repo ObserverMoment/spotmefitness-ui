@@ -89,8 +89,7 @@ class _ClubMembersChatPageState extends State<ClubMembersChatPage> {
           ? chat.StreamChannel(
               channel: _channel,
               child: CupertinoPageScaffold(
-                navigationBar: BottomBorderNavBar(
-                  bottomBorderColor: context.theme.navbarBottomBorder,
+                navigationBar: MyNavBar(
                   middle: Column(
                     children: [
                       NavBarTitle('Club Chat'),
@@ -166,7 +165,7 @@ class _ClubMembersChatPageState extends State<ClubMembersChatPage> {
               ),
             )
           : MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle('Loading Chat...'),
               ),
               child: LoadingCircle()),

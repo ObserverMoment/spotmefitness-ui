@@ -224,8 +224,7 @@ class _FullScreenTextEditingState extends State<FullScreenTextEditing> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BottomBorderNavBar(
-          bottomBorderColor: context.theme.navbarBottomBorder,
+        navigationBar: MyNavBar(
           customLeading: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

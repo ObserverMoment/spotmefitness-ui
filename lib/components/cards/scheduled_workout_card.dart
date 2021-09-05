@@ -83,6 +83,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
 
   Widget _buildCardHeader(BuildContext context, bool showNote) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +110,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
         ),
         if (showNote && Utils.textNotNull(scheduledWorkout.note))
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: ViewMoreFullScreenTextBlock(
               text: scheduledWorkout.note!,
               title: 'Note',

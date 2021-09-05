@@ -42,9 +42,7 @@ class TargetedBodyAreasPageView extends StatelessWidget {
           final List<BodyArea> allBodyAreas = data.bodyAreas;
 
           return MyPageScaffold(
-            navigationBar: BottomBorderNavBar(
-                bottomBorderColor: context.theme.navbarBottomBorder,
-                middle: NavBarTitle('Targeted Body Areas')),
+            navigationBar: MyNavBar(middle: NavBarTitle('Targeted Body Areas')),
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),

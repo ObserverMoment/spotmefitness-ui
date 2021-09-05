@@ -53,7 +53,7 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(

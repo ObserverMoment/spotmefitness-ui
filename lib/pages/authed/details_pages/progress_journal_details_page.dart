@@ -106,7 +106,7 @@ class _ProgressJournalDetailsPageState
         builder: (data) {
           final journal = data.progressJournalById;
           return MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle(journal.name),
                 trailing: NavBarEllipsisMenu(items: [
                   ContextMenuItem(

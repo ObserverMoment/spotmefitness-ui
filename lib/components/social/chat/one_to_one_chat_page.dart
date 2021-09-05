@@ -84,7 +84,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
           ? chat.StreamChannel(
               channel: _channel,
               child: CupertinoPageScaffold(
-                navigationBar: BorderlessNavBar(
+                navigationBar: MyNavBar(
                   middle: CupertinoButton(
                       padding: EdgeInsets.zero,
                       onPressed: () => openBottomSheetMenu(
@@ -157,7 +157,7 @@ class OneToOneChatPageState extends State<OneToOneChatPage> {
               ),
             )
           : MyPageScaffold(
-              navigationBar: BorderlessNavBar(
+              navigationBar: MyNavBar(
                 middle: NavBarTitle('Loading Chat...'),
               ),
               child: LoadingCircle()),

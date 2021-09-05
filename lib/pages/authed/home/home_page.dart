@@ -19,8 +19,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       key: Key('HomePage-MyPageScaffold'),
-      navigationBar: BorderlessNavBar(
-        key: Key('HomePage-BorderlessNavBar'),
+      navigationBar: MyNavBar(
+        key: Key('HomePage-MyNavBar'),
         customLeading: NavBarLargeTitle('Home'),
         trailing: NavBarTrailingRow(children: [
           NotificationsIconButton(),

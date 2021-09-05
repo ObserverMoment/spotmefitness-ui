@@ -26,8 +26,8 @@ class JournalsPage extends StatelessWidget {
 
           return MyPageScaffold(
             key: Key('JournalsPage - CupertinoPageScaffold'),
-            navigationBar: BorderlessNavBar(
-              key: Key('JournalsPage - BorderlessNavBar'),
+            navigationBar: MyNavBar(
+              key: Key('JournalsPage - MyNavBar'),
               middle: NavBarTitle('Journals'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,

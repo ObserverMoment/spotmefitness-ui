@@ -127,8 +127,7 @@ class _CollectionCreatorPageState extends State<CollectionCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(_cancel),
         middle:
             NavBarTitle(_isCreate ? 'Create Collection' : 'Edit Collection'),

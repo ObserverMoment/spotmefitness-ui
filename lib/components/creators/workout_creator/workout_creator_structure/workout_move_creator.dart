@@ -191,7 +191,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle(widget.pageTitle ?? 'Set'),
         trailing: _buildTopRightIcon(),

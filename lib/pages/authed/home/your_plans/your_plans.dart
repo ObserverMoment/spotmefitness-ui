@@ -47,7 +47,7 @@ class _YourPlansPageState extends State<YourPlansPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle('Your Plans'),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,

@@ -159,7 +159,7 @@ class _WorkoutPlanReviewCreatorPageState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(_cancel),
         middle: NavBarTitle('Leave Review'),
         trailing: AnimatedSwitcher(

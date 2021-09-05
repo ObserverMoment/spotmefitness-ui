@@ -19,7 +19,6 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/model/toast_request.dart';
@@ -289,7 +288,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                 final bool isOwner = workout.user.id == authedUserId;
 
                 return CupertinoPageScaffold(
-                  navigationBar: BorderlessNavBar(
+                  navigationBar: MyNavBar(
                     middle: NavBarTitle(workout.name),
                     trailing: CupertinoButton(
                       padding: EdgeInsets.zero,

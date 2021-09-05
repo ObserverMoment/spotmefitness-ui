@@ -236,8 +236,8 @@ class _BodyTransformationPageState extends State<BodyTransformationPage> {
               .toList();
 
           return MyPageScaffold(
-              navigationBar: BorderlessNavBar(
-                key: Key('BodyTransformationPage - BorderlessNavBar'),
+              navigationBar: MyNavBar(
+                key: Key('BodyTransformationPage - MyNavBar'),
                 middle: NavBarTitle('Transformation'),
                 trailing: NavBarTrailingRow(
                   children: [

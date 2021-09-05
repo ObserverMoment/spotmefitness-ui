@@ -96,7 +96,7 @@ class _YourSchedulePageState extends State<YourSchedulePage> {
             .toList();
 
         return CupertinoPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -267,7 +267,7 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
   Widget build(BuildContext context) {
     final filteredScheduledWorkouts = _filterBySearchString();
     return CupertinoPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         middle: NavBarTitle('Search Your Schedule'),
       ),
       child: Column(

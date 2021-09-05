@@ -179,7 +179,7 @@ class ShimmerListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle(title),
         ),
         child: ShimmerCardList(
@@ -195,7 +195,7 @@ class ShimmerGridPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle(title),
         ),
         child: ShimmerCardGrid(
@@ -210,7 +210,7 @@ class ShimmerDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: NavBarTitle(title),
         ),
         child: Column(

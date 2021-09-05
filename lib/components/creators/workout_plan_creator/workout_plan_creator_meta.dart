@@ -14,7 +14,6 @@ import 'package:spotmefitness_ui/components/user_input/selectors/workout_tags_se
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 class WorkoutPlanCreatorMeta extends StatelessWidget {
   const WorkoutPlanCreatorMeta({Key? key}) : super(key: key);

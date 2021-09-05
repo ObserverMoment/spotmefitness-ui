@@ -64,8 +64,7 @@ class WorkoutPlanDaySelector extends StatelessWidget {
         .fold<List<int>>([], (acum, next) => [...acum, next.dayNumber]);
 
     return CupertinoPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         middle: NavBarTitle(title),
       ),
       child: Column(

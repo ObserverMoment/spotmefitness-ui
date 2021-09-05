@@ -243,8 +243,7 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BottomBorderNavBar(
-        bottomBorderColor: context.theme.navbarBottomBorder,
+      navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(_handleCancel),
         middle: NavBarTitle(widget.userBenchmark.name),
         trailing: _loading

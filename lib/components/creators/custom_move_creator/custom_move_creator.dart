@@ -124,8 +124,7 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BasicNavBar(
-          heroTag: 'CustomMoveCreatorPage',
+      navigationBar: MyNavBar(
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(widget.move == null ? 'New Move' : 'Edit Move'),
           trailing: _formIsDirty

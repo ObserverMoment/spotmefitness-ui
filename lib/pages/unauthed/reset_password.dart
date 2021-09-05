@@ -53,8 +53,7 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BasicNavBar(
-          heroTag: 'ResetPassword',
+        navigationBar: MyNavBar(
           middle: H2('Reset Password'),
         ),
         child: AnimatedSwitcher(

@@ -19,7 +19,7 @@ class FutureBuilderHandler<T> extends StatelessWidget {
         if (snapshot.hasError) {
           print(snapshot.error);
           return MyPageScaffold(
-            navigationBar: BorderlessNavBar(
+            navigationBar: MyNavBar(
               middle: NavBarTitle('Oops...'),
             ),
             child: Padding(

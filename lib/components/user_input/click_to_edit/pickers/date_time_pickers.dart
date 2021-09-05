@@ -208,11 +208,10 @@ class _DateTimePickerState extends State<DateTimePicker> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: CupertinoPageScaffold(
         backgroundColor: context.theme.modalBackground,
-        navigationBar: BottomBorderNavBar(
+        navigationBar: MyNavBar(
           backgroundColor: context.theme.cardBackground,
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle(_buildTitle),
-          bottomBorderColor: context.theme.navbarBottomBorder,
           trailing: NavBarSaveButton(_saveAndClose),
         ),
         child: Padding(
@@ -545,11 +544,10 @@ class _DateRangePickerState extends State<DateRangePicker> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: CupertinoPageScaffold(
         backgroundColor: context.theme.modalBackground,
-        navigationBar: BottomBorderNavBar(
+        navigationBar: MyNavBar(
           backgroundColor: context.theme.cardBackground,
           customLeading: NavBarCancelButton(context.pop),
           middle: NavBarTitle('Select Date Range'),
-          bottomBorderColor: context.theme.navbarBottomBorder,
           trailing: _inputsValid() ? NavBarSaveButton(_saveAndClose) : null,
         ),
         child: Padding(

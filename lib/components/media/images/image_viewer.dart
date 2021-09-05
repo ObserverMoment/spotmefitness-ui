@@ -59,7 +59,7 @@ class FullScreenImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
           middle: title != null ? NavBarTitle(title!) : null,
         ),
         child: PhotoView(

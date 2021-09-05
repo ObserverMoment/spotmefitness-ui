@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
           customLeading: NavBarLargeTitle('Profile'),
           trailing: CupertinoButton(
               padding: const EdgeInsets.symmetric(horizontal: 12),

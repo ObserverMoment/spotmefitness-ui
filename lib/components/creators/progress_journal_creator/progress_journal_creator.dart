@@ -175,7 +175,7 @@ class _ProgressJournalCreatorPageState
   Widget build(BuildContext context) {
     return MyPageScaffold(
       // Non standard nav bar (not [CreateEdit] version as the journal is not created immediately on init of this widget (as is the case for workot creator), but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
-      navigationBar: BorderlessNavBar(
+      navigationBar: MyNavBar(
         withoutLeading: true,
         middle: Align(
             alignment: Alignment.centerLeft,

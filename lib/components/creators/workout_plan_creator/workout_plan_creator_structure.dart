@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/blocs/workout_plan_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_plan_day_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -59,8 +58,6 @@ class WorkoutPlanCreatorStructureWeek extends StatefulWidget {
 
 class _WorkoutPlanCreatorStructureWeekState
     extends State<WorkoutPlanCreatorStructureWeek> {
-  bool _minimizePlanDayCards = true;
-
   int dayNumberFromDayIndex(int dayIndex) => widget.weekNumber * 7 + dayIndex;
 
   WorkoutPlanCreatorBloc get bloc => context.read<WorkoutPlanCreatorBloc>();

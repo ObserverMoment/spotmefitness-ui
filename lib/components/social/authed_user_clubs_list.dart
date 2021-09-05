@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/cards/club_card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
@@ -29,11 +30,10 @@ class AuthedUserClubsList extends StatelessWidget {
             final clubs = data.userClubs;
 
             return clubs.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
+                ? ListAvoidFAB(
                     itemCount: clubs.length,
                     itemBuilder: (c, i) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: GestureDetector(
                         onTap: () => context
                             .navigateTo(ClubDetailsRoute(id: clubs[i].id)),

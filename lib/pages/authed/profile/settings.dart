@@ -70,8 +70,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
           return MyPageScaffold(
             key: Key('SettingsPage - CupertinoPageScaffold'),
-            navigationBar: BorderlessNavBar(
-              key: Key('SettingsPage - BasicNavBar'),
+            navigationBar: MyNavBar(
+              key: Key('SettingsPage - MyNavBar'),
               middle: NavBarTitle('Settings'),
             ),
             child: SingleChildScrollView(

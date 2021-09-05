@@ -272,7 +272,7 @@ class _ClubPostCreatorPageState extends State<ClubPostCreatorPage> {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-        navigationBar: BorderlessNavBar(
+        navigationBar: MyNavBar(
             customLeading: _buildLeading,
             middle: NavBarTitle('Create Post'),
             trailing: _activePageIndex == 0

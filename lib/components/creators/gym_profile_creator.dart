@@ -89,6 +89,7 @@ class _GymProfileCreatorPageState extends State<GymProfileCreatorPage> {
         content: MyText(
           'This will revert back to where you first started.',
           maxLines: 3,
+          textAlign: TextAlign.center,
         ),
         onConfirm: () => setState(() {
               _activeGymProfile = _initGymProfile();
