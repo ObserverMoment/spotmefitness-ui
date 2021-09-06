@@ -68,6 +68,23 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
   }
 
+  /// When false workout sets are displayed as a minimal single line item.
+  /// To allow clear overview and to make re-ordering more simple.
+  bool showFullSetInfo = true;
+  void toggleShowFullSetInfo() {
+    showFullSetInfo = !showFullSetInfo;
+    notifyListeners();
+  }
+
+  /// Users should not be able to navigate away from the media page while this in in progress.
+  /// Otherwise the upload will fail and throw an error.
+  /// The top right 'done' button should also be disabled.
+  bool uploadingMedia = false;
+  void setUploadingMedia(bool uploading) {
+    uploadingMedia = uploading;
+    notifyListeners();
+  }
+
   void updateWorkoutMeta(Map<String, dynamic> data) async {
     /// Client / Optimistic
     _backup();

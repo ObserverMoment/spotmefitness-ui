@@ -4,6 +4,8 @@ import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_media.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_meta.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_creator_structure.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -159,38 +161,66 @@ class _MainUIState extends State<MainUI> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<WorkoutCreatorBloc>.value(
       value: widget.bloc,
-      child: MyPageScaffold(
-        navigationBar: MyNavBar(
-          withoutLeading: true,
-          middle: LeadingNavBarTitle(
-            'Workout',
-            fontSize: FONTSIZE.MAIN,
-          ),
-          trailing: NavBarSaveButton(
-            _saveAndClose,
-            text: 'Done',
-          ),
-        ),
-        child: Column(
-          children: [
-            MyTabBarNav(
-                titles: ['Meta', 'Structure', 'Media'],
-                handleTabChange: (i) => setState(() => _activeTabIndex = i),
-                activeTabIndex: _activeTabIndex),
-            Expanded(
-              child: IndexedStack(
-                index: _activeTabIndex,
-                sizing: StackFit.expand,
-                children: [
-                  WorkoutCreatorMeta(),
-                  MyText('Structure'),
-                  WorkoutCreatorMedia()
-                ],
-              ),
+      builder: (context, _) {
+        final bool uploadingMedia =
+            context.select<WorkoutCreatorBloc, bool>((b) => b.uploadingMedia);
+
+        return MyPageScaffold(
+          navigationBar: MyNavBar(
+            withoutLeading: true,
+            middle: LeadingNavBarTitle(
+              'Workout',
+              fontSize: FONTSIZE.MAIN,
             ),
-          ],
-        ),
-      ),
+            trailing: uploadingMedia
+                ? NavBarTrailingRow(
+                    children: [
+                      NavBarLoadingDots(),
+                    ],
+                  )
+                : NavBarSaveButton(
+                    _saveAndClose,
+                    text: 'Done',
+                  ),
+          ),
+          child: Column(
+            children: [
+              AnimatedSwitcher(
+                duration: kStandardAnimationDuration,
+                child: uploadingMedia
+                    ? Container(
+                        height: 46,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                            MyText('Uploading media, please wait...'),
+                            SizedBox(width: 8),
+                            LoadingDots(
+                              size: 12,
+                            )
+                          ],
+                        ))
+                    : MyTabBarNav(
+                        titles: ['Meta', 'Structure', 'Media'],
+                        handleTabChange: (i) =>
+                            setState(() => _activeTabIndex = i),
+                        activeTabIndex: _activeTabIndex),
+              ),
+              Expanded(
+                child: IndexedStack(
+                  index: _activeTabIndex,
+                  sizing: StackFit.expand,
+                  children: [
+                    WorkoutCreatorMeta(),
+                    WorkoutCreatorStructure(),
+                    WorkoutCreatorMedia()
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

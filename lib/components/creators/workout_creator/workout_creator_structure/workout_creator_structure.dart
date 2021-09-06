@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/blocs/workout_creator_bloc_archived.dart';
+import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/add_workout_section.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -15,7 +16,6 @@ import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_me
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
-import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -55,25 +55,34 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
   }
 
   void _openCreateSection() async {
-    final nextIndex = _sortedworkoutSections.length;
-    // Create a default section as a placeholder until user selects the type.
-    await _bloc
-        .createWorkoutSection(DefaultObjectfactory.defaultWorkoutSectionType());
+    await context.push(
+        fullscreenDialog: true,
+        child: AddWorkoutSection(
+          createWorkoutSection:
+              (CreateWorkoutSectionInput createWorkoutSectionInput) {
+            print(createWorkoutSectionInput);
+          },
+        ));
 
-    // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
-          value: _bloc,
-          child: WorkoutSectionCreator(
-            key: Key((nextIndex).toString()),
-            sectionIndex: nextIndex,
-            isCreate: true,
-          ),
-        ),
-      ),
-    );
+    // final nextIndex = _sortedworkoutSections.length;
+    // // Create a default section as a placeholder until user selects the type.
+    // await _bloc
+    //     .createWorkoutSection(DefaultObjectfactory.defaultWorkoutSectionType());
+
+    // // https://stackoverflow.com/questions/57598029/how-to-pass-provider-with-navigator
+    // Navigator.push(
+    //   context,
+    //   CupertinoPageRoute(
+    //     builder: (context) => ChangeNotifierProvider<WorkoutCreatorBloc>.value(
+    //       value: _bloc,
+    //       child: WorkoutSectionCreator(
+    //         key: Key((nextIndex).toString()),
+    //         sectionIndex: nextIndex,
+    //         isCreate: true,
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   void _openEditSection(int sectionIndex) {
@@ -118,7 +127,7 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
                     animation: animation,
                     child: GestureDetector(
                       onTap: () => _openEditSection(index),
-                      child: WorkoutSectionInWorkout(
+                      child: WorkoutStructureWorkoutSection(
                         key: Key(item.id),
                         workoutSection: item,
                         index: index,
@@ -135,8 +144,6 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
                   children: [
                     CreateTextIconButton(
                       text: 'Add Section',
-                      loading: context.select<WorkoutCreatorBloc, bool>(
-                          (b) => b.creatingSection),
                       onPressed: _openCreateSection,
                     ),
                   ],
@@ -150,12 +157,12 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
   }
 }
 
-class WorkoutSectionInWorkout extends StatelessWidget {
+class WorkoutStructureWorkoutSection extends StatelessWidget {
   final Key key;
   final int index;
   final WorkoutSection workoutSection;
   final bool canReorder;
-  WorkoutSectionInWorkout(
+  WorkoutStructureWorkoutSection(
       {required this.key,
       required this.index,
       required this.workoutSection,
@@ -186,24 +193,24 @@ class WorkoutSectionInWorkout extends StatelessWidget {
   }
 
   void _updateSection(BuildContext context, Map<String, dynamic> data) {
-    context
-        .read<WorkoutCreatorBloc>()
-        .updateWorkoutSection(workoutSection.sortPosition, data);
+    // context
+    //     .read<WorkoutCreatorBloc>()
+    //     .updateWorkoutSection(workoutSection.sortPosition, data);
   }
 
   void _deleteWorkoutSection(BuildContext context) {
-    context.showConfirmDeleteDialog(
-        itemType: 'Section',
-        onConfirm: () =>
-            context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
+    // context.showConfirmDeleteDialog(
+    //     itemType: 'Section',
+    //     onConfirm: () =>
+    //         context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
   }
 
   void _moveWorkoutSectionUpOne(BuildContext context) {
-    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index - 1);
+    // context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index - 1);
   }
 
   void _moveWorkoutSectionDownOne(BuildContext context) {
-    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index + 1);
+    // context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index + 1);
   }
 
   @override
