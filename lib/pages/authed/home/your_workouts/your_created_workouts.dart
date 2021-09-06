@@ -26,7 +26,6 @@ class YourCreatedWorkouts extends StatelessWidget {
               .sortedBy<DateTime>((w) => w.createdAt)
               .reversed
               .toList();
-          return ShimmerCardList(itemCount: 20);
           return FilterableCreatedWorkouts(
             allWorkouts: workouts,
             selectWorkout: selectWorkout,

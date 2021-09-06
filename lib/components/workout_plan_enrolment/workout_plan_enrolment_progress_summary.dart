@@ -54,7 +54,7 @@ class WorkoutPlanEnrolmentProgressSummary extends StatelessWidget {
                   ),
                   SizedBox(height: 7),
                   LinearPercentIndicator(
-                    percent: completed / total,
+                    percent: (completed / total).clamp(0.0, 1.0),
                     lineHeight: 4,
                     padding: const EdgeInsets.only(left: 8),
                     backgroundColor: context.theme.primary.withOpacity(0.3),

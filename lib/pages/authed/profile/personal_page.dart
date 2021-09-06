@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/coercers.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
@@ -76,7 +77,7 @@ class ProfilePersonalPage extends StatelessWidget {
                   maxDisplayLines: 2,
                 ),
               ),
-              _InputPadding(
+              UserInputContainer(
                 child: TappableRow(
                     title: 'Country',
                     display: user.countryCode != null
@@ -92,7 +93,7 @@ class ProfilePersonalPage extends StatelessWidget {
                               context, user.id, 'countryCode', country.isoCode),
                         ))),
               ),
-              _InputPadding(
+              UserInputContainer(
                 child: TappableRow(
                     title: 'Birthdate',
                     display: user.birthdate != null
@@ -109,9 +110,9 @@ class ProfilePersonalPage extends StatelessWidget {
                               fromDartDateTimeToGraphQLDateTime(date)),
                         ))),
               ),
-              _InputPadding(
+              UserInputContainer(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Column(
                     children: [
                       Row(

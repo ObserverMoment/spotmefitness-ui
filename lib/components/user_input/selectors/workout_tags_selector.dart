@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/user_input/tag_managers/workout_tags_manager.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -11,6 +12,83 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+
+class WorkoutTagsSelectorRow extends StatelessWidget {
+  final List<WorkoutTag> selectedWorkoutTags;
+  final void Function(List<WorkoutTag> tags) updateSelectedWorkoutTags;
+  final int? max;
+  const WorkoutTagsSelectorRow(
+      {Key? key,
+      required this.selectedWorkoutTags,
+      required this.updateSelectedWorkoutTags,
+      this.max})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return UserInputContainer(
+        child: CupertinoButton(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      onPressed: () => context.push(
+          child: WorkoutTagsSelector(
+        selectedWorkoutTags: selectedWorkoutTags,
+        updateSelectedWorkoutTags: updateSelectedWorkoutTags,
+      )),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  MyText(
+                    'Tags',
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Icon(
+                    CupertinoIcons.tag,
+                    size: 18,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  MyText(
+                    selectedWorkoutTags.isEmpty ? 'Add' : 'Edit',
+                    textAlign: TextAlign.end,
+                  ),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Icon(
+                    selectedWorkoutTags.isEmpty
+                        ? CupertinoIcons.add
+                        : CupertinoIcons.pencil,
+                    size: 18,
+                  )
+                ],
+              )
+            ],
+          ),
+          GrowInOut(
+              show: selectedWorkoutTags.isNotEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 2),
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children:
+                      selectedWorkoutTags.map((g) => Tag(tag: g.tag)).toList(),
+                ),
+              ))
+        ],
+      ),
+    ));
+  }
+}
 
 /// Also lets you create a new tag and then select it via [WorkoutTagsManager].
 class WorkoutTagsSelector extends StatefulWidget {
@@ -52,29 +130,15 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
   Widget build(BuildContext context) {
     return MyPageScaffold(
         navigationBar: MyNavBar(
-          customLeading: CupertinoButton(
+          withoutLeading: true,
+          trailing: CupertinoButton(
               padding: EdgeInsets.zero,
               child: MyText(
                 'Done',
                 weight: FontWeight.bold,
               ),
               onPressed: () => Navigator.pop(context)),
-          middle: NavBarTitle('Workout Tags'),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InfoPopupButton(
-                infoWidget: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: MyText(
-                    'Info about this workout tags.',
-                    maxLines: 10,
-                  ),
-                ),
-              )
-            ],
-          ),
+          middle: LeadingNavBarTitle('Workout Tags'),
         ),
         child: QueryObserver<UserWorkoutTags$Query, json.JsonSerializable>(
             key: Key(
@@ -92,12 +156,25 @@ class _WorkoutTagsSelectorState extends State<WorkoutTagsSelector> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        workoutTags.isEmpty
-                            ? MyText('No tags created yet...')
-                            : MyText(
-                                'Click to select / deselect.',
-                                size: FONTSIZE.SMALL,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            workoutTags.isEmpty
+                                ? MyText('No tags created yet...')
+                                : MyText(
+                                    'Click to select / deselect.',
+                                    size: FONTSIZE.SMALL,
+                                  ),
+                            InfoPopupButton(
+                                infoWidget: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: MyText(
+                                'Info about this workout tags.',
+                                maxLines: 10,
                               ),
+                            )),
+                          ],
+                        ),
                         SizedBox(height: 16),
                         Wrap(
                           spacing: 10,

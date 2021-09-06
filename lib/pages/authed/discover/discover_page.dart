@@ -16,7 +16,11 @@ class DiscoverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: MyNavBar(
-        customLeading: NavBarLargeTitle('Discover'),
+        withoutLeading: true,
+        middle: LeadingNavBarTitle(
+          'Discover',
+          fontSize: FONTSIZE.LARGE,
+        ),
       ),
       child: Column(
         children: [

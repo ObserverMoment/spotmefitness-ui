@@ -148,10 +148,8 @@ class _CollectionCreatorPageState extends State<CollectionCreatorPage> {
                     ? NavBarSaveButton(_handleSave)
                     : Container(width: 0)),
       ),
-      // Use SafeArea as this screen is opened as a bottom sheet.
-      child: SafeArea(
-          child: SingleChildScrollView(
-              child: Padding(
+      child: SingleChildScrollView(
+          child: Padding(
         padding: const EdgeInsets.only(top: 12.0),
         child: Column(
           children: [
@@ -174,7 +172,7 @@ class _CollectionCreatorPageState extends State<CollectionCreatorPage> {
                 controller: _descriptionController),
           ],
         ),
-      ))),
+      )),
     );
   }
 }

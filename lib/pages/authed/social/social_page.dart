@@ -11,7 +11,11 @@ class SocialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: MyNavBar(
-        customLeading: NavBarLargeTitle('Social'),
+        withoutLeading: true,
+        middle: LeadingNavBarTitle(
+          'Social',
+          fontSize: FONTSIZE.LARGE,
+        ),
         trailing: NavBarTrailingRow(children: [
           NotificationsIconButton(),
           ChatsIconButton(),

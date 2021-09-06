@@ -66,7 +66,7 @@ class WorkoutDetailsSection extends StatelessWidget {
         workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

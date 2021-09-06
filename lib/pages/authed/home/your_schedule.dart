@@ -268,27 +268,20 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
     final filteredScheduledWorkouts = _filterBySearchString();
     return CupertinoPageScaffold(
       navigationBar: MyNavBar(
-        middle: NavBarTitle('Search Your Schedule'),
+        withoutLeading: true,
+        middle: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: CupertinoSearchTextField(
+            placeholder: 'Search your schedule',
+            focusNode: _focusNode,
+            onChanged: (value) =>
+                setState(() => _searchString = value.toLowerCase()),
+          ),
+        ),
+        trailing: NavBarTextButton(context.pop, 'Close'),
       ),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: CupertinoSearchTextField(
-                      focusNode: _focusNode,
-                      onChanged: (value) =>
-                          setState(() => _searchString = value.toLowerCase()),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: FadeIn(
               child: Padding(
@@ -300,7 +293,7 @@ class _YourScheduleTextSearchState extends State<YourScheduleTextSearch> {
                           scheduledWorkout.scheduledAt.millisecondsSinceEpoch)
                       .map((scheduledWorkout) => Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10.0),
+                                horizontal: 12, vertical: 6.0),
                             child: ScheduledWorkoutCard(scheduledWorkout),
                           ))
                       .toList(),

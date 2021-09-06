@@ -108,7 +108,7 @@ class _MoveSelectorState extends State<MoveSelector> {
                   children: [
                     if (widget.includeCustomMoves)
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.only(bottom: 4),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -254,107 +254,5 @@ class _MoveSelectorState extends State<MoveSelector> {
                 );
               });
         });
-  }
-}
-
-/// TODO: This is no longer being used...
-class MoveSelectorTextSearch extends StatefulWidget {
-  final List<Move> allMoves;
-  final void Function(Move move) selectMove;
-
-  MoveSelectorTextSearch({required this.allMoves, required this.selectMove});
-
-  @override
-  _MoveSelectorTextSearchState createState() => _MoveSelectorTextSearchState();
-}
-
-class _MoveSelectorTextSearchState extends State<MoveSelectorTextSearch> {
-  String _searchString = '';
-  late FocusNode _focusNode;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    _focusNode.requestFocus();
-  }
-
-  bool _filter(Move move) {
-    return [move.name, move.searchTerms, move.moveType.name]
-        .where((t) => Utils.textNotNull(t))
-        .map((t) => t!.toLowerCase())
-        .any((t) => t.contains(_searchString));
-  }
-
-  List<Move> _filterBySearchString() {
-    return Utils.textNotNull(_searchString)
-        ? widget.allMoves.where((m) => _filter(m)).toList()
-        : widget.allMoves;
-  }
-
-  void _handleSelectMove(Move move) {
-    widget.selectMove(move);
-    context.pop();
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final filteredMoves = _filterBySearchString();
-    return CupertinoPageScaffold(
-      child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3.0),
-                      child: CupertinoSearchTextField(
-                        focusNode: _focusNode,
-                        onChanged: (value) =>
-                            setState(() => _searchString = value.toLowerCase()),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  NavBarTextButton(context.pop, 'Close'),
-                ],
-              ),
-            ),
-            Expanded(
-              child: FadeIn(
-                child: ListView(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  shrinkWrap: true,
-                  children: filteredMoves
-                      .sortedBy<String>((move) => move.name)
-                      .map((move) => GestureDetector(
-                          onTap: () => _handleSelectMove(move),
-                          child: MoveListItem(
-                            move: move,
-                            optionalButton: move.scope == MoveScope.custom
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 6.0),
-                                    child: Tag(tag: 'Custom'),
-                                  )
-                                : null,
-                          )))
-                      .toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

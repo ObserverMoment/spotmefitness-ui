@@ -113,8 +113,7 @@ class YourWorkoutsList extends StatelessWidget {
                   onTap: () => selectWorkout(workouts[i].id),
                   child: SizeFadeIn(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: WorkoutCard(workouts[i]),
                     ),
                   ),

@@ -20,7 +20,7 @@ class Card extends StatelessWidget {
       required this.child,
       this.backgroundColor,
       this.withBoxShadow = true,
-      this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      this.padding = kStandardCardPadding,
       this.opaqueBackgroundImage = true});
   @override
   Widget build(BuildContext context) {

@@ -15,7 +15,11 @@ class ProgressPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: MyNavBar(
-        customLeading: NavBarLargeTitle('Progress'),
+        withoutLeading: true,
+        middle: LeadingNavBarTitle(
+          'Progress',
+          fontSize: FONTSIZE.LARGE,
+        ),
       ),
       child: Column(
         children: [

@@ -25,7 +25,7 @@ class SlidingSelect<T> extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: CupertinoSlidingSegmentedControl<T>(
-          padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
           backgroundColor: context.theme.cardBackground,
           thumbColor: context.theme.background,
           groupValue: value,

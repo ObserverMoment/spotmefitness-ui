@@ -238,60 +238,58 @@ class _YourLoggedWorkoutsTextSearchState
   Widget build(BuildContext context) {
     final filteredLogs = _filterBySearchString();
     return MyPageScaffold(
-      child: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 3.0),
-                    child: CupertinoSearchTextField(
-                      placeholder: 'Search your logs',
-                      focusNode: _focusNode,
-                      onChanged: (value) =>
-                          setState(() => _searchString = value.toLowerCase()),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                NavBarTextButton(context.pop, 'Close'),
-              ],
-            ),
-            Expanded(
-                child: AnimatedSwitcher(
-              duration: kStandardAnimationDuration,
-              child: _searchString.length < 3
-                  ? Padding(
-                      padding: const EdgeInsets.all(24),
-                      child:
-                          MyText('Type at least 3 characters', subtext: true),
-                    )
-                  : filteredLogs.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(32.0),
-                          child: MyText(
-                            'No logs found...',
-                            subtext: true,
-                          ),
-                        )
-                      : ListView(
-                          shrinkWrap: true,
-                          children: filteredLogs
-                              .sortedBy<DateTime>((log) => log.completedOn)
-                              .reversed
-                              .map((log) => GestureDetector(
-                                  onTap: () => _handleSelectLoggedWorkout(log),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4, vertical: 4.0),
-                                    child: LoggedWorkoutCard(log),
-                                  )))
-                              .toList(),
-                        ),
-            )),
-          ],
+      navigationBar: MyNavBar(
+        withoutLeading: true,
+        middle: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: CupertinoSearchTextField(
+            placeholder: 'Search your logs',
+            focusNode: _focusNode,
+            onChanged: (value) =>
+                setState(() => _searchString = value.toLowerCase()),
+          ),
         ),
+        trailing: NavBarTextButton(context.pop, 'Close'),
+      ),
+      child: AnimatedSwitcher(
+        duration: kStandardAnimationDuration,
+        child: _searchString.length < 3
+            ? Padding(
+                padding: const EdgeInsets.all(24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText('Type at least 3 characters', subtext: true),
+                  ],
+                ),
+              )
+            : filteredLogs.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MyText(
+                          'No logs found...',
+                          subtext: true,
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    shrinkWrap: true,
+                    children: filteredLogs
+                        .sortedBy<DateTime>((log) => log.completedOn)
+                        .reversed
+                        .map((log) => GestureDetector(
+                            onTap: () => _handleSelectLoggedWorkout(log),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              child: LoggedWorkoutCard(log),
+                            )))
+                        .toList(),
+                  ),
       ),
     );
   }

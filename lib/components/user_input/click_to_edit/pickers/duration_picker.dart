@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/close_picker.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -26,6 +27,75 @@ class DurationPickerDisplay extends StatelessWidget {
         updateDuration: updateDuration,
         title: modalTitle,
       )),
+    );
+  }
+}
+
+class DurationPickerRowDisplay extends StatelessWidget {
+  final Duration? duration;
+  final void Function(Duration duration) updateDuration;
+  const DurationPickerRowDisplay(
+      {Key? key, required this.duration, required this.updateDuration})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final hasDuration = duration != null;
+    return UserInputContainer(
+      child: Column(
+        children: [
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => context.showBottomSheet(
+                expand: false,
+                child: DurationPicker(
+                  duration: duration,
+                  mode: CupertinoTimerPickerMode.hm,
+                  minuteInterval: 5,
+                  updateDuration: updateDuration,
+                  title: 'Workout Duration',
+                )),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 24.0),
+                  child: Row(
+                    children: [
+                      MyText(
+                        'Duration',
+                      ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Icon(
+                        CupertinoIcons.clock,
+                        size: 18,
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: MyText(
+                    hasDuration ? duration!.displayString : 'Add... (optional)',
+                    subtext: !hasDuration,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              MyText(
+                'How long this workout should take in total.',
+                size: FONTSIZE.SMALL,
+                maxLines: 3,
+                subtext: true,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

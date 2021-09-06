@@ -79,7 +79,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
       alignment: widget.alignment,
       decoration: BoxDecoration(
         border: Border(
-            bottom: BorderSide(color: context.theme.cardBackground, width: 3)),
+            bottom: BorderSide(color: context.theme.cardBackground, width: 1)),
       ),
       height: 46,
       child: ListView(
@@ -93,7 +93,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                   clipBehavior: Clip.none,
                   children: [
                     CupertinoButton(
-                      padding: const EdgeInsets.only(left: 8, right: 12),
+                      padding: const EdgeInsets.only(left: 4, right: 10),
                       pressedOpacity: 0.9,
                       alignment: Alignment.centerLeft,
                       onPressed: () => widget.handleTabChange(index),
@@ -105,10 +105,11 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                           children: [
                             AnimatedOpacity(
                               key: _globalTextBoxKeys[index],
-                              opacity: index == widget.activeTabIndex ? 1 : 0.7,
+                              opacity:
+                                  index == widget.activeTabIndex ? 1 : 0.65,
                               duration: Duration(milliseconds: 400),
                               child: MyText(
-                                title,
+                                title.toUpperCase(),
                                 size: FONTSIZE.BIG,
                               ),
                             ),
@@ -117,7 +118,7 @@ class _MyTabBarNavState extends State<MyTabBarNav> {
                                 axis: Axis.horizontal,
                                 show: index == widget.activeTabIndex,
                                 child: Container(
-                                  height: 4,
+                                  height: 2,
                                   width: _tabRenderBoxWidths?[index] ?? 50,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),

@@ -18,10 +18,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      key: Key('HomePage-MyPageScaffold'),
       navigationBar: MyNavBar(
-        key: Key('HomePage-MyNavBar'),
-        customLeading: NavBarLargeTitle('Home'),
+        withoutLeading: true,
+        middle: LeadingNavBarTitle(
+          'Home',
+          fontSize: FONTSIZE.LARGE,
+        ),
         trailing: NavBarTrailingRow(children: [
           NotificationsIconButton(),
           ChatsIconButton(),

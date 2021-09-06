@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_finder/filtered_workout_plans_list.dart';
@@ -117,143 +118,136 @@ class _WorkoutPlanFinderTextSearchState
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      child: SafeArea(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: CupertinoSearchTextField(
-                    placeholder: _activePageIndex == 0
-                        ? 'Search your plans'
-                        : 'Search all plans',
-                    focusNode: _focusNode,
-                    onChanged: _handleSearchStringUpdate,
-                    onSubmitted: _handleSearchSubmit,
-                  ),
-                ),
-                SizedBox(width: 8),
-                NavBarTextButton(context.pop, 'Close'),
-              ],
-            ),
+      navigationBar: MyNavBar(
+        withoutLeading: true,
+        middle: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: CupertinoSearchTextField(
+            placeholder: _activePageIndex == 0
+                ? 'Search your plans'
+                : 'Search all plans',
+            focusNode: _focusNode,
+            onChanged: _handleSearchStringUpdate,
+            onSubmitted: _handleSearchSubmit,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
-            child: SizedBox(
-              width: double.infinity,
-              child: SlidingSelect<int>(
-                  value: _activePageIndex,
-                  updateValue: _updatePageIndex,
-                  children: {
-                    0: MyText('Your Plans'),
-                    1: MyText('All Plans'),
-                  }),
-            ),
+        ),
+        trailing: NavBarTextButton(context.pop, 'Close'),
+      ),
+      child: Column(children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 14),
+          child: SizedBox(
+            width: double.infinity,
+            child: SlidingSelect<int>(
+                value: _activePageIndex,
+                updateValue: _updatePageIndex,
+                children: {
+                  0: MyText('Your Plans'),
+                  1: MyText('All Plans'),
+                }),
           ),
-          Expanded(
-              child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            children: [
-              _searchString.length > 2
-                  ? _filteredUserWorkoutPlans.isEmpty
-                      ? Center(
-                          child: MyText(
-                          'No results.',
-                          subtext: true,
-                        ))
-                      : YourFilteredWorkoutPlansList(
-                          selectWorkoutPlan: widget.selectWorkoutPlan,
-                          workoutPlans: _filteredUserWorkoutPlans)
-                  : Center(
-                      child: MyText(
-                      'Enter at least 3 characters.',
-                      subtext: true,
-                    )),
-              _searchString.length > 2
-                  ? StreamBuilder<TextSearchState>(
-                      initialData: TextSearchState.empty,
-                      stream: StreamGroup.merge([
-                        _workoutPlansTextSearchBloc.state,
-                        _workoutPlanNamesTextSearchBloc.state
-                      ]),
-                      builder: (context, stateSnapshot) {
-                        return StreamBuilder<List<WorkoutPlan>>(
-                            initialData: <WorkoutPlan>[],
-                            stream: _workoutPlansTextSearchBloc.results,
-                            builder: (context, workoutPlansSnapshot) {
-                              return StreamBuilder<List<TextSearchResult>>(
-                                  initialData: <TextSearchResult>[],
-                                  stream:
-                                      _workoutPlanNamesTextSearchBloc.results,
-                                  builder: (context, workoutPlanNamesSnapshot) {
-                                    // Handle state.
-                                    if (stateSnapshot.data ==
-                                        TextSearchState.error) {
-                                      return Center(
+        ),
+        Expanded(
+            child: PageView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: _pageController,
+          children: [
+            _searchString.length > 2
+                ? _filteredUserWorkoutPlans.isEmpty
+                    ? Center(
+                        child: MyText(
+                        'No results.',
+                        subtext: true,
+                      ))
+                    : YourFilteredWorkoutPlansList(
+                        selectWorkoutPlan: widget.selectWorkoutPlan,
+                        workoutPlans: _filteredUserWorkoutPlans)
+                : Center(
+                    child: MyText(
+                    'Enter at least 3 characters.',
+                    subtext: true,
+                  )),
+            _searchString.length > 2
+                ? StreamBuilder<TextSearchState>(
+                    initialData: TextSearchState.empty,
+                    stream: StreamGroup.merge([
+                      _workoutPlansTextSearchBloc.state,
+                      _workoutPlanNamesTextSearchBloc.state
+                    ]),
+                    builder: (context, stateSnapshot) {
+                      return StreamBuilder<List<WorkoutPlan>>(
+                          initialData: <WorkoutPlan>[],
+                          stream: _workoutPlansTextSearchBloc.results,
+                          builder: (context, workoutPlansSnapshot) {
+                            return StreamBuilder<List<TextSearchResult>>(
+                                initialData: <TextSearchResult>[],
+                                stream: _workoutPlanNamesTextSearchBloc.results,
+                                builder: (context, workoutPlanNamesSnapshot) {
+                                  // Handle state.
+                                  if (stateSnapshot.data ==
+                                      TextSearchState.error) {
+                                    return Center(
+                                      child: MyText(
+                                        'Sorry, there was a problem getting results',
+                                        color: Styles.errorRed,
+                                      ),
+                                    );
+                                  } else if (stateSnapshot.data ==
+                                      TextSearchState.loading) {
+                                    return Center(child: LoadingCircle());
+                                  } else if (stateSnapshot.data ==
+                                      TextSearchState.empty) {
+                                    // Or show placeholder message.
+                                    return Center(
                                         child: MyText(
-                                          'Sorry, there was a problem getting results',
-                                          color: Styles.errorRed,
+                                      'Enter at least 3 characters.',
+                                      subtext: true,
+                                    ));
+                                  } else {
+                                    // Handle data
+                                    // Always show names list if it is not empty
+                                    if (workoutPlanNamesSnapshot
+                                        .data!.isNotEmpty) {
+                                      return FadeIn(
+                                        child: WorkoutFinderTextResultsNames(
+                                          results:
+                                              workoutPlanNamesSnapshot.data!,
+                                          searchString: _searchString,
+                                          searchWorkoutPlanName:
+                                              _handleSearchSubmit,
                                         ),
                                       );
-                                    } else if (stateSnapshot.data ==
-                                        TextSearchState.loading) {
-                                      return Center(child: LoadingCircle());
-                                    } else if (stateSnapshot.data ==
-                                        TextSearchState.empty) {
-                                      // Or show placeholder message.
+                                    } else if (workoutPlansSnapshot
+                                        .data!.isNotEmpty) {
+                                      // Or show workouts list if not empty.
+                                      return FadeIn(
+                                        child: YourFilteredWorkoutPlansList(
+                                          selectWorkoutPlan:
+                                              widget.selectWorkoutPlan,
+                                          workoutPlans:
+                                              workoutPlansSnapshot.data!,
+                                        ),
+                                      );
+                                    } else {
+                                      // Or show empty results message.
                                       return Center(
                                           child: MyText(
-                                        'Enter at least 3 characters.',
+                                        'No results....',
                                         subtext: true,
                                       ));
-                                    } else {
-                                      // Handle data
-                                      // Always show names list if it is not empty
-                                      if (workoutPlanNamesSnapshot
-                                          .data!.isNotEmpty) {
-                                        return FadeIn(
-                                          child: WorkoutFinderTextResultsNames(
-                                            results:
-                                                workoutPlanNamesSnapshot.data!,
-                                            searchString: _searchString,
-                                            searchWorkoutPlanName:
-                                                _handleSearchSubmit,
-                                          ),
-                                        );
-                                      } else if (workoutPlansSnapshot
-                                          .data!.isNotEmpty) {
-                                        // Or show workouts list if not empty.
-                                        return FadeIn(
-                                          child: YourFilteredWorkoutPlansList(
-                                            selectWorkoutPlan:
-                                                widget.selectWorkoutPlan,
-                                            workoutPlans:
-                                                workoutPlansSnapshot.data!,
-                                          ),
-                                        );
-                                      } else {
-                                        // Or show empty results message.
-                                        return Center(
-                                            child: MyText(
-                                          'No results....',
-                                          subtext: true,
-                                        ));
-                                      }
                                     }
-                                  });
-                            });
-                      })
-                  : Center(
-                      child: MyText(
-                      'Enter at least 3 characters.',
-                      subtext: true,
-                    )),
-            ],
-          )),
-        ]),
-      ),
+                                  }
+                                });
+                          });
+                    })
+                : Center(
+                    child: MyText(
+                    'Enter at least 3 characters.',
+                    subtext: true,
+                  )),
+          ],
+        )),
+      ]),
     );
   }
 }

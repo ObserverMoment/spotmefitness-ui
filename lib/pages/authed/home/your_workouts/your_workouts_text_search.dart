@@ -64,11 +64,12 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
               builder: (savedWorkoutsData) {
                 final collections = savedWorkoutsData.userCollections;
 
+                /// Cast to Set: There can be duplicate workouts if the user has the same workout in multiple collections, and if they have added their own created workouts to one or more collections.
                 final allWorkouts = [
                   ...createdWorkoutsData.userWorkouts,
                   ...collections.fold<List<Workout>>(
                       [], (acum, next) => [...acum, ...next.workouts])
-                ];
+                ].toSet().toList();
 
                 final List<Workout> filteredWorkouts = _searchString.length < 3
                     ? <Workout>[]
@@ -77,43 +78,42 @@ class _YourWorkoutsTextSearchState extends State<YourWorkoutsTextSearch> {
                         .sortedBy<String>((workout) => workout.name);
 
                 return MyPageScaffold(
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 3.0),
-                                child: CupertinoSearchTextField(
-                                  placeholder: 'Search your workouts',
-                                  focusNode: _focusNode,
-                                  onChanged: (value) => setState(() =>
-                                      _searchString = value.toLowerCase()),
-                                ),
-                              ),
+                  navigationBar: MyNavBar(
+                    withoutLeading: true,
+                    middle: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: CupertinoSearchTextField(
+                        placeholder: 'Search your workouts',
+                        focusNode: _focusNode,
+                        onChanged: (value) =>
+                            setState(() => _searchString = value.toLowerCase()),
+                      ),
+                    ),
+                    trailing: NavBarTextButton(context.pop, 'Close'),
+                  ),
+                  child: AnimatedSwitcher(
+                    duration: kStandardAnimationDuration,
+                    child: _searchString.length < 3
+                        ? Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MyText('Type at least 3 characters',
+                                    subtext: true),
+                              ],
                             ),
-                            SizedBox(width: 10),
-                            NavBarTextButton(context.pop, 'Close'),
-                          ],
-                        ),
-                        Expanded(
-                            child: AnimatedSwitcher(
-                          duration: kStandardAnimationDuration,
-                          child: _searchString.length < 3
-                              ? Padding(
-                                  padding: const EdgeInsets.all(24),
-                                  child: MyText('Type at least 3 characters',
-                                      subtext: true),
-                                )
-                              : YourWorkoutsList(
+                          )
+                        : Column(
+                            children: [
+                              Expanded(
+                                child: YourWorkoutsList(
                                   selectWorkout: _handleSelectWorkout,
                                   workouts: filteredWorkouts,
                                 ),
-                        )),
-                      ],
-                    ),
+                              ),
+                            ],
+                          ),
                   ),
                 );
               });

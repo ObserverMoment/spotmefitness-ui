@@ -139,8 +139,8 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
             SizedBox(height: 24),
             DifficultyLevelSelectorRow(
               difficultyLevel: difficultyLevel,
-              updateDifficultyLevel: (difficultyLevel) => _updateFilters(
-                  {'difficultyLevel': difficultyLevel?.apiValue}),
+              updateDifficultyLevel: (difficultyLevel) =>
+                  _updateFilters({'difficultyLevel': difficultyLevel.apiValue}),
             ),
             SizedBox(height: 24),
             WorkoutGoalsSelectorRow(

@@ -1,19 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_media.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_meta.dart';
-import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_creator_structure.dart';
-import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/future_builder_handler.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/content_access_scope_selector.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/difficulty_level_selector.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 class WorkoutCreatorPage extends StatefulWidget {
   /// For use when editing or duplicating a workout.
@@ -25,126 +27,170 @@ class WorkoutCreatorPage extends StatefulWidget {
 }
 
 class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
-  int _activeTabIndex = 0;
-  final PageController _pageController = PageController();
-  late bool _isCreate;
-
-  /// https://stackoverflow.com/questions/57793479/flutter-futurebuilder-gets-constantly-called
-  late Future<Workout> _initWorkoutFuture;
+  WorkoutCreatorBloc? _bloc;
 
   @override
   void initState() {
     super.initState();
-    _isCreate = widget.workout == null;
-    _initWorkoutFuture = WorkoutCreatorBloc.initialize(context, widget.workout);
-  }
-
-  void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
-    Utils.hideKeyboard(context);
-    setState(() => _activeTabIndex = index);
-  }
-
-  void _saveAndClose(BuildContext context) {
-    final success = context.read<WorkoutCreatorBloc>().saveAllChanges();
-    if (success) {
-      context.pop();
-    } else {
-      context.showErrorAlert(
-          'Sorry there was a problem updating, please try again.');
+    if (widget.workout != null) {
+      _initBloc(widget.workout!);
     }
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  /// Create a bare bones workout in the DB and add it to the store.
+  Future<void> _createWorkout(CreateWorkoutInput input) async {
+    final result = await context.graphQLStore
+        .create<CreateWorkout$Mutation, CreateWorkoutArguments>(
+            mutation: CreateWorkoutMutation(
+                variables: CreateWorkoutArguments(data: input)),
+            addRefToQueries: [GQLOpNames.userWorkoutsQuery]);
+
+    await checkOperationResult(context, result, onSuccess: () {
+      // Only the [UserSummary] sub field is returned by the create resolver.
+      // Add these fields manually to avoid [fromJson] throwing an error.
+      _initBloc(Workout.fromJson({
+        ...result.data!.createWorkout.toJson(),
+        'WorkoutSections': [],
+        'WorkoutGoals': [],
+        'WorkoutTags': []
+      }));
+    });
+  }
+
+  void _initBloc(Workout workout) {
+    setState(() => _bloc = WorkoutCreatorBloc(context, workout));
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilderHandler<Workout>(
-        loadingWidget: ShimmerDetailsPage(
-          title: 'Getting ready...',
+    return AnimatedSwitcher(
+        duration: kStandardAnimationDuration,
+        child: _bloc != null
+            ? MainUI(bloc: _bloc!)
+            : PreCreateUI(
+                createWorkout: _createWorkout,
+              ));
+  }
+}
+
+/// Allows user to enter the basic info required to create a workout in the DB.
+/// They can also abort here if they want and no workout will be created in the DB.
+class PreCreateUI extends StatefulWidget {
+  final void Function(CreateWorkoutInput input) createWorkout;
+  const PreCreateUI({Key? key, required this.createWorkout}) : super(key: key);
+
+  @override
+  _PreCreateUIState createState() => _PreCreateUIState();
+}
+
+class _PreCreateUIState extends State<PreCreateUI> {
+  late CreateWorkoutInput _createWorkoutInput;
+
+  @override
+  void initState() {
+    super.initState();
+    _createWorkoutInput = CreateWorkoutInput(
+        name: 'Workout ${DateTime.now().dateString}',
+        difficultyLevel: DifficultyLevel.challenging,
+        contentAccessScope: ContentAccessScope.private);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MyPageScaffold(
+      navigationBar: MyNavBar(
+        customLeading: NavBarCancelButton(context.pop),
+        middle: NavBarTitle('New Workout'),
+        trailing: NavBarSaveButton(
+            () => widget.createWorkout(_createWorkoutInput),
+            text: 'Create'),
+      ),
+      child: ListView(children: [
+        EditableTextFieldRow(
+          title: 'Name',
+          text: _createWorkoutInput.name,
+          onSave: (t) => setState(() => _createWorkoutInput.name = t),
+          inputValidation: (t) => t.length > 2 && t.length <= 50,
+          maxChars: 50,
+          validationMessage: 'Required. Min 3 chars. max 50',
         ),
-        future: _initWorkoutFuture,
-        builder: (initialWorkout) => ChangeNotifierProvider(
-              create: (context) => WorkoutCreatorBloc(
-                  initialWorkout: initialWorkout,
-                  context: context,
-                  isCreate: _isCreate),
-              builder: (context, child) {
-                final bool formIsDirty =
-                    context.select<WorkoutCreatorBloc, bool>(
-                        (bloc) => bloc.formIsDirty);
+        DifficultyLevelSelectorRow(
+          difficultyLevel: _createWorkoutInput.difficultyLevel,
+          updateDifficultyLevel: (level) =>
+              setState(() => _createWorkoutInput.difficultyLevel = level),
+        ),
+        ContentAccessScopeSelector(
+            contentAccessScope: _createWorkoutInput.contentAccessScope,
+            updateContentAccessScope: (scope) =>
+                setState(() => _createWorkoutInput.contentAccessScope = scope)),
+      ]),
+    );
+  }
+}
 
-                final bool uploadingMedia = context
-                    .select<WorkoutCreatorBloc, bool>((b) => b.uploadingMedia);
+/// Edit workout UI. We land here if the user is editing an existing workout or after they have just created a new workout and have submitted required fields.
+class MainUI extends StatefulWidget {
+  final WorkoutCreatorBloc bloc;
+  const MainUI({Key? key, required this.bloc}) : super(key: key);
 
-                final String name = context.select<WorkoutCreatorBloc, String>(
-                    (bloc) => bloc.workout.name);
+  @override
+  _MainUIState createState() => _MainUIState();
+}
 
-                return MyPageScaffold(
-                  navigationBar: CreateEditPageNavBar(
-                    handleClose: context.pop,
-                    handleSave: () => _saveAndClose(context),
-                    saveText: 'Done',
+class _MainUIState extends State<MainUI> {
+  int _activeTabIndex = 0;
 
-                    /// You always need to run the bloc.saveAllUpdates fn when creating.
-                    /// i.e when [widget.workout == null]
-                    formIsDirty: widget.workout == null || formIsDirty,
+  void _saveAndClose() {
+    final success = widget.bloc.saveAllChanges();
 
-                    /// Disable save / done while media is uploading.
-                    inputValid: !uploadingMedia && name.length >= 3,
-                    title:
-                        widget.workout == null ? 'New Workout' : 'Edit Workout',
-                  ),
-                  child: Column(
-                    children: [
-                      if (uploadingMedia)
-                        FadeIn(
-                          child: Container(
-                              height: 30,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  MyText('Uploading media, please wait...'),
-                                  SizedBox(width: 8),
-                                  LoadingDots(
-                                    size: 12,
-                                  )
-                                ],
-                              )),
-                        )
-                      else
-                        FadeIn(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 4, bottom: 6),
-                            child: MyTabBarNav(
-                                titles: ['Meta', 'Structure', 'Media'],
-                                handleTabChange: _changeTab,
-                                activeTabIndex: _activeTabIndex),
-                          ),
-                        ),
-                      Expanded(
-                          child: PageView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _pageController,
-                        onPageChanged: _changeTab,
-                        children: [
-                          WorkoutCreatorMeta(),
-                          WorkoutCreatorStructure(),
-                          WorkoutCreatorMedia(),
-                        ],
-                      )),
-                    ],
-                  ),
-                );
-              },
-            ));
+    if (success) {
+      context.pop();
+    } else {
+      context.showConfirmDialog(
+          title: 'Oh dear..!',
+          content: MyText('Sorry, there was an issue saving!'),
+          confirmText: 'Leave without saving',
+          cancelText: 'Go back and try again',
+          onConfirm: context.pop);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<WorkoutCreatorBloc>.value(
+      value: widget.bloc,
+      child: MyPageScaffold(
+        navigationBar: MyNavBar(
+          withoutLeading: true,
+          middle: LeadingNavBarTitle(
+            'Workout',
+            fontSize: FONTSIZE.MAIN,
+          ),
+          trailing: NavBarSaveButton(
+            _saveAndClose,
+            text: 'Done',
+          ),
+        ),
+        child: Column(
+          children: [
+            MyTabBarNav(
+                titles: ['Meta', 'Structure', 'Media'],
+                handleTabChange: (i) => setState(() => _activeTabIndex = i),
+                activeTabIndex: _activeTabIndex),
+            Expanded(
+              child: IndexedStack(
+                index: _activeTabIndex,
+                sizing: StackFit.expand,
+                children: [
+                  WorkoutCreatorMeta(),
+                  MyText('Structure'),
+                  WorkoutCreatorMedia()
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

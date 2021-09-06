@@ -37,51 +37,43 @@ class EditableTextFieldRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool hasText = Utils.textNotNull(text);
-    return CupertinoButton(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-      onPressed: () => context.push(
-          child: FullScreenTextEditing(
-        title: title,
-        inputValidation: inputValidation,
-        validationMessage: validationMessage,
-        initialValue: text,
-        onSave: onSave,
-        maxChars: maxChars,
-        maxInputLines: maxInputLines,
-      )),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 24.0),
-            child: Row(
-              children: [
-                MyText(
-                  title,
-                ),
-                if (isRequired == true) RequiredSuperText()
-              ],
-            ),
-          ),
-          Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Expanded(
-                child: ContentBox(
-                  child: MyText(
-                    hasText ? text : placeholder,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: hasText ? TextAlign.center : TextAlign.end,
-                    subtext: !hasText,
+    return UserInputContainer(
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => context.push(
+            child: FullScreenTextEditing(
+          title: title,
+          inputValidation: inputValidation,
+          validationMessage: validationMessage,
+          initialValue: text,
+          onSave: onSave,
+          maxChars: maxChars,
+          maxInputLines: maxInputLines,
+        )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 24.0),
+              child: Row(
+                children: [
+                  MyText(
+                    title,
                   ),
-                ),
+                  if (isRequired == true) RequiredSuperText()
+                ],
               ),
-              SizedBox(
-                width: 8,
+            ),
+            Expanded(
+              child: MyText(
+                hasText ? text : placeholder,
+                overflow: TextOverflow.ellipsis,
+                subtext: !hasText,
+                textAlign: TextAlign.end,
               ),
-              Icon(CupertinoIcons.pencil, size: 18),
-            ]),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -102,36 +94,38 @@ class EditableTextAreaRow extends StatelessWidget {
   EditableTextAreaRow(
       {required this.title,
       this.text = '',
-      this.placeholder = 'add...',
+      this.placeholder = '...',
       required this.onSave,
       required this.inputValidation,
       this.validationMessage,
       this.maxChars,
       this.maxInputLines,
-      this.maxDisplayLines,
+      this.maxDisplayLines = 4,
       this.isRequired = false});
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      onPressed: () => context.push(
-          child: FullScreenTextEditing(
-        title: title,
-        inputValidation: inputValidation,
-        validationMessage: validationMessage,
-        initialValue: text,
-        onSave: onSave,
-        maxChars: maxChars,
-        maxInputLines: maxInputLines,
-      )),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+    final bool hasText = Utils.textNotNull(text);
+    return UserInputContainer(
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: () => context.push(
+            child: FullScreenTextEditing(
+          title: title,
+          inputValidation: inputValidation,
+          validationMessage: validationMessage,
+          initialValue: text,
+          onSave: onSave,
+          maxChars: maxChars,
+          maxInputLines: maxInputLines,
+        )),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 24.0),
+              child: Row(
                 children: [
                   MyText(
                     title,
@@ -139,36 +133,18 @@ class EditableTextAreaRow extends StatelessWidget {
                   if (isRequired == true) RequiredSuperText()
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!Utils.textNotNull(text))
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: MyText(
-                        placeholder,
-                        subtext: true,
-                      ),
-                    ),
-                  Icon(CupertinoIcons.pencil, size: 18),
-                ],
-              ),
-            ],
-          ),
-          if (Utils.textNotNull(text))
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: ContentBox(
-                child: MyText(
-                  text,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  maxLines: maxDisplayLines,
-                  lineHeight: 1.4,
-                ),
+            ),
+            Expanded(
+              child: MyText(
+                hasText ? text : placeholder,
+                overflow: TextOverflow.ellipsis,
+                subtext: !hasText,
+                maxLines: maxDisplayLines,
+                textAlign: TextAlign.end,
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }

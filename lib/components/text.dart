@@ -240,6 +240,30 @@ class NavBarTitle extends StatelessWidget {
   }
 }
 
+/// For when we want the title to be on the left of the nav bar and an action button on the right.
+/// E.g. Selecting from a list before popping.
+class LeadingNavBarTitle extends StatelessWidget {
+  final String text;
+  final FONTSIZE fontSize;
+  LeadingNavBarTitle(this.text, {this.fontSize = FONTSIZE.MAIN});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          MyHeaderText(
+            text.toUpperCase(),
+            size: fontSize,
+            weight: FontWeight.bold,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Displays '(required)' in super text pos and style. For inputs.
 class RequiredSuperText extends StatelessWidget {
   @override

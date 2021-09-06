@@ -156,14 +156,17 @@ extension DurationExtension on Duration {
   }
 
   String get displayString {
-    final int minutes = this.inMinutes;
+    final int hours = this.inHours;
+    final int minutes = this.inMinutes - (hours * 60);
     final int seconds = this.inSeconds.remainder(60);
+    final String hourString = hours != 0 ? '$hours hr' : "";
     final String minuteString = minutes != 0 ? '$minutes min' : "";
     final String secondsString = seconds != 0 ? '$seconds sec' : "";
 
-    final spaceNeeded = minutes != 0 && seconds != 0;
+    final hourSpace = hours != 0 && minutes != 0 ? ' ' : '';
+    final minuteSpace = minutes != 0 && seconds != 0 ? ' ' : '';
 
-    return '$minuteString${spaceNeeded ? " " : ""}$secondsString';
+    return '$hourString$hourSpace$minuteString$minuteSpace$secondsString';
   }
 
   Duration clamp(Duration lower, Duration upper) {

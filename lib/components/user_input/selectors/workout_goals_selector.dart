@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/tappable_row.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -27,32 +26,73 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TappableRow(
-        title: 'Goals',
-        display: selectedWorkoutGoals.isEmpty
-            ? MyText(
-                max != null ? 'Add goals (max $max)...' : 'Add goals...',
-                subtext: true,
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: Wrap(
-                      alignment: WrapAlignment.end,
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: selectedWorkoutGoals
-                          .map((g) => Tag(tag: g.name))
-                          .toList(),
-                    )),
+    return UserInputContainer(
+        child: CupertinoButton(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      onPressed: () => context.push(
+          child: WorkoutGoalsSelector(
+        selectedWorkoutGoals: selectedWorkoutGoals,
+        updateSelectedWorkoutGoals: updateSelectedWorkoutGoals,
+        max: max,
+      )),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  MyText(
+                    'Goals',
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Icon(
+                    CupertinoIcons.scope,
+                    size: 18,
+                  ),
+                ],
               ),
-        onTap: () => context.push(
-                child: WorkoutGoalsSelector(
-              selectedWorkoutGoals: selectedWorkoutGoals,
-              updateSelectedWorkoutGoals: updateSelectedWorkoutGoals,
-              max: max,
-            )));
+              Row(
+                children: [
+                  MyText(
+                    selectedWorkoutGoals.isEmpty ? 'Add' : 'Edit',
+                    textAlign: TextAlign.end,
+                  ),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Icon(
+                    selectedWorkoutGoals.isEmpty
+                        ? CupertinoIcons.add
+                        : CupertinoIcons.pencil,
+                    size: 18,
+                  )
+                ],
+              )
+            ],
+          ),
+          GrowInOut(
+              show: selectedWorkoutGoals.isNotEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 2),
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: selectedWorkoutGoals
+                      .map((g) => Tag(
+                            tag: g.name,
+                            color: Styles.colorOne,
+                            textColor: Styles.white,
+                          ))
+                      .toList(),
+                ),
+              ))
+        ],
+      ),
+    ));
   }
 }
 
@@ -92,16 +132,20 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
       navigationBar: MyNavBar(
-        customLeading: CupertinoButton(
+        withoutLeading: true,
+        trailing: CupertinoButton(
             padding: EdgeInsets.zero,
             child: MyText(
               'Done',
               weight: FontWeight.bold,
             ),
             onPressed: () => Navigator.pop(context)),
-        middle: NavBarTitle('Workout Goals'),
+        middle: LeadingNavBarTitle(
+          'Workout Goals',
+          fontSize: FONTSIZE.MAIN,
+        ),
       ),
       child: QueryObserver<WorkoutGoals$Query, json.JsonSerializable>(
           key: Key(
@@ -110,7 +154,7 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
           fetchPolicy: QueryFetchPolicy.storeFirst,
           builder: (data) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Column(
                 children: [
                   if (widget.max != null)
@@ -118,11 +162,10 @@ class _WorkoutGoalsSelectorState extends State<WorkoutGoalsSelector> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         MyText(
-                          'Select up to ${widget.max!} goals',
-                          color: Styles.infoBlue,
+                          'Select up to ${widget.max!} goals - ',
                         ),
                         MyText(
-                          ' - ${_activeSelectedWorkoutGoals.length} selected',
+                          '${_activeSelectedWorkoutGoals.length} selected',
                           color: Styles.colorTwo,
                         ),
                       ],

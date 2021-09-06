@@ -435,7 +435,9 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                             runSpacing: 5,
                                             children: [
                                               DifficultyLevelTag(
-                                                  workout.difficultyLevel),
+                                                workout.difficultyLevel,
+                                                fontSize: FONTSIZE.TINY,
+                                              ),
                                               ...workout.workoutGoals
                                                   .map((g) => Tag(tag: g.name)),
                                               ...workout.workoutTags
@@ -450,7 +452,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                         if (Utils.textNotNull(
                                             workout.description))
                                           Padding(
-                                            padding: const EdgeInsets.all(12.0),
+                                            padding: const EdgeInsets.all(8.0),
                                             child: MyText(
                                               workout.description!,
                                               maxLines: 10,
@@ -508,10 +510,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                 if (workout.workoutSections.length > 1)
                                   Padding(
                                       padding: const EdgeInsets.only(
-                                          top: 16,
-                                          bottom: 8,
-                                          left: 8,
-                                          right: 8),
+                                          top: 8, bottom: 8, left: 8, right: 8),
                                       child: MyTabBarNav(
                                           titles: _sectionTitles(
                                               sortedWorkoutSections),
@@ -524,22 +523,18 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                         workout.workoutSections[0].name))
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 12, bottom: 8),
+                                        top: 6, bottom: 8),
                                     child: UnderlineTitle(
                                         workout.workoutSections[0].name!),
                                   ),
                                 if (sortedWorkoutSections.isNotEmpty)
                                   Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 10.0),
-                                      child: PageView(
-                                        controller: _pageController,
-                                        children: sortedWorkoutSections
-                                            .map((ws) => SingleChildScrollView(
-                                                child:
-                                                    WorkoutDetailsSection(ws)))
-                                            .toList(),
-                                      ),
+                                    child: PageView(
+                                      controller: _pageController,
+                                      children: sortedWorkoutSections
+                                          .map((ws) => SingleChildScrollView(
+                                              child: WorkoutDetailsSection(ws)))
+                                          .toList(),
                                     ),
                                   ),
                               ],

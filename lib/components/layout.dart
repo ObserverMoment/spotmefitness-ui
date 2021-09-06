@@ -83,6 +83,23 @@ class CircularBox extends StatelessWidget {
   }
 }
 
+/// Handles padding and adds a faint line separator on the bottom of the container.
+class UserInputContainer extends StatelessWidget {
+  final Widget child;
+  const UserInputContainer({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: BoxDecoration(
+          border:
+              Border(bottom: BorderSide(color: context.theme.cardBackground))),
+      child: child,
+    );
+  }
+}
+
 class HorizontalLine extends StatelessWidget {
   final double thickness;
   final Color? color;

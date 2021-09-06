@@ -72,7 +72,8 @@ class WorkoutCard extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+                topLeft: Radius.circular(kCardBorderRadiusValue),
+                topRight: Radius.circular(kCardBorderRadiusValue)),
             child: SizedBox(
                 height: 130,
                 child: Stack(
@@ -105,19 +106,12 @@ class WorkoutCard extends StatelessWidget {
                                 if (workout.lengthMinutes != null)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 5.0),
-                                    child: Card(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 3),
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 4.0),
-                                        child: Duration(
+                                    child: Tag(
+                                        color: context.theme.background,
+                                        textColor: context.theme.primary,
+                                        tag: Duration(
                                                 minutes: workout.lengthMinutes!)
-                                            .display(
-                                                fontSize: FONTSIZE.SMALL,
-                                                bold: true),
-                                      ),
-                                    ),
+                                            .displayString),
                                   ),
                               ],
                             ),

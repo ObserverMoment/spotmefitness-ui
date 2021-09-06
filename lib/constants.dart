@@ -19,11 +19,17 @@ const kAssumedFloatingButtonHeight = 68.0;
 const kDockedAudioPlayerHeight = 64.0;
 const kMiniButtonIconSize = 24.0;
 const kWorkoutMoveListItemHeight = 65.0;
+
 const kDefaultTagHeight = 28.0;
 const kDefaultTagPadding =
     const EdgeInsets.symmetric(horizontal: 11, vertical: 6);
+
 const kFullScreenImageViewerHeroTag = 'FullScreenImageViewerHeroTag';
-final kStandardCardBorderRadius = BorderRadius.circular(8);
+
+const kStandardCardPadding =
+    const EdgeInsets.symmetric(vertical: 8, horizontal: 12);
+const kCardBorderRadiusValue = 8.0;
+final kStandardCardBorderRadius = BorderRadius.circular(kCardBorderRadiusValue);
 
 const kStandardAnimationDuration = const Duration(milliseconds: 250);
 

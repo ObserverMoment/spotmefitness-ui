@@ -119,8 +119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 _spacer(),
                 MyText('ACCOUNT', color: _headingColor),
                 _spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                UserInputContainer(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -166,14 +165,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   onPress: () => context.push(
                       child: WorkoutTagsManager(allowCreateTagOnly: false)),
                 ),
-                _spacer(),
                 PageLink(
                   linkText: 'Journal Goal Tags',
                   onPress: () => context.push(
                       child: ProgressJournalGoalTagsManager(
                           allowCreateTagOnly: false)),
                 ),
-                _spacer(),
                 PageLink(
                   linkText: 'Personal Best Tags',
                   onPress: () => context.push(
