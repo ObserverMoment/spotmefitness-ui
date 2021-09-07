@@ -1,34 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
-import 'package:spotmefitness_ui/blocs/workout_creator_bloc_archived.dart';
+import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
-import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_set_definition.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
-import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
-import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-/// For [EMOM], [Last Standing]
+/// For [Free Session], [AMRAP]
 /// Displays a workout set with user interactions such as
 /// [delete workoutMove], [addWorkoutMove (create superset)], [reorderWorkoutMove] etc.
-class WorkoutEMOMSetCreator extends StatefulWidget {
+class WorkoutSetCreator extends StatefulWidget {
   final Key key;
   final int sectionIndex;
   final int setIndex;
   final bool scrollable;
   final bool allowReorder;
-  WorkoutEMOMSetCreator({
+  WorkoutSetCreator({
     required this.key,
     required this.sectionIndex,
     required this.setIndex,
@@ -37,21 +33,30 @@ class WorkoutEMOMSetCreator extends StatefulWidget {
   });
 
   @override
-  _WorkoutEMOMSetCreatorState createState() => _WorkoutEMOMSetCreatorState();
+  _WorkoutSetCreatorState createState() => _WorkoutSetCreatorState();
 }
 
-class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
+class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
   late List<WorkoutMove> _sortedWorkoutMoves;
   late WorkoutSet _workoutSet;
   late WorkoutCreatorBloc _bloc;
   late bool _showFullSetInfo;
+  late WorkoutSectionType _workoutSectionType;
   bool _shouldRebuild = false;
 
   void _checkForNewData() {
+    if (_workoutSectionType !=
+        _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType) {
+      _workoutSectionType =
+          _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType;
+      _shouldRebuild = true;
+    }
+
     if (_showFullSetInfo != _bloc.showFullSetInfo) {
       _showFullSetInfo = _bloc.showFullSetInfo;
       _shouldRebuild = true;
     }
+
     // Check that the set has not been deleted. Without this the below updates with throw an invalid index error every time a set is deleted.
     if (_bloc.workout.workoutSections[widget.sectionIndex].workoutSets.length >
         widget.setIndex) {
@@ -83,6 +88,9 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
     _bloc = context.read<WorkoutCreatorBloc>();
 
     _showFullSetInfo = _bloc.showFullSetInfo;
+
+    _workoutSectionType =
+        _bloc.workout.workoutSections[widget.sectionIndex].workoutSectionType;
 
     _workoutSet = WorkoutSet.fromJson(_bloc.workout
         .workoutSections[widget.sectionIndex].workoutSets[widget.setIndex]
@@ -118,55 +126,46 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
   }
 
   void _openAddWorkoutMoveToSet() {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => WorkoutMoveCreator(
-          pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
-          saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
-              widget.sectionIndex, widget.setIndex, workoutMove),
-          workoutMoveIndex: _sortedWorkoutMoves.length,
-        ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   CupertinoPageRoute(
+    //     builder: (context) => WorkoutMoveCreator(
+    //       pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
+    //       saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
+    //           widget.sectionIndex, widget.setIndex, workoutMove),
+    //       workoutMoveIndex: _sortedWorkoutMoves.length,
+    //     ),
+    //   ),
+    // );
   }
 
   void _openEditWorkoutMove(WorkoutMove workoutMove) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => WorkoutMoveCreator(
-          workoutMove: workoutMove,
-          pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
-          saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
-              widget.sectionIndex, widget.setIndex, workoutMove),
-          workoutMoveIndex: workoutMove.sortPosition,
-        ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   CupertinoPageRoute(
+    //     builder: (context) => WorkoutMoveCreator(
+    //       workoutMove: workoutMove,
+    //       pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
+    //       saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
+    //           widget.sectionIndex, widget.setIndex, workoutMove),
+    //       workoutMoveIndex: workoutMove.sortPosition,
+    //     ),
+    //   ),
+    // );
   }
 
   void _deleteWorkoutMove(int workoutMoveIndex) {
-    _bloc.deleteWorkoutMove(
-        widget.sectionIndex, widget.setIndex, workoutMoveIndex);
+    // _bloc.deleteWorkoutMove(
+    //     widget.sectionIndex, widget.setIndex, workoutMoveIndex);
   }
 
   void _duplicateWorkoutMove(int workoutMoveIndex) {
-    _bloc.duplicateWorkoutMove(
-        widget.sectionIndex, widget.setIndex, workoutMoveIndex);
+    // _bloc.duplicateWorkoutMove(
+    //     widget.sectionIndex, widget.setIndex, workoutMoveIndex);
   }
 
   void _reorderWorkoutMoves(int from, int to) {
-    _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
-  }
-
-  String _buildPeriodTimeText() {
-    if (_workoutSet.duration == null) {
-      throw Exception(
-          '_workoutSet.duration should be set when a new period (workoutSet) is created. It should never be null at this point.');
-    } else {
-      return _workoutSet.duration!.secondsToTimeDisplay();
-    }
+    // _bloc.reorderWorkoutMoves(widget.sectionIndex, widget.setIndex, from, to);
   }
 
   @override
@@ -188,33 +187,23 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    BorderButton(
-                        mini: true,
-                        text:
-                            'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
-                        onPressed: () => context.showBottomSheet<int>(
-                                child: NumberInputModalInt(
-                              value: _workoutSet.rounds,
-                              saveValue: (r) => context
-                                  .read<WorkoutCreatorBloc>()
-                                  .editWorkoutSet(widget.sectionIndex,
-                                      widget.setIndex, {'rounds': r}),
-                              title: 'How many repeats?',
-                            ))),
-                    MyText(' within '),
-                    BorderButton(
-                        mini: true,
-                        text: _buildPeriodTimeText(),
-                        onPressed: () => context.showBottomSheet(
-                            child: DurationPicker(
-                                duration:
-                                    Duration(seconds: _workoutSet.duration!),
-                                updateDuration: (duration) => context
-                                    .read<WorkoutCreatorBloc>()
-                                    .editWorkoutSet(
-                                        widget.sectionIndex,
-                                        widget.setIndex,
-                                        {'duration': duration.inSeconds})))),
+                    /// Assumes that allowReorder is based on their being more than one set.
+                    // if (widget.allowReorder ||
+                    //     _workoutSectionType.name != kAMRAPName)
+                    //   BorderButton(
+                    //       mini: true,
+                    //       text:
+                    //           'Repeat ${_workoutSet.rounds} ${_workoutSet.rounds == 1 ? "time" : "times"}',
+                    //       onPressed: () => context.showBottomSheet<int>(
+                    //               child: NumberInputModalInt(
+                    //             value: _workoutSet.rounds,
+                    //             saveValue: (r) => context
+                    //                 .read<WorkoutCreatorBloc>()
+                    //                 .editWorkoutSet(widget.sectionIndex,
+                    //                     widget.setIndex, {'rounds': r}),
+                    //             title: 'How many repeats?',
+                    //           ))),
+                    WorkoutSetDefinition(_workoutSet)
                   ],
                 ),
                 NavBarEllipsisMenu(ellipsisCircled: false, items: [

@@ -930,7 +930,7 @@ WorkoutSection _$WorkoutSectionFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String?
     ..note = json['note'] as String?
     ..rounds = json['rounds'] as int
-    ..timecap = json['timecap'] as int?
+    ..timecap = json['timecap'] as int
     ..sortPosition = json['sortPosition'] as int
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?
@@ -4876,7 +4876,7 @@ UpdateWorkoutSection _$UpdateWorkoutSectionFromJson(Map<String, dynamic> json) {
     ..name = json['name'] as String?
     ..note = json['note'] as String?
     ..rounds = json['rounds'] as int
-    ..timecap = json['timecap'] as int?
+    ..timecap = json['timecap'] as int
     ..sortPosition = json['sortPosition'] as int
     ..introVideoUri = json['introVideoUri'] as String?
     ..introVideoThumbUri = json['introVideoThumbUri'] as String?

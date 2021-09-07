@@ -16,26 +16,23 @@ class ConfirmCheckIcon extends StatelessWidget {
 
 class CompactTimerIcon extends StatelessWidget {
   final Duration? duration;
-  final Axis? alignment;
-  CompactTimerIcon(this.duration, {this.alignment = Axis.horizontal});
+  CompactTimerIcon(this.duration);
 
   List<Widget> _buildChildren() => [
         Icon(CupertinoIcons.timer),
-        alignment == Axis.vertical ? SizedBox(height: 4) : SizedBox(width: 4),
-        MyText(duration?.compactDisplay() ?? '---')
+        SizedBox(width: 8),
+        MyText(
+          duration?.displayString ?? '---',
+          size: FONTSIZE.LARGE,
+        )
       ];
 
   @override
   Widget build(BuildContext context) {
-    return alignment == Axis.horizontal
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildChildren(),
-          )
-        : Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildChildren(),
-          );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: _buildChildren(),
+    );
   }
 }
 
@@ -45,27 +42,24 @@ class NumberRoundsIcon extends StatelessWidget {
   NumberRoundsIcon(this.rounds, {this.alignment = Axis.horizontal});
 
   List<Widget> _buildChildren() => [
-        Icon(CupertinoIcons.arrow_2_circlepath),
+        MyText(
+          '$rounds',
+          size: FONTSIZE.HUGE,
+        ),
         SizedBox(
           width: 6,
         ),
         MyText(
-          '$rounds',
-          size: FONTSIZE.BIG,
-        )
+          'rounds',
+        ),
       ];
 
   @override
   Widget build(BuildContext context) {
-    return alignment == Axis.horizontal
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildChildren(),
-          )
-        : Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildChildren(),
-          );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: _buildChildren(),
+    );
   }
 }
 

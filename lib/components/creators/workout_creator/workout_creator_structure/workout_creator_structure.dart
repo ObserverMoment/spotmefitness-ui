@@ -5,9 +5,9 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/add_workout_section.dart';
-import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_creator.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
+import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
@@ -18,8 +18,8 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 class WorkoutCreatorStructure extends StatefulWidget {
   @override
@@ -58,10 +58,8 @@ class _WorkoutCreatorStructureState extends State<WorkoutCreatorStructure> {
     await context.push(
         fullscreenDialog: true,
         child: AddWorkoutSection(
-          createWorkoutSection:
-              (CreateWorkoutSectionInput createWorkoutSectionInput) {
-            print(createWorkoutSectionInput);
-          },
+          sortPosition: _sortedworkoutSections.length,
+          addWorkoutSection: _bloc.createWorkoutSection,
         ));
 
     // final nextIndex = _sortedworkoutSections.length;
@@ -193,142 +191,140 @@ class WorkoutStructureWorkoutSection extends StatelessWidget {
   }
 
   void _updateSection(BuildContext context, Map<String, dynamic> data) {
-    // context
-    //     .read<WorkoutCreatorBloc>()
-    //     .updateWorkoutSection(workoutSection.sortPosition, data);
+    context
+        .read<WorkoutCreatorBloc>()
+        .updateWorkoutSection(workoutSection.sortPosition, data);
   }
 
   void _deleteWorkoutSection(BuildContext context) {
-    // context.showConfirmDeleteDialog(
-    //     itemType: 'Section',
-    //     onConfirm: () =>
-    //         context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
+    context.showConfirmDeleteDialog(
+        itemType: 'Section',
+        onConfirm: () =>
+            context.read<WorkoutCreatorBloc>().deleteWorkoutSection(index));
   }
 
   void _moveWorkoutSectionUpOne(BuildContext context) {
-    // context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index - 1);
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index - 1);
   }
 
   void _moveWorkoutSectionDownOne(BuildContext context) {
-    // context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index + 1);
+    context.read<WorkoutCreatorBloc>().reorderWorkoutSections(index, index + 1);
   }
 
   @override
   Widget build(BuildContext context) {
     final data = _getMovesAndEquipments();
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Card(
         child: Column(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Styles.colorOne,
-                        ),
-                        child: MyText(
-                          '${workoutSection.sortPosition + 1}',
-                          color: Styles.white,
-                          size: FONTSIZE.SMALL,
-                        )),
-                    Expanded(
-                      child: MyText(
-                        Utils.textNotNull(workoutSection.name)
-                            ? workoutSection.name!
-                            : 'Section ${workoutSection.sortPosition + 1}',
-                      ),
+                Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Styles.colorOne,
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        NavBarEllipsisMenu(ellipsisCircled: false, items: [
-                          ContextMenuItem(
-                            text: Utils.textNotNull(workoutSection.name)
-                                ? 'Edit name'
-                                : 'Add name',
-                            iconData: CupertinoIcons.pencil,
-                            onTap: () => context.push(
-                                child: FullScreenTextEditing(
-                              title: 'Name',
-                              inputValidation: (t) =>
-                                  t.length > 0 && t.length <= 40,
-                              maxChars: 30,
-                              validationMessage: 'Max 30 chars',
-                              initialValue: workoutSection.name,
-                              onSave: (text) =>
-                                  _updateSection(context, {'name': text}),
-                            )),
-                          ),
-                          if (canReorder)
-                            ContextMenuItem(
-                              text: 'Move up',
-                              onTap: () => _moveWorkoutSectionUpOne(context),
-                              iconData: CupertinoIcons.up_arrow,
-                            ),
-                          if (canReorder)
-                            ContextMenuItem(
-                              text: 'Move down',
-                              onTap: () => _moveWorkoutSectionDownOne(context),
-                              iconData: CupertinoIcons.down_arrow,
-                            ),
-                          ContextMenuItem(
-                            text: 'Delete',
-                            onTap: () => _deleteWorkoutSection(context),
-                            iconData: CupertinoIcons.delete_simple,
-                            destructive: true,
-                          ),
-                        ])
-                      ],
-                    )
-                  ],
+                    child: MyHeaderText(
+                      '${workoutSection.sortPosition + 1}',
+                      color: Styles.white,
+                      size: FONTSIZE.SMALL,
+                      weight: FontWeight.normal,
+                    )),
+                Expanded(
+                  child: MyText(
+                    Utils.textNotNull(workoutSection.name)
+                        ? workoutSection.name!
+                        : 'Section ${workoutSection.sortPosition + 1}',
+                  ),
                 ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                      ContextMenuItem(
+                        text: Utils.textNotNull(workoutSection.name)
+                            ? 'Edit name'
+                            : 'Add name',
+                        iconData: CupertinoIcons.pencil,
+                        onTap: () => context.push(
+                            child: FullScreenTextEditing(
+                          title: 'Name',
+                          inputValidation: (t) =>
+                              t.length > 0 && t.length <= 40,
+                          maxChars: 30,
+                          validationMessage: 'Max 30 chars',
+                          initialValue: workoutSection.name,
+                          onSave: (text) =>
+                              _updateSection(context, {'name': text}),
+                        )),
+                      ),
+                      ContextMenuItem(
+                        text: Utils.textNotNull(workoutSection.note)
+                            ? 'Edit note'
+                            : 'Add note',
+                        iconData: CupertinoIcons.doc_text,
+                        onTap: () => context.push(
+                            child: FullScreenTextEditing(
+                          title: 'Note',
+                          inputValidation: (text) => true,
+                          initialValue: workoutSection.note,
+                          onSave: (note) =>
+                              _updateSection(context, {'note': note}),
+                        )),
+                      ),
+                      if (canReorder)
+                        ContextMenuItem(
+                          text: 'Move up',
+                          onTap: () => _moveWorkoutSectionUpOne(context),
+                          iconData: CupertinoIcons.up_arrow,
+                        ),
+                      if (canReorder)
+                        ContextMenuItem(
+                          text: 'Move down',
+                          onTap: () => _moveWorkoutSectionDownOne(context),
+                          iconData: CupertinoIcons.down_arrow,
+                        ),
+                      ContextMenuItem(
+                        text: 'Delete',
+                        onTap: () => _deleteWorkoutSection(context),
+                        iconData: CupertinoIcons.delete_simple,
+                        destructive: true,
+                      ),
+                    ])
+                  ],
+                )
               ],
             ),
             if (Utils.textNotNull(workoutSection.note))
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: ViewMoreFullScreenTextBlock(
-                    text: workoutSection.note!, title: 'Section Note'),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: MyText(
+                        workoutSection.note!,
+                        maxLines: 4,
+                        textAlign: TextAlign.left,
+                        lineHeight: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             Padding(
-              padding: const EdgeInsets.all(6.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  WorkoutSectionTypeTag(workoutSection.workoutSectionType.name),
-                  if ([kHIITCircuitName, kTabataName, kEMOMName]
-                      .contains(workoutSection.workoutSectionType.name))
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6.0, bottom: 4),
-                      child: ContentBox(
-                        child: MyText(
-                          'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}',
-                          color: Styles.colorTwo,
-                        ),
-                      ),
-                    ),
-                  if (workoutSection.timecap != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6.0, bottom: 4),
-                      child: ContentBox(
-                        child: MyText(
-                          'Timecap: ${workoutSection.timecap!.secondsToTimeDisplay()}',
-                          color: Styles.colorTwo,
-                        ),
-                      ),
-                    ),
+                  WorkoutSectionTypeTag(workoutSection.workoutSectionType.name,
+                      timecap: workoutSection.timecapIfValid),
                   ...data.moves
                       .map((m) => Tag(
                             color: context.theme.background,
@@ -340,43 +336,35 @@ class WorkoutStructureWorkoutSection extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 8,
-                runSpacing: 2,
-                children: [
-                  ...data.bodyAreas
-                      .map((ba) => RoundedBox(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 2, vertical: 2),
-                          child: MyText(ba)))
-                      .toList()
-                ],
+            if (data.bodyAreas.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CommaSeparatedList(data.bodyAreas.toList()),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 16,
-                runSpacing: 2,
-                children: [
-                  ...data.equipments
-                      .map((e) => SizedBox(
-                          width: 26,
-                          height: 26,
-                          child: Utils.getEquipmentIcon(context, e,
-                              color: context.theme.primary)))
-                      .toList(),
-                ],
+            if (data.equipments.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 16,
+                  runSpacing: 2,
+                  children: [
+                    ...data.equipments
+                        .map((e) => Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                                color: context.theme.background,
+                                borderRadius: BorderRadius.circular(30)),
+                            width: 30,
+                            height: 30,
+                            child: Utils.getEquipmentIcon(context, e,
+                                color: context.theme.primary)))
+                        .toList(),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),

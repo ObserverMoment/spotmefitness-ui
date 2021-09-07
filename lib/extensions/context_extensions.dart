@@ -294,7 +294,10 @@ extension BuildContextExtension on BuildContext {
                   Flexible(child: child),
                 ],
               )
-            : child);
+            : Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: child,
+              ));
     return result;
   }
 

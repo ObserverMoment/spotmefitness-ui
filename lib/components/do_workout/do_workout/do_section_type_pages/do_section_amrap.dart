@@ -37,7 +37,7 @@ class DoWorkoutSectionAMRAP extends StatelessWidget {
               Row(
                 children: [
                   H3(
-                    'AMRAP in ${Duration(seconds: workoutSection.timecap!).compactDisplay()}',
+                    'AMRAP in ${Duration(seconds: workoutSection.timecap).compactDisplay()}',
                   ),
                   InfoPopupButton(
                       infoWidget: MyText(

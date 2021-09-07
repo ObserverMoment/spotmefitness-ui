@@ -164,6 +164,12 @@ class _MainUIState extends State<MainUI> {
       builder: (context, _) {
         final bool uploadingMedia =
             context.select<WorkoutCreatorBloc, bool>((b) => b.uploadingMedia);
+        final bool creatingSection =
+            context.select<WorkoutCreatorBloc, bool>((b) => b.creatingSection);
+        final bool creatingSet =
+            context.select<WorkoutCreatorBloc, bool>((b) => b.creatingSet);
+        final bool creatingMove =
+            context.select<WorkoutCreatorBloc, bool>((b) => b.creatingMove);
 
         return MyPageScaffold(
           navigationBar: MyNavBar(
@@ -172,16 +178,17 @@ class _MainUIState extends State<MainUI> {
               'Workout',
               fontSize: FONTSIZE.MAIN,
             ),
-            trailing: uploadingMedia
-                ? NavBarTrailingRow(
-                    children: [
-                      NavBarLoadingDots(),
-                    ],
-                  )
-                : NavBarSaveButton(
-                    _saveAndClose,
-                    text: 'Done',
-                  ),
+            trailing:
+                uploadingMedia || creatingSection || creatingSet || creatingMove
+                    ? NavBarTrailingRow(
+                        children: [
+                          NavBarLoadingDots(),
+                        ],
+                      )
+                    : NavBarSaveButton(
+                        _saveAndClose,
+                        text: 'Done',
+                      ),
           ),
           child: Column(
             children: [

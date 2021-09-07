@@ -74,6 +74,7 @@ class _AuthedRoutesWrapperPageState extends State<AuthedRoutesWrapperPage> {
       feed.StreamFeedClient.connect(
         EnvironmentConfig.getStreamPublicKey,
         appId: EnvironmentConfig.getStreamAppId,
+        logLevel: feed.Level.OFF,
         token: feed.Token(
           _authedUser.streamFeedToken,
         ),

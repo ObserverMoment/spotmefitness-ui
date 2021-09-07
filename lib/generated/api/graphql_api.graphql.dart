@@ -177,7 +177,7 @@ mixin WorkoutSectionMixin {
   String? name;
   String? note;
   late int rounds;
-  int? timecap;
+  late int timecap;
   late int sortPosition;
   String? introVideoUri;
   String? introVideoThumbUri;

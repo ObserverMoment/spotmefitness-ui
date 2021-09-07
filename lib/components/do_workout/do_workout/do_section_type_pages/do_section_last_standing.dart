@@ -63,12 +63,11 @@ class DoWorkoutSectionLastStanding extends StatelessWidget {
                       H3(
                         'Last One Standing',
                       ),
-                      if (workoutSection.timecap != null)
-                        MyText(
-                          'Finsh after ${Duration(seconds: workoutSection.timecap!).compactDisplay()}',
-                          color: Styles.infoBlue,
-                          lineHeight: 1.3,
-                        ),
+                      MyText(
+                        'Finsh after ${Duration(seconds: workoutSection.timecap).compactDisplay()}',
+                        color: Styles.infoBlue,
+                        lineHeight: 1.3,
+                      ),
                     ],
                   ),
                   InfoPopupButton(

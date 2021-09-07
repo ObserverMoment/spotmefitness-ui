@@ -1,5 +1,7 @@
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 
 /// Extensions which pertain to the processing of fitness related data (i.e. the graphql types.)
 
@@ -23,6 +25,32 @@ extension WorkoutExtension on Workout {
 
     return copy;
   }
+}
+
+extension WorkoutSectionExtension on WorkoutSection {
+  bool get isAMRAP => this.workoutSectionType.name == kAMRAPName;
+
+  bool get isTimed => [
+        kHIITCircuitName,
+        kTabataName,
+        kEMOMName,
+        kLastStandingName
+      ].contains(this.workoutSectionType.name);
+
+  Duration get timedSectionDuration =>
+      DataUtils.calculateTimedSectionDuration(this);
+
+  /// For AMRAP - returns the timecap.
+  /// For Timed / Fixed length workouts calculate length based on contents.
+  int? get timecapIfValid => isAMRAP
+      ? this.timecap
+      : isTimed
+          ? DataUtils.calculateTimedSectionDuration(this).inSeconds
+          : null;
+
+  /// These section types ignore rounds input - generally it should be forced to be [1] when these sections are being used.
+  bool get roundsInputAllowed =>
+      ![kAMRAPName, kFreeSessionName].contains(this.workoutSectionType.name);
 }
 
 extension ClubExtension on Club {

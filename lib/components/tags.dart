@@ -168,11 +168,13 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   final FONTSIZE fontSize;
   final bool hasClassVideo;
   final bool hasClassAudio;
+  final bool withBorder;
   WorkoutSectionTypeTag(this.name,
       {this.timecap,
       this.fontSize = FONTSIZE.SMALL,
       this.hasClassVideo = false,
-      this.hasClassAudio = false});
+      this.hasClassAudio = false,
+      this.withBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +185,8 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: kDefaultTagPadding,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: Border.all(color: context.theme.primary),
+            border:
+                withBorder ? Border.all(color: context.theme.primary) : null,
             borderRadius: BorderRadius.circular(60),
           ),
           child: Row(

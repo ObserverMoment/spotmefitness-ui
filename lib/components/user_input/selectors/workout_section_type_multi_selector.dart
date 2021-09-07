@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -10,13 +11,49 @@ import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class WorkoutSectionTypeMultiSelector extends StatelessWidget {
+  final String name;
   final void Function(List<WorkoutSectionType> types) updateSelectedTypes;
   final List<WorkoutSectionType> selectedTypes;
+  final bool allowMultiSelect;
+
+  /// If Vertical, physics will be set to [NeverScrollablePhysics]
+  final Axis direction;
+  final bool hideTitle;
   const WorkoutSectionTypeMultiSelector(
-      {required this.updateSelectedTypes, required this.selectedTypes});
+      {required this.updateSelectedTypes,
+      required this.selectedTypes,
+      this.allowMultiSelect = true,
+      this.name = 'Workout Types',
+      this.direction = Axis.horizontal,
+      this.hideTitle = false});
 
   void _handleTap(WorkoutSectionType type) {
-    updateSelectedTypes(selectedTypes.toggleItem<WorkoutSectionType>(type));
+    if (allowMultiSelect) {
+      updateSelectedTypes(selectedTypes.toggleItem<WorkoutSectionType>(type));
+    } else {
+      updateSelectedTypes([type]);
+    }
+  }
+
+  List<Widget> _buildChildren(List<WorkoutSectionType> types) {
+    return types
+        .sortedBy<num>((type) => int.parse(type.id))
+        .map((type) => Padding(
+              padding: direction == Axis.vertical
+                  ? const EdgeInsets.only(bottom: 8.0)
+                  : const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                onTap: () => _handleTap(type),
+                child: SelectableBox(
+                  onPressed: () => _handleTap(type),
+                  selectedColor: Styles.colorOne,
+                  isSelected: selectedTypes.contains(type),
+                  fontSize: FONTSIZE.BIG,
+                  text: type.name,
+                ),
+              ),
+            ))
+        .toList();
   }
 
   @override
@@ -30,43 +67,43 @@ class WorkoutSectionTypeMultiSelector extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText(
-                      'Workout Types',
-                      textAlign: TextAlign.start,
-                      size: FONTSIZE.BIG,
-                    ),
-                    MyText(
-                      selectedTypes.isEmpty
-                          ? 'All'
-                          : '${selectedTypes.length} selected',
-                      color: Styles.infoBlue,
-                    )
-                  ],
+              if (!hideTitle)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MyText(
+                        name,
+                        textAlign: TextAlign.start,
+                        size: FONTSIZE.BIG,
+                      ),
+                      if (allowMultiSelect)
+                        MyText(
+                          selectedTypes.isEmpty
+                              ? 'All'
+                              : '${selectedTypes.length} selected',
+                          subtext: true,
+                        )
+                    ],
+                  ),
                 ),
-              ),
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 4,
-                runSpacing: 4,
-                children: data.workoutSectionTypes
-                    .sortedBy<num>((type) => int.parse(type.id))
-                    .map((type) => GestureDetector(
-                          onTap: () => _handleTap(type),
-                          child: SelectableTag(
-                            onPressed: () => _handleTap(type),
-                            selectedColor: Styles.colorOne,
-                            isSelected: selectedTypes.contains(type),
-                            text: type.name,
-                          ),
-                        ))
-                    .toList(),
-              ),
+              direction == Axis.vertical
+                  ? ListView(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: _buildChildren(data.workoutSectionTypes),
+                    )
+                  : SizedBox(
+                      height: 70,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        children: _buildChildren(data.workoutSectionTypes),
+                      ),
+                    ),
             ],
           );
         });

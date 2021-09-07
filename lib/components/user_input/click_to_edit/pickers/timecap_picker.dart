@@ -27,25 +27,21 @@ class TimecapPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        CupertinoButton(
-          onPressed: () async {
-            await context.openBlurModalPopup(
-                TimecapPopup(
-                    timecap: timecap,
-                    allowNoTimecap: allowNoTimecap,
-                    saveTimecap: saveTimecap),
-                height: 400,
-                barrierDismissible: allowPopupDismiss);
-          },
-          padding: const EdgeInsets.all(8),
-          child: CompactTimerIcon(
-            timecap,
-            alignment: Axis.vertical,
-          ),
-        ),
-      ],
+    return CupertinoButton(
+      onPressed: () async {
+        await context.showBottomSheet(
+          expand: false,
+          showDragHandle: false,
+          child: TimecapPopup(
+              timecap: timecap,
+              allowNoTimecap: allowNoTimecap,
+              saveTimecap: saveTimecap),
+        );
+      },
+      padding: const EdgeInsets.all(8),
+      child: CompactTimerIcon(
+        timecap,
+      ),
     );
   }
 }
@@ -90,6 +86,7 @@ class _TimecapPopupState extends State<TimecapPopup> {
     return Container(
         height: 360,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             ClosePicker(onClose: _handleSave),
             SizedBox(height: 15),
@@ -99,22 +96,22 @@ class _TimecapPopupState extends State<TimecapPopup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   H3(widget.title),
-                  SizedBox(
-                    width: 20,
-                  ),
                   if (widget.allowNoTimecap)
-                    SlidingSelect<bool>(
-                        value: _isOn,
-                        children: {
-                          true: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: MyText('On')),
-                          false: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: MyText('Off')),
-                        },
-                        updateValue: (bool? isOn) =>
-                            setState(() => _isOn = isOn ?? false)),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: SlidingSelect<bool>(
+                          value: _isOn,
+                          children: {
+                            true: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: MyText('On')),
+                            false: Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: MyText('Off')),
+                          },
+                          updateValue: (bool? isOn) =>
+                              setState(() => _isOn = isOn ?? false)),
+                    ),
                 ],
               ),
             ),

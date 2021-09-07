@@ -24,7 +24,6 @@ class RoundPicker extends StatelessWidget {
       )),
       child: NumberRoundsIcon(
         rounds,
-        alignment: Axis.vertical,
       ),
     );
   }

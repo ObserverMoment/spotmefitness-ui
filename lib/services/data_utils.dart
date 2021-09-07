@@ -30,6 +30,7 @@ class DataUtils {
       case kHIITCircuitName:
       case kEMOMName:
       case kTabataName:
+      case kLastStandingName:
         return Duration(
             seconds: workoutSection.rounds *
                 workoutSection.workoutSets.sumBy((s) => s.duration!));

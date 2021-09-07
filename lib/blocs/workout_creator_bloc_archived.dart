@@ -187,7 +187,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   }
 
   ////// WorkoutSection CRUD //////
-  Future<void> createWorkoutSection(WorkoutSectionType type) async {
+  Future<void> createWorkoutSection(WorkoutSection workoutSection) async {
     _backupAndMarkDirty();
     creatingSection = true;
     notifyListeners();
@@ -199,8 +199,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     final variables = CreateWorkoutSectionArguments(
         data: CreateWorkoutSectionInput(
             sortPosition: nextIndex,
+            timecap: workoutSection.timecap,
             workout: ConnectRelationInput(id: workout.id),
-            workoutSectionType: ConnectRelationInput(id: type.id)));
+            workoutSectionType: ConnectRelationInput(
+                id: workoutSection.workoutSectionType.id)));
 
     final result = await context.graphQLStore
         .mutate<CreateWorkoutSection$Mutation, CreateWorkoutSectionArguments>(

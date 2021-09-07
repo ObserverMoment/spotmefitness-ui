@@ -1077,3 +1077,45 @@ class ShowHideDetailsButton extends StatelessWidget {
     );
   }
 }
+
+/// CardBackground color when not selected.
+/// ColorOne when selected.
+class SelectableBox extends StatelessWidget {
+  final bool isSelected;
+  final void Function() onPressed;
+  final String text;
+  final Color selectedColor;
+  final FONTSIZE fontSize;
+  final EdgeInsets padding;
+  SelectableBox(
+      {required this.isSelected,
+      required this.onPressed,
+      required this.text,
+      this.fontSize = FONTSIZE.BIG,
+      this.selectedColor = Styles.colorOne,
+      this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 10)});
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: onPressed,
+      child: AnimatedContainer(
+        alignment: Alignment.center,
+        height: 60,
+        curve: Curves.easeIn,
+        duration: Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+            color: isSelected ? selectedColor : context.theme.cardBackground,
+            borderRadius: BorderRadius.circular(4)),
+        padding: padding,
+        child: MyText(
+          text,
+          size: fontSize,
+          color: isSelected ? Styles.white : null,
+          lineHeight: 1,
+          weight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}

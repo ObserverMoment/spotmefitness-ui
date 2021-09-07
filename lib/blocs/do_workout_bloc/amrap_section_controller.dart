@@ -18,7 +18,7 @@ class AMRAPSectionController extends WorkoutSectionController {
             workoutSection: workoutSection,
             markSectionComplete: markSectionComplete) {
     /// [workoutSection.timecap] must not be null for an AMRAP.
-    _sectionTimecapSeconds = workoutSection.timecap!;
+    _sectionTimecapSeconds = workoutSection.timecap;
 
     /// Time till the AMRAP timecap at the end of the section.
     state.timeToNextCheckpointMs = _sectionTimecapSeconds * 1000;

@@ -156,6 +156,9 @@ extension DurationExtension on Duration {
   }
 
   String get displayString {
+    if (this.inSeconds == 0) {
+      return '---';
+    }
     final int hours = this.inHours;
     final int minutes = this.inMinutes - (hours * 60);
     final int seconds = this.inSeconds.remainder(60);

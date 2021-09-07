@@ -12,16 +12,13 @@ class ClosePicker extends StatelessWidget {
       onTap: onClose,
       child: Container(
         height: 40,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10), topLeft: Radius.circular(10))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             MyText(
               'Save',
               color: Styles.infoBlue,
-              size: FONTSIZE.BIG,
+              size: FONTSIZE.LARGE,
               weight: FontWeight.bold,
             ),
           ],
