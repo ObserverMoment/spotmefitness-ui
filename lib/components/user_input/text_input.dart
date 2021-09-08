@@ -64,7 +64,6 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
         Stack(
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
               padding:
                   const EdgeInsets.only(left: 0, top: 10, bottom: 6, right: 8),
               decoration: widget.backgroundColor != null

@@ -9,7 +9,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/pages/unauthed/reset_password.dart';
-import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -61,45 +61,49 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: context.theme.barBackground,
       navigationBar: MyNavBar(
-        middle: MyText(
-          'Sign In',
-          weight: FontWeight.bold,
-        ),
+        middle: NavBarTitle('Sign In'),
       ),
       child: Column(
         children: [
-          CupertinoFormSection.insetGrouped(
-              margin: const EdgeInsets.all(16),
-              children: [
-                if (_signInError != null)
-                  GrowIn(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MyText(
-                        _signInError!,
-                        color: Styles.errorRed,
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                MyTextFormFieldRow(
-                  prefix: Icon(CupertinoIcons.envelope_fill),
-                  placeholder: 'Email',
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _emailController,
-                  validator: _validateEmail,
-                  autofocus: true,
-                  autofillHints: const <String>[AutofillHints.email],
+          SizedBox(height: 8),
+          if (_signInError != null)
+            GrowIn(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MyText(
+                  _signInError!,
+                  color: Styles.errorRed,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
-                MyPasswordFieldRow(
-                  controller: _passwordController,
-                  validator: _validatePassword,
-                  autofillHints: const <String>[AutofillHints.password],
-                ),
-              ]),
-          SizedBox(height: 10),
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: MyTextFormFieldRow(
+              prefix: Icon(CupertinoIcons.envelope_fill),
+              placeholder: 'Email',
+              keyboardType: TextInputType.emailAddress,
+              controller: _emailController,
+              validator: _validateEmail,
+              autofocus: true,
+              autofillHints: const <String>[AutofillHints.email],
+              backgroundColor: context.theme.background,
+            ),
+          ),
+          SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: MyPasswordFieldRow(
+              controller: _passwordController,
+              validator: _validatePassword,
+              autofillHints: const <String>[AutofillHints.password],
+              backgroundColor: context.theme.background,
+            ),
+          ),
+          SizedBox(height: 24),
           PrimaryButton(
               loading: _signingInUser,
               onPressed: _signIn,
@@ -112,20 +116,20 @@ class _SignInState extends State<SignIn> {
                     fullscreenDialog: true, builder: (_) => ResetPassword())),
             text: 'Reset Password',
           ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: MyText('Not a member yet?'),
-          ),
-          SecondaryButton(
-            text: 'Start Free Trial',
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      fullscreenDialog: true, builder: (_) => StartTrial()));
-            },
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(12.0),
+          //   child: MyText('Not a member yet?'),
+          // ),
+          // SecondaryButton(
+          //   text: 'Start Free Trial',
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //     Navigator.push(
+          //         context,
+          //         CupertinoPageRoute(
+          //             fullscreenDialog: true, builder: (_) => StartTrial()));
+          //   },
+          // ),
         ],
       ),
     );

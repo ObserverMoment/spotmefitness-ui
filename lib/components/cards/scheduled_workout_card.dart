@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/cards/workout_card.dart';
+import 'package:spotmefitness_ui/components/cards/workout_card_minimal.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/context_menu.dart';

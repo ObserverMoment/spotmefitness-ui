@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -41,6 +40,7 @@ class RegisterDetails extends StatelessWidget {
               autofillHints: const <String>[AutofillHints.email],
               backgroundColor: context.theme.background,
             ),
+            SizedBox(height: 10),
             MyPasswordFieldRow(
               controller: passwordController,
               validator: validatePassword,
@@ -48,8 +48,13 @@ class RegisterDetails extends StatelessWidget {
               backgroundColor: context.theme.background,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 12, top: 4, bottom: 24),
-              child: MyText('Min 6 characters'),
+              padding: const EdgeInsets.only(left: 8, top: 8, bottom: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  MyText('Min 6 characters'),
+                ],
+              ),
             ),
             if (canSubmit())
               FadeIn(

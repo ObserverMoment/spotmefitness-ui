@@ -10,14 +10,11 @@ import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.d
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/workout/workout_section_instructions.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
-import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:collection/collection.dart';
 

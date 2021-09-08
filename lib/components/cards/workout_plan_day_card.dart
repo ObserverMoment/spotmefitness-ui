@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/cards/workout_card.dart';
+import 'package:spotmefitness_ui/components/cards/workout_card_minimal.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';

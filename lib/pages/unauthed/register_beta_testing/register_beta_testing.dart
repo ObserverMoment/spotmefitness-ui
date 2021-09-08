@@ -69,14 +69,12 @@ class _RegisterBetaTestingState extends State<RegisterBetaTesting> {
         navigationBar: MyNavBar(
           withoutLeading: true,
           trailing: NavBarCancelButton(context.pop),
-          middle: Row(
-            children: [
-              NavBarLargeTitle('WELCOME TO SOFIE!'),
-            ],
+          middle: LeadingNavBarTitle(
+            'WELCOME TO SOFIE!',
+            fontSize: FONTSIZE.LARGE,
           ),
         ),
         child: Column(children: [
-          SizedBox(height: 10),
           CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: () => context.push(child: BetaExplained()),

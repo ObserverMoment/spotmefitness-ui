@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class ResetPassword extends StatefulWidget {
   @override
@@ -53,8 +54,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+        backgroundColor: context.theme.barBackground,
         navigationBar: MyNavBar(
-          middle: H2('Reset Password'),
+          middle: NavBarTitle('Reset Password'),
         ),
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 400),
@@ -80,27 +82,27 @@ class _ResetPasswordState extends State<ResetPassword> {
               : Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(24.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: MyText(
                         'Enter the email address you used when you joined and we’ll send you instructions to reset your password.',
                         maxLines: 3,
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    CupertinoFormSection.insetGrouped(
-                      margin: const EdgeInsets.all(16),
-                      children: [
-                        MyTextFormFieldRow(
-                          prefix: Icon(CupertinoIcons.envelope_fill),
-                          placeholder: 'Email',
-                          keyboardType: TextInputType.emailAddress,
-                          controller: _emailController,
-                          validator: _validateEmail,
-                          autofocus: true,
-                          autofillHints: const <String>[AutofillHints.email],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: MyTextFormFieldRow(
+                        prefix: Icon(CupertinoIcons.envelope_fill),
+                        placeholder: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                        validator: _validateEmail,
+                        autofocus: true,
+                        autofillHints: const <String>[AutofillHints.email],
+                        backgroundColor: context.theme.background,
+                      ),
                     ),
+                    SizedBox(height: 16),
                     PrimaryButton(
                         onPressed: _requestResetPassword,
                         text: 'Send Reset Instructions',

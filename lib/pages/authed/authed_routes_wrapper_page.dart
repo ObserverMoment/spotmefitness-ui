@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -154,37 +155,47 @@ class _InitAppLanding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Stack(
-        alignment: Alignment.center,
+    return LayoutBuilder(builder: (context, constraints) {
+      final screenHeight = constraints.maxHeight;
+      return CupertinoPageScaffold(
+          child: Stack(
+        alignment: Alignment.topCenter,
+        fit: StackFit.expand,
         children: [
           SizedBox.expand(
               child: Image.asset(
             'assets/stock_images/stretch.jpg',
             fit: BoxFit.fitHeight,
           )),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                'assets/logos/spotme_logo.svg',
-                width: 60.0,
-                color: Styles.white,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: MyText(
-                  'Getting ready',
+          Positioned(
+            top: screenHeight * 0.22,
+            child: Column(
+              children: [
+                Text('Sofie',
+                    style: GoogleFonts.voces(
+                      fontSize: 60,
+                    )),
+                MyText(
+                  'Social Fitness Elevated',
+                  weight: FontWeight.bold,
+                  // Must pass a color to avoid MyText component trying to look up context.theme, which does not exist prior to the user reaching the authed section of the app.
                   color: Styles.white,
                 ),
-              ),
-              LoadingDots(
-                color: Styles.white,
-              )
-            ],
-          )
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: MyText(
+                    'Getting ready',
+                    color: Styles.white,
+                  ),
+                ),
+                LoadingDots(
+                  color: Styles.white,
+                )
+              ],
+            ),
+          ),
         ],
-      ),
-    );
+      ));
+    });
   }
 }
