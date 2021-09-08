@@ -13,22 +13,15 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
       {required this.workoutSet, required this.workoutSectionType});
 
   String _buildMainText() {
-    if ([kEMOMName, kLastStandingName, kHIITCircuitName]
-            .contains(workoutSectionType.name) &&
-        workoutSet.duration == null) {
-      throw Exception(
-          'WorkoutSetDisplayHeader: workoutSet.duration cannot be null for workout type ${workoutSectionType.name}.');
-    }
-
     switch (workoutSectionType.name) {
       case kEMOMName:
       case kLastStandingName:
         return workoutSet.rounds == 1
-            ? 'Within ${workoutSet.duration!.secondsToTimeDisplay()}'
-            : 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"} within ${workoutSet.duration!.secondsToTimeDisplay()}';
+            ? 'Within ${workoutSet.duration.secondsToTimeDisplay()}'
+            : 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"} within ${workoutSet.duration.secondsToTimeDisplay()}';
       case kHIITCircuitName:
       case kTabataName:
-        return 'For ${workoutSet.duration!.secondsToTimeDisplay()}';
+        return 'For ${workoutSet.duration.secondsToTimeDisplay()}';
       case kFreeSessionName:
       case kForTimeName:
       case kAMRAPName:

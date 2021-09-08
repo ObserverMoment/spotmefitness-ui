@@ -23,6 +23,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
         MyText(
           workoutMove.reps.stringMyDouble(),
           lineHeight: 1,
+          size: FONTSIZE.BIG,
         ),
         MyText(
           workoutMove.repType == WorkoutMoveRepType.time
@@ -43,6 +44,7 @@ class WorkoutMoveDisplay extends StatelessWidget {
         MyText(
           workoutMove.loadAmount.stringMyDouble(),
           lineHeight: 1.2,
+          size: FONTSIZE.BIG,
         ),
         MyText(
           workoutMove.loadUnit.display,

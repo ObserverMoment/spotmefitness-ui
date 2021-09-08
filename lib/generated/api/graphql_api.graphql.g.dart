@@ -907,7 +907,7 @@ WorkoutSet _$WorkoutSetFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String
     ..sortPosition = json['sortPosition'] as int
     ..rounds = json['rounds'] as int
-    ..duration = json['duration'] as int?
+    ..duration = json['duration'] as int
     ..workoutMoves = (json['WorkoutMoves'] as List<dynamic>)
         .map((e) => WorkoutMove.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -3938,7 +3938,7 @@ UpdateWorkoutSet _$UpdateWorkoutSetFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String
     ..sortPosition = json['sortPosition'] as int
     ..rounds = json['rounds'] as int
-    ..duration = json['duration'] as int?;
+    ..duration = json['duration'] as int;
 }
 
 Map<String, dynamic> _$UpdateWorkoutSetToJson(UpdateWorkoutSet instance) =>
@@ -4014,7 +4014,7 @@ CreateWorkoutSet _$CreateWorkoutSetFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String
     ..sortPosition = json['sortPosition'] as int
     ..rounds = json['rounds'] as int
-    ..duration = json['duration'] as int?;
+    ..duration = json['duration'] as int;
 }
 
 Map<String, dynamic> _$CreateWorkoutSetToJson(CreateWorkoutSet instance) =>

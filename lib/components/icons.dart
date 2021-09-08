@@ -50,7 +50,7 @@ class NumberRoundsIcon extends StatelessWidget {
           width: 6,
         ),
         MyText(
-          'rounds',
+          rounds == 1 ? 'round' : 'rounds',
         ),
       ];
 

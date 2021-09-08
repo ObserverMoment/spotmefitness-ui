@@ -3,6 +3,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/close_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/cupertino_switch_row.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -93,6 +94,86 @@ class DurationPickerRowDisplay extends StatelessWidget {
                 subtext: true,
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class WorkoutSetDurationPicker extends StatefulWidget {
+  final Duration? duration;
+  final void Function(Duration duration, bool copyToAll) updateDuration;
+  final String? title;
+  final String switchTitle;
+  final CupertinoTimerPickerMode mode;
+  final int minuteInterval;
+  final int secondInterval;
+  WorkoutSetDurationPicker(
+      {required this.duration,
+      required this.updateDuration,
+      this.title,
+      this.minuteInterval = 1,
+      this.secondInterval = 5,
+      this.mode = CupertinoTimerPickerMode.ms,
+      this.switchTitle = 'Copy to all sets'});
+
+  @override
+  _WorkoutSetDurationPickerState createState() =>
+      _WorkoutSetDurationPickerState();
+}
+
+class _WorkoutSetDurationPickerState extends State<WorkoutSetDurationPicker> {
+  late Duration? _activeDuration;
+
+  /// Allows the user to bulk update the duration on all / a group of sets.
+  bool _copyToAll = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeDuration = widget.duration;
+  }
+
+  void _saveAndClose() {
+    if (_activeDuration != null) {
+      widget.updateDuration(_activeDuration!, _copyToAll);
+    }
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.title != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: H2(widget.title!),
+            ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClosePicker(onClose: _saveAndClose),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: CupertinoSwitchRow(
+                title: widget.switchTitle,
+                updateValue: (v) => setState(() => _copyToAll = v),
+                value: _copyToAll),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CupertinoTimerPicker(
+                initialTimerDuration: _activeDuration ?? Duration.zero,
+                mode: widget.mode,
+                minuteInterval: widget.minuteInterval,
+                secondInterval: widget.secondInterval,
+                onTimerDurationChanged: (duration) =>
+                    setState(() => _activeDuration = duration)),
           ),
         ],
       ),

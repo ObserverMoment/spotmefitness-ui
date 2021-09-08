@@ -150,8 +150,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
           children: [
             WorkoutSetDisplay(
                 workoutSet: workoutSet, workoutSectionType: workoutSectionType),
-            if (state.timeToNextCheckpointMs != null &&
-                workoutSet.duration != null)
+            if (state.timeToNextCheckpointMs != null)
               GrowInOut(
                   show: isCurrentActiveSet,
                   child: Padding(
@@ -160,7 +159,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
                       percent: isCurrentActiveSet
                           ? 1 -
                               (state.timeToNextCheckpointMs! /
-                                  (workoutSet.duration! * 1000))
+                                  (workoutSet.duration * 1000))
                           : 0,
                       linearGradient: Styles.pinkGradient,
                       padding: const EdgeInsets.symmetric(horizontal: 6),

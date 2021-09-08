@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 
-class WorkoutMoveInSet extends StatelessWidget {
+class WorkoutSetWorkoutMove extends StatelessWidget {
   final Key key;
   final double height;
   final WorkoutMove workoutMove;
@@ -15,7 +15,7 @@ class WorkoutMoveInSet extends StatelessWidget {
   final void Function(int index) deleteWorkoutMove;
   final bool isLast;
   final bool showReps;
-  WorkoutMoveInSet(
+  WorkoutSetWorkoutMove(
       {required this.key,
       required this.workoutMove,
       required this.openEditWorkoutMove,

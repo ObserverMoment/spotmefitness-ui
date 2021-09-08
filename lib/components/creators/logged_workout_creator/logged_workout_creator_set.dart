@@ -226,7 +226,7 @@ class _LoggedWorkoutCreatorSet extends State<LoggedWorkoutCreatorSet> {
                     _buildSetDefinition(),
                   ],
                 ),
-                NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                NavBarEllipsisMenu(items: [
                   ContextMenuItem(
                     text: Utils.textNotNull(_loggedWorkoutSet.note)
                         ? 'Edit note'

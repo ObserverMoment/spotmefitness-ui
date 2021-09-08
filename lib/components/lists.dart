@@ -3,7 +3,8 @@ import 'package:spotmefitness_ui/components/text.dart';
 
 class CommaSeparatedList extends StatelessWidget {
   final List<String> names;
-  CommaSeparatedList(this.names);
+  final FONTSIZE fontSize;
+  CommaSeparatedList(this.names, {this.fontSize = FONTSIZE.SMALL});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class CommaSeparatedList extends StatelessWidget {
               index,
               MyText(
                 index == names.length - 1 ? '$name.' : '$name, ',
-                size: FONTSIZE.SMALL,
+                size: fontSize,
               )))
           .values
           .toList(),

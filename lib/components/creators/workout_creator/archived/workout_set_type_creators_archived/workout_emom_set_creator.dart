@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/animated/dragged_item.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_move_creator.dart';
-import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_move_in_set.dart';
+import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_set_workout_move.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
@@ -125,7 +125,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
           pageTitle: 'Set ${widget.setIndex + 1}: Add Move',
           saveWorkoutMove: (workoutMove) => _bloc.createWorkoutMove(
               widget.sectionIndex, widget.setIndex, workoutMove),
-          workoutMoveIndex: _sortedWorkoutMoves.length,
+          sortPosition: _sortedWorkoutMoves.length,
         ),
       ),
     );
@@ -140,7 +140,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
           pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
           saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
               widget.sectionIndex, widget.setIndex, workoutMove),
-          workoutMoveIndex: workoutMove.sortPosition,
+          sortPosition: workoutMove.sortPosition,
         ),
       ),
     );
@@ -161,12 +161,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
   }
 
   String _buildPeriodTimeText() {
-    if (_workoutSet.duration == null) {
-      throw Exception(
-          '_workoutSet.duration should be set when a new period (workoutSet) is created. It should never be null at this point.');
-    } else {
-      return _workoutSet.duration!.secondsToTimeDisplay();
-    }
+    return _workoutSet.duration.secondsToTimeDisplay();
   }
 
   @override
@@ -208,7 +203,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
                                 duration:
-                                    Duration(seconds: _workoutSet.duration!),
+                                    Duration(seconds: _workoutSet.duration),
                                 updateDuration: (duration) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(
@@ -217,7 +212,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                                         {'duration': duration.inSeconds})))),
                   ],
                 ),
-                NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                NavBarEllipsisMenu(items: [
                   if (widget.allowReorder)
                     ContextMenuItem(
                         text: 'Move Up',
@@ -259,7 +254,7 @@ class _WorkoutEMOMSetCreatorState extends State<WorkoutEMOMSetCreator> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: _sortedWorkoutMoves.length,
-                      itemBuilder: (context, index) => WorkoutMoveInSet(
+                      itemBuilder: (context, index) => WorkoutSetWorkoutMove(
                             key: Key(
                                 '$index-workout_set_creator-${_sortedWorkoutMoves[index].id}'),
                             workoutMove: _sortedWorkoutMoves[index],

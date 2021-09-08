@@ -168,7 +168,7 @@ mixin WorkoutSetMixin {
   late String id;
   late int sortPosition;
   late int rounds;
-  int? duration;
+  late int duration;
 }
 mixin WorkoutSectionMixin {
   @JsonKey(name: '__typename')

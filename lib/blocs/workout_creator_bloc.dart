@@ -6,6 +6,11 @@ import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+
+/// Specify to update either all set.durations which are rest sets or not.
+/// Rest set is a set with one workoutMove in it where that move is a Rest.
+enum DurationUpdateType { sets, rests }
 
 class WorkoutCreatorBloc extends ChangeNotifier {
   final BuildContext context;
@@ -271,9 +276,18 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   ////// WorkoutSet CRUD //////
   /// [defaults] used to create sets for certain workoutsection types.
   /// E.g a set for a HIIT circuit with a pre filled [duration] field which matches what the user has inputted previously. Or a 20 second timed set if it is a tabata.
-  Future<void> createWorkoutSet(int sectionIndex, {int? duration}) async {
+  /// [shouldNotifyListeners]: Set this to false when creating a new set. Flow is:
+  /// 1. User selects a workoutMove (but not created in the DB).
+  /// 2. A new set is created (don't notify listeners)
+  /// 3. The new workoutMove is created and added to the set (notify listeners)
+  /// A workoutMove must be created within a set - so we need to create the set first. The above flow hides this from the user and makes it seem like they are just doing one action - i.e. selecting a workoutMove.
+  Future<void> createWorkoutSet(int sectionIndex,
+      {int? duration, bool shouldNotifyListeners = true}) async {
     _backup();
     creatingSet = true;
+
+    /// We notify listeners here even if [shouldNotifyListeners] is false.
+    /// So that the loading indicators display.
     notifyListeners();
 
     final parentSection = workout.workoutSections[sectionIndex];
@@ -302,7 +316,9 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
 
     creatingSet = false;
-    notifyListeners();
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   void editWorkoutSet(
@@ -339,6 +355,23 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// Will call editSet on all sets one after another in series to perform this update.
+  /// May be a bit slow. Update this once there is a batch update API resolver for sets.
+  void updateAllSetDurations(
+      int sectionIndex, int duration, DurationUpdateType type) {
+    _backup();
+
+    List<WorkoutSet> workoutSets =
+        workout.workoutSections[sectionIndex].workoutSets;
+
+    workoutSets.forEachIndexed((i, w) {
+      if (type == DurationUpdateType.sets && !w.isRestSet ||
+          type == DurationUpdateType.rests && w.isRestSet) {
+        editWorkoutSet(sectionIndex, i, {'duration': duration});
+      }
+    });
   }
 
   void duplicateWorkoutSet(int sectionIndex, int setIndex) async {
@@ -509,5 +542,165 @@ class WorkoutCreatorBloc extends ChangeNotifier {
       ));
     }
     notifyListeners();
+  }
+
+  void editWorkoutMove(
+      int sectionIndex, int setIndex, WorkoutMove workoutMove) async {
+    _backup();
+
+    /// Client.
+    workout.workoutSections[sectionIndex].workoutSets[setIndex]
+        .workoutMoves[workoutMove.sortPosition] = workoutMove;
+    notifyListeners();
+
+    /// Api.
+    final variables = UpdateWorkoutMoveArguments(
+        data: UpdateWorkoutMoveInput.fromJson(workoutMove.toJson()));
+
+    final result = await context.graphQLStore.networkOnlyOperation<
+        UpdateWorkoutMove$Mutation, UpdateWorkoutMoveArguments>(
+      operation: UpdateWorkoutMoveMutation(variables: variables),
+    );
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workout.workoutSections[sectionIndex].workoutSets[setIndex]
+          .workoutMoves[workoutMove.sortPosition] = WorkoutMove.fromJson(
+        result.data!.updateWorkoutMove.toJson(),
+      );
+    }
+
+    notifyListeners();
+  }
+
+  void deleteWorkoutMove(
+      int sectionIndex, int setIndex, int workoutMoveIndex) async {
+    _backup();
+
+    final workoutMoves = workout
+        .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+
+    final idToDelete = workoutMoves[workoutMoveIndex].id;
+
+    // Client.
+    workoutMoves.removeAt(workoutMoveIndex);
+
+    _updateWorkoutMovesSortPosition(workoutMoves);
+
+    notifyListeners();
+
+    // Api.
+    final variables = DeleteWorkoutMoveByIdArguments(id: idToDelete);
+
+    final result = await context.graphQLStore.networkOnlyDelete<
+            DeleteWorkoutMoveById$Mutation, DeleteWorkoutMoveByIdArguments>(
+        mutation: DeleteWorkoutMoveByIdMutation(variables: variables));
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      final deletedId = result.data!.deleteWorkoutMoveById;
+
+      // If the ids do not match then there was a problem - revert the changes.
+      if (idToDelete != deletedId) {
+        _revertChanges(result.errors);
+        notifyListeners();
+      }
+    }
+  }
+
+  void duplicateWorkoutMove(
+      int sectionIndex, int setIndex, int workoutMoveIndex) async {
+    _backup();
+
+    final workoutMoves = workout
+        .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+    final toDuplicate = workoutMoves[workoutMoveIndex];
+
+    /// Client side.
+    workoutMoves.insert(
+        workoutMoveIndex + 1,
+        WorkoutMove.fromJson({
+          ...toDuplicate.toJson(),
+          'id': 'temp-${Uuid().v1()}',
+        }));
+
+    _updateWorkoutMovesSortPosition(workoutMoves);
+
+    /// Api only for duplication
+    /// If we do optimistic client update then the user can immediately click to edit a workoutMove with a temp id that does not exist in the DB - causing network error on an update mutation request.
+    final variables = DuplicateWorkoutMoveByIdArguments(id: toDuplicate.id);
+
+    final result = await context.graphQLStore.networkOnlyOperation<
+        DuplicateWorkoutMoveById$Mutation, DuplicateWorkoutMoveByIdArguments>(
+      operation: DuplicateWorkoutMoveByIdMutation(variables: variables),
+    );
+
+    final success = _checkApiResult(result);
+
+    if (success) {
+      workoutMoves[workoutMoveIndex + 1] =
+          WorkoutMove.fromJson(result.data!.duplicateWorkoutMoveById.toJson());
+    }
+
+    notifyListeners();
+  }
+
+  void reorderWorkoutMoves(
+      int sectionIndex, int setIndex, int from, int to) async {
+    // https://api.flutter.dev/flutter/material/ReorderableListView-class.html
+    // // Necessary because of how flutters reorderable list calculates drop position...I think.
+    final moveTo = from < to ? to - 1 : to;
+
+    // Check that user is not trying to move beyond the bounds of the list.
+    if (moveTo >= 0 &&
+        moveTo <
+            workout.workoutSections[sectionIndex].workoutSets[setIndex]
+                .workoutMoves.length) {
+      _backup();
+
+      final workoutMoves = workout
+          .workoutSections[sectionIndex].workoutSets[setIndex].workoutMoves;
+
+      final inTransit = workoutMoves.removeAt(from);
+      workoutMoves.insert(moveTo, inTransit);
+
+      _updateWorkoutMovesSortPosition(workoutMoves);
+
+      notifyListeners();
+
+      /// Api.
+      final variables = ReorderWorkoutMovesArguments(
+          data: workoutMoves
+              .map((s) => UpdateSortPositionInput(
+                  id: s.id, sortPosition: s.sortPosition))
+              .toList());
+
+      final result = await context.graphQLStore.networkOnlyOperation<
+          ReorderWorkoutMoves$Mutation, ReorderWorkoutMovesArguments>(
+        operation: ReorderWorkoutMovesMutation(variables: variables),
+      );
+
+      final success = _checkApiResult(result);
+
+      if (success) {
+        final positions = result.data!.reorderWorkoutMoves;
+
+        // Write new sort positions.
+        workoutMoves.forEach((wm) {
+          wm.sortPosition =
+              positions.firstWhere((p) => p.id == wm.id).sortPosition;
+        });
+      }
+
+      notifyListeners();
+    }
+  }
+
+  void _updateWorkoutMovesSortPosition(List<WorkoutMove> workoutMoves) {
+    workoutMoves.forEachIndexed((i, workoutMove) {
+      workoutMove.sortPosition = i;
+    });
   }
 }

@@ -42,9 +42,8 @@ class LastStandingSectionController extends WorkoutSectionController {
 
     /// All Last Standing sets must have a duration. If they do not, this is an error.
     /// These are set timecaps / lap times (not split times - we do something similar with an acumulated time in a timed workout).
-    _setCheckPointTimesMs = workoutSection.workoutSets
-        .map((wSet) => wSet.duration! * 1000)
-        .toList();
+    _setCheckPointTimesMs =
+        workoutSection.workoutSets.map((wSet) => wSet.duration * 1000).toList();
 
     _nextAcumCheckPointMs = _setCheckPointTimesMs[0];
 

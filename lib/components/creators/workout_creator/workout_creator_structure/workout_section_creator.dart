@@ -123,7 +123,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
 
   @override
   Widget build(BuildContext context) {
-    final bool showFullSetInfo =
+    final _showFullSetInfo =
         context.select<WorkoutCreatorBloc, bool>((b) => b.showFullSetInfo);
 
     return MyPageScaffold(
@@ -156,6 +156,14 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
               text: 'Change type',
               iconData: CupertinoIcons.arrow_left_right,
               onTap: () => _openChangeSectionType(_workoutSection),
+            ),
+            ContextMenuItem(
+              text: _showFullSetInfo ? 'Compact Display' : 'Full Display',
+              iconData: _showFullSetInfo
+                  ? CupertinoIcons.fullscreen_exit
+                  : CupertinoIcons.fullscreen,
+              onTap: () =>
+                  context.read<WorkoutCreatorBloc>().toggleShowFullSetInfo(),
             ),
           ],
         ),

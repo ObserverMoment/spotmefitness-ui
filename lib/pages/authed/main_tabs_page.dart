@@ -161,7 +161,7 @@ class _MainTabsPageState extends State<MainTabsPage> {
                                   tabsRouter: _tabsRouter,
                                   activeIndex: _activeIndex,
                                   tabIndex: 0,
-                                  label: 'Home',
+                                  label: 'My Studio',
                                   inactiveIconData:
                                       CupertinoIcons.square_grid_2x2,
                                   activeIconData:

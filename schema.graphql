@@ -1541,7 +1541,7 @@ type WorkoutSet {
   id: ID!
   sortPosition: Int!
   rounds: Int!
-  duration: Int
+  duration: Int!
   WorkoutMoves: [WorkoutMove!]!
 }
 

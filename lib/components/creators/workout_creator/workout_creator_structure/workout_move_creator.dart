@@ -14,7 +14,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
 
-/// Theis builder will be fixed to these values and should not show any UI for adjusting them.
+/// UI will be fixed to these values and will not allow user to adjust them.
 class FixedTimeReps {
   final double reps;
   final TimeUnit timeUnit;
@@ -24,13 +24,15 @@ class FixedTimeReps {
 /// Handles state internally the user is ready to save it and add it to the section.
 class WorkoutMoveCreator extends StatefulWidget {
   final String? pageTitle;
-  final int workoutMoveIndex;
+  final int sortPosition;
   final WorkoutMove? workoutMove;
+
+  /// Do not display any rep pickers - use for section types where the reps are ignored (HIIT Circuit and Tabata etc).
   final bool ignoreReps;
   final FixedTimeReps? fixedTimeReps;
   final void Function(WorkoutMove workoutMove) saveWorkoutMove;
   WorkoutMoveCreator(
-      {required this.workoutMoveIndex,
+      {required this.sortPosition,
       required this.saveWorkoutMove,
       this.pageTitle,
       this.ignoreReps = false,
@@ -61,7 +63,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     // Selected equipment will need to be reselected.
     _activeWorkoutMove = WorkoutMove()
       ..id = _activeWorkoutMove?.id ?? 'tempId'
-      ..sortPosition = widget.workoutMoveIndex
+      ..sortPosition = widget.sortPosition
       ..equipment = null
       ..reps = widget.fixedTimeReps != null
           ? widget.fixedTimeReps!.reps

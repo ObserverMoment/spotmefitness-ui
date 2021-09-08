@@ -41,7 +41,7 @@ class TimedSectionController extends WorkoutSectionController {
         (index) => sortedWorkoutSets
                 // wSet.duration is in seconds in the DB. Convert it to ms.
                 .map((wSet) {
-              _acumTime += wSet.duration! * 1000;
+              _acumTime += wSet.duration * 1000;
               return _acumTime;
             }).toList());
 

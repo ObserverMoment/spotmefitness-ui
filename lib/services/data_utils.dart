@@ -33,7 +33,7 @@ class DataUtils {
       case kLastStandingName:
         return Duration(
             seconds: workoutSection.rounds *
-                workoutSection.workoutSets.sumBy((s) => s.duration!));
+                workoutSection.workoutSets.sumBy((s) => s.duration));
       default:
         throw Exception(
             'DataUtils.calculateTimedSectionDuration: ${workoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');

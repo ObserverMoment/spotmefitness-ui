@@ -7,6 +7,7 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 class WorkoutSetDisplay extends StatelessWidget {
   final WorkoutSet workoutSet;
@@ -38,7 +39,7 @@ class WorkoutSetDisplay extends StatelessWidget {
               workoutSectionType: workoutSectionType,
             ),
           ),
-          if (sortedMoves.isNotEmpty)
+          if (sortedMoves.isNotEmpty && !workoutSet.isRestSet)
             Flexible(
               child: ListView(
                 physics: scrollable ? null : NeverScrollableScrollPhysics(),

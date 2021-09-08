@@ -127,7 +127,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
             pageTitle: 'Set ${widget.setIndex + 1}: Edit Move',
             saveWorkoutMove: (workoutMove) => _bloc.editWorkoutMove(
                 widget.sectionIndex, widget.setIndex, workoutMove),
-            workoutMoveIndex: workoutMove.sortPosition,
+            sortPosition: workoutMove.sortPosition,
             // When picking a move for a circuit station the number of reps only matters if there is more than one move at that station. Otherwise you need to know how many / much of each you need to be doing (alternating between them).
             ignoreReps: _sortedWorkoutMoves.length == 1),
       ),
@@ -135,12 +135,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
   }
 
   String _buildStationTimeText() {
-    if (_workoutSet.duration == null) {
-      throw Exception(
-          '_workoutSet.duration should be set when a new timed workoutSet is created. It should never be null at this point.');
-    } else {
-      return _workoutSet.duration!.secondsToTimeDisplay();
-    }
+    return _workoutSet.duration.secondsToTimeDisplay();
   }
 
   @override
@@ -183,7 +178,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                         onPressed: () => context.showBottomSheet(
                             child: DurationPicker(
                                 duration:
-                                    Duration(seconds: _workoutSet.duration!),
+                                    Duration(seconds: _workoutSet.duration),
                                 updateDuration: (duration) => context
                                     .read<WorkoutCreatorBloc>()
                                     .editWorkoutSet(
@@ -205,7 +200,7 @@ class _WorkoutTabataSetCreatorState extends State<WorkoutTabataSetCreator> {
                     ),
                   ],
                 ),
-                NavBarEllipsisMenu(ellipsisCircled: false, items: [
+                NavBarEllipsisMenu(items: [
                   if (widget.allowReorder)
                     ContextMenuItem(
                         text: 'Move Up',

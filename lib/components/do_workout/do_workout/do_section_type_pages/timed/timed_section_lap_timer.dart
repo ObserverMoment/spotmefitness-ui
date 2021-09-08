@@ -35,7 +35,7 @@ class TimedSectionLapTimer extends StatelessWidget {
   /// currentWorkoutSet.duration should never be null for timed sets.
   int get _currentSetDuration => workoutSection.workoutSets
       .sortedBy<num>((wSet) => wSet.sortPosition)[state.currentSetIndex]
-      .duration!;
+      .duration;
 
   double get _currentSetTimeRemaining =>
       1 - (state.timeToNextCheckpointMs! / (_currentSetDuration * 1000));

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// [set], [superset], [giantset] etc.
 class WorkoutSetDefinition extends StatelessWidget {
@@ -13,28 +14,32 @@ class WorkoutSetDefinition extends StatelessWidget {
     final color = Styles.colorTwo;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: length > 3
+      child: workoutSet.isRestSet
           ? MyText(
-              'GIANTSET',
-              color: color,
-              size: FONTSIZE.TINY,
-              weight: FontWeight.bold,
+              'REST',
             )
-          : length == 3
+          : length > 3
               ? MyText(
-                  'TRISET',
+                  'GIANTSET',
                   color: color,
                   size: FONTSIZE.TINY,
                   weight: FontWeight.bold,
                 )
-              : length == 2
+              : length == 3
                   ? MyText(
-                      'SUPERSET',
+                      'TRISET',
                       color: color,
                       size: FONTSIZE.TINY,
                       weight: FontWeight.bold,
                     )
-                  : Container(),
+                  : length == 2
+                      ? MyText(
+                          'SUPERSET',
+                          color: color,
+                          size: FONTSIZE.TINY,
+                          weight: FontWeight.bold,
+                        )
+                      : Container(),
     );
   }
 }
