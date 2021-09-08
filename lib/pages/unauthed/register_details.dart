@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class RegisterDetails extends StatelessWidget {
   final TextEditingController emailController;
@@ -24,36 +27,41 @@ class RegisterDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          CupertinoFormSection.insetGrouped(
-              margin: const EdgeInsets.all(16),
-              footer: MyText('Password: Min 6 characters'),
-              children: [
-                MyTextFormFieldRow(
-                  prefix: Icon(CupertinoIcons.envelope_fill),
-                  placeholder: 'Email',
-                  keyboardType: TextInputType.emailAddress,
-                  controller: emailController,
-                  validator: validateEmail,
-                  autofocus: true,
-                  autofillHints: const <String>[AutofillHints.email],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            MyTextFormFieldRow(
+              prefix: Icon(CupertinoIcons.envelope_fill),
+              placeholder: 'Email',
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              validator: validateEmail,
+              autofocus: true,
+              autofillHints: const <String>[AutofillHints.email],
+              backgroundColor: context.theme.background,
+            ),
+            MyPasswordFieldRow(
+              controller: passwordController,
+              validator: validatePassword,
+              autofillHints: const <String>[AutofillHints.newPassword],
+              backgroundColor: context.theme.background,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 12, top: 4, bottom: 24),
+              child: MyText('Min 6 characters'),
+            ),
+            if (canSubmit())
+              FadeIn(
+                child: PrimaryButton(
+                  onPressed: registerNewUserAndContinue,
+                  text: 'Sign Up',
+                  disabled: !canSubmit(),
+                  loading: registeringNewUser,
                 ),
-                MyPasswordFieldRow(
-                  controller: passwordController,
-                  validator: validatePassword,
-                  autofillHints: const <String>[AutofillHints.newPassword],
-                ),
-              ]),
-          SizedBox(height: 10),
-          PrimaryButton(
-            onPressed: registerNewUserAndContinue,
-            text: 'Sign Up',
-            disabled: !canSubmit(),
-            loading: registeringNewUser,
-          ),
-          SizedBox(height: 16),
-        ],
+              ),
+          ],
+        ),
       ),
     );
   }

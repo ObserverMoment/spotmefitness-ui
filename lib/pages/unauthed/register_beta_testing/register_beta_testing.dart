@@ -4,24 +4,24 @@ import 'package:get_it/get_it.dart';
 import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
+import 'package:spotmefitness_ui/pages/unauthed/register_beta_testing/beta_explained.dart';
 import 'package:spotmefitness_ui/pages/unauthed/register_details.dart';
 import 'package:spotmefitness_ui/pages/unauthed/trial_selector.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
-class StartTrial extends StatefulWidget {
+class RegisterBetaTesting extends StatefulWidget {
   @override
-  _StartTrialState createState() => _StartTrialState();
+  _RegisterBetaTestingState createState() => _RegisterBetaTestingState();
 }
 
-class _StartTrialState extends State<StartTrial> {
-  TrialType? _trialType;
+class _RegisterBetaTestingState extends State<RegisterBetaTesting> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  PageController _pageController = PageController();
   int _currentStage = 0;
   bool _registeringNewUser = false;
   String? _registrationError;
@@ -35,26 +35,14 @@ class _StartTrialState extends State<StartTrial> {
     _passwordController.addListener(() {
       setState(() {});
     });
-    _pageController.addListener(() {
-      setState(() => _currentStage = _pageController.page!.toInt());
-    });
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
-
-  void _animateToPage(int index) {
-    _pageController.animateToPage(index,
-        duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
-  }
-
-  void _setTrialType(TrialType trialType) =>
-      setState(() => _trialType = trialType);
 
   bool _validateEmail() => EmailValidator.validate(_emailController.text);
   bool _validatePassword() => _passwordController.text.length > 5;
@@ -76,23 +64,49 @@ class _StartTrialState extends State<StartTrial> {
 
   @override
   Widget build(BuildContext context) {
-    return MyPageScaffold(
+    return CupertinoPageScaffold(
+        backgroundColor: context.theme.barBackground,
         navigationBar: MyNavBar(
-          customLeading: CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: context.pop,
-              child: MyText('Cancel')),
+          withoutLeading: true,
+          trailing: NavBarCancelButton(context.pop),
+          middle: Row(
+            children: [
+              NavBarLargeTitle('WELCOME TO SOFIE!'),
+            ],
+          ),
         ),
         child: Column(children: [
-          H2(
-            '3 MONTH FREE TRIAL',
+          SizedBox(height: 10),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () => context.push(child: BetaExplained()),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                MyHeaderText(
+                  'Great, but what IS "Beta"?',
+                ),
+                SizedBox(width: 8),
+                Icon(CupertinoIcons.info),
+              ],
+            ),
           ),
-          StageProgressIndicator(
-            numStages: 3,
-            titles: ['Select trial', 'Sign up', 'GO!'],
-            currentStage: _currentStage,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            child: MyText(
+              'Happy? Then just enter an email address and password to get started.',
+              maxLines: 3,
+              textAlign: TextAlign.center,
+            ),
           ),
-          SizedBox(height: 16),
+          RegisterDetails(
+            canSubmit: _canSubmitRegisterDetails,
+            emailController: _emailController,
+            passwordController: _passwordController,
+            registerNewUserAndContinue: _registerNewUserAndContinue,
+            validateEmail: _validateEmail,
+            validatePassword: _validatePassword,
+          ),
           if (_registrationError != null)
             GrowIn(
               child: Padding(
@@ -105,27 +119,6 @@ class _StartTrialState extends State<StartTrial> {
                 ),
               ),
             ),
-          Expanded(
-            child: PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                TrialSelector(
-                    trialType: _trialType,
-                    setTrialType: _setTrialType,
-                    goToEnterDetails: () => _animateToPage(1)),
-                RegisterDetails(
-                  canSubmit: _canSubmitRegisterDetails,
-                  emailController: _emailController,
-                  validateEmail: _validateEmail,
-                  passwordController: _passwordController,
-                  validatePassword: _validatePassword,
-                  registerNewUserAndContinue: _registerNewUserAndContinue,
-                  registeringNewUser: _registeringNewUser,
-                ),
-              ],
-            ),
-          )
         ]));
   }
 }

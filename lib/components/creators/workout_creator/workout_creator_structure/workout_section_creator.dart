@@ -178,7 +178,7 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                     padding: const EdgeInsets.all(8.0),
                     child: MyHeaderText(
                       _workoutSection.name!,
-                      size: FONTSIZE.LARGE,
+                      size: FONTSIZE.BIG,
                     ),
                   ),
                 if (_workoutSection.isTimed)

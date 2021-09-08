@@ -5,6 +5,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_page_view.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/icons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -17,6 +18,7 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutDetailsSection extends StatelessWidget {
@@ -61,7 +63,9 @@ class WorkoutDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Set<Equipment> allEquipments = _uniqueEquipments();
+    final List<Equipment> allEquipments = _uniqueEquipments()
+        .where((e) => e.id != kBodyweightEquipmentId)
+        .toList();
     final sortedSets =
         workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
 
@@ -78,22 +82,12 @@ class WorkoutDetailsSection extends StatelessWidget {
                 if (showSectionTypeTag)
                   WorkoutSectionTypeTag(
                     workoutSection.workoutSectionType.name,
-                    timecap: workoutSection.timecap,
+                    timecap: workoutSection.isAMRAP
+                        ? workoutSection.timecap
+                        : workoutSection.isTimed
+                            ? workoutSection.timedSectionDuration.inSeconds
+                            : null,
                     fontSize: FONTSIZE.MAIN,
-                  ),
-                if ([kHIITCircuitName, kTabataName, kEMOMName]
-                    .contains(workoutSection.workoutSectionType.name))
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: context.theme.primary.withOpacity(0.3)),
-                      borderRadius: BorderRadius.circular(60),
-                    ),
-                    child: MyText(
-                        'Duration: ${DataUtils.calculateTimedSectionDuration(workoutSection).compactDisplay()}'),
                   ),
               ],
             ),
@@ -146,8 +140,6 @@ class WorkoutDetailsSection extends StatelessWidget {
                 children: allEquipments
                     .map((e) => Tag(
                           tag: e.name,
-                          color: context.theme.cardBackground,
-                          textColor: context.theme.primary,
                         ))
                     .toList(),
               ),
@@ -158,15 +150,16 @@ class WorkoutDetailsSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 if (workoutSection.rounds > 1)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      NumberRoundsIcon(
-                        workoutSection.rounds,
-                        alignment: Axis.vertical,
-                      ),
-                    ],
+                  ContentBox(
+                    child: NumberRoundsIcon(
+                      workoutSection.rounds,
+                      alignment: Axis.vertical,
+                    ),
                   ),
+                if (workoutSection.isAMRAP)
+                  ContentBox(
+                      child: CompactTimerIcon(
+                          Duration(seconds: workoutSection.timecap))),
                 BorderButton(
                   mini: true,
                   prefix: Stack(
@@ -194,21 +187,13 @@ class WorkoutDetailsSection extends StatelessWidget {
               ],
             ),
           ),
-          if (workoutSection.timecap != null || workoutSection.rounds > 1)
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 6.0, horizontal: 20),
-              child: WorkoutSectionInstructions(
-                typeName: workoutSection.workoutSectionType.name,
-                rounds: workoutSection.rounds,
-                timecap: workoutSection.timecap,
-              ),
-            ),
           if (Utils.textNotNull(workoutSection.note))
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ViewMoreFullScreenTextBlock(
-                  text: workoutSection.note!, title: 'Section Note'),
+                  text: workoutSection.note!,
+                  title: 'Section Note',
+                  textAlign: TextAlign.center),
             ),
           if (sortedSets.isNotEmpty)
             Flexible(

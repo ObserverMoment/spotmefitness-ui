@@ -44,6 +44,7 @@ class ThemeBloc extends ChangeNotifier {
   Color get activeIcon => theme.customThemeData.activeIcon;
   Color get cardBackground => theme.customThemeData.cardBackground;
   Color get modalBackground => theme.customThemeData.cardBackground;
+  Color get barBackground => theme.cupertinoThemeData.barBackgroundColor;
   Color get navbarBottomBorder => theme.customThemeData.navbarBottomBorder;
 
   Future<void> switchToTheme(ThemeName switchToTheme) async {

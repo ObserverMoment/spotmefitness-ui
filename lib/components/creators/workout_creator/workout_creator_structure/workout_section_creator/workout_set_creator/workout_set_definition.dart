@@ -12,34 +12,37 @@ class WorkoutSetDefinition extends StatelessWidget {
   Widget build(BuildContext context) {
     final int length = workoutSet.workoutMoves.length;
     final color = Styles.colorTwo;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: workoutSet.isRestSet
-          ? MyText(
-              'REST',
-            )
-          : length > 3
-              ? MyText(
-                  'GIANTSET',
-                  color: color,
-                  size: FONTSIZE.TINY,
-                  weight: FontWeight.bold,
-                )
-              : length == 3
-                  ? MyText(
-                      'TRISET',
-                      color: color,
-                      size: FONTSIZE.TINY,
-                      weight: FontWeight.bold,
-                    )
-                  : length == 2
-                      ? MyText(
-                          'SUPERSET',
-                          color: color,
-                          size: FONTSIZE.TINY,
-                          weight: FontWeight.bold,
-                        )
-                      : Container(),
-    );
+
+    return length == 1
+        ? workoutSet.isRestSet
+            ? MyText(
+                'REST',
+              )
+            : Container()
+        : Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: length > 3
+                ? MyText(
+                    'GIANTSET',
+                    color: color,
+                    size: FONTSIZE.TINY,
+                    weight: FontWeight.bold,
+                  )
+                : length == 3
+                    ? MyText(
+                        'TRISET',
+                        color: color,
+                        size: FONTSIZE.TINY,
+                        weight: FontWeight.bold,
+                      )
+                    : length == 2
+                        ? MyText(
+                            'SUPERSET',
+                            color: color,
+                            size: FONTSIZE.TINY,
+                            weight: FontWeight.bold,
+                          )
+                        : Container(),
+          );
   }
 }

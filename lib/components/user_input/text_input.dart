@@ -66,7 +66,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
               padding:
-                  const EdgeInsets.only(left: 8, top: 10, bottom: 6, right: 8),
+                  const EdgeInsets.only(left: 0, top: 10, bottom: 6, right: 8),
               decoration: widget.backgroundColor != null
                   ? BoxDecoration(
                       color: widget.backgroundColor,
@@ -93,8 +93,8 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
             ),
             if (_controller.text.length > 0)
               Positioned(
-                  left: widget.prefix != null ? 8 : 17,
-                  top: 14,
+                  left: widget.prefix != null ? 20 : 32,
+                  top: 18,
                   child: FadeIn(
                     child: MyText(
                       widget.placeholder,
@@ -134,6 +134,7 @@ class MyPasswordFieldRow extends StatefulWidget {
   final TextEditingController controller;
   final bool Function()? validator;
   final List<String>? autofillHints;
+  final Color? backgroundColor;
 
   MyPasswordFieldRow(
       {this.prefix,
@@ -141,7 +142,8 @@ class MyPasswordFieldRow extends StatefulWidget {
       this.autofillHints,
       this.autofocus = false,
       this.obscureText = false,
-      this.validator});
+      this.validator,
+      this.backgroundColor});
 
   @override
   _MyPasswordFieldRowState createState() => _MyPasswordFieldRowState();
@@ -164,6 +166,7 @@ class _MyPasswordFieldRowState extends State<MyPasswordFieldRow> {
             controller: widget.controller,
             validator: widget.validator,
             autofillHints: widget.autofillHints,
+            backgroundColor: widget.backgroundColor,
           ),
         ),
         CupertinoButton(

@@ -57,6 +57,8 @@ extension WorkoutSectionExtension on WorkoutSection {
 }
 
 extension WorkoutSectionTypeExtension on WorkoutSectionType {
+  bool get canPyramid => ![kHIITCircuitName, kTabataName].contains(this.name);
+
   bool get isAMRAP => this.name == kAMRAPName;
 
   bool get isTimed => [

@@ -12,6 +12,7 @@ import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/pyramid_generator.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:collection/collection.dart';
@@ -129,6 +130,29 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
         widget.sectionIndex, widget.setIndex, widget.setIndex + 1);
   }
 
+  void _generateSequenceForPyramid() {
+    context.push(
+        fullscreenDialog: true,
+        child: PyramidGenerator(
+            pageTitle: 'Rep Pyramid Generator',
+            generateSequence: _createSetSequence));
+  }
+
+  void _createSetSequence(List<int> repSequence) {
+    context.showConfirmDialog(
+        title: 'Generate Pyramid',
+        content: MyText(
+          'This will replace the current set with ${repSequence.length} separate new sets. Continue?',
+          textAlign: TextAlign.center,
+          maxLines: 4,
+          lineHeight: 1.3,
+        ),
+        onConfirm: () {
+          context.read<WorkoutCreatorBloc>().createSetSequence(
+              widget.sectionIndex, widget.setIndex, repSequence);
+        });
+  }
+
   void _updateDuration(Duration duration, bool copyToAll) {
     if (copyToAll) {
       context.read<WorkoutCreatorBloc>().updateAllSetDurations(
@@ -216,11 +240,14 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                       text: Duration(seconds: _workoutSet.duration)
                           .compactDisplay(),
                     ),
-                  WorkoutSetDefinition(_workoutSet),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: WorkoutSetDefinition(_workoutSet),
+                  ),
                 ],
               ),
               Row(
-                mainAxisAlignment: material.MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (!_workoutSet.isRestSet)
                     Padding(
@@ -245,6 +272,11 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
                         text: 'Duplicate',
                         iconData: CupertinoIcons.doc_on_doc,
                         onTap: _duplicateWorkoutSet),
+                    if (_workoutSectionType.canPyramid)
+                      ContextMenuItem(
+                          text: 'Pyramid',
+                          iconData: CupertinoIcons.triangle_righthalf_fill,
+                          onTap: _generateSequenceForPyramid),
                     ContextMenuItem(
                       text: 'Delete',
                       iconData: CupertinoIcons.delete_simple,

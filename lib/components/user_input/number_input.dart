@@ -17,19 +17,24 @@ class MyNumberInput extends StatelessWidget {
     this.backgroundColor,
     this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
   });
+
   @override
   Widget build(BuildContext context) {
     return CupertinoTextField(
       controller: controller,
+      onTap: () {
+        controller.selection = TextSelection(
+            baseOffset: 0, extentOffset: controller.value.text.length);
+      },
       keyboardAppearance: context.theme.cupertinoThemeData.brightness,
       autofocus: autoFocus,
       keyboardType:
-          TextInputType.numberWithOptions(signed: false, decimal: autoFocus),
+          TextInputType.numberWithOptions(signed: false, decimal: allowDouble),
       // https://stackoverflow.com/questions/54454983/allow-only-two-decimal-number-in-flutter-input
       inputFormatters: [
         allowDouble
             ? FilteringTextInputFormatter.allow((RegExp(r'^\d+\.?\d{0,2}')))
-            : FilteringTextInputFormatter.digitsOnly
+            : FilteringTextInputFormatter.digitsOnly,
       ],
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,

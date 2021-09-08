@@ -113,7 +113,10 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     if (_workoutMoveNeedsLoad() && _activeWorkoutMove!.loadAmount == 0) {
       context.showConfirmDialog(
           title: 'Load Amount is Zero',
-          content: MyText('Is this intentional?'),
+          content: MyText(
+            'Is this intentional?',
+            textAlign: TextAlign.center,
+          ),
           confirmText: 'Yes, save it',
           cancelText: 'No, change it',
           onConfirm: _saveWorkoutMove);
@@ -217,7 +220,8 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Flexible(
-                                    child: H3(_activeWorkoutMove!.move.name)),
+                                    child: MyHeaderText(
+                                        _activeWorkoutMove!.move.name)),
                                 SizedBox(
                                   width: 16,
                                 ),

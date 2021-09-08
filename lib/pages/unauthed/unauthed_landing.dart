@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/pages/unauthed/register_beta_testing/register_beta_testing.dart';
 import 'package:spotmefitness_ui/pages/unauthed/sign_in.dart';
 import 'package:spotmefitness_ui/pages/unauthed/start_trial.dart';
 
@@ -27,11 +29,6 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
   List<Widget> _featurePages = [
     SizedBox.expand(
         child: Image.asset(
-      'assets/stock_images/gym.jpg',
-      fit: BoxFit.cover,
-    )),
-    SizedBox.expand(
-        child: Image.asset(
       'assets/stock_images/stretch.jpg',
       fit: BoxFit.fitHeight,
     )),
@@ -42,68 +39,77 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
     )),
     SizedBox.expand(
         child: Image.asset(
+      'assets/stock_images/skip.jpg',
+      fit: BoxFit.cover,
+    )),
+    SizedBox.expand(
+        child: Image.asset(
       'assets/stock_images/yoga_girl.jpg',
       fit: BoxFit.cover,
     )),
     SizedBox.expand(
         child: Image.asset(
-      'assets/stock_images/skip.jpg',
+      'assets/stock_images/gym.jpg',
       fit: BoxFit.cover,
     )),
   ];
 
-  Widget _logoHeader() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 32.0),
-      child: Column(
-        children: <Widget>[
-          SvgPicture.asset(
-            'assets/logos/spotme_logo.svg',
-            width: 60.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 6, bottom: 10.0),
-            child: MyText(
-              'SpotMe Fitness',
-              weight: FontWeight.bold,
-              // Must pass a color to avoid MyText component trying to look up context.theme, which does not exist prior to the user reaching the authed section of the app.
-              color: Styles.white,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-        child: Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        PageView(
-          controller: _pageController,
-          children: _featurePages,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 100.0),
-          child: _logoHeader(),
-        ),
-        Positioned(
-            bottom: 0,
+    return LayoutBuilder(builder: (context, constraints) {
+      final screenHeight = constraints.maxHeight;
+      return CupertinoPageScaffold(
+          child: Stack(
+        alignment: Alignment.topCenter,
+        fit: StackFit.expand,
+        children: [
+          PageView(
+            controller: _pageController,
+            children: _featurePages,
+          ),
+          // Positioned(
+          //   top: screenHeight * 0.1,
+          //   child: Opacity(
+          //     opacity: 0.4,
+          //     child: SvgPicture.asset(
+          //       'assets/logos/spotme_logo.svg',
+          //       width: 20.0,
+          //     ),
+          //   ),
+          // ),
+          Positioned(
+            top: screenHeight * 0.22,
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: BasicProgressDots(
-                    numDots: _featurePages.length,
-                    currentIndex: _pageController.hasClients &&
-                            _pageController.page != null
-                        ? _pageController.page!.toInt()
-                        : 0,
-                    color: Styles.white,
-                  ),
+                Text('Sofie',
+                    style: GoogleFonts.voces(
+                      fontSize: 60,
+                    )),
+                // Text('Sofie',
+                //     style: GoogleFonts.katibeh(
+                //       fontSize: 60,
+                //     )),
+                // Text('Sofie',
+                //     style: GoogleFonts.bigShouldersInlineDisplay(
+                //       fontSize: 60,
+                //     )),
+                // Text('Sofie',
+                //     style: GoogleFonts.plaster(
+                //       fontSize: 60,
+                //     )),
+                MyText(
+                  'Social Fitness Elevated',
+                  weight: FontWeight.bold,
+                  // Must pass a color to avoid MyText component trying to look up context.theme, which does not exist prior to the user reaching the authed section of the app.
+                  color: Styles.white,
                 ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 40,
+            child: Column(
+              children: [
                 MyButton(
                   text: 'Sign In',
                   onPressed: () => Navigator.push(
@@ -114,19 +120,28 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
                   contentColor: Styles.black,
                   withMinWidth: true,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 12),
                 SecondaryButton(
-                  text: 'Free Trial',
+                  text: 'Sign Up to Beta Testing',
                   onPressed: () => Navigator.push(
                       context,
                       CupertinoPageRoute(
-                          fullscreenDialog: true,
-                          builder: (_) => StartTrial())),
+                          builder: (_) => RegisterBetaTesting())),
                 ),
-                SizedBox(height: 100),
+                SizedBox(height: 24),
+                BasicProgressDots(
+                  numDots: _featurePages.length,
+                  currentIndex:
+                      _pageController.hasClients && _pageController.page != null
+                          ? _pageController.page!.toInt()
+                          : 0,
+                  color: Styles.peachRed,
+                ),
               ],
-            ))
-      ],
-    ));
+            ),
+          ),
+        ],
+      ));
+    });
   }
 }

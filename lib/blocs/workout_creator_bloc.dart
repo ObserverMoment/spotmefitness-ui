@@ -23,7 +23,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
   late Map<String, dynamic> backupJson = {};
 
   WorkoutCreatorBloc(this.context, Workout initialWorkout) {
-    workout = Workout.fromJson(initialWorkout.toJson());
+    workout = initialWorkout.copyAndSortAllChildren;
     backupJson = workout.toJson();
   }
 
@@ -374,7 +374,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     });
   }
 
-  void duplicateWorkoutSet(int sectionIndex, int setIndex) async {
+  Future<void> duplicateWorkoutSet(int sectionIndex, int setIndex) async {
     _backup();
 
     final workoutSets = workout.workoutSections[sectionIndex].workoutSets;
@@ -416,6 +416,42 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  /// For generating ladders and pyramids.
+  /// The original set will be written over with the set created by the first int in the repSequence. For each int in repSequence a new set will be created, where all of its moves will have their reps adjusted.
+  Future<void> createSetSequence(
+      int sectionIndex, int originalsetIndex, List<int> repSequence) async {
+    context.showLoadingAlert('Generating Pyramid',
+        icon: Icon(CupertinoIcons.triangle_righthalf_fill));
+    // generatingPyramid = true;
+    // notifyListeners();
+
+    /// 1. run duplicate set repSequence.length - 1 times
+    var dupes = List.generate(repSequence.length - 1, (i) => i);
+
+    for (final _ in dupes) {
+      await duplicateWorkoutSet(sectionIndex, originalsetIndex);
+    }
+
+    /// 2. New sets are from originalSetIndex to originalSetIndex + repSequence.length - 1. For each
+    final workoutSection = workout.workoutSections[sectionIndex];
+
+    var updates = List.generate(repSequence.length, (i) => i);
+
+    for (final i in updates) {
+      final workoutSet = workoutSection.workoutSets[originalsetIndex + i];
+      final workoutMoves = workoutSet.workoutMoves;
+
+      for (final wm in workoutMoves) {
+        wm.reps = repSequence[i].toDouble();
+        await editWorkoutMove(sectionIndex, workoutSet.sortPosition, wm);
+      }
+    }
+
+    // generatingPyramid = false;
+    // notifyListeners();
+    context.pop(); // Loading alert;
   }
 
   void reorderWorkoutSets(int sectionIndex, int from, int to) async {
@@ -544,7 +580,7 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void editWorkoutMove(
+  Future<void> editWorkoutMove(
       int sectionIndex, int setIndex, WorkoutMove workoutMove) async {
     _backup();
 
