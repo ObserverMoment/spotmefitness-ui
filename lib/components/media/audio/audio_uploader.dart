@@ -50,7 +50,7 @@ class _AudioUploaderState extends State<AudioUploader> {
       } catch (e) {
         await context.showErrorAlert(e.toString());
       } finally {
-        setState(() => _uploading = false);
+        if (mounted) setState(() => _uploading = false);
       }
     }
   }

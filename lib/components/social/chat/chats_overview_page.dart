@@ -4,7 +4,7 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/social/chat/club_chats_channel_list.dart';
 import 'package:spotmefitness_ui/components/social/chat/friend_chats_channel_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart' as chat;
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 

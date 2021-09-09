@@ -78,12 +78,7 @@ class WorkoutDetailsSection extends StatelessWidget {
               children: [
                 if (showSectionTypeTag)
                   WorkoutSectionTypeTag(
-                    workoutSection.workoutSectionType.name,
-                    timecap: workoutSection.isAMRAP
-                        ? workoutSection.timecap
-                        : workoutSection.isTimed
-                            ? workoutSection.timedSectionDuration.inSeconds
-                            : null,
+                    workoutSection: workoutSection,
                     fontSize: FONTSIZE.MAIN,
                   ),
               ],

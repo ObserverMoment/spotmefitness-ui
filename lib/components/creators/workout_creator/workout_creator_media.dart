@@ -47,9 +47,7 @@ class _WorkoutCreatorMediaState extends State<WorkoutCreatorMedia> {
       context.read<WorkoutCreatorBloc>().updateWorkoutMeta(data);
 
   void _updateWorkoutSection(int sectionindex, Map<String, dynamic> data) {
-// context
-    //     .read<WorkoutCreatorBloc>()
-    //     .updateWorkoutSection(sectionindex, data);
+    context.read<WorkoutCreatorBloc>().updateWorkoutSection(sectionindex, data);
   }
 
   @override

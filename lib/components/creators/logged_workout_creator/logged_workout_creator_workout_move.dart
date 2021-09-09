@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/animated_slidable.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_move_display.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/load_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/load_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';

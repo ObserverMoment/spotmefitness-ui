@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/date_time_pickers.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/date_time_pickers.dart';
 import 'package:spotmefitness_ui/components/user_input/tag_managers/progress_journal_goal_tags_manager.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';

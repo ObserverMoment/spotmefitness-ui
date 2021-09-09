@@ -11,7 +11,6 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 class WorkoutStructureWorkoutSection extends StatelessWidget {
   final Key key;
@@ -77,99 +76,75 @@ class WorkoutStructureWorkoutSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 4),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                  margin: const EdgeInsets.only(right: 8),
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Styles.colorOne,
-                  ),
-                  child: MyHeaderText(
-                    '${workoutSection.sortPosition + 1}',
-                    color: Styles.white,
-                    size: FONTSIZE.SMALL,
-                    weight: FontWeight.normal,
-                  )),
-              Expanded(
-                child: MyText(
-                  Utils.textNotNull(workoutSection.name)
-                      ? workoutSection.name!
-                      : 'Section ${workoutSection.sortPosition + 1}',
-                ),
+              WorkoutSectionTypeTag(
+                workoutSection: workoutSection,
+                withBorder: false,
+                fontSize: FONTSIZE.BIG,
+                fontColor: Styles.colorTwo,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  NavBarEllipsisMenu(items: [
-                    ContextMenuItem(
-                      text: Utils.textNotNull(workoutSection.name)
-                          ? 'Edit name'
-                          : 'Add name',
-                      iconData: CupertinoIcons.pencil,
-                      onTap: () => context.push(
-                          child: FullScreenTextEditing(
-                        title: 'Name',
-                        inputValidation: (t) => t.length > 0 && t.length <= 40,
-                        maxChars: 30,
-                        validationMessage: 'Max 30 chars',
-                        initialValue: workoutSection.name,
-                        onSave: (text) =>
-                            _updateSection(context, {'name': text}),
-                      )),
-                    ),
-                    ContextMenuItem(
-                      text: Utils.textNotNull(workoutSection.note)
-                          ? 'Edit note'
-                          : 'Add note',
-                      iconData: CupertinoIcons.doc_text,
-                      onTap: () => context.push(
-                          child: FullScreenTextEditing(
-                        title: 'Note',
-                        inputValidation: (text) => true,
-                        initialValue: workoutSection.note,
-                        onSave: (note) =>
-                            _updateSection(context, {'note': note}),
-                      )),
-                    ),
-                    if (canReorder)
-                      ContextMenuItem(
-                        text: 'Move up',
-                        onTap: () => _moveWorkoutSectionUpOne(context),
-                        iconData: CupertinoIcons.up_arrow,
-                      ),
-                    if (canReorder)
-                      ContextMenuItem(
-                        text: 'Move down',
-                        onTap: () => _moveWorkoutSectionDownOne(context),
-                        iconData: CupertinoIcons.down_arrow,
-                      ),
-                    ContextMenuItem(
-                      text: 'Delete',
-                      onTap: () => _deleteWorkoutSection(context),
-                      iconData: CupertinoIcons.delete_simple,
-                      destructive: true,
-                    ),
-                  ])
-                ],
-              )
+              NavBarEllipsisMenu(items: [
+                ContextMenuItem(
+                  text: Utils.textNotNull(workoutSection.name)
+                      ? 'Edit name'
+                      : 'Add name',
+                  iconData: CupertinoIcons.pencil,
+                  onTap: () => context.push(
+                      child: FullScreenTextEditing(
+                    title: 'Name',
+                    inputValidation: (t) => t.length > 0 && t.length <= 40,
+                    maxChars: 30,
+                    validationMessage: 'Max 30 chars',
+                    initialValue: workoutSection.name,
+                    onSave: (text) => _updateSection(context, {'name': text}),
+                  )),
+                ),
+                ContextMenuItem(
+                  text: Utils.textNotNull(workoutSection.note)
+                      ? 'Edit note'
+                      : 'Add note',
+                  iconData: CupertinoIcons.doc_text,
+                  onTap: () => context.push(
+                      child: FullScreenTextEditing(
+                    title: 'Note',
+                    inputValidation: (text) => true,
+                    initialValue: workoutSection.note,
+                    onSave: (note) => _updateSection(context, {'note': note}),
+                  )),
+                ),
+                if (canReorder)
+                  ContextMenuItem(
+                    text: 'Move up',
+                    onTap: () => _moveWorkoutSectionUpOne(context),
+                    iconData: CupertinoIcons.up_arrow,
+                  ),
+                if (canReorder)
+                  ContextMenuItem(
+                    text: 'Move down',
+                    onTap: () => _moveWorkoutSectionDownOne(context),
+                    iconData: CupertinoIcons.down_arrow,
+                  ),
+                ContextMenuItem(
+                  text: 'Delete',
+                  onTap: () => _deleteWorkoutSection(context),
+                  iconData: CupertinoIcons.delete_simple,
+                  destructive: true,
+                ),
+              ])
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                WorkoutSectionTypeTag(workoutSection.workoutSectionType.name,
-                    timecap: workoutSection.timecapIfValid),
-              ],
+          SizedBox(height: 4),
+          if (Utils.textNotNull(workoutSection.name))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: H3(workoutSection.name!),
             ),
-          ),
           if (Utils.textNotNull(workoutSection.note))
             Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: Row(
                 children: [
                   Expanded(

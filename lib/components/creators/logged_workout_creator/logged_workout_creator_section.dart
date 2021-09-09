@@ -5,8 +5,8 @@ import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logg
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section/logged_workout_section_times.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/logging/reps_score_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/logging/reps_score_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';

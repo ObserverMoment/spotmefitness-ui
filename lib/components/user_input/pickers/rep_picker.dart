@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -203,25 +203,26 @@ class _RepPickerModalState extends State<RepPickerModal> {
                           setState(() => _activeRepType = repType)),
               ],
             ),
-            if (_activeRepType != WorkoutMoveRepType.time)
-              FadeIn(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: MyNumberInput(
-                    _repsController,
-                    autoFocus: true,
-                    allowDouble: true,
-                  ),
+            FadeIn(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: MyNumberInput(
+                  _repsController,
+                  autoFocus: true,
+                  allowDouble: _activeRepType != WorkoutMoveRepType.time,
                 ),
               ),
+            ),
             if (_activeRepType == WorkoutMoveRepType.time)
-              FadeIn(
-                  child: RepTimePicker(
-                      reps: _activeReps,
-                      updateReps: (reps) => setState(() => _activeReps = reps),
-                      timeUnit: _activeTimeUnit,
-                      updateTimeUnit: (timeUnit) =>
-                          setState(() => _activeTimeUnit = timeUnit))),
+              SlidingSelect<TimeUnit>(
+                  value: _activeTimeUnit,
+                  children: {
+                    for (final v in TimeUnit.values
+                        .where((v) => v != TimeUnit.artemisUnknown))
+                      v: MyText(describeEnum(v))
+                  },
+                  updateValue: (timeUnit) =>
+                      setState(() => _activeTimeUnit = timeUnit)),
             if ([WorkoutMoveRepType.calories, WorkoutMoveRepType.reps]
                 .contains(_activeRepType))
               FadeIn(child: MyText(_activeRepType.display)),

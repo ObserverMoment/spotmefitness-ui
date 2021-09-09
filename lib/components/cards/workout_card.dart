@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
@@ -7,11 +6,9 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutCard extends StatelessWidget {
@@ -179,14 +176,7 @@ class WorkoutCard extends StatelessWidget {
                         children: workout.workoutSections
                             .sortedBy<num>((section) => section.sortPosition)
                             .map((section) => WorkoutSectionTypeTag(
-                                  Utils.textNotNull(section.name)
-                                      ? section.name!
-                                      : section.workoutSectionType.name,
-                                  hasClassVideo:
-                                      Utils.textNotNull(section.classVideoUri),
-                                  hasClassAudio:
-                                      Utils.textNotNull(section.classAudioUri),
-                                  timecap: section.timecapIfValid,
+                                  workoutSection: section,
                                 ))
                             .toList(),
                       ),

@@ -10,8 +10,9 @@ import 'package:spotmefitness_ui/components/creators/workout_creator/workout_cre
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_set_definition.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/round_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/pyramid_generator.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
@@ -167,6 +168,11 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
     }
   }
 
+  void _updateRounds(int rounds) {
+    context.read<WorkoutCreatorBloc>().editWorkoutSet(
+        widget.sectionIndex, widget.setIndex, {'rounds': rounds});
+  }
+
   void _openAddWorkoutMoveToSet() {
     context.push(
         child: WorkoutMoveCreator(
@@ -225,38 +231,56 @@ class _WorkoutSetCreatorState extends State<WorkoutSetCreator> {
               Row(
                 children: [
                   if (_workoutSectionType.isTimed)
-                    BorderButton(
-                      mini: true,
-                      onPressed: () => context.showBottomSheet(
-                          expand: false,
-                          showDragHandle: false,
-                          child: WorkoutSetDurationPicker(
-                              switchTitle: _workoutSet.isRestSet
-                                  ? 'Copy new time to all rest sets'
-                                  : 'Copy new time to all sets',
-                              duration: Duration(seconds: _workoutSet.duration),
-                              updateDuration: _updateDuration)),
-                      prefix: Icon(CupertinoIcons.stopwatch, size: 18),
-                      text: Duration(seconds: _workoutSet.duration)
-                          .compactDisplay(),
+                    CupertinoButton(
+                        padding: const EdgeInsets.all(4),
+                        onPressed: () => context.showBottomSheet(
+                            expand: false,
+                            showDragHandle: false,
+                            child: WorkoutSetDurationPicker(
+                                switchTitle: _workoutSet.isRestSet
+                                    ? 'Copy new time to all rest sets'
+                                    : 'Copy new time to all sets',
+                                duration:
+                                    Duration(seconds: _workoutSet.duration),
+                                updateDuration: _updateDuration)),
+                        child: Row(
+                          children: [
+                            Icon(CupertinoIcons.timer, size: 18),
+                            SizedBox(width: 5),
+                            MyText(
+                              Duration(seconds: _workoutSet.duration)
+                                  .displayString,
+                              size: FONTSIZE.BIG,
+                            )
+                          ],
+                        )),
+                  if (_workoutSectionType.roundsInputAllowed)
+                    RoundPicker(
+                        rounds: _workoutSet.rounds,
+                        saveValue: _updateRounds,
+                        padding: const EdgeInsets.all(4)),
+                  if (!_workoutSet.isRestSet)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: WorkoutSetDefinition(_workoutSet),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: WorkoutSetDefinition(_workoutSet),
-                  ),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (!_workoutSet.isRestSet)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: CreateTextIconButton(
-                        text: 'Move',
-                        onPressed: _openAddWorkoutMoveToSet,
-                      ),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: _workoutSet.isRestSet
+                        ? MyText(
+                            'REST',
+                            size: FONTSIZE.BIG,
+                          )
+                        : CreateTextIconButton(
+                            text: 'Move',
+                            onPressed: _openAddWorkoutMoveToSet,
+                          ),
+                  ),
                   NavBarEllipsisMenu(items: [
                     if (widget.allowReorder)
                       ContextMenuItem(

@@ -531,6 +531,7 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                   Expanded(
                                     child: PageView(
                                       controller: _pageController,
+                                      physics: NeverScrollableScrollPhysics(),
                                       children: sortedWorkoutSections
                                           .map((ws) => SingleChildScrollView(
                                               child: WorkoutDetailsSection(ws)))

@@ -5,13 +5,10 @@ import 'package:spotmefitness_ui/blocs/auth_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/pages/unauthed/register_beta_testing/beta_explained.dart';
 import 'package:spotmefitness_ui/pages/unauthed/register_details.dart';
-import 'package:spotmefitness_ui/pages/unauthed/trial_selector.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class RegisterBetaTesting extends StatefulWidget {
@@ -22,7 +19,6 @@ class RegisterBetaTesting extends StatefulWidget {
 class _RegisterBetaTestingState extends State<RegisterBetaTesting> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  int _currentStage = 0;
   bool _registeringNewUser = false;
   String? _registrationError;
 
@@ -104,6 +100,7 @@ class _RegisterBetaTestingState extends State<RegisterBetaTesting> {
             registerNewUserAndContinue: _registerNewUserAndContinue,
             validateEmail: _validateEmail,
             validatePassword: _validatePassword,
+            registeringNewUser: _registeringNewUser,
           ),
           if (_registrationError != null)
             GrowIn(

@@ -3,12 +3,11 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// This screen is for when the user is changing the section type - to ensure that correct fields are copied or removed - as required depending on the type. Pass [previousSection] for this.
 class ChangeSectionType extends StatefulWidget {
@@ -83,9 +82,7 @@ class _ChangeSectionTypeState extends State<ChangeSectionType> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: WorkoutSectionTypeTag(
-                  _workoutSection.workoutSectionType.name,
-                  timecap:
-                      _workoutSection.isAMRAP ? _workoutSection.timecap : null,
+                  workoutSection: _workoutSection,
                   fontSize: FONTSIZE.BIG,
                 ),
               ),

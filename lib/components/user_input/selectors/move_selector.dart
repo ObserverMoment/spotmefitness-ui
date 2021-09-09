@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/move_list_item.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/move_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/screens/move_filters_screen.dart';
 import 'package:spotmefitness_ui/components/workout/move_details.dart';

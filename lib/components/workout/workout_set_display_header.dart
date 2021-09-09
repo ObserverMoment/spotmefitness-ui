@@ -45,9 +45,12 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
           : MainAxisAlignment.spaceBetween,
       children: [
         if (showRoundOrTimeInfo)
-          MyText(
-            _buildMainText(),
-            size: FONTSIZE.BIG,
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: MyText(
+              _buildMainText(),
+              size: FONTSIZE.BIG,
+            ),
           ),
         WorkoutSetDefinition(workoutSet)
       ],

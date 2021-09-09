@@ -114,7 +114,7 @@ class _MyTextFormFieldRowState extends State<MyTextFormFieldRow> {
         ),
         if (widget.validationMessage != null)
           Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 8, top: 6),
             child: MyText(
               '(${widget.validationMessage!})',
               size: FONTSIZE.SMALL,

@@ -6,7 +6,7 @@ import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_workout_move.dart';
 import 'package:spotmefitness_ui/components/lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';

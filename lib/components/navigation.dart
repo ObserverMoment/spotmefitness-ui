@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 // Simple animated tabs which return a new tab index when clicked.
-class MyTabBarNav extends StatefulWidget {
+class MyTabBarNav extends StatelessWidget {
   final List<String> titles;
 
   /// Display a small icon on the top of the tab title.
@@ -26,114 +27,56 @@ class MyTabBarNav extends StatefulWidget {
             superscriptIcons.length == titles.length);
 
   @override
-  _MyTabBarNavState createState() => _MyTabBarNavState();
-}
-
-class _MyTabBarNavState extends State<MyTabBarNav> {
-  // Create global keys that can track the actual rendered size of the tab text.
-  late List<GlobalKey> _globalTextBoxKeys;
-  List<double>? _tabRenderBoxWidths;
-
-  /// The titles list can be changed from the parent. When they are this list will be updated and new keys and box positions will be generated.
-  late List<String> _activeTitles;
-
-  @override
-  void initState() {
-    super.initState();
-    _activeTitles = [...widget.titles];
-    _globalTextBoxKeys = _activeTitles.map((tab) => GlobalKey()).toList();
-
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // Get renderBox widths of the text elements.
-      _tabRenderBoxWidths =
-          _globalTextBoxKeys.map((k) => k.currentContext!.size!.width).toList();
-      setState(() {});
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant MyTabBarNav oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!oldWidget.titles.equals(widget.titles)) {
-      _activeTitles = [...widget.titles];
-      _globalTextBoxKeys = _activeTitles.map((tab) => GlobalKey()).toList();
-
-      /// They need to be refreshed after first frame is rendered.
-      /// Without this line the length of the list titles and the length if box widths arrays can diverge and cause index errors.
-      _tabRenderBoxWidths = null;
-
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        // Get renderBox widths of the text elements.
-        _tabRenderBoxWidths = _globalTextBoxKeys
-            .map((k) => k.currentContext!.size!.width)
-            .toList();
-        setState(() {});
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      alignment: widget.alignment,
+      alignment: alignment,
       decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(color: context.theme.cardBackground, width: 1)),
       ),
-      height: 46,
+      height: 44,
       child: ListView(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        children: _activeTitles
-            .asMap()
-            .map((index, title) => MapEntry(
-                index,
-                Stack(
+        children: titles
+            .mapIndexed((index, title) => Stack(
                   clipBehavior: Clip.none,
                   children: [
                     CupertinoButton(
                       padding: const EdgeInsets.only(left: 4, right: 10),
                       pressedOpacity: 0.9,
                       alignment: Alignment.centerLeft,
-                      onPressed: () => widget.handleTabChange(index),
-                      child: Container(
+                      onPressed: () => handleTabChange(index),
+                      child: AnimatedContainer(
+                        duration: kStandardAnimationDuration,
                         height: 46,
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: index == activeTabIndex
+                                        ? Styles.colorOne
+                                        : Colors.transparent))),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AnimatedOpacity(
-                              key: _globalTextBoxKeys[index],
-                              opacity:
-                                  index == widget.activeTabIndex ? 1 : 0.65,
+                              opacity: index == activeTabIndex ? 1 : 0.65,
                               duration: Duration(milliseconds: 400),
                               child: MyText(
                                 title.toUpperCase(),
                                 size: FONTSIZE.BIG,
                               ),
                             ),
-                            SizedBox(height: 2),
-                            GrowInOut(
-                                axis: Axis.horizontal,
-                                show: index == widget.activeTabIndex,
-                                child: Container(
-                                  height: 2,
-                                  width: _tabRenderBoxWidths?[index] ?? 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: Styles.colorOne,
-                                  ),
-                                )),
                           ],
                         ),
                       ),
                     ),
-                    if (widget.superscriptIcons?[index] != null)
-                      widget.superscriptIcons![index]!
+                    if (superscriptIcons?[index] != null)
+                      superscriptIcons![index]!
                   ],
-                )))
-            .values
+                ))
             .toList(),
       ),
     );

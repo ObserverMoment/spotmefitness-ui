@@ -7,15 +7,17 @@ class RoundPicker extends StatelessWidget {
   final int rounds;
   final void Function(int value) saveValue;
   final String modalTitle;
+  final EdgeInsetsGeometry? padding;
   RoundPicker(
       {required this.rounds,
       required this.saveValue,
-      this.modalTitle = 'How many rounds?'});
+      this.modalTitle = 'How many rounds?',
+      this.padding});
 
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      padding: const EdgeInsets.all(8),
+      padding: padding ?? const EdgeInsets.all(8),
       onPressed: () => context.showBottomSheet<int>(
           child: NumberInputModalInt(
         value: rounds,

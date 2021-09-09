@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/change_section_type.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_section_workout_sets.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/round_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/round_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -106,9 +105,9 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           WorkoutSectionTypeTag(
-            _workoutSection.workoutSectionType.name.toUpperCase(),
+            workoutSection: _workoutSection,
             withBorder: false,
-            timecap: _workoutSection.timecapIfValid,
+            uppercase: true,
           ),
         ],
       ),

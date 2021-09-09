@@ -3,9 +3,9 @@
 // import 'package:spotmefitness_ui/components/buttons.dart';
 // import 'package:spotmefitness_ui/components/layout.dart';
 // import 'package:spotmefitness_ui/components/text.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/load_picker.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/rep_picker.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/load_picker.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/rep_picker.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 // import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
 // import 'package:spotmefitness_ui/components/user_input/selectors/move_selector.dart';
 // import 'package:spotmefitness_ui/constants.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/difficulty_level_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';

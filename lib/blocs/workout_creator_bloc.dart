@@ -427,9 +427,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
     // generatingPyramid = true;
     // notifyListeners();
 
-    /// 1. run duplicate set repSequence.length - 1 times
+    /// 1. run duplicate set [repSequence.length - 1] times
     var dupes = List.generate(repSequence.length - 1, (i) => i);
 
+    /// Run these in series to ensure correct set is always being duplicated.
     for (final _ in dupes) {
       await duplicateWorkoutSet(sectionIndex, originalsetIndex);
     }
@@ -445,12 +446,10 @@ class WorkoutCreatorBloc extends ChangeNotifier {
 
       for (final wm in workoutMoves) {
         wm.reps = repSequence[i].toDouble();
-        await editWorkoutMove(sectionIndex, workoutSet.sortPosition, wm);
+        editWorkoutMove(sectionIndex, workoutSet.sortPosition, wm);
       }
     }
 
-    // generatingPyramid = false;
-    // notifyListeners();
     context.pop(); // Loading alert;
   }
 

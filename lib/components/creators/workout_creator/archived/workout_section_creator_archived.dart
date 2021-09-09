@@ -11,8 +11,8 @@
 // import 'package:spotmefitness_ui/components/tags.dart';
 // import 'package:spotmefitness_ui/components/text.dart';
 // import 'package:spotmefitness_ui/components/user_input/click_to_edit/editable_note_icon_display.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/round_picker.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/round_picker.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
 // import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 // import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 // import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_selector.dart';

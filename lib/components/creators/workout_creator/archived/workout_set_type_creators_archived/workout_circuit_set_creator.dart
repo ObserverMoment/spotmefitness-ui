@@ -7,7 +7,7 @@
 // import 'package:spotmefitness_ui/components/layout.dart';
 // import 'package:spotmefitness_ui/components/lists.dart';
 // import 'package:spotmefitness_ui/components/text.dart';
-// import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/duration_picker.dart';
+// import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 // import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 // import 'package:spotmefitness_ui/constants.dart';
 // import 'package:spotmefitness_ui/extensions/context_extensions.dart';

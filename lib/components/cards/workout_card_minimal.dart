@@ -10,7 +10,6 @@ import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// No background image and more compact - for displaying in a plan schedule list.
 /// Title and equipment are on the top - tags on the bottom.
@@ -145,14 +144,7 @@ class MinimalWorkoutCard extends StatelessWidget {
                   ...workout.workoutSections
                       .sortedBy<num>((section) => section.sortPosition)
                       .map((section) => WorkoutSectionTypeTag(
-                            Utils.textNotNull(section.name)
-                                ? section.name!
-                                : section.workoutSectionType.name,
-                            hasClassVideo:
-                                Utils.textNotNull(section.classVideoUri),
-                            hasClassAudio:
-                                Utils.textNotNull(section.classAudioUri),
-                            timecap: section.timecapIfValid,
+                            workoutSection: section,
                             fontSize: FONTSIZE.TINY,
                           ))
                       .toList(),

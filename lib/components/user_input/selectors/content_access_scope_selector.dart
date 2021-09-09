@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/sliding_select.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -41,7 +41,7 @@ class ContentAccessScopeSelector extends StatelessWidget {
                   duration: kStandardAnimationDuration,
                   child: MyText(
                     contentAccessScope == ContentAccessScope.private
-                        ? 'Only people you share this with, and people who are members of clubs you share this with will have access.'
+                        ? 'Only people you share this with, and people who are members of clubs you share this with, will have access.'
                         : 'Everyone will be able to view this.',
                     textAlign: TextAlign.center,
                     maxLines: 3,

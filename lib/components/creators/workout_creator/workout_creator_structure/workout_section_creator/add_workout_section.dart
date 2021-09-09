@@ -4,13 +4,12 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/pickers/timecap_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// When adding a new section this screen opens to allow the user to select the section type and any required attributes for that section type. Should return a [WorkoutSection] which can then be passed to the bloc for creation.
 class AddWorkoutSection extends StatefulWidget {
@@ -109,8 +108,7 @@ class _AddWorkoutSectionState extends State<AddWorkoutSection> {
                         child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: WorkoutSectionTypeTag(
-                        _workoutSection!.workoutSectionType.name,
-                        timecap: _workoutSection!.timecapIfValid,
+                        workoutSection: _workoutSection!,
                         fontSize: FONTSIZE.BIG,
                       ),
                     )),
@@ -127,13 +125,15 @@ class _AddWorkoutSectionState extends State<AddWorkoutSection> {
           if (_workoutSection?.workoutSectionType != null)
             GrowIn(
                 child: Padding(
-              padding: const EdgeInsets.only(bottom: 12.0, top: 8),
+              padding: const EdgeInsets.only(bottom: 12.0, top: 12),
               child: MyTextFormFieldRow(
                 backgroundColor: context.theme.cardBackground,
                 controller: _nameController,
                 placeholder: 'Name (optional). E.g. Warm Up, Core',
                 keyboardType: TextInputType.text,
-                validator: () => _nameController.text.length < 26,
+                validator: () =>
+                    _nameController.text.isNotEmpty &&
+                    _nameController.text.length < 26,
                 validationMessage: 'Max 25 characters',
               ),
             )),

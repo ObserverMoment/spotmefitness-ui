@@ -7,6 +7,8 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 class Tag extends StatelessWidget {
   final Color? color;
@@ -163,26 +165,32 @@ class DifficultyLevelTag extends StatelessWidget {
 }
 
 class WorkoutSectionTypeTag extends StatelessWidget {
-  final String name;
-  final int? timecap; // Seconds
+  final WorkoutSection workoutSection;
+  // final String name;
+  // final int? timecap; // Seconds
   final FONTSIZE fontSize;
-  final bool hasClassVideo;
-  final bool hasClassAudio;
+  final Color? fontColor;
+  // final bool hasClassVideo;
+  // final bool hasClassAudio;
   final bool withBorder;
-  WorkoutSectionTypeTag(this.name,
-      {this.timecap,
+  final bool uppercase;
+  WorkoutSectionTypeTag(
+      {required this.workoutSection,
       this.fontSize = FONTSIZE.SMALL,
-      this.hasClassVideo = false,
-      this.hasClassAudio = false,
-      this.withBorder = true});
+      // this.hasClassVideo = false,
+      // this.hasClassAudio = false,
+      this.withBorder = true,
+      this.fontColor,
+      this.uppercase = false});
 
   @override
   Widget build(BuildContext context) {
+    final timecapOrTotalDuration = workoutSection.timecapIfValid;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: kDefaultTagPadding,
+          padding: withBorder ? kDefaultTagPadding : null,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border:
@@ -193,34 +201,40 @@ class WorkoutSectionTypeTag extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               MyText(
-                name,
+                uppercase
+                    ? workoutSection.workoutSectionType.name.toUpperCase()
+                    : workoutSection.workoutSectionType.name,
                 lineHeight: 1.2,
                 size: fontSize,
                 textAlign: TextAlign.center,
                 weight: FontWeight.bold,
+                color: fontColor,
               ),
-              if (timecap != null)
+              if (timecapOrTotalDuration != null)
                 MyText(
-                  ' - ${(timecap! / 60).round()} mins',
+                  ' - ${(timecapOrTotalDuration / 60).round()} mins',
                   lineHeight: 1.2,
                   size: fontSize,
                   textAlign: TextAlign.center,
                   weight: FontWeight.bold,
+                  color: fontColor,
                 ),
-              if (hasClassVideo)
+              if (Utils.textNotNull(workoutSection.classVideoUri))
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
                     CupertinoIcons.film_fill,
                     size: 16,
+                    color: fontColor,
                   ),
                 ),
-              if (hasClassAudio)
+              if (Utils.textNotNull(workoutSection.classAudioUri))
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Icon(
                     CupertinoIcons.volume_up,
                     size: 16,
+                    color: fontColor,
                   ),
                 ),
             ],
@@ -230,6 +244,81 @@ class WorkoutSectionTypeTag extends StatelessWidget {
     );
   }
 }
+
+// class WorkoutSectionTypeTag extends StatelessWidget {
+//   final String name;
+//   final int? timecap; // Seconds
+//   final FONTSIZE fontSize;
+//   final Color? fontColor;
+//   final bool hasClassVideo;
+//   final bool hasClassAudio;
+//   final bool withBorder;
+//   WorkoutSectionTypeTag(this.name,
+//       {this.timecap,
+//       this.fontSize = FONTSIZE.SMALL,
+//       this.hasClassVideo = false,
+//       this.hasClassAudio = false,
+//       this.withBorder = true,
+//       this.fontColor});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisSize: MainAxisSize.min,
+//       children: [
+//         Container(
+//           padding: withBorder ? kDefaultTagPadding : null,
+//           alignment: Alignment.center,
+//           decoration: BoxDecoration(
+//             border:
+//                 withBorder ? Border.all(color: context.theme.primary) : null,
+//             borderRadius: BorderRadius.circular(60),
+//           ),
+//           child: Row(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               MyText(
+//                 name,
+//                 lineHeight: 1.2,
+//                 size: fontSize,
+//                 textAlign: TextAlign.center,
+//                 weight: FontWeight.bold,
+//                 color: fontColor,
+//               ),
+//               if (timecap != null)
+//                 MyText(
+//                   ' - ${(timecap! / 60).round()} mins',
+//                   lineHeight: 1.2,
+//                   size: fontSize,
+//                   textAlign: TextAlign.center,
+//                   weight: FontWeight.bold,
+//                   color: fontColor,
+//                 ),
+//               if (hasClassVideo)
+//                 Padding(
+//                   padding: const EdgeInsets.only(left: 8.0),
+//                   child: Icon(
+//                     CupertinoIcons.film_fill,
+//                     size: 16,
+//                     color: fontColor,
+//                   ),
+//                 ),
+//               if (hasClassAudio)
+//                 Padding(
+//                   padding: const EdgeInsets.only(left: 8.0),
+//                   child: Icon(
+//                     CupertinoIcons.volume_up,
+//                     size: 16,
+//                     color: fontColor,
+//                   ),
+//                 ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class ProgressJournalGoalAndTagsTag extends StatelessWidget {
   final ProgressJournalGoal progressJournalGoal;

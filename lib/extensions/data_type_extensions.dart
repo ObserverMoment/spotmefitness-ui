@@ -68,9 +68,8 @@ extension WorkoutSectionTypeExtension on WorkoutSectionType {
         kLastStandingName
       ].contains(this.name);
 
-  /// These section types ignore rounds input - generally it should be forced to be [1] when these sections are being used.
   bool get roundsInputAllowed =>
-      ![kAMRAPName, kFreeSessionName].contains(this.name);
+      [kForTimeName, kFreeSessionName].contains(this.name);
 }
 
 extension WorkoutSetExtension on WorkoutSet {
