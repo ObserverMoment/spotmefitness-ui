@@ -22,6 +22,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// As required by the workoutSectionType
 class DoWorkoutBloc extends ChangeNotifier {
   final BuildContext context;
+  final Workout workout;
   late List<WorkoutSection> _sortedWorkoutSections;
   late LoggedWorkout loggedWorkout;
 
@@ -55,7 +56,7 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   DoWorkoutBloc({
     required BuildContext this.context,
-    required Workout workout,
+    required Workout this.workout,
   }) {
     loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
 

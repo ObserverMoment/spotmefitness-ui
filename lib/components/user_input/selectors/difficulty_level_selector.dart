@@ -66,6 +66,7 @@ class DifficultyLevelSelectorRow extends StatelessWidget {
                           Icon(
                             CupertinoIcons.chevron_right,
                             size: 18,
+                            color: Styles.white,
                           )
                         ],
                       ),

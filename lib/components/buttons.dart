@@ -47,6 +47,7 @@ class MyButton extends StatelessWidget {
       child: CupertinoButton(
         padding: EdgeInsets.all(0),
         onPressed: disabled ? null : onPressed,
+        pressedOpacity: 0.9,
         child: Container(
           height: 54,
           constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
@@ -129,16 +130,7 @@ class PrimaryButton extends StatelessWidget {
           : null,
       disabled: disabled,
       loading: loading,
-      backgroundGradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          backgroundColor.withOpacity(0.85),
-          backgroundColor,
-          backgroundColor.withOpacity(0.85)
-        ],
-        stops: [0, 0.5, 1],
-      ),
+      backgroundColor: backgroundColor,
       contentColor: contentColor,
       withMinWidth: withMinWidth,
     );

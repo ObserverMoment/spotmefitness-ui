@@ -8,6 +8,7 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/workout_plan/workout_plan_reviews_summary.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -53,7 +54,8 @@ class WorkoutPlanCard extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           ClipRRect(
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+                  topLeft: Radius.circular(kCardBorderRadiusValue),
+                  topRight: Radius.circular(kCardBorderRadiusValue)),
               child: SizedBox(
                 height: 150,
                 width: double.infinity,
@@ -72,58 +74,43 @@ class WorkoutPlanCard extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (workoutPlan.workoutPlanDays.isNotEmpty &&
-                                      workoutPlan.calcDifficulty != null)
-                                    DifficultyLevelTag(
-                                      workoutPlan.calcDifficulty!,
-                                      fontSize: FONTSIZE.TINY,
-                                    ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 6.0),
-                                    child: Row(
-                                      children: [
-                                        Card(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 3),
-                                          child: MyText(
-                                            workoutPlan.lengthString,
-                                            size: FONTSIZE.SMALL,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 6.0),
-                                          child: Card(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 3),
-                                            child: MyText(
-                                              '${workoutPlan.daysPerWeek} days / week',
-                                              size: FONTSIZE.SMALL,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                            Row(
+                              children: [
+                                Card(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: MyText(
+                                    workoutPlan.lengthString,
+                                    size: FONTSIZE.SMALL,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 6.0),
+                                  child: Card(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: MyText(
+                                      '${workoutPlan.daysPerWeek} days / week',
+                                      size: FONTSIZE.SMALL,
+                                      weight: FontWeight.bold,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             if (allTags.isNotEmpty)
                               SizedBox(
-                                height: 26,
+                                height: 30,
                                 child: ListView.builder(
-                                  padding: const EdgeInsets.only(left: 8),
                                   scrollDirection: Axis.horizontal,
                                   shrinkWrap: true,
                                   itemCount: allTags.length,
@@ -138,15 +125,27 @@ class WorkoutPlanCard extends StatelessWidget {
                           ],
                         )),
                     Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Card(
-                            child: WorkoutPlanReviewsSummary(
-                                reviews: workoutPlan.workoutPlanReviews),
-                          ),
-                        )),
+                        right: 8,
+                        top: 8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Card(
+                              borderRadius: BorderRadius.circular(5),
+                              child: WorkoutPlanReviewsSummary(
+                                  reviews: workoutPlan.workoutPlanReviews),
+                            ),
+                            if (workoutPlan.workoutPlanDays.isNotEmpty &&
+                                workoutPlan.calcDifficulty != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: DifficultyLevelTag(
+                                  workoutPlan.calcDifficulty!,
+                                  fontSize: FONTSIZE.TINY,
+                                ),
+                              ),
+                          ],
+                        ))
                   ],
                 ),
               )),

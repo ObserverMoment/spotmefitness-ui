@@ -11,9 +11,11 @@ class Card extends StatelessWidget {
   final Color? backgroundColor;
   final bool withBoxShadow;
   final EdgeInsets padding;
+  final BorderRadiusGeometry? borderRadius;
 
   // When true the image will be faded into the background of the card. When false it will display normally
   final bool opaqueBackgroundImage;
+
   Card(
       {this.height,
       this.backgroundImageUri,
@@ -21,7 +23,8 @@ class Card extends StatelessWidget {
       this.backgroundColor,
       this.withBoxShadow = true,
       this.padding = kStandardCardPadding,
-      this.opaqueBackgroundImage = true});
+      this.opaqueBackgroundImage = true,
+      this.borderRadius});
   @override
   Widget build(BuildContext context) {
     Dimensions dimensions = const Dimensions(500, 500);
@@ -40,7 +43,7 @@ class Card extends StatelessWidget {
       decoration: BoxDecoration(
           color: backgroundColor ?? context.theme.cardBackground,
           boxShadow: withBoxShadow ? [Styles.cardBoxShadow] : null,
-          borderRadius: kStandardCardBorderRadius,
+          borderRadius: borderRadius ?? kStandardCardBorderRadius,
           image: backgroundImageUri != null
               ? DecorationImage(
                   fit: BoxFit.cover,

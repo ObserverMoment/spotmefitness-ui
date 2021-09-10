@@ -102,7 +102,7 @@ class MyHeaderText extends StatelessWidget {
         textAlign: textAlign,
         maxLines: maxLines,
         overflow: overflow,
-        style: GoogleFonts.archivo(
+        style: GoogleFonts.rubik(
             textStyle: TextStyle(
                 fontWeight: weight,
                 decoration: decoration,
@@ -345,6 +345,7 @@ class ViewMoreFullScreenTextBlock extends StatelessWidget {
   final double lineHeight;
   final FONTSIZE? fontSize;
   final bool subtext;
+  final Color? textColor;
   const ViewMoreFullScreenTextBlock(
       {Key? key,
       required this.text,
@@ -353,7 +354,8 @@ class ViewMoreFullScreenTextBlock extends StatelessWidget {
       this.textAlign = TextAlign.start,
       this.lineHeight = 1.3,
       this.fontSize,
-      this.subtext = false})
+      this.subtext = false,
+      this.textColor})
       : super(key: key);
 
   @override
@@ -365,7 +367,8 @@ class ViewMoreFullScreenTextBlock extends StatelessWidget {
           textAlign: textAlign,
           lineHeight: lineHeight,
           size: fontSize ?? FONTSIZE.MAIN,
-          subtext: subtext),
+          subtext: subtext,
+          color: textColor),
     );
   }
 }

@@ -54,6 +54,29 @@ extension WorkoutSectionExtension on WorkoutSection {
   /// These section types ignore rounds input - generally it should be forced to be [1] when these sections are being used.
   bool get roundsInputAllowed =>
       ![kAMRAPName, kFreeSessionName].contains(this.workoutSectionType.name);
+
+  /// Retuns all the equipment needed for completing the section and also removes [bodyweight]
+  List<Equipment> get uniqueEquipments {
+    final Set<Equipment> equipments =
+        this.workoutSets.fold({}, (acum1, workoutSet) {
+      final Set<Equipment> setEquipments =
+          workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
+        if (workoutMove.equipment != null) {
+          acum2.add(workoutMove.equipment!);
+        }
+        if (workoutMove.move.requiredEquipments.isNotEmpty) {
+          acum2.addAll(workoutMove.move.requiredEquipments);
+        }
+        return acum2;
+      });
+
+      acum1.addAll(setEquipments);
+
+      return acum1;
+    });
+
+    return equipments.where((e) => e.id != kBodyweightEquipmentId).toList();
+  }
 }
 
 extension WorkoutSectionTypeExtension on WorkoutSectionType {

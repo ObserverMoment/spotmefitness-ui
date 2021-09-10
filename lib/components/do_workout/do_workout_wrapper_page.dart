@@ -7,7 +7,10 @@ import 'package:spotmefitness_ui/components/future_builder_handler.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
+/// Gets the workout from the DB based on its ID and then inits the DoWorkoutBloc.
+/// Uses [AutoRouter.declarative] to move the user from the do workout page to the log workout page onec all workout sections are completed.
 class DoWorkoutWrapperPage extends StatefulWidget {
   final String id;
   final ScheduledWorkout? scheduledWorkout;
@@ -27,15 +30,12 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
     final variables = WorkoutByIdArguments(id: widget.id);
     final query = WorkoutByIdQuery(variables: variables);
 
-    final response = await context.graphQLStore.execute(query);
+    final result =
+        await context.graphQLStore.networkOnlyOperation(operation: query);
 
-    if ((response.errors != null && response.errors!.isNotEmpty) ||
-        response.data == null) {
-      throw Exception(
-          'DoWorkoutWrapperPage._getWorkoutById was not able to retrieve data for workout ${widget.id}');
-    } else {
-      return WorkoutById$Query.fromJson(response.data ?? {}).workoutById;
-    }
+    await checkOperationResult(context, result);
+
+    return result.data!.workoutById;
   }
 
   @override
@@ -50,22 +50,22 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
         loadingWidget: ShimmerDetailsPage(title: 'Warming Up'),
         future: _initWorkoutFuture,
         builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
-            create: (context) => DoWorkoutBloc(
-                  context: context,
-                  workout: workout,
-                ),
-            child: Builder(builder: (context) {
-              final allSectionsComplete = context
-                  .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
+              create: (context) => DoWorkoutBloc(
+                context: context,
+                workout: workout,
+              ),
+              builder: (context, _) {
+                final allSectionsComplete = context
+                    .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
 
-              return AutoRouter.declarative(
-                  routes: (_) => [
-                        if (!allSectionsComplete)
-                          DoWorkoutDoWorkoutRoute(workout: workout),
-                        if (allSectionsComplete)
-                          DoWorkoutLogWorkoutRoute(
-                              scheduledWorkout: widget.scheduledWorkout),
-                      ]);
-            })));
+                return AutoRouter.declarative(
+                    routes: (_) => [
+                          if (!allSectionsComplete) DoWorkoutOverviewRoute(),
+                          if (allSectionsComplete)
+                            DoWorkoutLogWorkoutRoute(
+                                scheduledWorkout: widget.scheduledWorkout),
+                        ]);
+              },
+            ));
   }
 }

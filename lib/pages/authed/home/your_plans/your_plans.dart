@@ -71,7 +71,7 @@ class _YourPlansPageState extends State<YourPlansPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.only(bottom: 6.0),
               child: SizedBox(
                 width: double.infinity,
                 child: SlidingSelect<int>(

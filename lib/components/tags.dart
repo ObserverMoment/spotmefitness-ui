@@ -28,8 +28,8 @@ class Tag extends StatelessWidget {
       this.prefix,
       this.suffix,
       this.padding = kDefaultTagPadding,
-      this.fontWeight = FontWeight.bold,
-      this.fontSize = FONTSIZE.TINY});
+      this.fontWeight = FontWeight.normal,
+      this.fontSize = FONTSIZE.SMALL});
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +146,7 @@ class DifficultyLevelTag extends StatelessWidget {
           border: difficultyLevel == DifficultyLevel.elite
               ? Border.all(color: Styles.white)
               : null,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(4),
           color: difficultyLevel.displayColor),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -193,9 +193,10 @@ class WorkoutSectionTypeTag extends StatelessWidget {
           padding: withBorder ? kDefaultTagPadding : null,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border:
-                withBorder ? Border.all(color: context.theme.primary) : null,
-            borderRadius: BorderRadius.circular(60),
+            border: withBorder
+                ? Border.all(color: context.theme.primary.withOpacity(0.2))
+                : null,
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -204,7 +205,6 @@ class WorkoutSectionTypeTag extends StatelessWidget {
                 uppercase
                     ? workoutSection.workoutSectionType.name.toUpperCase()
                     : workoutSection.workoutSectionType.name,
-                lineHeight: 1.2,
                 size: fontSize,
                 textAlign: TextAlign.center,
                 weight: FontWeight.bold,
@@ -213,7 +213,6 @@ class WorkoutSectionTypeTag extends StatelessWidget {
               if (timecapOrTotalDuration != null)
                 MyText(
                   ' - ${(timecapOrTotalDuration / 60).round()} mins',
-                  lineHeight: 1.2,
                   size: fontSize,
                   textAlign: TextAlign.center,
                   weight: FontWeight.bold,

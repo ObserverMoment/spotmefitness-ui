@@ -67,8 +67,8 @@ class VideoThumbnailPlayer extends StatelessWidget {
                 top: 0,
                 left: 0,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 0.5, horizontal: 3),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 1, horizontal: 4),
                     decoration: BoxDecoration(
                         color: Styles.black,
                         borderRadius: BorderRadius.only(
@@ -77,7 +77,6 @@ class VideoThumbnailPlayer extends StatelessWidget {
                     child: MyText(
                       tag!,
                       size: FONTSIZE.TINY,
-                      weight: FontWeight.bold,
                       color: Styles.white,
                     ))),
         ],

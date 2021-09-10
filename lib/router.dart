@@ -13,7 +13,7 @@ import 'package:spotmefitness_ui/components/creators/scheduled_workout_creator.d
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_creator/workout_plan_creator.dart';
 import 'package:spotmefitness_ui/components/creators/workout_plan_review_creator.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_do_workout_page.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_overview_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_log_workout_page.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_wrapper_page.dart';
 import 'package:spotmefitness_ui/components/social/chat/club_members_chat_page.dart';
@@ -143,7 +143,7 @@ import 'package:spotmefitness_ui/pages/unauthed/unauthed_landing.dart';
               path: "do-workout/:id",
               page: DoWorkoutWrapperPage,
               children: [
-                AutoRoute(page: DoWorkoutDoWorkoutPage),
+                AutoRoute(page: DoWorkoutOverviewPage),
                 AutoRoute(page: DoWorkoutLogWorkoutPage),
               ]),
           AutoRoute(path: 'settings', page: SettingsPage),

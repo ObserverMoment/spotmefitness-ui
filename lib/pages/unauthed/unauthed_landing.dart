@@ -72,6 +72,7 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
                 Text('Sofie',
                     style: GoogleFonts.voces(
                       fontSize: 60,
+                      color: Styles.white,
                     )),
                 MyText(
                   'Social Fitness Elevated',

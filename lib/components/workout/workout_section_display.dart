@@ -30,22 +30,6 @@ class WorkoutDetailsSection extends StatelessWidget {
 
   final Size _kthumbDisplaySize = Size(64, 64);
 
-  Set<Equipment> _uniqueEquipments() =>
-      workoutSection.workoutSets.fold({}, (acum1, workoutSet) {
-        final Set<Equipment> setEquipments =
-            workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
-          if (workoutMove.equipment != null) {
-            acum2.add(workoutMove.equipment!);
-          }
-          if (workoutMove.move.requiredEquipments.isNotEmpty) {
-            acum2.addAll(workoutMove.move.requiredEquipments);
-          }
-          return acum2;
-        });
-        acum1.addAll(setEquipments);
-        return acum1;
-      });
-
   List<BodyAreaMoveScore> bodyAreaMoveScoresFromSection() {
     return workoutSection.workoutSets.fold(
         <BodyAreaMoveScore>[],
@@ -60,9 +44,8 @@ class WorkoutDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Equipment> allEquipments = _uniqueEquipments()
-        .where((e) => e.id != kBodyweightEquipmentId)
-        .toList();
+    final List<Equipment> uniqueEquipments = workoutSection.uniqueEquipments;
+
     final sortedSets =
         workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
 
@@ -122,14 +105,14 @@ class WorkoutDetailsSection extends StatelessWidget {
                 ],
               ),
             ),
-          if (allEquipments.isNotEmpty)
+          if (uniqueEquipments.isNotEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 3),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 spacing: 6,
                 runSpacing: 4,
-                children: allEquipments
+                children: uniqueEquipments
                     .map((e) => Tag(
                           tag: e.name,
                         ))

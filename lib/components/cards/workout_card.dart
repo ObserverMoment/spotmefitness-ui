@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/images/user_avatar.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
@@ -90,23 +91,44 @@ class WorkoutCard extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                DifficultyLevelTag(workout.difficultyLevel),
-                                if (workout.lengthMinutes != null)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: Tag(
-                                        color: context.theme.background,
-                                        textColor: context.theme.primary,
-                                        tag: Duration(
-                                                minutes: workout.lengthMinutes!)
-                                            .displayString),
-                                  ),
+                                Row(
+                                  mainAxisAlignment:
+                                      workout.lengthMinutes != null
+                                          ? MainAxisAlignment.spaceBetween
+                                          : MainAxisAlignment.end,
+                                  children: [
+                                    if (workout.lengthMinutes != null)
+                                      ContentBox(
+                                          borderRadius: 4,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 8),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(CupertinoIcons.timer,
+                                                  size: 13),
+                                              SizedBox(width: 4),
+                                              MyText(
+                                                Duration(
+                                                        minutes: workout
+                                                            .lengthMinutes!)
+                                                    .displayString,
+                                                size: FONTSIZE.SMALL,
+                                              ),
+                                            ],
+                                          )),
+                                    DifficultyLevelTag(
+                                      workout.difficultyLevel,
+                                      fontSize: FONTSIZE.TINY,
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
                           if (_allTags.isNotEmpty)
                             SizedBox(
-                              height: 26,
+                              height: 30,
                               child: ListView.builder(
                                 padding: const EdgeInsets.only(left: 8),
                                 scrollDirection: Axis.horizontal,
@@ -116,6 +138,9 @@ class WorkoutCard extends StatelessWidget {
                                   padding: const EdgeInsets.only(right: 4.0),
                                   child: Tag(
                                     tag: _allTags[i],
+                                    color:
+                                        context.theme.primary.withOpacity(0.95),
+                                    textColor: context.theme.background,
                                   ),
                                 ),
                               ),

@@ -86,13 +86,21 @@ class Theme {
 }
 
 class CustomThemeData {
+  final Color greyOne;
+  final Color greyTwo;
+  final Color greyThree;
+  final Color greyFour;
   final LinearGradient scaffoldGradient;
   final Color bottomNavigationBackground;
   final Color activeIcon;
   final Color cardBackground;
   final Color navbarBottomBorder;
   CustomThemeData(
-      {required this.scaffoldGradient,
+      {required this.greyOne,
+      required this.greyTwo,
+      required this.greyThree,
+      required this.greyFour,
+      required this.scaffoldGradient,
       required this.bottomNavigationBackground,
       required this.activeIcon,
       required this.cardBackground,
@@ -104,6 +112,10 @@ abstract class ThemeData {
   static Theme lightTheme = Theme(cupertinoLightData, customLightData);
 
   static CustomThemeData customDarkData = CustomThemeData(
+      greyOne: Styles.greyOne,
+      greyTwo: Styles.greyTwo,
+      greyThree: Styles.greyThree,
+      greyFour: Styles.greyFour,
       scaffoldGradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -116,6 +128,10 @@ abstract class ThemeData {
       navbarBottomBorder: Styles.white.withOpacity(0.1));
 
   static CustomThemeData customLightData = CustomThemeData(
+      greyOne: Styles.greyFour,
+      greyTwo: Styles.greyThree,
+      greyThree: Styles.greyTwo,
+      greyFour: Styles.greyOne,
       scaffoldGradient: LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
@@ -158,7 +174,7 @@ abstract class Styles {
   static const Color black = CupertinoColors.black;
   static const Color white = CupertinoColors.white;
   static const Color lightGrey = CupertinoColors.systemGrey;
-  static final Color grey = CupertinoColors.systemGrey.withOpacity(0.3);
+  static final Color grey = CupertinoColors.darkBackgroundGray;
   static const Color errorRed = CupertinoColors.destructiveRed;
   static const Color infoBlue = CupertinoColors.activeBlue;
   static const Color heartRed = const Color(0xffA8294B);
@@ -171,6 +187,12 @@ abstract class Styles {
   static const Color pink = const Color(0xffFF5282);
   static const Color starGold = Colors.amber;
   static const Color yellow = Colors.yellow;
+
+  // Shades of grey
+  static const Color greyOne = const Color(0xff383838);
+  static const Color greyTwo = const Color(0xff595959);
+  static const Color greyThree = const Color(0xff9c9c9c);
+  static const Color greyFour = const Color(0xfffc9c9c9);
 
   // Difficulty Level Colours
   static const difficultyLevelOne = const Color(0xff226F54); // Green

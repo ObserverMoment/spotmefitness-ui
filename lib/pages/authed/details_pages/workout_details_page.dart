@@ -453,9 +453,10 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
                                             workout.description))
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: MyText(
-                                              workout.description!,
-                                              maxLines: 10,
+                                            child: ViewMoreFullScreenTextBlock(
+                                              text: workout.description!,
+                                              title: workout.name,
+                                              maxLines: 6,
                                               lineHeight: 1.3,
                                               textAlign: TextAlign.center,
                                             ),

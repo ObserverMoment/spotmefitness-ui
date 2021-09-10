@@ -173,11 +173,11 @@ class _InitAppLanding extends StatelessWidget {
                 Text('Sofie',
                     style: GoogleFonts.voces(
                       fontSize: 60,
+                      color: Styles.white,
                     )),
                 MyText(
                   'Social Fitness Elevated',
                   weight: FontWeight.bold,
-                  // Must pass a color to avoid MyText component trying to look up context.theme, which does not exist prior to the user reaching the authed section of the app.
                   color: Styles.white,
                 ),
                 Padding(
