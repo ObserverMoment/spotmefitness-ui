@@ -121,8 +121,7 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
     if (isSelected) {
       toggleSelection();
     } else {
-      if ([kAMRAPName, kLastStandingName]
-              .contains(loggedWorkoutSection.workoutSectionType.name) &&
+      if (kAMRAPName == loggedWorkoutSection.workoutSectionType.name &&
           loggedWorkoutSection.repScore == null) {
         context.showBottomSheet(
             expand: false,
@@ -183,8 +182,8 @@ class IncludeWorkoutSectionSelector extends StatelessWidget {
                         'Duration: ${DataUtils.calculateTimedLoggedSectionDuration(loggedWorkoutSection).compactDisplay()}',
                         weight: FontWeight.bold,
                       ),
-                    if ([kAMRAPName, kLastStandingName]
-                        .contains(loggedWorkoutSection.workoutSectionType.name))
+                    if (kAMRAPName ==
+                        loggedWorkoutSection.workoutSectionType.name)
                       RepsScoreDisplay<LoggedWorkoutSection>(
                         score: loggedWorkoutSection.repScore,
                         section: loggedWorkoutSection,

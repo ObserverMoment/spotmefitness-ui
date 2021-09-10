@@ -46,8 +46,9 @@ class WorkoutSetDisplay extends StatelessWidget {
                 shrinkWrap: true,
                 children: sortedMoves
                     .map((wm) => GestureDetector(
-                          onTap: () =>
-                              context.push(child: MoveDetails(wm.move)),
+                          onTap: () => context.push(
+                              fullscreenDialog: true,
+                              child: MoveDetails(wm.move)),
                           child: WorkoutMoveDisplay(
                             wm,
                             isLast: wm.sortPosition == sortedMoves.length - 1,

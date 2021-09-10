@@ -1,7 +1,9 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/model/client_only_model.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Extensions which pertain to the processing of fitness related data (i.e. the graphql types.)
 extension ClubExtension on Club {
@@ -31,13 +33,16 @@ extension WorkoutExtension on Workout {
 }
 
 extension WorkoutSectionExtension on WorkoutSection {
+  /// If there is a name, display the name, otherwise just display the type.
+  String get nameOrTypeForDisplay =>
+      Utils.textNotNull(this.name) ? this.name! : this.workoutSectionType.name;
+
   bool get isAMRAP => this.workoutSectionType.name == kAMRAPName;
 
   bool get isTimed => [
         kHIITCircuitName,
         kTabataName,
         kEMOMName,
-        kLastStandingName
       ].contains(this.workoutSectionType.name);
 
   Duration get timedSectionDuration =>
@@ -55,9 +60,9 @@ extension WorkoutSectionExtension on WorkoutSection {
   bool get roundsInputAllowed =>
       ![kAMRAPName, kFreeSessionName].contains(this.workoutSectionType.name);
 
-  /// Retuns all the equipment needed for completing the section and also removes [bodyweight]
+  /// Retuns all the equipment needed for completing the section and also removes [bodyweight] if present.
   List<Equipment> get uniqueEquipments {
-    final Set<Equipment> equipments =
+    final Set<Equipment> sectionEquipments =
         this.workoutSets.fold({}, (acum1, workoutSet) {
       final Set<Equipment> setEquipments =
           workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
@@ -75,7 +80,43 @@ extension WorkoutSectionExtension on WorkoutSection {
       return acum1;
     });
 
-    return equipments.where((e) => e.id != kBodyweightEquipmentId).toList();
+    return sectionEquipments
+        .where((e) => e.id != kBodyweightEquipmentId)
+        .toList();
+  }
+
+  /// Retuns all the equipment needed for completing the section along with the load needed for each. Also removes [bodyweight] if present.
+  List<EquipmentWithLoad> get equipmentsWithLoad {
+    final Set<EquipmentWithLoad> sectionEquipmentsWithLoad =
+        this.workoutSets.fold({}, (acum1, workoutSet) {
+      final Set<EquipmentWithLoad> setEquipments =
+          workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
+        if (workoutMove.equipment != null) {
+          acum2.add(EquipmentWithLoad(
+              equipment: workoutMove.equipment!,
+              loadAmount: workoutMove.equipment!.loadAdjustable
+                  ? workoutMove.loadAmount
+                  : null,
+              loadUnit: workoutMove.loadUnit));
+        }
+        if (workoutMove.move.requiredEquipments.isNotEmpty) {
+          acum2.addAll(workoutMove.move.requiredEquipments.map((e) =>
+              EquipmentWithLoad(
+                  equipment: e,
+                  loadAmount: e.loadAdjustable ? workoutMove.loadAmount : null,
+                  loadUnit: workoutMove.loadUnit)));
+        }
+        return acum2;
+      });
+
+      acum1.addAll(setEquipments);
+
+      return acum1;
+    });
+
+    return sectionEquipmentsWithLoad
+        .where((e) => e.equipment.id != kBodyweightEquipmentId)
+        .toList();
   }
 }
 
@@ -88,7 +129,6 @@ extension WorkoutSectionTypeExtension on WorkoutSectionType {
         kHIITCircuitName,
         kTabataName,
         kEMOMName,
-        kLastStandingName
       ].contains(this.name);
 
   bool get roundsInputAllowed =>

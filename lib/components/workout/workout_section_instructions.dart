@@ -31,10 +31,6 @@ class WorkoutSectionInstructions extends StatelessWidget {
         return 'Complete all sets ${_getRoundsText()}, as fast as possible.';
       case kAMRAPName:
         return 'Complete as many reps as possible in ${timecap!.secondsToTimeDisplay()}.';
-      case kLastStandingName:
-        return timecap != null
-            ? 'Complete sets within the timecaps for ${timecap!.secondsToTimeDisplay()}...if you can!'
-            : 'Complete sets within the timecaps for as long as you can!';
       default:
         throw Exception(
             'WorkoutSectionInstructions: $typeName is not a valid typename.');

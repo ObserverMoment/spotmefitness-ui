@@ -27,7 +27,6 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
         : section.timecap ?? null;
 
     switch (section.workoutSectionType.name) {
-      case kLastStandingName:
       case kAMRAPName:
         return [
           SizedBox(width: 4),

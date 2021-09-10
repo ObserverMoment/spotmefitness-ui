@@ -5,7 +5,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/utils.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/utils.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';

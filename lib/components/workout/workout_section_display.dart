@@ -11,7 +11,6 @@ import 'package:spotmefitness_ui/components/media/video/video_thumbnail_player.d
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -44,8 +43,6 @@ class WorkoutDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Equipment> uniqueEquipments = workoutSection.uniqueEquipments;
-
     final sortedSets =
         workoutSection.workoutSets.sortedBy<num>((ws) => ws.sortPosition);
 
@@ -54,18 +51,15 @@ class WorkoutDetailsSection extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (showSectionTypeTag)
-                  WorkoutSectionTypeTag(
-                    workoutSection: workoutSection,
-                    fontSize: FONTSIZE.MAIN,
-                  ),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (showSectionTypeTag)
+                WorkoutSectionTypeTag(
+                  workoutSection: workoutSection,
+                  fontSize: FONTSIZE.MAIN,
+                ),
+            ],
           ),
           SizedBox(height: 4),
           if (showMediaThumbs &&
@@ -103,20 +97,6 @@ class WorkoutDetailsSection extends StatelessWidget {
                         displaySize: _kthumbDisplaySize,
                         tag: 'Class'),
                 ],
-              ),
-            ),
-          if (uniqueEquipments.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 3),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 4,
-                children: uniqueEquipments
-                    .map((e) => Tag(
-                          tag: e.name,
-                        ))
-                    .toList(),
               ),
             ),
           Padding(

@@ -910,6 +910,19 @@ class NavBarCancelButton extends StatelessWidget {
 }
 
 /// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
+class NavBarChevronDownButton extends StatelessWidget {
+  final void Function() onPressed;
+  NavBarChevronDownButton(this.onPressed);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: Icon(CupertinoIcons.chevron_down));
+  }
+}
+
+/// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
 class NavBarTextButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;

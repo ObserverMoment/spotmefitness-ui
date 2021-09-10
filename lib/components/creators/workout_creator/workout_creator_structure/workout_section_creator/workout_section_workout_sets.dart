@@ -137,8 +137,7 @@ class WorkoutSectionWorkoutSets extends StatelessWidget {
                         30,
                       ),
                     ),
-                  if ([kEMOMName, kLastStandingName]
-                      .contains(workoutSectionType.name))
+                  if (kEMOMName == workoutSectionType.name)
                     CreateTextIconButton(
                       text: 'Add Period',
                       loading: creatingSet,

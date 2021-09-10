@@ -16,10 +16,6 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
   String _buildMainText() {
     switch (workoutSectionType.name) {
       case kEMOMName:
-      case kLastStandingName:
-        return workoutSet.rounds == 1
-            ? 'Within ${workoutSet.duration.secondsToTimeDisplay()}'
-            : 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"} within ${workoutSet.duration.secondsToTimeDisplay()}';
       case kHIITCircuitName:
       case kTabataName:
         return '${workoutSet.duration.secondsToTimeDisplay()}';

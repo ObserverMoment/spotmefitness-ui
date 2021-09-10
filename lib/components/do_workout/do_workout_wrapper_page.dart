@@ -60,7 +60,7 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
 
                 return AutoRouter.declarative(
                     routes: (_) => [
-                          if (!allSectionsComplete) DoWorkoutOverviewRoute(),
+                          if (!allSectionsComplete) DoWorkoutDoWorkoutRoute(),
                           if (allSectionsComplete)
                             DoWorkoutLogWorkoutRoute(
                                 scheduledWorkout: widget.scheduledWorkout),

@@ -211,6 +211,7 @@ class ShimmerDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MyPageScaffold(
         navigationBar: MyNavBar(
+          backgroundColor: context.theme.background,
           middle: NavBarTitle(title),
         ),
         child: Column(

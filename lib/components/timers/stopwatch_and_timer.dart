@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_workout_bottom_navbar.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_bottom_navbar.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';

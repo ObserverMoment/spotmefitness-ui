@@ -83,8 +83,7 @@ class LoggedWorkoutCreatorSection extends StatelessWidget {
                   ),
                 ),
               ),
-            if ([kAMRAPName, kLastStandingName]
-                .contains(loggedWorkoutSection.workoutSectionType.name))
+            if (kAMRAPName == loggedWorkoutSection.workoutSectionType.name)
               RepsScoreDisplay(
                   score: repScore,
                   section: loggedWorkoutSection,

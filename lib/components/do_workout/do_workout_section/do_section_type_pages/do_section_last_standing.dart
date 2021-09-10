@@ -7,8 +7,8 @@ import 'package:spotmefitness_ui/components/animated/animated_submit_button.dart
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/last_standing/last_standing_countdown_timer.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/last_standing/last_standing_moves_list.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/last_standing/last_standing_countdown_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/last_standing/last_standing_moves_list.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

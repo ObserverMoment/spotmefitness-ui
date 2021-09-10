@@ -26,7 +26,7 @@ import 'components/creators/workout_creator/workout_creator.dart' as _i32;
 import 'components/creators/workout_plan_creator/workout_plan_creator.dart'
     as _i34;
 import 'components/creators/workout_plan_review_creator.dart' as _i35;
-import 'components/do_workout/do_workout/do_workout_overview_page.dart' as _i61;
+import 'components/do_workout/do_workout_do_workout_page.dart' as _i61;
 import 'components/do_workout/do_workout_log_workout_page.dart' as _i62;
 import 'components/do_workout/do_workout_wrapper_page.dart' as _i11;
 import 'components/social/chat/chats_overview_page.dart' as _i6;
@@ -493,10 +493,10 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return _i60.ProfileCustomMovesPage();
         }),
-    DoWorkoutOverviewRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
+    DoWorkoutDoWorkoutRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i61.DoWorkoutOverviewPage();
+          return const _i61.DoWorkoutDoWorkoutPage();
         }),
     DoWorkoutLogWorkoutRoute.name: (routeData) => _i1.CupertinoPageX<dynamic>(
         routeData: routeData,
@@ -573,8 +573,8 @@ class AppRouter extends _i1.RootStackRouter {
           _i1.RouteConfig(DoWorkoutWrapperRoute.name,
               path: 'do-workout/:id',
               children: [
-                _i1.RouteConfig(DoWorkoutOverviewRoute.name,
-                    path: 'do-workout-overview-page'),
+                _i1.RouteConfig(DoWorkoutDoWorkoutRoute.name,
+                    path: 'do-workout-do-workout-page'),
                 _i1.RouteConfig(DoWorkoutLogWorkoutRoute.name,
                     path: 'do-workout-log-workout-page')
               ]),
@@ -1367,11 +1367,11 @@ class ProfileCustomMovesRoute extends _i1.PageRouteInfo {
   static const String name = 'ProfileCustomMovesRoute';
 }
 
-class DoWorkoutOverviewRoute extends _i1.PageRouteInfo {
-  const DoWorkoutOverviewRoute()
-      : super(name, path: 'do-workout-overview-page');
+class DoWorkoutDoWorkoutRoute extends _i1.PageRouteInfo {
+  const DoWorkoutDoWorkoutRoute()
+      : super(name, path: 'do-workout-do-workout-page');
 
-  static const String name = 'DoWorkoutOverviewRoute';
+  static const String name = 'DoWorkoutDoWorkoutRoute';
 }
 
 class DoWorkoutLogWorkoutRoute

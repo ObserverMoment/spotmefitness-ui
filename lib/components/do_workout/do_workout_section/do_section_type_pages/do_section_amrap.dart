@@ -4,9 +4,9 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.da
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/animated/animated_submit_button.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_countdown_timer.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_moves_list.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/amrap/amrap_section_progress_summary.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/amrap/amrap_countdown_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/amrap/amrap_section_moves_list.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/amrap/amrap_section_progress_summary.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -10,6 +11,7 @@ import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Info about and exercise. Video and description.
 class MoveDetails extends StatelessWidget {
@@ -106,8 +108,10 @@ class MoveDetails extends StatelessWidget {
         query: BodyAreasQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
             navigationBar: MyNavBar(
+              customLeading: NavBarChevronDownButton(context.pop),
+              backgroundColor: context.theme.background,
               middle: NavBarTitle(move.name),
             ),
             child: SingleChildScrollView(

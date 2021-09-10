@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/section_modal_container.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/start_workout_countdown_button.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/section_modal_container.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/start_workout_countdown_button.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_section_display.dart';
 import 'package:spotmefitness_ui/constants.dart';

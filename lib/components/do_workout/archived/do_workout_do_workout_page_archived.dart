@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/do_section_type_pages/do_workout_section.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout/section_components/workout_section_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -15,16 +15,18 @@ import 'package:collection/collection.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
-class DoWorkoutDoWorkoutPage extends StatefulWidget {
+class DoWorkoutDoWorkoutPageArchived extends StatefulWidget {
   final Workout workout;
-  const DoWorkoutDoWorkoutPage({Key? key, required this.workout})
+  const DoWorkoutDoWorkoutPageArchived({Key? key, required this.workout})
       : super(key: key);
 
   @override
-  _DoWorkoutDoWorkoutPageState createState() => _DoWorkoutDoWorkoutPageState();
+  _DoWorkoutDoWorkoutPageArchivedState createState() =>
+      _DoWorkoutDoWorkoutPageArchivedState();
 }
 
-class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
+class _DoWorkoutDoWorkoutPageArchivedState
+    extends State<DoWorkoutDoWorkoutPageArchived> {
   final kNavbarIconSize = 32.0;
 
   int _activeSectionPageIndex = 0;

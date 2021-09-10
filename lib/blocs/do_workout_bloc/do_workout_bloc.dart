@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controll
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/fortime_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/last_standing_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -22,8 +21,10 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 /// As required by the workoutSectionType
 class DoWorkoutBloc extends ChangeNotifier {
   final BuildContext context;
+
+  /// Just use this for meta info about the workout. For everything else use [sortedWorkoutSections].
   final Workout workout;
-  late List<WorkoutSection> _sortedWorkoutSections;
+  late List<WorkoutSection> sortedWorkoutSections;
   late LoggedWorkout loggedWorkout;
 
   /// AMRAP, ForTime and LastStanding types will use this.
@@ -44,14 +45,14 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// Need to ensure that one only at a time is playing.
   late List<WorkoutSectionController> controllers;
 
-  /// At completed LoggedWorkoutSection at index [workoutSection.sortPosition] when completed.
+  /// Add LoggedWorkoutSection at index [workoutSection.sortPosition] when completed.
   late List<LoggedWorkoutSection?> completedSections;
   bool allSectionsComplete = false;
 
   /// If false then an intro modal will show over the section page letting the user start the workout with countdown.
   late List<bool> startedSections;
 
-  /// This is true whenever any section is in progress. False
+  /// This is true whenever any section is in progress.
   bool workoutInProgress = false;
 
   DoWorkoutBloc({
@@ -60,30 +61,31 @@ class DoWorkoutBloc extends ChangeNotifier {
   }) {
     loggedWorkout = DefaultObjectfactory.defaultLoggedWorkout(workout: workout);
 
-    _sortedWorkoutSections = workout.workoutSections
+    sortedWorkoutSections = workout.workoutSections
         .sortedBy<num>((wSection) => wSection.sortPosition);
 
-    completedSections = _sortedWorkoutSections.map((_) => null).toList();
-    startedSections = _sortedWorkoutSections.map((_) => false).toList();
-    totalReps = _sortedWorkoutSections.map((_) => 0).toList();
+    /// Init for each section.
+    completedSections = sortedWorkoutSections.map((_) => null).toList();
+    startedSections = sortedWorkoutSections.map((_) => false).toList();
+    totalReps = sortedWorkoutSections.map((_) => 0).toList();
 
     /// One per section.
     _stopWatchTimers =
-        _sortedWorkoutSections.map((_) => StopWatchTimer()).toList();
+        sortedWorkoutSections.map((_) => StopWatchTimer()).toList();
 
     /// One per section.
-    controllers = _sortedWorkoutSections
+    controllers = sortedWorkoutSections
         .map((wSection) => _mapSectionTypeToControllerType(wSection))
         .toList();
 
     /// One per section. Create null filled list then call async function to generate the required audio players.
-    _audioPlayers = _sortedWorkoutSections.map((_) => null).toList();
+    _audioPlayers = sortedWorkoutSections.map((_) => null).toList();
     initAudioPlayers();
   }
 
   /// Constructor async helper ///
   Future<void> initAudioPlayers() async {
-    for (final section in _sortedWorkoutSections) {
+    for (final section in sortedWorkoutSections) {
       if (Utils.textNotNull(section.classAudioUri)) {
         final player = await AudioPlayerController.init(
             audioUri: section.classAudioUri!, player: AudioPlayer());
@@ -148,7 +150,7 @@ class DoWorkoutBloc extends ChangeNotifier {
   }
 
   void resetWorkout() {
-    _sortedWorkoutSections.forEach((ws) {
+    sortedWorkoutSections.forEach((ws) {
       resetSection(ws.sortPosition);
     });
     allSectionsComplete = false;
@@ -175,7 +177,7 @@ class DoWorkoutBloc extends ChangeNotifier {
     loggedWorkout.loggedWorkoutSections.add(sectionLog);
 
     if (completedSections.whereType<LoggedWorkoutSection>().length ==
-        _sortedWorkoutSections.length) {
+        sortedWorkoutSections.length) {
       allSectionsComplete = true;
     }
     workoutInProgress = false;
@@ -282,13 +284,6 @@ class DoWorkoutBloc extends ChangeNotifier {
         );
       case kFreeSessionName:
         return FreeSessionSectionController(
-          workoutSection: workoutSection,
-          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () =>
-              _markSectionComplete(workoutSection.sortPosition),
-        );
-      case kLastStandingName:
-        return LastStandingSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
           markSectionComplete: () =>

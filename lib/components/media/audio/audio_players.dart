@@ -56,13 +56,19 @@ class AudioPlayerController {
   }
 
   static Future<void> openAudioPlayer(
-      BuildContext context, String audioUri, String displayTitle,
-      {bool autoPlay = false}) async {
+      {required BuildContext context,
+      required String audioUri,
+      required String audioTitle,
+      String? audioSubtitle,
+      required String pageTitle,
+      bool autoPlay = false}) async {
     await context.push(
         fullscreenDialog: true,
         child: FullAudioPlayer(
           audioUri: audioUri,
-          title: displayTitle,
+          pageTitle: pageTitle,
+          audioTitle: audioTitle,
+          audioSubtitle: audioSubtitle,
           autoPlay: autoPlay,
         ));
   }
@@ -72,14 +78,16 @@ class AudioPlayerController {
 class FullAudioPlayer extends StatefulWidget {
   final String audioUri;
   final Widget? image;
-  final String title;
-  final String? subTitle;
+  final String pageTitle;
+  final String audioTitle;
+  final String? audioSubtitle;
   final bool autoPlay;
   FullAudioPlayer(
       {required this.audioUri,
       this.image,
-      required this.title,
-      this.subTitle,
+      required this.pageTitle,
+      required this.audioTitle,
+      this.audioSubtitle,
       this.autoPlay = false});
 
   @override
@@ -102,7 +110,10 @@ class _FullAudioPlayerState extends State<FullAudioPlayer> {
 
   Future<void> _init() async {
     await AudioPlayerController.init(
-        player: _player, audioUri: widget.audioUri);
+      player: _player,
+      audioUri: widget.audioUri,
+      autoPlay: widget.autoPlay,
+    );
     setState(() {
       _totalDuration = _player.duration!;
     });
@@ -127,6 +138,8 @@ class _FullAudioPlayerState extends State<FullAudioPlayer> {
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: MyNavBar(
+        middle: NavBarTitle(widget.pageTitle),
+        backgroundColor: context.theme.background,
         customLeading: CupertinoButton(
             child: Icon(CupertinoIcons.chevron_down), onPressed: context.pop),
       ),
@@ -204,12 +217,12 @@ class _FullAudioPlayerState extends State<FullAudioPlayer> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: H2(widget.title),
+            child: H2(widget.audioTitle),
           ),
-          if (Utils.textNotNull(widget.subTitle))
+          if (Utils.textNotNull(widget.audioSubtitle))
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: MyText(widget.subTitle!),
+              child: MyText(widget.audioSubtitle!),
             ),
           SizedBox(
             child: StreamBuilder<PlayerState>(

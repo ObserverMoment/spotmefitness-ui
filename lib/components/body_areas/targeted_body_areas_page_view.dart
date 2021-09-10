@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_graphics.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
+import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
@@ -42,7 +43,10 @@ class TargetedBodyAreasPageView extends StatelessWidget {
           final List<BodyArea> allBodyAreas = data.bodyAreas;
 
           return MyPageScaffold(
-            navigationBar: MyNavBar(middle: NavBarTitle('Targeted Body Areas')),
+            navigationBar: MyNavBar(
+                customLeading: NavBarChevronDownButton(context.pop),
+                backgroundColor: context.theme.background,
+                middle: NavBarTitle('Targeted Body Areas')),
             child: LayoutBuilder(builder: (context, constraints) {
               return Container(
                 padding: const EdgeInsets.symmetric(vertical: 12),
