@@ -1,3 +1,0 @@
-mutation deleteLoggedWorkoutSectionById($id: ID!) {
-  deleteLoggedWorkoutSectionById(id: $id)
-}

@@ -4,5 +4,16 @@ mutation updateLoggedWorkoutSection($data: UpdateLoggedWorkoutSectionInput!) {
     WorkoutSectionType {
       ...WorkoutSectionType
     }
+    workoutSectionData {
+      rounds {
+        timeTakenMs
+        sets {
+          timeTakenMs
+          move
+          load
+          quantity
+        }
+      }
+    }
   }
 }

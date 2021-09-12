@@ -1,5 +1,0 @@
-mutation updateLoggedWorkoutSet($data: UpdateLoggedWorkoutSetInput!) {
-  updateLoggedWorkoutSet: updateLoggedWorkoutSet(data: $data) {
-    ...LoggedWorkoutSet
-  }
-}

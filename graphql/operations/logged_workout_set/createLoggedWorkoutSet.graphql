@@ -1,5 +1,0 @@
-mutation createLoggedWorkoutSet($data: CreateLoggedWorkoutSetInput!) {
-  createLoggedWorkoutSet: createLoggedWorkoutSet(data: $data) {
-    ...LoggedWorkoutSet
-  }
-}

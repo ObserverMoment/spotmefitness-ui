@@ -12,30 +12,14 @@ query loggedWorkoutById($id: ID!) {
       WorkoutSectionType {
         ...WorkoutSectionType
       }
-      LoggedWorkoutSets {
-        ...LoggedWorkoutSet
-        LoggedWorkoutMoves {
-          ...LoggedWorkoutMove
-          Equipment {
-            ...Equipment
-          }
-          Move {
-            ...Move
-            MoveType {
-              ...MoveType
-            }
-            BodyAreaMoveScores {
-              score
-              BodyArea {
-                ...BodyArea
-              }
-            }
-            RequiredEquipments {
-              ...Equipment
-            }
-            SelectableEquipments {
-              ...Equipment
-            }
+      workoutSectionData {
+        rounds {
+          timeTakenMs
+          sets {
+            timeTakenMs
+            move
+            load
+            quantity
           }
         }
       }

@@ -14,28 +14,5 @@ fragment LoggedWorkoutSection on LoggedWorkoutSection {
   timecap
   repScore
   timeTakenMs
-  lapTimesMs
   sortPosition
-}
-
-fragment LoggedWorkoutSet on LoggedWorkoutSet {
-  __typename
-  id
-  note
-  roundsCompleted
-  duration
-  sortPosition
-  roundNumber
-}
-
-fragment LoggedWorkoutMove on LoggedWorkoutMove {
-  __typename
-  id
-  sortPosition
-  reps
-  repType
-  distanceUnit
-  loadAmount
-  loadUnit
-  timeUnit
 }
