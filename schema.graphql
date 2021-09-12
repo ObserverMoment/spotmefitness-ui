@@ -511,6 +511,7 @@ type LoggedWorkout {
   completedOn: DateTime!
   name: String!
   note: String
+  BodyAreas: [BodyArea!]!
   GymProfile: GymProfile
   LoggedWorkoutSections: [LoggedWorkoutSection!]!
   ScheduledWorkout: ScheduledWorkout

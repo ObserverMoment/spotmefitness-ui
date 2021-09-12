@@ -1,6 +1,9 @@
 mutation updateLoggedWorkoutSection($data: UpdateLoggedWorkoutSectionInput!) {
   updateLoggedWorkoutSection: updateLoggedWorkoutSection(data: $data) {
     ...LoggedWorkoutSection
+    BodyAreas {
+      ...BodyArea
+    }
     WorkoutSectionType {
       ...WorkoutSectionType
     }

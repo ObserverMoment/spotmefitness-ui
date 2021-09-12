@@ -2516,6 +2516,9 @@ LoggedWorkout _$LoggedWorkoutFromJson(Map<String, dynamic> json) {
         fromGraphQLDateTimeToDartDateTime(json['completedOn'] as int)
     ..note = json['note'] as String?
     ..name = json['name'] as String
+    ..bodyAreas = (json['BodyAreas'] as List<dynamic>)
+        .map((e) => BodyArea.fromJson(e as Map<String, dynamic>))
+        .toList()
     ..gymProfile = json['GymProfile'] == null
         ? null
         : GymProfile.fromJson(json['GymProfile'] as Map<String, dynamic>)
@@ -2531,6 +2534,7 @@ Map<String, dynamic> _$LoggedWorkoutToJson(LoggedWorkout instance) =>
       'completedOn': fromDartDateTimeToGraphQLDateTime(instance.completedOn),
       'note': instance.note,
       'name': instance.name,
+      'BodyAreas': instance.bodyAreas.map((e) => e.toJson()).toList(),
       'GymProfile': instance.gymProfile?.toJson(),
       'LoggedWorkoutSections':
           instance.loggedWorkoutSections.map((e) => e.toJson()).toList(),
@@ -5382,6 +5386,9 @@ UpdateLoggedWorkoutSection _$UpdateLoggedWorkoutSectionFromJson(
     ..repScore = json['repScore'] as int?
     ..timeTakenMs = json['timeTakenMs'] as int?
     ..sortPosition = json['sortPosition'] as int
+    ..bodyAreas = (json['BodyAreas'] as List<dynamic>)
+        .map((e) => BodyArea.fromJson(e as Map<String, dynamic>))
+        .toList()
     ..workoutSectionType = WorkoutSectionType.fromJson(
         json['WorkoutSectionType'] as Map<String, dynamic>)
     ..workoutSectionData = WorkoutSectionData.fromJson(
@@ -5399,6 +5406,7 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionToJson(
       'repScore': instance.repScore,
       'timeTakenMs': instance.timeTakenMs,
       'sortPosition': instance.sortPosition,
+      'BodyAreas': instance.bodyAreas.map((e) => e.toJson()).toList(),
       'WorkoutSectionType': instance.workoutSectionType.toJson(),
       'workoutSectionData': instance.workoutSectionData.toJson(),
     };
