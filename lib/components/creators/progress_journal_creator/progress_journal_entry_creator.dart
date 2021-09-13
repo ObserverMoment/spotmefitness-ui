@@ -134,20 +134,24 @@ class ProgressJournalEntryCreatorNotes extends StatelessWidget {
 
     return Column(
       children: [
-        EditableTextAreaRow(
-            title: 'Text Note',
-            text: note ?? '',
-            onSave: (note) => context
-                .read<ProgressJournalEntryCreatorBloc>()
-                .updateEntry({'note': note}),
-            inputValidation: (t) => true),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
+        UserInputContainer(
+          child: EditableTextAreaRow(
+              title: 'Text Note',
+              text: note ?? '',
+              onSave: (note) => context
+                  .read<ProgressJournalEntryCreatorBloc>()
+                  .updateEntry({'note': note}),
+              inputValidation: (t) => true),
+        ),
+        UserInputContainer(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MyText(
-                'Voice Note',
+              Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: MyText(
+                  'Voice Note',
+                ),
               ),
               AudioUploader(
                   audioUri: voiceNoteUri,
@@ -220,11 +224,10 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
         context.select<ProgressJournalEntryCreatorBloc, BodyweightUnit>(
             (b) => b.parentJournal.bodyweightUnit);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Row(
+    return Column(
+      children: [
+        UserInputContainer(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MyText('Bodyweight'),
@@ -243,77 +246,77 @@ class ProgressJournalEntryCreatorScores extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: 70,
+        ),
+        SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                height: 70,
+                child: Row(
+                  children: [
+                    MyText(
+                      'Reflective Journaling',
+                    ),
+                    InfoPopupButton(
+                        infoWidget: MyText(
+                            'Info about self reporting scores. Why, what etc.'))
+                  ],
+                ),
+              ),
+              if (_hasSubmittedScores(entry))
+                FadeIn(
                   child: Row(
                     children: [
-                      MyText(
-                        'Reflective Journaling',
+                      MyText('Average '),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: CircularPercentIndicator(
+                          startAngle: 180,
+                          backgroundColor: Styles.colorOne.withOpacity(0.35),
+                          circularStrokeCap: CircularStrokeCap.round,
+                          radius: 54.0,
+                          lineWidth: 6.0,
+                          percent: _calcOverallAverage(entry) / kMaxScore,
+                          center: MyText(
+                            _calcOverallAverage(entry).toInt().toString(),
+                            lineHeight: 1,
+                            weight: FontWeight.bold,
+                          ),
+                          progressColor: Color.lerp(
+                              kBadScoreColor,
+                              kGoodScoreColor,
+                              _calcOverallAverage(entry) / kMaxScore),
+                        ),
                       ),
-                      InfoPopupButton(
-                          infoWidget: MyText(
-                              'Info about self reporting scores. Why, what etc.'))
                     ],
                   ),
                 ),
-                if (_hasSubmittedScores(entry))
-                  FadeIn(
-                    child: Row(
-                      children: [
-                        MyText('Average '),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: CircularPercentIndicator(
-                            startAngle: 180,
-                            backgroundColor: Styles.colorOne.withOpacity(0.35),
-                            circularStrokeCap: CircularStrokeCap.round,
-                            radius: 54.0,
-                            lineWidth: 6.0,
-                            percent: _calcOverallAverage(entry) / kMaxScore,
-                            center: MyText(
-                              _calcOverallAverage(entry).toInt().toString(),
-                              lineHeight: 1,
-                              weight: FontWeight.bold,
-                            ),
-                            progressColor: Color.lerp(
-                                kBadScoreColor,
-                                kGoodScoreColor,
-                                _calcOverallAverage(entry) / kMaxScore),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
-          JournalEntryScoreInput(
-            title: 'Mood',
-            updateScore: (s) => _updateScore(context, 'moodScore', s),
-            score: entry.moodScore,
-          ),
-          JournalEntryScoreInput(
-            title: 'Energy',
-            updateScore: (s) => _updateScore(context, 'energyScore', s),
-            score: entry.energyScore,
-          ),
-          JournalEntryScoreInput(
-              title: 'Confidence',
-              updateScore: (s) => _updateScore(context, 'confidenceScore', s),
-              score: entry.confidenceScore),
-          JournalEntryScoreInput(
-            title: 'Motivation',
-            updateScore: (s) => _updateScore(context, 'motivationScore', s),
-            score: entry.motivationScore,
-          ),
-        ],
-      ),
+        ),
+        JournalEntryScoreInput(
+          title: 'Mood',
+          updateScore: (s) => _updateScore(context, 'moodScore', s),
+          score: entry.moodScore,
+        ),
+        JournalEntryScoreInput(
+          title: 'Energy',
+          updateScore: (s) => _updateScore(context, 'energyScore', s),
+          score: entry.energyScore,
+        ),
+        JournalEntryScoreInput(
+            title: 'Confidence',
+            updateScore: (s) => _updateScore(context, 'confidenceScore', s),
+            score: entry.confidenceScore),
+        JournalEntryScoreInput(
+          title: 'Motivation',
+          updateScore: (s) => _updateScore(context, 'motivationScore', s),
+          score: entry.motivationScore,
+        ),
+      ],
     );
   }
 }

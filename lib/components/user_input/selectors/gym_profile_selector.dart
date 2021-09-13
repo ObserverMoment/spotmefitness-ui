@@ -29,7 +29,7 @@ class GymProfileSelectorDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: 46,
       child: Row(
         children: [
           Expanded(
@@ -42,7 +42,7 @@ class GymProfileSelectorDisplay extends StatelessWidget {
               title: 'Gym Profile',
               display: gymProfile == null
                   ? MyText(
-                      'Select...',
+                      '...select',
                       subtext: true,
                     )
                   : ContentBox(child: MyText(gymProfile!.name)),

@@ -42,18 +42,7 @@ class DefaultObjectfactory {
       ..name = Utils.textNotNull(workoutSection.name)
           ? 'Log - ${workoutSection.name}'
           : 'Log - ${workoutSection.workoutSectionType.name}'
-      ..lapTimesMs = {}
-      ..workoutSectionType = workoutSection.workoutSectionType
-      ..loggedWorkoutSets = [];
-  }
-
-  static LoggedWorkoutSet defaultLoggedWorkoutSet({required int sortPosition}) {
-    return LoggedWorkoutSet()
-      ..$$typename = kLoggedWorkoutSetTypename
-      ..id = 'temp-$kLoggedWorkoutSetTypename:${Uuid().v1()}'
-      ..roundsCompleted = 1
-      ..sortPosition = sortPosition
-      ..loggedWorkoutMoves = [];
+      ..workoutSectionType = workoutSection.workoutSectionType;
   }
 
   static WorkoutMove defaultRestWorkoutMove(

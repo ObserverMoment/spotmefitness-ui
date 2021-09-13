@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/equipment_selector.dart';
@@ -25,31 +26,34 @@ class CustomMoveCreatorEquipment extends StatelessWidget {
 
           return SingleChildScrollView(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: Column(
                 children: [
-                  SelectedEquipmentsDisplay(
-                    selectedEquipments: move.requiredEquipments,
-                    title: 'Required',
-                    allEquipments: allEquipments,
-                    updateSelectedEquipments: (List<Equipment> equipments) {
-                      updateMove({
-                        'RequiredEquipments':
-                            equipments.map((e) => e.toJson()).toList()
-                      });
-                    },
+                  UserInputContainer(
+                    child: SelectedEquipmentsDisplay(
+                      selectedEquipments: move.requiredEquipments,
+                      title: 'Required Equipment',
+                      allEquipments: allEquipments,
+                      updateSelectedEquipments: (List<Equipment> equipments) {
+                        updateMove({
+                          'RequiredEquipments':
+                              equipments.map((e) => e.toJson()).toList()
+                        });
+                      },
+                    ),
                   ),
-                  SelectedEquipmentsDisplay(
-                    selectedEquipments: move.selectableEquipments,
-                    title: 'Selectable',
-                    allEquipments: allEquipments,
-                    updateSelectedEquipments: (List<Equipment> equipments) {
-                      updateMove({
-                        'SelectableEquipments':
-                            equipments.map((e) => e.toJson()).toList()
-                      });
-                    },
+                  UserInputContainer(
+                    child: SelectedEquipmentsDisplay(
+                      selectedEquipments: move.selectableEquipments,
+                      title: 'Selectable Equipment',
+                      allEquipments: allEquipments,
+                      updateSelectedEquipments: (List<Equipment> equipments) {
+                        updateMove({
+                          'SelectableEquipments':
+                              equipments.map((e) => e.toJson()).toList()
+                        });
+                      },
+                    ),
                   ),
                 ],
               ),

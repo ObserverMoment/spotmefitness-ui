@@ -13,6 +13,6 @@ fragment LoggedWorkoutSection on LoggedWorkoutSection {
   note
   timecap
   repScore
-  timeTakenMs
+  timeTakenSeconds
   sortPosition
 }

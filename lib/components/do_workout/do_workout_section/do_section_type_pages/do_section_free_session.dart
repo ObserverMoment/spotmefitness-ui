@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/free_session_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/free_session/free_session_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/free_session/free_session_progress.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
@@ -66,34 +63,34 @@ class _DoWorkoutSectionFreeSessionState
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GrowInOut(
-            show: _freeSessionController
-                .loggedWorkoutSection.loggedWorkoutSets.isNotEmpty,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SecondaryButton(
-                          prefixIconData: CupertinoIcons.doc_chart,
-                          withMinWidth: false,
-                          text: 'Log this section',
-                          onPressed: _markSectionComplete),
-                    ],
-                  ),
-                  Positioned(
-                      right: 0,
-                      child: InfoPopupButton(
-                          infoWidget: MyText(
-                        'Explain that pressing this button will log the work you have done so far in this free session - you do not need to "complete" a free session',
-                        maxLines: 6,
-                      ))),
-                ],
-              ),
-            )),
+        // GrowInOut(
+        //     show: _freeSessionController
+        //         .loggedWorkoutSection.loggedWorkoutSets.isNotEmpty,
+        //     child: Padding(
+        //       padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12),
+        //       child: Stack(
+        //         alignment: Alignment.center,
+        //         children: [
+        //           Row(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: [
+        //               SecondaryButton(
+        //                   prefixIconData: CupertinoIcons.doc_chart,
+        //                   withMinWidth: false,
+        //                   text: 'Log this section',
+        //                   onPressed: _markSectionComplete),
+        //             ],
+        //           ),
+        //           Positioned(
+        //               right: 0,
+        //               child: InfoPopupButton(
+        //                   infoWidget: MyText(
+        //                 'Explain that pressing this button will log the work you have done so far in this free session - you do not need to "complete" a free session',
+        //                 maxLines: 6,
+        //               ))),
+        //         ],
+        //       ),
+        //     )),
         Expanded(
           child: PageView(
             controller: widget.pageController,

@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/personal_best/personal_best_entry_score_display.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 class PersonalBestCard extends StatelessWidget {
@@ -22,36 +23,13 @@ class PersonalBestCard extends StatelessWidget {
         : entries.reversed.toList();
   }
 
-  Widget _buildScore(
-          BuildContext context, int index, UserBenchmarkEntry entry) =>
-      Padding(
-        padding: const EdgeInsets.only(bottom: 4.0),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              PersonalBestEntryScoreDisplay(
-                benchmark: userBenchmark,
-                entry: entry,
-              ),
-              SizedBox(width: 6),
-              MyText(
-                '${entry.completedOn.minimalDateString}',
-                size: FONTSIZE.TINY,
-                color: Styles.infoBlue,
-              ),
-            ],
-          ),
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
+    final bestEntry = _sortEntries()[0];
+
     return Card(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
@@ -65,84 +43,98 @@ class PersonalBestCard extends StatelessWidget {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: MyText(
+                      child: MyHeaderText(
                         userBenchmark.name,
                         size: FONTSIZE.BIG,
                       ),
                     ),
                     MyText(
                       userBenchmark.benchmarkType.display,
-                      lineHeight: 1.4,
                     ),
                     SizedBox(height: 6),
-                    if (Utils.textNotNull(userBenchmark.description))
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: MyText(
-                          userBenchmark.description!,
-                          maxLines: 5,
-                          size: FONTSIZE.SMALL,
-                          subtext: true,
-                          lineHeight: 1.4,
-                        ),
-                      ),
                     if (Utils.textNotNull(userBenchmark.equipmentInfo))
                       Padding(
                         padding: const EdgeInsets.only(bottom: 6),
                         child: MyText(
                           userBenchmark.equipmentInfo!,
                           maxLines: 5,
-                          size: FONTSIZE.SMALL,
                           color: Styles.colorTwo,
-                          lineHeight: 1.4,
-                        ),
-                      ),
-                    if (userBenchmark.userBenchmarkTags.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6, bottom: 10),
-                        child: Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: userBenchmark.userBenchmarkTags
-                              .map(
-                                (tag) => Tag(
-                                  tag: tag.name,
-                                ),
-                              )
-                              .toList(),
                         ),
                       ),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 4.0, right: 0, left: 8, bottom: 6),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    userBenchmark.userBenchmarkEntries.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: MyText('No scores'),
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: _sortEntries()
-                                .take(3)
-                                .mapIndexed(
-                                    (i, e) => _buildScore(context, i, e))
-                                .toList()),
-                  ],
-                ),
-              ),
+              userBenchmark.userBenchmarkEntries.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: MyText('No scores'),
+                    )
+                  : _BestEntryScoreDisplay(
+                      benchmark: userBenchmark,
+                      benchmarkEntry: bestEntry,
+                    ),
             ],
           ),
+          if (Utils.textNotNull(userBenchmark.description))
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: MyText(
+                userBenchmark.description!,
+                maxLines: 3,
+                size: FONTSIZE.SMALL,
+                lineHeight: 1.4,
+              ),
+            ),
+          if (userBenchmark.userBenchmarkTags.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 6, bottom: 8),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: userBenchmark.userBenchmarkTags
+                    .map(
+                      (tag) => Tag(
+                        tag: tag.name,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
         ],
       ),
+    );
+  }
+}
+
+class _BestEntryScoreDisplay extends StatelessWidget {
+  final UserBenchmark benchmark;
+  final UserBenchmarkEntry benchmarkEntry;
+  const _BestEntryScoreDisplay(
+      {Key? key, required this.benchmark, required this.benchmarkEntry})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+              boxShadow: [Styles.avatarBoxShadow],
+              gradient: Styles.secondaryButtonGradient,
+              borderRadius: BorderRadius.circular(30)),
+          child: MyHeaderText(
+              DataUtils.buildBenchmarkEntryScoreText(benchmark, benchmarkEntry),
+              size: FONTSIZE.BIG,
+              color: Styles.white),
+        ),
+        SizedBox(height: 4),
+        MyText(
+          benchmarkEntry.completedOn.minimalDateStringYear,
+          size: FONTSIZE.SMALL,
+          subtext: true,
+        )
+      ],
     );
   }
 }

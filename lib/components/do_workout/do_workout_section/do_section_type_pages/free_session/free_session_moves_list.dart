@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/free_session_section_controller.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/creators/workout_creator/workout_creator_structure/workout_section_creator/workout_set_creator/workout_set_definition.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/load_picker.dart';
 import 'package:spotmefitness_ui/components/workout/workout_move_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
-import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -25,49 +24,50 @@ class FreeSessionMovesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sortedWorkoutSets = freeSessionController.workoutSection.workoutSets
-        .sortedBy<num>((wSet) => wSet.sortPosition);
+    return MyText('FreeSessionMovesList');
+    // final sortedWorkoutSets = freeSessionController.workoutSection.workoutSets
+    //     .sortedBy<num>((wSet) => wSet.sortPosition);
 
-    final loggedWorkoutSets =
-        freeSessionController.loggedWorkoutSection.loggedWorkoutSets;
+    // final loggedWorkoutSets =
+    //     freeSessionController.loggedWorkoutSection.loggedWorkoutSets;
 
-    return ListView.builder(
-      itemCount: sortedWorkoutSets.length + 2,
-      itemBuilder: (c, i) {
-        if (i == sortedWorkoutSets.length + 1) {
-          return SizedBox(height: EnvironmentConfig.bottomNavBarHeight);
-        } else if (i == sortedWorkoutSets.length) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CreateTextIconButton(
-                  text: 'Add Set',
-                  onPressed: () => print('create set'),
-                ),
-              ],
-            ),
-          );
-        } else {
-          final setIsMarkedComplete = loggedWorkoutSets.any((lwSet) =>
-              lwSet.sortPosition == sortedWorkoutSets[i].sortPosition);
+    // return ListView.builder(
+    //   itemCount: sortedWorkoutSets.length + 2,
+    //   itemBuilder: (c, i) {
+    //     if (i == sortedWorkoutSets.length + 1) {
+    //       return SizedBox(height: EnvironmentConfig.bottomNavBarHeight);
+    //     } else if (i == sortedWorkoutSets.length) {
+    //       return Padding(
+    //         padding: const EdgeInsets.all(8.0),
+    //         child: Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: [
+    //             CreateTextIconButton(
+    //               text: 'Add Set',
+    //               onPressed: () => print('create set'),
+    //             ),
+    //           ],
+    //         ),
+    //       );
+    //     } else {
+    //       final setIsMarkedComplete = loggedWorkoutSets.any((lwSet) =>
+    //           lwSet.sortPosition == sortedWorkoutSets[i].sortPosition);
 
-          return SizeFadeIn(
-              child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: AnimatedOpacity(
-              opacity: setIsMarkedComplete ? 0.5 : 1,
-              duration: kStandardAnimationDuration,
-              child: _WorkoutSetInFreeSession(
-                  workoutSet: sortedWorkoutSets[i],
-                  setIsMarkedComplete: setIsMarkedComplete,
-                  freeSessionController: freeSessionController),
-            ),
-          ));
-        }
-      },
-    );
+    //       return SizeFadeIn(
+    //           child: Padding(
+    //         padding: const EdgeInsets.all(4.0),
+    //         child: AnimatedOpacity(
+    //           opacity: setIsMarkedComplete ? 0.5 : 1,
+    //           duration: kStandardAnimationDuration,
+    //           child: _WorkoutSetInFreeSession(
+    //               workoutSet: sortedWorkoutSets[i],
+    //               setIsMarkedComplete: setIsMarkedComplete,
+    //               freeSessionController: freeSessionController),
+    //         ),
+    //       ));
+    //     }
+    //   },
+    // );
   }
 }
 

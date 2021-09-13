@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
-import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
@@ -68,8 +68,9 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
     await checkOperationResult(context, result);
 
     if (widget.scheduledWorkout != null) {
-      LoggedWorkoutCreatorBloc.updateScheduleWithLoggedWorkout(
-          context, widget.scheduledWorkout!, result.data!.createLoggedWorkout);
+      /// TODO.
+      // LoggedWorkoutCreatorBloc.updateScheduleWithLoggedWorkout(
+      //     context, widget.scheduledWorkout!, result.data!.createLoggedWorkout);
     }
 
     setState(() => _logSavedToDB = true);
@@ -144,8 +145,8 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
 
     /// When doing a workout 'live' the timeTakenMs should always be non null as it gets added by the [DoWorkoutBloc] in section complete.
     /// Being null here is an error.
-    final totalTimeMs =
-        loggedWorkout.loggedWorkoutSections.sumBy((s) => s.timeTakenMs!);
+    final totalTimeSeconds =
+        loggedWorkout.loggedWorkoutSections.sumBy((s) => s.timeTakenSeconds);
 
     return CupertinoPageScaffold(
         child: SafeArea(
@@ -174,7 +175,7 @@ class _DoWorkoutLogWorkoutPageState extends State<DoWorkoutLogWorkoutPage> {
               MyText('Time spent working:'),
               SizedBox(width: 8),
               H3(
-                Duration(milliseconds: totalTimeMs).compactDisplay(),
+                Duration(seconds: totalTimeSeconds).compactDisplay(),
                 color: Styles.colorTwo,
               ),
             ],

@@ -101,14 +101,14 @@ class _PersonalBestDetailsPageState extends State<PersonalBestDetailsPage> {
                   NavBarEllipsisMenu(items: [
                     ContextMenuItem(
                         iconData: CupertinoIcons.info,
-                        text: 'Edit Personal Best',
+                        text: 'Edit PB Definition',
                         onTap: () => context.navigateTo(
                             PersonalBestCreatorRoute(
                                 userBenchmark: benchmark))),
                     ContextMenuItem(
                         iconData: CupertinoIcons.delete_simple,
                         destructive: true,
-                        text: 'Delete Personal Best',
+                        text: 'Delete PB',
                         onTap: _handleDeleteJournal),
                   ]),
                 ],

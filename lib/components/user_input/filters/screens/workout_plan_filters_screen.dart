@@ -45,77 +45,92 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           children: [
-            TappableRow(
-                onTap: () => context.showBottomSheet<int>(
-                        child: NumberPickerModal(
-                      initialValue: lengthWeeks,
-                      min: 1,
-                      max: 52,
-                      saveValue: (lengthWeeks) =>
-                          _updateFilters({'lengthWeeks': lengthWeeks}),
-                      title: 'Weeks',
-                    )),
-                display: Row(
-                  children: [
-                    ContentBox(
-                      child: MyText(
-                        lengthWeeks != null ? lengthWeeks.toString() : ' - ',
-                        size: FONTSIZE.DISPLAY,
-                        weight: FontWeight.bold,
-                        lineHeight: 1.2,
+            UserInputContainer(
+              child: TappableRow(
+                  onTap: () => context.showBottomSheet<int>(
+                          child: NumberPickerModal(
+                        initialValue: lengthWeeks,
+                        min: 1,
+                        max: 52,
+                        saveValue: (lengthWeeks) =>
+                            _updateFilters({'lengthWeeks': lengthWeeks}),
+                        title: 'Weeks',
+                      )),
+                  display: Row(
+                    children: [
+                      ContentBox(
+                        child: MyText(
+                          lengthWeeks != null ? lengthWeeks.toString() : ' - ',
+                          size: FONTSIZE.HUGE,
+                          weight: FontWeight.bold,
+                          lineHeight: 1.2,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    MyText('weeks'),
-                    if (lengthWeeks != null)
-                      _ClearInputButton(
-                        onPressed: () => _updateFilters({'lengthWeeks': null}),
-                      )
-                  ],
-                ),
-                title: 'Plan Length'),
-            TappableRow(
-                onTap: () => context.showBottomSheet<int>(
-                        child: NumberPickerModal(
-                      initialValue: daysPerWeek,
-                      min: 1,
-                      max: 52,
-                      saveValue: (daysPerWeek) =>
-                          _updateFilters({'daysPerWeek': daysPerWeek}),
-                      title: 'Days',
-                    )),
-                display: Row(
-                  children: [
-                    ContentBox(
-                      child: MyText(
-                        daysPerWeek != null ? daysPerWeek.toString() : ' - ',
-                        size: FONTSIZE.DISPLAY,
-                        weight: FontWeight.bold,
-                        lineHeight: 1.2,
+                      SizedBox(
+                        width: 8,
                       ),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    MyText('days / week'),
-                    if (daysPerWeek != null)
-                      _ClearInputButton(
-                        onPressed: () => _updateFilters({'daysPerWeek': null}),
-                      )
-                  ],
-                ),
-                title: 'Days / Week'),
+                      MyText('weeks'),
+                      if (lengthWeeks != null)
+                        _ClearInputButton(
+                          onPressed: () =>
+                              _updateFilters({'lengthWeeks': null}),
+                        )
+                    ],
+                  ),
+                  title: 'Plan Length'),
+            ),
+            UserInputContainer(
+              child: TappableRow(
+                  onTap: () => context.showBottomSheet<int>(
+                          child: NumberPickerModal(
+                        initialValue: daysPerWeek,
+                        min: 1,
+                        max: 52,
+                        saveValue: (daysPerWeek) =>
+                            _updateFilters({'daysPerWeek': daysPerWeek}),
+                        title: 'Days',
+                      )),
+                  display: Row(
+                    children: [
+                      ContentBox(
+                        child: MyText(
+                          daysPerWeek != null ? daysPerWeek.toString() : ' - ',
+                          size: FONTSIZE.HUGE,
+                          weight: FontWeight.bold,
+                          lineHeight: 1.2,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      MyText('days / week'),
+                      if (daysPerWeek != null)
+                        _ClearInputButton(
+                          onPressed: () =>
+                              _updateFilters({'daysPerWeek': null}),
+                        )
+                    ],
+                  ),
+                  title: 'Days / Week'),
+            ),
             SizedBox(height: 12),
-            H3('Use Equipment?'),
-            Row(
+            UserInputContainer(
+                child: Column(
               children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: double.infinity,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      MyHeaderText('Use Equipment?'),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
                       child: SlidingSelect<int>(
                           value: DataUtils.nullableBoolToInt(bodyweightOnly),
                           updateValue: (v) => _updateFilters({
@@ -127,16 +142,15 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
                             2: MyText("Don't mind")
                           }),
                     ),
-                  ),
+                    InfoPopupButton(
+                        infoWidget: MyText(
+                      'No = bodyweight only, yes = not bodyweight only (i.e. has equipment',
+                      maxLines: 5,
+                    ))
+                  ],
                 ),
-                InfoPopupButton(
-                    infoWidget: MyText(
-                  'No = bodyweight only, yes = not bodyweight only (i.e. has equipment',
-                  maxLines: 5,
-                ))
               ],
-            ),
-            SizedBox(height: 24),
+            )),
             DifficultyLevelSelectorRow(
               difficultyLevel: difficultyLevel,
               updateDifficultyLevel: (difficultyLevel) =>

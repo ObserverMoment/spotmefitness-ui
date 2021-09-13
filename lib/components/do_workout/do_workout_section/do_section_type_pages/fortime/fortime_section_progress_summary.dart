@@ -214,8 +214,8 @@ class _ForTimeWorkoutSetDisplay extends StatelessWidget {
     final isActive = state.currentSectionRound == roundNumber &&
         state.currentSetIndex == workoutSet.sortPosition;
 
-    final int? lapTimeMs = state.lapTimesMs[roundNumber.toString()]
-        ?['setLapTimesMs'][workoutSet.sortPosition.toString()];
+    // final int? lapTimeMs = state.lapTimesMs[roundNumber.toString()]
+    //     ?['setLapTimesMs'][workoutSet.sortPosition.toString()];
 
     return AnimatedOpacity(
       opacity: DoWorkoutUtils.moveIsCompleted(
@@ -231,34 +231,35 @@ class _ForTimeWorkoutSetDisplay extends StatelessWidget {
                 border: Border.all(color: context.theme.primary),
               )
             : null,
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Row(
-            mainAxisAlignment: lapTimeMs != null
-                ? MainAxisAlignment.spaceBetween
-                : MainAxisAlignment.center,
-            children: [
-              Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                spacing: 12,
-                runSpacing: 6,
-                children: workoutSet.workoutMoves
-                    .map((workoutMove) => ContentBox(
-                          child: WorkoutMoveMinimalDisplay(
-                            workoutMove: workoutMove,
-                            showReps: showReps,
-                          ),
-                        ))
-                    .toList(),
-              ),
-              if (lapTimeMs != null)
-                SizeFadeIn(
-                    child: MyText(
-                        Duration(milliseconds: lapTimeMs).compactDisplay()))
-            ],
-          ),
-        ),
+        child: MyText('_ForTimeWorkoutSetDisplay'),
+        // child: Padding(
+        //   padding: const EdgeInsets.all(6.0),
+        //   child: Row(
+        //     mainAxisAlignment: lapTimeMs != null
+        //         ? MainAxisAlignment.spaceBetween
+        //         : MainAxisAlignment.center,
+        //     children: [
+        //       Wrap(
+        //         alignment: WrapAlignment.center,
+        //         runAlignment: WrapAlignment.center,
+        //         spacing: 12,
+        //         runSpacing: 6,
+        //         children: workoutSet.workoutMoves
+        //             .map((workoutMove) => ContentBox(
+        //                   child: WorkoutMoveMinimalDisplay(
+        //                     workoutMove: workoutMove,
+        //                     showReps: showReps,
+        //                   ),
+        //                 ))
+        //             .toList(),
+        //       ),
+        //       // if (lapTimeMs != null)
+        //       //   SizeFadeIn(
+        //       //       child: MyText(
+        //       //           Duration(milliseconds: lapTimeMs).compactDisplay()))
+        //     ],
+        //   ),
+        // ),
       ),
     );
   }

@@ -73,10 +73,9 @@ class WorkoutSectionTypeMultiSelector extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      MyText(
+                      MyHeaderText(
                         name,
                         textAlign: TextAlign.start,
-                        size: FONTSIZE.BIG,
                       ),
                       if (allowMultiSelect)
                         MyText(

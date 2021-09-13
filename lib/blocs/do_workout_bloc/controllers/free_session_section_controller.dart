@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -20,15 +19,17 @@ class FreeSessionSectionController extends WorkoutSectionController
             markSectionComplete: markSectionComplete);
 
   void markWorkoutSetComplete(BuildContext context, WorkoutSet workoutSet) {
-    loggedWorkoutSection.loggedWorkoutSets
-        .add(workoutSetToLoggedWorkoutSet(workoutSet, 0));
+    /// TODO.
+    // loggedWorkoutSection.loggedWorkoutSets
+    //     .add(workoutSetToLoggedWorkoutSet(workoutSet, 0));
     notifyListeners();
     context.showToast(message: 'Set Completed!');
   }
 
   void markWorkoutSetIncomplete(WorkoutSet workoutSet) {
-    loggedWorkoutSection.loggedWorkoutSets
-        .removeWhere((lwSet) => lwSet.sortPosition == workoutSet.sortPosition);
+    /// TODO.
+    // loggedWorkoutSection.loggedWorkoutSets
+    //     .removeWhere((lwSet) => lwSet.sortPosition == workoutSet.sortPosition);
     notifyListeners();
   }
 

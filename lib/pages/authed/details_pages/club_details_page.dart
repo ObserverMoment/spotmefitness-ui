@@ -179,6 +179,7 @@ class _ClubDetailsTabBarDelegate extends SliverPersistentHeaderDelegate {
       color: context.theme.background,
       alignment: Alignment.center,
       height: kHeight,
+      padding: const EdgeInsets.only(left: 8),
       child: MyTabBarNav(
           titles: ['About', 'Content', 'Timeline'],
           handleTabChange: selectTabIndex,

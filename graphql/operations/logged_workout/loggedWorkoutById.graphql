@@ -1,25 +1,31 @@
 query loggedWorkoutById($id: ID!) {
   loggedWorkoutById(id: $id) {
     ...LoggedWorkout
-    BodyAreas {
-      ...BodyArea
-    }
     GymProfile {
       ...GymProfile
       Equipments {
         ...Equipment
       }
     }
+    WorkoutGoals {
+      ...WorkoutGoal
+    }
     LoggedWorkoutSections {
       ...LoggedWorkoutSection
       WorkoutSectionType {
         ...WorkoutSectionType
       }
+      BodyAreas {
+        ...BodyArea
+      }
+      MoveTypes {
+        ...MoveType
+      }
       workoutSectionData {
         rounds {
-          timeTakenMs
+          timeTakenSeconds
           sets {
-            timeTakenMs
+            timeTakenSeconds
             move
             load
             quantity

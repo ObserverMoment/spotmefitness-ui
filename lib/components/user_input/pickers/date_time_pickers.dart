@@ -89,51 +89,48 @@ class DateTimePickerDisplayRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color highlightColor = Styles.peachRed;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          MyText(title),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (showDate)
-                GestureDetector(
-                  onTap: onTapDate,
-                  child: ContentBox(
-                      backgroundColor: contentBoxColor,
-                      child: MyText(
-                        dateTime == null
-                            ? 'Select date...'
-                            : dateTime!.compactDateString,
-                        color: activePickerIndex == 0 ? highlightColor : null,
-                        weight: activePickerIndex == 0
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      )),
-                ),
-              if (showDate && showTime) SizedBox(width: 6),
-              if (showTime)
-                GestureDetector(
-                  onTap: onTapTime,
-                  child: ContentBox(
-                      backgroundColor: contentBoxColor,
-                      child: MyText(
-                        dateTime == null
-                            ? 'Select time...'
-                            : dateTime!.timeString24,
-                        color: activePickerIndex == 1 ? highlightColor : null,
-                        weight: activePickerIndex == 1
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      )),
-                ),
-            ],
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        MyText(title),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (showDate)
+              GestureDetector(
+                onTap: onTapDate,
+                child: ContentBox(
+                    backgroundColor: contentBoxColor,
+                    child: MyText(
+                      dateTime == null
+                          ? 'Select date...'
+                          : dateTime!.compactDateString,
+                      color: activePickerIndex == 0 ? highlightColor : null,
+                      weight: activePickerIndex == 0
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    )),
+              ),
+            if (showDate && showTime) SizedBox(width: 6),
+            if (showTime)
+              GestureDetector(
+                onTap: onTapTime,
+                child: ContentBox(
+                    backgroundColor: contentBoxColor,
+                    child: MyText(
+                      dateTime == null
+                          ? 'Select time...'
+                          : dateTime!.timeString24,
+                      color: activePickerIndex == 1 ? highlightColor : null,
+                      weight: activePickerIndex == 1
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    )),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -98,7 +98,6 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
 
   /// 0 is your plans, 1 is public plans.
   late int _activePageIndex;
-  late PageController _tabPageController;
 
   late WorkoutPlanFiltersBloc _bloc;
   late WorkoutPlanFilters _lastUsedFilters;
@@ -126,7 +125,6 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
   void initState() {
     super.initState();
     _activePageIndex = widget.initialOpenPublicTab ? 1 : 0;
-    _tabPageController = PageController(initialPage: _activePageIndex);
 
     _bloc = context.read<WorkoutPlanFiltersBloc>();
 
@@ -202,7 +200,6 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
 
   void _updatePageIndex(int index) {
     setState(() => _activePageIndex = index);
-    _tabPageController.jumpToPage(_activePageIndex);
   }
 
   void _togglePanel() {
@@ -251,7 +248,6 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
 
   @override
   void dispose() {
-    _tabPageController.dispose();
     _pagingController.dispose();
     _pagingScrollController.dispose();
     super.dispose();
@@ -345,7 +341,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
           Expanded(child: WorkoutPlanFiltersScreen())
         ],
       ),
-      body: CupertinoPageScaffold(
+      body: MyPageScaffold(
         navigationBar: MyNavBar(
           middle: NavBarTitle('Find a Workout Plan'),
           trailing: CupertinoButton(
@@ -368,8 +364,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 14),
+              padding: const EdgeInsets.symmetric(vertical: 4),
               child: SizedBox(
                 width: double.infinity,
                 child: SlidingSelect<int>(
@@ -382,9 +377,8 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
               ),
             ),
             Expanded(
-              child: PageView(
-                controller: _tabPageController,
-                physics: NeverScrollableScrollPhysics(),
+              child: IndexedStack(
+                index: _activePageIndex,
                 children: [
                   YourFilteredWorkoutPlansList(
                     selectWorkoutPlan: widget.selectWorkoutPlan != null
@@ -396,8 +390,7 @@ class _WorkoutPlanFinderPageUIState extends State<WorkoutPlanFinderPageUI> {
                   ),
                   PagedListView<int, WorkoutPlan>(
                     // Bottom padding to push list up above floating filters panel.
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 4, bottom: 138),
+                    padding: const EdgeInsets.only(bottom: 138),
                     pagingController: _pagingController,
                     scrollController: _pagingScrollController,
                     builderDelegate: PagedChildBuilderDelegate<WorkoutPlan>(

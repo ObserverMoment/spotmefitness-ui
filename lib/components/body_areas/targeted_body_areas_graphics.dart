@@ -108,7 +108,7 @@ class TargetedBodyAreasSelectedIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nonActiveColor = Styles.grey.withOpacity(0.2);
+    final nonActiveColor = Styles.grey;
     final _activeColor = activeColor ?? context.watch<ThemeBloc>().primary;
 
     List<BodyArea> bodyAreasToDisplay = allBodyAreas

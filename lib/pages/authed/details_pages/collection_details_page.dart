@@ -16,7 +16,6 @@ import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 class CollectionDetailsPage extends StatefulWidget {
   final String id;
@@ -29,18 +28,8 @@ class CollectionDetailsPage extends StatefulWidget {
 
 class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
   int _activeTabIndex = 0;
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
-  }
 
   void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
     setState(() => _activeTabIndex = index);
   }
 
@@ -93,12 +82,6 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final query = UserCollectionByIdQuery(
         variables: UserCollectionByIdArguments(id: widget.id));
@@ -115,7 +98,7 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
           final String? authedUserId = GetIt.I<AuthBloc>().authedUser?.id;
           final bool isOwner = collection.user.id == authedUserId;
 
-          return CupertinoPageScaffold(
+          return MyPageScaffold(
             navigationBar: MyNavBar(
               middle: NavBarTitle(collection.name),
               trailing: CupertinoButton(
@@ -149,65 +132,38 @@ class _CollectionDetailsPageState extends State<CollectionDetailsPage> {
                         ])),
               ),
             ),
-            child: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0, vertical: 8),
-                      child: MyText(
-                        Utils.textNotNull(collection.description)
-                            ? collection.description!
-                            : 'No description',
-                        maxLines: 10,
-                        subtext: !Utils.textNotNull(collection.description),
-                        textAlign: TextAlign.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                MyTabBarNav(
+                    titles: [
+                      'Workouts',
+                      'Plans'
+                    ],
+                    superscriptIcons: [
+                      collection.workouts.isEmpty
+                          ? null
+                          : _buildNumberDisplay(collection.workouts.length),
+                      collection.workoutPlans.isEmpty
+                          ? null
+                          : _buildNumberDisplay(collection.workoutPlans.length),
+                    ],
+                    handleTabChange: _changeTab,
+                    activeTabIndex: _activeTabIndex),
+                Expanded(
+                  child: IndexedStack(
+                    index: _activeTabIndex,
+                    children: [
+                      FilterableCollectionWorkouts(
+                        collection: collection,
                       ),
-                    ),
-                  )
-                ];
-              },
-              body: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    MyTabBarNav(
-                        titles: [
-                          'Workouts',
-                          'Plans'
-                        ],
-                        superscriptIcons: [
-                          collection.workouts.isEmpty
-                              ? null
-                              : _buildNumberDisplay(collection.workouts.length),
-                          collection.workoutPlans.isEmpty
-                              ? null
-                              : _buildNumberDisplay(
-                                  collection.workoutPlans.length),
-                        ],
-                        handleTabChange: _changeTab,
-                        activeTabIndex: _activeTabIndex),
-                    SizedBox(height: 8),
-                    Expanded(
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: _changeTab,
-                        physics: NeverScrollableScrollPhysics(),
-                        children: [
-                          FilterableCollectionWorkouts(
-                            collection: collection,
-                          ),
-                          FilterableCollectionWorkoutPlans(
-                            collection: collection,
-                          ),
-                        ],
+                      FilterableCollectionWorkoutPlans(
+                        collection: collection,
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ],
+                  ),
+                )
+              ],
             ),
           );
         });

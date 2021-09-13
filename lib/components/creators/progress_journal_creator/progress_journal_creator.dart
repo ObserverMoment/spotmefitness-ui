@@ -174,7 +174,6 @@ class _ProgressJournalCreatorPageState
   @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
-      // Non standard nav bar (not [CreateEdit] version as the journal is not created immediately on init of this widget (as is the case for workot creator), but only when user hits save. So there needs to be different cancel / close logic to handle user bailing out of a create op.
       navigationBar: MyNavBar(
         withoutLeading: true,
         middle: Align(
@@ -212,26 +211,27 @@ class _ProgressJournalCreatorPageState
       ),
       child: ListView(
         children: [
-          EditableTextFieldRow(
-              title: 'Name',
-              text: _activeProgressJournal.name,
-              onSave: _updateName,
-              maxChars: 40,
-              validationMessage: 'Min 3, max 40 characters',
-              isRequired: true,
-              inputValidation: (t) => t.length > 2 && t.length < 41),
-          EditableTextAreaRow(
-              title: 'Description',
-              text: _activeProgressJournal.description ?? '',
-              onSave: _updateDescription,
-              maxDisplayLines: 6,
-              inputValidation: (t) => true),
-          SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          UserInputContainer(
+            child: EditableTextFieldRow(
+                title: 'Name',
+                text: _activeProgressJournal.name,
+                onSave: _updateName,
+                maxChars: 40,
+                validationMessage: 'Min 3, max 40 characters',
+                inputValidation: (t) => t.length > 2 && t.length < 41),
+          ),
+          UserInputContainer(
+            child: EditableTextAreaRow(
+                title: 'Description',
+                text: _activeProgressJournal.description ?? '',
+                onSave: _updateDescription,
+                maxDisplayLines: 6,
+                inputValidation: (t) => true),
+          ),
+          UserInputContainer(
             child: Column(
               children: [
-                MyText('Cover Image'),
+                MyHeaderText('Cover Image'),
                 SizedBox(height: 8),
                 ImageUploader(
                   imageUri: _activeProgressJournal.coverImageUri,
@@ -243,9 +243,7 @@ class _ProgressJournalCreatorPageState
               ],
             ),
           ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          UserInputContainer(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

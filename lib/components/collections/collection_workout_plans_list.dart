@@ -76,8 +76,7 @@ class _FilterableCollectionWorkoutPlansState
       children: [
         if (allTags.isNotEmpty)
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
+            padding: const EdgeInsets.only(top: 4, bottom: 8),
             child: SizedBox(
                 height: 30,
                 child: ListView.builder(
@@ -123,43 +122,38 @@ class _CollectionWorkoutPlansList extends StatelessWidget {
   Widget build(BuildContext context) {
     return workoutPlans.isEmpty
         ? Padding(padding: const EdgeInsets.all(24), child: MyText('No plans'))
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: workoutPlans.length,
-                itemBuilder: (c, i) => ContextMenu(
-                      key: Key(workoutPlans[i].id),
-                      actions: [
-                        ContextMenuAction(
-                            text: 'View details',
-                            iconData: CupertinoIcons.eye,
-                            onTap: () => context.navigateTo(
-                                WorkoutPlanDetailsRoute(
-                                    id: workoutPlans[i].id))),
-                        ContextMenuAction(
-                            text: 'Move to collection',
-                            iconData: CupertinoIcons.tray_arrow_up,
-                            onTap: () => moveToCollection(workoutPlans[i])),
-                        ContextMenuAction(
-                            text: 'Copy to collection',
-                            iconData: CupertinoIcons.doc_on_doc,
-                            onTap: () => copyToCollection(workoutPlans[i])),
-                        ContextMenuAction(
-                            text: 'Remove',
-                            iconData: CupertinoIcons.delete_simple,
-                            destructive: true,
-                            onTap: () => removeFromCollection(workoutPlans[i]))
-                      ],
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 10.0),
-                        child: WorkoutPlanCard(workoutPlans[i]),
-                      ),
-                      menuChild: WorkoutPlanCard(
-                        workoutPlans[i],
-                      ),
-                    )),
-          );
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: workoutPlans.length,
+            itemBuilder: (c, i) => ContextMenu(
+                  key: Key(workoutPlans[i].id),
+                  actions: [
+                    ContextMenuAction(
+                        text: 'View details',
+                        iconData: CupertinoIcons.eye,
+                        onTap: () => context.navigateTo(
+                            WorkoutPlanDetailsRoute(id: workoutPlans[i].id))),
+                    ContextMenuAction(
+                        text: 'Move to collection',
+                        iconData: CupertinoIcons.tray_arrow_up,
+                        onTap: () => moveToCollection(workoutPlans[i])),
+                    ContextMenuAction(
+                        text: 'Copy to collection',
+                        iconData: CupertinoIcons.doc_on_doc,
+                        onTap: () => copyToCollection(workoutPlans[i])),
+                    ContextMenuAction(
+                        text: 'Remove',
+                        iconData: CupertinoIcons.delete_simple,
+                        destructive: true,
+                        onTap: () => removeFromCollection(workoutPlans[i]))
+                  ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: WorkoutPlanCard(workoutPlans[i]),
+                  ),
+                  menuChild: WorkoutPlanCard(
+                    workoutPlans[i],
+                  ),
+                ));
   }
 }

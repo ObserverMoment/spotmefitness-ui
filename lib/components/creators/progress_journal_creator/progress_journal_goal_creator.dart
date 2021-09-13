@@ -178,30 +178,35 @@ class _ProgressJournalGoalCreatorState
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              EditableTextFieldRow(
-                  title: 'Name',
-                  text: _activeProgressJournalGoal.name,
-                  onSave: _updateName,
-                  validationMessage: 'Min 3, max 30 characters',
-                  maxChars: 30,
-                  inputValidation: (t) => t.length > 3 && t.length < 31),
-              EditableTextAreaRow(
-                  title: 'Description',
-                  text: _activeProgressJournalGoal.description ?? '',
-                  onSave: _updateDescription,
-                  maxDisplayLines: 10,
-                  inputValidation: (t) => true),
-              DateTimePickerDisplay(
-                dateTime: _activeProgressJournalGoal.deadline,
-                saveDateTime: _updateDeadline,
-                showTime: false,
-                title: 'Deadline',
+              UserInputContainer(
+                child: EditableTextFieldRow(
+                    title: 'Name',
+                    text: _activeProgressJournalGoal.name,
+                    onSave: _updateName,
+                    validationMessage: 'Min 3, max 30 characters',
+                    maxChars: 30,
+                    inputValidation: (t) => t.length > 3 && t.length < 31),
+              ),
+              UserInputContainer(
+                child: EditableTextAreaRow(
+                    title: 'Description',
+                    text: _activeProgressJournalGoal.description ?? '',
+                    onSave: _updateDescription,
+                    maxDisplayLines: 10,
+                    inputValidation: (t) => true),
+              ),
+              UserInputContainer(
+                child: DateTimePickerDisplay(
+                  dateTime: _activeProgressJournalGoal.deadline,
+                  saveDateTime: _updateDeadline,
+                  showTime: false,
+                  title: 'Deadline',
+                ),
               ),
               // Allow adjusting of the completed date - but only once it has been marked completed.
               // You can not currently unmark as complete from this page.
               if (_activeProgressJournalGoal.completedDate != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                UserInputContainer(
                   child: DateTimePickerDisplay(
                     dateTime: _activeProgressJournalGoal.completedDate,
                     saveDateTime: _updateCompletedDate,
@@ -209,56 +214,63 @@ class _ProgressJournalGoalCreatorState
                     showTime: false,
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              UserInputContainer(
+                child: Column(
                   children: [
-                    MyText(
-                      'Tags',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MyText(
+                          'Tags',
+                        ),
+                        InfoPopupButton(infoWidget: MyText('Info about tags'))
+                      ],
                     ),
-                    InfoPopupButton(infoWidget: MyText('Info about tags'))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4.0, bottom: 8),
+                      child: MyText(
+                        _activeProgressJournalGoal
+                                .progressJournalGoalTags.isEmpty
+                            ? 'No tags selected'
+                            : '${_activeProgressJournalGoal.progressJournalGoalTags.length} tags selected',
+                      ),
+                    ),
+                    QueryObserver<ProgressJournalGoalTags$Query,
+                            json.JsonSerializable>(
+                        key: Key(
+                            'ProgressJournalGoalCreator - ${ProgressJournalGoalTagsQuery().operationName}'),
+                        query: ProgressJournalGoalTagsQuery(),
+                        builder: (data) {
+                          final tags =
+                              data.progressJournalGoalTags.reversed.toList();
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              alignment: WrapAlignment.center,
+                              children: tags
+                                  .map((tag) => SelectableTag(
+                                        text: tag.tag,
+                                        selectedColor:
+                                            HexColor.fromHex(tag.hexColor),
+                                        onPressed: () => _toggleSelectTag(tag),
+                                        isSelected: _activeProgressJournalGoal
+                                            .progressJournalGoalTags
+                                            .contains(tag),
+                                      ))
+                                  .toList(),
+                            ),
+                          );
+                        }),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 16),
-                child: MyText(
-                  _activeProgressJournalGoal.progressJournalGoalTags.isEmpty
-                      ? 'No tags selected'
-                      : '${_activeProgressJournalGoal.progressJournalGoalTags.length} tags selected',
-                ),
-              ),
-              QueryObserver<ProgressJournalGoalTags$Query,
-                      json.JsonSerializable>(
-                  key: Key(
-                      'ProgressJournalGoalCreator - ${ProgressJournalGoalTagsQuery().operationName}'),
-                  query: ProgressJournalGoalTagsQuery(),
-                  builder: (data) {
-                    final tags = data.progressJournalGoalTags.reversed.toList();
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
-                        children: tags
-                            .map((tag) => SelectableTag(
-                                  text: tag.tag,
-                                  selectedColor: HexColor.fromHex(tag.hexColor),
-                                  onPressed: () => _toggleSelectTag(tag),
-                                  isSelected: _activeProgressJournalGoal
-                                      .progressJournalGoalTags
-                                      .contains(tag),
-                                ))
-                            .toList(),
-                      ),
-                    );
-                  }),
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CreateTextIconButton(
-                    text: 'New Tag',
+                    text: 'Create New Tag',
                     onPressed: () =>
                         context.push(child: ProgressJournalGoalTagsManager())),
               )

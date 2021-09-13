@@ -314,11 +314,10 @@ class _BodyTransformationPageState extends State<BodyTransformationPage> {
                                       onPressed: () => _openPhotoViewer(
                                           data.bodyTransformationPhotos)),
                                   CupertinoButton(
-                                    padding: EdgeInsets.zero,
                                     onPressed: _enterDeleteMode,
                                     child: Icon(
                                       CupertinoIcons.delete,
-                                      size: 25,
+                                      size: 20,
                                     ),
                                   ),
                                 ],
@@ -393,13 +392,13 @@ class _TimeLine extends StatelessWidget {
               isFirst: i == 0,
               isLast: i == sortedData.length - 1,
               alignment: TimelineAlign.manual,
-              lineXY: 0.15,
+              lineXY: 0.1,
               indicatorStyle: IndicatorStyle(
                   padding: const EdgeInsets.all(8),
                   drawGap: true,
                   width: 60,
                   indicator: MyText(
-                    sortedData[i].date.compactDateString,
+                    sortedData[i].date.minimalDateStringYear,
                     size: FONTSIZE.SMALL,
                     weight: FontWeight.bold,
                     lineHeight: 1.3,

@@ -25,80 +25,81 @@ class AMRAPSectionProgressSummary extends StatelessWidget {
     final sortedWorkoutSets =
         workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: LinearPercentIndicator(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            lineHeight: 6,
-            percent: state.percentComplete,
-            backgroundColor: context.theme.primary.withOpacity(0.07),
-            linearGradient: Styles.pinkGradient,
-            linearStrokeCap: LinearStrokeCap.roundAll,
-          ),
-        ),
-        state.lapTimesMs.keys.isEmpty
-            ? Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Column(
-                  children: [
-                    MyText('No sets completed yet...', subtext: true),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: H1("Let's go!"),
-                    ),
-                  ],
-                ),
-              )
-            : Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.only(
-                      bottom: EnvironmentConfig.bottomNavBarHeight,
-                      top: 12,
-                      left: 16,
-                      right: 16),
-                  children: state.lapTimesMs.keys
-                      .map<Widget>((i) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: H3('Round ${int.parse(i) + 1}'),
-                              ),
-                              Column(
-                                children: (state.lapTimesMs[i]!['setLapTimesMs']
-                                        as Map)
-                                    .keys
-                                    .map((j) => SizeFadeIn(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              _CompletedAMRAPSet(
-                                                workoutSet: sortedWorkoutSets[
-                                                    int.parse(j)],
-                                              ),
-                                              MyText(Duration(
-                                                      milliseconds: state
-                                                              .lapTimesMs[i]![
-                                                          'setLapTimesMs'][j])
-                                                  .compactDisplay()),
-                                            ],
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                              HorizontalLine(),
-                            ],
-                          ))
-                      .toList(),
-                ),
-              ),
-      ],
-    );
+    return MyText('AMRAPSectionProgressSummary');
+    // return Column(
+    //   children: [
+    //     Padding(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: LinearPercentIndicator(
+    //         padding: const EdgeInsets.symmetric(horizontal: 20),
+    //         lineHeight: 6,
+    //         percent: state.percentComplete,
+    //         backgroundColor: context.theme.primary.withOpacity(0.07),
+    //         linearGradient: Styles.pinkGradient,
+    //         linearStrokeCap: LinearStrokeCap.roundAll,
+    //       ),
+    //     ),
+    //     state.lapTimesMs.keys.isEmpty
+    //         ? Padding(
+    //             padding: const EdgeInsets.all(30.0),
+    //             child: Column(
+    //               children: [
+    //                 MyText('No sets completed yet...', subtext: true),
+    //                 Padding(
+    //                   padding: const EdgeInsets.all(8.0),
+    //                   child: H1("Let's go!"),
+    //                 ),
+    //               ],
+    //             ),
+    //           )
+    //         : Expanded(
+    //             child: ListView(
+    //               shrinkWrap: true,
+    //               padding: EdgeInsets.only(
+    //                   bottom: EnvironmentConfig.bottomNavBarHeight,
+    //                   top: 12,
+    //                   left: 16,
+    //                   right: 16),
+    //               children: state.lapTimesMs.keys
+    //                   .map<Widget>((i) => Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.start,
+    //                         children: [
+    //                           Padding(
+    //                             padding:
+    //                                 const EdgeInsets.symmetric(vertical: 8.0),
+    //                             child: H3('Round ${int.parse(i) + 1}'),
+    //                           ),
+    //                           Column(
+    //                             children: (state.lapTimesMs[i]!['setLapTimesMs']
+    //                                     as Map)
+    //                                 .keys
+    //                                 .map((j) => SizeFadeIn(
+    //                                       child: Row(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceBetween,
+    //                                         children: [
+    //                                           _CompletedAMRAPSet(
+    //                                             workoutSet: sortedWorkoutSets[
+    //                                                 int.parse(j)],
+    //                                           ),
+    //                                           MyText(Duration(
+    //                                                   milliseconds: state
+    //                                                           .lapTimesMs[i]![
+    //                                                       'setLapTimesMs'][j])
+    //                                               .compactDisplay()),
+    //                                         ],
+    //                                       ),
+    //                                     ))
+    //                                 .toList(),
+    //                           ),
+    //                           HorizontalLine(),
+    //                         ],
+    //                       ))
+    //                   .toList(),
+    //             ),
+    //           ),
+    //   ],
+    // );
   }
 }
 

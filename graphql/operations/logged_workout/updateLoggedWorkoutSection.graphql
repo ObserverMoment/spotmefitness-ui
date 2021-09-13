@@ -1,17 +1,20 @@
 mutation updateLoggedWorkoutSection($data: UpdateLoggedWorkoutSectionInput!) {
   updateLoggedWorkoutSection: updateLoggedWorkoutSection(data: $data) {
     ...LoggedWorkoutSection
-    BodyAreas {
-      ...BodyArea
-    }
     WorkoutSectionType {
       ...WorkoutSectionType
     }
+    BodyAreas {
+      ...BodyArea
+    }
+    MoveTypes {
+      ...MoveType
+    }
     workoutSectionData {
       rounds {
-        timeTakenMs
+        timeTakenSeconds
         sets {
-          timeTakenMs
+          timeTakenSeconds
           move
           load
           quantity

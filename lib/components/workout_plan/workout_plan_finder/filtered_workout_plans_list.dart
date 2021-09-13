@@ -27,8 +27,7 @@ class YourFilteredWorkoutPlansList extends StatelessWidget {
             : ImplicitlyAnimatedList<WorkoutPlan>(
                 controller: listPositionScrollController,
                 // Bottom padding to push list up above floating filters panel.
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 4, bottom: 138),
+                padding: const EdgeInsets.only(bottom: 138),
                 items: workoutPlans,
                 itemBuilder: (context, animation, WorkoutPlan workoutPlan, i) =>
                     SizeFadeTransition(

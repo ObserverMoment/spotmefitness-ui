@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/workout_card.dart';
+import 'package:spotmefitness_ui/components/cards/workout_card_minimal.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -180,32 +181,34 @@ class _ScheduledWorkoutCreatorPageState
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: WorkoutCard(
+                  child: MinimalWorkoutCard(
                     _activeScheduledWorkout.workout!,
                   ),
                 ),
-                SizedBox(height: 10),
-                DateTimePickerDisplay(
-                  dateTime: _activeScheduledWorkout.scheduledAt,
-                  saveDateTime: (d) =>
-                      setState(() => _activeScheduledWorkout.scheduledAt = d),
+                UserInputContainer(
+                  child: DateTimePickerDisplay(
+                    dateTime: _activeScheduledWorkout.scheduledAt,
+                    saveDateTime: (d) =>
+                        setState(() => _activeScheduledWorkout.scheduledAt = d),
+                  ),
                 ),
-                SizedBox(height: 10),
-                GymProfileSelectorDisplay(
-                    gymProfile: _activeScheduledWorkout.gymProfile,
-                    selectGymProfile: (p) =>
-                        setState(() => _activeScheduledWorkout.gymProfile = p),
-                    clearGymProfile: () => setState(
-                        () => _activeScheduledWorkout.gymProfile = null)),
-                SizedBox(height: 12),
-                EditableTextAreaRow(
-                    title: 'Note',
-                    text: _activeScheduledWorkout.note ?? '',
-                    onSave: (note) =>
-                        setState(() => _activeScheduledWorkout.note = note),
-                    maxDisplayLines: 4,
-                    inputValidation: (t) => true),
-                SizedBox(height: 16),
+                UserInputContainer(
+                  child: GymProfileSelectorDisplay(
+                      gymProfile: _activeScheduledWorkout.gymProfile,
+                      selectGymProfile: (p) => setState(
+                          () => _activeScheduledWorkout.gymProfile = p),
+                      clearGymProfile: () => setState(
+                          () => _activeScheduledWorkout.gymProfile = null)),
+                ),
+                UserInputContainer(
+                  child: EditableTextAreaRow(
+                      title: 'Note',
+                      text: _activeScheduledWorkout.note ?? '',
+                      onSave: (note) =>
+                          setState(() => _activeScheduledWorkout.note = note),
+                      maxDisplayLines: 4,
+                      inputValidation: (t) => true),
+                ),
               ],
             ),
             if (!_isCreate)

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/media/video/video_uploader.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -53,119 +54,97 @@ class CustomMoveCreatorMeta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MyText(
-                    'Video',
-                    weight: FontWeight.bold,
-                  ),
-                  Row(
-                    children: [
-                      VideoUploader(
-                          videoUri: move.demoVideoUri,
-                          videoThumbUri: move.demoVideoThumbUri,
-                          displaySize: Size(50, 50),
-                          onUploadSuccess: (v, t) {
-                            context.showToast(message: 'Video uploaded');
-                            updateMove({
-                              'demoVideoUri': v,
-                              'demoVideoThumbUri': t,
-                            });
-                          },
-                          removeVideo: () {
-                            updateMove({
-                              'demoVideoUri': null,
-                              'demoVideoThumbUri': null,
-                            });
-                            context.showToast(message: 'Video removed');
-                          }),
-                      SizedBox(width: 12),
-                      SizedBox(
-                        width: 60,
-                        child: MyText(
-                          move.demoVideoUri != null
-                              ? 'Click thumb to change'
-                              : 'Click thumb to upload',
-                          maxLines: 2,
-                          size: FONTSIZE.TINY,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          UserInputContainer(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText(
+                  'Demo Video',
+                ),
+                VideoUploader(
+                    videoUri: move.demoVideoUri,
+                    videoThumbUri: move.demoVideoThumbUri,
+                    displaySize: Size(60, 60),
+                    onUploadSuccess: (v, t) {
+                      context.showToast(message: 'Video uploaded');
+                      updateMove({
+                        'demoVideoUri': v,
+                        'demoVideoThumbUri': t,
+                      });
+                    },
+                    removeVideo: () {
+                      updateMove({
+                        'demoVideoUri': null,
+                        'demoVideoThumbUri': null,
+                      });
+                      context.showToast(message: 'Video removed');
+                    }),
+              ],
+            ),
+          ),
+          if (move.demoVideoUri != null)
+            FadeIn(
+              child: UserInputContainer(
+                child: SizedBox(
+                    height: 200,
+                    child: InlineUploadcareVideoPlayer(
+                        key: Key(move.demoVideoUri!),
+                        videoUri: move.demoVideoUri!)),
               ),
             ),
-            if (move.demoVideoUri != null)
-              FadeIn(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SizedBox(
-                      height: 200,
-                      child: InlineUploadcareVideoPlayer(
-                          key: Key(move.demoVideoUri!),
-                          videoUri: move.demoVideoUri!)),
-                ),
-              ),
-            SizedBox(height: 20),
-            EditableTextFieldRow(
+          UserInputContainer(
+            child: EditableTextFieldRow(
               title: 'Name',
               text: move.name,
               onSave: (text) => updateMove({'name': text}),
               inputValidation: (text) => text.length >= 3,
               maxChars: 50,
             ),
-            EditableTextAreaRow(
+          ),
+          UserInputContainer(
+            child: EditableTextAreaRow(
               title: 'Description',
               text: move.description ?? '',
               onSave: (text) => updateMove({'description': text}),
               maxDisplayLines: 5,
               inputValidation: (t) => true,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      MyText(
-                        'Valid Rep Types',
-                        weight: FontWeight.bold,
-                      ),
-                      InfoPopupButton(
-                          infoWidget: MyText('What are valid rep types'))
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      MyText(
-                        'TIME + ',
-                        weight: FontWeight.bold,
-                      ),
-                      _buildValidrepTypeButton(
-                          context, WorkoutMoveRepType.reps),
-                      _buildValidrepTypeButton(
-                          context, WorkoutMoveRepType.calories),
-                      _buildValidrepTypeButton(
-                          context, WorkoutMoveRepType.distance),
-                    ],
-                  )
-                ],
-              ),
+          ),
+          UserInputContainer(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText(
+                      'Valid Rep Types',
+                    ),
+                    InfoPopupButton(
+                        infoWidget: MyText('What are valid rep types'))
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MyText(
+                      'TIME + ',
+                      weight: FontWeight.bold,
+                    ),
+                    _buildValidrepTypeButton(context, WorkoutMoveRepType.reps),
+                    _buildValidrepTypeButton(
+                        context, WorkoutMoveRepType.calories),
+                    _buildValidrepTypeButton(
+                        context, WorkoutMoveRepType.distance),
+                  ],
+                )
+              ],
             ),
-            SizedBox(height: 16)
-          ],
-        ),
+          ),
+          SizedBox(height: 16)
+        ],
       ),
     );
   }

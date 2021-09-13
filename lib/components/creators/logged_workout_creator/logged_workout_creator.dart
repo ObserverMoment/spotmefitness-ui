@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_meta.dart';
@@ -36,28 +36,28 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
     setState(() => _activeTabIndex = index);
   }
 
-  Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
-    context.showLoadingAlert('Logging...',
-        icon: Icon(
-          CupertinoIcons.doc_plaintext,
-          color: Styles.infoBlue,
-        ));
+  // Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
+  //   context.showLoadingAlert('Logging...',
+  //       icon: Icon(
+  //         CupertinoIcons.doc_plaintext,
+  //         color: Styles.infoBlue,
+  //       ));
 
-    final result = await bloc.createAndSave(context);
+  //   final result = await bloc.createAndSave(context);
 
-    context.pop(); // Close loading alert.
+  //   context.pop(); // Close loading alert.
 
-    if (result.hasErrors) {
-      context
-          .showErrorAlert('Sorry, there was a problem logging this workout!');
-    } else {
-      await context.showSuccessAlert(
-        'Workout Logged!',
-        'You can go to Progress > Logs to view it.',
-      );
-      context.pop(result: true); // Close the logged workout creator.
-    }
-  }
+  //   if (result.hasErrors) {
+  //     context
+  //         .showErrorAlert('Sorry, there was a problem logging this workout!');
+  //   } else {
+  //     await context.showSuccessAlert(
+  //       'Workout Logged!',
+  //       'You can go to Progress > Logs to view it.',
+  //     );
+  //     context.pop(result: true); // Close the logged workout creator.
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -67,77 +67,78 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LoggedWorkoutCreatorBloc(
-          context: context,
-          workout: widget.workout,
-          scheduledWorkout: widget.scheduledWorkout),
-      builder: (context, child) {
-        final loggedWorkoutSections = context
-            .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-                (b) => b.loggedWorkout.loggedWorkoutSections);
+    return MyText('Logged Workout Creator Page');
+    // return ChangeNotifierProvider(
+    //   create: (context) => LoggedWorkoutCreatorBloc(
+    //       context: context,
+    //       workout: widget.workout,
+    //       scheduledWorkout: widget.scheduledWorkout),
+    //   builder: (context, child) {
+    //     final loggedWorkoutSections = context
+    //         .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
+    //             (b) => b.loggedWorkout.loggedWorkoutSections);
 
-        final includedSectionIds =
-            context.select<LoggedWorkoutCreatorBloc, List<String>>(
-                (b) => b.includedSectionIds);
+    //     final includedSectionIds =
+    //         context.select<LoggedWorkoutCreatorBloc, List<String>>(
+    //             (b) => b.includedSectionIds);
 
-        final includedSections = loggedWorkoutSections
-            .where((s) => includedSectionIds.contains(s.id))
-            .sortedBy<num>((s) => s.sortPosition);
+    //     final includedSections = loggedWorkoutSections
+    //         .where((s) => includedSectionIds.contains(s.id))
+    //         .sortedBy<num>((s) => s.sortPosition);
 
-        return MyPageScaffold(
-            navigationBar: MyNavBar(
-              customLeading:
-                  NavBarCancelButton(() => context.pop(result: false)),
-              middle: NavBarTitle('Log Workout'),
-              trailing: includedSections.isNotEmpty
-                  ? NavBarSaveButton(
-                      () => _saveLogToDB(
-                          context.read<LoggedWorkoutCreatorBloc>()),
-                      text: 'Log It',
-                    )
-                  : null,
-            ),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 8,
-                ),
-                MyTabBarNav(
-                    titles: [
-                      'Overview',
-                      ...includedSections
-                          .map((s) => Utils.textNotNull(s.name)
-                              ? s.name!
-                              : s.workoutSectionType.name)
-                          .toList()
-                    ],
-                    handleTabChange: _changeTab,
-                    activeTabIndex: _activeTabIndex),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    onPageChanged: _changeTab,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: LoggedWorkoutCreatorMeta(),
-                      ),
-                      ...includedSections
-                          .map((section) => LoggedWorkoutCreatorSection(
-                                section.sortPosition,
-                                showLapTimesButton: true,
-                              ))
-                          .toList()
-                    ],
-                  ),
-                )),
-              ],
-            ));
-      },
-    );
+    //     return MyPageScaffold(
+    //         navigationBar: MyNavBar(
+    //           customLeading:
+    //               NavBarCancelButton(() => context.pop(result: false)),
+    //           middle: NavBarTitle('Log Workout'),
+    //           trailing: includedSections.isNotEmpty
+    //               ? NavBarSaveButton(
+    //                   () => _saveLogToDB(
+    //                       context.read<LoggedWorkoutCreatorBloc>()),
+    //                   text: 'Log It',
+    //                 )
+    //               : null,
+    //         ),
+    //         child: Column(
+    //           children: [
+    //             SizedBox(
+    //               height: 8,
+    //             ),
+    //             MyTabBarNav(
+    //                 titles: [
+    //                   'Overview',
+    //                   ...includedSections
+    //                       .map((s) => Utils.textNotNull(s.name)
+    //                           ? s.name!
+    //                           : s.workoutSectionType.name)
+    //                       .toList()
+    //                 ],
+    //                 handleTabChange: _changeTab,
+    //                 activeTabIndex: _activeTabIndex),
+    //             Expanded(
+    //                 child: Padding(
+    //               padding: const EdgeInsets.symmetric(vertical: 8.0),
+    //               child: PageView(
+    //                 physics: NeverScrollableScrollPhysics(),
+    //                 controller: _pageController,
+    //                 onPageChanged: _changeTab,
+    //                 children: [
+    //                   Padding(
+    //                     padding: const EdgeInsets.all(8.0),
+    //                     child: LoggedWorkoutCreatorMeta(),
+    //                   ),
+    //                   ...includedSections
+    //                       .map((section) => LoggedWorkoutCreatorSection(
+    //                             section.sortPosition,
+    //                             showLapTimesButton: true,
+    //                           ))
+    //                       .toList()
+    //                 ],
+    //               ),
+    //             )),
+    //           ],
+    //         ));
+    //   },
+    // );
   }
 }

@@ -8,15 +8,13 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-/// [T] can be a WorkoutSection or a LoggedWorkoutSection
-class RepsScoreDisplay<T> extends StatelessWidget {
-  final T section;
+class RepsScoreDisplay extends StatelessWidget {
+  final WorkoutSection section;
   final int? score;
   final void Function(int score) updateScore;
-  RepsScoreDisplay(
-      {required this.section, this.score, required this.updateScore})
-      : assert(section is WorkoutSection || section is LoggedWorkoutSection,
-            'section must (currently) be WorkoutSection or LoggedWorkoutSection.');
+  const RepsScoreDisplay(
+      {required this.section, this.score, required this.updateScore});
+
   @override
   Widget build(BuildContext context) {
     return BorderButton(
@@ -34,20 +32,18 @@ class RepsScoreDisplay<T> extends StatelessWidget {
   }
 }
 
-class RepsScorePicker<T> extends StatefulWidget {
-  final T section;
+class RepsScorePicker extends StatefulWidget {
+  final WorkoutSection section;
   final int? score;
   final void Function(int score) updateScore;
-  RepsScorePicker(
-      {required this.section, this.score, required this.updateScore})
-      : assert(section is WorkoutSection || section is LoggedWorkoutSection,
-            'section must (currently) be WorkoutSection or LoggedWorkoutSection.');
+  const RepsScorePicker(
+      {required this.section, this.score, required this.updateScore});
 
   @override
-  _RepsScorePickerState<T> createState() => _RepsScorePickerState<T>();
+  _RepsScorePickerState createState() => _RepsScorePickerState();
 }
 
-class _RepsScorePickerState<T> extends State<RepsScorePicker<T>> {
+class _RepsScorePickerState extends State<RepsScorePicker> {
   late int _repsPerRound;
   late TextEditingController _roundsInputController;
   late TextEditingController _repsInputController;
@@ -55,7 +51,7 @@ class _RepsScorePickerState<T> extends State<RepsScorePicker<T>> {
   @override
   void initState() {
     super.initState();
-    _repsPerRound = DataUtils.totalRepsInSection<T>(widget.section);
+    _repsPerRound = DataUtils.totalRepsInSection(widget.section);
 
     if (widget.score != null) {
       final rounds = widget.score! ~/ _repsPerRound;

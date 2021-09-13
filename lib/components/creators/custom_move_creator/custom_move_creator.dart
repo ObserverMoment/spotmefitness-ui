@@ -27,7 +27,6 @@ class CustomMoveCreatorPage extends StatefulWidget {
 class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
   int _activeTabIndex = 0;
   late Move? _activeMove;
-  final PageController _pageController = PageController();
   bool _formIsDirty = false;
   bool _loading = false;
 
@@ -69,9 +68,6 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
   }
 
   void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
     Utils.hideKeyboard(context);
     setState(() => _activeTabIndex = index);
   }
@@ -116,12 +112,6 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MyPageScaffold(
       navigationBar: MyNavBar(
@@ -139,8 +129,7 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
+            UserInputContainer(
               child: TappableRow(
                   onTap: () => context.push(
                       child: MoveTypeSelector(
@@ -153,18 +142,19 @@ class _CustomMoveCreatorPageState extends State<CustomMoveCreatorPage> {
             ),
             if (_activeMove?.moveType != null)
               FadeIn(
-                child: MyTabBarNav(
-                    titles: ['Meta', 'Equipment', 'Body'],
-                    handleTabChange: _changeTab,
-                    activeTabIndex: _activeTabIndex),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: MyTabBarNav(
+                      titles: ['Meta', 'Equipment', 'Body'],
+                      handleTabChange: _changeTab,
+                      activeTabIndex: _activeTabIndex),
+                ),
               ),
             if (_activeMove?.moveType != null)
               Expanded(
                 child: FadeIn(
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    onPageChanged: _changeTab,
+                  child: IndexedStack(
+                    index: _activeTabIndex,
                     children: [
                       CustomMoveCreatorMeta(
                         move: _activeMove!,

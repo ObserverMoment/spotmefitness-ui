@@ -166,12 +166,8 @@ class DifficultyLevelTag extends StatelessWidget {
 
 class WorkoutSectionTypeTag extends StatelessWidget {
   final WorkoutSection workoutSection;
-  // final String name;
-  // final int? timecap; // Seconds
   final FONTSIZE fontSize;
   final Color? fontColor;
-  // final bool hasClassVideo;
-  // final bool hasClassAudio;
   final bool withBorder;
   final bool uppercase;
   WorkoutSectionTypeTag(

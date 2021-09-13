@@ -28,8 +28,7 @@ class YourFilteredWorkoutsList extends StatelessWidget {
             : ImplicitlyAnimatedList<Workout>(
                 controller: listPositionScrollController,
                 // Bottom padding to push list up above floating filters panel.
-                padding: const EdgeInsets.only(
-                    left: 8, right: 8, top: 4, bottom: 138),
+                padding: const EdgeInsets.only(bottom: 138),
                 items: workouts
                     .sortedBy<DateTime>((w) => w.createdAt)
                     .reversed

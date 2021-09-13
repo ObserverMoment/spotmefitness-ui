@@ -15,7 +15,7 @@ class WorkoutFinderWorkoutPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: ContextMenu(
         key: Key('WorkoutFinderWorkoutPlanCard ${workoutPlan.id}'),
         child: WorkoutPlanCard(workoutPlan),

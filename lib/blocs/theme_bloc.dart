@@ -208,19 +208,6 @@ abstract class Styles {
     stops: [0.1, 0.9],
   );
 
-  static final fullPageModalGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      Styles.colorOne.withOpacity(0.7),
-      Styles.colorOne.withOpacity(0.4),
-      CupertinoColors.black.withOpacity(0.5),
-      CupertinoColors.black.withOpacity(0.7),
-      CupertinoColors.black.withOpacity(1),
-    ],
-    stops: [0.1, 0.2, 0.4, 0.7, 0.9],
-  );
-
   static final neonBlueGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

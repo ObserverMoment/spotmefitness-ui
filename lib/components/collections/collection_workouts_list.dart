@@ -77,8 +77,7 @@ class _FilterableCollectionWorkoutsState
       children: [
         if (allTags.isNotEmpty)
           Padding(
-            padding:
-                const EdgeInsets.only(left: 16.0, top: 4, bottom: 10, right: 4),
+            padding: const EdgeInsets.only(top: 4, bottom: 8),
             child: SizedBox(
                 height: 30,
                 child: ListView.builder(
@@ -125,42 +124,38 @@ class _CollectionWorkoutsList extends StatelessWidget {
     return workouts.isEmpty
         ? Padding(
             padding: const EdgeInsets.all(24), child: MyText('No workouts'))
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: workouts.length,
-                itemBuilder: (c, i) => ContextMenu(
-                      key: Key(workouts[i].id),
-                      actions: [
-                        ContextMenuAction(
-                            text: 'View details',
-                            iconData: CupertinoIcons.eye,
-                            onTap: () => context.navigateTo(
-                                WorkoutDetailsRoute(id: workouts[i].id))),
-                        ContextMenuAction(
-                            text: 'Move to collection',
-                            iconData: CupertinoIcons.tray_arrow_up,
-                            onTap: () => moveToCollection(workouts[i])),
-                        ContextMenuAction(
-                            text: 'Copy to collection',
-                            iconData: CupertinoIcons.doc_on_doc,
-                            onTap: () => copyToCollection(workouts[i])),
-                        ContextMenuAction(
-                            text: 'Remove',
-                            iconData: CupertinoIcons.delete_simple,
-                            destructive: true,
-                            onTap: () => removeFromCollection(workouts[i]))
-                      ],
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 10.0),
-                        child: WorkoutCard(workouts[i]),
-                      ),
-                      menuChild: WorkoutCard(
-                        workouts[i],
-                      ),
-                    )),
-          );
+        : ListView.builder(
+            shrinkWrap: true,
+            itemCount: workouts.length,
+            itemBuilder: (c, i) => ContextMenu(
+                  key: Key(workouts[i].id),
+                  actions: [
+                    ContextMenuAction(
+                        text: 'View details',
+                        iconData: CupertinoIcons.eye,
+                        onTap: () => context.navigateTo(
+                            WorkoutDetailsRoute(id: workouts[i].id))),
+                    ContextMenuAction(
+                        text: 'Move to collection',
+                        iconData: CupertinoIcons.tray_arrow_up,
+                        onTap: () => moveToCollection(workouts[i])),
+                    ContextMenuAction(
+                        text: 'Copy to collection',
+                        iconData: CupertinoIcons.doc_on_doc,
+                        onTap: () => copyToCollection(workouts[i])),
+                    ContextMenuAction(
+                        text: 'Remove',
+                        iconData: CupertinoIcons.delete_simple,
+                        destructive: true,
+                        onTap: () => removeFromCollection(workouts[i]))
+                  ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: WorkoutCard(workouts[i]),
+                  ),
+                  menuChild: WorkoutCard(
+                    workouts[i],
+                  ),
+                ));
   }
 }

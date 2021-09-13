@@ -55,7 +55,7 @@ class ProfilePersonalPage extends StatelessWidget {
           return ListView(
             children: [
               SizedBox(height: 8),
-              _InputPadding(
+              UserInputContainer(
                 child: EditableTextFieldRow(
                   title: 'Name',
                   text: user.displayName,
@@ -67,7 +67,7 @@ class ProfilePersonalPage extends StatelessWidget {
                   maxChars: 30,
                 ),
               ),
-              _InputPadding(
+              UserInputContainer(
                 child: EditableTextAreaRow(
                   title: 'Bio',
                   text: user.bio ?? '',
@@ -78,37 +78,48 @@ class ProfilePersonalPage extends StatelessWidget {
                 ),
               ),
               UserInputContainer(
-                child: TappableRow(
-                    title: 'Country',
-                    display: user.countryCode != null
-                        ? SelectedCountryDisplay(user.countryCode!)
-                        : null,
-                    onTap: () => context.push(
-                        fullscreenDialog: true,
-                        child: CountrySelector(
-                          selectedCountry: user.countryCode != null
-                              ? Country.fromIsoCode(user.countryCode!)
-                              : null,
-                          selectCountry: (country) => updateUserFields(
-                              context, user.id, 'countryCode', country.isoCode),
-                        ))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: TappableRow(
+                      title: 'Country',
+                      display: user.countryCode != null
+                          ? ContentBox(
+                              child: SelectedCountryDisplay(user.countryCode!))
+                          : null,
+                      onTap: () => context.push(
+                          fullscreenDialog: true,
+                          child: CountrySelector(
+                            selectedCountry: user.countryCode != null
+                                ? Country.fromIsoCode(user.countryCode!)
+                                : null,
+                            selectCountry: (country) => updateUserFields(
+                                context,
+                                user.id,
+                                'countryCode',
+                                country.isoCode),
+                          ))),
+                ),
               ),
               UserInputContainer(
-                child: TappableRow(
-                    title: 'Birthdate',
-                    display: user.birthdate != null
-                        ? MyText(user.birthdate!.dateString)
-                        : null,
-                    onTap: () => context.push(
-                        fullscreenDialog: true,
-                        child: DateSelector(
-                          selectedDate: user.birthdate,
-                          saveDate: (date) => updateUserFields(
-                              context,
-                              user.id,
-                              'birthdate',
-                              fromDartDateTimeToGraphQLDateTime(date)),
-                        ))),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: TappableRow(
+                      title: 'Birthdate',
+                      display: user.birthdate != null
+                          ? ContentBox(
+                              child: MyText(user.birthdate!.dateString))
+                          : null,
+                      onTap: () => context.push(
+                          fullscreenDialog: true,
+                          child: DateSelector(
+                            selectedDate: user.birthdate,
+                            saveDate: (date) => updateUserFields(
+                                context,
+                                user.id,
+                                'birthdate',
+                                fromDartDateTimeToGraphQLDateTime(date)),
+                          ))),
+                ),
               ),
               UserInputContainer(
                 child: Padding(

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/services/data_utils.dart';
 
 class PersonalBestEntryScoreDisplay extends StatelessWidget {
   final UserBenchmarkEntry entry;
@@ -15,25 +14,10 @@ class PersonalBestEntryScoreDisplay extends StatelessWidget {
       this.fontSize = FONTSIZE.MAIN,
       this.fontWeight = FontWeight.normal});
 
-  String _buildScoreText() {
-    switch (benchmark.benchmarkType) {
-      case BenchmarkType.maxload:
-        return '${entry.score.stringMyDouble()}${benchmark.loadUnit.display}';
-      case BenchmarkType.fastesttime:
-      case BenchmarkType.unbrokentime:
-        return Duration(seconds: entry.score.round()).compactDisplay();
-      case BenchmarkType.amrap:
-      case BenchmarkType.unbrokenreps:
-        return '${entry.score.stringMyDouble()} reps';
-      default:
-        return entry.score.stringMyDouble();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MyText(
-      _buildScoreText(),
+      DataUtils.buildBenchmarkEntryScoreText(benchmark, entry),
       size: fontSize,
       weight: fontWeight,
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/free_session_section_controller.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
 
 class FreeSessionProgress extends StatelessWidget {

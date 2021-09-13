@@ -63,11 +63,13 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
                         MyText(
                           'Targeted areas not yet specified',
                           subtext: true,
+                          lineHeight: 1.3,
                         ),
                         MyText(
                           '(Click body area to add / edit scores)',
                           subtext: true,
                           size: FONTSIZE.SMALL,
+                          lineHeight: 1.3,
                         ),
                       ],
                     ),

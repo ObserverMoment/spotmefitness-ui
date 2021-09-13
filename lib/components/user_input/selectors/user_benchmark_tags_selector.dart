@@ -11,15 +11,90 @@ import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
+import 'package:spotmefitness_ui/components/tags.dart';
+
+class UserBenchmarkTagsSelectorRow extends StatelessWidget {
+  final List<UserBenchmarkTag> selectedTags;
+  final void Function(List<UserBenchmarkTag> tags) updateTags;
+  final int? max;
+  const UserBenchmarkTagsSelectorRow(
+      {Key? key,
+      required this.selectedTags,
+      required this.updateTags,
+      this.max})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return UserInputContainer(
+        child: CupertinoButton(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      onPressed: () => context.push(
+          child: UserBenchmarkTagsSelector(
+        selectedTags: selectedTags,
+        updateTags: updateTags,
+      )),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  MyText(
+                    'Tags',
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Icon(
+                    CupertinoIcons.tag,
+                    size: 18,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  MyText(
+                    selectedTags.isEmpty ? 'Add' : 'Edit',
+                    textAlign: TextAlign.end,
+                  ),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Icon(
+                    selectedTags.isEmpty
+                        ? CupertinoIcons.add
+                        : CupertinoIcons.pencil,
+                    size: 18,
+                  )
+                ],
+              )
+            ],
+          ),
+          GrowInOut(
+              show: selectedTags.isNotEmpty,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 2),
+                child: Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 4,
+                  runSpacing: 4,
+                  children: selectedTags.map((g) => Tag(tag: g.name)).toList(),
+                ),
+              ))
+        ],
+      ),
+    ));
+  }
+}
 
 /// Also lets you create a new tag and then select it via tag manager.
 class UserBenchmarkTagsSelector extends StatefulWidget {
-  final List<UserBenchmarkTag> selectedUserBenchmarkTags;
-  final void Function(List<UserBenchmarkTag> updated)
-      updateSelectedUserBenchmarkTags;
+  final List<UserBenchmarkTag> selectedTags;
+  final void Function(List<UserBenchmarkTag> updated) updateTags;
   UserBenchmarkTagsSelector(
-      {required this.selectedUserBenchmarkTags,
-      required this.updateSelectedUserBenchmarkTags});
+      {required this.selectedTags, required this.updateTags});
 
   @override
   _UserBenchmarkTagsSelectorState createState() =>
@@ -32,7 +107,7 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
   @override
   void initState() {
     super.initState();
-    _activeSelectedUserBenchmarkTags = [...widget.selectedUserBenchmarkTags];
+    _activeSelectedUserBenchmarkTags = [...widget.selectedTags];
   }
 
   void _updateSelected(UserBenchmarkTag tapped) {
@@ -40,7 +115,7 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
       _activeSelectedUserBenchmarkTags =
           _activeSelectedUserBenchmarkTags.toggleItem<UserBenchmarkTag>(tapped);
     });
-    widget.updateSelectedUserBenchmarkTags(_activeSelectedUserBenchmarkTags);
+    widget.updateTags(_activeSelectedUserBenchmarkTags);
   }
 
   void _openCreateNewTag() {
@@ -52,7 +127,7 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: MyNavBar(
           customLeading: CupertinoButton(
               padding: EdgeInsets.zero,
@@ -89,8 +164,7 @@ class _UserBenchmarkTagsSelectorState extends State<UserBenchmarkTagsSelector> {
               return Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 24.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

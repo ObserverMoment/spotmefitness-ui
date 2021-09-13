@@ -174,11 +174,11 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
               ),
               Wrap(
                 alignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 4,
+                spacing: 8,
+                runSpacing: 8,
                 children: BenchmarkType.values
                     .where((v) => v != BenchmarkType.artemisUnknown)
-                    .map((type) => SelectableTag(
+                    .map((type) => SelectableBox(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 9),
                         fontSize: FONTSIZE.BIG,
@@ -192,38 +192,47 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
                 show: _benchmarkType != null,
                 child: Column(
                   children: [
-                    EditableTextFieldRow(
-                        title: 'Name',
-                        isRequired: true,
-                        text: _name ?? '',
-                        onSave: (t) => _setStateWrapper(() => _name = t),
-                        validationMessage: 'Min 4, max 30 characters',
-                        inputValidation: (t) => t.length > 3 && t.length < 31),
-                    EditableTextAreaRow(
-                        title: 'Description',
-                        text: _description ?? '',
-                        maxDisplayLines: 6,
-                        onSave: (t) => _setStateWrapper(() => _description = t),
-                        inputValidation: (t) => true),
-                    EditableTextAreaRow(
-                        title: 'Equipment Info',
-                        text: _equipmentInfo ?? '',
-                        maxDisplayLines: 6,
-                        onSave: (t) =>
-                            _setStateWrapper(() => _equipmentInfo = t),
-                        inputValidation: (t) => true),
+                    UserInputContainer(
+                      child: EditableTextFieldRow(
+                          title: 'Name',
+                          isRequired: _name == null,
+                          text: _name ?? '',
+                          onSave: (t) => _setStateWrapper(() => _name = t),
+                          validationMessage: 'Min 4, max 30 characters',
+                          inputValidation: (t) =>
+                              t.length > 3 && t.length < 31),
+                    ),
+                    UserInputContainer(
+                      child: EditableTextAreaRow(
+                          title: 'Description',
+                          text: _description ?? '',
+                          placeholder: '...add',
+                          maxDisplayLines: 6,
+                          onSave: (t) =>
+                              _setStateWrapper(() => _description = t),
+                          inputValidation: (t) => true),
+                    ),
+                    UserInputContainer(
+                      child: EditableTextAreaRow(
+                          title: 'Equipment Info',
+                          text: _equipmentInfo ?? '',
+                          placeholder: '...add',
+                          maxDisplayLines: 6,
+                          onSave: (t) =>
+                              _setStateWrapper(() => _equipmentInfo = t),
+                          inputValidation: (t) => true),
+                    ),
                   ],
                 ),
               ),
               GrowInOut(
                 show: _benchmarkType == BenchmarkType.maxload,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: UserInputContainer(
                   child: Column(
                     children: [
                       H3('Max Load PB'),
                       SizedBox(height: 8),
-                      MyText('Submit your score in:'),
+                      MyText('Submit your score as'),
                       SizedBox(height: 8),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -246,39 +255,9 @@ class _PersonalBestCreatorPageState extends State<PersonalBestCreatorPage> {
               ),
               GrowInOut(
                 show: _benchmarkType != null,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: TappableRow(
-                      title: 'Tags',
-                      display: _tags.isEmpty
-                          ? MyText(
-                              'Add some tags...',
-                              subtext: true,
-                            )
-                          : Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.6,
-                                  child: Wrap(
-                                    alignment: WrapAlignment.end,
-                                    spacing: 4,
-                                    runSpacing: 4,
-                                    children: _tags
-                                        .map((t) => Tag(
-                                              tag: t.name,
-                                              color: Styles.colorOne,
-                                              textColor: Styles.white,
-                                            ))
-                                        .toList(),
-                                  )),
-                            ),
-                      onTap: () => context.push(
-                          child: UserBenchmarkTagsSelector(
-                              selectedUserBenchmarkTags: _tags,
-                              updateSelectedUserBenchmarkTags: (tags) =>
-                                  _setStateWrapper(() => _tags = tags)))),
+                child: UserBenchmarkTagsSelectorRow(
+                  selectedTags: _tags,
+                  updateTags: (tags) => _setStateWrapper(() => _tags = tags),
                 ),
               ),
             ],

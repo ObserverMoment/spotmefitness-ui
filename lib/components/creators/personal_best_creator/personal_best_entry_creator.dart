@@ -264,31 +264,42 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
       child: ListView(
         shrinkWrap: true,
         children: [
-          DateTimePickerDisplay(
-            dateTime: _completedOn,
-            saveDateTime: (DateTime d) {
-              _setStateWrapper(() {
-                _completedOn = d;
-              });
-            },
+          UserInputContainer(
+            child: DateTimePickerDisplay(
+              dateTime: _completedOn,
+              saveDateTime: (DateTime d) {
+                _setStateWrapper(() {
+                  _completedOn = d;
+                });
+              },
+            ),
           ),
-          SizedBox(height: 12),
-          H3(_buildScoreHeaderText()),
-          SizedBox(height: 12),
-          if ([
-            BenchmarkType.maxload,
-            BenchmarkType.unbrokenreps,
-            BenchmarkType.amrap
-          ].contains(widget.userBenchmark.benchmarkType))
-            _buildNumberInput()
-          else
-            _buildDurationInput(),
-          EditableTextAreaRow(
-              title: 'Note',
-              text: _note ?? '',
-              maxDisplayLines: 6,
-              onSave: (t) => _setStateWrapper(() => _note = t),
-              inputValidation: (t) => true)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                H3(_buildScoreHeaderText()),
+                SizedBox(height: 12),
+                if ([
+                  BenchmarkType.maxload,
+                  BenchmarkType.unbrokenreps,
+                  BenchmarkType.amrap
+                ].contains(widget.userBenchmark.benchmarkType))
+                  _buildNumberInput()
+                else
+                  _buildDurationInput(),
+              ],
+            ),
+          ),
+          UserInputContainer(
+            child: EditableTextAreaRow(
+                title: 'Note',
+                text: _note ?? '',
+                maxDisplayLines: 6,
+                onSave: (t) => _setStateWrapper(() => _note = t),
+                inputValidation: (t) => true),
+          )
         ],
       ),
     );

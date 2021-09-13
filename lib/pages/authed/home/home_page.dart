@@ -21,7 +21,7 @@ class HomePage extends StatelessWidget {
       navigationBar: MyNavBar(
         withoutLeading: true,
         middle: LeadingNavBarTitle(
-          'Home',
+          'My Studio',
           fontSize: FONTSIZE.LARGE,
         ),
         trailing: NavBarTrailingRow(children: [

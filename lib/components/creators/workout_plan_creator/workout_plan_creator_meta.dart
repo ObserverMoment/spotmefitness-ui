@@ -32,147 +32,130 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             children: [
-              TappableRow(
-                  onTap: () => context.showBottomSheet<int>(
-                          child: NumberPickerModal(
-                        initialValue: workoutPlanData.lengthWeeks,
-                        min: 1,
-                        max: 52,
-                        saveValue: (lengthWeeks) {
-                          if (lengthWeeks < workoutPlanData.lengthWeeks) {
-                            context.showConfirmDialog(
-                                title: 'Reduce Length of Plan?',
-                                content: MyText(
-                                  'If you have planned workouts in later weeks will be deleted. OK?',
-                                  textAlign: TextAlign.center,
-                                  maxLines: 4,
-                                ),
-                                onConfirm: () => context
-                                    .read<WorkoutPlanCreatorBloc>()
-                                    .reduceWorkoutPlanlength(lengthWeeks));
-                          } else {
-                            _updateWorkoutPlanMeta(
-                                {'lengthWeeks': lengthWeeks});
-                          }
-                        },
-                        title: 'Weeks',
-                      )),
-                  display: Row(
-                    children: [
-                      ContentBox(
-                        child: MyText(
-                          workoutPlanData.lengthWeeks.toString(),
-                          size: FONTSIZE.DISPLAY,
-                          weight: FontWeight.bold,
-                          lineHeight: 1.2,
+              UserInputContainer(
+                child: TappableRow(
+                    showPenIcon: false,
+                    onTap: () => context.showBottomSheet<int>(
+                            child: NumberPickerModal(
+                          initialValue: workoutPlanData.lengthWeeks,
+                          min: 1,
+                          max: 52,
+                          saveValue: (lengthWeeks) {
+                            if (lengthWeeks < workoutPlanData.lengthWeeks) {
+                              context.showConfirmDialog(
+                                  title: 'Reduce Length of Plan?',
+                                  content: MyText(
+                                    'If you have planned workouts in later weeks will be deleted. OK?',
+                                    textAlign: TextAlign.center,
+                                    maxLines: 4,
+                                  ),
+                                  onConfirm: () => context
+                                      .read<WorkoutPlanCreatorBloc>()
+                                      .reduceWorkoutPlanlength(lengthWeeks));
+                            } else {
+                              _updateWorkoutPlanMeta(
+                                  {'lengthWeeks': lengthWeeks});
+                            }
+                          },
+                          title: 'Weeks',
+                        )),
+                    display: Row(
+                      children: [
+                        ContentBox(
+                          child: MyText(
+                            workoutPlanData.lengthWeeks.toString(),
+                            size: FONTSIZE.HUGE,
+                            weight: FontWeight.bold,
+                            lineHeight: 1.2,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      MyText('weeks')
-                    ],
-                  ),
-                  title: 'Plan Length'),
-              TappableRow(
-                  onTap: () => context.showBottomSheet<int>(
-                          child: NumberPickerModal(
-                        initialValue: workoutPlanData.daysPerWeek,
-                        min: 1,
-                        max: 7,
-                        saveValue: (daysPerWeek) => _updateWorkoutPlanMeta(
-                            {'daysPerWeek': daysPerWeek}),
-                        title: 'Days Per Week',
-                      )),
-                  display: Row(
-                    children: [
-                      ContentBox(
-                        child: MyText(
-                          workoutPlanData.daysPerWeek.toString(),
-                          size: FONTSIZE.DISPLAY,
-                          weight: FontWeight.bold,
-                          lineHeight: 1.2,
+                        SizedBox(
+                          width: 8,
                         ),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      MyText(workoutPlanData.daysPerWeek == 1
-                          ? 'day / week'
-                          : 'days / week')
-                    ],
-                  ),
-                  title: 'Days Per Week'),
-              SizedBox(height: 12),
-              EditableTextFieldRow(
-                title: 'Name',
-                text: workoutPlanData.name,
-                onSave: (text) => _updateWorkoutPlanMeta({'name': text}),
-                inputValidation: (t) => t.length > 2 && t.length <= 50,
-                maxChars: 50,
-                validationMessage: 'Required. Min 3 chars. max 50',
+                        MyText('weeks')
+                      ],
+                    ),
+                    title: 'Plan Length'),
               ),
-              EditableTextAreaRow(
-                title: 'Description',
-                text: workoutPlanData.description ?? '',
-                placeholder: 'Add description...',
-                onSave: (text) => _updateWorkoutPlanMeta({'description': text}),
-                inputValidation: (t) => true,
-                maxDisplayLines: 2,
-              ),
-              SizedBox(height: 8),
-              TappableRow(
-                  title: 'Tags',
-                  display: workoutPlanData.workoutTags.isEmpty
-                      ? MyText(
-                          'Add some tags...',
-                          subtext: true,
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Wrap(
-                                alignment: WrapAlignment.end,
-                                spacing: 4,
-                                runSpacing: 4,
-                                children: workoutPlanData.workoutTags
-                                    .map((t) => Tag(
-                                          tag: t.tag,
-                                          color: Styles.colorOne,
-                                          textColor: Styles.white,
-                                        ))
-                                    .toList(),
-                              )),
+              UserInputContainer(
+                child: TappableRow(
+                    showPenIcon: false,
+                    onTap: () => context.showBottomSheet<int>(
+                            child: NumberPickerModal(
+                          initialValue: workoutPlanData.daysPerWeek,
+                          min: 1,
+                          max: 7,
+                          saveValue: (daysPerWeek) => _updateWorkoutPlanMeta(
+                              {'daysPerWeek': daysPerWeek}),
+                          title: 'Days Per Week',
+                        )),
+                    display: Row(
+                      children: [
+                        ContentBox(
+                          child: MyText(
+                            workoutPlanData.daysPerWeek.toString(),
+                            size: FONTSIZE.HUGE,
+                            weight: FontWeight.bold,
+                            lineHeight: 1.2,
+                          ),
                         ),
-                  onTap: () => context.push(
-                          child: WorkoutTagsSelector(
-                        selectedWorkoutTags: workoutPlanData.workoutTags,
-                        updateSelectedWorkoutTags: (tags) =>
-                            _updateWorkoutPlanMeta({
-                          'WorkoutTags': tags.map((t) => t.toJson()).toList()
-                        }),
-                      ))),
-              SizedBox(height: 20),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        MyText(workoutPlanData.daysPerWeek == 1
+                            ? 'day / week'
+                            : 'days / week')
+                      ],
+                    ),
+                    title: 'Days Per Week'),
+              ),
+              UserInputContainer(
+                child: EditableTextFieldRow(
+                  title: 'Name',
+                  text: workoutPlanData.name,
+                  onSave: (text) => _updateWorkoutPlanMeta({'name': text}),
+                  inputValidation: (t) => t.length > 2 && t.length <= 50,
+                  maxChars: 50,
+                  validationMessage: 'Required. Min 3 chars. max 50',
+                ),
+              ),
+              UserInputContainer(
+                child: EditableTextAreaRow(
+                  title: 'Description',
+                  text: workoutPlanData.description ?? '',
+                  placeholder: 'Add description...',
+                  onSave: (text) =>
+                      _updateWorkoutPlanMeta({'description': text}),
+                  inputValidation: (t) => true,
+                  maxDisplayLines: 2,
+                ),
+              ),
+              WorkoutTagsSelectorRow(
+                selectedWorkoutTags: workoutPlanData.workoutTags,
+                updateSelectedWorkoutTags: (tags) => _updateWorkoutPlanMeta(
+                    {'WorkoutTags': tags.map((t) => t.toJson()).toList()}),
+              ),
               Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MyText('Audience'),
-                    SlidingSelect<ContentAccessScope>(
-                        value: workoutPlanData.contentAccessScope,
-                        children: <ContentAccessScope, Widget>{
-                          for (final v in ContentAccessScope.values.where(
-                              (v) => v != ContentAccessScope.artemisUnknown))
-                            v: MyText(v.display)
-                        },
-                        updateValue: (scope) => _updateWorkoutPlanMeta(
-                            {'contentAccessScope': scope.apiValue})),
-                    InfoPopupButton(
-                        infoWidget: MyText(
-                            'Explaining the difrerent scopes and what they mean.')),
-                  ],
+                padding: const EdgeInsets.only(left: 4.0),
+                child: UserInputContainer(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MyText('Audience'),
+                      SlidingSelect<ContentAccessScope>(
+                          value: workoutPlanData.contentAccessScope,
+                          children: <ContentAccessScope, Widget>{
+                            for (final v in ContentAccessScope.values.where(
+                                (v) => v != ContentAccessScope.artemisUnknown))
+                              v: MyText(v.display)
+                          },
+                          updateValue: (scope) => _updateWorkoutPlanMeta(
+                              {'contentAccessScope': scope.apiValue})),
+                      InfoPopupButton(
+                          infoWidget: MyText(
+                              'Explaining the difrerent scopes and what they mean.')),
+                    ],
+                  ),
                 ),
               )
             ],

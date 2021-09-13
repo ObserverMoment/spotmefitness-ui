@@ -3,14 +3,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/amrap_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/fortime_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/free_session_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/timed_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/amrap_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/fortime_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/free_session_section_controller.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/timed_section_controller.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -109,12 +108,13 @@ class DoWorkoutBloc extends ChangeNotifier {
   }
 
   void _calculateTotalReps(int sectionIndex) {
-    totalReps[sectionIndex] =
-        DataUtils.totalRepsInSection<LoggedWorkoutSection>(
-            controllers[sectionIndex].loggedWorkoutSection);
+    /// TODO.
+    // totalReps[sectionIndex] =
+    //     DataUtils.totalRepsInSection<LoggedWorkoutSection>(
+    //         controllers[sectionIndex].loggedWorkoutSection);
 
-    controllers[sectionIndex].loggedWorkoutSection.repScore =
-        totalReps[sectionIndex];
+    // controllers[sectionIndex].loggedWorkoutSection.repScore =
+    //     totalReps[sectionIndex];
 
     notifyListeners();
   }
@@ -187,8 +187,8 @@ class DoWorkoutBloc extends ChangeNotifier {
   LoggedWorkoutSection _genLoggedWorkoutSection(int sectionIndex) {
     final LoggedWorkoutSection sectionLog =
         controllers[sectionIndex].loggedWorkoutSection;
-    sectionLog.timeTakenMs = _stopWatchTimers[sectionIndex].rawTime.value;
-    sectionLog.lapTimesMs = controllers[sectionIndex].state.lapTimesMs;
+    sectionLog.timeTakenSeconds =
+        _stopWatchTimers[sectionIndex].secondTime.value;
     return sectionLog;
   }
 

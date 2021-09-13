@@ -4,14 +4,13 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/services/default_object_factory.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
-/// Can either create a new logged workout or edit (in real time) and already existing one.
+/// Can either create a new logged workout or edit (in real time) an already existing one.
 /// Create: The full object is constructed on the client and then saved as a whole to the API when the user is done.
 /// Edit: Edits are made and saved to the API in real time incrementally, then the client side store is updated once when the user is done. (Similar to the workout creator bloc).
 class LoggedWorkoutCreatorBloc extends ChangeNotifier {
@@ -27,8 +26,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
   /// When [creating] the initial log - nothing is saved to the API until the end of the flow and the user hits save.
   /// When [editing]:
-  ///  - Log: Edits are saved to the DB immediately (optimistically to UI, then to the API). The store is written after the API has returned.
-  ///  - Section and below. Changes are saved to the DB only when the section as a whole is saved. The returned section (from the API) is merged with the log and then written to the client store. Only the [LoggedWorkout] object is normalized into the store (as a root object) - all its children are not..
+  ///  - Log: Edits are saved to the DB immediately (optimistically to local UI state, then to the API). The global store is written after the API has returned.
   late bool _isEditing;
 
   LoggedWorkoutCreatorBloc(
@@ -47,18 +45,15 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
           workout: workout, scheduledWorkout: scheduledWorkout);
     }
 
-    // Make sure the sections and the sets are correctly ordered - otherwise delete ops and display will be messed up.
+    // Make sure the sections are correctly ordered.
     loggedWorkout.loggedWorkoutSections.sortBy<num>((s) => s.sortPosition);
-    loggedWorkout.loggedWorkoutSections.forEach((lws) {
-      lws.loggedWorkoutSets.sortBy<num>((s) => s.sortPosition);
-    });
 
     _backupJson = loggedWorkout.toJson();
   }
 
   bool showFullSetInfo = true;
 
-  void makeBackupLog() {
+  void _backup() {
     _backupJson = loggedWorkout.toJson();
   }
 
@@ -74,26 +69,14 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         toastType: ToastType.destructive);
   }
 
-  /// When editing, if the user has made changes which need to be saved or discarded on exiting the [LoggedWorkoutSectionDetailsEditable] screen.
-  bool sectionHasUnsavedChanges = false;
-  // Backup of the section that is currently open an being edited.
-  Map<String, dynamic>? backupSectionJson;
-
-  void _backupSectionAndMarkDirty(int sectionIndex) {
-    sectionHasUnsavedChanges = true;
-    backupSectionJson =
-        loggedWorkout.loggedWorkoutSections[sectionIndex].toJson();
+  bool _checkApiResult(MutationResult result) {
+    if (result.hasErrors || result.data == null) {
+      _revertChanges(errors: result.errors!);
+      return false;
+    } else {
+      return true;
+    }
   }
-
-  void revertChangesToSection() {
-    final section = LoggedWorkoutSection.fromJson(backupSectionJson!);
-    loggedWorkout.loggedWorkoutSections[section.sortPosition] = section;
-    sectionHasUnsavedChanges = false;
-    notifyListeners();
-  }
-
-  bool _apiResultOk(MutationResult result) =>
-      !(result.hasErrors || result.data == null);
 
   /// Writes all changes to the graphQLStore.
   /// Via the normalized root object which is the LoggedWorkout.
@@ -121,48 +104,32 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       gymProfile: log.gymProfile != null
           ? ConnectRelationInput(id: log.gymProfile!.id)
           : null,
+
+      /// TODO
+      workoutGoals: [],
       completedOn: log.completedOn,
       loggedWorkoutSections: log.loggedWorkoutSections
           .where((s) => includedSectionIds.contains(s.id))
           .sortedBy<num>((s) => s.sortPosition)
           .mapIndexed((index, section) =>
               CreateLoggedWorkoutSectionInLoggedWorkoutInput(
-                  name: section.name,
-                  note: section.note,
-                  // Not the original sortPosition, the index from within the selected sections list at [includedSectionIds]
-                  sortPosition: index,
-                  lapTimesMs: section.lapTimesMs,
-                  repScore: section.repScore,
-                  timeTakenMs: section.timeTakenMs,
-                  timecap: section.timecap,
-                  workoutSectionType:
-                      ConnectRelationInput(id: section.workoutSectionType.id),
-                  loggedWorkoutSets: section.loggedWorkoutSets
-                      .map((logSet) => CreateLoggedWorkoutSetInLoggedSectionInput(
-                          sortPosition: logSet.sortPosition,
-                          note: logSet.note,
-                          roundNumber: logSet.roundNumber,
-                          roundsCompleted: logSet.roundsCompleted,
-                          duration: logSet.duration,
-                          loggedWorkoutMoves: logSet.loggedWorkoutMoves
-                              .map((logWorkoutMove) =>
-                                  CreateLoggedWorkoutMoveInLoggedSetInput(
-                                      sortPosition: logWorkoutMove.sortPosition,
-                                      repType: logWorkoutMove.repType,
-                                      reps: logWorkoutMove.reps,
-                                      distanceUnit: logWorkoutMove.distanceUnit,
-                                      loadAmount: logWorkoutMove.loadAmount,
-                                      loadUnit: logWorkoutMove.loadUnit,
-                                      timeUnit: logWorkoutMove.timeUnit,
-                                      equipment: logWorkoutMove.equipment !=
-                                              null
-                                          ? ConnectRelationInput(
-                                              id: logWorkoutMove.equipment!.id)
-                                          : null,
-                                      move: ConnectRelationInput(
-                                          id: logWorkoutMove.move.id)))
-                              .toList()))
-                      .toList()))
+                name: section.name,
+                note: section.note,
+                // Not the original sortPosition, the index from within the selected sections list at [includedSectionIds]
+                sortPosition: index,
+
+                /// TODO
+                moveTypes: [],
+                bodyAreas: [],
+                repScore: section.repScore,
+                timeTakenSeconds: section.timeTakenSeconds,
+                timecap: section.timecap,
+
+                /// TODO
+                workoutSectionData: WorkoutSectionDataInput(rounds: []),
+                workoutSectionType:
+                    ConnectRelationInput(id: section.workoutSectionType.id),
+              ))
           .toList(),
     );
 
@@ -174,7 +141,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
     await checkOperationResult(context, result);
 
-    /// If the log is being created from a scheduled workout then we need to add the newly completed workout log to the scheduledWorkout.loggedWorkout (or the alias for the field if there is one) in the store.
+    /// If the log is being created from a scheduled workout then we need to add the newly completed workout log to the scheduledWorkout.loggedWorkout in the store.
     if (scheduledWorkout != null && result.data != null) {
       updateScheduleWithLoggedWorkout(
           context, scheduledWorkout!, result.data!.createLoggedWorkout);
@@ -190,7 +157,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   }
 
   Future<void> updateGymProfile(GymProfile? profile) async {
-    makeBackupLog();
+    _backup();
     loggedWorkout.gymProfile = profile;
     notifyListeners();
 
@@ -211,15 +178,12 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
       );
 
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      }
+      _checkApiResult(result);
     }
   }
 
   Future<void> updateCompletedOn(DateTime completedOn) async {
-    makeBackupLog();
+    _backup();
     loggedWorkout.completedOn = completedOn;
     notifyListeners();
 
@@ -240,15 +204,12 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
       );
 
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      }
+      _checkApiResult(result);
     }
   }
 
   Future<void> updateNote(String note) async {
-    makeBackupLog();
+    _backup();
     loggedWorkout.note = note;
     notifyListeners();
 
@@ -266,10 +227,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
       );
 
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      }
+      _checkApiResult(result);
     }
   }
 
@@ -291,7 +249,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   /// Does not write to graphql store.
   Future<void> editLoggedWorkoutSection(
       int sectionIndex, Map<String, dynamic> data) async {
-    _backupSectionAndMarkDirty(sectionIndex);
+    _backup();
 
     final updated = LoggedWorkoutSection.fromJson({
       ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
@@ -326,278 +284,45 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       writeToStore: false,
     );
 
-    /// Check the result.
-    if (!_apiResultOk(result)) {
-      _revertChanges(errors: result.errors!);
-    }
+    _checkApiResult(result);
   }
 
   /// Only available when user is editing as logged workout, not when creating.
   /// So [if (_isEditing)] check is not required before calling the network.
   /// When creating use [includedSectionIds] to add / remove sections.
   /// These deletes get written to the [graphQLStore] immediately that the API result confirms.
-  Future<void> deleteLoggedWorkoutSection(int sectionIndex) async {
-    makeBackupLog();
-    final idToDelete = loggedWorkout.loggedWorkoutSections[sectionIndex].id;
-    loggedWorkout.loggedWorkoutSections.removeAt(sectionIndex);
-    notifyListeners();
+  // Future<void> deleteLoggedWorkoutSection(int sectionIndex) async {
+  //   _backup();
+  //   final idToDelete = loggedWorkout.loggedWorkoutSections[sectionIndex].id;
+  //   loggedWorkout.loggedWorkoutSections.removeAt(sectionIndex);
+  //   notifyListeners();
 
-    /// Delete from DB.
-    /// Not using [graphQLStore.delete] as that is designed for deleting root objects that have been normalized.
-    final result = await context.graphQLStore.mutate(
-        writeToStore: false,
-        mutation: DeleteLoggedWorkoutSectionByIdMutation(
-            variables:
-                DeleteLoggedWorkoutSectionByIdArguments(id: idToDelete)));
+  //   /// Delete from DB.
+  //   /// Not using [graphQLStore.delete] as that is designed for deleting root objects that have been normalized.
+  //   final result = await context.graphQLStore.mutate(
+  //       writeToStore: false,
+  //       mutation: DeleteLoggedWorkoutSectionByIdMutation(
+  //           variables:
+  //               DeleteLoggedWorkoutSectionByIdArguments(id: idToDelete)));
 
-    /// Check the result.
-    if (!_apiResultOk(result) ||
-        idToDelete != result.data?.deleteLoggedWorkoutSectionById) {
-      _revertChanges(errors: result.errors!);
-    } else {
-      _updateLoggedWorkoutSectionsSortPosition(
-          loggedWorkout.loggedWorkoutSections);
+  //   /// Check the result.
+  //   if (!_checkApiResult(result) ||
+  //       idToDelete != result.data?.deleteLoggedWorkoutSectionById) {
+  //     _revertChanges(errors: result.errors!);
+  //   } else {
+  //     _updateLoggedWorkoutSectionsSortPosition(
+  //         loggedWorkout.loggedWorkoutSections);
 
-      /// Immediately update the client store with the updated log.
-      writeAllChangesToStore();
-    }
-  }
+  //     /// Immediately update the client store with the updated log.
+  //     writeAllChangesToStore();
+  //   }
+  // }
 
   /// Internal: Client
   void _updateLoggedWorkoutSectionsSortPosition(
       List<LoggedWorkoutSection> loggedWorkoutSections) {
     loggedWorkoutSections.forEachIndexed((i, loggedWorkoutSection) {
       loggedWorkoutSection.sortPosition = i;
-    });
-  }
-
-  Future<void> addLoggedWorkoutSet(
-    int sectionIndex,
-  ) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    final sets =
-        loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets;
-
-    final newSet =
-        DefaultObjectfactory.defaultLoggedWorkoutSet(sortPosition: sets.length);
-
-    loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets = [
-      ...sets,
-      newSet
-    ];
-    notifyListeners();
-
-    if (_isEditing) {
-      final variables = CreateLoggedWorkoutSetArguments(
-          data: CreateLoggedWorkoutSetInput.fromJson(newSet.toJson()));
-
-      final result = await context.graphQLStore.mutate(
-        mutation: CreateLoggedWorkoutSetMutation(variables: variables),
-        writeToStore: false,
-      );
-
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      } else {
-        loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets
-            .last = LoggedWorkoutSet.fromJson({
-          ...newSet.toJson(),
-          ...result.data!.createLoggedWorkoutSet.toJson()
-        });
-      }
-    }
-  }
-
-  Future<void> editLoggedWorkoutSet(
-      int sectionIndex, int setIndex, LoggedWorkoutSet loggedWorkoutSet) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    final oldSetsCopy =
-        loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets;
-
-    loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets =
-        oldSetsCopy
-            .map((original) =>
-                original.sortPosition == loggedWorkoutSet.sortPosition
-                    ? loggedWorkoutSet
-                    : original)
-            .toList();
-    notifyListeners();
-
-    if (_isEditing) {
-      final variables = UpdateLoggedWorkoutSetArguments(
-          data:
-              UpdateLoggedWorkoutSetInput.fromJson(loggedWorkoutSet.toJson()));
-
-      final result = await context.graphQLStore.mutate(
-        mutation: UpdateLoggedWorkoutSetMutation(variables: variables),
-        writeToStore: false,
-      );
-
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      } else {
-        loggedWorkout.loggedWorkoutSections[sectionIndex]
-            .loggedWorkoutSets[setIndex] = LoggedWorkoutSet.fromJson({
-          ...loggedWorkoutSet.toJson(),
-          ...result.data!.updateLoggedWorkoutSet.toJson()
-        });
-      }
-    }
-  }
-
-  Future<void> deleteLoggedWorkoutSet(int sectionIndex, int setIndex) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    final idToDelete = loggedWorkout
-        .loggedWorkoutSections[sectionIndex].loggedWorkoutSets[setIndex].id;
-
-    loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets
-        .removeAt(setIndex);
-
-    _updateLoggedWorkoutSetsSortPosition(
-        loggedWorkout.loggedWorkoutSections[sectionIndex].loggedWorkoutSets);
-
-    notifyListeners();
-
-    if (_isEditing) {
-      /// Not using [graphQLStore.delete] as that is designed for deleting root objects that have been normalized.
-      final result = await context.graphQLStore.mutate(
-          writeToStore: false,
-          mutation: DeleteLoggedWorkoutSetByIdMutation(
-              variables: DeleteLoggedWorkoutSetByIdArguments(id: idToDelete)));
-
-      /// Check the result.
-      if (!_apiResultOk(result) ||
-          idToDelete != result.data?.deleteLoggedWorkoutSetById) {
-        _revertChanges(errors: result.errors!);
-      }
-    }
-  }
-
-  /// Internal: Client
-  void _updateLoggedWorkoutSetsSortPosition(
-      List<LoggedWorkoutSet> loggedWorkoutSets) {
-    loggedWorkoutSets.forEachIndexed((i, loggedWorkoutSet) {
-      loggedWorkoutSet.sortPosition = i;
-    });
-  }
-
-  /// To the end of a set.
-  Future<void> addLoggedWorkoutMove(int sectionIndex, int setIndex,
-      LoggedWorkoutMove loggedWorkoutMove) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-
-    loggedWorkout.loggedWorkoutSections[sectionIndex]
-        .loggedWorkoutSets[setIndex].loggedWorkoutMoves
-        .add(loggedWorkoutMove);
-
-    notifyListeners();
-
-    if (_isEditing) {
-      final variables = CreateLoggedWorkoutMoveArguments(
-          data: CreateLoggedWorkoutMoveInput.fromJson({
-        ...loggedWorkoutMove.toJson(),
-        'LoggedWorkoutSet': loggedWorkout
-            .loggedWorkoutSections[sectionIndex].loggedWorkoutSets[setIndex]
-            .toJson()
-      }));
-
-      final result = await context.graphQLStore.mutate(
-        mutation: CreateLoggedWorkoutMoveMutation(variables: variables),
-        writeToStore: false,
-      );
-
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      } else {
-        /// Ensure you overwrite the temp id of the logged workout move.
-        loggedWorkout
-            .loggedWorkoutSections[sectionIndex]
-            .loggedWorkoutSets[setIndex]
-            .loggedWorkoutMoves
-            .last = LoggedWorkoutMove.fromJson({
-          ...loggedWorkoutMove.toJson(),
-          ...result.data!.createLoggedWorkoutMove.toJson(),
-        });
-      }
-    }
-  }
-
-  Future<void> editLoggedWorkoutMove(int sectionIndex, int setIndex,
-      LoggedWorkoutMove loggedWorkoutMove) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    loggedWorkout
-            .loggedWorkoutSections[sectionIndex]
-            .loggedWorkoutSets[setIndex]
-            .loggedWorkoutMoves[loggedWorkoutMove.sortPosition] =
-        LoggedWorkoutMove.fromJson(loggedWorkoutMove.toJson());
-    notifyListeners();
-
-    if (_isEditing) {
-      final variables = UpdateLoggedWorkoutMoveArguments(
-          data: UpdateLoggedWorkoutMoveInput.fromJson(
-              loggedWorkoutMove.toJson()));
-
-      final result = await context.graphQLStore.mutate(
-        mutation: UpdateLoggedWorkoutMoveMutation(variables: variables),
-        writeToStore: false,
-      );
-
-      /// Check the result.
-      if (!_apiResultOk(result)) {
-        _revertChanges(errors: result.errors!);
-      } else {
-        loggedWorkout
-                .loggedWorkoutSections[sectionIndex]
-                .loggedWorkoutSets[setIndex]
-                .loggedWorkoutMoves[loggedWorkoutMove.sortPosition] =
-            LoggedWorkoutMove.fromJson({
-          ...loggedWorkoutMove.toJson(),
-          ...result.data!.updateLoggedWorkoutMove.toJson()
-        });
-      }
-    }
-  }
-
-  Future<void> deleteLoggedWorkoutMove(
-      int sectionIndex, int setIndex, int workoutMoveIndex) async {
-    _backupSectionAndMarkDirty(sectionIndex);
-    final idToDelete = loggedWorkout.loggedWorkoutSections[sectionIndex]
-        .loggedWorkoutSets[setIndex].loggedWorkoutMoves[workoutMoveIndex].id;
-
-    loggedWorkout.loggedWorkoutSections[sectionIndex]
-        .loggedWorkoutSets[setIndex].loggedWorkoutMoves
-        .removeAt(workoutMoveIndex);
-
-    _updateLoggedWorkoutMovesSortPosition(loggedWorkout
-        .loggedWorkoutSections[sectionIndex]
-        .loggedWorkoutSets[setIndex]
-        .loggedWorkoutMoves);
-
-    notifyListeners();
-
-    if (_isEditing) {
-      /// Not using [graphQLStore.delete] as that is designed for deleting root objects that have been normalized.
-      final result = await context.graphQLStore.mutate(
-          writeToStore: false,
-          mutation: DeleteLoggedWorkoutMoveByIdMutation(
-              variables: DeleteLoggedWorkoutMoveByIdArguments(id: idToDelete)));
-
-      /// Check the result.
-      if (!_apiResultOk(result) ||
-          idToDelete != result.data?.deleteLoggedWorkoutMoveById) {
-        _revertChanges(errors: result.errors!);
-      }
-    }
-  }
-
-  /// Internal: Client
-  void _updateLoggedWorkoutMovesSortPosition(
-      List<LoggedWorkoutMove> loggedWorkoutMoves) {
-    loggedWorkoutMoves.forEachIndexed((i, loggedWorkoutMove) {
-      loggedWorkoutMove.sortPosition = i;
     });
   }
 

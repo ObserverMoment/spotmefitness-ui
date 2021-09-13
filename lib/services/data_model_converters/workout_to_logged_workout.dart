@@ -36,58 +36,8 @@ LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
   return LoggedWorkoutSection()
     ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
     ..name = workoutSection.name
-    ..loggedWorkoutSets = List.generate(
-        workoutSection.rounds,
-        (roundNumber) => workoutSetsToLoggedWorkoutSets(
-                workoutSection.workoutSets, roundNumber)
-            .sortedBy<num>((ws) => ws.sortPosition)).expand((x) => x).toList()
-    ..lapTimesMs = {}
     ..timecap = workoutSection.timecap
     ..sortPosition = workoutSection.sortPosition
     ..workoutSectionType =
         WorkoutSectionType.fromJson(workoutSection.workoutSectionType.toJson());
 }
-
-List<LoggedWorkoutSet> workoutSetsToLoggedWorkoutSets(
-    List<WorkoutSet> workoutSets, int roundNumber) {
-  return workoutSets
-      .map(
-          (workoutSet) => workoutSetToLoggedWorkoutSet(workoutSet, roundNumber))
-      .toList();
-}
-
-LoggedWorkoutSet workoutSetToLoggedWorkoutSet(
-    WorkoutSet workoutSet, int roundNumber) {
-  final uuid = Uuid();
-  return LoggedWorkoutSet()
-    ..id = 'temp - loggedWorkoutSet:${uuid.v1()}'
-    ..sortPosition = workoutSet.sortPosition
-    ..roundNumber = roundNumber
-    ..roundsCompleted = workoutSet.rounds
-    ..duration = workoutSet.duration
-    ..loggedWorkoutMoves =
-        workoutMovesToLoggedWorkoutMoves(workoutSet.workoutMoves)
-            .sortedBy<num>((wm) => wm.sortPosition);
-}
-
-List<LoggedWorkoutMove> workoutMovesToLoggedWorkoutMoves(
-    List<WorkoutMove> workoutMoves) {
-  return workoutMoves
-      .map((workoutMove) => workoutMoveToLoggedWorkoutMove(
-            workoutMove,
-          ))
-      .toList();
-}
-
-LoggedWorkoutMove workoutMoveToLoggedWorkoutMove(WorkoutMove workoutMove) =>
-    LoggedWorkoutMove()
-      ..id = 'temp - LoggedWorkoutMove:${Uuid().v1()}'
-      ..sortPosition = workoutMove.sortPosition
-      ..repType = workoutMove.repType
-      ..reps = workoutMove.reps
-      ..distanceUnit = workoutMove.distanceUnit
-      ..loadAmount = workoutMove.loadAmount
-      ..loadUnit = workoutMove.loadUnit
-      ..timeUnit = workoutMove.timeUnit
-      ..equipment = workoutMove.equipment
-      ..move = workoutMove.move;

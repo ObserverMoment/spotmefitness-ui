@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
@@ -101,59 +102,63 @@ class WorkoutFiltersInfo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          UserInputContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MyText(
-                  'Length (minutes)',
-                  textAlign: TextAlign.start,
-                  size: FONTSIZE.BIG,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: MyHeaderText(
+                    'Length (minutes)',
+                    textAlign: TextAlign.start,
+                  ),
                 ),
                 SizedBox(height: 8),
-                SlidingSelect<int>(
-                    value: _minLengthToInt(minLength),
-                    updateValue: (v) =>
-                        _updateFilters(_intToMinLengthMaxLength(v)),
-                    children: {
-                      0: MyText('Any'),
-                      1: MyText('< 15'),
-                      2: MyText("15-30"),
-                      3: MyText("30-45"),
-                      4: MyText("45-60"),
-                      5: MyText("60 >"),
-                    })
+                SizedBox(
+                  width: double.infinity,
+                  child: SlidingSelect<int>(
+                      value: _minLengthToInt(minLength),
+                      updateValue: (v) =>
+                          _updateFilters(_intToMinLengthMaxLength(v)),
+                      children: {
+                        0: MyText('Any'),
+                        1: MyText('< 15'),
+                        2: MyText("15-30"),
+                        3: MyText("30-45"),
+                        4: MyText("45-60"),
+                        5: MyText("60 >"),
+                      }),
+                )
               ],
             ),
           ),
-          SizedBox(height: 25),
           DifficultyLevelSelectorRow(
             difficultyLevel: difficultyLevel,
             updateDifficultyLevel: (difficultyLevel) =>
                 _updateFilters({'difficultyLevel': difficultyLevel.apiValue}),
           ),
-          SizedBox(height: 16),
           WorkoutGoalsSelectorRow(
               selectedWorkoutGoals: workoutGoals,
               updateSelectedWorkoutGoals: (goals) => _updateFilters(
                   {'workoutGoals': goals.map((t) => t.toJson()).toList()})),
-          SizedBox(height: 28),
-          WorkoutSectionTypeMultiSelector(
-            selectedTypes: workoutSectionTypes,
-            updateSelectedTypes: (types) => _updateFilters(
-                {'workoutSectionTypes': types.map((t) => t.toJson()).toList()}),
+          UserInputContainer(
+            child: WorkoutSectionTypeMultiSelector(
+              selectedTypes: workoutSectionTypes,
+              updateSelectedTypes: (types) => _updateFilters({
+                'workoutSectionTypes': types.map((t) => t.toJson()).toList()
+              }),
+            ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 28.0, horizontal: 8.0),
+          UserInputContainer(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MyText(
-                  'Class Video',
-                  textAlign: TextAlign.start,
-                  size: FONTSIZE.BIG,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: MyHeaderText(
+                    'Class Video',
+                    textAlign: TextAlign.start,
+                  ),
                 ),
                 SizedBox(height: 12),
                 SizedBox(
@@ -168,11 +173,19 @@ class WorkoutFiltersInfo extends StatelessWidget {
                         2: MyText("Don't mind")
                       }),
                 ),
-                SizedBox(height: 12),
-                MyText(
-                  'Class Audio',
-                  textAlign: TextAlign.start,
-                  size: FONTSIZE.BIG,
+              ],
+            ),
+          ),
+          UserInputContainer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: MyHeaderText(
+                    'Class Audio',
+                    textAlign: TextAlign.start,
+                  ),
                 ),
                 SizedBox(height: 12),
                 SizedBox(

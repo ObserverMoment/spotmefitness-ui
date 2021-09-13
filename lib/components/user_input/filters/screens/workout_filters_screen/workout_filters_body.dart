@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/filters/blocs/workout_filters_bloc.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/sliding_select.dart';
@@ -21,17 +20,14 @@ class _WorkoutFiltersBodyState extends State<WorkoutFiltersBody> {
   final kBodyGraphicHeight = 420.0;
   late int _activePageIndex;
 
-  PageController _pageController = PageController();
-
   @override
   void initState() {
     super.initState();
     _activePageIndex = 0;
   }
 
-  void _animateToPage(int page) {
+  void _updatePage(int page) {
     setState(() => _activePageIndex = page);
-    _pageController.toPage(page);
   }
 
   @override
@@ -54,7 +50,7 @@ class _WorkoutFiltersBodyState extends State<WorkoutFiltersBody> {
                 child: SizedBox(
                   width: double.infinity,
                   child: SlidingSelect<int>(
-                    updateValue: _animateToPage,
+                    updateValue: _updatePage,
                     value: _activePageIndex,
                     children: {
                       0: MyText('Front'),
@@ -64,61 +60,42 @@ class _WorkoutFiltersBodyState extends State<WorkoutFiltersBody> {
                 ),
               ),
               SingleChildScrollView(
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        height: kBodyGraphicHeight,
-                        child: PageView(
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _pageController,
-                          children: [
-                            BodyAreaSelectorIndicator(
-                                selectedBodyAreas: targetedBodyAreas,
-                                frontBack: BodyAreaFrontBack.front,
-                                allBodyAreas: allBodyAreas,
-                                handleTapBodyArea: (b) => context
-                                        .read<WorkoutFiltersBloc>()
-                                        .updateFilters({
-                                      'targetedBodyAreas': targetedBodyAreas
-                                          .toggleItem(b)
-                                          .map((b) => b.toJson())
-                                          .toList()
-                                    }),
-                                height: kBodyGraphicHeight),
-                            BodyAreaSelectorIndicator(
-                                selectedBodyAreas: targetedBodyAreas,
-                                frontBack: BodyAreaFrontBack.back,
-                                allBodyAreas: allBodyAreas,
-                                handleTapBodyArea: (b) => context
-                                        .read<WorkoutFiltersBloc>()
-                                        .updateFilters({
-                                      'targetedBodyAreas': targetedBodyAreas
-                                          .toggleItem(b)
-                                          .map((b) => b.toJson())
-                                          .toList()
-                                    }),
-                                height: kBodyGraphicHeight),
-                          ],
-                        ),
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: kBodyGraphicHeight,
+                    child: IndexedStack(
+                      index: _activePageIndex,
+                      children: [
+                        BodyAreaSelectorIndicator(
+                            selectedBodyAreas: targetedBodyAreas,
+                            frontBack: BodyAreaFrontBack.front,
+                            allBodyAreas: allBodyAreas,
+                            handleTapBodyArea: (b) => context
+                                    .read<WorkoutFiltersBloc>()
+                                    .updateFilters({
+                                  'targetedBodyAreas': targetedBodyAreas
+                                      .toggleItem(b)
+                                      .map((b) => b.toJson())
+                                      .toList()
+                                }),
+                            height: kBodyGraphicHeight),
+                        BodyAreaSelectorIndicator(
+                            selectedBodyAreas: targetedBodyAreas,
+                            frontBack: BodyAreaFrontBack.back,
+                            allBodyAreas: allBodyAreas,
+                            handleTapBodyArea: (b) => context
+                                    .read<WorkoutFiltersBloc>()
+                                    .updateFilters({
+                                  'targetedBodyAreas': targetedBodyAreas
+                                      .toggleItem(b)
+                                      .map((b) => b.toJson())
+                                      .toList()
+                                }),
+                            height: kBodyGraphicHeight),
+                      ],
                     ),
-                    if (targetedBodyAreas.isNotEmpty)
-                      Positioned(
-                        top: 4,
-                        right: 8,
-                        child: TextButton(
-                          text: 'Clear all',
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          destructive: true,
-                          underline: false,
-                          onPressed: () => context
-                              .read<WorkoutFiltersBloc>()
-                              .updateFilters({'targetedBodyAreas': []}),
-                        ),
-                      )
-                  ],
+                  ),
                 ),
               ),
               Padding(

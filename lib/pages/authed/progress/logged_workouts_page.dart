@@ -34,12 +34,15 @@ class LoggedWorkoutsPage extends StatelessWidget {
               .toList();
 
           return MyPageScaffold(
-            key: Key('LoggedWorkoutsPage - CupertinoPageScaffold'),
             navigationBar: MyNavBar(
-              key: Key('LoggedWorkoutsPage - MyNavBar'),
               middle: NavBarTitle('Workout Logs'),
-              trailing:
-                  InfoPopupButton(infoWidget: MyText('Info about the logs')),
+              trailing: CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () => print('coming soon'),
+                child: Icon(
+                  CupertinoIcons.graph_square,
+                ),
+              ),
             ),
             child: FilterableLoggedWorkoutsList(logs),
           );

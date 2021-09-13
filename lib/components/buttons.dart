@@ -1101,24 +1101,23 @@ class SelectableBox extends StatelessWidget {
       this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 10)});
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: AnimatedContainer(
-        alignment: Alignment.center,
-        height: 60,
-        curve: Curves.easeIn,
-        duration: Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-            color: isSelected ? selectedColor : context.theme.cardBackground,
-            borderRadius: BorderRadius.circular(4)),
-        padding: padding,
+    return AnimatedContainer(
+      height: 60,
+      curve: Curves.easeIn,
+      duration: Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+          color: isSelected ? selectedColor : context.theme.cardBackground,
+          borderRadius: BorderRadius.circular(4)),
+      padding: padding,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
         child: MyText(
           text,
           size: fontSize,
           color: isSelected ? Styles.white : null,
           lineHeight: 1,
-          weight: FontWeight.bold,
+          weight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
     );

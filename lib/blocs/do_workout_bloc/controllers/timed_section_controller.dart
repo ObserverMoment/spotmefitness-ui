@@ -63,10 +63,11 @@ class TimedSectionController extends WorkoutSectionController {
     } else {
       /// If need to. Update the progressState;
       if (_hasSetChangeTimePassed(secondsElapsed)) {
+        /// TODO
         /// Update the [loggedWorkoutSection]
-        loggedWorkoutSection.loggedWorkoutSets.add(workoutSetToLoggedWorkoutSet(
-            sortedWorkoutSets[state.currentSetIndex],
-            state.currentSectionRound));
+        // loggedWorkoutSection.loggedWorkoutSets.add(workoutSetToLoggedWorkoutSet(
+        //     sortedWorkoutSets[state.currentSetIndex],
+        //     state.currentSectionRound));
 
         state.moveToNextSetOrSection(secondsElapsed);
 

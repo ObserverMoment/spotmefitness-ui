@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/content_access_scope_selector.dart';
@@ -22,21 +23,25 @@ class WorkoutCreatorMeta extends StatelessWidget {
     return ListView(
       shrinkWrap: true,
       children: [
-        EditableTextFieldRow(
-          title: 'Name',
-          text: workoutData.name,
-          onSave: (text) => _updateWorkoutMeta({'name': text}),
-          inputValidation: (t) => t.length > 2 && t.length <= 50,
-          maxChars: 50,
-          validationMessage: 'Required. Min 3 chars. max 50',
+        UserInputContainer(
+          child: EditableTextFieldRow(
+            title: 'Name',
+            text: workoutData.name,
+            onSave: (text) => _updateWorkoutMeta({'name': text}),
+            inputValidation: (t) => t.length > 2 && t.length <= 50,
+            maxChars: 50,
+            validationMessage: 'Required. Min 3 chars. max 50',
+          ),
         ),
-        EditableTextAreaRow(
-          title: 'Description',
-          text: workoutData.description ?? '',
-          placeholder: 'Add... (optional)',
-          onSave: (text) => _updateWorkoutMeta({'description': text}),
-          inputValidation: (t) => true,
-          maxDisplayLines: 4,
+        UserInputContainer(
+          child: EditableTextAreaRow(
+            title: 'Description',
+            text: workoutData.description ?? '',
+            placeholder: 'Add... (optional)',
+            onSave: (text) => _updateWorkoutMeta({'description': text}),
+            inputValidation: (t) => true,
+            maxDisplayLines: 4,
+          ),
         ),
         DurationPickerRowDisplay(
           duration: workoutData.lengthMinutes != null

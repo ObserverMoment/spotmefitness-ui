@@ -8,16 +8,7 @@ class WorkoutSectionProgressState {
   int currentSectionRound = 0;
   int currentSetIndex = 0;
 
-  /// Shape of this map matches the shape required by the Joi validation that runs before JSON blob is saved to the DB.
-  /// {
-  ///   [sectionRoundNumber.toString()]: {
-  ///     lapTimeMs: int, (lap time for section round)
-  ///     setLapTimesMs: {
-  ///       [currentSetIndex.toString()]: int (lap time for set at sortPosition [currentSetIndex] within round)
-  ///     }
-  ///   }
-  /// }
-  Map<String, Map<String, dynamic>> lapTimesMs = {};
+  WorkoutSectionData workoutSectionData = WorkoutSectionData()..rounds = [];
 
   /// Used for timed workouts or timecaps.
   /// Can be the next set or the end of the section, depending on the section type.
@@ -41,7 +32,7 @@ class WorkoutSectionProgressState {
   WorkoutSectionProgressState.copy(WorkoutSectionProgressState o)
       : currentSectionRound = o.currentSectionRound,
         currentSetIndex = o.currentSetIndex,
-        lapTimesMs = o.lapTimesMs,
+        workoutSectionData = o.workoutSectionData,
         percentComplete = o.percentComplete,
         timeToNextCheckpointMs = o.timeToNextCheckpointMs,
         numberSetsPerSectionRound = o.numberSetsPerSectionRound,
@@ -83,30 +74,11 @@ class WorkoutSectionProgressState {
 
   /// Add a lapTime at the [currentSectionRound] and [currentSetIndex]
   void addSetLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
-    final prevSetData = prevSectionData['setLapTimesMs'] ?? {};
-
-    lapTimesMs = {
-      ...lapTimesMs,
-      currentSectionRound.toString(): {
-        ...prevSectionData,
-        'setLapTimesMs': {
-          ...prevSetData,
-          currentSetIndex.toString(): lapTimeMs
-        },
-      }
-    };
+    /// TODO.
   }
 
   void addSectionRoundLapTime(int lapTimeMs) {
-    final prevSectionData = lapTimesMs[currentSectionRound.toString()] ?? {};
-    lapTimesMs = {
-      ...lapTimesMs,
-      currentSectionRound.toString(): {
-        ...prevSectionData,
-        'lapTimeMs': lapTimeMs,
-      }
-    };
+    /// TODO.
   }
 
   void moveToNextSet() {

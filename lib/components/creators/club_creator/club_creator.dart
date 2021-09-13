@@ -39,7 +39,6 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
   Club? _activeClub;
   Map<String, dynamic> _activeClubBackup = {};
 
-  PageController _pageController = PageController();
   int _activePageIndex = 0;
 
   /// Doing something over the network - replaces tab sliding select and 'done' buttons with loading indicators.
@@ -79,7 +78,6 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
 
   void _updatePageIndex(int i) {
     Utils.hideKeyboard(context);
-    _pageController.jumpToPage(i);
     setState(() => _activePageIndex = i);
   }
 
@@ -398,7 +396,6 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
     _nameController.dispose();
     _descriptionController.dispose();
     _locationController.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -470,9 +467,8 @@ class _ClubCreatorPageState extends State<ClubCreatorPage> {
                   nameController: _nameController,
                 )
               : Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: NeverScrollableScrollPhysics(),
+                  child: IndexedStack(
+                    index: _activePageIndex,
                     children: [
                       ClubCreatorInfo(
                         club: _activeClub!,

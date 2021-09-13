@@ -26,7 +26,7 @@ class EditableTextFieldRow extends StatelessWidget {
   EditableTextFieldRow(
       {required this.title,
       this.text = '',
-      this.placeholder = 'Add...',
+      this.placeholder = '...add',
       required this.onSave,
       required this.inputValidation,
       this.validationMessage,
@@ -37,43 +37,41 @@ class EditableTextFieldRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool hasText = Utils.textNotNull(text);
-    return UserInputContainer(
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: () => context.push(
-            child: FullScreenTextEditing(
-          title: title,
-          inputValidation: inputValidation,
-          validationMessage: validationMessage,
-          initialValue: text,
-          onSave: onSave,
-          maxChars: maxChars,
-          maxInputLines: maxInputLines,
-        )),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 24.0),
-              child: Row(
-                children: [
-                  MyText(
-                    title,
-                  ),
-                  if (isRequired == true) RequiredSuperText()
-                ],
-              ),
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push(
+          child: FullScreenTextEditing(
+        title: title,
+        inputValidation: inputValidation,
+        validationMessage: validationMessage,
+        initialValue: text,
+        onSave: onSave,
+        maxChars: maxChars,
+        maxInputLines: maxInputLines,
+      )),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 24.0),
+            child: Row(
+              children: [
+                MyText(
+                  title,
+                ),
+                if (isRequired == true) RequiredSuperText()
+              ],
             ),
-            Expanded(
-              child: MyText(
-                hasText ? text : placeholder,
-                overflow: TextOverflow.ellipsis,
-                subtext: !hasText,
-                textAlign: TextAlign.end,
-              ),
+          ),
+          Expanded(
+            child: MyText(
+              hasText ? text : placeholder,
+              overflow: TextOverflow.ellipsis,
+              subtext: !hasText,
+              textAlign: TextAlign.end,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -94,7 +92,7 @@ class EditableTextAreaRow extends StatelessWidget {
   EditableTextAreaRow(
       {required this.title,
       this.text = '',
-      this.placeholder = '...',
+      this.placeholder = '...add',
       required this.onSave,
       required this.inputValidation,
       this.validationMessage,
@@ -106,45 +104,43 @@ class EditableTextAreaRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool hasText = Utils.textNotNull(text);
-    return UserInputContainer(
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        onPressed: () => context.push(
-            child: FullScreenTextEditing(
-          title: title,
-          inputValidation: inputValidation,
-          validationMessage: validationMessage,
-          initialValue: text,
-          onSave: onSave,
-          maxChars: maxChars,
-          maxInputLines: maxInputLines,
-        )),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 24.0),
-              child: Row(
-                children: [
-                  MyText(
-                    title,
-                  ),
-                  if (isRequired == true) RequiredSuperText()
-                ],
-              ),
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => context.push(
+          child: FullScreenTextEditing(
+        title: title,
+        inputValidation: inputValidation,
+        validationMessage: validationMessage,
+        initialValue: text,
+        onSave: onSave,
+        maxChars: maxChars,
+        maxInputLines: maxInputLines,
+      )),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 24.0),
+            child: Row(
+              children: [
+                MyText(
+                  title,
+                ),
+                if (isRequired == true) RequiredSuperText()
+              ],
             ),
-            Expanded(
-              child: MyText(
-                hasText ? text : placeholder,
-                overflow: TextOverflow.ellipsis,
-                subtext: !hasText,
-                maxLines: maxDisplayLines,
-                textAlign: TextAlign.end,
-              ),
+          ),
+          Expanded(
+            child: MyText(
+              hasText ? text : placeholder,
+              overflow: TextOverflow.ellipsis,
+              subtext: !hasText,
+              maxLines: maxDisplayLines,
+              textAlign: TextAlign.end,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

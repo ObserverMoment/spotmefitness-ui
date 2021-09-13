@@ -21,24 +21,29 @@ class WorkoutFiltersMoves extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          WorkoutFilterMovesList(
-            moves: requiredMoves,
-            title: 'Required',
-            subtitle: 'Workouts must include these moves',
-            updateMoves: (moves) => context
-                .read<WorkoutFiltersBloc>()
-                .updateFilters(
-                    {'requiredMoves': moves.map((m) => m.toJson()).toList()}),
+          SizedBox(height: 10),
+          UserInputContainer(
+            child: WorkoutFilterMovesList(
+              moves: requiredMoves,
+              title: 'Required',
+              subtitle: 'Workouts must include these moves',
+              updateMoves: (moves) => context
+                  .read<WorkoutFiltersBloc>()
+                  .updateFilters(
+                      {'requiredMoves': moves.map((m) => m.toJson()).toList()}),
+            ),
           ),
-          SizedBox(height: 20),
-          WorkoutFilterMovesList(
-            moves: excludedMoves,
-            title: 'Excluded',
-            subtitle: 'Workouts cannot include these moves',
-            updateMoves: (moves) => context
-                .read<WorkoutFiltersBloc>()
-                .updateFilters(
-                    {'excludedMoves': moves.map((m) => m.toJson()).toList()}),
+          SizedBox(height: 10),
+          UserInputContainer(
+            child: WorkoutFilterMovesList(
+              moves: excludedMoves,
+              title: 'Excluded',
+              subtitle: 'Workouts cannot include these moves',
+              updateMoves: (moves) => context
+                  .read<WorkoutFiltersBloc>()
+                  .updateFilters(
+                      {'excludedMoves': moves.map((m) => m.toJson()).toList()}),
+            ),
           ),
         ],
       ),

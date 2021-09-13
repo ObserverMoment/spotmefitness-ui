@@ -1,6 +1,8 @@
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 
 class DataUtils {
   /// Receives any list of bodyAreaMove scores and returns a new list.
@@ -39,22 +41,6 @@ class DataUtils {
     }
   }
 
-  /// Used when creating a log.
-  static Duration calculateTimedLoggedSectionDuration(
-      LoggedWorkoutSection loggedWorkoutSection) {
-    switch (loggedWorkoutSection.workoutSectionType.name) {
-      case kHIITCircuitName:
-      case kEMOMName:
-      case kTabataName:
-        return Duration(
-            milliseconds: loggedWorkoutSection.loggedWorkoutSets
-                .sumBy((s) => s.duration! * 1000));
-      default:
-        throw Exception(
-            'DataUtils.calculateTimedSectionDuration: ${loggedWorkoutSection.workoutSectionType.name} is not a timed workout type - so a duration cannot be calculated.');
-    }
-  }
-
   static int workoutMoveTimeRepsInSeconds(WorkoutMove workoutMove) {
     switch (workoutMove.timeUnit) {
       case TimeUnit.hours:
@@ -71,61 +57,28 @@ class DataUtils {
 
   /// Time and distance moves: a workoutMove counts as one 'rep'.
   /// E.g. 10mtr row would be 1 rep. 10 seconds hang hold would be one rep.
-  static int totalRepsInSection<T>(T section) {
-    assert(section is WorkoutSection || section is LoggedWorkoutSection,
-        'DataUtils.totalRepsPerSectionRound: section must (currently) be WorkoutSection or LoggedWorkoutSection.');
-    if (section is WorkoutSection) {
-      return section.workoutSets.fold(0, (sectionAcum, nextSet) {
-        return sectionAcum +
-            nextSet.rounds *
-                nextSet.workoutMoves.fold(0, (setAcum, nextMove) {
-                  if ([
-                    WorkoutMoveRepType.time,
-                    WorkoutMoveRepType.distance,
-                    WorkoutMoveRepType.artemisUnknown
-                  ].contains(nextMove.repType)) {
-                    return setAcum + 1;
-                  } else {
-                    return setAcum + nextMove.reps.round();
-                  }
-                });
-      });
-    } else {
-      return (section as LoggedWorkoutSection).loggedWorkoutSets.fold(0,
-          (sectionAcum, nextSet) {
-        return sectionAcum +
-            nextSet.roundsCompleted *
-                nextSet.loggedWorkoutMoves.fold(0, (setAcum, nextMove) {
-                  if ([
-                    WorkoutMoveRepType.time,
-                    WorkoutMoveRepType.distance,
-                    WorkoutMoveRepType.artemisUnknown
-                  ].contains(nextMove.repType)) {
-                    return setAcum + 1;
-                  } else {
-                    return setAcum + nextMove.reps.round();
-                  }
-                });
-      });
-    }
+  static int totalRepsInSection(WorkoutSection section) {
+    return section.workoutSets.fold(0, (sectionAcum, nextSet) {
+      return sectionAcum +
+          nextSet.rounds *
+              nextSet.workoutMoves.fold(0, (setAcum, nextMove) {
+                if ([
+                  WorkoutMoveRepType.time,
+                  WorkoutMoveRepType.distance,
+                  WorkoutMoveRepType.artemisUnknown
+                ].contains(nextMove.repType)) {
+                  return setAcum + 1;
+                } else {
+                  return setAcum + nextMove.reps.round();
+                }
+              });
+    });
   }
 
   static List<BodyArea> bodyAreasInWorkoutSection(WorkoutSection section) {
     List<BodyArea> bodyAreas = [];
     for (final s in section.workoutSets) {
       for (final m in s.workoutMoves) {
-        bodyAreas.addAll(
-            m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
-      }
-    }
-    return bodyAreas;
-  }
-
-  static List<BodyArea> bodyAreasInLoggedWorkoutSection(
-      LoggedWorkoutSection section) {
-    List<BodyArea> bodyAreas = [];
-    for (final s in section.loggedWorkoutSets) {
-      for (final m in s.loggedWorkoutMoves) {
         bodyAreas.addAll(
             m.move.bodyAreaMoveScores.map((bams) => bams.bodyArea).toList());
       }
@@ -150,6 +103,22 @@ class DataUtils {
 
       return map;
     });
+  }
+
+  static String buildBenchmarkEntryScoreText(
+      UserBenchmark benchmark, UserBenchmarkEntry entry) {
+    switch (benchmark.benchmarkType) {
+      case BenchmarkType.maxload:
+        return '${entry.score.stringMyDouble()}${benchmark.loadUnit.display}';
+      case BenchmarkType.fastesttime:
+      case BenchmarkType.unbrokentime:
+        return Duration(seconds: entry.score.round()).compactDisplay();
+      case BenchmarkType.amrap:
+      case BenchmarkType.unbrokenreps:
+        return '${entry.score.stringMyDouble()} reps';
+      default:
+        return entry.score.stringMyDouble();
+    }
   }
 
   /// 0 = true / yes
