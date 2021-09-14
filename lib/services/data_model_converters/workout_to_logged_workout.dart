@@ -1,43 +1,98 @@
+import 'package:flutter/foundation.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
-import 'package:uuid/uuid.dart';
 
-// /// Converts a workout to a logged workout by first converting each workout section to a logged workout section. The process of doing this depends on the type of workout section.
+// /// Converts a workout to a logged workout.
 LoggedWorkout workoutToLoggedWorkout(
-    {Workout? workout, ScheduledWorkout? scheduledWorkout}) {
-  final name = Utils.textNotNull(workout?.name)
-      ? 'Log - ${workout?.name}'
+    {required Workout workout, ScheduledWorkout? scheduledWorkout}) {
+  final name = Utils.textNotNull(workout.name)
+      ? 'Log - ${workout.name}'
       : 'Log - ${DateTime.now().dateString}';
   return LoggedWorkout()
-    ..id = 'temp - $name'
+    ..id = workout.id // Temp ID matches the workout
     ..completedOn = scheduledWorkout?.scheduledAt ?? DateTime.now()
-    ..loggedWorkoutSections = workout != null
-        ? workoutSectionsToLoggedWorkoutSections(workout.workoutSections)
-            .sortedBy<num>((ws) => ws.sortPosition)
-        : []
-    ..gymProfile = scheduledWorkout?.gymProfile
     ..note = scheduledWorkout?.note
-    ..name = name;
-}
-
-List<LoggedWorkoutSection> workoutSectionsToLoggedWorkoutSections(
-    List<WorkoutSection> workoutSections) {
-  return workoutSections
-      .sortedBy<num>((ws) => ws.sortPosition)
-      .map((ws) => workoutSectionToLoggedWorkoutSection(ws))
-      .toList();
+    ..name = name
+    ..gymProfile = scheduledWorkout?.gymProfile
+    ..loggedWorkoutSections = []
+    ..workoutGoals = workout.workoutGoals;
 }
 
 LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
-    WorkoutSection workoutSection) {
-  final uuid = Uuid();
+    {required WorkoutSection workoutSection,
+    int? repScore,
+    int? timeTakenSeconds}) {
+  final calcedTimeTaken = workoutSection.timecapIfValid;
+
+  if (calcedTimeTaken == null && timeTakenSeconds == null) {
+    throw Exception(
+        'Either [calcedTimeTaken] or [timeTakenSeconds] (usually from a user input are required to be non null when creating a [LoggedWorkoutSection]');
+  }
+
   return LoggedWorkoutSection()
-    ..id = 'temp - LoggedWorkoutSection:${uuid.v1()}'
+    ..id = workoutSection.id // Temp ID matches the workoutSection
     ..name = workoutSection.name
-    ..timecap = workoutSection.timecap
+    ..repScore = repScore
+    // Only set the timecap for AMRAPS. Needs review.
+    ..timecap = workoutSection.workoutSectionType.name == kAMRAPName
+        ? workoutSection.timecap
+        : null
     ..sortPosition = workoutSection.sortPosition
-    ..workoutSectionType =
-        WorkoutSectionType.fromJson(workoutSection.workoutSectionType.toJson());
+    ..timeTakenSeconds = workoutSection.timecapIfValid ?? timeTakenSeconds!
+    ..workoutSectionType = workoutSection.workoutSectionType
+    ..bodyAreas = workoutSection.uniqueBodyAreas
+    ..moveTypes = workoutSection.uniqueMoveTypes
+    ..loggedWorkoutSectionData =
+        loggedWorkoutSectionDataFromWorkoutSection(workoutSection);
 }
+
+LoggedWorkoutSectionData loggedWorkoutSectionDataFromWorkoutSection(
+    WorkoutSection workoutSection) {
+  final rounds = List.generate(
+      workoutSection.rounds,
+      (index) => WorkoutSectionRoundData()
+        ..timeTakenSeconds = workoutSection.timecapIfValid ?? 0
+        ..sets = workoutSection.workoutSets
+            .map((wSet) => List.generate(
+                wSet.rounds,
+                (_) => WorkoutSectionRoundSetData()
+                  ..moves = generateMovesList(wSet)
+                  ..timeTakenSeconds = workoutSetDurationOrNull(
+                          workoutSection.workoutSectionType, wSet) ??
+                      0))
+            .expand((x) => x)
+            .toList()
+            .toList());
+
+  return LoggedWorkoutSectionData()..rounds = rounds;
+}
+
+String generateMovesList(WorkoutSet workoutSet) => workoutSet.workoutMoves
+    .map((wm) => generateWorkoutMoveString(wm))
+    .join(',');
+
+String generateWorkoutMoveString(WorkoutMove workoutMove) =>
+    '${generateRepString(workoutMove)} ${workoutMove.move.name} ${generateLoadString(workoutMove)}';
+
+/// Very simlar to the [WorkoutMoveDisplay] widget.
+String generateRepString(
+  WorkoutMove workoutMove,
+) {
+  final repUnit = workoutMove.repType == WorkoutMoveRepType.time
+      ? workoutMove.timeUnit.shortDisplay
+      : workoutMove.repType == WorkoutMoveRepType.distance
+          ? workoutMove.distanceUnit.shortDisplay
+          : '';
+
+  return '${workoutMove.reps.stringMyDouble()} $repUnit';
+}
+
+String generateLoadString(WorkoutMove workoutMove) =>
+    '(${workoutMove.loadAmount.stringMyDouble()} ${workoutMove.loadUnit.display})';
+
+int? workoutSetDurationOrNull(WorkoutSectionType type, WorkoutSet workoutSet) =>
+    type.isTimed ? workoutSet.duration : null;

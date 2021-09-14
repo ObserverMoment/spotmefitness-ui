@@ -8,8 +8,9 @@ import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/round_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker_archived.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -219,13 +220,12 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
                         ),
                       if (_workoutSection.isAMRAP)
                         ContentBox(
-                          child: TimecapPicker(
-                            allowNoTimecap:
-                                _workoutSection.workoutSectionType.name !=
-                                    kAMRAPName,
-                            timecap: Duration(seconds: _workoutSection.timecap),
-                            saveTimecap: (duration) => _updateWorkoutSection(
-                                {'timecap': duration?.inSeconds}),
+                          child: DurationPickerDisplay(
+                            modalTitle: 'AMRAP Timecap',
+                            duration:
+                                Duration(seconds: _workoutSection.timecap),
+                            updateDuration: (duration) => _updateWorkoutSection(
+                                {'timecap': duration.inSeconds}),
                           ),
                         ),
                     ],

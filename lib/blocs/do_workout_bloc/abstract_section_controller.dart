@@ -45,7 +45,8 @@ abstract class WorkoutSectionController {
     numberSetsPerSection = sortedWorkoutSets.length;
 
     /// LoggedWorkout section with empty loggedWorkoutSets list to be added to as the workout progresses.
-    loggedWorkoutSection = workoutSectionToLoggedWorkoutSection(workoutSection);
+    loggedWorkoutSection =
+        workoutSectionToLoggedWorkoutSection(workoutSection: workoutSection);
 
     state = WorkoutSectionProgressState(workoutSection);
     progressStateController.add(state);

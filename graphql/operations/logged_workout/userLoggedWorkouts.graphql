@@ -21,14 +21,12 @@ query userLoggedWorkouts($take: Int) {
       MoveTypes {
         ...MoveType
       }
-      workoutSectionData {
+      loggedWorkoutSectionData {
         rounds {
           timeTakenSeconds
           sets {
             timeTakenSeconds
-            move
-            load
-            quantity
+            moves
           }
         }
       }

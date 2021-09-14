@@ -8,7 +8,8 @@ class WorkoutSectionProgressState {
   int currentSectionRound = 0;
   int currentSetIndex = 0;
 
-  WorkoutSectionData workoutSectionData = WorkoutSectionData()..rounds = [];
+  LoggedWorkoutSectionData workoutSectionData = LoggedWorkoutSectionData()
+    ..rounds = [];
 
   /// Used for timed workouts or timecaps.
   /// Can be the next set or the end of the section, depending on the section type.

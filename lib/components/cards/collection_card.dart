@@ -13,11 +13,12 @@ class CollectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final planWithImage = collection.workoutPlans
-        .firstWhereOrNull((wp) => wp.coverImageUri != null);
+        .firstWhereOrNull((wp) => Utils.textNotNull(wp.coverImageUri));
 
     final workoutWithImage = planWithImage != null
         ? null
-        : collection.workouts.firstWhereOrNull((w) => w.coverImageUri != null);
+        : collection.workouts
+            .firstWhereOrNull((w) => Utils.textNotNull(w.coverImageUri));
 
     final selectedImageUri = planWithImage != null
         ? planWithImage.coverImageUri

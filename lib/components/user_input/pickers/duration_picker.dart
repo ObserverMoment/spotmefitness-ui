@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/icons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/cupertino_switch_row.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/close_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/save_and_close_picker.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
@@ -14,20 +14,21 @@ class DurationPickerDisplay extends StatelessWidget {
   DurationPickerDisplay(
       {required this.updateDuration,
       this.duration,
-      this.modalTitle = 'Enter duration'});
+      this.modalTitle = 'Enter Duration'});
 
   @override
   Widget build(BuildContext context) {
-    return BorderButton(
-      mini: true,
-      text: duration != null ? duration!.compactDisplay() : 'Duration...',
-      prefix: Icon(CupertinoIcons.stopwatch, size: 18),
-      onPressed: () => context.showBottomSheet(
+    return CupertinoButton(
+      onPressed: () => context.showActionSheetPopup(
           child: DurationPicker(
         duration: duration,
         updateDuration: updateDuration,
         title: modalTitle,
       )),
+      padding: const EdgeInsets.all(8),
+      child: CompactTimerIcon(
+        duration,
+      ),
     );
   }
 }
@@ -47,15 +48,14 @@ class DurationPickerRowDisplay extends StatelessWidget {
         children: [
           CupertinoButton(
             padding: EdgeInsets.zero,
-            onPressed: () => context.showBottomSheet(
-                expand: false,
+            onPressed: () => context.showActionSheetPopup(
                 child: DurationPicker(
-                  duration: duration,
-                  mode: CupertinoTimerPickerMode.hm,
-                  minuteInterval: 5,
-                  updateDuration: updateDuration,
-                  title: 'Workout Duration',
-                )),
+              duration: duration,
+              mode: CupertinoTimerPickerMode.hm,
+              minuteInterval: 5,
+              updateDuration: updateDuration,
+              title: 'Workout Duration',
+            )),
             child: Row(
               children: [
                 Padding(
@@ -155,10 +155,6 @@ class _WorkoutSetDurationPickerState extends State<WorkoutSetDurationPicker> {
               child: H2(widget.title!),
             ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClosePicker(onClose: _saveAndClose),
-          ),
-          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: CupertinoSwitchRow(
                 title: widget.switchTitle,
@@ -175,6 +171,7 @@ class _WorkoutSetDurationPickerState extends State<WorkoutSetDurationPicker> {
                 onTimerDurationChanged: (duration) =>
                     setState(() => _activeDuration = duration)),
           ),
+          SaveAndClosePicker(saveAndClose: _saveAndClose)
         ],
       ),
     );
@@ -218,20 +215,17 @@ class _DurationPickerState extends State<DurationPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 32.0),
+    return Container(
+      height: 400,
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.title != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: H2(widget.title!),
+              child: H2(widget.title!.toUpperCase()),
             ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClosePicker(onClose: _saveAndClose),
-          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CupertinoTimerPicker(
@@ -242,6 +236,7 @@ class _DurationPickerState extends State<DurationPicker> {
                 onTimerDurationChanged: (duration) =>
                     setState(() => _activeDuration = duration)),
           ),
+          SaveAndClosePicker(saveAndClose: _saveAndClose)
         ],
       ),
     );

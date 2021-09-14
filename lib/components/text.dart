@@ -264,12 +264,24 @@ class LeadingNavBarTitle extends StatelessWidget {
   }
 }
 
-/// Displays '(required)' in super text pos and style. For inputs.
-class RequiredSuperText extends StatelessWidget {
+/// Displays a widget up and to the right of normal text position. i.e super.
+class SuperText extends StatelessWidget {
+  final Widget child;
+  const SuperText({required this.child});
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
       offset: const Offset(0, -8),
+      child: child,
+    );
+  }
+}
+
+/// Displays '(required)' in super text pos and style. For inputs.
+class RequiredSuperText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SuperText(
       child: Icon(
         CupertinoIcons.exclamationmark_circle_fill,
         size: 14,

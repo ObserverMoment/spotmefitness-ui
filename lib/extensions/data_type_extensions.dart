@@ -1,3 +1,4 @@
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
@@ -60,6 +61,24 @@ extension WorkoutSectionExtension on WorkoutSection {
   bool get roundsInputAllowed =>
       ![kAMRAPName, kFreeSessionName].contains(this.workoutSectionType.name);
 
+  List<BodyArea> get uniqueBodyAreas {
+    final Set<BodyArea> sectionBodyAreas =
+        this.workoutSets.fold({}, (acum1, workoutSet) {
+      final Set<BodyArea> setBodyAreas =
+          workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
+        acum2.addAll(
+            workoutMove.move.bodyAreaMoveScores.map((bams) => bams.bodyArea));
+        return acum2;
+      });
+
+      acum1.addAll(setBodyAreas);
+
+      return acum1;
+    });
+
+    return sectionBodyAreas.toList();
+  }
+
   /// Retuns all the equipment needed for completing the section and also removes [bodyweight] if present.
   List<Equipment> get uniqueEquipments {
     final Set<Equipment> sectionEquipments =
@@ -117,6 +136,23 @@ extension WorkoutSectionExtension on WorkoutSection {
     return sectionEquipmentsWithLoad
         .where((e) => e.equipment.id != kBodyweightEquipmentId)
         .toList();
+  }
+
+  List<MoveType> get uniqueMoveTypes {
+    final Set<MoveType> sectionMoveTypes =
+        this.workoutSets.fold({}, (acum1, workoutSet) {
+      final Set<MoveType> setMoveTypes =
+          workoutSet.workoutMoves.fold({}, (acum2, workoutMove) {
+        acum2.add(workoutMove.move.moveType);
+        return acum2;
+      });
+
+      acum1.addAll(setMoveTypes);
+
+      return acum1;
+    });
+
+    return sectionMoveTypes.toList();
   }
 }
 

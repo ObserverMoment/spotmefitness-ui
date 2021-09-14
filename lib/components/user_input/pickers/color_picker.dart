@@ -3,6 +3,8 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/modal_picker_title.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/save_and_close_picker.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class GoalTagsColorSwatch {
@@ -34,17 +36,15 @@ Future<void> openColorPickerDialog(
     Color? initialColor,
     String title = 'Select a color',
     required void Function(Color color) onSave}) async {
-  context.showBottomSheet(
-      expand: false,
-      useRootNavigator: false,
+  context.showActionSheetPopup(
       child: MyColorPicker(
-        title: title,
-        onCancel: context.pop,
-        onSave: (Color color) {
-          onSave(color);
-          context.pop();
-        },
-      ));
+    title: title,
+    onCancel: context.pop,
+    onSave: (Color color) {
+      onSave(color);
+      context.pop();
+    },
+  ));
 }
 
 class MyColorPicker extends StatefulWidget {
@@ -55,7 +55,7 @@ class MyColorPicker extends StatefulWidget {
   MyColorPicker(
       {required this.onSave,
       required this.onCancel,
-      this.title = 'Select a color',
+      this.title = 'Select a Color',
       this.initialColor});
 
   @override
@@ -74,43 +74,12 @@ class _MyColorPickerState extends State<MyColorPicker> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Padding(
+        child: Container(
+      height: 540,
       padding: const EdgeInsets.all(8.0),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              H3(widget.title),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (_activeColor != null)
-                    FadeIn(
-                      child: CupertinoButton(
-                          onPressed: () => widget.onSave(_activeColor!),
-                          child: Icon(
-                            CupertinoIcons.checkmark_alt,
-                            size: 32,
-                          )),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: CupertinoButton(
-                        onPressed: widget.onCancel,
-                        child: Icon(
-                          CupertinoIcons.clear_thick,
-                          size: 28,
-                        )),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
+        ModalPickerTitle(title: widget.title),
         Card(
-          backgroundColor: Styles.white,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: GridView.count(
@@ -149,7 +118,12 @@ class _MyColorPickerState extends State<MyColorPicker> {
             ),
           ),
         ),
-        SizedBox(height: 48)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: SaveAndClosePicker(
+              disabled: _activeColor == null,
+              saveAndClose: () => widget.onSave(_activeColor!)),
+        ),
       ]),
     ));
   }

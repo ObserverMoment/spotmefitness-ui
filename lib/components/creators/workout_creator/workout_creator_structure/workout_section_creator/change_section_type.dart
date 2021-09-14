@@ -3,7 +3,8 @@ import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker_archived.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -42,17 +43,13 @@ class _ChangeSectionTypeState extends State<ChangeSectionType> {
   }
 
   void _openTimecapPicker() {
-    context.showBottomSheet(
-        showDragHandle: false,
-        expand: false,
-        child: TimecapPopup(
-            timecap: Duration(seconds: _workoutSection.timecap),
-            allowNoTimecap: false,
+    context.showActionSheetPopup(
+        child: DurationPicker(
+            duration: Duration(seconds: _workoutSection.timecap),
             title: 'AMRAP in how long?',
-            saveTimecap: (timecap) {
-              if (timecap != null) {
-                _workoutSection.timecap = timecap.inSeconds;
-              }
+            mode: CupertinoTimerPickerMode.hm,
+            updateDuration: (timecap) {
+              _workoutSection.timecap = timecap.inSeconds;
               setState(() {});
             }));
   }

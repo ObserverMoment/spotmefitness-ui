@@ -19,7 +19,10 @@ class CompactTimerIcon extends StatelessWidget {
   CompactTimerIcon(this.duration);
 
   List<Widget> _buildChildren() => [
-        Icon(CupertinoIcons.timer),
+        Icon(
+          CupertinoIcons.timer,
+          size: 20,
+        ),
         SizedBox(width: 8),
         MyText(
           duration?.displayString ?? '---',

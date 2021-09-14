@@ -216,7 +216,7 @@ input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   sortPosition: Int!
   repScore: Int
   timeTakenSeconds: Int!
-  workoutSectionData: WorkoutSectionDataInput!
+  loggedWorkoutSectionData: LoggedWorkoutSectionDataInput!
   WorkoutSectionType: ConnectRelationInput!
   BodyAreas: [ConnectRelationInput!]!
   MoveTypes: [ConnectRelationInput!]!
@@ -528,11 +528,19 @@ type LoggedWorkoutSection {
   sortPosition: Int!
   timeTakenSeconds: Int!
   repScore: Int
-  workoutSectionData: WorkoutSectionData
+  loggedWorkoutSectionData: LoggedWorkoutSectionData
   BodyAreas: [BodyArea!]!
   WorkoutSectionType: WorkoutSectionType!
   MoveTypes: [MoveType!]!
   LoggedWorkout: LoggedWorkout!
+}
+
+type LoggedWorkoutSectionData {
+  rounds: [WorkoutSectionRoundData!]!
+}
+
+input LoggedWorkoutSectionDataInput {
+  rounds: [WorkoutSectionRoundDataInput!]!
 }
 
 type Move {
@@ -936,7 +944,7 @@ input UpdateLoggedWorkoutSectionInput {
   note: String
   timeTakenSeconds: Int
   repScore: Int
-  workoutSectionData: WorkoutSectionDataInput
+  loggedWorkoutSectionData: LoggedWorkoutSectionDataInput
 }
 
 input UpdateMoveInput {
@@ -1411,14 +1419,6 @@ type WorkoutSection {
   WorkoutSets: [WorkoutSet!]!
 }
 
-type WorkoutSectionData {
-  rounds: [WorkoutSectionRoundData!]!
-}
-
-input WorkoutSectionDataInput {
-  rounds: [WorkoutSectionRoundDataInput!]!
-}
-
 type WorkoutSectionRoundData {
   timeTakenSeconds: Int!
   sets: [WorkoutSectionRoundSetData!]!
@@ -1431,16 +1431,12 @@ input WorkoutSectionRoundDataInput {
 
 type WorkoutSectionRoundSetData {
   timeTakenSeconds: Int!
-  move: String!
-  load: String
-  quantity: String!
+  moves: String!
 }
 
 input WorkoutSectionRoundSetDataInput {
   timeTakenSeconds: Int!
-  move: String!
-  load: String
-  quantity: String!
+  moves: String!
 }
 
 type WorkoutSectionSummary {

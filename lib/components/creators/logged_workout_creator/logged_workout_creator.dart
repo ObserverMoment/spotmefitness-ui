@@ -1,18 +1,15 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc_archived.dart';
+import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_meta.dart';
-import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_section.dart';
+import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_with_sections.dart';
+import 'package:spotmefitness_ui/components/creators/logged_workout_creator/required_user_inputs.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/navigation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 
 class LoggedWorkoutCreatorPage extends StatefulWidget {
   final Workout workout;
@@ -25,120 +22,81 @@ class LoggedWorkoutCreatorPage extends StatefulWidget {
 }
 
 class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
-  int _activeTabIndex = 0;
-  final PageController _pageController = PageController();
+  Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
+    context.showLoadingAlert('Logging...',
+        icon: Icon(
+          CupertinoIcons.doc_plaintext,
+          color: Styles.infoBlue,
+        ));
 
-  void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
-    Utils.hideKeyboard(context);
-    setState(() => _activeTabIndex = index);
+    final result = await bloc.createAndSave(context);
+
+    context.pop(); // Close loading alert.
+
+    if (result.hasErrors) {
+      context
+          .showErrorAlert('Sorry, there was a problem logging this workout!');
+    } else {
+      await context.showSuccessAlert(
+        'Workout Logged!',
+        'You can go to Progress > Logs to view it.',
+      );
+      context.pop(result: true); // Close the logged workout creator.
+    }
   }
 
-  // Future<void> _saveLogToDB(LoggedWorkoutCreatorBloc bloc) async {
-  //   context.showLoadingAlert('Logging...',
-  //       icon: Icon(
-  //         CupertinoIcons.doc_plaintext,
-  //         color: Styles.infoBlue,
-  //       ));
-
-  //   final result = await bloc.createAndSave(context);
-
-  //   context.pop(); // Close loading alert.
-
-  //   if (result.hasErrors) {
-  //     context
-  //         .showErrorAlert('Sorry, there was a problem logging this workout!');
-  //   } else {
-  //     await context.showSuccessAlert(
-  //       'Workout Logged!',
-  //       'You can go to Progress > Logs to view it.',
-  //     );
-  //     context.pop(result: true); // Close the logged workout creator.
-  //   }
-  // }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  void _handleCancel() {
+    context.showConfirmDialog(
+        title: 'Leave without Saving?',
+        onConfirm: () => context.pop(result: false));
   }
 
   @override
   Widget build(BuildContext context) {
-    return MyText('Logged Workout Creator Page');
-    // return ChangeNotifierProvider(
-    //   create: (context) => LoggedWorkoutCreatorBloc(
-    //       context: context,
-    //       workout: widget.workout,
-    //       scheduledWorkout: widget.scheduledWorkout),
-    //   builder: (context, child) {
-    //     final loggedWorkoutSections = context
-    //         .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-    //             (b) => b.loggedWorkout.loggedWorkoutSections);
+    return ChangeNotifierProvider(
+      create: (context) => LoggedWorkoutCreatorBloc(
+          context: context,
+          workout: widget.workout,
+          scheduledWorkout: widget.scheduledWorkout),
+      builder: (context, child) {
+        final requireUserInputs =
+            context.select<LoggedWorkoutCreatorBloc, bool>(
+                (b) => b.loggedWorkout.loggedWorkoutSections.isEmpty);
 
-    //     final includedSectionIds =
-    //         context.select<LoggedWorkoutCreatorBloc, List<String>>(
-    //             (b) => b.includedSectionIds);
+        final workoutSections =
+            context.select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
+                (b) => b.workout.workoutSections);
 
-    //     final includedSections = loggedWorkoutSections
-    //         .where((s) => includedSectionIds.contains(s.id))
-    //         .sortedBy<num>((s) => s.sortPosition);
-
-    //     return MyPageScaffold(
-    //         navigationBar: MyNavBar(
-    //           customLeading:
-    //               NavBarCancelButton(() => context.pop(result: false)),
-    //           middle: NavBarTitle('Log Workout'),
-    //           trailing: includedSections.isNotEmpty
-    //               ? NavBarSaveButton(
-    //                   () => _saveLogToDB(
-    //                       context.read<LoggedWorkoutCreatorBloc>()),
-    //                   text: 'Log It',
-    //                 )
-    //               : null,
-    //         ),
-    //         child: Column(
-    //           children: [
-    //             SizedBox(
-    //               height: 8,
-    //             ),
-    //             MyTabBarNav(
-    //                 titles: [
-    //                   'Overview',
-    //                   ...includedSections
-    //                       .map((s) => Utils.textNotNull(s.name)
-    //                           ? s.name!
-    //                           : s.workoutSectionType.name)
-    //                       .toList()
-    //                 ],
-    //                 handleTabChange: _changeTab,
-    //                 activeTabIndex: _activeTabIndex),
-    //             Expanded(
-    //                 child: Padding(
-    //               padding: const EdgeInsets.symmetric(vertical: 8.0),
-    //               child: PageView(
-    //                 physics: NeverScrollableScrollPhysics(),
-    //                 controller: _pageController,
-    //                 onPageChanged: _changeTab,
-    //                 children: [
-    //                   Padding(
-    //                     padding: const EdgeInsets.all(8.0),
-    //                     child: LoggedWorkoutCreatorMeta(),
-    //                   ),
-    //                   ...includedSections
-    //                       .map((section) => LoggedWorkoutCreatorSection(
-    //                             section.sortPosition,
-    //                             showLapTimesButton: true,
-    //                           ))
-    //                       .toList()
-    //                 ],
-    //               ),
-    //             )),
-    //           ],
-    //         ));
-    //   },
-    // );
+        return MyPageScaffold(
+            navigationBar: MyNavBar(
+              customLeading: NavBarCancelButton(_handleCancel),
+              middle: NavBarTitle('Log Workout'),
+              trailing: !requireUserInputs
+                  ? NavBarSaveButton(
+                      () => _saveLogToDB(
+                          context.read<LoggedWorkoutCreatorBloc>()),
+                      text: 'Log It',
+                    )
+                  : null,
+            ),
+            child: Column(
+              children: [
+                UserInputContainer(
+                  child: H3(widget.workout.name),
+                ),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: kStandardAnimationDuration,
+                    child: requireUserInputs
+                        ? RequiredUserInputs(
+                            workoutSections: workoutSections,
+                          )
+                        : LoggedWorkoutCreatorWithSections(),
+                  ),
+                ),
+              ],
+            ));
+      },
+    );
   }
 }

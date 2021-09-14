@@ -1,115 +1,105 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/model/enum.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
-/// Can either create a new logged workout or edit (in real time) an already existing one.
-/// Create: The full object is constructed on the client and then saved as a whole to the API when the user is done.
-/// Edit: Edits are made and saved to the API in real time incrementally, then the client side store is updated once when the user is done. (Similar to the workout creator bloc).
+class WorkoutSectionWithInput {
+  WorkoutSection workoutSection;
+  // Will be either reps (repScore) or time in seconds (timeTakenSeconds)
+  // When none of these are null the user can proceed and we can generate the full list of loggedWorkoutSections.
+  int? input;
+  WorkoutSectionWithInput({required this.workoutSection, this.input});
+}
+
+/// This is only for CREATING a LoggedWorkout from a Workout.
+/// Editing is more basic and is handled by the LoggedWorkoutDetails page (as of sept 2021).
+/// LoggedWorkout is saved to teh API at the end of the flow, not incrementally.
 class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   final BuildContext context;
 
-  final Workout? workout;
+  final Workout workout;
   final ScheduledWorkout? scheduledWorkout;
-  final LoggedWorkout? initialLoggedWorkout;
 
+  final List<String> typesInputRequired = [
+    kFreeSessionName,
+    kForTimeName,
+    kAMRAPName
+  ];
   late LoggedWorkout loggedWorkout;
-  late Map<String, dynamic> _backupJson;
-  List<String> includedSectionIds = [];
-
-  /// When [creating] the initial log - nothing is saved to the API until the end of the flow and the user hits save.
-  /// When [editing]:
-  ///  - Log: Edits are saved to the DB immediately (optimistically to local UI state, then to the API). The global store is written after the API has returned.
-  late bool _isEditing;
 
   LoggedWorkoutCreatorBloc(
-      {required this.context,
-      this.initialLoggedWorkout,
-      this.workout,
-      this.scheduledWorkout})
-      : assert(workout != null || initialLoggedWorkout != null,
-            'Must provide either a workout (to create a logged workout from) or a loggedWorkout (to edit)') {
-    if (initialLoggedWorkout != null) {
-      _isEditing = true;
-      loggedWorkout = LoggedWorkout.fromJson(initialLoggedWorkout!.toJson());
-    } else {
-      _isEditing = false;
-      loggedWorkout = workoutToLoggedWorkout(
-          workout: workout, scheduledWorkout: scheduledWorkout);
+      {required this.context, required this.workout, this.scheduledWorkout}) {
+    loggedWorkout = workoutToLoggedWorkout(
+        workout: workout, scheduledWorkout: scheduledWorkout);
+
+    /// Are there any sections that required inputs from the user?
+    /// i.e. FreeSession - timeTaken
+    /// i.e. AMRAP - repScore
+    /// i.e. ForTIme - timeTaken
+    /// If not then go ahead and form the loggedWorkoutSections.
+    /// Otherwise do not.
+    if (workout.workoutSections
+        .none((w) => typesInputRequired.contains(w.workoutSectionType.name))) {
+      loggedWorkout.loggedWorkoutSections = workout.workoutSections
+          .map((ws) => workoutSectionToLoggedWorkoutSection(workoutSection: ws))
+          .toList();
     }
-
-    // Make sure the sections are correctly ordered.
-    loggedWorkout.loggedWorkoutSections.sortBy<num>((s) => s.sortPosition);
-
-    _backupJson = loggedWorkout.toJson();
   }
 
-  bool showFullSetInfo = true;
+  /// From workout sections plus their inputs - inputted by the user.
+  /// Do not sun this before the user has added reps and timeTakenSeconds to AMRAP, ForTime and FreeSession sections.
+  void generateLoggedWorkoutSections(
+      List<WorkoutSectionWithInput> sectionsWithInputs) {
+    loggedWorkout.loggedWorkoutSections = workout.workoutSections
+        .sortedBy<num>((ws) => ws.sortPosition)
+        .map((ws) {
+      if (ws.workoutSectionType.name == kAMRAPName) {
+        // Get the value from the inputs
+        final s =
+            sectionsWithInputs.firstWhere((s) => ws.id == s.workoutSection.id);
+        return workoutSectionToLoggedWorkoutSection(
+            workoutSection: ws, repScore: s.input);
+      } else if ([kFreeSessionName, kForTimeName]
+          .contains(ws.workoutSectionType.name)) {
+        // Get the value from the inputs
+        final s =
+            sectionsWithInputs.firstWhere((s) => ws.id == s.workoutSection.id);
+        return workoutSectionToLoggedWorkoutSection(
+            workoutSection: ws, timeTakenSeconds: s.input);
+      } else {
+        // Timed sections already have all the data needed to create a LoggedWorkoutSection
+        return workoutSectionToLoggedWorkoutSection(workoutSection: ws);
+      }
+    }).toList();
 
-  void _backup() {
-    _backupJson = loggedWorkout.toJson();
-  }
-
-  /// Called if there has been an error when updating to the API.
-  void _revertChanges({List<Object> errors = const []}) {
-    errors.forEach((e) {
-      print(e);
-    });
-    loggedWorkout = LoggedWorkout.fromJson(_backupJson);
     notifyListeners();
-    context.showToast(
-        message: 'There was a problem, changes not saved',
-        toastType: ToastType.destructive);
-  }
-
-  bool _checkApiResult(MutationResult result) {
-    if (result.hasErrors || result.data == null) {
-      _revertChanges(errors: result.errors!);
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  /// Writes all changes to the graphQLStore.
-  /// Via the normalized root object which is the LoggedWorkout.
-  /// At [LoggedWorkout:{loggedWorkout.id}].
-  /// Should only be run when user is editing the log, not when they are creating it.
-  bool writeAllChangesToStore() {
-    final success = context.graphQLStore.writeDataToStore(
-        data: loggedWorkout.toJson(),
-        broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery]);
-    return success;
   }
 
   Future<MutationResult> createAndSave(BuildContext context) async {
-    final log = LoggedWorkout.fromJson(loggedWorkout.toJson());
-
     /// Need to update the workout section indexes because the user may not have included all of the workout sections in the log.
-    _updateLoggedWorkoutSectionsSortPosition(log.loggedWorkoutSections);
+    _updateLoggedWorkoutSectionsSortPosition(
+        loggedWorkout.loggedWorkoutSections);
 
     final input = CreateLoggedWorkoutInput(
-      name: log.name,
-      note: log.note,
+      name: loggedWorkout.name,
+      note: loggedWorkout.note,
       scheduledWorkout: scheduledWorkout != null
           ? ConnectRelationInput(id: scheduledWorkout!.id)
           : null,
-      gymProfile: log.gymProfile != null
-          ? ConnectRelationInput(id: log.gymProfile!.id)
+      gymProfile: loggedWorkout.gymProfile != null
+          ? ConnectRelationInput(id: loggedWorkout.gymProfile!.id)
           : null,
 
       /// TODO
       workoutGoals: [],
-      completedOn: log.completedOn,
-      loggedWorkoutSections: log.loggedWorkoutSections
-          .where((s) => includedSectionIds.contains(s.id))
+      completedOn: loggedWorkout.completedOn,
+      loggedWorkoutSections: loggedWorkout.loggedWorkoutSections
           .sortedBy<num>((s) => s.sortPosition)
           .mapIndexed((index, section) =>
               CreateLoggedWorkoutSectionInLoggedWorkoutInput(
@@ -126,7 +116,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
                 timecap: section.timecap,
 
                 /// TODO
-                workoutSectionData: WorkoutSectionDataInput(rounds: []),
+                loggedWorkoutSectionData:
+                    LoggedWorkoutSectionDataInput(rounds: []),
                 workoutSectionType:
                     ConnectRelationInput(id: section.workoutSectionType.id),
               ))
@@ -150,175 +141,43 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     return result;
   }
 
-  void toggleIncludeSection(LoggedWorkoutSection loggedWorkoutSection) {
-    includedSectionIds =
-        includedSectionIds.toggleItem<String>(loggedWorkoutSection.id);
-    notifyListeners();
-  }
-
-  Future<void> updateGymProfile(GymProfile? profile) async {
-    _backup();
+  void updateGymProfile(GymProfile? profile) {
     loggedWorkout.gymProfile = profile;
     notifyListeners();
-
-    /// Save to API.
-    if (_isEditing) {
-      final variables = UpdateLoggedWorkoutArguments(
-          data: UpdateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
-
-      /// MEMO: Constructors such as [UpdateLoggedWorkoutInput] will pass null for anything that you don't specify. So either pass the full object or use [customVariablesMap] from [graphQLStore.mutate].
-      final result = await context.graphQLStore.mutate(
-        mutation: UpdateLoggedWorkoutMutation(variables: variables),
-        customVariablesMap: {
-          'data': {
-            'id': loggedWorkout.id,
-            'GymProfile': profile == null ? null : {'id': profile.id}
-          }
-        },
-        broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
-      );
-
-      _checkApiResult(result);
-    }
   }
 
-  Future<void> updateCompletedOn(DateTime completedOn) async {
-    _backup();
+  void updateCompletedOn(DateTime completedOn) {
     loggedWorkout.completedOn = completedOn;
     notifyListeners();
-
-    /// Save to API.
-    if (_isEditing) {
-      final variables = UpdateLoggedWorkoutArguments(
-          data: UpdateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
-
-      /// MEMO: Constructors such as [UpdateLoggedWorkoutInput] will pass null for anything that you don't specify. So either pass the full object or use [customVariablesMap] from [graphQLStore.mutate].
-      final result = await context.graphQLStore.mutate(
-        mutation: UpdateLoggedWorkoutMutation(variables: variables),
-        customVariablesMap: {
-          'data': {
-            'id': loggedWorkout.id,
-            'completedOn': completedOn.millisecondsSinceEpoch
-          }
-        },
-        broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
-      );
-
-      _checkApiResult(result);
-    }
   }
 
-  Future<void> updateNote(String note) async {
-    _backup();
+  void updateNote(String note) {
     loggedWorkout.note = note;
     notifyListeners();
-
-    /// Save to API.
-    if (_isEditing) {
-      final variables = UpdateLoggedWorkoutArguments(
-          data: UpdateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
-
-      /// MEMO: Constructors such as [UpdateLoggedWorkoutInput] will pass null for anything that you don't specify. So either pass the full object or use [customVariablesMap] from [graphQLStore.mutate].
-      final result = await context.graphQLStore.mutate(
-        mutation: UpdateLoggedWorkoutMutation(variables: variables),
-        customVariablesMap: {
-          'data': {'id': loggedWorkout.id, 'note': note}
-        },
-        broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
-      );
-
-      _checkApiResult(result);
-    }
   }
 
-  /// Section or Section Children Updates ////
-  /// In the case where user [_isEditing] ////
-  /// All of these updates run as follows. !!Except [deleteLoggedWorkoutSection]!!.
-  /// 0. Take backup of section before update.
-  /// 1. Update the bloc state and notifyListeners. [Stop here if !_isEditing]
-  /// 2. Update over network to API. Via [editLoggedWorkoutSection]
-  /// 3. Check that result has no errors.
-  /// 4. If no errors - return. [TODO - is this solid enough or do we need to overwrite bloc state agaiin with the returned data?]
-  /// 5. If errors - rollback changes and notify listeners.
-  /// NOTE: Do not write to store on any of these updates.
-  /// Write to store when the user closes the section editing screen.
-  ///
-  /// When updating "score" inputs (section reps, time, rounds) we check if the section is being included in the log via [includedSectionIds]. If the user is entering a score for this section then we can assume that they want to include it and so should update this automatically.
-
-  /// Also calls the API to update the DB.
-  /// Does not write to graphql store.
-  Future<void> editLoggedWorkoutSection(
-      int sectionIndex, Map<String, dynamic> data) async {
-    _backup();
-
-    final updated = LoggedWorkoutSection.fromJson({
-      ...loggedWorkout.loggedWorkoutSections[sectionIndex].toJson(),
-      ...data,
-    });
-
-    loggedWorkout.loggedWorkoutSections = loggedWorkout.loggedWorkoutSections
-        .mapIndexed((i, logSection) => i == sectionIndex ? updated : logSection)
-        .toList();
-
-    /// Add to included sections if not already there.
-    if (!includedSectionIds.contains(updated.id)) {
-      includedSectionIds.add(updated.id);
-    }
-
+  /// Section ////
+  void updateRepScore(int sectionIndex, int repScore) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson({...prev.toJson(), 'repScore': repScore});
     notifyListeners();
-
-    if (_isEditing) {
-      await apiUpdateLoggedWorkoutSection(
-          loggedWorkout.loggedWorkoutSections[sectionIndex]);
-    }
   }
 
-  Future<void> apiUpdateLoggedWorkoutSection(
-      LoggedWorkoutSection loggedWorkoutSection) async {
-    final variables = UpdateLoggedWorkoutSectionArguments(
-        data: UpdateLoggedWorkoutSectionInput.fromJson(
-            loggedWorkoutSection.toJson()));
-
-    final result = await context.graphQLStore.mutate(
-      mutation: UpdateLoggedWorkoutSectionMutation(variables: variables),
-      writeToStore: false,
-    );
-
-    _checkApiResult(result);
+  void updateTimeTakenSeconds(int sectionIndex, int timeTakenSeconds) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(
+            {...prev.toJson(), 'timeTakenSeconds': timeTakenSeconds});
+    notifyListeners();
   }
 
-  /// Only available when user is editing as logged workout, not when creating.
-  /// So [if (_isEditing)] check is not required before calling the network.
-  /// When creating use [includedSectionIds] to add / remove sections.
-  /// These deletes get written to the [graphQLStore] immediately that the API result confirms.
-  // Future<void> deleteLoggedWorkoutSection(int sectionIndex) async {
-  //   _backup();
-  //   final idToDelete = loggedWorkout.loggedWorkoutSections[sectionIndex].id;
-  //   loggedWorkout.loggedWorkoutSections.removeAt(sectionIndex);
-  //   notifyListeners();
-
-  //   /// Delete from DB.
-  //   /// Not using [graphQLStore.delete] as that is designed for deleting root objects that have been normalized.
-  //   final result = await context.graphQLStore.mutate(
-  //       writeToStore: false,
-  //       mutation: DeleteLoggedWorkoutSectionByIdMutation(
-  //           variables:
-  //               DeleteLoggedWorkoutSectionByIdArguments(id: idToDelete)));
-
-  //   /// Check the result.
-  //   if (!_checkApiResult(result) ||
-  //       idToDelete != result.data?.deleteLoggedWorkoutSectionById) {
-  //     _revertChanges(errors: result.errors!);
-  //   } else {
-  //     _updateLoggedWorkoutSectionsSortPosition(
-  //         loggedWorkout.loggedWorkoutSections);
-
-  //     /// Immediately update the client store with the updated log.
-  //     writeAllChangesToStore();
-  //   }
-  // }
+  void updateSectionData() {
+    print('updateSectionData');
+  }
 
   /// Internal: Client
+  /// Based on their position in the loggedWorkout.loggedWorkoutSections list.
   void _updateLoggedWorkoutSectionsSortPosition(
       List<LoggedWorkoutSection> loggedWorkoutSections) {
     loggedWorkoutSections.forEachIndexed((i, loggedWorkoutSection) {
@@ -327,7 +186,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
   }
 
   /// Static helpers and methods ///
-  /// Updates the client side store by adding the newly created workout log to the scheduled workout at [scheduledWorkout.loggedWorkoutId].
+  /// Updates the [client side GraphQLStore] by adding the newly created workout log to the scheduled workout at [scheduledWorkout.loggedWorkoutId].
+  /// The API will handle connecting the log to the scheduled workout in the DB.
   /// Meaning that the user's schedule will update and show the scheduled workout as completed.
   static void updateScheduleWithLoggedWorkout(BuildContext context,
       ScheduledWorkout scheduledWorkout, LoggedWorkout loggedWorkout) {

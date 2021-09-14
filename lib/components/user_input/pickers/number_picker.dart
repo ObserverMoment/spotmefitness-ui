@@ -4,14 +4,23 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input_modal.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+/// Has diverged (visually) from [NumberPickerDouble] below.
 class NumberPickerInt extends StatelessWidget {
   final int? number;
   final void Function(int value) saveValue;
   final String modalTitle;
+  final Color? contentBoxColor;
+  final FONTSIZE fontSize;
+  final Widget? prefix;
+  final Widget? suffix;
   NumberPickerInt(
       {required this.number,
       required this.saveValue,
-      this.modalTitle = 'How many?'});
+      this.modalTitle = 'How many?',
+      this.contentBoxColor,
+      this.fontSize = FONTSIZE.DISPLAY,
+      this.prefix,
+      this.suffix});
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +32,23 @@ class NumberPickerInt extends StatelessWidget {
         saveValue: (v) => saveValue(v),
         title: modalTitle,
       )),
-      child: ContentBox(
-        child: MyText(
-          number == null ? ' - ' : number.toString(),
-          size: FONTSIZE.DISPLAY,
-          weight: FontWeight.bold,
-        ),
+      child: Row(
+        children: [
+          if (prefix != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: prefix!,
+            ),
+          MyText(
+            number == null ? ' - ' : number.toString(),
+            size: fontSize,
+          ),
+          if (suffix != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: suffix!,
+            ),
+        ],
       ),
     );
   }
@@ -38,10 +58,12 @@ class NumberPickerDouble extends StatelessWidget {
   final double? number;
   final void Function(double value) saveValue;
   final String modalTitle;
+  final FONTSIZE fontSize;
   NumberPickerDouble(
       {required this.number,
       required this.saveValue,
-      this.modalTitle = 'How many?'});
+      this.modalTitle = 'How many?',
+      this.fontSize = FONTSIZE.DISPLAY});
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +78,7 @@ class NumberPickerDouble extends StatelessWidget {
       child: ContentBox(
         child: MyText(
           number == null ? ' - ' : number.toString(),
-          size: FONTSIZE.DISPLAY,
-          weight: FontWeight.bold,
+          size: fontSize,
         ),
       ),
     );

@@ -47,7 +47,7 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
           children: [
             UserInputContainer(
               child: TappableRow(
-                  onTap: () => context.showBottomSheet<int>(
+                  onTap: () => context.showActionSheetPopup(
                           child: NumberPickerModal(
                         initialValue: lengthWeeks,
                         min: 1,
@@ -70,18 +70,13 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
                         width: 8,
                       ),
                       MyText('weeks'),
-                      if (lengthWeeks != null)
-                        _ClearInputButton(
-                          onPressed: () =>
-                              _updateFilters({'lengthWeeks': null}),
-                        )
                     ],
                   ),
                   title: 'Plan Length'),
             ),
             UserInputContainer(
               child: TappableRow(
-                  onTap: () => context.showBottomSheet<int>(
+                  onTap: () => context.showActionSheetPopup(
                           child: NumberPickerModal(
                         initialValue: daysPerWeek,
                         min: 1,
@@ -104,11 +99,6 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
                         width: 8,
                       ),
                       MyText('days / week'),
-                      if (daysPerWeek != null)
-                        _ClearInputButton(
-                          onPressed: () =>
-                              _updateFilters({'daysPerWeek': null}),
-                        )
                     ],
                   ),
                   title: 'Days / Week'),

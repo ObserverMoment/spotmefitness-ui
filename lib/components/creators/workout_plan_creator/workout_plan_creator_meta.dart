@@ -35,7 +35,7 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
               UserInputContainer(
                 child: TappableRow(
                     showPenIcon: false,
-                    onTap: () => context.showBottomSheet<int>(
+                    onTap: () => context.showActionSheetPopup(
                             child: NumberPickerModal(
                           initialValue: workoutPlanData.lengthWeeks,
                           min: 1,
@@ -79,8 +79,7 @@ class WorkoutPlanCreatorMeta extends StatelessWidget {
               ),
               UserInputContainer(
                 child: TappableRow(
-                    showPenIcon: false,
-                    onTap: () => context.showBottomSheet<int>(
+                    onTap: () => context.showActionSheetPopup(
                             child: NumberPickerModal(
                           initialValue: workoutPlanData.daysPerWeek,
                           min: 1,

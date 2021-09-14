@@ -272,7 +272,7 @@ extension BuildContextExtension on BuildContext {
   Future<T?> showBottomSheet<T>({
     required Widget child,
     bool expand = true,
-    bool showDragHandle = true,
+    bool showDragHandle = false,
     bool useRootNavigator = true,
   }) async {
     final BuildContext context = this;
@@ -299,6 +299,28 @@ extension BuildContextExtension on BuildContext {
                 child: child,
               ));
     return result;
+  }
+
+  /// Opens a classic design cupertino bottom sheet modal with save and cancel buttons at the bottom.
+  /// Does not use roo
+  Future<void> showActionSheetPopup({
+    required Widget child,
+    bool useRootNavigator = false,
+  }) async {
+    final BuildContext context = this;
+
+    await showCupertinoModalPopup(
+        context: context,
+        useRootNavigator: useRootNavigator,
+        builder: (context) => CupertinoActionSheet(
+              actions: [child],
+              cancelButton: CupertinoActionSheetAction(
+                  onPressed: context.pop,
+                  child: MyText(
+                    'Cancel',
+                    color: context.theme.primary,
+                  )),
+            ));
   }
 
   Future<void> showSuccessAlert(

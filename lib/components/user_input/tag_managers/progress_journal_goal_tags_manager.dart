@@ -78,8 +78,7 @@ class _ProgressJournalGoalTagsManagerState
       if (widget.allowCreateTagOnly) {
         context.pop();
       } else {
-        context.showToast(
-            message: 'New tag created!', toastType: ToastType.success);
+        context.showToast(message: 'New tag created!');
         setState(() {
           _tagNameController.text = '';
           _newTagColor = null;

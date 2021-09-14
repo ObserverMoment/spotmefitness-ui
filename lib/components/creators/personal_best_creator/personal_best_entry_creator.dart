@@ -7,7 +7,6 @@ import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/date_time_pickers.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/number_input.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -220,24 +219,13 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
 
   Widget _buildDurationInput() {
     final duration = Duration(seconds: _score.round());
-    return GestureDetector(
-      onTap: () => context.showBottomSheet(
-          child: DurationPicker(
-        duration: duration,
-        updateDuration: (d) =>
-            _setStateWrapper(() => _score = d.inSeconds.toDouble()),
-        title: _buildScoreHeaderText(),
-      )),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: UnRaisedButtonContainer(
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-            child: MyText(
-              duration.compactDisplay(),
-              size: FONTSIZE.DISPLAY,
-            )),
-      ),
-    );
+    return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: CupertinoTimerPicker(
+            initialTimerDuration: duration,
+            onTimerDurationChanged: (d) => _setStateWrapper(
+                  () => _score = d.inSeconds.toDouble(),
+                )));
   }
 
   @override
@@ -277,9 +265,9 @@ class _PersonalBestEntryCreatorState extends State<PersonalBestEntryCreator> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                H3(_buildScoreHeaderText()),
+                H3(_buildScoreHeaderText().toUpperCase()),
                 SizedBox(height: 12),
                 if ([
                   BenchmarkType.maxload,

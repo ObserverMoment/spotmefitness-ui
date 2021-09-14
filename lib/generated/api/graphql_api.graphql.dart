@@ -3149,14 +3149,10 @@ class WorkoutSectionRoundSetData extends JsonSerializable with EquatableMixin {
 
   late int timeTakenSeconds;
 
-  late String move;
-
-  String? load;
-
-  late String quantity;
+  late String moves;
 
   @override
-  List<Object?> get props => [timeTakenSeconds, move, load, quantity];
+  List<Object?> get props => [timeTakenSeconds, moves];
   @override
   Map<String, dynamic> toJson() => _$WorkoutSectionRoundSetDataToJson(this);
 }
@@ -3179,18 +3175,18 @@ class WorkoutSectionRoundData extends JsonSerializable with EquatableMixin {
 }
 
 @JsonSerializable(explicitToJson: true)
-class WorkoutSectionData extends JsonSerializable with EquatableMixin {
-  WorkoutSectionData();
+class LoggedWorkoutSectionData extends JsonSerializable with EquatableMixin {
+  LoggedWorkoutSectionData();
 
-  factory WorkoutSectionData.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSectionDataFromJson(json);
+  factory LoggedWorkoutSectionData.fromJson(Map<String, dynamic> json) =>
+      _$LoggedWorkoutSectionDataFromJson(json);
 
   late List<WorkoutSectionRoundData> rounds;
 
   @override
   List<Object?> get props => [rounds];
   @override
-  Map<String, dynamic> toJson() => _$WorkoutSectionDataToJson(this);
+  Map<String, dynamic> toJson() => _$LoggedWorkoutSectionDataToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -3210,7 +3206,7 @@ class LoggedWorkoutSection extends JsonSerializable
   @JsonKey(name: 'MoveTypes')
   late List<MoveType> moveTypes;
 
-  WorkoutSectionData? workoutSectionData;
+  LoggedWorkoutSectionData? loggedWorkoutSectionData;
 
   @override
   List<Object?> get props => [
@@ -3225,7 +3221,7 @@ class LoggedWorkoutSection extends JsonSerializable
         workoutSectionType,
         bodyAreas,
         moveTypes,
-        workoutSectionData
+        loggedWorkoutSectionData
       ];
   @override
   Map<String, dynamic> toJson() => _$LoggedWorkoutSectionToJson(this);
@@ -3448,7 +3444,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
       required this.sortPosition,
       this.repScore,
       required this.timeTakenSeconds,
-      required this.workoutSectionData,
+      required this.loggedWorkoutSectionData,
       required this.workoutSectionType,
       required this.bodyAreas,
       required this.moveTypes});
@@ -3469,7 +3465,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
 
   late int timeTakenSeconds;
 
-  late WorkoutSectionDataInput workoutSectionData;
+  late LoggedWorkoutSectionDataInput loggedWorkoutSectionData;
 
   @JsonKey(name: 'WorkoutSectionType')
   late ConnectRelationInput workoutSectionType;
@@ -3488,7 +3484,7 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
         sortPosition,
         repScore,
         timeTakenSeconds,
-        workoutSectionData,
+        loggedWorkoutSectionData,
         workoutSectionType,
         bodyAreas,
         moveTypes
@@ -3499,18 +3495,19 @@ class CreateLoggedWorkoutSectionInLoggedWorkoutInput extends JsonSerializable
 }
 
 @JsonSerializable(explicitToJson: true)
-class WorkoutSectionDataInput extends JsonSerializable with EquatableMixin {
-  WorkoutSectionDataInput({required this.rounds});
+class LoggedWorkoutSectionDataInput extends JsonSerializable
+    with EquatableMixin {
+  LoggedWorkoutSectionDataInput({required this.rounds});
 
-  factory WorkoutSectionDataInput.fromJson(Map<String, dynamic> json) =>
-      _$WorkoutSectionDataInputFromJson(json);
+  factory LoggedWorkoutSectionDataInput.fromJson(Map<String, dynamic> json) =>
+      _$LoggedWorkoutSectionDataInputFromJson(json);
 
   late List<WorkoutSectionRoundDataInput> rounds;
 
   @override
   List<Object?> get props => [rounds];
   @override
-  Map<String, dynamic> toJson() => _$WorkoutSectionDataInputToJson(this);
+  Map<String, dynamic> toJson() => _$LoggedWorkoutSectionDataInputToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -3536,24 +3533,17 @@ class WorkoutSectionRoundDataInput extends JsonSerializable
 class WorkoutSectionRoundSetDataInput extends JsonSerializable
     with EquatableMixin {
   WorkoutSectionRoundSetDataInput(
-      {required this.timeTakenSeconds,
-      required this.move,
-      this.load,
-      required this.quantity});
+      {required this.timeTakenSeconds, required this.moves});
 
   factory WorkoutSectionRoundSetDataInput.fromJson(Map<String, dynamic> json) =>
       _$WorkoutSectionRoundSetDataInputFromJson(json);
 
   late int timeTakenSeconds;
 
-  late String move;
-
-  String? load;
-
-  late String quantity;
+  late String moves;
 
   @override
-  List<Object?> get props => [timeTakenSeconds, move, load, quantity];
+  List<Object?> get props => [timeTakenSeconds, moves];
   @override
   Map<String, dynamic> toJson() =>
       _$WorkoutSectionRoundSetDataInputToJson(this);
@@ -6642,7 +6632,7 @@ class UpdateLoggedWorkoutSection extends JsonSerializable
   @JsonKey(name: 'MoveTypes')
   late List<MoveType> moveTypes;
 
-  WorkoutSectionData? workoutSectionData;
+  LoggedWorkoutSectionData? loggedWorkoutSectionData;
 
   @override
   List<Object?> get props => [
@@ -6657,7 +6647,7 @@ class UpdateLoggedWorkoutSection extends JsonSerializable
         workoutSectionType,
         bodyAreas,
         moveTypes,
-        workoutSectionData
+        loggedWorkoutSectionData
       ];
   @override
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutSectionToJson(this);
@@ -6689,7 +6679,7 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
       this.note,
       this.timeTakenSeconds,
       this.repScore,
-      this.workoutSectionData});
+      this.loggedWorkoutSectionData});
 
   factory UpdateLoggedWorkoutSectionInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateLoggedWorkoutSectionInputFromJson(json);
@@ -6702,11 +6692,11 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
 
   int? repScore;
 
-  WorkoutSectionDataInput? workoutSectionData;
+  LoggedWorkoutSectionDataInput? loggedWorkoutSectionData;
 
   @override
   List<Object?> get props =>
-      [id, note, timeTakenSeconds, repScore, workoutSectionData];
+      [id, note, timeTakenSeconds, repScore, loggedWorkoutSectionData];
   @override
   Map<String, dynamic> toJson() =>
       _$UpdateLoggedWorkoutSectionInputToJson(this);
@@ -35955,7 +35945,7 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'MoveType'), directives: [])
                         ])),
                     FieldNode(
-                        name: NameNode(value: 'workoutSectionData'),
+                        name: NameNode(value: 'loggedWorkoutSectionData'),
                         alias: null,
                         arguments: [],
                         directives: [],
@@ -35986,19 +35976,7 @@ final LOGGED_WORKOUT_BY_ID_QUERY_DOCUMENT = DocumentNode(definitions: [
                                           directives: [],
                                           selectionSet: null),
                                       FieldNode(
-                                          name: NameNode(value: 'move'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'load'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'quantity'),
+                                          name: NameNode(value: 'moves'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
@@ -36508,7 +36486,7 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'MoveType'), directives: [])
                         ])),
                     FieldNode(
-                        name: NameNode(value: 'workoutSectionData'),
+                        name: NameNode(value: 'loggedWorkoutSectionData'),
                         alias: null,
                         arguments: [],
                         directives: [],
@@ -36539,19 +36517,7 @@ final USER_LOGGED_WORKOUTS_QUERY_DOCUMENT = DocumentNode(definitions: [
                                           directives: [],
                                           selectionSet: null),
                                       FieldNode(
-                                          name: NameNode(value: 'move'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'load'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'quantity'),
+                                          name: NameNode(value: 'moves'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
@@ -37104,7 +37070,7 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                               name: NameNode(value: 'MoveType'), directives: [])
                         ])),
                     FieldNode(
-                        name: NameNode(value: 'workoutSectionData'),
+                        name: NameNode(value: 'loggedWorkoutSectionData'),
                         alias: null,
                         arguments: [],
                         directives: [],
@@ -37135,19 +37101,7 @@ final CREATE_LOGGED_WORKOUT_MUTATION_DOCUMENT = DocumentNode(definitions: [
                                           directives: [],
                                           selectionSet: null),
                                       FieldNode(
-                                          name: NameNode(value: 'move'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'load'),
-                                          alias: null,
-                                          arguments: [],
-                                          directives: [],
-                                          selectionSet: null),
-                                      FieldNode(
-                                          name: NameNode(value: 'quantity'),
+                                          name: NameNode(value: 'moves'),
                                           alias: null,
                                           arguments: [],
                                           directives: [],
@@ -59974,7 +59928,7 @@ final UPDATE_LOGGED_WORKOUT_SECTION_MUTATION_DOCUMENT =
                         name: NameNode(value: 'MoveType'), directives: [])
                   ])),
               FieldNode(
-                  name: NameNode(value: 'workoutSectionData'),
+                  name: NameNode(value: 'loggedWorkoutSectionData'),
                   alias: null,
                   arguments: [],
                   directives: [],
@@ -60004,19 +59958,7 @@ final UPDATE_LOGGED_WORKOUT_SECTION_MUTATION_DOCUMENT =
                                     directives: [],
                                     selectionSet: null),
                                 FieldNode(
-                                    name: NameNode(value: 'move'),
-                                    alias: null,
-                                    arguments: [],
-                                    directives: [],
-                                    selectionSet: null),
-                                FieldNode(
-                                    name: NameNode(value: 'load'),
-                                    alias: null,
-                                    arguments: [],
-                                    directives: [],
-                                    selectionSet: null),
-                                FieldNode(
-                                    name: NameNode(value: 'quantity'),
+                                    name: NameNode(value: 'moves'),
                                     alias: null,
                                     arguments: [],
                                     directives: [],

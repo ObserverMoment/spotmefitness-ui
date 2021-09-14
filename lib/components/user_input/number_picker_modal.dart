@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/modal_picker_title.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/save_and_close_picker.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// This widget uses scroll and step input to select an integer value within a min and max range.
@@ -59,17 +60,15 @@ class _NumberPickerModalState<T> extends State<NumberPickerModal> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalCupertinoPageScaffold(
-      resizeToAvoidBottomInset: true,
-      cancel: context.pop,
-      save: _saveValue,
-      validToSave: _activeValue != widget.initialValue,
-      title: widget.title,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          ModalPickerTitle(title: widget.title),
           Container(
-            height: 260,
+            height: 240,
             width: 150,
             child: CupertinoPicker(
                 scrollController: _scrollController,
@@ -112,7 +111,13 @@ class _NumberPickerModalState<T> extends State<NumberPickerModal> {
                     size: 50,
                   )),
             ],
-          )
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SaveAndClosePicker(
+                disabled: _activeValue == widget.initialValue,
+                saveAndClose: _saveValue),
+          ),
         ],
       ),
     );
