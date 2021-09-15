@@ -10,6 +10,18 @@ extension ClubExtension on Club {
   int get totalMembers => 1 + this.admins.length + this.members.length;
 }
 
+extension LoggedWorkoutExtension on LoggedWorkout {
+  /// Returns a copy of the LoggedWorkout
+  /// with its LoggedWorkoutSections sorted correctly by [sortPosition].
+  LoggedWorkout get copyAndSortAllChildren {
+    final copy = LoggedWorkout.fromJson(this.toJson());
+
+    copy.loggedWorkoutSections.sortBy<num>((section) => section.sortPosition);
+
+    return copy;
+  }
+}
+
 extension WorkoutExtension on Workout {
   /// Returns a copy of the workout with all child lists, ([workoutSections], [workoutSets], [workoutMoves]) sorted by [sortPosition].
   Workout get copyAndSortAllChildren {

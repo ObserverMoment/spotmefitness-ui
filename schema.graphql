@@ -933,6 +933,7 @@ input UpdateLoggedWorkoutInput {
   completedOn: DateTime
   note: String
   GymProfile: ConnectRelationInput
+  WorkoutGoals: [ConnectRelationInput!]!
 }
 
 input UpdateLoggedWorkoutSectionInput {
@@ -940,6 +941,8 @@ input UpdateLoggedWorkoutSectionInput {
   timeTakenSeconds: Int
   repScore: Int
   loggedWorkoutSectionData: LoggedWorkoutSectionDataInput
+  BodyAreas: [ConnectRelationInput!]!
+  MoveTypes: [ConnectRelationInput!]!
 }
 
 input UpdateMoveInput {

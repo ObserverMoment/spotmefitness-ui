@@ -3336,7 +3336,11 @@ class UpdateLoggedWorkout$Mutation extends JsonSerializable
 @JsonSerializable(explicitToJson: true)
 class UpdateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
   UpdateLoggedWorkoutInput(
-      {required this.id, this.completedOn, this.note, this.gymProfile});
+      {required this.id,
+      this.completedOn,
+      this.note,
+      this.gymProfile,
+      required this.workoutGoals});
 
   factory UpdateLoggedWorkoutInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateLoggedWorkoutInputFromJson(json);
@@ -3353,8 +3357,11 @@ class UpdateLoggedWorkoutInput extends JsonSerializable with EquatableMixin {
   @JsonKey(name: 'GymProfile')
   ConnectRelationInput? gymProfile;
 
+  @JsonKey(name: 'WorkoutGoals')
+  late List<ConnectRelationInput> workoutGoals;
+
   @override
-  List<Object?> get props => [id, completedOn, note, gymProfile];
+  List<Object?> get props => [id, completedOn, note, gymProfile, workoutGoals];
   @override
   Map<String, dynamic> toJson() => _$UpdateLoggedWorkoutInputToJson(this);
 }
@@ -3598,7 +3605,9 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
       {required this.id,
       this.timeTakenSeconds,
       this.repScore,
-      this.loggedWorkoutSectionData});
+      this.loggedWorkoutSectionData,
+      required this.bodyAreas,
+      required this.moveTypes});
 
   factory UpdateLoggedWorkoutSectionInput.fromJson(Map<String, dynamic> json) =>
       _$UpdateLoggedWorkoutSectionInputFromJson(json);
@@ -3611,9 +3620,21 @@ class UpdateLoggedWorkoutSectionInput extends JsonSerializable
 
   LoggedWorkoutSectionDataInput? loggedWorkoutSectionData;
 
+  @JsonKey(name: 'BodyAreas')
+  late List<ConnectRelationInput> bodyAreas;
+
+  @JsonKey(name: 'MoveTypes')
+  late List<ConnectRelationInput> moveTypes;
+
   @override
-  List<Object?> get props =>
-      [id, timeTakenSeconds, repScore, loggedWorkoutSectionData];
+  List<Object?> get props => [
+        id,
+        timeTakenSeconds,
+        repScore,
+        loggedWorkoutSectionData,
+        bodyAreas,
+        moveTypes
+      ];
   @override
   Map<String, dynamic> toJson() =>
       _$UpdateLoggedWorkoutSectionInputToJson(this);

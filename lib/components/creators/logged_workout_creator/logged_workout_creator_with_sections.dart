@@ -179,7 +179,6 @@ class _SelectedLoggedWorkoutSection extends StatelessWidget {
                   ),
                   suffix: MyText(
                     'reps',
-                    size: FONTSIZE.SMALL,
                   ),
                 ),
               ),

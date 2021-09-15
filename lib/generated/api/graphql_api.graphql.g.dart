@@ -2628,6 +2628,9 @@ UpdateLoggedWorkoutInput _$UpdateLoggedWorkoutInputFromJson(
         ? null
         : ConnectRelationInput.fromJson(
             json['GymProfile'] as Map<String, dynamic>),
+    workoutGoals: (json['WorkoutGoals'] as List<dynamic>)
+        .map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -2639,6 +2642,7 @@ Map<String, dynamic> _$UpdateLoggedWorkoutInputToJson(
           instance.completedOn),
       'note': instance.note,
       'GymProfile': instance.gymProfile?.toJson(),
+      'WorkoutGoals': instance.workoutGoals.map((e) => e.toJson()).toList(),
     };
 
 CreateLoggedWorkout$Mutation _$CreateLoggedWorkout$MutationFromJson(
@@ -2841,6 +2845,12 @@ UpdateLoggedWorkoutSectionInput _$UpdateLoggedWorkoutSectionInputFromJson(
         ? null
         : LoggedWorkoutSectionDataInput.fromJson(
             json['loggedWorkoutSectionData'] as Map<String, dynamic>),
+    bodyAreas: (json['BodyAreas'] as List<dynamic>)
+        .map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    moveTypes: (json['MoveTypes'] as List<dynamic>)
+        .map((e) => ConnectRelationInput.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -2851,6 +2861,8 @@ Map<String, dynamic> _$UpdateLoggedWorkoutSectionInputToJson(
       'timeTakenSeconds': instance.timeTakenSeconds,
       'repScore': instance.repScore,
       'loggedWorkoutSectionData': instance.loggedWorkoutSectionData?.toJson(),
+      'BodyAreas': instance.bodyAreas.map((e) => e.toJson()).toList(),
+      'MoveTypes': instance.moveTypes.map((e) => e.toJson()).toList(),
     };
 
 DeleteWorkoutPlanReviewById$Mutation

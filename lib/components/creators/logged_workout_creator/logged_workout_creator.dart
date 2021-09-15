@@ -39,7 +39,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
     } else {
       await context.showSuccessAlert(
         'Workout Logged!',
-        'You can go to Progress > Logs to view it.',
+        'You can go to Progress -> Logs to view it.',
       );
       context.pop(result: true); // Close the logged workout creator.
     }
@@ -63,10 +63,6 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
             context.select<LoggedWorkoutCreatorBloc, bool>(
                 (b) => b.loggedWorkout.loggedWorkoutSections.isEmpty);
 
-        final workoutSections =
-            context.select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
-                (b) => b.workout.workoutSections);
-
         return MyPageScaffold(
             navigationBar: MyNavBar(
               customLeading: NavBarCancelButton(_handleCancel),
@@ -82,15 +78,16 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
             child: Column(
               children: [
                 UserInputContainer(
-                  child: H3(widget.workout.name),
+                  child: MyHeaderText(
+                    widget.workout.name,
+                    size: FONTSIZE.BIG,
+                  ),
                 ),
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: kStandardAnimationDuration,
                     child: requireUserInputs
-                        ? RequiredUserInputs(
-                            workoutSections: workoutSections,
-                          )
+                        ? RequiredUserInputs()
                         : LoggedWorkoutCreatorWithSections(),
                   ),
                 ),

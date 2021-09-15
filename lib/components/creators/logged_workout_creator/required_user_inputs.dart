@@ -8,13 +8,13 @@ import 'package:spotmefitness_ui/components/creators/logged_workout_creator/scor
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
-import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
 
+/// Certain loggedWorkoutSection types require some input from the user before they can be created.
+/// i.e. AMRAPs require a score and ForTime requires a time.
+/// When we have these kinds of sections we direct the user here first so that they can enter the required data before proceeding.
 class RequiredUserInputs extends StatefulWidget {
-  final List<WorkoutSection> workoutSections;
-  const RequiredUserInputs({Key? key, required this.workoutSections})
-      : super(key: key);
+  const RequiredUserInputs({Key? key}) : super(key: key);
 
   @override
   _RequiredUserInputsState createState() => _RequiredUserInputsState();
@@ -30,7 +30,9 @@ class _RequiredUserInputsState extends State<RequiredUserInputs> {
   void initState() {
     _bloc = context.read<LoggedWorkoutCreatorBloc>();
 
-    _sectionsRequiringInput = widget.workoutSections
+    /// RequiredUserInput flow is only for creating a log, so [workout] must be non null.
+    ///
+    _sectionsRequiringInput = _bloc.workout!.workoutSections
         .where(
             (w) => _bloc.typesInputRequired.contains(w.workoutSectionType.name))
         .sortedBy<num>((ws) => ws.sortPosition)
@@ -52,7 +54,7 @@ class _RequiredUserInputsState extends State<RequiredUserInputs> {
   }
 
   bool get _validToProceed =>
-      _sectionsRequiringInput.every((s) => s.input != null);
+      _sectionsRequiringInput.every((s) => s.input != null && s.input != 0);
 
   void _generateLoggedWorkoutSections() {
     _bloc.generateLoggedWorkoutSections(_sectionsRequiringInput);
@@ -63,22 +65,25 @@ class _RequiredUserInputsState extends State<RequiredUserInputs> {
     return Column(
       children: [
         UserInputContainer(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MyText(
-                'Submit Scores / Times',
-                size: FONTSIZE.LARGE,
-              ),
-              if (_validToProceed)
-                FadeIn(
-                    child: TextButton(
-                  onPressed: _generateLoggedWorkoutSections,
-                  text: 'Next',
-                  color: Styles.infoBlue,
-                  underline: false,
-                ))
-            ],
+          child: SizedBox(
+            height: 26,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MyText(
+                  'Submit Scores / Times',
+                  size: FONTSIZE.LARGE,
+                ),
+                if (_validToProceed)
+                  FadeIn(
+                      child: TextButton(
+                          onPressed: _generateLoggedWorkoutSections,
+                          text: 'Next',
+                          color: Styles.infoBlue,
+                          underline: false,
+                          padding: const EdgeInsets.symmetric(horizontal: 16)))
+              ],
+            ),
           ),
         ),
         Expanded(
@@ -93,7 +98,7 @@ class _RequiredUserInputsState extends State<RequiredUserInputs> {
                         children: [
                           MyHeaderText(
                             w.workoutSection.name ??
-                                w.workoutSection.sortPosition.toString(),
+                                'Section ${(w.workoutSection.sortPosition + 1)}',
                             lineHeight: 1.5,
                           ),
                           MyText(

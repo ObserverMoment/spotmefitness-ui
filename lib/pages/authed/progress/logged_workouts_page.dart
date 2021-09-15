@@ -38,7 +38,7 @@ class LoggedWorkoutsPage extends StatelessWidget {
               middle: NavBarTitle('Workout Logs'),
               trailing: CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: () => print('coming soon'),
+                onPressed: () => context.showAlertDialog(title: 'Coming soon!'),
                 child: Icon(
                   CupertinoIcons.graph_square,
                 ),

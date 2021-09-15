@@ -303,6 +303,29 @@ class NavBarBackButton extends StatelessWidget {
   }
 }
 
+class NavBarBackButtonStandalone extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Alignment alignment;
+  const NavBarBackButtonStandalone({
+    Key? key,
+    this.alignment = Alignment.centerLeft,
+    required this.onPressed,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      alignment: alignment,
+      onPressed: onPressed,
+      child: Icon(
+        CupertinoIcons.arrow_left,
+        size: 22,
+        color: context.theme.primary,
+      ),
+    );
+  }
+}
+
 class NavBarTrailingRow extends StatelessWidget {
   final List<Widget> children;
   const NavBarTrailingRow({Key? key, required this.children}) : super(key: key);

@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/comma_separated_list_generator.dart';
+import 'package:spotmefitness_ui/components/user_input/pickers/cupertino_switch_row.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -11,11 +13,20 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 
 /// Editable moves list _ lap / split times.
-class LoggedWorkoutCreatorSectionMovesList extends StatelessWidget {
+class LoggedWorkoutCreatorSectionMovesList extends StatefulWidget {
   final int sectionIndex;
   const LoggedWorkoutCreatorSectionMovesList(
       {Key? key, required this.sectionIndex})
       : super(key: key);
+
+  @override
+  _LoggedWorkoutCreatorSectionMovesListState createState() =>
+      _LoggedWorkoutCreatorSectionMovesListState();
+}
+
+class _LoggedWorkoutCreatorSectionMovesListState
+    extends State<LoggedWorkoutCreatorSectionMovesList> {
+  bool _showSets = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +35,7 @@ class LoggedWorkoutCreatorSectionMovesList extends StatelessWidget {
     final loggedWorkoutSection = context
         .watch<LoggedWorkoutCreatorBloc>()
         .loggedWorkout
-        .loggedWorkoutSections[sectionIndex];
+        .loggedWorkoutSections[widget.sectionIndex];
 
     final roundData =
         loggedWorkoutSection.loggedWorkoutSectionData?.rounds ?? [];
@@ -55,36 +66,38 @@ class LoggedWorkoutCreatorSectionMovesList extends StatelessWidget {
                       updateDuration: (duration) => context
                           .read<LoggedWorkoutCreatorBloc>()
                           .updateTimeTakenSeconds(
-                              loggedWorkoutSection.sortPosition,
-                              duration.inSeconds)),
+                              widget.sectionIndex, duration.inSeconds)),
                 )
               ],
             ),
           ),
           HorizontalLine(),
-          Flexible(
+          CupertinoSwitchRow(
+              title: 'Show Sets',
+              updateValue: (v) => setState(() => _showSets = v),
+              value: _showSets),
+          HorizontalLine(),
+          Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: roundData.length,
-                itemBuilder: (c, i) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: _SingleRoundData(
+                itemCount: roundData.length + 1,
+                itemBuilder: (c, i) => i == roundData.length
+                    ? CreateTextIconButton(
+                        text: 'Add Round',
+                        onPressed: () => context
+                            .read<LoggedWorkoutCreatorBloc>()
+                            .addRoundToSection(
+                              widget.sectionIndex,
+                            ))
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: _SingleRoundData(
                           sectionIndex: loggedWorkoutSection.sortPosition,
                           roundIndex: i,
-                          roundData: roundData[i]),
-                    )),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CreateTextIconButton(
-                  text: 'Add Round',
-                  onPressed: () => context
-                      .read<LoggedWorkoutCreatorBloc>()
-                      .addRoundToSection(
-                        loggedWorkoutSection.sortPosition,
+                          roundData: roundData[i],
+                          showSets: _showSets,
+                        ),
                       )),
-            ],
           ),
         ],
       ),
@@ -95,17 +108,20 @@ class LoggedWorkoutCreatorSectionMovesList extends StatelessWidget {
 class _SingleRoundData extends StatelessWidget {
   final int sectionIndex;
   final int roundIndex;
+  final bool showSets;
   final WorkoutSectionRoundData roundData;
   const _SingleRoundData(
       {Key? key,
       required this.roundData,
       required this.sectionIndex,
-      required this.roundIndex})
+      required this.roundIndex,
+      required this.showSets})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<LoggedWorkoutCreatorBloc>();
+    final sets = roundData.sets;
     return ContentBox(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(
@@ -135,51 +151,51 @@ class _SingleRoundData extends StatelessWidget {
             ),
           ],
         ),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: roundData.sets.length,
-            itemBuilder: (c, i) => GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => context.push(
-                      child: CommaSeparatedListGenerator(
-                          title: 'Set Moves',
-                          list: roundData.sets[i].moves,
-                          updateList: (moves) => bloc.updateSetMovesList(
-                              sectionIndex: sectionIndex,
-                              roundIndex: roundIndex,
-                              setIndex: i,
-                              moves: moves))),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color: context.theme.background
-                                    .withOpacity(0.7)))),
-                    child: _SingleSetData(
-                        index: i,
-                        setData: roundData.sets[i],
-                        updateDuration: (d) => bloc.updateSetTimeTakenSeconds(
-                            sectionIndex: sectionIndex,
-                            roundIndex: roundIndex,
-                            setIndex: i,
-                            seconds: d.inSeconds),
-                        removeSetFromRound: () =>
-                            bloc.removeSetFromSectionRound(
-                                sectionIndex, roundIndex, i)),
-                  ),
-                )),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CreateTextIconButton(
-              text: 'Add Set',
-              onPressed: () => context
-                  .read<LoggedWorkoutCreatorBloc>()
-                  .addSetToSectionRound(sectionIndex, roundIndex),
-            ),
-          ],
+        GrowInOut(
+          show: showSets,
+          child: ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: sets.length + 1,
+              itemBuilder: (c, i) => i == sets.length
+                  ? CreateTextIconButton(
+                      text: 'Add Set',
+                      onPressed: () => context
+                          .read<LoggedWorkoutCreatorBloc>()
+                          .addSetToSectionRound(sectionIndex, roundIndex),
+                    )
+                  : GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => context.push(
+                          child: CommaSeparatedListGenerator(
+                              title: 'Set Moves',
+                              list: sets[i].moves,
+                              updateList: (moves) => bloc.updateSetMovesList(
+                                  sectionIndex: sectionIndex,
+                                  roundIndex: roundIndex,
+                                  setIndex: i,
+                                  moves: moves))),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: context.theme.background
+                                        .withOpacity(0.7)))),
+                        child: _SingleSetData(
+                            index: i,
+                            setData: roundData.sets[i],
+                            updateDuration: (d) =>
+                                bloc.updateSetTimeTakenSeconds(
+                                    sectionIndex: sectionIndex,
+                                    roundIndex: roundIndex,
+                                    setIndex: i,
+                                    seconds: d.inSeconds),
+                            removeSetFromRound: () =>
+                                bloc.removeSetFromSectionRound(
+                                    sectionIndex, roundIndex, i)),
+                      ),
+                    )),
         ),
       ]),
     );

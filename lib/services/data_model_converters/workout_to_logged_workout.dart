@@ -6,9 +6,11 @@ import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
-// /// Converts a workout to a logged workout.
+/// Converts a workout to a logged workout.
 LoggedWorkout workoutToLoggedWorkout(
-    {required Workout workout, ScheduledWorkout? scheduledWorkout}) {
+    {required Workout workout,
+    ScheduledWorkout? scheduledWorkout,
+    bool copySections = false}) {
   final name = Utils.textNotNull(workout.name)
       ? 'Log - ${workout.name}'
       : 'Log - ${DateTime.now().dateString}';
@@ -18,7 +20,12 @@ LoggedWorkout workoutToLoggedWorkout(
     ..note = scheduledWorkout?.note
     ..name = name
     ..gymProfile = scheduledWorkout?.gymProfile
-    ..loggedWorkoutSections = []
+    ..loggedWorkoutSections = copySections
+        ? workout.workoutSections
+            .map((ws) =>
+                workoutSectionToLoggedWorkoutSection(workoutSection: ws))
+            .toList()
+        : []
     ..workoutGoals = workout.workoutGoals;
 }
 

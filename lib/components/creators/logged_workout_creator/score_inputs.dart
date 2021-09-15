@@ -124,9 +124,9 @@ class _TimeTakenInputState extends State<TimeTakenInput> {
   }
 
   Duration get _activeDuration => Duration(
-      hours: int.parse(_hoursController.text),
-      minutes: int.parse(_minutesController.text),
-      seconds: int.parse(_secondsController.text));
+      hours: int.tryParse(_hoursController.text) ?? 0,
+      minutes: int.tryParse(_minutesController.text) ?? 0,
+      seconds: int.tryParse(_secondsController.text) ?? 0);
 
   void _updateDuration() {
     widget.updateDuration(_activeDuration);

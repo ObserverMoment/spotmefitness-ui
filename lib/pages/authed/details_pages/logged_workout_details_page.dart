@@ -1,37 +1,27 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
-import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
-import 'package:spotmefitness_ui/components/cards/logged_workout_section_card.dart';
+import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_with_sections.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
 import 'package:spotmefitness_ui/components/user_input/menus/bottom_sheet_menu.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/date_time_pickers.dart';
-import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/query_observer.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
-import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:json_annotation/json_annotation.dart' as json;
-import 'package:collection/collection.dart';
 
+/// Very simlar to the LoggedWorkoutCreator.
+/// Shares most of its components and logic is handled by [LoggedWorkoutCreatorBloc].
 class LoggedWorkoutDetailsPage extends StatelessWidget {
   final String id;
   LoggedWorkoutDetailsPage({@PathParam('id') required this.id});
-
-  void _updateCompletedOn(LoggedWorkoutCreatorBloc bloc, DateTime date) {
-    bloc.updateCompletedOn(date);
-  }
 
   Future<void> _deleteLoggedWorkout(BuildContext context) async {
     await context.showConfirmDialog(
@@ -72,6 +62,12 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         });
   }
 
+  /// Saves all changes to the global graphql store once the user is done with this spage.
+  void _handleSaveAndClose(BuildContext context) {
+    context.read<LoggedWorkoutCreatorBloc>().writeAllChangesToStore();
+    context.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final query =
@@ -84,90 +80,127 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
         fetchPolicy: QueryFetchPolicy.networkOnly,
         loadingIndicator: ShimmerDetailsPage(title: 'Finding log...'),
         builder: (data) {
-          final log = data.loggedWorkoutById;
+          final loggedWorkout = data.loggedWorkoutById;
 
-          return MyText('Logged Workout Details');
+          return ChangeNotifierProvider(
+            create: (context) => LoggedWorkoutCreatorBloc(
+              context: context,
+              prevLoggedWorkout: loggedWorkout,
+            ),
+            builder: (context, child) {
+              return MyPageScaffold(
+                  navigationBar: MyNavBar(
+                    customLeading: NavBarBackButtonStandalone(
+                      onPressed: () => _handleSaveAndClose(context),
+                    ),
+                    middle: NavBarTitle('Workout Log'),
+                    trailing: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: Icon(CupertinoIcons.ellipsis),
+                        onPressed: () => openBottomSheetMenu(
+                            context: context,
+                            child: BottomSheetMenu(
+                                header: BottomSheetMenuHeader(
+                                  name: loggedWorkout.name,
+                                  subtitle: 'Logged Workout',
+                                ),
+                                items: [
+                                  /// TODO.
+                                  // BottomSheetMenuItem(
+                                  //     text: 'Share',
+                                  //     icon: Icon(CupertinoIcons.paperplane),
+                                  //     onPressed: () => SharingAndLinking
+                                  //         .shareImageRenderOfWidget(
+                                  //             padding: const EdgeInsets.all(16),
+                                  //             context: context,
+                                  //             text: 'Just nailed this workout!',
+                                  //             subject: 'Just nailed this workout!',
+                                  //             widgetForImageCapture:
+                                  //                 _buildLoggedWorkoutSummaryForSharing(
+                                  //                     sortedSections))),
+                                  // TODO. Not yet querying for workout or workoutId when retrieving the loggedWorkout.
+                                  // BottomSheetMenuItem(
+                                  //     text: 'View workout',
+                                  //     icon: Icon(
+                                  //         CupertinoIcons.arrow_right_square),
+                                  //     onPressed: () =>
+                                  //         print('view original workout')),
+                                  BottomSheetMenuItem(
+                                      text: 'Delete',
+                                      icon: Icon(
+                                        CupertinoIcons.delete_simple,
+                                        color: Styles.errorRed,
+                                      ),
+                                      isDestructive: true,
+                                      onPressed: () =>
+                                          _deleteLoggedWorkout(context)),
+                                ]))),
+                  ),
+                  child: Column(
+                    children: [
+                      UserInputContainer(
+                        child: MyHeaderText(
+                          loggedWorkout.name,
+                          size: FONTSIZE.BIG,
+                        ),
+                      ),
+                      Expanded(child: LoggedWorkoutCreatorWithSections()),
+                    ],
+                  ));
+            },
+          );
 
-          // return ChangeNotifierProvider(
-          //   create: (context) => LoggedWorkoutCreatorBloc(
-          //       context: context, initialLoggedWorkout: log),
-          //   builder: (context, child) {
-          //     final bloc = context.read<LoggedWorkoutCreatorBloc>();
+          // return MyPageScaffold(
+          //   navigationBar: MyNavBar(
+          //     middle: NavBarTitle(log.name),
+          //     trailing: CupertinoButton(
+          //       padding: EdgeInsets.zero,
+          //       child: Icon(CupertinoIcons.ellipsis),
+          //       onPressed: () => openBottomSheetMenu(
+          //           context: context,
+          //           child: BottomSheetMenu(
+          //               header: BottomSheetMenuHeader(
+          //                 name: name,
+          //                 subtitle: 'Logged Workout',
+          //               ),
+          //               items: [
+          /// TODO.
+          // BottomSheetMenuItem(
+          //     text: 'Share',
+          //     icon: Icon(CupertinoIcons.paperplane),
+          //     onPressed: () => SharingAndLinking
+          //         .shareImageRenderOfWidget(
+          //             padding: const EdgeInsets.all(16),
+          //             context: context,
+          //             text: 'Just nailed this workout!',
+          //             subject: 'Just nailed this workout!',
+          //             widgetForImageCapture:
+          //                 _buildLoggedWorkoutSummaryForSharing(
+          //                     sortedSections))),
+          /// TODO.
+          // BottomSheetMenuItem(
+          //     text: 'View workout',
+          //     icon: Icon(CupertinoIcons.arrow_right_square),
+          //     onPressed: () =>
+          //         print('view original workout')),
 
-          //     final sortedSections = context
-          //         .select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-          //             (b) => b.loggedWorkout.loggedWorkoutSections)
-          //         .sortedBy<num>((s) => s.sortPosition);
-
-          //     final workoutGoals =
-          //         context.select<LoggedWorkoutCreatorBloc, List<WorkoutGoal>>(
-          //             (b) => b.loggedWorkout.workoutGoals);
-
-          //     final name = context.select<LoggedWorkoutCreatorBloc, String>(
-          //         (b) => b.loggedWorkout.name);
-
-          //     final note = context.select<LoggedWorkoutCreatorBloc, String?>(
-          //         (b) => b.loggedWorkout.note);
-
-          //     final gymProfile =
-          //         context.select<LoggedWorkoutCreatorBloc, GymProfile?>(
-          //             (b) => b.loggedWorkout.gymProfile);
-
-          //     final completedOn =
-          //         context.select<LoggedWorkoutCreatorBloc, DateTime>(
-          //             (b) => b.loggedWorkout.completedOn);
-
-          //     return MyPageScaffold(
-          //       navigationBar: MyNavBar(
-          //         middle: NavBarTitle(log.name),
-          //         trailing: CupertinoButton(
-          //           padding: EdgeInsets.zero,
-          //           child: Icon(CupertinoIcons.ellipsis),
-          //           onPressed: () => openBottomSheetMenu(
-          //               context: context,
-          //               child: BottomSheetMenu(
-          //                   header: BottomSheetMenuHeader(
-          //                     name: name,
-          //                     subtitle: 'Logged Workout',
+          /// TODO.
+          // BottomSheetMenuItem(
+          //     text: 'Export',
+          //     icon: Icon(CupertinoIcons.download_circle),
+          //     onPressed: () => print('export')),
+          //               BottomSheetMenuItem(
+          //                   text: 'Delete',
+          //                   icon: Icon(
+          //                     CupertinoIcons.delete_simple,
+          //                     color: Styles.errorRed,
           //                   ),
-          //                   items: [
-          //                     /// TODO.
-          //                     // BottomSheetMenuItem(
-          //                     //     text: 'Share',
-          //                     //     icon: Icon(CupertinoIcons.paperplane),
-          //                     //     onPressed: () => SharingAndLinking
-          //                     //         .shareImageRenderOfWidget(
-          //                     //             padding: const EdgeInsets.all(16),
-          //                     //             context: context,
-          //                     //             text: 'Just nailed this workout!',
-          //                     //             subject: 'Just nailed this workout!',
-          //                     //             widgetForImageCapture:
-          //                     //                 _buildLoggedWorkoutSummaryForSharing(
-          //                     //                     sortedSections))),
-          //                     /// TODO.
-          //                     // BottomSheetMenuItem(
-          //                     //     text: 'View workout',
-          //                     //     icon: Icon(CupertinoIcons.arrow_right_square),
-          //                     //     onPressed: () =>
-          //                     //         print('view original workout')),
-
-          //                     /// TODO.
-          //                     // BottomSheetMenuItem(
-          //                     //     text: 'Export',
-          //                     //     icon: Icon(CupertinoIcons.download_circle),
-          //                     //     onPressed: () => print('export')),
-          //                     BottomSheetMenuItem(
-          //                         text: 'Delete',
-          //                         icon: Icon(
-          //                           CupertinoIcons.delete_simple,
-          //                           color: Styles.errorRed,
-          //                         ),
-          //                         isDestructive: true,
-          //                         onPressed: () =>
-          //                             _deleteLoggedWorkout(context)),
-          //                   ])),
-          //         ),
-          //       ),
+          //                   isDestructive: true,
+          //                   onPressed: () =>
+          //                       _deleteLoggedWorkout(context)),
+          //             ])),
+          //   ),
+          // ),
           //       child: ListView(
           //         shrinkWrap: true,
           //         children: [

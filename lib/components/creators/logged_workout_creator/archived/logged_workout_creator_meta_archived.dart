@@ -22,13 +22,6 @@ class LoggedWorkoutCreatorMeta extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<LoggedWorkoutCreatorBloc>();
 
-    final workoutSections =
-        context.select<LoggedWorkoutCreatorBloc, List<WorkoutSection>>(
-            (b) => b.workout.workoutSections);
-    final loggedWorkoutSections =
-        context.select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
-            (b) => b.loggedWorkout.loggedWorkoutSections);
-
     final note = context
         .select<LoggedWorkoutCreatorBloc, String?>((b) => b.loggedWorkout.note);
 

@@ -200,23 +200,23 @@
 //           data: UpdateLoggedWorkoutInput.fromJson(loggedWorkout.toJson()));
 
 //       /// MEMO: Constructors such as [UpdateLoggedWorkoutInput] will pass null for anything that you don't specify. So either pass the full object or use [customVariablesMap] from [graphQLStore.mutate].
-//       final result = await context.graphQLStore.mutate(
-//         mutation: UpdateLoggedWorkoutMutation(variables: variables),
-//         customVariablesMap: {
-//           'data': {
-//             'id': loggedWorkout.id,
-//             'GymProfile': profile == null ? null : {'id': profile.id}
-//           }
-//         },
-//         broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
-//       );
+//     final result = await context.graphQLStore.mutate(
+//       mutation: UpdateLoggedWorkoutMutation(variables: variables),
+//       customVariablesMap: {
+//         'data': {
+//           'id': loggedWorkout.id,
+//           'GymProfile': profile == null ? null : {'id': profile.id}
+//         }
+//       },
+//       broadcastQueryIds: [GQLNullVarsKeys.userLoggedWorkoutsQuery],
+//     );
 
-//       /// Check the result.
-//       if (!_apiResultOk(result)) {
-//         _revertChanges(errors: result.errors!);
-//       }
+//     /// Check the result.
+//     if (!_apiResultOk(result)) {
+//       _revertChanges(errors: result.errors!);
 //     }
 //   }
+// }
 
 //   Future<void> updateCompletedOn(DateTime completedOn) async {
 //     makeBackupLog();

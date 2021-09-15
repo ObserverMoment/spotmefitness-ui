@@ -556,10 +556,11 @@ class GraphQLStore {
   /////// No data saved to client side store //////////
   /////// Light wrappers around [execute] function ////
   Future<MutationResult<TData>>
-      networkOnlyOperation<TData, TVars extends json.JsonSerializable>({
-    required GraphQLQuery<TData, TVars> operation,
-  }) async {
-    final response = await execute(operation);
+      networkOnlyOperation<TData, TVars extends json.JsonSerializable>(
+          {required GraphQLQuery<TData, TVars> operation,
+          Map<String, dynamic>? customVariablesMap}) async {
+    final response =
+        await execute(operation, customVariablesMap: customVariablesMap);
 
     final result = MutationResult<TData>(
         data: operation.parse(response.data ?? {}), errors: response.errors);
