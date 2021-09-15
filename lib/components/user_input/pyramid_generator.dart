@@ -75,6 +75,9 @@ class _PyramidGeneratorState extends State<PyramidGenerator> {
 
   @override
   void dispose() {
+    _activeInputControllers.forEach((c) {
+      c.dispose();
+    });
     _removedControllers.forEach((c) {
       c.dispose();
     });

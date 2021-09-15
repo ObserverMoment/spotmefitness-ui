@@ -17,11 +17,13 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
   final List<WorkoutGoal> selectedWorkoutGoals;
   final void Function(List<WorkoutGoal>) updateSelectedWorkoutGoals;
   final int? max;
+  final String name;
   const WorkoutGoalsSelectorRow(
       {Key? key,
       required this.selectedWorkoutGoals,
       required this.updateSelectedWorkoutGoals,
-      this.max})
+      this.max,
+      this.name = 'Goals'})
       : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
               Row(
                 children: [
                   MyText(
-                    'Goals',
+                    name,
                   ),
                   SizedBox(
                     width: 6,
@@ -78,7 +80,6 @@ class WorkoutGoalsSelectorRow extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: 16.0, bottom: 2),
                 child: Wrap(
-                  alignment: WrapAlignment.end,
                   spacing: 4,
                   runSpacing: 4,
                   children: selectedWorkoutGoals

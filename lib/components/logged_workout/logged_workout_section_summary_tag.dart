@@ -48,8 +48,9 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
         padding: withBorder ? kDefaultTagPadding : null,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            border:
-                withBorder ? Border.all(color: context.theme.primary) : null),
+            border: withBorder
+                ? Border.all(color: context.theme.primary.withOpacity(0.5))
+                : null),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

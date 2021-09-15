@@ -10,8 +10,6 @@ fragment LoggedWorkoutSection on LoggedWorkoutSection {
   __typename
   id
   name
-  note
-  timecap
   repScore
   timeTakenSeconds
   sortPosition

@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/services/graphql_operation_names.dart';
 import 'package:spotmefitness_ui/services/store/graphql_store.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
@@ -94,29 +95,27 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       gymProfile: loggedWorkout.gymProfile != null
           ? ConnectRelationInput(id: loggedWorkout.gymProfile!.id)
           : null,
-
-      /// TODO
-      workoutGoals: [],
+      workoutGoals: loggedWorkout.workoutGoals
+          .map((goal) => ConnectRelationInput(id: goal.id))
+          .toList(),
       completedOn: loggedWorkout.completedOn,
       loggedWorkoutSections: loggedWorkout.loggedWorkoutSections
-          .sortedBy<num>((s) => s.sortPosition)
+          .sortedBy<num>((section) => section.sortPosition)
           .mapIndexed((index, section) =>
               CreateLoggedWorkoutSectionInLoggedWorkoutInput(
                 name: section.name,
-                note: section.note,
-                // Not the original sortPosition, the index from within the selected sections list at [includedSectionIds]
                 sortPosition: index,
-
-                /// TODO
-                moveTypes: [],
-                bodyAreas: [],
+                moveTypes: section.moveTypes
+                    .map((m) => ConnectRelationInput(id: m.id))
+                    .toList(),
+                bodyAreas: section.bodyAreas
+                    .map((b) => ConnectRelationInput(id: b.id))
+                    .toList(),
                 repScore: section.repScore,
                 timeTakenSeconds: section.timeTakenSeconds,
-                timecap: section.timecap,
-
-                /// TODO
                 loggedWorkoutSectionData:
-                    LoggedWorkoutSectionDataInput(rounds: []),
+                    LoggedWorkoutSectionDataInput.fromJson(
+                        section.loggedWorkoutSectionData?.toJson() ?? {}),
                 workoutSectionType:
                     ConnectRelationInput(id: section.workoutSectionType.id),
               ))
@@ -155,9 +154,15 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateWorkoutGoals(List<WorkoutGoal> goals) {
+    loggedWorkout.workoutGoals = goals;
+    notifyListeners();
+  }
+
   /// Section ////
   void updateRepScore(int sectionIndex, int repScore) {
     final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+
     loggedWorkout.loggedWorkoutSections[sectionIndex] =
         LoggedWorkoutSection.fromJson({...prev.toJson(), 'repScore': repScore});
     notifyListeners();
@@ -165,14 +170,133 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
   void updateTimeTakenSeconds(int sectionIndex, int timeTakenSeconds) {
     final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+
     loggedWorkout.loggedWorkoutSections[sectionIndex] =
         LoggedWorkoutSection.fromJson(
             {...prev.toJson(), 'timeTakenSeconds': timeTakenSeconds});
     notifyListeners();
   }
 
-  void updateSectionData() {
-    print('updateSectionData');
+  void toggleSectionBodyArea(int sectionIndex, BodyArea bodyArea) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    final updated = prev.bodyAreas
+        .toggleItem<BodyArea>(bodyArea)
+        .map((b) => b.toJson())
+        .toList();
+
+    print(updated);
+
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson({...prev.toJson(), 'BodyAreas': updated});
+    notifyListeners();
+  }
+
+  void updateSectionMoveTypes(int sectionIndex, List<MoveType> moveTypes) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    final updated = moveTypes.map((m) => m.toJson()).toList();
+
+    print(updated);
+
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson({...prev.toJson(), 'MoveTypes': updated});
+    notifyListeners();
+  }
+
+  ///// LoggedWorkoutSectiondata //////
+  /// Creates a new roundData object with original round data from
+  void addRoundToSection(int sectionIndex) {
+    final prevSection = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    final rounds = prevSection.loggedWorkoutSectionData!.rounds;
+
+    final roundData =
+        rounds.isNotEmpty ? rounds.last : WorkoutSectionRoundData()
+          ..timeTakenSeconds = 60
+          ..sets = [];
+
+    prevSection.loggedWorkoutSectionData!.rounds
+        .add(WorkoutSectionRoundData.fromJson(roundData.toJson()));
+
+    notifyListeners();
+  }
+
+  void removeRoundFromSection(int sectionIndex, int roundIndex) {
+    final prevSection = loggedWorkout.loggedWorkoutSections[sectionIndex];
+
+    prevSection.loggedWorkoutSectionData!.rounds.removeAt(roundIndex);
+
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(prevSection.toJson());
+    notifyListeners();
+  }
+
+  void updateRoundTimeTakenSeconds(
+      {required int sectionIndex,
+      required int roundIndex,
+      required int seconds}) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    prev.loggedWorkoutSectionData!.rounds[roundIndex].timeTakenSeconds =
+        seconds;
+
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(prev.toJson());
+    notifyListeners();
+  }
+
+  void addSetToSectionRound(int sectionIndex, int roundIndex) {
+    final prevSection = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    final prevRound = prevSection.loggedWorkoutSectionData!.rounds[roundIndex];
+    final setData = prevRound.sets.isNotEmpty
+        ? prevRound.sets.last
+        : WorkoutSectionRoundSetData()
+      ..timeTakenSeconds = 60
+      ..moves = 'Enter...';
+
+    prevSection.loggedWorkoutSectionData!.rounds[roundIndex].sets
+        .add(WorkoutSectionRoundSetData.fromJson(setData.toJson()));
+
+    notifyListeners();
+  }
+
+  void removeSetFromSectionRound(
+      int sectionIndex, int roundIndex, int setIndex) {
+    final prevSection = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    prevSection.loggedWorkoutSectionData!.rounds[roundIndex].sets
+        .removeAt(setIndex);
+
+    /// Listeners are at the section level. So make a new one so that they know to rebuild.
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(prevSection.toJson());
+    notifyListeners();
+  }
+
+  void updateSetTimeTakenSeconds(
+      {required int sectionIndex,
+      required int roundIndex,
+      required int setIndex,
+      required int seconds}) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    prev.loggedWorkoutSectionData!.rounds[roundIndex].sets[setIndex]
+        .timeTakenSeconds = seconds;
+
+    /// Listeners are at the section level. So make a new one so that they know to rebuild.
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(prev.toJson());
+    notifyListeners();
+  }
+
+  void updateSetMovesList(
+      {required int sectionIndex,
+      required int roundIndex,
+      required int setIndex,
+      required String moves}) {
+    final prev = loggedWorkout.loggedWorkoutSections[sectionIndex];
+    prev.loggedWorkoutSectionData!.rounds[roundIndex].sets[setIndex].moves =
+        moves;
+
+    /// Listeners are at the section level. So make a new one so that they know to rebuild.
+    loggedWorkout.loggedWorkoutSections[sectionIndex] =
+        LoggedWorkoutSection.fromJson(prev.toJson());
+    notifyListeners();
   }
 
   /// Internal: Client

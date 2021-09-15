@@ -37,10 +37,6 @@ LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
     ..id = workoutSection.id // Temp ID matches the workoutSection
     ..name = workoutSection.name
     ..repScore = repScore
-    // Only set the timecap for AMRAPS. Needs review.
-    ..timecap = workoutSection.workoutSectionType.name == kAMRAPName
-        ? workoutSection.timecap
-        : null
     ..sortPosition = workoutSection.sortPosition
     ..timeTakenSeconds = workoutSection.timecapIfValid ?? timeTakenSeconds!
     ..workoutSectionType = workoutSection.workoutSectionType
@@ -86,9 +82,9 @@ String generateRepString(
       ? workoutMove.timeUnit.shortDisplay
       : workoutMove.repType == WorkoutMoveRepType.distance
           ? workoutMove.distanceUnit.shortDisplay
-          : '';
+          : null;
 
-  return '${workoutMove.reps.stringMyDouble()} $repUnit';
+  return '${workoutMove.reps.stringMyDouble()}${repUnit != null ? " $repUnit" : ""}';
 }
 
 String generateLoadString(WorkoutMove workoutMove) =>

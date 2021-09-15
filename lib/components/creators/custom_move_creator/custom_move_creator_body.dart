@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/components/body_areas/body_area_score_adjuster.dart';
-import 'package:spotmefitness_ui/components/body_areas/body_area_selectors.dart';
+import 'package:spotmefitness_ui/components/body_areas/body_area_selector_score_indicator.dart';
 import 'package:spotmefitness_ui/components/body_areas/targeted_body_areas_lists.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -96,7 +96,7 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
                               child: CupertinoButton(
                                   child: MyText('Back >'),
                                   onPressed: () => _animateToPage(1))),
-                          BodyAreaSelectorAndMoveScoreIndicator(
+                          BodyAreaSelectorScoreIndicator(
                             bodyAreaMoveScores: widget.move.bodyAreaMoveScores,
                             frontBack: BodyAreaFrontBack.front,
                             allBodyAreas: allBodyAreas,
@@ -112,7 +112,7 @@ class _CustomMoveCreatorBodyState extends State<CustomMoveCreatorBody> {
                               child: CupertinoButton(
                                   child: MyText('< Front'),
                                   onPressed: () => _animateToPage(0))),
-                          BodyAreaSelectorAndMoveScoreIndicator(
+                          BodyAreaSelectorScoreIndicator(
                             bodyAreaMoveScores: widget.move.bodyAreaMoveScores,
                             frontBack: BodyAreaFrontBack.back,
                             allBodyAreas: allBodyAreas,

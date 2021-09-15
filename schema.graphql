@@ -211,8 +211,6 @@ input CreateLoggedWorkoutInput {
 
 input CreateLoggedWorkoutSectionInLoggedWorkoutInput {
   name: String
-  note: String
-  timecap: Int
   sortPosition: Int!
   repScore: Int
   timeTakenSeconds: Int!
@@ -523,8 +521,6 @@ type LoggedWorkout {
 type LoggedWorkoutSection {
   id: ID!
   name: String
-  note: String
-  timecap: Int
   sortPosition: Int!
   timeTakenSeconds: Int!
   repScore: Int
@@ -941,7 +937,6 @@ input UpdateLoggedWorkoutInput {
 
 input UpdateLoggedWorkoutSectionInput {
   id: ID!
-  note: String
   timeTakenSeconds: Int
   repScore: Int
   loggedWorkoutSectionData: LoggedWorkoutSectionDataInput

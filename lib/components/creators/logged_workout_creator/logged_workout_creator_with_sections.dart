@@ -3,7 +3,7 @@ import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_section_details.dart';
+import 'package:spotmefitness_ui/components/creators/logged_workout_creator/logged_workout_creator_section_moves_list.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_click_to_edit.dart';
@@ -11,9 +11,12 @@ import 'package:spotmefitness_ui/components/user_input/pickers/date_time_pickers
 import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/number_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/gym_profile_selector.dart';
+import 'package:spotmefitness_ui/components/user_input/selectors/workout_goals_selector.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+
+import 'logged_workout_creator_section_details.dart';
 
 class LoggedWorkoutCreatorWithSections extends StatelessWidget {
   const LoggedWorkoutCreatorWithSections({Key? key}) : super(key: key);
@@ -30,6 +33,10 @@ class LoggedWorkoutCreatorWithSections extends StatelessWidget {
 
     final completedOn = context.select<LoggedWorkoutCreatorBloc, DateTime>(
         (b) => b.loggedWorkout.completedOn);
+
+    final targetedGoals =
+        context.select<LoggedWorkoutCreatorBloc, List<WorkoutGoal>>(
+            (b) => b.loggedWorkout.workoutGoals);
 
     final loggedWorkoutSections =
         context.select<LoggedWorkoutCreatorBloc, List<LoggedWorkoutSection>>(
@@ -59,6 +66,11 @@ class LoggedWorkoutCreatorWithSections extends StatelessWidget {
             maxDisplayLines: 6,
           ),
         ),
+        WorkoutGoalsSelectorRow(
+            name: 'Goals Targeted',
+            selectedWorkoutGoals: targetedGoals,
+            updateSelectedWorkoutGoals: (goals) =>
+                bloc.updateWorkoutGoals(goals)),
         ...loggedWorkoutSections
             .map((lws) => Padding(
                   padding: const EdgeInsets.only(top: 12.0),
@@ -76,8 +88,29 @@ class _SelectedLoggedWorkoutSection extends StatelessWidget {
   const _SelectedLoggedWorkoutSection({Key? key, required this.sectionIndex})
       : super(key: key);
 
+  Widget _buildProviderNavigatorButton(
+          BuildContext context,
+          LoggedWorkoutCreatorBloc bloc,
+          Widget pageChild,
+          Widget buttonChild) =>
+      CupertinoButton(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        // https://stackoverflow.com/questions/57913888/how-to-consume-provider-after-navigating-to-another-route
+        onPressed: () => Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) =>
+                ChangeNotifierProvider<LoggedWorkoutCreatorBloc>.value(
+              value: bloc,
+              child: pageChild,
+            ),
+          ),
+        ),
+        child: buttonChild,
+      );
+
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<LoggedWorkoutCreatorBloc>();
     final loggedWorkoutSection =
         context.select<LoggedWorkoutCreatorBloc, LoggedWorkoutSection>(
             (b) => b.loggedWorkout.loggedWorkoutSections[sectionIndex]);
@@ -109,13 +142,23 @@ class _SelectedLoggedWorkoutSection extends StatelessWidget {
                   ],
                 ),
               ),
-              CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                onPressed: () => context.push(
-                    child: LoggedWorkoutCreatorSectionDetails(
-                        loggedWorkoutSection: loggedWorkoutSection)),
-                child: Icon(CupertinoIcons.list_number),
-              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  _buildProviderNavigatorButton(
+                      context,
+                      bloc,
+                      LoggedWorkoutCreatorSectionMovesList(
+                          sectionIndex: sectionIndex),
+                      Icon(CupertinoIcons.list_number)),
+                  _buildProviderNavigatorButton(
+                      context,
+                      bloc,
+                      LoggedWorkoutCreatorSectionDetails(
+                          sectionIndex: sectionIndex),
+                      Icon(CupertinoIcons.doc_chart)),
+                ],
+              )
             ],
           ),
           Row(

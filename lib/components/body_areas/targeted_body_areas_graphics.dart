@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.graphql.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Display for either the front or back of the body, with targeted areas highlighted.
 /// Each body area should only have one corresponding bodyAreaMoveScore in this list.
@@ -108,7 +109,7 @@ class TargetedBodyAreasSelectedIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nonActiveColor = Styles.grey;
+    final nonActiveColor = context.theme.primary.withOpacity(0.2);
     final _activeColor = activeColor ?? context.watch<ThemeBloc>().primary;
 
     List<BodyArea> bodyAreasToDisplay = allBodyAreas

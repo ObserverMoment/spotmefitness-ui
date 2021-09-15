@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Used for [TextRowClickToEdit] components
@@ -17,6 +18,7 @@ class MyTextField extends StatefulWidget {
   final void Function(String)? onUnfocus;
   final String? initialValue;
   final Iterable<String>? autofillHints;
+  final List<TextInputFormatter>? inputFormatters;
 
   MyTextField(
       {this.key,
@@ -32,7 +34,8 @@ class MyTextField extends StatefulWidget {
       this.onUnfocus,
       this.initialValue,
       this.textAlign = TextAlign.start,
-      this.autofillHints});
+      this.autofillHints,
+      this.inputFormatters});
 
   @override
   _MyTextFieldState createState() => _MyTextFieldState();
@@ -86,6 +89,7 @@ class _MyTextFieldState extends State<MyTextField> {
         textAlign: widget.textAlign,
         autofillHints: widget.autofillHints,
         style: TextStyle(fontWeight: FontWeight.w500),
+        inputFormatters: widget.inputFormatters,
         prefix: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: widget.icon,

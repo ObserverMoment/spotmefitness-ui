@@ -100,7 +100,12 @@ class QueryObserverState<TData, TVars extends json.JsonSerializable>
               return widget.builder(snapshot.data!.data!);
             }
           } else {
-            return widget.loadingIndicator ?? Center(child: LoadingCircle());
+            return widget.loadingIndicator ??
+                Center(
+                    child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: LoadingCircle(),
+                ));
           }
         });
   }
