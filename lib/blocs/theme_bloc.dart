@@ -123,7 +123,7 @@ abstract class ThemeData {
         stops: [0.1, 0.9],
       ),
       activeIcon: Styles.colorFour,
-      cardBackground: const Color(0xFF151515),
+      cardBackground: const Color(0xff1a1a1c),
       bottomNavigationBackground: const Color(0xff434343),
       navbarBottomBorder: Styles.white.withOpacity(0.1));
 

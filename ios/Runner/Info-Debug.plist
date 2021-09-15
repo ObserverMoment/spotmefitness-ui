@@ -15,7 +15,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>SpotMe Fitness</string>
+		<string>Sofie</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
@@ -23,18 +23,18 @@
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>CFBundleURLTypes</key>
-  		<array>
-    		<dict>
-      			<key>CFBundleTypeRole</key>
-      			<string>Editor</string>
-      			<key>CFBundleURLName</key>
-      			<string>com.quarksoup.spotmefitness</string>
-      			<key>CFBundleURLSchemes</key>
-      			<array>
-        			<string>spotmefitness</string>
-      			</array>
-    		</dict>
-  		</array>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLName</key>
+				<string>com.quarksoup.spotmefitness</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>spotmefitness</string>
+				</array>
+			</dict>
+		</array>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
@@ -75,6 +75,6 @@
 		<key>NSMicrophoneUsageDescription</key>
 		<string>Please allow access so that you can record audio from your device.</string>
 		<key>ITSAppUsesNonExemptEncryption</key>
-    	<false/>
+		<false/>
 	</dict>
 </plist>

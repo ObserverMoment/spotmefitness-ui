@@ -2,7 +2,7 @@
     package="com.quarksoup.spotmefitness">
   <!-- https://pub.dev/packages/image_picker = android:requestLegacyExternalStorage="true" -->
    <application
-        android:label="SpotMe Fitness"
+        android:label="Sofie"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity

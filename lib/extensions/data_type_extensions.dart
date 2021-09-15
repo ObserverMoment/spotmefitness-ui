@@ -1,4 +1,3 @@
-import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:collection/collection.dart';
