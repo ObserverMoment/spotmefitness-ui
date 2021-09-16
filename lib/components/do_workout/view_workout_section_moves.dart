@@ -17,7 +17,7 @@ class ViewWorkoutSectionMoves extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final workoutSection = context.select<DoWorkoutBloc, WorkoutSection>(
-        (b) => b.sortedWorkoutSections[sectionIndex]);
+        (b) => b.activeWorkout.workoutSections[sectionIndex]);
 
     return MyPageScaffold(
       navigationBar: MyNavBar(

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
@@ -64,6 +65,11 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
           PageView(
             controller: _pageController,
             children: _featurePages,
+          ),
+          Positioned(
+            top: screenHeight * 0.10,
+            child: SvgPicture.asset('assets/logos/sofie_logo.svg',
+                width: 40, color: Styles.white),
           ),
           Positioned(
             top: screenHeight * 0.22,

@@ -1,13 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/do_section_amrap.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/do_section_fortime.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/do_section_free_session.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/do_section_last_standing.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/do_section_timed.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_bottom_navbar.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_amrap.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_fortime.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_free_session.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_timed.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_section_nav.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/section_complete_modal.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/start_section_modal.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -64,43 +63,42 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
   }
 
   /// Build the set of pages and components for the different workout section sub types.
-  Widget _buildDoSectionPages(WorkoutSectionProgressState progressState) {
-    switch (widget.workoutSection.workoutSectionType.name) {
-      case kTabataName:
-      case kHIITCircuitName:
-      case kEMOMName:
-        return DoWorkoutSectionTimed(
-          pageController: _pageController,
-          progressState: progressState,
-          workoutSection: widget.workoutSection,
-          activePageIndex: _activePageIndex,
-        );
-      case kAMRAPName:
-        return DoWorkoutSectionAMRAP(
-          pageController: _pageController,
-          progressState: progressState,
-          workoutSection: widget.workoutSection,
-          activePageIndex: _activePageIndex,
-        );
-      case kForTimeName:
-        return DoWorkoutSectionForTime(
-          pageController: _pageController,
-          progressState: progressState,
-          workoutSection: widget.workoutSection,
-          activePageIndex: _activePageIndex,
-        );
-      case kFreeSessionName:
-        return DoWorkoutSectionFreeSession(
-          pageController: _pageController,
-          workoutSection: widget.workoutSection,
-          activePageIndex: _activePageIndex,
-        );
+  // Widget _buildDoSectionPages(WorkoutSectionProgressState progressState) {
+  //   switch (widget.workoutSection.workoutSectionType.name) {
+  //     case kTabataName:
+  //     case kHIITCircuitName:
+  //     case kEMOMName:
+  //       return DoWorkoutSectionTimed(
+  //         pageController: _pageController,
+  //         progressState: progressState,
+  //         workoutSection: widget.workoutSection,
+  //         activePageIndex: _activePageIndex,
+  //       );
+  //     case kAMRAPName:
+  //       return DoWorkoutSectionAMRAP(
+  //         pageController: _pageController,
+  //         progressState: progressState,
+  //         workoutSection: widget.workoutSection,
+  //         activePageIndex: _activePageIndex,
+  //       );
+  //     case kForTimeName:
+  //       return DoWorkoutSectionForTime(
+  //         progressState: progressState,
+  //         workoutSection: widget.workoutSection,
+  //         activePageIndex: _activePageIndex,
+  //       );
+  //     case kFreeSessionName:
+  //       return DoWorkoutSectionFreeSession(
+  //         pageController: _pageController,
+  //         workoutSection: widget.workoutSection,
+  //         activePageIndex: _activePageIndex,
+  //       );
 
-      default:
-        throw Exception(
-            'No DoSectionPages builder defined for section type: ${widget.workoutSection.workoutSectionType.name}');
-    }
-  }
+  //     default:
+  //       throw Exception(
+  //           'No DoSectionPages builder defined for section type: ${widget.workoutSection.workoutSectionType.name}');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -134,16 +132,16 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
           return Stack(
             children: [
               SizedBox(height: 8),
-              _buildDoSectionPages(progressState),
-              Align(
-                  alignment: Alignment.bottomCenter,
-                  child: DoWorkoutBottomNavBar(
-                    activePageIndex: _activePageIndex,
-                    goToPage: _goToPage,
-                    showAudioTab: showAudioTab,
-                    muteAudio: _muteAudio,
-                    toggleMuteAudio: _toggleMuteAudio,
-                  )),
+              // _buildDoSectionPages(progressState),
+              // Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: DoWorkoutBottomNavBar(
+              //       activePageIndex: _activePageIndex,
+              //       goToPage: _goToPage,
+              //       showAudioTab: showAudioTab,
+              //       muteAudio: _muteAudio,
+              //       toggleMuteAudio: _toggleMuteAudio,
+              //     )),
               if (!sectionHasStarted)
                 Center(
                     child: SizeFadeIn(

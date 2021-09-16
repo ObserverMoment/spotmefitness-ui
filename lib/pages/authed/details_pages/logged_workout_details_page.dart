@@ -93,7 +93,7 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                     customLeading: NavBarBackButtonStandalone(
                       onPressed: () => _handleSaveAndClose(context),
                     ),
-                    middle: NavBarTitle('Workout Log'),
+                    middle: NavBarTitle(loggedWorkout.name),
                     trailing: CupertinoButton(
                         padding: EdgeInsets.zero,
                         child: Icon(CupertinoIcons.ellipsis),
@@ -136,124 +136,9 @@ class LoggedWorkoutDetailsPage extends StatelessWidget {
                                           _deleteLoggedWorkout(context)),
                                 ]))),
                   ),
-                  child: Column(
-                    children: [
-                      UserInputContainer(
-                        child: MyHeaderText(
-                          loggedWorkout.name,
-                          size: FONTSIZE.BIG,
-                        ),
-                      ),
-                      Expanded(child: LoggedWorkoutCreatorWithSections()),
-                    ],
-                  ));
+                  child: LoggedWorkoutCreatorWithSections());
             },
           );
-
-          // return MyPageScaffold(
-          //   navigationBar: MyNavBar(
-          //     middle: NavBarTitle(log.name),
-          //     trailing: CupertinoButton(
-          //       padding: EdgeInsets.zero,
-          //       child: Icon(CupertinoIcons.ellipsis),
-          //       onPressed: () => openBottomSheetMenu(
-          //           context: context,
-          //           child: BottomSheetMenu(
-          //               header: BottomSheetMenuHeader(
-          //                 name: name,
-          //                 subtitle: 'Logged Workout',
-          //               ),
-          //               items: [
-          /// TODO.
-          // BottomSheetMenuItem(
-          //     text: 'Share',
-          //     icon: Icon(CupertinoIcons.paperplane),
-          //     onPressed: () => SharingAndLinking
-          //         .shareImageRenderOfWidget(
-          //             padding: const EdgeInsets.all(16),
-          //             context: context,
-          //             text: 'Just nailed this workout!',
-          //             subject: 'Just nailed this workout!',
-          //             widgetForImageCapture:
-          //                 _buildLoggedWorkoutSummaryForSharing(
-          //                     sortedSections))),
-          /// TODO.
-          // BottomSheetMenuItem(
-          //     text: 'View workout',
-          //     icon: Icon(CupertinoIcons.arrow_right_square),
-          //     onPressed: () =>
-          //         print('view original workout')),
-
-          /// TODO.
-          // BottomSheetMenuItem(
-          //     text: 'Export',
-          //     icon: Icon(CupertinoIcons.download_circle),
-          //     onPressed: () => print('export')),
-          //               BottomSheetMenuItem(
-          //                   text: 'Delete',
-          //                   icon: Icon(
-          //                     CupertinoIcons.delete_simple,
-          //                     color: Styles.errorRed,
-          //                   ),
-          //                   isDestructive: true,
-          //                   onPressed: () =>
-          //                       _deleteLoggedWorkout(context)),
-          //             ])),
-          //   ),
-          // ),
-          //       child: ListView(
-          //         shrinkWrap: true,
-          //         children: [
-          //           Column(
-          //             children: [
-          //               UserInputContainer(
-          //                 child: DateTimePickerDisplay(
-          //                   dateTime: completedOn,
-          //                   saveDateTime: (d) => _updateCompletedOn(bloc, d),
-          //                 ),
-          //               ),
-          //               UserInputContainer(
-          //                 child: GymProfileSelectorDisplay(
-          //                   clearGymProfile: () => bloc.updateGymProfile(null),
-          //                   gymProfile: gymProfile,
-          //                   selectGymProfile: bloc.updateGymProfile,
-          //                 ),
-          //               ),
-          //               UserInputContainer(
-          //                 child: EditableTextAreaRow(
-          //                   title: 'Note',
-          //                   text: note ?? '',
-          //                   onSave: (t) => bloc.updateNote(t),
-          //                   inputValidation: (t) => true,
-          //                   maxDisplayLines: 6,
-          //                 ),
-          //               ),
-          //             ],
-          //           ),
-          //           if (workoutGoals.isNotEmpty)
-          //             UserInputContainer(
-          //               child: Wrap(
-          //                 spacing: 6,
-          //                 runSpacing: 6,
-          //                 children: workoutGoals
-          //                     .map((goal) => Tag(tag: goal.name))
-          //                     .toList(),
-          //               ),
-          //             ),
-          //           if (sortedSections.isNotEmpty)
-          //             ...sortedSections
-          //                 .map((s) => Padding(
-          //                       padding:
-          //                           const EdgeInsets.symmetric(vertical: 6.0),
-          //                       child: LoggedWorkoutSectionCard(
-          //                           loggedWorkoutSection: s),
-          //                     ))
-          //                 .toList(),
-          //         ],
-          //       ),
-          //     );
-          //   },
-          // );
         });
   }
 }

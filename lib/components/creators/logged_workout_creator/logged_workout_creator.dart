@@ -66,7 +66,7 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
         return MyPageScaffold(
             navigationBar: MyNavBar(
               customLeading: NavBarCancelButton(_handleCancel),
-              middle: NavBarTitle('Log Workout'),
+              middle: NavBarTitle(widget.workout.name),
               trailing: !requireUserInputs
                   ? NavBarSaveButton(
                       () => _saveLogToDB(
@@ -75,23 +75,11 @@ class _LoggedWorkoutCreatorPageState extends State<LoggedWorkoutCreatorPage> {
                     )
                   : null,
             ),
-            child: Column(
-              children: [
-                UserInputContainer(
-                  child: MyHeaderText(
-                    widget.workout.name,
-                    size: FONTSIZE.BIG,
-                  ),
-                ),
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: kStandardAnimationDuration,
-                    child: requireUserInputs
-                        ? RequiredUserInputs()
-                        : LoggedWorkoutCreatorWithSections(),
-                  ),
-                ),
-              ],
+            child: AnimatedSwitcher(
+              duration: kStandardAnimationDuration,
+              child: requireUserInputs
+                  ? RequiredUserInputs()
+                  : LoggedWorkoutCreatorWithSections(),
             ));
       },
     );

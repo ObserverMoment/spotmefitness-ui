@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -167,26 +168,22 @@ class _InitAppLanding extends StatelessWidget {
             fit: BoxFit.fitHeight,
           )),
           Positioned(
-            top: screenHeight * 0.22,
+            top: screenHeight * 0.16,
+            child: SvgPicture.asset(
+              'assets/logos/sofie_logo.svg',
+              width: 50,
+              color: Styles.white,
+            ),
+          ),
+          Positioned(
+            top: screenHeight * 0.30,
             child: Column(
               children: [
-                Text('Sofie',
-                    style: GoogleFonts.voces(
-                      fontSize: 60,
-                      color: Styles.white,
-                    )),
                 MyText(
-                  'Social Fitness Elevated',
-                  weight: FontWeight.bold,
+                  'Getting ready',
                   color: Styles.white,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: MyText(
-                    'Getting ready',
-                    color: Styles.white,
-                  ),
-                ),
+                SizedBox(height: 24),
                 LoadingDots(
                   color: Styles.white,
                 )

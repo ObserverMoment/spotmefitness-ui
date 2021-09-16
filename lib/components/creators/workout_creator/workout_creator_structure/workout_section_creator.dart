@@ -107,7 +107,6 @@ class _WorkoutSectionCreatorState extends State<WorkoutSectionCreator> {
         children: [
           WorkoutSectionTypeTag(
             workoutSection: _workoutSection,
-            withBorder: false,
             uppercase: true,
           ),
         ],

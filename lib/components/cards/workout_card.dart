@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
@@ -98,25 +99,12 @@ class WorkoutCard extends StatelessWidget {
                                           : MainAxisAlignment.end,
                                   children: [
                                     if (workout.lengthMinutes != null)
-                                      ContentBox(
-                                          borderRadius: 4,
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 6, horizontal: 8),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(CupertinoIcons.timer,
-                                                  size: 13),
-                                              SizedBox(width: 4),
-                                              MyText(
-                                                Duration(
-                                                        minutes: workout
-                                                            .lengthMinutes!)
-                                                    .displayString,
-                                                size: FONTSIZE.SMALL,
-                                              ),
-                                            ],
-                                          )),
+                                      DurationTag(
+                                        duration: Duration(
+                                            minutes: workout.lengthMinutes!),
+                                        backgroundColor: Styles.infoBlue,
+                                        textColor: Styles.white,
+                                      ),
                                     DifficultyLevelTag(
                                       workout.difficultyLevel,
                                       fontSize: FONTSIZE.TINY,

@@ -24,7 +24,7 @@ class CalendarUI {
         disabledDecoration: kDefaultDecoration,
         holidayDecoration: kDefaultDecoration,
         selectedDecoration: BoxDecoration(
-          color: Styles.peachRed,
+          color: Styles.infoBlue,
           shape: BoxShape.circle,
         ),
         todayDecoration: BoxDecoration(

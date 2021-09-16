@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/free_session_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/free_session/free_session_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_type_pages/free_session/free_session_progress.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';

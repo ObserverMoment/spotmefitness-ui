@@ -77,8 +77,8 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
-    final numWorkoutSections = context
-        .select<DoWorkoutBloc, int>((b) => b.sortedWorkoutSections.length);
+    final numWorkoutSections = context.select<DoWorkoutBloc, int>(
+        (b) => b.activeWorkout.workoutSections.length);
 
     return IndexedStack(
       index: _activePageIndex,

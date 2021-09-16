@@ -43,12 +43,15 @@ class _ProfilePageState extends State<ProfilePage> {
             QueryObserver<AuthedUser$Query, json.JsonSerializable>(
                 key: Key('ProfilePage - ${AuthedUserQuery().operationName}'),
                 query: AuthedUserQuery(),
-                loadingIndicator: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ShimmerCircle(diameter: 100),
-                    ShimmerCircle(diameter: 100)
-                  ],
+                loadingIndicator: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ShimmerCircle(diameter: 100),
+                      ShimmerCircle(diameter: 100)
+                    ],
+                  ),
                 ),
                 builder: (data) {
                   final user = data.authedUser;

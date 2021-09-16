@@ -82,14 +82,14 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => context.navigateTo(YourEventsRoute()),
+                onTap: () => context.showAlertDialog(title: 'Coming Soon!'),
                 child: _HomeScreenCard(
                   label: 'Events',
                   assetImagePath: 'home_page_events.jpg',
                 ),
               ),
               GestureDetector(
-                onTap: () => () => context.navigateTo(YourChallengesRoute()),
+                onTap: () => context.showAlertDialog(title: 'Coming Soon!'),
                 child: _HomeScreenCard(
                   label: 'Challenges',
                   assetImagePath: 'home_page_challenges.jpg',

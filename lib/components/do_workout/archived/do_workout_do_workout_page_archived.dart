@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/archived/do_workout_section_archived.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';

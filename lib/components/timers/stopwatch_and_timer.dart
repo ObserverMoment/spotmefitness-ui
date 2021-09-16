@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_bottom_navbar.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -103,14 +103,14 @@ class TimersBottomNavBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                BottomNavbarItem(
+                NavItem(
                   activeIconData: CupertinoIcons.stopwatch_fill,
                   inactiveIconData: CupertinoIcons.stopwatch,
                   label: 'Stopwatch',
                   onTap: () => goToPage(0),
                   isActive: activePageIndex == 0,
                 ),
-                BottomNavbarItem(
+                NavItem(
                   activeIconData: CupertinoIcons.timer_fill,
                   inactiveIconData: CupertinoIcons.timer,
                   label: 'Timer',
@@ -119,6 +119,82 @@ class TimersBottomNavBar extends StatelessWidget {
                 ),
               ],
             )),
+      ),
+    );
+  }
+}
+
+class NavItem extends StatelessWidget {
+  final IconData activeIconData;
+  final IconData inactiveIconData;
+  final String label;
+  final bool isActive;
+  final void Function() onTap;
+  const NavItem(
+      {Key? key,
+      required this.activeIconData,
+      required this.inactiveIconData,
+      required this.label,
+      required this.isActive,
+      required this.onTap})
+      : super(key: key);
+
+  final iconSize = 22.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: ClipOval(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            color: context.theme.cardBackground.withOpacity(0.8),
+            child: CupertinoButton(
+              padding: const EdgeInsets.all(0),
+              pressedOpacity: 0.9,
+              onPressed: onTap,
+              child: AnimatedOpacity(
+                duration: kStandardAnimationDuration,
+                opacity: isActive ? 1 : 0.6,
+                child: AnimatedSwitcher(
+                    duration: kStandardAnimationDuration,
+                    child: isActive
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                activeIconData,
+                                size: iconSize,
+                              ),
+                              SizedBox(height: 1),
+                              MyText(
+                                label,
+                                size: FONTSIZE.TINY,
+                              )
+                            ],
+                          )
+                        : Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                inactiveIconData,
+                                size: iconSize,
+                              ),
+                              SizedBox(height: 1),
+                              MyText(
+                                label,
+                                size: FONTSIZE.TINY,
+                              )
+                            ],
+                          )),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

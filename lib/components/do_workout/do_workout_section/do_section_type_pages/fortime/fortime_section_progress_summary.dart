@@ -57,18 +57,18 @@ class ForTimeSectionProgressSummaryState
   void didUpdateWidget(ForTimeSectionProgressSummary oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
+    /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
     if (!!_disableAutoScroll) {
-      if (widget.state.currentSectionRound < widget.workoutSection.rounds) {
+      if (widget.state.currentRoundIndex < widget.workoutSection.rounds) {
         _autoScrollController.scrollToIndex(
             _calcCurrentSetIndex(
-                widget.state.currentSectionRound, widget.state.currentSetIndex),
+                widget.state.currentRoundIndex, widget.state.currentSetIndex),
             preferPosition: AutoScrollPosition.begin);
       } else {
         /// Go to the finish line.
         _autoScrollController.scrollToIndex(
             _calcCurrentSetIndex(
-                widget.state.currentSectionRound, widget.state.currentSetIndex),
+                widget.state.currentRoundIndex, widget.state.currentSetIndex),
             preferPosition: AutoScrollPosition.begin);
       }
     }
@@ -95,9 +95,9 @@ class ForTimeSectionProgressSummaryState
             children: [
               MyText(
                 'Round ${roundNumber + 1}',
-                subtext: widget.state.currentSectionRound > roundNumber,
+                subtext: widget.state.currentRoundIndex > roundNumber,
               ),
-              if (widget.state.currentSectionRound > roundNumber)
+              if (widget.state.currentRoundIndex > roundNumber)
                 FadeIn(
                     child: Padding(
                   padding: const EdgeInsets.only(left: 6.0),
@@ -211,7 +211,7 @@ class _ForTimeWorkoutSetDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isActive = state.currentSectionRound == roundNumber &&
+    final isActive = state.currentRoundIndex == roundNumber &&
         state.currentSetIndex == workoutSet.sortPosition;
 
     // final int? lapTimeMs = state.lapTimesMs[roundNumber.toString()]

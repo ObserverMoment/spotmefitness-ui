@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
@@ -82,9 +83,9 @@ class AnimatedSubmitButtonState extends State<AnimatedSubmitButton>
               ? null
               : BoxConstraints.expand(height: widget.height),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-            color: context.theme.primary,
-          ),
+              borderRadius:
+                  BorderRadius.circular(submitted ? 100 : widget.borderRadius),
+              color: Styles.neonBlueOne),
           child: Center(
               child: submitted
                   ? Stack(
@@ -92,7 +93,7 @@ class AnimatedSubmitButtonState extends State<AnimatedSubmitButton>
                       children: <Widget>[
                         Icon(
                           CupertinoIcons.checkmark_alt,
-                          color: context.theme.background,
+                          color: Styles.white,
                           size: widget.setCompleteButtonIconSize,
                         ),
                         Positioned.fill(
@@ -102,7 +103,7 @@ class AnimatedSubmitButtonState extends State<AnimatedSubmitButton>
                                 Matrix4.rotationY(_checkAnimationDx * (pi / 2)),
                             alignment: Alignment.centerRight,
                             child: Container(
-                              color: context.theme.primary,
+                              color: Styles.neonBlueOne,
                             ),
                           ),
                         ),
@@ -114,7 +115,7 @@ class AnimatedSubmitButtonState extends State<AnimatedSubmitButton>
                           : (widget.text ?? 'Submit').toUpperCase(),
                       textAlign: TextAlign.center,
                       size: widget.fontSize,
-                      color: context.theme.background,
+                      color: Styles.white,
                       weight: FontWeight.bold,
                     )),
         ),

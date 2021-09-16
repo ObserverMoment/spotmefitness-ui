@@ -1,19 +1,25 @@
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
+import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logged_workout.dart';
 
 class WorkoutSectionProgressState {
-  late int numberSetsPerSectionRound;
-  int latestSectionRoundSplitTimeMs = 0;
-  int latestSetSplitTimeMs = 0;
+  late WorkoutSection workoutSection;
+  late int numberSetsPerRound;
+  int latestRoundSplitTimeSeconds = 0;
+  int latestSetSplitTimeSeconds = 0;
 
-  int currentSectionRound = 0;
+  int currentRoundIndex = 0;
   int currentSetIndex = 0;
 
-  LoggedWorkoutSectionData workoutSectionData = LoggedWorkoutSectionData()
-    ..rounds = [];
+  LoggedWorkoutSectionData sectionData = LoggedWorkoutSectionData()
+    ..rounds = [
+      WorkoutSectionRoundData()
+        ..sets = []
+        ..timeTakenSeconds = 0
+    ];
 
   /// Used for timed workouts or timecaps.
   /// Can be the next set or the end of the section, depending on the section type.
-  int? timeToNextCheckpointMs;
+  int? secondsToNextCheckpoint;
 
   /// Must be a double between 0.0 and 1.0 inclusive.
   /// How this is calculated will depend on the type of workout / workout controller.
@@ -21,70 +27,73 @@ class WorkoutSectionProgressState {
   /// ForTime and Free Session workouts are based on rounds and sets complete vs total rounds and set in the workout.
   double percentComplete = 0.0;
 
-  /// Only used for [LastStanding] type sections where a user can 'get ahead' of the time and so should be resting while they wait for the next period.
-  bool userShouldBeResting = false;
-
-  WorkoutSectionProgressState(WorkoutSection workoutSection) {
-    numberSetsPerSectionRound = workoutSection.workoutSets.length;
+  WorkoutSectionProgressState(this.workoutSection) {
+    numberSetsPerRound = workoutSection.workoutSets.length;
   }
 
   /// This is invoked each time a new state is generated.
   /// So make sure if you add any fields that they also get added to this copy method!
   WorkoutSectionProgressState.copy(WorkoutSectionProgressState o)
-      : currentSectionRound = o.currentSectionRound,
+      : currentRoundIndex = o.currentRoundIndex,
         currentSetIndex = o.currentSetIndex,
-        workoutSectionData = o.workoutSectionData,
+        sectionData = o.sectionData,
         percentComplete = o.percentComplete,
-        timeToNextCheckpointMs = o.timeToNextCheckpointMs,
-        numberSetsPerSectionRound = o.numberSetsPerSectionRound,
-        latestSectionRoundSplitTimeMs = o.latestSectionRoundSplitTimeMs,
-        latestSetSplitTimeMs = o.latestSetSplitTimeMs,
-        userShouldBeResting = o.userShouldBeResting;
+        secondsToNextCheckpoint = o.secondsToNextCheckpoint,
+        numberSetsPerRound = o.numberSetsPerRound,
+        latestRoundSplitTimeSeconds = o.latestRoundSplitTimeSeconds,
+        latestSetSplitTimeSeconds = o.latestSetSplitTimeSeconds;
 
   /// Move to next set, or if currently on the last set of a section round, move to the round - resetting the section index to 0.
   /// [secondsElapsed] is the total seconds passed for this section.
-  /// This method will calculate the splits for the set / section from this and the latest split times stored locally.
-  /// Makes a copy of the current state and returns it.
+  /// This method will calculate the time taken for the set / section from [secondsElapsed] and the latest split times stored locally. [latestRoundSplitTimeSeconds] and [latestSetSplitTimeSeconds].
   void moveToNextSetOrSection(int secondsElapsed) {
-    final elapsedMs = secondsElapsed * 1000;
-    final sectionLapTimeTimeMs = elapsedMs - latestSectionRoundSplitTimeMs;
-    final setLapTimeTimeMs = elapsedMs - latestSetSplitTimeMs;
+    final roundTimeTakenSeconds = secondsElapsed - latestRoundSplitTimeSeconds;
+    final setTimeTakenSeconds = secondsElapsed - latestSetSplitTimeSeconds;
 
-    if (currentSetIndex >= numberSetsPerSectionRound - 1) {
-      /// Move to the next section round.
-      latestSectionRoundSplitTimeMs = elapsedMs;
+    if (currentSetIndex >= numberSetsPerRound - 1) {
+      /// Moving to the next round.
+      /// Update the latest round split time.
+      latestRoundSplitTimeSeconds = secondsElapsed;
 
       /// Add the latest lap times.
-      addSectionRoundLapTime(sectionLapTimeTimeMs);
+      addSectionRoundData(roundTimeTakenSeconds);
 
-      addSetLapTime(setLapTimeTimeMs);
+      addSectionRoundSetData(setTimeTakenSeconds);
 
-      currentSectionRound += 1;
+      currentRoundIndex += 1;
       currentSetIndex = 0;
     } else {
-      /// Move to the next set.
-      /// Add the latest lap time.
-      addSetLapTime(setLapTimeTimeMs);
+      /// Moving to the next set only.
+      addSectionRoundSetData(setTimeTakenSeconds);
 
       currentSetIndex += 1;
     }
 
-    /// Always update the set split time when moving to the next set.
-    latestSetSplitTimeMs = elapsedMs;
+    /// Update the latest set split time.
+    latestSetSplitTimeSeconds = secondsElapsed;
   }
 
-  /// Add a lapTime at the [currentSectionRound] and [currentSetIndex]
-  void addSetLapTime(int lapTimeMs) {
-    /// TODO.
+  /// At the [currentRoundIndex] add [timeTakenSeconds]
+  /// Add new WorkoutSectionRoundData object ready for the next rounds data.
+  void addSectionRoundData(int timeTakenSeconds) {
+    sectionData.rounds[currentRoundIndex].timeTakenSeconds = timeTakenSeconds;
+    sectionData.rounds.add(WorkoutSectionRoundData()
+      ..sets = []
+      ..timeTakenSeconds = 0);
   }
 
-  void addSectionRoundLapTime(int lapTimeMs) {
-    /// TODO.
+  /// At the [currentRoundIndex] and [currentSetIndex]
+  void addSectionRoundSetData(int timeTakenSeconds) {
+    final workoutSet = workoutSection.workoutSets[currentSetIndex];
+    final setDataWithRepeats = loggedWorkoutSetDataFromWorkoutSet(
+        workoutSet, workoutSection.workoutSectionType);
+
+    sectionData.rounds[currentRoundIndex].sets.addAll(setDataWithRepeats);
   }
 
   void moveToNextSet() {
-    if (currentSetIndex == numberSetsPerSectionRound - 1) {
-      currentSectionRound++;
+    if (currentSetIndex == numberSetsPerRound - 1) {
+      currentRoundIndex++;
       currentSetIndex = 0;
     } else {
       currentSetIndex++;
@@ -92,7 +101,7 @@ class WorkoutSectionProgressState {
   }
 
   void moveToNextSection() {
-    currentSectionRound++;
+    currentRoundIndex++;
     currentSetIndex = 0;
   }
 }

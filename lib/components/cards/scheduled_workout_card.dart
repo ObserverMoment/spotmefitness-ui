@@ -26,7 +26,7 @@ class ScheduledWorkoutCard extends StatelessWidget {
         ? Styles.colorOne // Done
         : scheduledWorkout.scheduledAt.isBefore(DateTime.now())
             ? Styles.errorRed // Missed
-            : Styles.colorFour; // Upcoming
+            : Styles.infoBlue; // Upcoming
     final IconData icon = hasLog
         ? CupertinoIcons.checkmark_alt_circle // Done
         : scheduledWorkout.scheduledAt.isBefore(DateTime.now())
@@ -103,7 +103,6 @@ class ScheduledWorkoutCard extends StatelessWidget {
             if (scheduledWorkout.gymProfile != null)
               MyText(
                 scheduledWorkout.gymProfile!.name,
-                color: Styles.infoBlue,
                 size: FONTSIZE.SMALL,
               ),
           ],

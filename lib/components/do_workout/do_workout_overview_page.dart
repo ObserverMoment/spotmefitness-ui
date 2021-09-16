@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
@@ -31,11 +33,11 @@ class DoWorkoutOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// Because [workout.workoutSections] are not in order.
-    final sortedWorkoutSections =
-        context.select<DoWorkoutBloc, List<WorkoutSection>>(
-            (b) => b.sortedWorkoutSections);
-    final workout = context.select<DoWorkoutBloc, Workout>((b) => b.workout);
+    final workoutSections = context.select<DoWorkoutBloc, List<WorkoutSection>>(
+        (b) => b.activeWorkout.workoutSections);
+
+    final workout =
+        context.select<DoWorkoutBloc, Workout>((b) => b.activeWorkout);
 
     return CupertinoPageScaffold(
       child: Stack(
@@ -47,6 +49,9 @@ class DoWorkoutOverview extends StatelessWidget {
                     'assets/home_page_images/home_page_workouts.jpg',
                     fit: BoxFit.cover,
                   ),
+          ),
+          SizedBox.expand(
+            child: Container(color: Styles.black.withOpacity(0.4)),
           ),
           Column(
             children: [
@@ -64,7 +69,7 @@ class DoWorkoutOverview extends StatelessWidget {
                         workout: workout,
                       ),
                     ),
-                    ...sortedWorkoutSections
+                    ...workoutSections
                         .map((workoutSection) => Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 6.0),
@@ -179,7 +184,7 @@ class _TopNavBar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: safeTopPadding),
       decoration:
-          BoxDecoration(color: context.theme.background.withOpacity(0.97)),
+          BoxDecoration(color: context.theme.background.withOpacity(0.85)),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
         child: Row(
@@ -195,6 +200,11 @@ class _TopNavBar extends StatelessWidget {
               label: 'Settings',
               onPressed: () => context.push(
                   fullscreenDialog: true, child: DoWorkoutSettings()),
+            ),
+            _TopNavBarIcon(
+              iconData: CupertinoIcons.plus_slash_minus,
+              label: 'Modify',
+              onPressed: () => print('open modifications'),
             ),
           ],
         ),
@@ -216,15 +226,22 @@ class _TopNavBarIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: Column(
-        children: [
-          Icon(iconData),
-          SizedBox(height: 2),
-          MyText(label, size: FONTSIZE.TINY)
-        ],
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: context.theme.cardBackground.withOpacity(0.8),
+      ),
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
+        child: Column(
+          children: [
+            Icon(iconData),
+            SizedBox(height: 2),
+            MyText(label, size: FONTSIZE.TINY)
+          ],
+        ),
       ),
     );
   }
@@ -265,6 +282,8 @@ class _WorkoutSectionSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<DoWorkoutBloc>();
+
     final List<EquipmentWithLoad> equipmentsWithLoad =
         workoutSection.equipmentsWithLoad;
 
@@ -332,10 +351,15 @@ class _WorkoutSectionSummary extends StatelessWidget {
               _buildSectionFooterButton(
                   CupertinoIcons.list_bullet,
                   'View Moves',
-                  () => context.push(
-                      fullscreenDialog: true,
-                      child: ViewWorkoutSectionMoves(
-                          sectionIndex: workoutSection.sortPosition))),
+                  () => Navigator.of(context).push(CupertinoPageRoute(
+                        fullscreenDialog: true,
+                        builder: (context) =>
+                            ChangeNotifierProvider<DoWorkoutBloc>.value(
+                          value: bloc,
+                          child: ViewWorkoutSectionMoves(
+                              sectionIndex: workoutSection.sortPosition),
+                        ),
+                      ))),
               _buildSectionFooterButton(
                   CupertinoIcons.play, 'Do Section', navigateToSectionPage),
             ],

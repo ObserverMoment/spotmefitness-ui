@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
-import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section_summary_tag.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
@@ -67,10 +67,25 @@ class LoggedWorkoutCard extends StatelessWidget {
                 spacing: 6,
                 runSpacing: 6,
                 children: sortedSections
-                    .map((s) => LoggedWorkoutSectionSummaryTag(s))
+                    .map((s) => LoggedWorkoutSectionSummaryTag(
+                          s,
+                        ))
                     .toList(),
               ),
-            )
+            ),
+          Padding(
+            padding: const EdgeInsets.only(top: 6.0, bottom: 4),
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: loggedWorkout.workoutGoals
+                  .map((g) => Tag(
+                        tag: g.name,
+                        fontSize: FONTSIZE.TINY,
+                      ))
+                  .toList(),
+            ),
+          )
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -144,7 +145,7 @@ class DifficultyLevelTag extends StatelessWidget {
       padding: kDefaultTagPadding,
       decoration: BoxDecoration(
           border: difficultyLevel == DifficultyLevel.elite
-              ? Border.all(color: Styles.white)
+              ? Border.all(color: Styles.white.withOpacity(0.8))
               : null,
           borderRadius: BorderRadius.circular(4),
           color: difficultyLevel.displayColor),
@@ -168,14 +169,10 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   final WorkoutSection workoutSection;
   final FONTSIZE fontSize;
   final Color? fontColor;
-  final bool withBorder;
   final bool uppercase;
   WorkoutSectionTypeTag(
       {required this.workoutSection,
       this.fontSize = FONTSIZE.SMALL,
-      // this.hasClassVideo = false,
-      // this.hasClassAudio = false,
-      this.withBorder = true,
       this.fontColor,
       this.uppercase = false});
 
@@ -186,12 +183,10 @@ class WorkoutSectionTypeTag extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: withBorder ? kDefaultTagPadding : null,
+          padding: kStandardCardPadding,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            border: withBorder
-                ? Border.all(color: context.theme.primary.withOpacity(0.2))
-                : null,
+            color: context.theme.background,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
@@ -240,80 +235,101 @@ class WorkoutSectionTypeTag extends StatelessWidget {
   }
 }
 
-// class WorkoutSectionTypeTag extends StatelessWidget {
-//   final String name;
-//   final int? timecap; // Seconds
-//   final FONTSIZE fontSize;
-//   final Color? fontColor;
-//   final bool hasClassVideo;
-//   final bool hasClassAudio;
-//   final bool withBorder;
-//   WorkoutSectionTypeTag(this.name,
-//       {this.timecap,
-//       this.fontSize = FONTSIZE.SMALL,
-//       this.hasClassVideo = false,
-//       this.hasClassAudio = false,
-//       this.withBorder = true,
-//       this.fontColor});
+class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
+  final LoggedWorkoutSection section;
+  final FONTSIZE fontSize;
+  final FontWeight fontWeight;
+  LoggedWorkoutSectionSummaryTag(
+    this.section, {
+    this.fontSize = FONTSIZE.SMALL,
+    this.fontWeight = FontWeight.normal,
+  });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         Container(
-//           padding: withBorder ? kDefaultTagPadding : null,
-//           alignment: Alignment.center,
-//           decoration: BoxDecoration(
-//             border:
-//                 withBorder ? Border.all(color: context.theme.primary) : null,
-//             borderRadius: BorderRadius.circular(60),
-//           ),
-//           child: Row(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               MyText(
-//                 name,
-//                 lineHeight: 1.2,
-//                 size: fontSize,
-//                 textAlign: TextAlign.center,
-//                 weight: FontWeight.bold,
-//                 color: fontColor,
-//               ),
-//               if (timecap != null)
-//                 MyText(
-//                   ' - ${(timecap! / 60).round()} mins',
-//                   lineHeight: 1.2,
-//                   size: fontSize,
-//                   textAlign: TextAlign.center,
-//                   weight: FontWeight.bold,
-//                   color: fontColor,
-//                 ),
-//               if (hasClassVideo)
-//                 Padding(
-//                   padding: const EdgeInsets.only(left: 8.0),
-//                   child: Icon(
-//                     CupertinoIcons.film_fill,
-//                     size: 16,
-//                     color: fontColor,
-//                   ),
-//                 ),
-//               if (hasClassAudio)
-//                 Padding(
-//                   padding: const EdgeInsets.only(left: 8.0),
-//                   child: Icon(
-//                     CupertinoIcons.volume_up,
-//                     size: 16,
-//                     color: fontColor,
-//                   ),
-//                 ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+  int? get _repsScore => section.repScore ?? null;
+
+  Widget _text(String t) => MyText(t, size: fontSize, weight: fontWeight);
+
+  List<Widget> _build() {
+    final time = section.timeTakenSeconds;
+
+    /// User does not have to enter a rep score for timed workouts - so it may be null.
+    /// If it is null then just display the length of the workout section.
+    return [kEMOMName, kHIITCircuitName, kTabataName]
+                .contains(section.workoutSectionType.name) &&
+            _repsScore == null
+        ? [
+            Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: _text(Duration(seconds: time).compactDisplay()),
+            )
+          ]
+        : [
+            SizedBox(width: 4),
+            _text('${_repsScore ?? 0} reps'),
+            _text(' in '),
+            _text(Duration(seconds: time).compactDisplay())
+          ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            padding: kStandardCardPadding,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: context.theme.background,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MyText('${section.workoutSectionType.name}',
+                    size: fontSize, weight: fontWeight),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _build(),
+                )
+              ],
+            )),
+      ],
+    );
+  }
+}
+
+class DurationTag extends StatelessWidget {
+  final Duration duration;
+  final FONTSIZE fontSize;
+  final double iconSize;
+  final Color? backgroundColor;
+  final Color? textColor;
+  const DurationTag(
+      {Key? key,
+      required this.duration,
+      this.fontSize = FONTSIZE.SMALL,
+      this.iconSize = 13,
+      this.backgroundColor,
+      this.textColor})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ContentBox(
+        backgroundColor: backgroundColor,
+        borderRadius: 4,
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(CupertinoIcons.timer, size: iconSize),
+            SizedBox(width: 4),
+            MyText(duration.displayString, size: fontSize, color: textColor),
+          ],
+        ));
+  }
+}
 
 class ProgressJournalGoalAndTagsTag extends StatelessWidget {
   final ProgressJournalGoal progressJournalGoal;

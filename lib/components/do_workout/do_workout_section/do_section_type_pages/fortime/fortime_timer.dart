@@ -62,80 +62,77 @@ class ForTimeTimer extends StatelessWidget {
         ? sortedWorkoutSets[0]
         : sortedWorkoutSets[state.currentSetIndex + 1];
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.only(bottom: EnvironmentConfig.bottomNavBarHeight),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _handlePlayPause(context),
-          child: StreamBuilder<int>(
-            initialData: 0,
-            stream: context
-                .read<DoWorkoutBloc>()
-                .getStopWatchTimerForSection(workoutSection.sortPosition)
-                .secondTime,
-            builder: (context, AsyncSnapshot<int> snapshot) {
-              final seconds = snapshot.data!;
+    return Padding(
+      padding: EdgeInsets.only(bottom: EnvironmentConfig.bottomNavBarHeight),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _handlePlayPause(context),
+        child: StreamBuilder<int>(
+          initialData: 0,
+          stream: context
+              .read<DoWorkoutBloc>()
+              .getStopWatchTimerForSection(workoutSection.sortPosition)
+              .secondTime,
+          builder: (context, AsyncSnapshot<int> snapshot) {
+            final seconds = snapshot.data!;
 
-              /// Get the remaining seconds in the minute.
-              final remainingOfCurrentMinute = (seconds % 60) / 60;
+            /// Get the remaining seconds in the minute.
+            final remainingOfCurrentMinute = (seconds % 60) / 60;
 
-              /// Get the display time.
-              final overAnHour = seconds > 3600;
-              final displayTime = StopWatchTimer.getDisplayTime(seconds * 1000,
-                  milliSecond: false, hours: overAnHour);
+            /// Get the display time.
+            final overAnHour = seconds > 3600;
+            final displayTime = StopWatchTimer.getDisplayTime(seconds * 1000,
+                milliSecond: false, hours: overAnHour);
 
-              return LayoutBuilder(
-                  builder: (context, constraints) => Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          CircularPercentIndicator(
-                              header: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    H3('Now: '),
-                                    _buildWorkoutSetDisplay(currentSet),
-                                  ],
-                                ),
+            return LayoutBuilder(
+                builder: (context, constraints) => Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        CircularPercentIndicator(
+                            header: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  H3('Now: '),
+                                  _buildWorkoutSetDisplay(currentSet),
+                                ],
                               ),
-                              center: MyText(
-                                displayTime,
-                                size: FONTSIZE.DISPLAY,
-                                lineHeight: 1,
+                            ),
+                            center: MyText(
+                              displayTime,
+                              size: FONTSIZE.DISPLAY,
+                              lineHeight: 1,
+                            ),
+                            footer: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      H3('Next: '),
+                                      _buildWorkoutSetDisplay(nextSet),
+                                    ],
+                                  ),
+                                  MyText(
+                                    'Tap screen to start / pause',
+                                    size: FONTSIZE.SMALL,
+                                    subtext: true,
+                                  )
+                                ],
                               ),
-                              footer: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        H3('Next: '),
-                                        _buildWorkoutSetDisplay(nextSet),
-                                      ],
-                                    ),
-                                    MyText(
-                                      'Tap screen to start / pause',
-                                      size: FONTSIZE.SMALL,
-                                      subtext: true,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              backgroundColor:
-                                  context.theme.primary.withOpacity(0.1),
-                              linearGradient: Styles.pinkGradient,
-                              circularStrokeCap: CircularStrokeCap.round,
-                              percent: remainingOfCurrentMinute,
-                              radius: constraints.maxWidth / 1.8),
-                        ],
-                      ));
-            },
-          ),
+                            ),
+                            backgroundColor:
+                                context.theme.primary.withOpacity(0.1),
+                            linearGradient: Styles.neonBlueGradient,
+                            circularStrokeCap: CircularStrokeCap.round,
+                            percent: remainingOfCurrentMinute,
+                            radius: constraints.maxWidth / 1.7),
+                      ],
+                    ));
+          },
         ),
       ),
     );

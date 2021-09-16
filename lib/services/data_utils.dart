@@ -57,22 +57,26 @@ class DataUtils {
 
   /// Time and distance moves: a workoutMove counts as one 'rep'.
   /// E.g. 10mtr row would be 1 rep. 10 seconds hang hold would be one rep.
+  /// One 'round' of the section.
   static int totalRepsInSection(WorkoutSection section) {
     return section.workoutSets.fold(0, (sectionAcum, nextSet) {
-      return sectionAcum +
-          nextSet.rounds *
-              nextSet.workoutMoves.fold(0, (setAcum, nextMove) {
-                if ([
-                  WorkoutMoveRepType.time,
-                  WorkoutMoveRepType.distance,
-                  WorkoutMoveRepType.artemisUnknown
-                ].contains(nextMove.repType)) {
-                  return setAcum + 1;
-                } else {
-                  return setAcum + nextMove.reps.round();
-                }
-              });
+      return sectionAcum + totalRepsInSet(nextSet);
     });
+  }
+
+  static int totalRepsInSet(WorkoutSet workoutSet) {
+    return workoutSet.rounds *
+        workoutSet.workoutMoves.fold(0, (setAcum, nextMove) {
+          if ([
+            WorkoutMoveRepType.time,
+            WorkoutMoveRepType.distance,
+            WorkoutMoveRepType.artemisUnknown
+          ].contains(nextMove.repType)) {
+            return setAcum + 1;
+          } else {
+            return setAcum + nextMove.reps.round();
+          }
+        });
   }
 
   static List<BodyArea> bodyAreasInWorkoutSection(WorkoutSection section) {

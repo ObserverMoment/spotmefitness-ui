@@ -20,7 +20,7 @@ class AMRAPSectionController extends WorkoutSectionController {
     _sectionTimecapSeconds = workoutSection.timecap;
 
     /// Time till the AMRAP timecap at the end of the section.
-    state.timeToNextCheckpointMs = _sectionTimecapSeconds * 1000;
+    state.secondsToNextCheckpoint = _sectionTimecapSeconds;
     progressStateController.add(state);
 
     _timerStreamSubscription =
@@ -39,8 +39,7 @@ class AMRAPSectionController extends WorkoutSectionController {
       }
 
       /// Update time left till timecap and percent complete.
-      state.timeToNextCheckpointMs =
-          (_sectionTimecapSeconds - secondsElapsed) * 1000;
+      state.secondsToNextCheckpoint = _sectionTimecapSeconds - secondsElapsed;
 
       state.percentComplete = secondsElapsed / _sectionTimecapSeconds;
 

@@ -44,12 +44,12 @@ class _TimedSectionMovesListState extends State<TimedSectionMovesList> {
   void didUpdateWidget(TimedSectionMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
+    /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
     if (!_disableAutoScroll &&
-        widget.state.currentSectionRound < widget.workoutSection.rounds) {
+        widget.state.currentRoundIndex < widget.workoutSection.rounds) {
       _autoScrollController.scrollToIndex(
           _calcCurrentSetIndex(
-              widget.state.currentSectionRound, widget.state.currentSetIndex),
+              widget.state.currentRoundIndex, widget.state.currentSetIndex),
           preferPosition: AutoScrollPosition.begin);
     }
   }
@@ -79,9 +79,9 @@ class _TimedSectionMovesListState extends State<TimedSectionMovesList> {
             children: [
               MyText(
                 'Round ${roundNumber + 1}',
-                subtext: widget.state.currentSectionRound > roundNumber,
+                subtext: widget.state.currentRoundIndex > roundNumber,
               ),
-              if (widget.state.currentSectionRound > roundNumber)
+              if (widget.state.currentRoundIndex > roundNumber)
                 FadeIn(
                     child: Padding(
                   padding: const EdgeInsets.only(left: 6.0),
@@ -157,7 +157,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isCurrentActiveSet = state.currentSectionRound == roundNumber &&
+    final bool isCurrentActiveSet = state.currentRoundIndex == roundNumber &&
         state.currentSetIndex == workoutSet.sortPosition;
 
     return AnimatedOpacity(
@@ -173,7 +173,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
           children: [
             WorkoutSetDisplay(
                 workoutSet: workoutSet, workoutSectionType: workoutSectionType),
-            if (state.timeToNextCheckpointMs != null)
+            if (state.secondsToNextCheckpoint != null)
               GrowInOut(
                   show: isCurrentActiveSet,
                   child: Padding(
@@ -181,7 +181,7 @@ class _WorkoutSetInMovesList extends StatelessWidget {
                     child: LinearPercentIndicator(
                       percent: isCurrentActiveSet
                           ? 1 -
-                              (state.timeToNextCheckpointMs! /
+                              (state.secondsToNextCheckpoint! /
                                   (workoutSet.duration * 1000))
                           : 0,
                       linearGradient: Styles.pinkGradient,

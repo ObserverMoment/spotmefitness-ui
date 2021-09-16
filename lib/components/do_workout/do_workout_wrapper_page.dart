@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/future_builder_handler.dart';
+import 'package:spotmefitness_ui/components/indicators.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -47,16 +50,36 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<Workout>(
-        loadingWidget: ShimmerDetailsPage(title: 'Warming Up'),
+        loadingWidget: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/logos/sofie_logo.svg',
+              width: 40,
+              color: context.theme.primary,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MyText('WARMING UP'),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: LoadingDots(),
+            ),
+          ],
+        ),
         future: _initWorkoutFuture,
         builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
               create: (context) => DoWorkoutBloc(
                 context: context,
-                workout: workout,
+                originalWorkout: workout,
               ),
               builder: (context, _) {
-                final allSectionsComplete = context
-                    .select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
+                final allSectionsComplete = context.select<DoWorkoutBloc, bool>(
+                    (b) =>
+                        b.activeWorkout.workoutSections.length ==
+                        b.loggedWorkout.loggedWorkoutSections.length);
 
                 return AutoRouter.declarative(
                     routes: (_) => [

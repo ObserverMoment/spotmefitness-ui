@@ -64,11 +64,14 @@ class EditableTextFieldRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: MyText(
-              hasText ? text : placeholder,
-              overflow: TextOverflow.ellipsis,
-              subtext: !hasText,
-              textAlign: TextAlign.end,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: MyText(
+                hasText ? text : placeholder,
+                overflow: TextOverflow.ellipsis,
+                subtext: !hasText,
+                textAlign: TextAlign.end,
+              ),
             ),
           ),
         ],
@@ -132,12 +135,15 @@ class EditableTextAreaRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: MyText(
-              hasText ? text : placeholder,
-              overflow: TextOverflow.ellipsis,
-              subtext: !hasText,
-              maxLines: maxDisplayLines,
-              textAlign: hasText ? TextAlign.start : TextAlign.end,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: MyText(
+                hasText ? text : placeholder,
+                overflow: TextOverflow.ellipsis,
+                subtext: !hasText,
+                maxLines: maxDisplayLines,
+                textAlign: TextAlign.end,
+              ),
             ),
           ),
         ],

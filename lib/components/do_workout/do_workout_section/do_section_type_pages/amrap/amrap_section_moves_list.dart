@@ -41,12 +41,12 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
   void didUpdateWidget(AMRAPSectionMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    /// When reaching the end of the section [state.currentSectionRound] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
+    /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
     if (!_disableAutoScroll &&
-        widget.state.currentSectionRound < widget.workoutSection.rounds) {
+        widget.state.currentRoundIndex < widget.workoutSection.rounds) {
       _autoScrollController.scrollToIndex(
           _calcCurrentSetIndex(
-              widget.state.currentSectionRound, widget.state.currentSetIndex),
+              widget.state.currentRoundIndex, widget.state.currentSetIndex),
           preferPosition: AutoScrollPosition.begin);
     }
   }
@@ -81,7 +81,7 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
             index: listItemIndex,
             key: Key(listItemIndex.toString()),
             child: Padding(
-              padding: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
               child: _WorkoutSetInMovesList(
                 state: widget.state,
                 workoutSectionType: widget.workoutSection.workoutSectionType,
@@ -110,8 +110,8 @@ class _AMRAPSectionMovesListState extends State<AMRAPSectionMovesList> {
       child: ListView(
           shrinkWrap: true,
           controller: _autoScrollController,
-          padding:
-              EdgeInsets.only(bottom: EnvironmentConfig.bottomNavBarHeight),
+          padding: EdgeInsets.only(
+              top: 4, bottom: EnvironmentConfig.bottomNavBarHeight),
           children: List.generate(widget.workoutSection.rounds,
                   (roundNumber) => _movesList(roundNumber))
               .expand((x) => x)
@@ -144,7 +144,9 @@ class _WorkoutSetInMovesList extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: kStandardCardBorderRadius,
             border: Border.all(
-                color: isCurrentActiveSet ? Styles.pink : Colors.transparent)),
+                color: isCurrentActiveSet
+                    ? Styles.neonBlueOne
+                    : Colors.transparent)),
         child: WorkoutSetDisplay(
             workoutSet: workoutSet, workoutSectionType: workoutSectionType),
       ),

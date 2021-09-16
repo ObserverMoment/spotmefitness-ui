@@ -82,7 +82,6 @@ class WorkoutStructureWorkoutSection extends StatelessWidget {
             children: [
               WorkoutSectionTypeTag(
                 workoutSection: workoutSection,
-                withBorder: false,
                 fontSize: FONTSIZE.BIG,
                 fontColor: Styles.colorTwo,
               ),

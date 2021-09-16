@@ -3,8 +3,8 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.da
 class DoWorkoutUtils {
   static bool moveIsCompleted(WorkoutSectionProgressState state,
       int moveRoundNumber, int moveSetIndex) {
-    return state.currentSectionRound > moveRoundNumber ||
-        (state.currentSectionRound == moveRoundNumber &&
+    return state.currentRoundIndex > moveRoundNumber ||
+        (state.currentRoundIndex == moveRoundNumber &&
             state.currentSetIndex > moveSetIndex);
   }
 }

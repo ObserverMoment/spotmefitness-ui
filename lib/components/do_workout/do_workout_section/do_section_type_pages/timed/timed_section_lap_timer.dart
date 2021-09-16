@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
+import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
@@ -38,7 +38,7 @@ class TimedSectionLapTimer extends StatelessWidget {
       .duration;
 
   double get _currentSetTimeRemaining =>
-      1 - (state.timeToNextCheckpointMs! / (_currentSetDuration * 1000));
+      1 - (state.secondsToNextCheckpoint! / _currentSetDuration);
 
   Widget _buildWorkoutSetDisplay(WorkoutSet workoutSet) => Padding(
         padding: const EdgeInsets.all(6.0),
@@ -93,7 +93,7 @@ class TimedSectionLapTimer extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    H3('Round ${state.currentSectionRound + 1} of $totalRounds'),
+                                    H3('Round ${state.currentRoundIndex + 1} of $totalRounds'),
                                     H3('Set ${state.currentSetIndex + 1} of $totalSetsPerRound'),
                                   ],
                                 ),
@@ -108,7 +108,7 @@ class TimedSectionLapTimer extends StatelessWidget {
                             ),
                           ),
                           center: TimerDisplayText(
-                            milliseconds: state.timeToNextCheckpointMs!,
+                            milliseconds: state.secondsToNextCheckpoint!,
                             size: 50,
                           ),
                           footer: Padding(

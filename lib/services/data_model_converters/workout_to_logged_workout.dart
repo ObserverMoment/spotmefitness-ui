@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
@@ -60,18 +58,25 @@ LoggedWorkoutSectionData loggedWorkoutSectionDataFromWorkoutSection(
       (index) => WorkoutSectionRoundData()
         ..timeTakenSeconds = workoutSection.timecapIfValid ?? 0
         ..sets = workoutSection.workoutSets
-            .map((wSet) => List.generate(
-                wSet.rounds,
-                (_) => WorkoutSectionRoundSetData()
-                  ..moves = generateMovesList(wSet)
-                  ..timeTakenSeconds = workoutSetDurationOrNull(
-                          workoutSection.workoutSectionType, wSet) ??
-                      0))
+            .map((wSet) => loggedWorkoutSetDataFromWorkoutSet(
+                wSet, workoutSection.workoutSectionType))
             .expand((x) => x)
             .toList()
             .toList());
 
   return LoggedWorkoutSectionData()..rounds = rounds;
+}
+
+/// Returns a list because a set can have repeats - there will be one object for each repeat.
+List<WorkoutSectionRoundSetData> loggedWorkoutSetDataFromWorkoutSet(
+    WorkoutSet workoutSet, WorkoutSectionType workoutSectionType) {
+  return List.generate(
+          workoutSet.rounds,
+          (_) => WorkoutSectionRoundSetData()
+            ..moves = generateMovesList(workoutSet)
+            ..timeTakenSeconds =
+                workoutSetDurationOrNull(workoutSectionType, workoutSet) ?? 0)
+      .toList();
 }
 
 String generateMovesList(WorkoutSet workoutSet) => workoutSet.workoutMoves

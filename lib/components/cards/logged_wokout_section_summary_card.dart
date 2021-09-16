@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spotmefitness_ui/components/logged_workout/logged_workout_section_summary_tag.dart';
+import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';

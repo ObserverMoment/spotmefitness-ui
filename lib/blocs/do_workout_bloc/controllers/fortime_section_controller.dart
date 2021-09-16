@@ -4,7 +4,8 @@ import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ForTimeSectionController extends WorkoutSectionController {
-  late int _totalRepsToComplete;
+  late int totalRepsToComplete;
+  int repsCompleted = 0;
 
   ForTimeSectionController(
       {required WorkoutSection workoutSection,
@@ -14,31 +15,28 @@ class ForTimeSectionController extends WorkoutSectionController {
             stopWatchTimer: stopWatchTimer,
             workoutSection: workoutSection,
             markSectionComplete: markSectionComplete) {
-    _totalRepsToComplete = DataUtils.totalRepsInSection(workoutSection);
+    totalRepsToComplete =
+        DataUtils.totalRepsInSection(workoutSection) * workoutSection.rounds;
   }
 
-  /// Public method for the user to progress to the next set (or section if this is the last set)
+  /// Public method for the user to progress to the next set (or section if this is the last set in that section).
   void markCurrentWorkoutSetAsComplete() {
     if (!sectionComplete) {
-      /// TODO
-      /// Update the [loggedWorkoutSection]
-      // loggedWorkoutSection.loggedWorkoutSets.add(workoutSetToLoggedWorkoutSet(
-      //     sortedWorkoutSets[state.currentSetIndex], state.currentSectionRound));
+      /// Update reps completed.
+      repsCompleted += DataUtils.totalRepsInSet(
+          workoutSection.workoutSets[state.currentSetIndex]);
 
-      // final secondsElapsed = stopWatchTimer.secondTime.value;
-      // state.moveToNextSetOrSection(secondsElapsed);
+      /// Update percentage complete.
+      state.percentComplete = repsCompleted / totalRepsToComplete;
 
-      // /// Update percentage complete.
-      // state.percentComplete =
-      //     DataUtils.totalRepsInSection<LoggedWorkoutSection>(
-      //             loggedWorkoutSection) /
-      //         _totalRepsToComplete;
+      /// Move to the next set.
+      state.moveToNextSetOrSection(stopWatchTimer.secondTime.value);
 
       /// Broadcast new state.
       progressStateController.add(state);
 
       /// Check for end of the section.
-      if (state.currentSectionRound >= workoutSection.rounds) {
+      if (state.currentRoundIndex >= workoutSection.rounds) {
         sectionComplete = true;
         markSectionComplete();
       }

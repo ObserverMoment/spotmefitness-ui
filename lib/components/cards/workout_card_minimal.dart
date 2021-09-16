@@ -62,7 +62,7 @@ class MinimalWorkoutCard extends StatelessWidget {
         children: [
           Container(
             padding:
-                const EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 8),
+                const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -129,17 +129,16 @@ class MinimalWorkoutCard extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
+                if (workout.lengthMinutes != null)
+                  DurationTag(
+                    duration: Duration(minutes: workout.lengthMinutes!),
+                    backgroundColor: Styles.infoBlue,
+                    textColor: Styles.white,
+                  ),
                 DifficultyLevelTag(
                   workout.difficultyLevel,
                   fontSize: FONTSIZE.TINY,
                 ),
-                if (workout.lengthMinutes != null)
-                  Tag(
-                    tag:
-                        Duration(minutes: workout.lengthMinutes!).displayString,
-                    color: Styles.colorOne,
-                    textColor: Styles.white,
-                  ),
                 if (workout.workoutSections.isNotEmpty)
                   ...workout.workoutSections
                       .sortedBy<num>((section) => section.sortPosition)
