@@ -6,6 +6,7 @@ import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 class DoWorkoutSectionNav extends StatelessWidget {
   final int activePageIndex;
   final void Function(int pageIndex) goToPage;
+  final bool showVideoTab;
   final bool showAudioTab;
   final bool muteAudio;
   final void Function() toggleMuteAudio;
@@ -16,6 +17,7 @@ class DoWorkoutSectionNav extends StatelessWidget {
     required this.muteAudio,
     required this.activePageIndex,
     required this.toggleMuteAudio,
+    required this.showVideoTab,
   }) : super(key: key);
 
   @override
@@ -31,17 +33,18 @@ class DoWorkoutSectionNav extends StatelessWidget {
           isActive: activePageIndex == 0,
         ),
         NavItem(
-          inactiveIconData: CupertinoIcons.tv,
-          activeIconData: CupertinoIcons.tv_fill,
+          inactiveIconData: CupertinoIcons.timer,
+          activeIconData: CupertinoIcons.timer_fill,
           onTap: () => goToPage(1),
           isActive: activePageIndex == 1,
         ),
-        NavItem(
-          inactiveIconData: CupertinoIcons.timer,
-          activeIconData: CupertinoIcons.timer_fill,
-          onTap: () => goToPage(2),
-          isActive: activePageIndex == 2,
-        ),
+        if (showVideoTab)
+          NavItem(
+            inactiveIconData: CupertinoIcons.tv,
+            activeIconData: CupertinoIcons.tv_fill,
+            onTap: () => goToPage(2),
+            isActive: activePageIndex == 2,
+          ),
         if (showAudioTab)
           NavItem(
             inactiveIconData: CupertinoIcons.volume_up,

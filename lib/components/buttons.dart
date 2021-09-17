@@ -24,6 +24,7 @@ class MyButton extends StatelessWidget {
   final bool disabled;
   final bool loading;
   final bool withMinWidth;
+  final double height;
 
   MyButton({
     this.prefix,
@@ -37,6 +38,7 @@ class MyButton extends StatelessWidget {
     this.withMinWidth = true,
     this.loading = false,
     this.backgroundGradient,
+    this.height = 54,
   });
 
   @override
@@ -49,7 +51,7 @@ class MyButton extends StatelessWidget {
         onPressed: disabled ? null : onPressed,
         pressedOpacity: 0.9,
         child: Container(
-          height: 54,
+          height: height,
           constraints: withMinWidth ? BoxConstraints(minWidth: 300) : null,
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           decoration: BoxDecoration(

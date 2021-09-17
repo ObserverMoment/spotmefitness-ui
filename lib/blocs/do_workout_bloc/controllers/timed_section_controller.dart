@@ -37,7 +37,7 @@ class TimedSectionController extends WorkoutSectionController {
     int _acumTime = 0;
     _setChangeTimes = List.generate(
         workoutSection.rounds,
-        (index) => sortedWorkoutSets
+        (index) => workoutSection.workoutSets
                 // wSet.duration is in seconds in the DB.
                 .map((wSet) {
               _acumTime += wSet.duration;

@@ -42,4 +42,9 @@ class ForTimeSectionController extends WorkoutSectionController {
       }
     }
   }
+
+  void reset() {
+    repsCompleted = 0;
+    super.reset();
+  }
 }

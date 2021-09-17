@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_overview_page.dart';
@@ -23,56 +21,31 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
   /// Or if > 0 user is viewing / doing the workout section at [workout.workoutSections][_activePageIndex]
   int _activePageIndex = 0;
 
-  void _navigateToSectionPage(int index) {
-    print('go to section index');
-
-    /// + 1 because 0 is the overview page. Sections start at 1.
-    setState(() => _activePageIndex = index + 1);
-  }
-
-  void _handleResetWorkout() {
-    context.showConfirmDialog(
-      title: 'Reset the whole workout?',
-      content: MyText(
-        'The work you have done will not be saved. OK?',
-        textAlign: TextAlign.center,
-        maxLines: 3,
-      ),
-      onConfirm: () => context.read<DoWorkoutBloc>().resetWorkout(),
-    );
+  void _navigateToPage(int index) {
+    setState(() => _activePageIndex = index);
   }
 
   void _handleExitRequest() {
-    context.read<DoWorkoutBloc>().pauseWorkout();
-
-    context.showDialog(
-        useRootNavigator: true,
-        title: 'Leave the Workout?',
-        barrierDismissible: true,
-        actions: [
-          CupertinoDialogAction(
-              child: MyText('Leave without logging'),
-              onPressed: () {
-                context.pop(rootNavigator: true); // Dialog.
-                context.popRoute(); // Do workout.
-              }),
-          CupertinoDialogAction(
-              child: MyText('Log progress, then Leave'),
-              onPressed: () {
-                context.pop(rootNavigator: true); // Dialog.
-                context.read<DoWorkoutBloc>().generatePartialLog();
-              }),
-          CupertinoDialogAction(
-              child: MyText('Restart the workout'),
-              onPressed: () {
-                context.pop(rootNavigator: true); // Dialog.
-                _handleResetWorkout();
-              }),
-          CupertinoDialogAction(
-              child: MyText('Cancel'),
-              onPressed: () => context.pop(rootNavigator: true) // Dialog.,
-              ),
-        ]);
+    context.showActionSheetMenu(title: 'Exit Workout?', actions: [
+      CupertinoActionSheetAction(
+          child: MyText('Clear progress and exit'),
+          onPressed: () {
+            context.pop(); // Dialog.
+            context.popRoute(); // Exit
+          }),
+      CupertinoActionSheetAction(
+          child: MyText('Save progress and exit'),
+          onPressed: () {
+            context.pop(); // Dialog.
+            context.read<DoWorkoutBloc>().generatePartialLog();
+          }),
+      CupertinoActionSheetAction(
+          child: MyText('Reset workout'),
+          onPressed: () {
+            context.pop(); // Dialog.
+            context.read<DoWorkoutBloc>().resetWorkout();
+          }),
+    ]);
   }
 
   @override
@@ -85,11 +58,12 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
       children: [
         DoWorkoutOverview(
             handleExitRequest: _handleExitRequest,
-            navigateToSectionPage: _navigateToSectionPage),
+            navigateToSectionPage: _navigateToPage),
         ...List.generate(
             numWorkoutSections,
             (i) => DoWorkoutSection(
                   sectionIndex: i,
+                  navigateToPage: _navigateToPage,
                 ))
       ],
     );

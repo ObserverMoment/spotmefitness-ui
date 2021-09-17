@@ -41,6 +41,26 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
     return result.data!.workoutById;
   }
 
+  Widget get _loadingWidget => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            'assets/logos/sofie_logo.svg',
+            width: 40,
+            color: context.theme.primary,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyText('WARMING UP'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: LoadingDots(),
+          ),
+        ],
+      );
+
   @override
   void initState() {
     super.initState();
@@ -50,32 +70,18 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilderHandler<Workout>(
-        loadingWidget: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SvgPicture.asset(
-              'assets/logos/sofie_logo.svg',
-              width: 40,
-              color: context.theme.primary,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: MyText('WARMING UP'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: LoadingDots(),
-            ),
-          ],
-        ),
+        loadingWidget: _loadingWidget,
         future: _initWorkoutFuture,
         builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
               create: (context) => DoWorkoutBloc(
-                context: context,
                 originalWorkout: workout,
               ),
               builder: (context, _) {
+                final mediaSetupComplete = context.select<DoWorkoutBloc, bool>(
+                    (b) => b.audioInitSuccess && b.videoInitSuccess);
+
+                if (!mediaSetupComplete) return _loadingWidget;
+
                 final allSectionsComplete = context.select<DoWorkoutBloc, bool>(
                     (b) =>
                         b.activeWorkout.workoutSections.length ==

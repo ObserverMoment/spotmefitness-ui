@@ -24,6 +24,8 @@ import 'package:collection/collection.dart';
 
 class DoWorkoutOverview extends StatelessWidget {
   final VoidCallback handleExitRequest;
+
+  /// Pass section index + 1 - because index 0 is the overview page.
   final void Function(int sectionIndex) navigateToSectionPage;
   const DoWorkoutOverview(
       {Key? key,
@@ -77,7 +79,7 @@ class DoWorkoutOverview extends StatelessWidget {
                                   workoutSection: workoutSection,
                                   navigateToSectionPage: () =>
                                       navigateToSectionPage(
-                                          workoutSection.sortPosition)),
+                                          workoutSection.sortPosition + 1)),
                             ))
                         .toList()
                   ],
@@ -192,7 +194,7 @@ class _TopNavBar extends StatelessWidget {
           children: [
             _TopNavBarIcon(
               iconData: CupertinoIcons.clear_thick,
-              label: 'Quit',
+              label: 'Exit',
               onPressed: handleExitRequest,
             ),
             _TopNavBarIcon(

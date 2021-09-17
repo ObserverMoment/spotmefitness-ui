@@ -1,13 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 /// Abstract parent for all workout section type sub controllers.
 abstract class WorkoutSectionController {
+  final WorkoutSection workoutSection;
+
+  final StopWatchTimer stopWatchTimer;
+
   /// Broadcast changes to the progress state.
   StreamController<WorkoutSectionProgressState> progressStateController =
       StreamController<WorkoutSectionProgressState>.broadcast();
@@ -17,30 +21,15 @@ abstract class WorkoutSectionController {
 
   late WorkoutSectionProgressState state;
 
-  /// The log that will be generated incrementally as the workout progresses.
-  /// Can be retrieved by the [DoWorkoutBloc] at any stage to be added to the main [LoggedWorkout.loggedWorkoutSections] list.
-  late LoggedWorkoutSection loggedWorkoutSection;
-
-  /// The sorted sets from the WorkoutSection.
-  late List<WorkoutSet> sortedWorkoutSets;
-
-  /// Used to know when to move forward one set and when to move to the next section round.
-  late int numberSetsPerSection;
-
-  final void Function() markSectionComplete;
-
-  final WorkoutSection workoutSection;
-  final StopWatchTimer stopWatchTimer;
-
+  bool sectionHasStarted = false;
   bool sectionComplete = false;
 
+  final VoidCallback markSectionComplete;
+
   WorkoutSectionController(
-      {required void Function() this.markSectionComplete,
+      {required VoidCallback this.markSectionComplete,
       required WorkoutSection this.workoutSection,
       required this.stopWatchTimer}) {
-    sortedWorkoutSets = workoutSection.workoutSets;
-    numberSetsPerSection = sortedWorkoutSets.length;
-
     state = WorkoutSectionProgressState(workoutSection);
     progressStateController.add(state);
   }
@@ -51,7 +40,9 @@ abstract class WorkoutSectionController {
 
   @mustCallSuper
   void reset() {
+    sectionHasStarted = false;
     sectionComplete = false;
+    stopWatchTimer.onExecute.add(StopWatchExecute.reset);
     state = WorkoutSectionProgressState(workoutSection);
     progressStateController.add(state);
   }

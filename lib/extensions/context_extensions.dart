@@ -302,7 +302,33 @@ extension BuildContextExtension on BuildContext {
   }
 
   /// Opens a classic design cupertino bottom sheet modal with save and cancel buttons at the bottom.
-  /// Does not use roo
+  /// Does not use root navigator by default.
+  Future<void> showActionSheetMenu({
+    required String title,
+    required List<Widget> actions,
+    bool useRootNavigator = false,
+  }) async {
+    final BuildContext context = this;
+
+    await showCupertinoModalPopup(
+        context: context,
+        useRootNavigator: useRootNavigator,
+        builder: (context) => CupertinoActionSheet(
+              title: MyHeaderText(
+                title,
+                textAlign: TextAlign.center,
+                size: FONTSIZE.BIG,
+              ),
+              actions: actions,
+              cancelButton: CupertinoActionSheetAction(
+                  onPressed: context.pop,
+                  child: MyText(
+                    'Cancel',
+                    color: context.theme.primary,
+                  )),
+            ));
+  }
+
   Future<void> showActionSheetPopup({
     required Widget child,
     bool useRootNavigator = false,

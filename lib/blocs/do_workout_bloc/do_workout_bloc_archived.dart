@@ -122,8 +122,8 @@ class DoWorkoutBloc extends ChangeNotifier {
   void generatePartialLog() {
     startedSections.forEachIndexed((index, started) {
       if (started) {
-        final sectionLog = _genLoggedWorkoutSection(index);
-        loggedWorkout.loggedWorkoutSections.add(sectionLog);
+        // final sectionLog = _genLoggedWorkoutSection(index);
+        // loggedWorkout.loggedWorkoutSections.add(sectionLog);
         _calculateTotalReps(index);
       }
     });
@@ -168,13 +168,13 @@ class DoWorkoutBloc extends ChangeNotifier {
     _audioPlayers[sectionIndex]?.stop();
     _stopWatchTimers[sectionIndex].onExecute.add(StopWatchExecute.stop);
 
-    final sectionLog = _genLoggedWorkoutSection(sectionIndex);
-    completedSections = completedSections
-        .mapIndexed((index, nullableLog) =>
-            index == sectionIndex ? sectionLog : nullableLog)
-        .toList();
+    // final sectionLog = _genLoggedWorkoutSection(sectionIndex);
+    // completedSections = completedSections
+    //     .mapIndexed((index, nullableLog) =>
+    //         index == sectionIndex ? sectionLog : nullableLog)
+    //     .toList();
 
-    loggedWorkout.loggedWorkoutSections.add(sectionLog);
+    // loggedWorkout.loggedWorkoutSections.add(sectionLog);
 
     if (completedSections.whereType<LoggedWorkoutSection>().length ==
         sortedWorkoutSections.length) {
@@ -184,13 +184,13 @@ class DoWorkoutBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  LoggedWorkoutSection _genLoggedWorkoutSection(int sectionIndex) {
-    final LoggedWorkoutSection sectionLog =
-        controllers[sectionIndex].loggedWorkoutSection;
-    sectionLog.timeTakenSeconds =
-        _stopWatchTimers[sectionIndex].secondTime.value;
-    return sectionLog;
-  }
+  // LoggedWorkoutSection _genLoggedWorkoutSection(int sectionIndex) {
+  //   final LoggedWorkoutSection sectionLog =
+  //       controllers[sectionIndex].loggedWorkoutSection;
+  //   sectionLog.timeTakenSeconds =
+  //       _stopWatchTimers[sectionIndex].secondTime.value;
+  //   return sectionLog;
+  // }
 
   void addNoteToLoggedWorkoutSection(int sectionIndex, String note) {
     final prev = loggedWorkout.loggedWorkoutSections[sectionIndex].toJson();
@@ -219,8 +219,8 @@ class DoWorkoutBloc extends ChangeNotifier {
   StopWatchTimer getStopWatchTimerForSection(int index) =>
       _stopWatchTimers[index];
 
-  LoggedWorkoutSection getLoggedWorkoutSectionForSection(int index) =>
-      controllers[index].loggedWorkoutSection;
+  // LoggedWorkoutSection getLoggedWorkoutSectionForSection(int index) =>
+  //     controllers[index].loggedWorkoutSection;
 
   /// For when user first starts the section from the StartSectionModal.
   /// For play / pause use [playSection(int)]

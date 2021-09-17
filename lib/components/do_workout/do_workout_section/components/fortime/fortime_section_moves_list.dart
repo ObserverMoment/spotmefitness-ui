@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/controllers/fortime_section_controller.dart';
-import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/fortime_rep_score.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/workout_section_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
@@ -15,24 +13,21 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:provider/provider.dart';
 
-/// For AMRAP and ForTime workouts.
 /// The user is progressing through the workout tapping 'set complete' or 'round complete' as they go.
-class ScoredSectionMovesList extends StatefulWidget {
+class ForTimeMovesList extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const ScoredSectionMovesList(
+  const ForTimeMovesList(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  _ScoredSectionMovesListState createState() => _ScoredSectionMovesListState();
+  _ForTimeMovesListState createState() => _ForTimeMovesListState();
 }
 
-class _ScoredSectionMovesListState extends State<ScoredSectionMovesList> {
+class _ForTimeMovesListState extends State<ForTimeMovesList> {
   late AutoScrollController _autoScrollController;
-  late ForTimeSectionController _forTimeSectionController;
 
   /// This list will auto scroll downwards as the workout progresses, with the current set at the top of the visible list.
   /// When the user interacts we start a ?? second timer. During this time autoscroll is disabled, allowing the user to check whichever part of the workout they need to.
@@ -44,16 +39,10 @@ class _ScoredSectionMovesListState extends State<ScoredSectionMovesList> {
   void initState() {
     super.initState();
     _autoScrollController = AutoScrollController();
-
-    /// This will throw error if this is not a ForTime section.
-    _forTimeSectionController = context
-            .read<DoWorkoutBloc>()
-            .getControllerForSection(widget.workoutSection.sortPosition)
-        as ForTimeSectionController;
   }
 
   @override
-  void didUpdateWidget(ScoredSectionMovesList oldWidget) {
+  void didUpdateWidget(ForTimeMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
@@ -118,10 +107,10 @@ class _ScoredSectionMovesListState extends State<ScoredSectionMovesList> {
             children: [
               MyHeaderText(
                 'FOR TIME',
-                weight: FontWeight.normal,
               ),
               DoWorkoutSectionTimer(workoutSection: widget.workoutSection),
-              _ForTimeRepsScore(controller: _forTimeSectionController),
+              ForTimeRepsScore(
+                  sectionIndex: widget.workoutSection.sortPosition),
             ],
           ),
         ),
@@ -159,27 +148,6 @@ class _ScoredSectionMovesListState extends State<ScoredSectionMovesList> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ForTimeRepsScore extends StatelessWidget {
-  final ForTimeSectionController controller;
-  const _ForTimeRepsScore({Key? key, required this.controller})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final score = controller.repsCompleted;
-    final total = controller.totalRepsToComplete;
-
-    return Container(
-      child: SizeFadeIn(
-          key: Key(score.toString()),
-          child: MyHeaderText(
-            '$score / $total',
-            size: FONTSIZE.BIG,
-          )),
     );
   }
 }
