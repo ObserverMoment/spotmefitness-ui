@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_settings.dart';
 import 'package:spotmefitness_ui/components/do_workout/view_workout_section_moves.dart';
@@ -13,6 +14,7 @@ import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
@@ -41,6 +43,9 @@ class DoWorkoutOverview extends StatelessWidget {
     final workout =
         context.select<DoWorkoutBloc, Workout>((b) => b.activeWorkout);
 
+    final allSectionsComplete =
+        context.select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
+
     return CupertinoPageScaffold(
       child: Stack(
         children: [
@@ -68,8 +73,8 @@ class DoWorkoutOverview extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6.0),
                       child: _WorkoutIntroSummaryCard(
-                        workout: workout,
-                      ),
+                          workout: workout,
+                          allSectionsComplete: allSectionsComplete),
                     ),
                     ...workoutSections
                         .map((workoutSection) => Padding(
@@ -95,7 +100,9 @@ class DoWorkoutOverview extends StatelessWidget {
 
 class _WorkoutIntroSummaryCard extends StatelessWidget {
   final Workout workout;
-  const _WorkoutIntroSummaryCard({Key? key, required this.workout})
+  final bool allSectionsComplete;
+  const _WorkoutIntroSummaryCard(
+      {Key? key, required this.workout, required this.allSectionsComplete})
       : super(key: key);
 
   @override
@@ -159,13 +166,37 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  PrimaryButton(
-                    withMinWidth: false,
-                    onPressed: () =>
-                        print('open section 1 and mark do all settings true'),
-                    suffixIconData: CupertinoIcons.play,
-                    text: 'Do All Sections',
-                  ),
+                  allSectionsComplete
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: 12.0,
+                              ),
+                              child: MyText(
+                                'Yeah! All Sections Complete!',
+                                size: FONTSIZE.BIG,
+                                color: Styles.neonBlueOne,
+                              ),
+                            ),
+                            MyButton(
+                              backgroundColor: Styles.neonBlueOne,
+                              contentColor: Styles.white,
+                              withMinWidth: false,
+                              onPressed: () => print('log workout flow'),
+                              prefix: Icon(CupertinoIcons.doc_text,
+                                  color: Styles.white),
+                              text: 'Log Workout',
+                            )
+                          ],
+                        )
+                      : PrimaryButton(
+                          withMinWidth: false,
+                          onPressed: () => print(
+                              'open section 1 and mark do all settings true'),
+                          suffixIconData: CupertinoIcons.play,
+                          text: 'Do All Sections',
+                        ),
                 ],
               ),
             ),
@@ -207,6 +238,11 @@ class _TopNavBar extends StatelessWidget {
               iconData: CupertinoIcons.plus_slash_minus,
               label: 'Modify',
               onPressed: () => print('open modifications'),
+            ),
+            _TopNavBarIcon(
+              iconData: CupertinoIcons.doc_text,
+              label: 'Log',
+              onPressed: () => print('partial log flow'),
             ),
           ],
         ),
@@ -259,25 +295,30 @@ class _WorkoutSectionSummary extends StatelessWidget {
       : super(key: key);
 
   Widget _buildSectionFooterButton(
-      IconData iconData, String label, VoidCallback onPressed) {
-    return CupertinoButton(
-      padding: EdgeInsets.zero,
-      onPressed: onPressed,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              MyText(
-                label,
-                size: FONTSIZE.SMALL,
-              ),
-              SizedBox(width: 6),
-              Icon(
-                iconData,
-              ),
-            ],
-          ),
-        ],
+      IconData iconData, String label, VoidCallback onPressed,
+      {bool disabled = false}) {
+    return AnimatedOpacity(
+      duration: kStandardAnimationDuration,
+      opacity: disabled ? 0.3 : 1,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        onPressed: disabled ? null : onPressed,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                MyText(
+                  label,
+                  size: FONTSIZE.SMALL,
+                ),
+                SizedBox(width: 6),
+                Icon(
+                  iconData,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -285,6 +326,13 @@ class _WorkoutSectionSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<DoWorkoutBloc>();
+
+    final isComplete = context.select<DoWorkoutBloc, bool>((b) =>
+        b.getControllerForSection(workoutSection.sortPosition).sectionComplete);
+
+    final hasStarted = context.select<DoWorkoutBloc, bool>((b) => b
+        .getControllerForSection(workoutSection.sortPosition)
+        .sectionHasStarted);
 
     final List<EquipmentWithLoad> equipmentsWithLoad =
         workoutSection.equipmentsWithLoad;
@@ -296,16 +344,38 @@ class _WorkoutSectionSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 2.0, bottom: 4),
-                child: WorkoutSectionTypeTag(
-                  workoutSection: workoutSection,
-                  fontSize: FONTSIZE.MAIN,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.0, bottom: 4),
+                    child: WorkoutSectionTypeTag(
+                      workoutSection: workoutSection,
+                      fontSize: FONTSIZE.MAIN,
+                    ),
+                  ),
+                ],
               ),
+              if (!isComplete && hasStarted)
+                Positioned(
+                    right: 8,
+                    child: SizeFadeIn(
+                        child: Icon(
+                      CupertinoIcons.pause_circle,
+                      size: 30,
+                      color: Styles.neonBlueOne,
+                    ))),
+              if (isComplete)
+                Positioned(
+                    right: 8,
+                    child: SizeFadeIn(
+                        child: Icon(
+                      CupertinoIcons.checkmark_alt_circle,
+                      size: 30,
+                      color: Styles.neonBlueOne,
+                    )))
             ],
           ),
           if (Utils.textNotNull(workoutSection.name))
@@ -363,7 +433,8 @@ class _WorkoutSectionSummary extends StatelessWidget {
                         ),
                       ))),
               _buildSectionFooterButton(
-                  CupertinoIcons.play, 'Do Section', navigateToSectionPage),
+                  CupertinoIcons.play, 'Do Section', navigateToSectionPage,
+                  disabled: isComplete),
             ],
           ),
         ],

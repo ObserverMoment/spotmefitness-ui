@@ -22,7 +22,7 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
       case kFreeSessionName:
       case kForTimeName:
       case kAMRAPName:
-        return 'Repeat ${workoutSet.rounds} ${workoutSet.rounds == 1 ? "time" : "times"}';
+        return '${workoutSet.rounds} x';
       default:
         throw Exception(
             'WorkoutSetDisplayHeader: ${workoutSectionType.name} is not a valid section type name.');
@@ -42,10 +42,9 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
       children: [
         if (showRoundOrTimeInfo)
           Padding(
-            padding: const EdgeInsets.only(top: 6.0),
+            padding: const EdgeInsets.only(top: 4.0),
             child: MyText(
               _buildMainText(),
-              size: FONTSIZE.BIG,
             ),
           ),
         WorkoutSetDefinition(workoutSet)

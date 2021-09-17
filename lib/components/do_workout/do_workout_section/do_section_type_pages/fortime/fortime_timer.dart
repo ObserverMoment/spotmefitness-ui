@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.da
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
+import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display_archived.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

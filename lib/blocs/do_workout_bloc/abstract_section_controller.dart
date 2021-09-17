@@ -24,10 +24,10 @@ abstract class WorkoutSectionController {
   bool sectionHasStarted = false;
   bool sectionComplete = false;
 
-  final VoidCallback markSectionComplete;
+  final VoidCallback onCompleteSection;
 
   WorkoutSectionController(
-      {required VoidCallback this.markSectionComplete,
+      {required VoidCallback this.onCompleteSection,
       required WorkoutSection this.workoutSection,
       required this.stopWatchTimer}) {
     state = WorkoutSectionProgressState(workoutSection);

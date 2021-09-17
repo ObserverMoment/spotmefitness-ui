@@ -73,18 +73,28 @@ List<WorkoutSectionRoundSetData> loggedWorkoutSetDataFromWorkoutSet(
   return List.generate(
           workoutSet.rounds,
           (_) => WorkoutSectionRoundSetData()
-            ..moves = generateMovesList(workoutSet)
+            ..moves = generateMovesList(workoutSet, workoutSectionType)
             ..timeTakenSeconds =
                 workoutSetDurationOrNull(workoutSectionType, workoutSet) ?? 0)
       .toList();
 }
 
-String generateMovesList(WorkoutSet workoutSet) => workoutSet.workoutMoves
-    .map((wm) => generateWorkoutMoveString(wm))
-    .join(',');
+String generateMovesList(
+        WorkoutSet workoutSet, WorkoutSectionType workoutSectionType) =>
+    workoutSet.workoutMoves
+        .map((wm) => generateWorkoutMoveString(wm, workoutSectionType))
+        .join(',');
 
-String generateWorkoutMoveString(WorkoutMove workoutMove) =>
-    '${generateRepString(workoutMove)} ${workoutMove.move.name} ${generateLoadString(workoutMove)}';
+String generateWorkoutMoveString(
+    WorkoutMove workoutMove, WorkoutSectionType workoutSectionType) {
+  final reps =
+      workoutSectionType.isTimed ? '' : '${generateRepString(workoutMove)} ';
+  final equipment =
+      workoutMove.equipment != null ? ' ${workoutMove.equipment!.name}' : '';
+  final load =
+      workoutMove.loadAmount != 0 ? ' ${generateLoadString(workoutMove)}' : '';
+  return '$reps${workoutMove.move.name}$load$equipment';
+}
 
 /// Very simlar to the [WorkoutMoveDisplay] widget.
 String generateRepString(

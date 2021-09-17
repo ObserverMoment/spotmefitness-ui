@@ -4,6 +4,7 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/active_workout_set_display.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/fortime_rep_score.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
@@ -33,15 +34,6 @@ class ForTimeSectionTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final isRunning = context.select<DoWorkoutBloc, bool>((b) =>
         b.getStopWatchTimerForSection(workoutSection.sortPosition).isRunning);
-
-    final sortedWorkoutSets =
-        workoutSection.workoutSets.sortedBy<num>((wSet) => wSet.sortPosition);
-
-    final currentSet = sortedWorkoutSets[state.currentSetIndex];
-
-    final nextSet = state.currentSetIndex == sortedWorkoutSets.length - 1
-        ? sortedWorkoutSets[0]
-        : sortedWorkoutSets[state.currentSetIndex + 1];
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -119,15 +111,17 @@ class ForTimeSectionTimer extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MyHeaderText('Now:'),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3.0),
+                                child: MyHeaderText('Now:'),
+                              ),
                               SizedBox(height: 6),
-                              SizeFadeIn(
-                                key: Key(currentSet.id),
-                                child: WorkoutSetDisplay(
-                                    workoutSet: currentSet,
-                                    workoutSectionType:
-                                        workoutSection.workoutSectionType),
-                              )
+                              ActiveSetDisplay(
+                                offset: 0,
+                                sectionIndex: workoutSection.sortPosition,
+                                workoutSectionType:
+                                    workoutSection.workoutSectionType,
+                              ),
                             ],
                           ),
                         ),
@@ -136,15 +130,17 @@ class ForTimeSectionTimer extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              MyHeaderText('Next:'),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 3.0),
+                                child: MyHeaderText('Next:'),
+                              ),
                               SizedBox(height: 6),
-                              SizeFadeIn(
-                                key: Key(nextSet.id),
-                                child: WorkoutSetDisplay(
-                                    workoutSet: nextSet,
-                                    workoutSectionType:
-                                        workoutSection.workoutSectionType),
-                              )
+                              ActiveSetDisplay(
+                                offset: 1,
+                                sectionIndex: workoutSection.sortPosition,
+                                workoutSectionType:
+                                    workoutSection.workoutSectionType,
+                              ),
                             ],
                           ),
                         ),

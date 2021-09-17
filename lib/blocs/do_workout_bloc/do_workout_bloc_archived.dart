@@ -265,28 +265,28 @@ class DoWorkoutBloc extends ChangeNotifier {
         return TimedSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () =>
+          onCompleteSection: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
       case kAMRAPName:
         return AMRAPSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () =>
+          onCompleteSection: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
       case kForTimeName:
         return ForTimeSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () =>
+          onCompleteSection: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
       case kFreeSessionName:
         return FreeSessionSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () =>
+          onCompleteSection: () =>
               _markSectionComplete(workoutSection.sortPosition),
         );
       default:

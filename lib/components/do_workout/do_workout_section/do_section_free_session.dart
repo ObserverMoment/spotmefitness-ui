@@ -50,7 +50,7 @@ class _DoWorkoutSectionFreeSessionState
 
   /// If this is the only section in the workout then this will move you to the log workout screen.
   void _markSectionComplete() {
-    _freeSessionController.markSectionComplete();
+    _freeSessionController.onCompleteSection();
   }
 
   @override

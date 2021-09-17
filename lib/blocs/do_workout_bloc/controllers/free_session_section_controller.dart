@@ -12,11 +12,11 @@ class FreeSessionSectionController extends WorkoutSectionController
   FreeSessionSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete})
+      required void Function() onCompleteSection})
       : super(
             workoutSection: workoutSection,
             stopWatchTimer: stopWatchTimer,
-            markSectionComplete: markSectionComplete);
+            onCompleteSection: onCompleteSection);
 
   void markWorkoutSetComplete(BuildContext context, WorkoutSet workoutSet) {
     /// TODO.

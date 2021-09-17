@@ -20,7 +20,7 @@ class WorkoutSetDefinition extends StatelessWidget {
               )
             : Container()
         : Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
             child: length > 3
                 ? MyText(
                     'GIANTSET',

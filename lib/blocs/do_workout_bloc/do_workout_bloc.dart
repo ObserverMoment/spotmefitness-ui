@@ -122,32 +122,34 @@ class DoWorkoutBloc extends ChangeNotifier {
         return TimedSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () => print('section complete'),
+          onCompleteSection: () => print('section complete'),
         );
       case kAMRAPName:
         return AMRAPSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () => print('section complete'),
+          onCompleteSection: () => print('section complete'),
         );
       case kForTimeName:
         return ForTimeSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () => print('section complete'),
+          onCompleteSection: () {
+            pauseSection(workoutSection.sortPosition);
+            notifyListeners();
+          },
         );
       case kFreeSessionName:
         return FreeSessionSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          markSectionComplete: () => print('section complete'),
+          onCompleteSection: () => print('section complete'),
         );
       default:
         throw Exception(
             'No mapping exists for workout section type $typeName.');
     }
   }
-  ////////
 
   AudioPlayer? getAudioPlayerForSection(int index) =>
       index > _audioPlayers.length - 1 ? null : _audioPlayers[index];
@@ -166,6 +168,18 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   WorkoutSectionProgressState getProgressStateForSection(int index) =>
       _controllers[index].state;
+
+  bool get allSectionsComplete => _controllers.every((c) => c.sectionComplete);
+
+  /// Used to get the 'Now" and Next" set displays.
+  /// For now set use offset of 0.
+  /// For next set use offset of 1.
+  WorkoutSet getActiveSetForSection(int index, int offset) {
+    final controller = _controllers[index];
+    final requestedIndex = controller.state.currentSetIndex + offset;
+    final setsInRound = controller.workoutSection.workoutSets.length;
+    return controller.workoutSection.workoutSets[requestedIndex % setsInRound];
+  }
 
   //// User Inputs Start ////
   Future<void> playSection(int index) async {
@@ -214,6 +228,11 @@ class DoWorkoutBloc extends ChangeNotifier {
   /// [AMRAP] / [ForTime]
   void markCurrentWorkoutSetAsComplete(int sectionIndex) {
     _controllers[sectionIndex].markCurrentWorkoutSetAsComplete();
+  }
+
+  void onSectionComplete(int index) {
+    pauseSection(index);
+    notifyListeners();
   }
 
   void generatePartialLog() {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -27,11 +28,11 @@ class TimedSectionController extends WorkoutSectionController {
   TimedSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete})
+      required VoidCallback onCompleteSection})
       : super(
             stopWatchTimer: stopWatchTimer,
             workoutSection: workoutSection,
-            markSectionComplete: markSectionComplete) {
+            onCompleteSection: onCompleteSection) {
     _totalRounds = workoutSection.rounds;
 
     int _acumTime = 0;
@@ -55,19 +56,15 @@ class TimedSectionController extends WorkoutSectionController {
   }
 
   void timerStreamListener(int secondsElapsed) async {
-    if (sectionComplete) {
-      stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-      return;
-    } else {
+    if (!sectionComplete) {
       /// If need to. Update the progressState;
       if (_hasSetChangeTimePassed(secondsElapsed)) {
         state.moveToNextSetOrSection(secondsElapsed);
 
         /// Check for the end of the section.
         if (state.currentRoundIndex == _totalRounds) {
-          stopWatchTimer.onExecute.add(StopWatchExecute.stop);
           sectionComplete = true;
-          markSectionComplete();
+          onCompleteSection();
         }
       }
 

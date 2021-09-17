@@ -11,11 +11,11 @@ class AMRAPSectionController extends WorkoutSectionController {
   AMRAPSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete})
+      required void Function() onCompleteSection})
       : super(
             stopWatchTimer: stopWatchTimer,
             workoutSection: workoutSection,
-            markSectionComplete: markSectionComplete) {
+            onCompleteSection: onCompleteSection) {
     /// [workoutSection.timecap] must not be null for an AMRAP.
     _sectionTimecapSeconds = workoutSection.timecap;
 
@@ -35,7 +35,7 @@ class AMRAPSectionController extends WorkoutSectionController {
       if (secondsElapsed >= _sectionTimecapSeconds) {
         sectionComplete = true;
         stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-        markSectionComplete();
+        onCompleteSection();
       }
 
       /// Update time left till timecap and percent complete.

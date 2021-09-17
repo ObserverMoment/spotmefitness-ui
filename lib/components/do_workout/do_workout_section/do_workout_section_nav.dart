@@ -77,29 +77,26 @@ class NavItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: ClipOval(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            color: context.theme.cardBackground.withOpacity(0.8),
-            child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              pressedOpacity: 0.9,
-              onPressed: onTap,
-              child: AnimatedOpacity(
-                duration: kStandardAnimationDuration,
-                opacity: isActive ? 1 : 0.6,
-                child: AnimatedSwitcher(
-                    duration: kStandardAnimationDuration,
-                    child: isActive
-                        ? Icon(
-                            activeIconData,
-                            size: iconSize,
-                          )
-                        : Icon(
-                            inactiveIconData,
-                            size: iconSize,
-                          )),
-              ),
+        child: Container(
+          color: context.theme.cardBackground.withOpacity(0.5),
+          child: CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            pressedOpacity: 0.9,
+            onPressed: onTap,
+            child: AnimatedOpacity(
+              duration: kStandardAnimationDuration,
+              opacity: isActive ? 1 : 0.6,
+              child: AnimatedSwitcher(
+                  duration: kStandardAnimationDuration,
+                  child: isActive
+                      ? Icon(
+                          activeIconData,
+                          size: iconSize,
+                        )
+                      : Icon(
+                          inactiveIconData,
+                          size: iconSize,
+                        )),
             ),
           ),
         ),

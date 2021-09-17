@@ -10,11 +10,11 @@ class ForTimeSectionController extends WorkoutSectionController {
   ForTimeSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
-      required void Function() markSectionComplete})
+      required void Function() onCompleteSection})
       : super(
             stopWatchTimer: stopWatchTimer,
             workoutSection: workoutSection,
-            markSectionComplete: markSectionComplete) {
+            onCompleteSection: onCompleteSection) {
     totalRepsToComplete =
         DataUtils.totalRepsInSection(workoutSection) * workoutSection.rounds;
   }
@@ -36,9 +36,9 @@ class ForTimeSectionController extends WorkoutSectionController {
       progressStateController.add(state);
 
       /// Check for end of the section.
-      if (state.currentRoundIndex >= workoutSection.rounds) {
+      if (repsCompleted >= totalRepsToComplete) {
         sectionComplete = true;
-        markSectionComplete();
+        onCompleteSection();
       }
     }
   }

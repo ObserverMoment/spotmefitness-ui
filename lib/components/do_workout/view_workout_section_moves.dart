@@ -25,7 +25,10 @@ class ViewWorkoutSectionMoves extends StatelessWidget {
         customLeading: NavBarChevronDownButton(context.pop),
         middle: NavBarTitle(workoutSection.nameOrTypeForDisplay),
       ),
-      child: WorkoutDetailsSection(workoutSection),
+      child: WorkoutDetailsSection(
+        workoutSection,
+        scrollable: true,
+      ),
     );
   }
 }

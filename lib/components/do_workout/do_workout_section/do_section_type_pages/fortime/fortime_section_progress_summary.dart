@@ -8,7 +8,7 @@ import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/utils.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
-import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display.dart';
+import 'package:spotmefitness_ui/components/workout/workout_move_minimal_display_archived.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
