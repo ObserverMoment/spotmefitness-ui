@@ -5,28 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/fortime_rep_score.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/workout_section_timer.dart';
-import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/animated/mounting.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/name_and_repscore.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/workout_section_simple_timer.dart';
 import 'package:spotmefitness_ui/components/workout/workout_set_display.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 /// The user is progressing through the workout tapping 'set complete' or 'round complete' as they go.
-class ForTimeMovesList extends StatefulWidget {
+class ForTimeAMRAPMovesList extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const ForTimeMovesList(
+  const ForTimeAMRAPMovesList(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  _ForTimeMovesListState createState() => _ForTimeMovesListState();
+  _ForTimeAMRAPMovesListState createState() => _ForTimeAMRAPMovesListState();
 }
 
-class _ForTimeMovesListState extends State<ForTimeMovesList> {
+class _ForTimeAMRAPMovesListState extends State<ForTimeAMRAPMovesList> {
   late AutoScrollController _autoScrollController;
 
   /// This list will auto scroll downwards as the workout progresses, with the current set at the top of the visible list.
@@ -42,7 +43,7 @@ class _ForTimeMovesListState extends State<ForTimeMovesList> {
   }
 
   @override
-  void didUpdateWidget(ForTimeMovesList oldWidget) {
+  void didUpdateWidget(ForTimeAMRAPMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.
@@ -99,18 +100,16 @@ class _ForTimeMovesListState extends State<ForTimeMovesList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 8),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MyHeaderText(
-                'FOR TIME',
+              NameAndRepScore(workoutSection: widget.workoutSection),
+              WorkoutSectionSimpleTimer(
+                workoutSection: widget.workoutSection,
+                showElapsedLabel: false,
               ),
-              DoWorkoutSectionTimer(workoutSection: widget.workoutSection),
-              ForTimeRepsScore(
-                  sectionIndex: widget.workoutSection.sortPosition),
             ],
           ),
         ),
@@ -168,12 +167,18 @@ class _WorkoutSetInMovesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final int setIndex = workoutSet.sortPosition;
-    final bool isCurrentRound = state.currentRoundIndex == roundIndex;
+
+    /// AMRAP should always just have one round so it is always the current round.
+    final bool isCurrentRound =
+        workoutSectionType.isAMRAP || state.currentRoundIndex == roundIndex;
 
     final bool isCurrentSet =
         isCurrentRound && state.currentSetIndex == setIndex;
-    final isCompletedSet = state.currentRoundIndex > roundIndex ||
-        (isCurrentRound && state.currentSetIndex > setIndex);
+
+    /// AMRAP only a single round which repeats so need to unfade completed sets once a round is finished.
+    final isCompletedSet =
+        (!workoutSectionType.isAMRAP && state.currentRoundIndex > roundIndex) ||
+            (isCurrentRound && state.currentSetIndex > setIndex);
 
     return AnimatedOpacity(
       opacity: isCompletedSet ? 0.6 : 1,
@@ -184,8 +189,30 @@ class _WorkoutSetInMovesList extends StatelessWidget {
             borderRadius: kStandardCardBorderRadius,
             border: Border.all(
                 color: isCurrentSet ? Styles.neonBlueOne : Colors.transparent)),
-        child: WorkoutSetDisplay(
-            workoutSet: workoutSet, workoutSectionType: workoutSectionType),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            WorkoutSetDisplay(
+                workoutSet: workoutSet, workoutSectionType: workoutSectionType),
+            if (state.secondsToNextCheckpoint != null)
+              if (workoutSectionType.isTimed)
+                GrowInOut(
+                    show: isCurrentSet,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: LinearPercentIndicator(
+                        percent: isCurrentSet
+                            ? 1 -
+                                (state.secondsToNextCheckpoint! /
+                                    (workoutSet.duration))
+                            : 0,
+                        progressColor: Styles.neonBlueOne,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        lineHeight: 4,
+                      ),
+                    ))
+          ],
+        ),
       ),
     );
   }

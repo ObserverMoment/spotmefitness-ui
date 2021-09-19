@@ -30,6 +30,7 @@ class WorkoutCreatorPage extends StatefulWidget {
 
 class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
   WorkoutCreatorBloc? _bloc;
+  bool _creatingNewWorkout = false;
 
   @override
   void initState() {
@@ -41,6 +42,9 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
 
   /// Create a bare bones workout in the DB and add it to the store.
   Future<void> _createWorkout(CreateWorkoutInput input) async {
+    setState(() {
+      _creatingNewWorkout = true;
+    });
     final result = await context.graphQLStore
         .create<CreateWorkout$Mutation, CreateWorkoutArguments>(
             mutation: CreateWorkoutMutation(
@@ -57,6 +61,10 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
         'WorkoutTags': []
       }));
     });
+
+    setState(() {
+      _creatingNewWorkout = false;
+    });
   }
 
   void _initBloc(Workout workout) {
@@ -71,7 +79,7 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
             ? MainUI(bloc: _bloc!)
             : PreCreateUI(
                 createWorkout: _createWorkout,
-              ));
+                creatingNewWorkout: _creatingNewWorkout));
   }
 }
 
@@ -79,7 +87,10 @@ class _WorkoutCreatorPageState extends State<WorkoutCreatorPage> {
 /// They can also abort here if they want and no workout will be created in the DB.
 class PreCreateUI extends StatefulWidget {
   final void Function(CreateWorkoutInput input) createWorkout;
-  const PreCreateUI({Key? key, required this.createWorkout}) : super(key: key);
+  final bool creatingNewWorkout;
+  const PreCreateUI(
+      {Key? key, required this.createWorkout, required this.creatingNewWorkout})
+      : super(key: key);
 
   @override
   _PreCreateUIState createState() => _PreCreateUIState();
@@ -103,9 +114,14 @@ class _PreCreateUIState extends State<PreCreateUI> {
       navigationBar: MyNavBar(
         customLeading: NavBarCancelButton(context.pop),
         middle: NavBarTitle('New Workout'),
-        trailing: NavBarSaveButton(
-            () => widget.createWorkout(_createWorkoutInput),
-            text: 'Create'),
+        trailing: widget.creatingNewWorkout
+            ? NavBarTrailingRow(
+                children: [
+                  NavBarLoadingDots(),
+                ],
+              )
+            : NavBarSaveButton(() => widget.createWorkout(_createWorkoutInput),
+                text: 'Create'),
       ),
       child: ListView(children: [
         EditableTextFieldRow(

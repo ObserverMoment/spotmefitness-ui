@@ -9,7 +9,6 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_settings.dart'
 import 'package:spotmefitness_ui/components/do_workout/view_workout_section_moves.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
-import 'package:spotmefitness_ui/components/media/images/sized_uploadcare_image.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -47,51 +46,35 @@ class DoWorkoutOverview extends StatelessWidget {
         context.select<DoWorkoutBloc, bool>((b) => b.allSectionsComplete);
 
     return CupertinoPageScaffold(
-      child: Stack(
+      child: Column(
         children: [
-          SizedBox.expand(
-            child: workout.coverImageUri != null
-                ? SizedUploadcareImage(workout.coverImageUri!)
-                : Image.asset(
-                    'assets/home_page_images/home_page_workouts.jpg',
-                    fit: BoxFit.cover,
-                  ),
+          _TopNavBar(
+            handleExitRequest: handleExitRequest,
           ),
-          SizedBox.expand(
-            child: Container(color: Styles.black.withOpacity(0.4)),
-          ),
-          Column(
-            children: [
-              _TopNavBar(
-                handleExitRequest: handleExitRequest,
-              ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(14),
-                  shrinkWrap: true,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6.0),
-                      child: _WorkoutIntroSummaryCard(
-                          workout: workout,
-                          allSectionsComplete: allSectionsComplete),
-                    ),
-                    ...workoutSections
-                        .map((workoutSection) => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 6.0),
-                              child: _WorkoutSectionSummary(
-                                  workoutSection: workoutSection,
-                                  navigateToSectionPage: () =>
-                                      navigateToSectionPage(
-                                          workoutSection.sortPosition + 1)),
-                            ))
-                        .toList()
-                  ],
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(14),
+              shrinkWrap: true,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6.0),
+                  child: _WorkoutIntroSummaryCard(
+                      workout: workout,
+                      allSectionsComplete: allSectionsComplete),
                 ),
-              )
-            ],
-          ),
+                ...workoutSections
+                    .map((workoutSection) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          child: _WorkoutSectionSummary(
+                              workoutSection: workoutSection,
+                              navigateToSectionPage: () =>
+                                  navigateToSectionPage(
+                                      workoutSection.sortPosition + 1)),
+                        ))
+                    .toList()
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -110,7 +93,7 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
     return ContentBox(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         backgroundColor: context.theme.cardBackground.withOpacity(0.97),
-        borderRadius: 26,
+        borderRadius: 4,
         child: Column(
           children: [
             MyHeaderText(
@@ -174,7 +157,7 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
                                 bottom: 12.0,
                               ),
                               child: MyText(
-                                'Yeah! All Sections Complete!',
+                                'All Sections Complete!',
                                 size: FONTSIZE.BIG,
                                 color: Styles.neonBlueOne,
                               ),
@@ -340,7 +323,7 @@ class _WorkoutSectionSummary extends StatelessWidget {
     return ContentBox(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       backgroundColor: context.theme.cardBackground.withOpacity(0.97),
-      borderRadius: 26,
+      borderRadius: 4,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

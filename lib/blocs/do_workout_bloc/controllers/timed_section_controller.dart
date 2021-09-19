@@ -23,7 +23,7 @@ class TimedSectionController extends WorkoutSectionController {
   late StreamSubscription _timerStreamSubscription;
 
   late int _totalRounds;
-  late int _totalDurationSeconds;
+  late int totalDurationSeconds;
 
   TimedSectionController(
       {required WorkoutSection workoutSection,
@@ -45,7 +45,7 @@ class TimedSectionController extends WorkoutSectionController {
               return _acumTime;
             }).toList());
 
-    _totalDurationSeconds = _setChangeTimes.last.last;
+    totalDurationSeconds = _setChangeTimes.last.last;
 
     /// Initialise the first checkpoint in the state.
     state.secondsToNextCheckpoint = _setChangeTimes[0][0];
@@ -68,7 +68,7 @@ class TimedSectionController extends WorkoutSectionController {
         }
       }
 
-      /// Update time to next checkpoint / set change - only if not passed the last checkpoint.
+      /// Update time to next checkpoint / set change - if not finished the section.
       if (state.currentRoundIndex < _totalRounds) {
         state.secondsToNextCheckpoint = _setChangeTimes[state.currentRoundIndex]
                 [state.currentSetIndex] -
@@ -76,7 +76,7 @@ class TimedSectionController extends WorkoutSectionController {
       }
 
       /// Update percentage complete.
-      state.percentComplete = secondsElapsed / _totalDurationSeconds;
+      state.percentComplete = secondsElapsed / totalDurationSeconds;
 
       /// Broadcast new state.
       progressStateController.add(state);

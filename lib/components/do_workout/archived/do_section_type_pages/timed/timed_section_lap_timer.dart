@@ -109,7 +109,7 @@ class TimedSectionLapTimer extends StatelessWidget {
                           ),
                           center: TimerDisplayText(
                             milliseconds: state.secondsToNextCheckpoint!,
-                            size: 50,
+                            fontSize: FONTSIZE.BIG,
                           ),
                           footer: Padding(
                             padding: const EdgeInsets.all(12.0),

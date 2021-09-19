@@ -88,7 +88,7 @@ class AMRAPCountdownTimer extends StatelessWidget {
                           ),
                           center: TimerDisplayText(
                             milliseconds: remainingMs,
-                            size: 50,
+                            fontSize: FONTSIZE.BIG,
                           ),
                           footer: Padding(
                             padding: const EdgeInsets.all(12.0),

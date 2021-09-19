@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/timer_components.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -114,7 +115,9 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                     center: TimerDisplayText(
                                       /// Display gets rounded down so when not displaying milliseconds it appears like you are one seocnd ahead of where you would expect to be.
                                       milliseconds: milliseconds + 1000,
-                                      size: widget.fullScreenDisplay ? 70 : 50,
+                                      fontSize: widget.fullScreenDisplay
+                                          ? FONTSIZE.EPIC
+                                          : FONTSIZE.EXTREME,
                                     ),
                                     backgroundColor:
                                         context.theme.primary.withOpacity(0.1),

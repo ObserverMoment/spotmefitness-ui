@@ -36,15 +36,17 @@ class WorkoutSetDisplayHeader extends StatelessWidget {
         workoutSectionType.isTimed;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: !showRoundOrTimeInfo
           ? MainAxisAlignment.end
           : MainAxisAlignment.spaceBetween,
       children: [
         if (showRoundOrTimeInfo)
           Padding(
-            padding: const EdgeInsets.only(top: 4.0),
+            padding: const EdgeInsets.only(bottom: 2, top: 2),
             child: MyText(
               _buildMainText(),
+              lineHeight: 1,
             ),
           ),
         WorkoutSetDefinition(workoutSet)

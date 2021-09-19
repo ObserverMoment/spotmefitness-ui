@@ -115,7 +115,7 @@ class _UnauthedLandingPageState extends State<UnauthedLandingPage> {
                       _pageController.hasClients && _pageController.page != null
                           ? _pageController.page!.toInt()
                           : 0,
-                  color: Styles.peachRed,
+                  color: Styles.neonBlueOne,
                 ),
               ],
             ),

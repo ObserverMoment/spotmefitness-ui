@@ -24,15 +24,22 @@ class WorkoutSetMinimalDisplay extends StatelessWidget {
       backgroundColor: backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          WorkoutSetDisplayHeader(
-            workoutSectionType: workoutSectionType,
-            workoutSet: workoutSet,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              WorkoutSetDisplayHeader(
+                workoutSectionType: workoutSectionType,
+                workoutSet: workoutSet,
+              ),
+            ],
           ),
           ...workoutSet.workoutMoves
-              .map((wm) =>
-                  MyText(generateWorkoutMoveString(wm, workoutSectionType)))
-              .toList(),
+              .map((wm) => MyText(
+                    generateWorkoutMoveString(wm, workoutSectionType),
+                  ))
+              .toList()
         ],
       ),
     );

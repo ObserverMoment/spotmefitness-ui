@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
+import 'package:spotmefitness_ui/components/animated/countdown_animation.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:provider/provider.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 class StartResumeButton extends StatelessWidget {
   final int sectionIndex;
@@ -12,25 +14,18 @@ class StartResumeButton extends StatelessWidget {
       : super(key: key);
 
   /// Runs a countdown animation and THEN starts the workout.
-  void _startSection(BuildContext context) {
+  void _startSectionCountdown(BuildContext context) {
     showCupertinoModalPopup(
         context: context,
         useRootNavigator: false,
         barrierDismissible: false,
         builder: (context) {
-          return Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: CupertinoActionSheet(
-                  title:
-                      MyHeaderText('GET READY!', textAlign: TextAlign.center),
-                  message: SizedBox(
-                    height: 120,
-                    child: MyText('Animated text here'),
-                  ),
-                ),
-              ));
+          return CountdownAnimation(
+              onCountdownEnd: () {
+                context.pop();
+                _playSection(context);
+              },
+              startFromSeconds: 3);
         });
   }
 
@@ -42,9 +37,11 @@ class StartResumeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final sectionHasStarted = context.select<DoWorkoutBloc, bool>(
         (b) => b.getControllerForSection(sectionIndex).sectionHasStarted);
+
     return GestureDetector(
-      onTap: () =>
-          sectionHasStarted ? _playSection(context) : _startSection(context),
+      onTap: () => sectionHasStarted
+          ? _playSection(context)
+          : _startSectionCountdown(context),
       child: Container(
         height: height,
         decoration: BoxDecoration(

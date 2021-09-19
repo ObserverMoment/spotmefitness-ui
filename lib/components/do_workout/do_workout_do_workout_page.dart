@@ -26,20 +26,13 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
   }
 
   void _handleExitRequest() {
-    context.showActionSheetMenu(title: 'Exit or Reset?', actions: [
-      CupertinoActionSheetAction(
-          child: MyText('Exit Workout'),
-          onPressed: () {
-            context.pop(); // Dialog.
-            context.popRoute(); // Exit
-          }),
-      CupertinoActionSheetAction(
-          child: MyText('Reset Workout'),
-          onPressed: () {
-            context.pop(); // Dialog.
-            context.read<DoWorkoutBloc>().resetWorkout();
-          }),
-    ]);
+    context.showConfirmDialog(
+        title: 'Exit Workout',
+        content: MyText(
+          'Nothing will be saved. OK?',
+          textAlign: TextAlign.center,
+        ),
+        onConfirm: context.popRoute);
   }
 
   @override
@@ -59,6 +52,7 @@ class _DoWorkoutDoWorkoutPageState extends State<DoWorkoutDoWorkoutPage> {
             (i) => DoWorkoutSection(
                   sectionIndex: i,
                   navigateToPage: _navigateToPage,
+                  isLastSection: i == numWorkoutSections - 1,
                 ))
       ],
     );

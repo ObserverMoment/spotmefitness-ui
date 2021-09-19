@@ -230,7 +230,7 @@ class _MicAudioRecorderState extends State<MicAudioRecorder> {
                 padding: const EdgeInsets.all(8.0),
                 child: TimerDisplayText(
                   milliseconds: _recordDuration * 1000,
-                  size: 36,
+                  fontSize: FONTSIZE.HUGE,
                 ),
               ),
               Padding(

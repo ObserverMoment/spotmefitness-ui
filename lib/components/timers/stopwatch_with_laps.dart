@@ -47,7 +47,9 @@ class _StopwatchWithLapsState extends State<StopwatchWithLaps> {
               builder: (context, AsyncSnapshot<int> msSnapshot) {
                 return TimerDisplayText(
                   milliseconds: msSnapshot.data!,
-                  size: widget.fullScreenDisplay ? 72 : 60,
+                  fontSize: widget.fullScreenDisplay
+                      ? FONTSIZE.EPIC
+                      : FONTSIZE.EXTREME,
                   showMilliseconds: true,
                 );
               }),

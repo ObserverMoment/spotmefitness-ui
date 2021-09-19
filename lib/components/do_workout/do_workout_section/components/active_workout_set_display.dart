@@ -26,12 +26,10 @@ class ActiveSetDisplay extends StatelessWidget {
 
     return SizeFadeIn(
       key: Key(workoutSet.id),
-      child: SizedBox(
-        child: WorkoutSetMinimalDisplay(
-            backgroundColor: context.theme.cardBackground.withOpacity(0.6),
-            workoutSet: workoutSet,
-            workoutSectionType: workoutSectionType),
-      ),
+      child: WorkoutSetMinimalDisplay(
+          backgroundColor: context.theme.cardBackground.withOpacity(0.6),
+          workoutSet: workoutSet,
+          workoutSectionType: workoutSectionType),
     );
   }
 }

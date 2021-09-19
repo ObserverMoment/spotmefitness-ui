@@ -215,6 +215,11 @@ abstract class Styles {
     stops: [0.1, 0.9],
   );
 
+  static final neonBlueSweepGradient = SweepGradient(
+    colors: [Styles.neonBlueOne, Styles.colorFour],
+    stops: [0.1, 0.9],
+  );
+
   static const secondaryButtonGradient = const LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,

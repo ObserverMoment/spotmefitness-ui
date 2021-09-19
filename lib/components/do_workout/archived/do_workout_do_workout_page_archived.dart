@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/archived/do_workout_section_archived.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/section_components/workout_section_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/workout_section_simple_timer.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
@@ -107,17 +107,17 @@ class _DoWorkoutDoWorkoutPageArchivedState
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 62,
-                  child: PageView(
-                    controller: _sectionTimerPageController,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: sortedWorkoutSections
-                        .map((wSection) =>
-                            DoWorkoutSectionTimer(workoutSection: wSection))
-                        .toList(),
-                  ),
-                ),
+                // SizedBox(
+                //   height: 62,
+                //   child: PageView(
+                //     controller: _sectionTimerPageController,
+                //     physics: NeverScrollableScrollPhysics(),
+                //     children: sortedWorkoutSections
+                //         .map((wSection) =>
+                //             DoWorkoutSectionTimer(workoutSection: wSection))
+                //         .toList(),
+                //   ),
+                // ),
                 GrowInOut(
                   show: context
                       .select<DoWorkoutBloc, bool>((b) => !b.workoutInProgress),

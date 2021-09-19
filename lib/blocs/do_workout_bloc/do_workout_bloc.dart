@@ -120,35 +120,40 @@ class DoWorkoutBloc extends ChangeNotifier {
       case kHIITCircuitName:
       case kTabataName:
         return TimedSectionController(
-          workoutSection: workoutSection,
-          stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          onCompleteSection: () => print('section complete'),
-        );
+            workoutSection: workoutSection,
+            stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
+            onCompleteSection: () =>
+                _onSectionComplete(workoutSection.sortPosition));
       case kAMRAPName:
         return AMRAPSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          onCompleteSection: () => print('section complete'),
+          onCompleteSection: () =>
+              _onSectionComplete(workoutSection.sortPosition),
         );
       case kForTimeName:
         return ForTimeSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          onCompleteSection: () {
-            pauseSection(workoutSection.sortPosition);
-            notifyListeners();
-          },
+          onCompleteSection: () =>
+              _onSectionComplete(workoutSection.sortPosition),
         );
       case kFreeSessionName:
         return FreeSessionSectionController(
           workoutSection: workoutSection,
           stopWatchTimer: _stopWatchTimers[workoutSection.sortPosition],
-          onCompleteSection: () => print('section complete'),
+          onCompleteSection: () =>
+              _onSectionComplete(workoutSection.sortPosition),
         );
       default:
         throw Exception(
             'No mapping exists for workout section type $typeName.');
     }
+  }
+
+  void _onSectionComplete(int index) {
+    pauseSection(index);
+    notifyListeners();
   }
 
   AudioPlayer? getAudioPlayerForSection(int index) =>
@@ -241,14 +246,14 @@ class DoWorkoutBloc extends ChangeNotifier {
 
   /// User Inputs End ////
 
-  /// TODO.
   @override
   void dispose() async {
+    super.dispose();
     for (final c in _controllers) {
       c.dispose();
     }
     for (final v in _videoControllers) {
-      v?.dispose();
+      v?.dispose(forceDispose: true);
     }
     for (final t in _stopWatchTimers) {
       await t.dispose();
@@ -256,7 +261,5 @@ class DoWorkoutBloc extends ChangeNotifier {
     for (final p in _audioPlayers) {
       await p?.dispose();
     }
-
-    super.dispose();
   }
 }

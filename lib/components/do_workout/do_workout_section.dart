@@ -5,7 +5,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_fortime.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/moves_lists/fortime_amrap_moves_list.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/amrap_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/fortime_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/interval_timer.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/video_overlays/main_video_overlay.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_template_layout.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_section_nav.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/constants.dart';
@@ -16,11 +21,14 @@ import 'package:spotmefitness_ui/services/utils.dart';
 
 class DoWorkoutSection extends StatefulWidget {
   final int sectionIndex;
-
-  /// Pass section index + 1 to navigate to a section, or 0 to navigate to the overview page.
+  // Pass section index + 1 to navigate to a section, or 0 to navigate to the overview page.
   final void Function(int sectionIndex) navigateToPage;
+  final bool isLastSection;
   const DoWorkoutSection(
-      {Key? key, required this.sectionIndex, required this.navigateToPage})
+      {Key? key,
+      required this.sectionIndex,
+      required this.navigateToPage,
+      required this.isLastSection})
       : super(key: key);
 
   @override
@@ -39,51 +47,61 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
 
   bool _muteAudio = false;
 
+  bool _completeModelOpen = false;
+
   void _checkForComplete() {
-    if (_bloc.getControllerForSection(widget.sectionIndex).sectionComplete) {
-      /// TODO: handle autoplay of the next section when autoplay is enabled.
-      /// And check if there is a 'next section' to go to.
-      /// If all sections are complete then could nav back to overview automatically.
-
-      showCupertinoModalPopup(
-          context: context,
-          useRootNavigator: false,
-          barrierDismissible: false,
-          builder: (context) {
-            return Align(
-                alignment: Alignment.center,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: CupertinoActionSheet(
-                    title: MyHeaderText('SECTION COMPLETE',
-                        textAlign: TextAlign.center),
-                    message: Column(
-                      children: [
-                        MyText('Great Work!'),
-                        SizedBox(height: 16),
-                        PrimaryButton(
-                          onPressed: () {
-                            context.pop();
-
-                            /// TODO: Go to next section.
-                          },
-                          suffixIconData: CupertinoIcons.arrow_right,
-                          text: 'Next Section',
+    /// To stop the bloc listener triggering twice which was causing two dialogs to open on top of each other.
+    if (!_completeModelOpen) {
+      if (_bloc.getControllerForSection(widget.sectionIndex).sectionComplete) {
+        if (widget.isLastSection) {
+          widget.navigateToPage(0);
+        } else {
+          /// TODO: handle autoplay of the next section when autoplay is enabled.
+          /// And check if there is a 'next section' to go to.
+          /// If all sections are complete then could nav back to overview automatically.
+          _completeModelOpen = true;
+          showCupertinoModalPopup(
+              context: context,
+              barrierDismissible: false,
+              useRootNavigator: false,
+              builder: (context) {
+                return Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: CupertinoActionSheet(
+                        title: MyHeaderText('SECTION COMPLETE',
+                            textAlign: TextAlign.center),
+                        message: Column(
+                          children: [
+                            MyText('Great Work!'),
+                            SizedBox(height: 16),
+                            PrimaryButton(
+                              onPressed: () {
+                                context.pop();
+                                widget.navigateToPage(widget.sectionIndex + 1);
+                                _completeModelOpen = false;
+                              },
+                              suffixIconData: CupertinoIcons.arrow_right,
+                              text: 'Next Section',
+                            ),
+                            SizedBox(height: 8),
+                            PrimaryButton(
+                              onPressed: () {
+                                context.pop();
+                                widget.navigateToPage(0);
+                                _completeModelOpen = false;
+                              },
+                              prefixIconData: CupertinoIcons.arrow_left,
+                              text: 'To Overview',
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 8),
-                        PrimaryButton(
-                          onPressed: () {
-                            context.pop();
-                            widget.navigateToPage(0);
-                          },
-                          prefixIconData: CupertinoIcons.arrow_left,
-                          text: 'To Overview',
-                        ),
-                      ],
-                    ),
-                  ),
-                ));
-          });
+                      ),
+                    ));
+              });
+        }
+      }
     }
   }
 
@@ -101,28 +119,13 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
     setState(() => _activePageIndex = index);
   }
 
-  void _handleExitRequest() {
-    context.showActionSheetMenu(title: 'Leave Section?', actions: [
-      CupertinoActionSheetAction(
-          child: MyText('Keep progress and leave'),
-          onPressed: () {
-            context.pop(); // Dialog.
-            widget.navigateToPage(0); // To overview.
-          }),
-      CupertinoActionSheetAction(
-          child: MyText('Clear progress and leave'),
-          onPressed: () {
-            context.pop(); // Dialog.
-            context.read<DoWorkoutBloc>().resetSection(widget.sectionIndex);
-            widget.navigateToPage(0); // To overview.
-          }),
-      CupertinoActionSheetAction(
-          child: MyText('Reset section'),
-          onPressed: () {
-            context.pop(); // Dialog.
-            context.read<DoWorkoutBloc>().resetSection(widget.sectionIndex);
-          }),
-    ]);
+  void _handleResetRequest() {
+    context.showConfirmDialog(
+      title: 'Reset Section?',
+      onConfirm: () {
+        context.read<DoWorkoutBloc>().resetSection(widget.sectionIndex);
+      },
+    );
   }
 
   void _toggleMuteAudio() {
@@ -135,48 +138,6 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
       final isMuted = player.volume == 0.0;
       player.setVolume(isMuted ? 1.0 : 0.0);
       setState(() => _muteAudio = !_muteAudio);
-    }
-  }
-
-  /// Build the set of pages and components for the different workout section sub types.
-  Widget _buildSectionContent(
-    WorkoutSection workoutSection,
-    WorkoutSectionProgressState progressState,
-  ) {
-    switch (workoutSection.workoutSectionType.name) {
-      case kTabataName:
-      case kHIITCircuitName:
-      case kEMOMName:
-      // return DoWorkoutSectionTimed(
-      //   progressState: progressState,
-      //   workoutSection: workoutSection,
-      //   activePageIndex: _activePageIndex,
-      // );
-      case kAMRAPName:
-        return MyText('AMRAP section');
-      // return DoWorkoutSectionAMRAP(
-      //   pageController: _pageController,
-      //   progressState: progressState,
-      //   workoutSection: workoutSection,
-      //   activePageIndex: _activePageIndex,
-      // );
-      case kForTimeName:
-        return DoWorkoutSectionForTime(
-          progressState: progressState,
-          workoutSection: workoutSection,
-          activePageIndex: _activePageIndex,
-        );
-      case kFreeSessionName:
-        return MyText('Free Session section');
-      // return DoWorkoutSectionFreeSession(
-      //   pageController: _pageController,
-      //   workoutSection: workoutSection,
-      //   activePageIndex: _activePageIndex,
-      // );
-
-      default:
-        throw Exception(
-            'No DoSectionPages builder defined for section type: ${workoutSection.workoutSectionType.name}');
     }
   }
 
@@ -201,6 +162,9 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
     final isRunning = context.select<DoWorkoutBloc, bool>(
         (b) => b.getStopWatchTimerForSection(widget.sectionIndex).isRunning);
 
+    final hasStarted = context.select<DoWorkoutBloc, bool>((b) =>
+        b.getControllerForSection(widget.sectionIndex).sectionHasStarted);
+
     return StreamBuilder<WorkoutSectionProgressState>(
         initialData: initialState,
         stream: context
@@ -210,7 +174,11 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
           final state = snapshot.data!;
           return Stack(
             children: [
-              _buildSectionContent(workoutSection, state),
+              _DoSectionTemplateSelector(
+                workoutSection: workoutSection,
+                state: state,
+                activePageIndex: _activePageIndex,
+              ),
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -227,11 +195,24 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
                                 onTap: () => context
                                     .read<DoWorkoutBloc>()
                                     .pauseSection(widget.sectionIndex))
-                            : NavItem(
-                                activeIconData: CupertinoIcons.arrow_left,
-                                inactiveIconData: CupertinoIcons.arrow_left,
-                                isActive: true,
-                                onTap: _handleExitRequest),
+                            : Row(
+                                children: [
+                                  NavItem(
+                                      activeIconData: CupertinoIcons.arrow_left,
+                                      inactiveIconData:
+                                          CupertinoIcons.arrow_left,
+                                      isActive: true,
+                                      onTap: () => widget.navigateToPage(0)),
+                                  if (hasStarted)
+                                    NavItem(
+                                        activeIconData:
+                                            CupertinoIcons.refresh_bold,
+                                        inactiveIconData:
+                                            CupertinoIcons.refresh_bold,
+                                        isActive: true,
+                                        onTap: _handleResetRequest),
+                                ],
+                              ),
                       ),
                       DoWorkoutSectionNav(
                         activePageIndex: _activePageIndex,
@@ -249,5 +230,81 @@ class _DoWorkoutSectionState extends State<DoWorkoutSection> {
             ],
           );
         });
+  }
+}
+
+class _DoSectionTemplateSelector extends StatelessWidget {
+  final WorkoutSection workoutSection;
+  final WorkoutSectionProgressState state;
+  final int activePageIndex;
+  const _DoSectionTemplateSelector(
+      {Key? key,
+      required this.workoutSection,
+      required this.state,
+      required this.activePageIndex})
+      : super(key: key);
+
+  Widget _buildMovesList() {
+    switch (workoutSection.workoutSectionType.name) {
+      case kAMRAPName:
+      case kForTimeName:
+        return ForTimeAMRAPMovesList(
+            workoutSection: workoutSection, state: state);
+      case kEMOMName:
+      case kTabataName:
+      case kHIITCircuitName:
+        return ForTimeAMRAPMovesList(
+            workoutSection: workoutSection, state: state);
+      case kFreeSessionName:
+        return ForTimeAMRAPMovesList(
+            workoutSection: workoutSection, state: state);
+      default:
+        throw Exception(
+            'No moves list builder specified for ${workoutSection.workoutSectionType.name}');
+    }
+  }
+
+  Widget _buildTimer() {
+    switch (workoutSection.workoutSectionType.name) {
+      case kForTimeName:
+      case kFreeSessionName:
+        return ForTimeTimer(workoutSection: workoutSection, state: state);
+      case kAMRAPName:
+        return AMRAPTimer(workoutSection: workoutSection, state: state);
+      case kEMOMName:
+      case kTabataName:
+      case kHIITCircuitName:
+        return IntervalTimer(workoutSection: workoutSection, state: state);
+      default:
+        throw Exception(
+            'No moves list builder specified for ${workoutSection.workoutSectionType.name}');
+    }
+  }
+
+  Widget _buildVideoOverlay() {
+    switch (workoutSection.workoutSectionType.name) {
+      case kAMRAPName:
+      case kForTimeName:
+      case kEMOMName:
+      case kTabataName:
+      case kHIITCircuitName:
+      case kFreeSessionName:
+        return MainVideoOverlay(workoutSection: workoutSection, state: state);
+      default:
+        throw Exception(
+            'No moves list builder specified for ${workoutSection.workoutSectionType.name}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DoSectionTemplateLayout(
+      movesList: _buildMovesList(),
+      timer: _buildTimer(),
+      videoOverlay: _buildVideoOverlay(),
+      activePageIndex: activePageIndex,
+      state: state,
+      workoutSection: workoutSection,
+    );
   }
 }
