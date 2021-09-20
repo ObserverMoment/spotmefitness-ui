@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/cards/card.dart';
-import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/modal_picker_title.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/save_and_close_picker.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';

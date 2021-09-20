@@ -34,8 +34,6 @@ void main() async {
 
   await Firebase.initializeApp();
 
-  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     // Default to light initially - this needs to be updated to dark if the user selects light theme.

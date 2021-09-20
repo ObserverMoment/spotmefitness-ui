@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Slider call to action component
 class SliderButton extends StatefulWidget {
@@ -140,7 +142,7 @@ class SliderButtonState extends State<SliderButton>
                 : BoxConstraints.expand(height: widget.height),
             child: Material(
               elevation: widget.elevation,
-              color: widget.outerColor ?? Theme.of(context).accentColor,
+              color: widget.outerColor ?? Styles.colorOne,
               borderRadius: BorderRadius.circular(widget.borderRadius),
               child: submitted
                   ? Transform(
@@ -154,7 +156,7 @@ class SliderButtonState extends State<SliderButton>
                                 Icon(
                                   Icons.done,
                                   color: widget.innerColor ??
-                                      Theme.of(context).primaryIconTheme.color,
+                                      context.theme.primary,
                                 ),
                             Positioned.fill(
                               right: 0,
@@ -163,8 +165,7 @@ class SliderButtonState extends State<SliderButton>
                                     _checkAnimationDx * (pi / 2)),
                                 alignment: Alignment.centerRight,
                                 child: Container(
-                                  color: widget.outerColor ??
-                                      Theme.of(context).accentColor,
+                                  color: widget.outerColor ?? Styles.colorOne,
                                 ),
                               ),
                             ),
@@ -221,16 +222,12 @@ class SliderButtonState extends State<SliderButton>
                                                 size:
                                                     widget.sliderButtonIconSize,
                                                 color: widget.outerColor ??
-                                                    Theme.of(context)
-                                                        .accentColor,
+                                                    Styles.colorOne,
                                               ),
                                         ),
                                       ),
                                     ),
-                                    color: widget.innerColor ??
-                                        Theme.of(context)
-                                            .primaryIconTheme
-                                            .color,
+                                    color: widget.innerColor ?? Styles.colorOne,
                                   ),
                                 ),
                               ),

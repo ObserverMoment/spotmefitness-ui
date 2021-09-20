@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/components/animated/animated_submit_button_V2.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/section_video_player_screen.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/start_resume_button.dart';
 import 'package:spotmefitness_ui/constants.dart';

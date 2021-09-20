@@ -5,7 +5,6 @@ import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/tags.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker_archived.dart';
 import 'package:spotmefitness_ui/components/user_input/selectors/workout_section_type_multi_selector.dart';
 import 'package:spotmefitness_ui/components/user_input/text_input.dart';
 import 'package:spotmefitness_ui/constants.dart';

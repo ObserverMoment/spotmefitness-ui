@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/components/timers/countdown_timer.dart';
 import 'package:spotmefitness_ui/components/timers/stopwatch_with_laps.dart';

@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/text.dart';
@@ -154,25 +152,6 @@ class WorkoutPlanFiltersScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ClearInputButton extends StatelessWidget {
-  final void Function() onPressed;
-  const _ClearInputButton({Key? key, required this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FadeIn(
-      child: CupertinoButton(
-          child: Icon(
-            CupertinoIcons.clear_thick,
-            color: Styles.errorRed,
-            size: 22,
-          ),
-          onPressed: onPressed),
     );
   }
 }

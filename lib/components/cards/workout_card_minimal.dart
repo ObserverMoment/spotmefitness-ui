@@ -9,7 +9,6 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
-import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 /// No background image and more compact - for displaying in a plan schedule list.
 /// Title and equipment are on the top - tags on the bottom.

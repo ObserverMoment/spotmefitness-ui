@@ -6,7 +6,6 @@ import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:spotmefitness_ui/services/data_utils.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
