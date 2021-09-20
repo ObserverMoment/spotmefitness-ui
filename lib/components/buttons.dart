@@ -804,32 +804,28 @@ class FilterButton extends StatelessWidget {
   FilterButton({required this.onPressed, this.hasActiveFilters = false});
   @override
   Widget build(BuildContext context) {
-    return UnRaisedButtonContainer(
-      padding: EdgeInsets.zero,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          BorderButton(
-            mini: true,
-            withBorder: false,
-            onPressed: onPressed,
-            prefix: Icon(
-              CupertinoIcons.slider_horizontal_3,
-              size: kMiniButtonIconSize,
-            ),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        CupertinoButton(
+          padding: EdgeInsets.zero,
+          onPressed: onPressed,
+          child: Icon(
+            CupertinoIcons.slider_horizontal_3,
+            size: kMiniButtonIconSize,
           ),
-          if (hasActiveFilters)
-            Positioned(
-              top: -4,
-              right: -3,
-              child: Icon(
-                CupertinoIcons.checkmark_alt_circle_fill,
-                color: Styles.infoBlue,
-                size: 20,
-              ),
-            )
-        ],
-      ),
+        ),
+        if (hasActiveFilters)
+          Positioned(
+            top: -4,
+            right: -3,
+            child: Icon(
+              CupertinoIcons.checkmark_alt_circle_fill,
+              color: Styles.infoBlue,
+              size: 20,
+            ),
+          )
+      ],
     );
   }
 }
@@ -899,14 +895,15 @@ class CreateTextIconButton extends StatelessWidget {
 /// Has no padding which allows it to act as 'Leading' / 'trailing' widget in the nav bar.
 class NavBarCancelButton extends StatelessWidget {
   final void Function() onPressed;
-  NavBarCancelButton(this.onPressed);
+  final String text;
+  NavBarCancelButton(this.onPressed, {this.text = 'Cancel'});
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
         padding: EdgeInsets.zero,
         onPressed: onPressed,
         child: MyText(
-          'Cancel',
+          text,
         ));
   }
 }
@@ -1024,7 +1021,7 @@ class NoteIconViewerButton extends StatelessWidget {
   }
 }
 
-/// Circled + should be used in the nav bar only - elsewhere use the uncircled version.
+/// Primarily for use in the nav bar.
 class CreateIconButton extends StatelessWidget {
   final void Function() onPressed;
   CreateIconButton({required this.onPressed});
@@ -1034,8 +1031,8 @@ class CreateIconButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: onPressed,
       child: Icon(
-        CupertinoIcons.add_circled,
-        size: 25,
+        CupertinoIcons.plus_app,
+        size: 28,
       ),
     );
   }

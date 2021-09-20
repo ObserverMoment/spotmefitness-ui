@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/abstract_section_controller.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
 /// Although it extends [WorkoutSectionController] it is not very similar...
-/// Allows updating of sets and moves (just load and reps for moves) of the [WorkoutSection] during the workout. Hence why the [ChangeNotfier] mixin is being used.
-/// When they are ready the user can move sets across from the workout section and into the log. [loggedWorkoutSection.loggedWorkoutSets] is emptied in the [WorkoutSectionController] constructor.
+/// Allows updating of sets (rounds) and moves (load and reps for moves) by updating the main [activeWorkout] object in the [DoWorkoutBloc].
+/// The controller maintains a list of completed workoutSet Ids.
 class FreeSessionSectionController extends WorkoutSectionController
     with ChangeNotifier {
+  List<String> completedWorkoutSetIds = [];
+
   FreeSessionSectionController(
       {required WorkoutSection workoutSection,
       required StopWatchTimer stopWatchTimer,
@@ -18,18 +19,19 @@ class FreeSessionSectionController extends WorkoutSectionController
             stopWatchTimer: stopWatchTimer,
             onCompleteSection: onCompleteSection);
 
-  void markWorkoutSetComplete(BuildContext context, WorkoutSet workoutSet) {
-    /// TODO.
-    // loggedWorkoutSection.loggedWorkoutSets
-    //     .add(workoutSetToLoggedWorkoutSet(workoutSet, 0));
+  void markWorkoutSetComplete(WorkoutSet workoutSet) {
+    completedWorkoutSetIds.add(workoutSet.id);
+    state.updateSectionRoundSetDataFromCompletedSets(workoutSection.workoutSets
+        .where((wSet) => completedWorkoutSetIds.contains(wSet.id))
+        .toList());
     notifyListeners();
-    context.showToast(message: 'Set Completed!');
   }
 
   void markWorkoutSetIncomplete(WorkoutSet workoutSet) {
-    /// TODO.
-    // loggedWorkoutSection.loggedWorkoutSets
-    //     .removeWhere((lwSet) => lwSet.sortPosition == workoutSet.sortPosition);
+    completedWorkoutSetIds.remove(workoutSet.id);
+    state.updateSectionRoundSetDataFromCompletedSets(workoutSection.workoutSets
+        .where((wSet) => completedWorkoutSetIds.contains(wSet.id))
+        .toList());
     notifyListeners();
   }
 

@@ -29,7 +29,6 @@ class MoveFiltersScreen extends StatefulWidget {
 class _MoveFiltersScreenState extends State<MoveFiltersScreen> {
   int _activeTabIndex = 0;
   late MoveFilters _activeMoveFilters;
-  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -43,9 +42,6 @@ class _MoveFiltersScreenState extends State<MoveFiltersScreen> {
   }
 
   void _changeTab(int index) {
-    _pageController.jumpToPage(
-      index,
-    );
     Utils.hideKeyboard(context);
     setState(() => _activeTabIndex = index);
   }
@@ -62,65 +58,59 @@ class _MoveFiltersScreenState extends State<MoveFiltersScreen> {
   void _updateBodyAreas(List<BodyArea> bodyAreas) =>
       setState(() => _activeMoveFilters.bodyAreas = bodyAreas);
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
+  void _clearAllFilters() {
+    setState(() {
+      _activeMoveFilters.moveTypes = [];
+      _activeMoveFilters.bodyWeightOnly = false;
+      _activeMoveFilters.equipments = [];
+      _activeMoveFilters.bodyAreas = [];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
+    return MyPageScaffold(
         navigationBar: MyNavBar(
-            automaticallyImplyLeading: false,
-            customLeading: null,
-            middle: NavBarTitle('Move Filters'),
-            trailing: NavBarSaveButton(
-              _saveAndClose,
-            )),
+          customLeading: NavBarCancelButton(
+            _clearAllFilters,
+            text: 'Clear All',
+          ),
+          middle: NavBarTitle('Move Filters'),
+          trailing: NavBarSaveButton(
+            _saveAndClose,
+          ),
+        ),
         child: Column(
           children: [
-            SizedBox(height: 12),
             MyTabBarNav(
                 titles: ['Types', 'Equipment', 'BodyAreas'],
                 handleTabChange: _changeTab,
                 activeTabIndex: _activeTabIndex),
             Expanded(
-              child: FadeIn(
-                child: PageView(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: _pageController,
-                  onPageChanged: _changeTab,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MoveFiltersTypes(
-                        selectedMoveTypes: _activeMoveFilters.moveTypes,
-                        updateSelected: _updateMoveTypes,
-                      ),
+              child: IndexedStack(
+                index: _activeTabIndex,
+                children: [
+                  MoveFiltersTypes(
+                    selectedMoveTypes: _activeMoveFilters.moveTypes,
+                    updateSelected: _updateMoveTypes,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MoveFiltersEquipment(
+                      bodyweightOnly: _activeMoveFilters.bodyWeightOnly,
+                      toggleBodyweight: _toggleBodyweightOnly,
+                      handleSelection: (e) => _updateEquipments(
+                          _activeMoveFilters.equipments
+                              .toggleItem<Equipment>(e)),
+                      selectedEquipments: _activeMoveFilters.equipments,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: MoveFiltersEquipment(
-                        bodyweightOnly: _activeMoveFilters.bodyWeightOnly,
-                        toggleBodyweight: _toggleBodyweightOnly,
-                        handleSelection: (e) => _updateEquipments(
-                            _activeMoveFilters.equipments
-                                .toggleItem<Equipment>(e)),
-                        selectedEquipments: _activeMoveFilters.equipments,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MoveFiltersBody(
-                          selectedBodyAreas: _activeMoveFilters.bodyAreas,
-                          clearAllBodyAreas: () => _updateBodyAreas([]),
-                          handleTapBodyArea: (ba) => _updateBodyAreas(
-                              _activeMoveFilters.bodyAreas
-                                  .toggleItem<BodyArea>(ba))),
-                    ),
-                  ],
-                ),
+                  ),
+                  MoveFiltersBody(
+                      selectedBodyAreas: _activeMoveFilters.bodyAreas,
+                      handleTapBodyArea: (ba) => _updateBodyAreas(
+                          _activeMoveFilters.bodyAreas
+                              .toggleItem<BodyArea>(ba))),
+                ],
               ),
             ),
           ],
@@ -146,33 +136,34 @@ class MoveFiltersTypes extends StatelessWidget {
         builder: (data) {
           final allMoveTypes = data.moveTypes;
 
-          return Container(
-            padding: const EdgeInsets.only(top: 4, left: 8),
-            height: 56,
-            child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 10,
-                runSpacing: 6,
-                children: [
-                  SelectableTag(
-                      isSelected: selectedMoveTypes.isEmpty,
-                      onPressed: () {
-                        if (selectedMoveTypes.isEmpty) {
-                          updateSelected([...allMoveTypes]);
-                        } else {
-                          updateSelected([]);
-                        }
-                      },
-                      text: 'ALL'),
-                  ...allMoveTypes
-                      .map((type) => SelectableTag(
-                            text: type.name,
-                            isSelected: selectedMoveTypes.contains(type),
-                            onPressed: () => updateSelected(
-                                selectedMoveTypes.toggleItem<MoveType>(type)),
-                          ))
-                      .toList(),
-                ]),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
+            child: ListView(children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: SelectableBox(
+                    isSelected: selectedMoveTypes.isEmpty,
+                    onPressed: () {
+                      if (selectedMoveTypes.isEmpty) {
+                        updateSelected([...allMoveTypes]);
+                      } else {
+                        updateSelected([]);
+                      }
+                    },
+                    text: 'ALL'),
+              ),
+              ...allMoveTypes
+                  .map((type) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: SelectableBox(
+                          text: type.name,
+                          isSelected: selectedMoveTypes.contains(type),
+                          onPressed: () => updateSelected(
+                              selectedMoveTypes.toggleItem<MoveType>(type)),
+                        ),
+                      ))
+                  .toList(),
+            ]),
           );
         });
   }
@@ -229,11 +220,10 @@ class MoveFiltersEquipment extends StatelessWidget {
 class MoveFiltersBody extends StatefulWidget {
   final List<BodyArea> selectedBodyAreas;
   final void Function(BodyArea bodyArea) handleTapBodyArea;
-  final void Function() clearAllBodyAreas;
-  MoveFiltersBody(
-      {required this.selectedBodyAreas,
-      required this.handleTapBodyArea,
-      required this.clearAllBodyAreas});
+  MoveFiltersBody({
+    required this.selectedBodyAreas,
+    required this.handleTapBodyArea,
+  });
 
   @override
   _MoveFiltersBodyState createState() => _MoveFiltersBodyState();
@@ -260,21 +250,7 @@ class _MoveFiltersBodyState extends State<MoveFiltersBody> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                if (widget.selectedBodyAreas.isNotEmpty)
-                  FadeIn(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          text: 'Clear all',
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          destructive: true,
-                          underline: false,
-                          onPressed: widget.clearAllBodyAreas,
-                        ),
-                      ],
-                    ),
-                  ),
+                SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TargetedBodyAreasList(widget.selectedBodyAreas),

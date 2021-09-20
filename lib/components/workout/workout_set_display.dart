@@ -29,6 +29,7 @@ class WorkoutSetDisplay extends StatelessWidget {
             workoutSet.workoutMoves.length == 1));
 
     return Card(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

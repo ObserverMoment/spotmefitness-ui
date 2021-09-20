@@ -108,7 +108,7 @@ class MoveDetails extends StatelessWidget {
         query: BodyAreasQuery(),
         fetchPolicy: QueryFetchPolicy.storeFirst,
         builder: (data) {
-          return MyPageScaffold(
+          return CupertinoPageScaffold(
             navigationBar: MyNavBar(
               customLeading: NavBarChevronDownButton(context.pop),
               backgroundColor: context.theme.background,

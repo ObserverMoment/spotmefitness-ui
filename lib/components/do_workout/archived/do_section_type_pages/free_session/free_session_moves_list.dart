@@ -82,7 +82,7 @@ class _WorkoutSetInFreeSession extends StatelessWidget {
   });
 
   void _handleMarkSetComplete(BuildContext context) {
-    freeSessionController.markWorkoutSetComplete(context, workoutSet);
+    freeSessionController.markWorkoutSetComplete(workoutSet);
   }
 
   void _handleMarkSetInComplete() {

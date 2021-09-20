@@ -13,6 +13,7 @@ import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/enum_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:spotmefitness_ui/services/utils.dart';
 
 /// UI will be fixed to these values and will not allow user to adjust them.
 class FixedTimeReps {
@@ -48,7 +49,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
 
   /// 0 = MoveSelector
   /// 1 = Reps etc editor
-  int _activePageIndex = 0;
+  int _activeTabIndex = 0;
 
   @override
   void initState() {
@@ -56,7 +57,12 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     _activeWorkoutMove = widget.workoutMove != null
         ? WorkoutMove.fromJson(widget.workoutMove!.toJson())
         : null;
-    _activePageIndex = _activeWorkoutMove == null ? 0 : 1;
+    _activeTabIndex = _activeWorkoutMove == null ? 0 : 1;
+  }
+
+  void _changeTab(int index) {
+    Utils.hideKeyboard(context);
+    setState(() => _activeTabIndex = index);
   }
 
   void _selectMove(Move move) {
@@ -82,7 +88,7 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
       ..move = move;
 
     setState(() {
-      _activePageIndex = 1;
+      _activeTabIndex = 1;
     });
   }
 
@@ -136,19 +142,6 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
     context.pop();
   }
 
-  Widget? _buildTopRightIcon() {
-    if (_activePageIndex == 0 && _activeWorkoutMove?.move != null) {
-      return NavBarTextButton(
-          () => setState(() => _activePageIndex = 1), 'Edit >');
-    } else if (_validToSave()) {
-      return FadeIn(
-        child: NavBarSaveButton(
-          _checkLoadAmount,
-        ),
-      );
-    }
-  }
-
   bool _showLoadPicker() {
     if (_activeWorkoutMove?.move == null) {
       return false;
@@ -181,204 +174,193 @@ class _WorkoutMoveCreatorState extends State<WorkoutMoveCreator> {
 
   @override
   Widget build(BuildContext context) {
-    return MyPageScaffold(
-      navigationBar: MyNavBar(
-        customLeading: NavBarCancelButton(context.pop),
-        middle: NavBarTitle(widget.pageTitle ?? 'Set'),
-        trailing: _buildTopRightIcon(),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: IndexedStack(index: _activePageIndex, children: [
-              MoveSelector(
-                move: _activeWorkoutMove?.move,
-                selectMove: _selectMove,
-              ),
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: _activeWorkoutMove == null
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BorderButton(
-                                mini: true,
-                                prefix: Icon(
-                                  CupertinoIcons.arrow_left_right_square,
-                                  color: context.theme.background,
-                                  size: 20,
-                                ),
-                                text: 'Select a move',
-                                onPressed: () =>
-                                    setState(() => _activePageIndex = 0))
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: MyHeaderText(
-                                        _activeWorkoutMove!.move.name)),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                BorderButton(
-                                    mini: true,
-                                    prefix: Icon(
-                                      CupertinoIcons.arrow_left_right,
-                                      size: 20,
-                                    ),
-                                    text: 'Change',
-                                    onPressed: () =>
-                                        setState(() => _activePageIndex = 0))
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 24.0),
-                              child: Wrap(
-                                spacing: 30,
-                                runSpacing: 10,
-                                alignment: WrapAlignment.spaceEvenly,
-                                runAlignment: WrapAlignment.spaceEvenly,
-                                children: [
-                                  if (!widget.ignoreReps &&
-                                      widget.fixedTimeReps == null)
-                                    RepPickerDisplay(
-                                      expandPopup: true,
-                                      reps: _activeWorkoutMove!.reps,
-                                      validRepTypes: _activeWorkoutMove!
-                                          .move.validRepTypes,
-                                      repType: _activeWorkoutMove!.repType,
-                                      updateReps: (reps) =>
-                                          _updateWorkoutMove({'reps': reps}),
-                                      updateRepType: (repType) =>
-                                          _updateWorkoutMove(
-                                              {'repType': repType.apiValue}),
-                                      distanceUnit:
-                                          _activeWorkoutMove!.distanceUnit,
-                                      updateDistanceUnit: (distanceUnit) =>
-                                          _updateWorkoutMove({
-                                        'distanceUnit': distanceUnit.apiValue
-                                      }),
-                                      timeUnit: _activeWorkoutMove!.timeUnit,
-                                      updateTimeUnit: (timeUnit) =>
-                                          _updateWorkoutMove(
-                                              {'timeUnit': timeUnit.apiValue}),
-                                    ),
-                                  if (_showLoadPicker())
-                                    FadeIn(
-                                      child: LoadPickerDisplay(
-                                        expandPopup: true,
-                                        loadAmount:
-                                            _activeWorkoutMove!.loadAmount,
-                                        loadUnit: _activeWorkoutMove!.loadUnit,
-                                        updateLoad: (loadAmount, loadUnit) =>
-                                            _updateWorkoutMove({
-                                          'loadAmount': loadAmount,
-                                          'loadUnit': loadUnit.apiValue
-                                        }),
-                                      ),
-                                    ),
-                                ],
+    return IndexedStack(index: _activeTabIndex, children: [
+      MoveSelector(
+          move: _activeWorkoutMove?.move,
+          selectMove: _selectMove,
+          onCancel: () =>
+              _activeWorkoutMove?.move == null ? context.pop() : _changeTab(1)),
+      MyPageScaffold(
+        navigationBar: MyNavBar(
+          customLeading: NavBarCancelButton(context.pop),
+          middle: NavBarTitle(widget.pageTitle ?? 'Set'),
+          trailing: _validToSave()
+              ? FadeIn(
+                  child: NavBarSaveButton(
+                  _checkLoadAmount,
+                ))
+              : null,
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: _activeWorkoutMove == null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BorderButton(
+                          mini: true,
+                          prefix: Icon(
+                            CupertinoIcons.arrow_left_right_square,
+                            color: context.theme.background,
+                            size: 20,
+                          ),
+                          text: 'Select a move',
+                          onPressed: () => _changeTab(0))
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                              child:
+                                  MyHeaderText(_activeWorkoutMove!.move.name)),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          BorderButton(
+                              mini: true,
+                              prefix: Icon(
+                                CupertinoIcons.arrow_left_right,
+                                size: 20,
                               ),
-                            ),
-                            if (_activeWorkoutMove!
-                                .move.requiredEquipments.isNotEmpty)
+                              text: 'Change',
+                              onPressed: () => _changeTab(0))
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24.0),
+                        child: Wrap(
+                          spacing: 30,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.spaceEvenly,
+                          runAlignment: WrapAlignment.spaceEvenly,
+                          children: [
+                            if (!widget.ignoreReps &&
+                                widget.fixedTimeReps == null)
+                              RepPickerDisplay(
+                                expandPopup: true,
+                                reps: _activeWorkoutMove!.reps,
+                                validRepTypes:
+                                    _activeWorkoutMove!.move.validRepTypes,
+                                repType: _activeWorkoutMove!.repType,
+                                updateReps: (reps) =>
+                                    _updateWorkoutMove({'reps': reps}),
+                                updateRepType: (repType) => _updateWorkoutMove(
+                                    {'repType': repType.apiValue}),
+                                distanceUnit: _activeWorkoutMove!.distanceUnit,
+                                updateDistanceUnit: (distanceUnit) =>
+                                    _updateWorkoutMove({
+                                  'distanceUnit': distanceUnit.apiValue
+                                }),
+                                timeUnit: _activeWorkoutMove!.timeUnit,
+                                updateTimeUnit: (timeUnit) =>
+                                    _updateWorkoutMove(
+                                        {'timeUnit': timeUnit.apiValue}),
+                              ),
+                            if (_showLoadPicker())
+                              FadeIn(
+                                child: LoadPickerDisplay(
+                                  expandPopup: true,
+                                  loadAmount: _activeWorkoutMove!.loadAmount,
+                                  loadUnit: _activeWorkoutMove!.loadUnit,
+                                  updateLoad: (loadAmount, loadUnit) =>
+                                      _updateWorkoutMove({
+                                    'loadAmount': loadAmount,
+                                    'loadUnit': loadUnit.apiValue
+                                  }),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      if (_activeWorkoutMove!
+                          .move.requiredEquipments.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            MyText('Required'),
+                            SizedBox(height: 10),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 8,
+                              runSpacing: 8,
+                              children:
+                                  _activeWorkoutMove!.move.requiredEquipments
+                                      .map((e) => ContentBox(
+                                            child: MyText(
+                                              e.name,
+                                              weight: FontWeight.bold,
+                                              size: FONTSIZE.BIG,
+                                            ),
+                                          ))
+                                      .toList(),
+                            )
+                          ],
+                        ),
+                      if (_activeWorkoutMove!
+                          .move.selectableEquipments.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 6),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: MyText('Select one from...',
+                                    color: _activeWorkoutMove?.equipment == null
+                                        ? Styles.errorRed
+                                        : null,
+                                    lineHeight: 1.4),
+                              ),
+                              EquipmentSelectorList(
+                                  showIcon: true,
+                                  tilesBorder: true,
+                                  equipments: _equipmentsWithBodyWeightFirst(
+                                      _activeWorkoutMove!
+                                          .move.selectableEquipments),
+                                  handleSelection: (equipment) {
+                                    _updateWorkoutMove({
+                                      'Equipment': equipment.toJson(),
+                                    });
+                                  },
+                                  selectedEquipments: [
+                                    if (_activeWorkoutMove!.equipment != null)
+                                      _activeWorkoutMove!.equipment!
+                                  ]),
+                            ],
+                          ),
+                        ),
+                      if (_activeWorkoutMove!.equipment != null)
+                        GrowIn(
+                            child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  MyText('Required'),
+                                  MyText('Selected'),
                                   SizedBox(height: 10),
-                                  Wrap(
-                                    alignment: WrapAlignment.center,
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: _activeWorkoutMove!
-                                        .move.requiredEquipments
-                                        .map((e) => ContentBox(
-                                              child: MyText(
-                                                e.name,
-                                                weight: FontWeight.bold,
-                                                size: FONTSIZE.BIG,
-                                              ),
-                                            ))
-                                        .toList(),
+                                  ContentBox(
+                                    child: MyText(
+                                      _activeWorkoutMove!.equipment!.name,
+                                      weight: FontWeight.bold,
+                                    ),
                                   )
                                 ],
                               ),
-                            if (_activeWorkoutMove!
-                                .move.selectableEquipments.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 6),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: MyText('Select one from...',
-                                          color:
-                                              _activeWorkoutMove?.equipment ==
-                                                      null
-                                                  ? Styles.errorRed
-                                                  : null,
-                                          lineHeight: 1.4),
-                                    ),
-                                    EquipmentSelectorList(
-                                        showIcon: true,
-                                        tilesBorder: true,
-                                        equipments:
-                                            _equipmentsWithBodyWeightFirst(
-                                                _activeWorkoutMove!
-                                                    .move.selectableEquipments),
-                                        handleSelection: (equipment) {
-                                          _updateWorkoutMove({
-                                            'Equipment': equipment.toJson(),
-                                          });
-                                        },
-                                        selectedEquipments: [
-                                          if (_activeWorkoutMove!.equipment !=
-                                              null)
-                                            _activeWorkoutMove!.equipment!
-                                        ]),
-                                  ],
-                                ),
-                              ),
-                            if (_activeWorkoutMove!.equipment != null)
-                              GrowIn(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(top: 12.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        MyText('Selected'),
-                                        SizedBox(height: 10),
-                                        ContentBox(
-                                          child: MyText(
-                                            _activeWorkoutMove!.equipment!.name,
-                                            weight: FontWeight.bold,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )),
-                          ],
-                        ),
-                ),
-              )
-            ]),
+                            ],
+                          ),
+                        )),
+                    ],
+                  ),
           ),
-        ],
-      ),
-    );
+        ),
+      )
+    ]);
   }
 }

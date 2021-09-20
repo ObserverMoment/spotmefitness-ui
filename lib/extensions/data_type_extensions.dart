@@ -51,6 +51,9 @@ extension WorkoutSectionExtension on WorkoutSection {
 
   bool get isAMRAP => this.workoutSectionType.name == kAMRAPName;
 
+  bool get isScored =>
+      [kAMRAPName, kForTimeName].contains(this.workoutSectionType.name);
+
   bool get isTimed => [
         kHIITCircuitName,
         kTabataName,
@@ -171,6 +174,8 @@ extension WorkoutSectionTypeExtension on WorkoutSectionType {
   bool get canPyramid => ![kHIITCircuitName, kTabataName].contains(this.name);
 
   bool get isAMRAP => this.name == kAMRAPName;
+
+  bool get isScored => [kAMRAPName, kForTimeName].contains(this.name);
 
   bool get isTimed => [
         kHIITCircuitName,

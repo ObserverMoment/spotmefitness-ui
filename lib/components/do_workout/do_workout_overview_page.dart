@@ -3,10 +3,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section_modifications.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_settings.dart';
-import 'package:spotmefitness_ui/components/do_workout/view_workout_section_moves.dart';
 import 'package:spotmefitness_ui/components/layout.dart';
 import 'package:spotmefitness_ui/components/media/audio/audio_players.dart';
 import 'package:spotmefitness_ui/components/media/video/uploadcare_video_player.dart';
@@ -28,10 +27,12 @@ class DoWorkoutOverview extends StatelessWidget {
 
   /// Pass section index + 1 - because index 0 is the overview page.
   final void Function(int sectionIndex) navigateToSectionPage;
+  final VoidCallback generateLog;
   const DoWorkoutOverview(
       {Key? key,
       required this.handleExitRequest,
-      required this.navigateToSectionPage})
+      required this.navigateToSectionPage,
+      required this.generateLog})
       : super(key: key);
 
   @override
@@ -49,8 +50,7 @@ class DoWorkoutOverview extends StatelessWidget {
       child: Column(
         children: [
           _TopNavBar(
-            handleExitRequest: handleExitRequest,
-          ),
+              handleExitRequest: handleExitRequest, generateLog: generateLog),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(14),
@@ -60,7 +60,8 @@ class DoWorkoutOverview extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 6.0),
                   child: _WorkoutIntroSummaryCard(
                       workout: workout,
-                      allSectionsComplete: allSectionsComplete),
+                      allSectionsComplete: allSectionsComplete,
+                      generateLog: generateLog),
                 ),
                 ...workoutSections
                     .map((workoutSection) => Padding(
@@ -84,8 +85,12 @@ class DoWorkoutOverview extends StatelessWidget {
 class _WorkoutIntroSummaryCard extends StatelessWidget {
   final Workout workout;
   final bool allSectionsComplete;
+  final VoidCallback generateLog;
   const _WorkoutIntroSummaryCard(
-      {Key? key, required this.workout, required this.allSectionsComplete})
+      {Key? key,
+      required this.workout,
+      required this.allSectionsComplete,
+      required this.generateLog})
       : super(key: key);
 
   @override
@@ -100,11 +105,11 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
               workout.name,
               maxLines: 2,
               size: FONTSIZE.LARGE,
-              weight: FontWeight.normal,
             ),
+            SizedBox(height: 10),
             if (Utils.textNotNull(workout.description))
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: ViewMoreFullScreenTextBlock(
                   text: workout.description!,
                   title: workout.name,
@@ -115,7 +120,7 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
             if (Utils.anyNotNull(
                 [workout.introAudioUri, workout.introVideoUri]))
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -166,18 +171,21 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
                               backgroundColor: Styles.neonBlueOne,
                               contentColor: Styles.white,
                               withMinWidth: false,
-                              onPressed: () => print('log workout flow'),
+                              onPressed: generateLog,
                               prefix: Icon(CupertinoIcons.doc_text,
                                   color: Styles.white),
                               text: 'Log Workout',
                             )
                           ],
                         )
-                      : PrimaryButton(
+                      : MyButton(
+                          contentColor: context.theme.primary,
+                          backgroundGradient: Styles.neonBlueGradient,
                           withMinWidth: false,
                           onPressed: () => print(
-                              'open section 1 and mark do all settings true'),
-                          suffixIconData: CupertinoIcons.play,
+                              'open section 1 and mark [do all] setting true'),
+                          suffix: Icon(CupertinoIcons.play,
+                              color: context.theme.primary),
                           text: 'Do All Sections',
                         ),
                 ],
@@ -190,7 +198,9 @@ class _WorkoutIntroSummaryCard extends StatelessWidget {
 
 class _TopNavBar extends StatelessWidget {
   final VoidCallback handleExitRequest;
-  const _TopNavBar({Key? key, required this.handleExitRequest})
+  final VoidCallback generateLog;
+  const _TopNavBar(
+      {Key? key, required this.handleExitRequest, required this.generateLog})
       : super(key: key);
 
   @override
@@ -218,14 +228,9 @@ class _TopNavBar extends StatelessWidget {
                   fullscreenDialog: true, child: DoWorkoutSettings()),
             ),
             _TopNavBarIcon(
-              iconData: CupertinoIcons.plus_slash_minus,
-              label: 'Modify',
-              onPressed: () => print('open modifications'),
-            ),
-            _TopNavBarIcon(
               iconData: CupertinoIcons.doc_text,
-              label: 'Log',
-              onPressed: () => print('partial log flow'),
+              label: 'Log It',
+              onPressed: generateLog,
             ),
           ],
         ),
@@ -330,35 +335,30 @@ class _WorkoutSectionSummary extends StatelessWidget {
           Stack(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0, bottom: 4),
-                    child: WorkoutSectionTypeTag(
-                      workoutSection: workoutSection,
-                      fontSize: FONTSIZE.MAIN,
-                    ),
+                  WorkoutSectionTypeTag(
+                    workoutSection: workoutSection,
+                    fontSize: FONTSIZE.MAIN,
+                  ),
+                  AnimatedSwitcher(
+                    duration: kStandardAnimationDuration,
+                    child: (!isComplete && hasStarted)
+                        ? Icon(
+                            CupertinoIcons.pause_circle,
+                            size: 30,
+                            color: Styles.neonBlueOne,
+                          )
+                        : isComplete
+                            ? Icon(
+                                CupertinoIcons.checkmark_alt_circle,
+                                size: 30,
+                                color: Styles.neonBlueOne,
+                              )
+                            : Container(),
                   ),
                 ],
               ),
-              if (!isComplete && hasStarted)
-                Positioned(
-                    right: 8,
-                    child: SizeFadeIn(
-                        child: Icon(
-                      CupertinoIcons.pause_circle,
-                      size: 30,
-                      color: Styles.neonBlueOne,
-                    ))),
-              if (isComplete)
-                Positioned(
-                    right: 8,
-                    child: SizeFadeIn(
-                        child: Icon(
-                      CupertinoIcons.checkmark_alt_circle,
-                      size: 30,
-                      color: Styles.neonBlueOne,
-                    )))
             ],
           ),
           if (Utils.textNotNull(workoutSection.name))
@@ -377,12 +377,15 @@ class _WorkoutSectionSummary extends StatelessWidget {
                 text: workoutSection.note!,
                 title: 'Section Note',
                 maxLines: 3,
+                textAlign: TextAlign.left,
               ),
             ),
           if (equipmentsWithLoad.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 4),
+              padding: const EdgeInsets.only(top: 12.0, bottom: 8),
               child: Wrap(
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.start,
                 spacing: 6,
                 runSpacing: 6,
                 children: equipmentsWithLoad
@@ -405,18 +408,18 @@ class _WorkoutSectionSummary extends StatelessWidget {
             children: [
               _buildSectionFooterButton(
                   CupertinoIcons.list_bullet,
-                  'View Moves',
+                  'View / Modify',
                   () => Navigator.of(context).push(CupertinoPageRoute(
                         fullscreenDialog: true,
                         builder: (context) =>
                             ChangeNotifierProvider<DoWorkoutBloc>.value(
                           value: bloc,
-                          child: ViewWorkoutSectionMoves(
+                          child: DoWorkoutSectionModifications(
                               sectionIndex: workoutSection.sortPosition),
                         ),
                       ))),
               _buildSectionFooterButton(
-                  CupertinoIcons.play, 'Do Section', navigateToSectionPage,
+                  CupertinoIcons.play, 'Do It', navigateToSectionPage,
                   disabled: isComplete),
             ],
           ),

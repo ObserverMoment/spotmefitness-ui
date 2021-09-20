@@ -5,7 +5,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/moves_lists/fortime_amrap_moves_list.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/moves_lists/free_session_moves_list.dart';
+import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/moves_lists/main_moves_list.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/amrap_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/fortime_timer.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/components/timers/interval_timer.dart';
@@ -13,6 +14,7 @@ import 'package:spotmefitness_ui/components/do_workout/do_workout_section/compon
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_template_layout.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_section_nav.dart';
 import 'package:spotmefitness_ui/components/text.dart';
+import 'package:spotmefitness_ui/components/timers/stopwatch_and_timer.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:provider/provider.dart';
@@ -248,16 +250,13 @@ class _DoSectionTemplateSelector extends StatelessWidget {
     switch (workoutSection.workoutSectionType.name) {
       case kAMRAPName:
       case kForTimeName:
-        return ForTimeAMRAPMovesList(
-            workoutSection: workoutSection, state: state);
+        return MainMovesList(workoutSection: workoutSection, state: state);
       case kEMOMName:
       case kTabataName:
       case kHIITCircuitName:
-        return ForTimeAMRAPMovesList(
-            workoutSection: workoutSection, state: state);
+        return MainMovesList(workoutSection: workoutSection, state: state);
       case kFreeSessionName:
-        return ForTimeAMRAPMovesList(
-            workoutSection: workoutSection, state: state);
+        return FreeSessionMovesList(workoutSection: workoutSection);
       default:
         throw Exception(
             'No moves list builder specified for ${workoutSection.workoutSectionType.name}');
@@ -267,7 +266,6 @@ class _DoSectionTemplateSelector extends StatelessWidget {
   Widget _buildTimer() {
     switch (workoutSection.workoutSectionType.name) {
       case kForTimeName:
-      case kFreeSessionName:
         return ForTimeTimer(workoutSection: workoutSection, state: state);
       case kAMRAPName:
         return AMRAPTimer(workoutSection: workoutSection, state: state);
@@ -275,6 +273,8 @@ class _DoSectionTemplateSelector extends StatelessWidget {
       case kTabataName:
       case kHIITCircuitName:
         return IntervalTimer(workoutSection: workoutSection, state: state);
+      case kFreeSessionName:
+        return StopwatchAndTimer();
       default:
         throw Exception(
             'No moves list builder specified for ${workoutSection.workoutSectionType.name}');
@@ -288,8 +288,9 @@ class _DoSectionTemplateSelector extends StatelessWidget {
       case kEMOMName:
       case kTabataName:
       case kHIITCircuitName:
-      case kFreeSessionName:
         return MainVideoOverlay(workoutSection: workoutSection, state: state);
+      case kFreeSessionName: // No video overlay required.
+        return Container();
       default:
         throw Exception(
             'No moves list builder specified for ${workoutSection.workoutSectionType.name}');

@@ -25,12 +25,16 @@ class HomePage extends StatelessWidget {
           fontSize: FONTSIZE.LARGE,
         ),
         trailing: NavBarTrailingRow(children: [
-          NotificationsIconButton(),
           ChatsIconButton(),
           _buildNavBarButton(
               CupertinoIcons.timer,
               () => context.push(
-                  child: StopwatchAndTimer(), rootNavigator: true)),
+                  child: CupertinoPageScaffold(
+                      navigationBar: MyNavBar(
+                        middle: NavBarTitle('Timers'),
+                      ),
+                      child: StopwatchAndTimer()),
+                  rootNavigator: true)),
           _buildNavBarButton(
             CupertinoIcons.calendar,
             () => context.navigateTo(YourScheduleRoute()),

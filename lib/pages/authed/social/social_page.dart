@@ -17,7 +17,6 @@ class SocialPage extends StatelessWidget {
           fontSize: FONTSIZE.LARGE,
         ),
         trailing: NavBarTrailingRow(children: [
-          NotificationsIconButton(),
           ChatsIconButton(),
           CupertinoButton(
               padding: const EdgeInsets.symmetric(horizontal: 13),

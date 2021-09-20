@@ -125,15 +125,11 @@ class WorkoutFilterMovesList extends StatelessWidget {
               CreateTextIconButton(
                 text: 'Add',
                 onPressed: () => context.push(
-                  child: MyPageScaffold(
-                    navigationBar: MyNavBar(
-                      customLeading: NavBarCancelButton(context.pop),
-                      middle: NavBarTitle('Select Move'),
-                    ),
-                    child: MoveSelector(
-                        includeCustomMoves: false,
-                        showCreateCustomMoveButton: false,
-                        selectMove: (Move move) => _handleAdd(context, move)),
+                  child: MoveSelector(
+                    includeCustomMoves: false,
+                    showCreateCustomMoveButton: false,
+                    selectMove: (move) => _handleAdd(context, move),
+                    onCancel: context.pop,
                   ),
                 ),
               ),

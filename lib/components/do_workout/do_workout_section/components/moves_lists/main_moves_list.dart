@@ -15,19 +15,19 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
-/// The user is progressing through the workout tapping 'set complete' or 'round complete' as they go.
-class ForTimeAMRAPMovesList extends StatefulWidget {
+/// Used for everything except Free Session.
+class MainMovesList extends StatefulWidget {
   final WorkoutSection workoutSection;
   final WorkoutSectionProgressState state;
-  const ForTimeAMRAPMovesList(
+  const MainMovesList(
       {Key? key, required this.workoutSection, required this.state})
       : super(key: key);
 
   @override
-  _ForTimeAMRAPMovesListState createState() => _ForTimeAMRAPMovesListState();
+  _MainMovesListState createState() => _MainMovesListState();
 }
 
-class _ForTimeAMRAPMovesListState extends State<ForTimeAMRAPMovesList> {
+class _MainMovesListState extends State<MainMovesList> {
   late AutoScrollController _autoScrollController;
 
   /// This list will auto scroll downwards as the workout progresses, with the current set at the top of the visible list.
@@ -43,7 +43,7 @@ class _ForTimeAMRAPMovesListState extends State<ForTimeAMRAPMovesList> {
   }
 
   @override
-  void didUpdateWidget(ForTimeAMRAPMovesList oldWidget) {
+  void didUpdateWidget(MainMovesList oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     /// When reaching the end of the section [state.currentRoundIndex] will be greater than the total [workoutSection.rounds] and will cause [AutoScrollController] to throw an error.

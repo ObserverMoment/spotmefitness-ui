@@ -15,15 +15,16 @@ import 'package:spotmefitness_ui/services/data_model_converters/workout_to_logge
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
+import 'package:uuid/uuid.dart';
+import 'package:collection/collection.dart';
 
 class DoWorkoutBloc extends ChangeNotifier {
   /// Before any pre-start adjustments.
   final Workout originalWorkout;
+  final ScheduledWorkout? scheduledWorkout;
 
   /// After any pre-start adjustments. Use this during.
   late Workout activeWorkout;
-
-  late LoggedWorkout loggedWorkout;
 
   /// List of timers - one for each workoutSection.
   /// Sorted by sortPosition. Index [0] == sortPosition of [0] etc.
@@ -47,11 +48,14 @@ class DoWorkoutBloc extends ChangeNotifier {
   bool audioInitSuccess = false;
   bool videoInitSuccess = false;
 
-  DoWorkoutBloc({
-    required Workout this.originalWorkout,
-  }) {
-    loggedWorkout = workoutToLoggedWorkout(workout: originalWorkout);
+  /// Completed progress flags.
+  /// Lets the UI know to send the User to the post workout page.
+  bool workoutCompletedAndLogged = false;
 
+  DoWorkoutBloc({
+    required this.originalWorkout,
+    this.scheduledWorkout,
+  }) {
     activeWorkout = originalWorkout.copyAndSortAllChildren;
 
     final workoutSections = activeWorkout.workoutSections;
@@ -240,8 +244,146 @@ class DoWorkoutBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void generatePartialLog() {
-    /// TODO:
+  /// Modify workout methods ////
+  /// Modify sets and moves before starting the workout or (if Free Session) during the workout ///
+  void updateWorkoutSectionRounds(int sectionIndex, int rounds) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.rounds = rounds;
+    activeWorkout.workoutSections[sectionIndex] = section;
+
+    notifyListeners();
+  }
+
+  /// For AMRAPs.
+  void updateWorkoutSectionTimecap(int sectionIndex, int seconds) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.timecap = seconds;
+    activeWorkout.workoutSections[sectionIndex] = section;
+
+    notifyListeners();
+  }
+
+  /// Allows the user to add a single move set (i.e) not a SuperSet to the end of the section.
+  /// Primarily for use in a Free Session so the user can extend their workout / add extra moves easily whilst they are in progress. But also available via the [DoWorkoutSectionModifications] screen.
+  /// Always making a copy of the section as this is what the provider.select listener is checking.
+  void addWorkoutMoveToSection(int sectionIndex, WorkoutMove workoutMove) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    final newWorkoutSet = WorkoutSet()
+      ..id = Uuid().v1()
+      ..sortPosition = section.workoutSets.length
+      ..rounds = 1
+      ..duration = 60
+      ..workoutMoves = [workoutMove];
+
+    section.workoutSets.add(newWorkoutSet);
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+    notifyListeners();
+  }
+
+  void removeWorkoutSetFromSection(int sectionIndex, int setIndex) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.workoutSets.removeAt(setIndex);
+
+    section.workoutSets.forEachIndexed((i, wSet) {
+      wSet.sortPosition = i;
+    });
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+    notifyListeners();
+  }
+
+  void updateWorkoutSetRounds(int sectionIndex, int setIndex, int rounds) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.workoutSets[setIndex].rounds = rounds;
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+    notifyListeners();
+  }
+
+  void updateWorkoutSetDuration(int sectionIndex, int setIndex, int seconds) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.workoutSets[setIndex].duration = seconds;
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+    notifyListeners();
+  }
+
+  void updateWorkoutMove(
+      int sectionIndex, int setIndex, WorkoutMove workoutMove) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+
+    section.workoutSets[setIndex].workoutMoves = section
+        .workoutSets[setIndex].workoutMoves
+        .map((wm) => wm.id == workoutMove.id ? workoutMove : wm)
+        .toList();
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+
+    notifyListeners();
+  }
+
+  void addWorkoutSetToSection(int sectionIndex, WorkoutSet workoutSet) {
+    final section = WorkoutSection.fromJson(
+        activeWorkout.workoutSections[sectionIndex].toJson());
+    section.workoutSets.add(workoutSet);
+
+    activeWorkout.workoutSections[sectionIndex] = section;
+    notifyListeners();
+  }
+
+  /// Based on the state objects of all of the section controllers, generate a full workout log for this workout.
+  LoggedWorkout generateLog() {
+    final loggedWorkout = loggedWorkoutFromWorkout(workout: activeWorkout);
+
+    loggedWorkout.loggedWorkoutSections =
+        activeWorkout.workoutSections.map((wSection) {
+      final sectionIndex = wSection.sortPosition;
+
+      /// If AMRAP or ForTime then save reps.
+      int? repScore;
+
+      if (wSection.workoutSectionType.isAMRAP) {
+        repScore =
+            (getControllerForSection(sectionIndex) as AMRAPSectionController)
+                .repsCompleted;
+      } else if (wSection.workoutSectionType.name == kForTimeName) {
+        repScore =
+            (getControllerForSection(sectionIndex) as ForTimeSectionController)
+                .repsCompleted;
+      }
+
+      final loggedSection = loggedWorkoutSectionFromWorkoutSection(
+          workoutSection: wSection,
+          repScore: repScore,
+          timeTakenSeconds:
+              getStopWatchTimerForSection(sectionIndex).secondTime.value);
+
+      /// Add the sectionData that was accumulated as the user did the workout.
+      loggedSection.loggedWorkoutSectionData =
+          getControllerForSection(wSection.sortPosition).state.sectionData;
+      return loggedSection;
+    }).toList();
+
+    return loggedWorkout;
+  }
+
+  void markWorkoutCompleteAndLogged() {
+    workoutCompletedAndLogged = true;
+    notifyListeners();
   }
 
   /// User Inputs End ////

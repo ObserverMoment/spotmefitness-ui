@@ -3,13 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc.dart';
-import 'package:spotmefitness_ui/components/animated/loading_shimmers.dart';
 import 'package:spotmefitness_ui/components/future_builder_handler.dart';
 import 'package:spotmefitness_ui/components/indicators.dart';
 import 'package:spotmefitness_ui/components/text.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
-import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
+import 'package:spotmefitness_ui/router.gr.dart';
 import 'package:spotmefitness_ui/services/store/store_utils.dart';
 
 /// Gets the workout from the DB based on its ID and then inits the DoWorkoutBloc.
@@ -74,25 +73,23 @@ class _DoWorkoutWrapperPageState extends State<DoWorkoutWrapperPage> {
         future: _initWorkoutFuture,
         builder: (workout) => ChangeNotifierProvider<DoWorkoutBloc>(
               create: (context) => DoWorkoutBloc(
-                originalWorkout: workout,
-              ),
+                  originalWorkout: workout,
+                  scheduledWorkout: widget.scheduledWorkout),
               builder: (context, _) {
                 final mediaSetupComplete = context.select<DoWorkoutBloc, bool>(
                     (b) => b.audioInitSuccess && b.videoInitSuccess);
 
                 if (!mediaSetupComplete) return _loadingWidget;
 
-                final allSectionsComplete = context.select<DoWorkoutBloc, bool>(
-                    (b) =>
-                        b.activeWorkout.workoutSections.length ==
-                        b.loggedWorkout.loggedWorkoutSections.length);
+                final workoutCompletedAndLogged =
+                    context.select<DoWorkoutBloc, bool>(
+                        (b) => b.workoutCompletedAndLogged);
 
                 return AutoRouter.declarative(
                     routes: (_) => [
-                          if (!allSectionsComplete) DoWorkoutDoWorkoutRoute(),
-                          if (allSectionsComplete)
-                            DoWorkoutLogWorkoutRoute(
-                                scheduledWorkout: widget.scheduledWorkout),
+                          workoutCompletedAndLogged
+                              ? DoWorkoutPostWorkoutRoute()
+                              : DoWorkoutDoWorkoutRoute(),
                         ]);
               },
             ));

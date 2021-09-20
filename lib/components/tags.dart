@@ -254,21 +254,27 @@ class LoggedWorkoutSectionSummaryTag extends StatelessWidget {
 
     /// User does not have to enter a rep score for timed workouts - so it may be null.
     /// If it is null then just display the length of the workout section.
-    return [kEMOMName, kHIITCircuitName, kTabataName]
-                .contains(section.workoutSectionType.name) &&
-            _repsScore == null
-        ? [
-            Padding(
-              padding: const EdgeInsets.only(left: 4.0),
-              child: _text(Duration(seconds: time).compactDisplay()),
-            )
-          ]
-        : [
-            SizedBox(width: 4),
-            _text('${_repsScore ?? 0} reps'),
-            _text(' in '),
-            _text(Duration(seconds: time).compactDisplay())
-          ];
+    if (section.workoutSectionType.isTimed) {
+      return [
+        Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: _text(Duration(seconds: time).compactDisplay()),
+        )
+      ];
+    } else if (section.workoutSectionType.isScored) {
+      return [
+        SizedBox(width: 4),
+        _text('${_repsScore ?? 0} reps'),
+        _text(' in '),
+        _text(Duration(seconds: time).compactDisplay())
+      ];
+    } else {
+      return [
+        SizedBox(width: 4),
+        _text('for '),
+        _text(Duration(seconds: time).compactDisplay())
+      ];
+    }
   }
 
   @override

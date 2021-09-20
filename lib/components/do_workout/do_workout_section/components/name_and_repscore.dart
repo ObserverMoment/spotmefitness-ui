@@ -16,9 +16,9 @@ class NameAndRepScore extends StatelessWidget {
       children: [
         MyText(
           workoutSection.workoutSectionType.name.toUpperCase(),
-          size: workoutSection.isTimed ? FONTSIZE.HUGE : FONTSIZE.SMALL,
+          size: !workoutSection.isScored ? FONTSIZE.HUGE : FONTSIZE.SMALL,
         ),
-        if (!workoutSection.isTimed)
+        if (workoutSection.isScored)
           Padding(
             padding: const EdgeInsets.only(top: 2.0),
             child: RepScoreDisplay(

@@ -321,7 +321,7 @@ class _DatePickerCalendarState extends State<DatePickerCalendar> {
                       color: _activeTabIndex == 1 ? Styles.peachRed : null,
                     ),
                     SizedBox(width: 4),
-                    AnimatedRotation(
+                    MyAnimatedRotation(
                       turns: 0.25,
                       rotate: _activeTabIndex == 1,
                       child: Icon(

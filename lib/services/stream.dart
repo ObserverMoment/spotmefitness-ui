@@ -67,7 +67,7 @@ class NotificationsIconButton extends StatefulWidget {
 class _NotificationsIconButtonState extends State<NotificationsIconButton> {
   int _unseenCount = 0;
   late NotificationFeed _notificationFeed;
-  late Subscription _feedSubscription;
+  Subscription? _feedSubscription;
 
   @override
   void initState() {
@@ -77,8 +77,6 @@ class _NotificationsIconButtonState extends State<NotificationsIconButton> {
   }
 
   void _addTest() async {
-    // await _notificationFeed
-    //     .removeActivityById('9e366c12-0049-11ec-a184-12e0c51dd22e');
     await _notificationFeed.addActivity(Activity(
       actor: context.streamFeedClient.currentUser!.ref,
       verb: 'notify',
@@ -117,7 +115,7 @@ class _NotificationsIconButtonState extends State<NotificationsIconButton> {
 
   @override
   void dispose() {
-    _feedSubscription.cancel();
+    _feedSubscription?.cancel();
     super.dispose();
   }
 

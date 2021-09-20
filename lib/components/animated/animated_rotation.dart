@@ -2,23 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:spotmefitness_ui/constants.dart';
 
-class AnimatedRotation extends StatefulWidget {
+class MyAnimatedRotation extends StatefulWidget {
   final bool rotate;
   final Widget child;
 
   /// Rotates 180deg by default. (0.5 = 180deg)
   /// For anti-clockwise use -0.5.
   final double turns;
-  AnimatedRotation({
+  MyAnimatedRotation({
     required this.rotate,
     required this.child,
     this.turns = 0.5,
   });
   @override
-  _AnimatedRotationState createState() => _AnimatedRotationState();
+  _MyAnimatedRotationState createState() => _MyAnimatedRotationState();
 }
 
-class _AnimatedRotationState extends State<AnimatedRotation>
+class _MyAnimatedRotationState extends State<MyAnimatedRotation>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -37,7 +37,7 @@ class _AnimatedRotationState extends State<AnimatedRotation>
   }
 
   @override
-  void didUpdateWidget(AnimatedRotation oldWidget) {
+  void didUpdateWidget(MyAnimatedRotation oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.rotate != oldWidget.rotate) {
       if (widget.rotate) {

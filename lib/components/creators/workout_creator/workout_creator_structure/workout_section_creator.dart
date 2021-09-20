@@ -10,14 +10,12 @@ import 'package:spotmefitness_ui/components/user_input/click_to_edit/text_row_cl
 import 'package:spotmefitness_ui/components/user_input/menus/nav_bar_ellipsis_menu.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/duration_picker.dart';
 import 'package:spotmefitness_ui/components/user_input/pickers/round_picker.dart';
-import 'package:spotmefitness_ui/components/user_input/pickers/timecap_picker_archived.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 import 'package:collection/collection.dart';
-import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 
 class WorkoutSectionCreator extends StatefulWidget {

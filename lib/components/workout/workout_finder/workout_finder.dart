@@ -281,7 +281,7 @@ class _WorkoutFinderPageUIState extends State<WorkoutFinderPageUI> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      AnimatedRotation(
+                      MyAnimatedRotation(
                           rotate: _panelIsOpen,
                           child: Icon(
                             CupertinoIcons.chevron_up,

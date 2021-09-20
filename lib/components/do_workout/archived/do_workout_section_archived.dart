@@ -4,10 +4,10 @@ import 'package:spotmefitness_ui/blocs/do_workout_bloc/workout_progress_state.da
 import 'package:spotmefitness_ui/components/animated/mounting.dart';
 import 'package:spotmefitness_ui/components/do_workout/archived/section_components/section_complete_modal.dart';
 import 'package:spotmefitness_ui/components/do_workout/archived/section_components/start_section_modal.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_amrap_archived.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_fortime_archived.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_free_session_archived.dart';
-import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_section_timed_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/archived/do_section_amrap_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/archived/do_section_fortime_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/archived/do_section_free_session_archived.dart';
+import 'package:spotmefitness_ui/components/do_workout/archived/do_section_timed_archived.dart';
 import 'package:spotmefitness_ui/components/do_workout/do_workout_section/do_workout_section_nav.dart';
 import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/generated/api/graphql_api.dart';

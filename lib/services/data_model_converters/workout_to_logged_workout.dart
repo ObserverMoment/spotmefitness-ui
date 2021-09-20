@@ -5,7 +5,7 @@ import 'package:spotmefitness_ui/extensions/data_type_extensions.dart';
 import 'package:spotmefitness_ui/services/utils.dart';
 
 /// Converts a workout to a logged workout.
-LoggedWorkout workoutToLoggedWorkout(
+LoggedWorkout loggedWorkoutFromWorkout(
     {required Workout workout,
     ScheduledWorkout? scheduledWorkout,
     bool copySections = false}) {
@@ -21,13 +21,13 @@ LoggedWorkout workoutToLoggedWorkout(
     ..loggedWorkoutSections = copySections
         ? workout.workoutSections
             .map((ws) =>
-                workoutSectionToLoggedWorkoutSection(workoutSection: ws))
+                loggedWorkoutSectionFromWorkoutSection(workoutSection: ws))
             .toList()
         : []
     ..workoutGoals = workout.workoutGoals;
 }
 
-LoggedWorkoutSection workoutSectionToLoggedWorkoutSection(
+LoggedWorkoutSection loggedWorkoutSectionFromWorkoutSection(
     {required WorkoutSection workoutSection,
     int? repScore,
     int? timeTakenSeconds}) {

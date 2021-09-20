@@ -9,9 +9,17 @@ import 'package:spotmefitness_ui/constants.dart';
 import 'package:spotmefitness_ui/env_config.dart';
 import 'package:spotmefitness_ui/extensions/context_extensions.dart';
 
+class StopwathAndTimerPage extends StatelessWidget {
+  const StopwathAndTimerPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 /// Full screen widget with bottom navigation bar.
 /// Navigate between [StopwatchWithLaps] and [CountdownTimer]
-/// very similar to iOS.
 class StopwatchAndTimer extends StatefulWidget {
   const StopwatchAndTimer({Key? key}) : super(key: key);
 
@@ -21,69 +29,47 @@ class StopwatchAndTimer extends StatefulWidget {
 
 class _StopwatchAndTimerState extends State<StopwatchAndTimer> {
   int _activeTabIndex = 0;
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    _pageController = PageController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: MyNavBar(
-        middle: NavBarTitle('Timer'),
-      ),
-      child: Stack(
-        fit: StackFit.expand,
-        clipBehavior: Clip.none,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-                top: 16,
-                left: 16,
-                right: 16,
-                bottom: EnvironmentConfig.bottomNavBarHeight),
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (i) => setState(() => _activeTabIndex = i),
-              children: [
-                StopwatchWithLaps(
-                  fullScreenDisplay: true,
-                ),
-                CountdownTimer(
-                  fullScreenDisplay: true,
-                )
-              ],
-            ),
+    return Stack(
+      fit: StackFit.expand,
+      clipBehavior: Clip.none,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+              top: 12,
+              left: 16,
+              right: 16,
+              bottom: EnvironmentConfig.bottomNavBarHeight),
+          child: IndexedStack(
+            index: _activeTabIndex,
+            children: [
+              StopwatchWithLaps(
+                fullScreenDisplay: true,
+              ),
+              CountdownTimer(
+                fullScreenDisplay: true,
+              )
+            ],
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: TimersBottomNavBar(
-              activePageIndex: _activeTabIndex,
-              goToPage: (i) {
-                _pageController.jumpToPage(i);
-                setState(() => _activeTabIndex = i);
-              },
-            ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: _TimersBottomNavBar(
+            activePageIndex: _activeTabIndex,
+            goToPage: (i) => setState(() => _activeTabIndex = i),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class TimersBottomNavBar extends StatelessWidget {
+class _TimersBottomNavBar extends StatelessWidget {
   final int activePageIndex;
   final void Function(int pageIndex) goToPage;
-  const TimersBottomNavBar({
+  const _TimersBottomNavBar({
     Key? key,
     required this.goToPage,
     required this.activePageIndex,
@@ -91,46 +77,41 @@ class TimersBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-            decoration: BoxDecoration(
-              color: context.theme.background.withOpacity(0.2),
+    return Container(
+        decoration: BoxDecoration(
+          color: context.theme.primary.withOpacity(0.1),
+        ),
+        height: EnvironmentConfig.bottomNavBarHeight,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _TimersNavItem(
+              activeIconData: CupertinoIcons.stopwatch_fill,
+              inactiveIconData: CupertinoIcons.stopwatch,
+              label: 'Stopwatch',
+              onTap: () => goToPage(0),
+              isActive: activePageIndex == 0,
             ),
-            height: EnvironmentConfig.bottomNavBarHeight,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                NavItem(
-                  activeIconData: CupertinoIcons.stopwatch_fill,
-                  inactiveIconData: CupertinoIcons.stopwatch,
-                  label: 'Stopwatch',
-                  onTap: () => goToPage(0),
-                  isActive: activePageIndex == 0,
-                ),
-                NavItem(
-                  activeIconData: CupertinoIcons.timer_fill,
-                  inactiveIconData: CupertinoIcons.timer,
-                  label: 'Timer',
-                  onTap: () => goToPage(1),
-                  isActive: activePageIndex == 1,
-                ),
-              ],
-            )),
-      ),
-    );
+            _TimersNavItem(
+              activeIconData: CupertinoIcons.timer_fill,
+              inactiveIconData: CupertinoIcons.timer,
+              label: 'Timer',
+              onTap: () => goToPage(1),
+              isActive: activePageIndex == 1,
+            ),
+          ],
+        ));
   }
 }
 
-class NavItem extends StatelessWidget {
+class _TimersNavItem extends StatelessWidget {
   final IconData activeIconData;
   final IconData inactiveIconData;
   final String label;
   final bool isActive;
   final void Function() onTap;
-  const NavItem(
+  const _TimersNavItem(
       {Key? key,
       required this.activeIconData,
       required this.inactiveIconData,
@@ -145,55 +126,46 @@ class NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: ClipOval(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            color: context.theme.cardBackground.withOpacity(0.8),
-            child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              pressedOpacity: 0.9,
-              onPressed: onTap,
-              child: AnimatedOpacity(
-                duration: kStandardAnimationDuration,
-                opacity: isActive ? 1 : 0.6,
-                child: AnimatedSwitcher(
-                    duration: kStandardAnimationDuration,
-                    child: isActive
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                activeIconData,
-                                size: iconSize,
-                              ),
-                              SizedBox(height: 1),
-                              MyText(
-                                label,
-                                size: FONTSIZE.TINY,
-                              )
-                            ],
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                inactiveIconData,
-                                size: iconSize,
-                              ),
-                              SizedBox(height: 1),
-                              MyText(
-                                label,
-                                size: FONTSIZE.TINY,
-                              )
-                            ],
-                          )),
-              ),
-            ),
-          ),
+      child: CupertinoButton(
+        padding: const EdgeInsets.all(0),
+        pressedOpacity: 0.9,
+        onPressed: onTap,
+        child: AnimatedOpacity(
+          duration: kStandardAnimationDuration,
+          opacity: isActive ? 1 : 0.6,
+          child: AnimatedSwitcher(
+              duration: kStandardAnimationDuration,
+              child: isActive
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          activeIconData,
+                          size: iconSize,
+                        ),
+                        SizedBox(height: 1),
+                        MyText(
+                          label,
+                          size: FONTSIZE.TINY,
+                        )
+                      ],
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          inactiveIconData,
+                          size: iconSize,
+                        ),
+                        SizedBox(height: 1),
+                        MyText(
+                          label,
+                          size: FONTSIZE.TINY,
+                        )
+                      ],
+                    )),
         ),
       ),
     );

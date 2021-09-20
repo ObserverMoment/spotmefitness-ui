@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:spotmefitness_ui/blocs/do_workout_bloc/do_workout_bloc_archived.dart';
-import 'package:spotmefitness_ui/blocs/logged_workout_creator_bloc_archived.dart';
 import 'package:spotmefitness_ui/blocs/theme_bloc.dart';
 import 'package:spotmefitness_ui/components/buttons.dart';
 import 'package:spotmefitness_ui/components/cards/logged_wokout_section_summary_card.dart';
@@ -22,8 +21,10 @@ import 'package:supercharged/supercharged.dart';
 import 'package:spotmefitness_ui/extensions/type_extensions.dart';
 
 class DoWorkoutLogWorkoutPage extends StatefulWidget {
+  final LoggedWorkout loggedWorkout;
   final ScheduledWorkout? scheduledWorkout;
-  const DoWorkoutLogWorkoutPage({Key? key, this.scheduledWorkout})
+  const DoWorkoutLogWorkoutPage(
+      {Key? key, this.scheduledWorkout, required this.loggedWorkout})
       : super(key: key);
 
   @override

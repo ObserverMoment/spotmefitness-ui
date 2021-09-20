@@ -47,10 +47,10 @@ class NumberRoundsIcon extends StatelessWidget {
   List<Widget> _buildChildren() => [
         MyText(
           '$rounds',
-          size: FONTSIZE.HUGE,
+          size: FONTSIZE.LARGE,
         ),
         SizedBox(
-          width: 6,
+          width: 4,
         ),
         MyText(
           rounds == 1 ? 'round' : 'rounds',

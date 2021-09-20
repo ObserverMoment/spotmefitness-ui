@@ -109,6 +109,7 @@ class WorkoutSetDurationPicker extends StatefulWidget {
   final CupertinoTimerPickerMode mode;
   final int minuteInterval;
   final int secondInterval;
+  final bool allowCopyToAll;
   WorkoutSetDurationPicker(
       {required this.duration,
       required this.updateDuration,
@@ -116,7 +117,8 @@ class WorkoutSetDurationPicker extends StatefulWidget {
       this.minuteInterval = 1,
       this.secondInterval = 5,
       this.mode = CupertinoTimerPickerMode.ms,
-      this.switchTitle = 'Copy to all sets'});
+      this.switchTitle = 'Copy to all sets',
+      this.allowCopyToAll = true});
 
   @override
   _WorkoutSetDurationPickerState createState() =>
@@ -154,13 +156,14 @@ class _WorkoutSetDurationPickerState extends State<WorkoutSetDurationPicker> {
               padding: const EdgeInsets.all(8.0),
               child: H2(widget.title!),
             ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CupertinoSwitchRow(
-                title: widget.switchTitle,
-                updateValue: (v) => setState(() => _copyToAll = v),
-                value: _copyToAll),
-          ),
+          if (widget.allowCopyToAll)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: CupertinoSwitchRow(
+                  title: widget.switchTitle,
+                  updateValue: (v) => setState(() => _copyToAll = v),
+                  value: _copyToAll),
+            ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: CupertinoTimerPicker(

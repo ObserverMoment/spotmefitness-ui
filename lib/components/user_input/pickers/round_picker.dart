@@ -17,7 +17,7 @@ class RoundPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoButton(
-      padding: padding ?? const EdgeInsets.all(8),
+      padding: padding ?? const EdgeInsets.all(4),
       onPressed: () => context.showBottomSheet<int>(
           child: NumberInputModalInt(
         value: rounds,

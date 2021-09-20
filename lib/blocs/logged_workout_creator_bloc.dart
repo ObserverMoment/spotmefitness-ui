@@ -57,7 +57,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
       loggedWorkout = prevLoggedWorkout!.copyAndSortAllChildren;
     } else {
       _isEditing = false;
-      loggedWorkout = workoutToLoggedWorkout(
+      loggedWorkout = loggedWorkoutFromWorkout(
           workout: workout!,
           scheduledWorkout: scheduledWorkout,
           copySections: false);
@@ -73,7 +73,7 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         loggedWorkout.loggedWorkoutSections = workout!.workoutSections
             .sortedBy<num>((ws) => ws.sortPosition)
             .map((ws) =>
-                workoutSectionToLoggedWorkoutSection(workoutSection: ws))
+                loggedWorkoutSectionFromWorkoutSection(workoutSection: ws))
             .toList();
       }
     }
@@ -120,18 +120,18 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
         // Get the value from the inputs
         final s =
             sectionsWithInputs.firstWhere((s) => ws.id == s.workoutSection.id);
-        return workoutSectionToLoggedWorkoutSection(
+        return loggedWorkoutSectionFromWorkoutSection(
             workoutSection: ws, repScore: s.input);
       } else if ([kFreeSessionName, kForTimeName]
           .contains(ws.workoutSectionType.name)) {
         // Get the value from the inputs
         final s =
             sectionsWithInputs.firstWhere((s) => ws.id == s.workoutSection.id);
-        return workoutSectionToLoggedWorkoutSection(
+        return loggedWorkoutSectionFromWorkoutSection(
             workoutSection: ws, timeTakenSeconds: s.input);
       } else {
         // Timed sections already have all the data needed to create a LoggedWorkoutSection
-        return workoutSectionToLoggedWorkoutSection(workoutSection: ws);
+        return loggedWorkoutSectionFromWorkoutSection(workoutSection: ws);
       }
     }).toList();
 
@@ -152,41 +152,8 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
 
   /// Used when creating only - when editing we save incrementally.
   Future<MutationResult> createAndSave(BuildContext context) async {
-    final input = CreateLoggedWorkoutInput(
-      name: loggedWorkout.name,
-      note: loggedWorkout.note,
-      scheduledWorkout: scheduledWorkout != null
-          ? ConnectRelationInput(id: scheduledWorkout!.id)
-          : null,
-      gymProfile: loggedWorkout.gymProfile != null
-          ? ConnectRelationInput(id: loggedWorkout.gymProfile!.id)
-          : null,
-      workoutGoals: loggedWorkout.workoutGoals
-          .map((goal) => ConnectRelationInput(id: goal.id))
-          .toList(),
-      completedOn: loggedWorkout.completedOn,
-      loggedWorkoutSections: loggedWorkout.loggedWorkoutSections
-          .sortedBy<num>((section) => section.sortPosition)
-          .mapIndexed((index, section) =>
-              CreateLoggedWorkoutSectionInLoggedWorkoutInput(
-                name: section.name,
-                sortPosition: index,
-                moveTypes: section.moveTypes
-                    .map((m) => ConnectRelationInput(id: m.id))
-                    .toList(),
-                bodyAreas: section.bodyAreas
-                    .map((b) => ConnectRelationInput(id: b.id))
-                    .toList(),
-                repScore: section.repScore,
-                timeTakenSeconds: section.timeTakenSeconds,
-                loggedWorkoutSectionData:
-                    LoggedWorkoutSectionDataInput.fromJson(
-                        section.loggedWorkoutSectionData?.toJson() ?? {}),
-                workoutSectionType:
-                    ConnectRelationInput(id: section.workoutSectionType.id),
-              ))
-          .toList(),
-    );
+    final input = createLoggedWorkoutInputFromLoggedWorkout(
+        loggedWorkout, scheduledWorkout);
 
     final variables = CreateLoggedWorkoutArguments(data: input);
 
@@ -502,5 +469,44 @@ class LoggedWorkoutCreatorBloc extends ChangeNotifier {
     context.graphQLStore.writeDataToStore(
         data: updated.toJson(),
         broadcastQueryIds: [GQLOpNames.userScheduledWorkoutsQuery]);
+  }
+
+  static CreateLoggedWorkoutInput createLoggedWorkoutInputFromLoggedWorkout(
+      LoggedWorkout loggedWorkout, ScheduledWorkout? scheduledWorkout) {
+    return CreateLoggedWorkoutInput(
+      name: loggedWorkout.name,
+      note: loggedWorkout.note,
+      scheduledWorkout: scheduledWorkout != null
+          ? ConnectRelationInput(id: scheduledWorkout.id)
+          : null,
+      gymProfile: loggedWorkout.gymProfile != null
+          ? ConnectRelationInput(id: loggedWorkout.gymProfile!.id)
+          : null,
+      workoutGoals: loggedWorkout.workoutGoals
+          .map((goal) => ConnectRelationInput(id: goal.id))
+          .toList(),
+      completedOn: loggedWorkout.completedOn,
+      loggedWorkoutSections: loggedWorkout.loggedWorkoutSections
+          .sortedBy<num>((section) => section.sortPosition)
+          .mapIndexed((index, section) =>
+              CreateLoggedWorkoutSectionInLoggedWorkoutInput(
+                name: section.name,
+                sortPosition: index,
+                moveTypes: section.moveTypes
+                    .map((m) => ConnectRelationInput(id: m.id))
+                    .toList(),
+                bodyAreas: section.bodyAreas
+                    .map((b) => ConnectRelationInput(id: b.id))
+                    .toList(),
+                repScore: section.repScore,
+                timeTakenSeconds: section.timeTakenSeconds,
+                loggedWorkoutSectionData:
+                    LoggedWorkoutSectionDataInput.fromJson(
+                        section.loggedWorkoutSectionData?.toJson() ?? {}),
+                workoutSectionType:
+                    ConnectRelationInput(id: section.workoutSectionType.id),
+              ))
+          .toList(),
+    );
   }
 }

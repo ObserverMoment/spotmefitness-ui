@@ -121,7 +121,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                     ),
                                     backgroundColor:
                                         context.theme.primary.withOpacity(0.1),
-                                    linearGradient: Styles.pinkGradient,
+                                    linearGradient: Styles.neonBlueGradient,
                                     circularStrokeCap: CircularStrokeCap.round,
                                     percent: milliseconds /
                                         _countdownTime.inMilliseconds,
