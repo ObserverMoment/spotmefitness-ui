@@ -1,0 +1,3 @@
+mutation softDeleteWorkoutById($id: ID!) {
+  softDeleteWorkoutById(id: $id)
+}

@@ -1,0 +1,48 @@
+# Summary data only - for lists and search results.
+query userWorkouts {
+  userWorkouts {
+    ...Workout
+    User {
+      ...UserSummary
+    }
+    WorkoutGoals {
+      ...WorkoutGoal
+    }
+    WorkoutTags {
+      ...WorkoutTag
+    }
+    WorkoutSections {
+      ...WorkoutSection
+      WorkoutSectionType {
+        ...WorkoutSectionType
+      }
+      WorkoutSets {
+        ...WorkoutSet
+        WorkoutMoves {
+          ...WorkoutMove
+          Equipment {
+            ...Equipment
+          }
+          Move {
+            ...Move
+            MoveType {
+              ...MoveType
+            }
+            BodyAreaMoveScores {
+              score
+              BodyArea {
+                ...BodyArea
+              }
+            }
+            RequiredEquipments {
+              ...Equipment
+            }
+            SelectableEquipments {
+              ...Equipment
+            }
+          }
+        }
+      }
+    }
+  }
+}

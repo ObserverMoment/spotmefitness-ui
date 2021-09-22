@@ -1,0 +1,38 @@
+query checkClubInviteToken($id: ID!) {
+  checkClubInviteToken(id: $id) {
+    __typename
+    ... on ClubInviteTokenData {
+      ...ClubInviteTokenData
+      Club {
+        ...Club
+        Owner {
+          ...UserSummary
+        }
+        Admins {
+          ...UserSummary
+        }
+        Members {
+          ...UserSummary
+        }
+        ClubInviteTokens {
+          ...ClubInviteToken
+        }
+        JoinClubInvites {
+          ...JoinClubInvite
+          Invited {
+            ...UserSummary
+          }
+        }
+        JoinClubRequests {
+          ...JoinClubRequest
+          Applicant {
+            ...UserSummary
+          }
+        }
+      }
+    }
+    ... on InviteTokenError {
+      ...InviteTokenError
+    }
+  }
+}

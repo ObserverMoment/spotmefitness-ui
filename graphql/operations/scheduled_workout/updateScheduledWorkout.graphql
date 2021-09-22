@@ -1,0 +1,58 @@
+mutation updateScheduledWorkout($data: UpdateScheduledWorkoutInput!) {
+  updateScheduledWorkout(data: $data) {
+    ...ScheduledWorkout
+    Workout {
+      ...Workout
+      User {
+        ...UserSummary
+      }
+      WorkoutGoals {
+        ...WorkoutGoal
+      }
+      WorkoutTags {
+        ...WorkoutTag
+      }
+      WorkoutSections {
+        ...WorkoutSection
+        WorkoutSectionType {
+          ...WorkoutSectionType
+        }
+        WorkoutSets {
+          ...WorkoutSet
+          WorkoutMoves {
+            ...WorkoutMove
+            Equipment {
+              ...Equipment
+            }
+            Move {
+              ...Move
+              MoveType {
+                ...MoveType
+              }
+              BodyAreaMoveScores {
+                score
+                BodyArea {
+                  ...BodyArea
+                }
+              }
+              RequiredEquipments {
+                ...Equipment
+              }
+              SelectableEquipments {
+                ...Equipment
+              }
+            }
+          }
+        }
+      }
+    }
+    GymProfile {
+      ...GymProfile
+      Equipments {
+        ...Equipment
+      }
+    }
+    loggedWorkoutId
+    workoutPlanEnrolmentId
+  }
+}

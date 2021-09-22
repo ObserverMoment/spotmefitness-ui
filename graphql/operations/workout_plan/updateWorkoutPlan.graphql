@@ -1,0 +1,9 @@
+# Just the workout - not descendants.
+mutation updateWorkoutPlan($data: UpdateWorkoutPlanInput!) {
+  updateWorkoutPlan: updateWorkoutPlan(data: $data) {
+    ...WorkoutPlan
+    WorkoutTags {
+      ...WorkoutTag
+    }
+  }
+}

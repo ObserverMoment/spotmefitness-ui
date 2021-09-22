@@ -1,0 +1,9 @@
+# Sub type fields will all be empty when
+mutation createWorkoutPlan($data: CreateWorkoutPlanInput!) {
+  createWorkoutPlan: createWorkoutPlan(data: $data) {
+    ...WorkoutPlan
+    User {
+      ...UserSummary
+    }
+  }
+}

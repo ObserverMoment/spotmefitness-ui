@@ -1,0 +1,7 @@
+mutation updateBodyTransformationPhoto(
+  $data: UpdateBodyTransformationPhotoInput!
+) {
+  updateBodyTransformationPhoto(data: $data) {
+    ...BodyTransformationPhoto
+  }
+}

@@ -1,0 +1,47 @@
+query publicWorkouts($cursor: ID, $filters: WorkoutFiltersInput, $take: Int) {
+  publicWorkouts(cursor: $cursor, filters: $filters, take: $take) {
+    ...Workout
+    User {
+      ...UserSummary
+    }
+    WorkoutGoals {
+      ...WorkoutGoal
+    }
+    WorkoutTags {
+      ...WorkoutTag
+    }
+    WorkoutSections {
+      ...WorkoutSection
+      WorkoutSectionType {
+        ...WorkoutSectionType
+      }
+      WorkoutSets {
+        ...WorkoutSet
+        WorkoutMoves {
+          ...WorkoutMove
+          Equipment {
+            ...Equipment
+          }
+          Move {
+            ...Move
+            MoveType {
+              ...MoveType
+            }
+            BodyAreaMoveScores {
+              score
+              BodyArea {
+                ...BodyArea
+              }
+            }
+            RequiredEquipments {
+              ...Equipment
+            }
+            SelectableEquipments {
+              ...Equipment
+            }
+          }
+        }
+      }
+    }
+  }
+}

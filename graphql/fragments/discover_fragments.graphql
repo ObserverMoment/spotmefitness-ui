@@ -1,0 +1,32 @@
+fragment DiscoverFeatured on DiscoverFeatured {
+  __typename
+  id
+  createdAt
+  tag
+  name
+  tagline
+  description
+  coverImageUri
+}
+
+fragment DiscoverWorkoutCategory on DiscoverWorkoutCategory {
+  __typename
+  id
+  createdAt
+  active
+  name
+  tagline
+  description
+  coverImageUri
+}
+
+fragment DiscoverWorkoutPlanCategory on DiscoverWorkoutPlanCategory {
+  __typename
+  id
+  createdAt
+  active
+  name
+  tagline
+  description
+  coverImageUri
+}

@@ -1,0 +1,103 @@
+# Not being used...potential future optimization.
+fragment WorkoutSummary on WorkoutSummary {
+  id
+  __typename
+  createdAt
+  creatorId
+  creatorName
+  creatorAvatarUri
+  name
+  description
+  contentAccessScope
+  lengthMinutes
+  difficultyLevel
+  WorkoutGoals
+  WorkoutTags
+  WorkoutSections {
+    name
+    timecap
+    sortPosition
+    classVideoUri
+    classVideoThumbUri
+    classAudioUri
+    WorkoutSectionType
+  }
+  Moves
+  Equipments
+}
+
+fragment Workout on Workout {
+  __typename
+  id
+  createdAt
+  archived
+  name
+  description
+  lengthMinutes
+  difficultyLevel
+  coverImageUri
+  contentAccessScope
+  introVideoUri
+  introVideoThumbUri
+  introAudioUri
+}
+
+fragment WorkoutGoal on WorkoutGoal {
+  __typename
+  id
+  name
+  description
+  hexColor
+}
+
+fragment WorkoutSection on WorkoutSection {
+  __typename
+  id
+  name
+  note
+  rounds
+  timecap
+  sortPosition
+  introVideoUri
+  introVideoThumbUri
+  introAudioUri
+  classVideoUri
+  classVideoThumbUri
+  classAudioUri
+  outroVideoUri
+  outroVideoThumbUri
+  outroAudioUri
+}
+
+fragment WorkoutSectionType on WorkoutSectionType {
+  __typename
+  id
+  name
+  description
+}
+
+fragment WorkoutSet on WorkoutSet {
+  __typename
+  id
+  sortPosition
+  rounds
+  duration
+}
+
+fragment WorkoutMove on WorkoutMove {
+  __typename
+  id
+  sortPosition
+  reps
+  repType
+  distanceUnit
+  loadAmount
+  loadUnit
+  timeUnit
+}
+
+fragment WorkoutTag on WorkoutTag {
+  __typename
+  id
+  tag
+}

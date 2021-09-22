@@ -1,0 +1,5 @@
+query clubSummaries($ids: [ID!]!) {
+  clubSummaries(ids: $ids) {
+    ...ClubPublicSummary
+  }
+}

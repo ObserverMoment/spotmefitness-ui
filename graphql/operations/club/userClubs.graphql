@@ -1,0 +1,29 @@
+query userClubs {
+  userClubs {
+    ...Club
+    Owner {
+      ...UserSummary
+    }
+    Admins {
+      ...UserSummary
+    }
+    Members {
+      ...UserSummary
+    }
+    ClubInviteTokens {
+      ...ClubInviteToken
+    }
+    JoinClubInvites {
+      ...JoinClubInvite
+      Invited {
+        ...UserSummary
+      }
+    }
+    JoinClubRequests {
+      ...JoinClubRequest
+      Applicant {
+        ...UserSummary
+      }
+    }
+  }
+}

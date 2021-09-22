@@ -1,0 +1,23 @@
+mutation updateLoggedWorkoutSection($data: UpdateLoggedWorkoutSectionInput!) {
+  updateLoggedWorkoutSection: updateLoggedWorkoutSection(data: $data) {
+    ...LoggedWorkoutSection
+    WorkoutSectionType {
+      ...WorkoutSectionType
+    }
+    BodyAreas {
+      ...BodyArea
+    }
+    MoveTypes {
+      ...MoveType
+    }
+    loggedWorkoutSectionData {
+      rounds {
+        timeTakenSeconds
+        sets {
+          timeTakenSeconds
+          moves
+        }
+      }
+    }
+  }
+}
